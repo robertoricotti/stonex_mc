@@ -1,0 +1,105 @@
+package serial;
+
+import android.content.Context;
+import android.os.Build;
+import android.serialport.SerialPortFinder;
+import android.util.Log;
+import android.widget.Toast;
+
+import packexcalib.exca.DataSaved;
+import utils.MyDeviceManager;
+
+
+public class OpenSerialPort {
+    public static boolean mOpened;
+    String mBaudrate;
+    Device mDevice;
+
+    public OpenSerialPort(Context ctx) {
+        String[] mDevices;
+        int aPosition = -1;
+        if (DataSaved.my_comPort != 0) {
+
+            try {
+                SerialPortFinder serialPortFinder = new SerialPortFinder();
+                mBaudrate = "115200";
+                mDevices = serialPortFinder.getAllDevicesPath();
+                //Log.d("Seriali", Arrays.toString(mDevices));
+
+                String[] item = mDevices;
+                for (int i = 0; i < item.length; i++)
+                    if (item[i].contains(MyDeviceManager.serialCom(DataSaved.my_comPort)))
+                        aPosition = i;
+                mDevice = new Device(mDevices[aPosition], mBaudrate);
+                mOpened = SerialPortManager.instance().open(mDevice) != null;
+                if (mOpened) {
+                    Toast toast = Toast.makeText(ctx.getApplicationContext(), MyDeviceManager.serialCom(DataSaved.my_comPort), Toast.LENGTH_LONG);
+                    toast.setGravity(0, 0, 0);
+                    toast.show();
+
+                    if (DataSaved.my_comPort == 3) {
+                        try {
+                            if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
+                                SerialPortManager.instance().sendCommand("CONFIG UNDULATION AUTO\r\n");
+                                SerialPortManager.instance().sendCommand("GNGGA COM1 100\r\n");
+                                SerialPortManager.instance().sendCommand("GPGGA COM1 100\r\n");
+                                SerialPortManager.instance().sendCommand("GNGSA COM1 100\r\n");
+                                SerialPortManager.instance().sendCommand("GPGSV COM1 100\r\n");
+                                SerialPortManager.instance().sendCommand("GBGSV COM1 100\r\n");
+                                SerialPortManager.instance().sendCommand("GAGSV COM1 100\r\n");
+                                SerialPortManager.instance().sendCommand("GLGSV COM1 100\r\n");
+                                SerialPortManager.instance().sendCommand("GNRMC COM1 100\r\n");
+                                SerialPortManager.instance().sendCommand("GPHDT COM1 0.1\r\n");
+                                SerialPortManager.instance().sendCommand("GNHDT COM1 0.1\r\n");
+                                SerialPortManager.instance().sendCommand("SAVECONFIG\r\n");
+
+                            } else {
+                                SerialPortManager.instance().sendCommand("CONFIG UNDULATION AUTO\r\n");
+                                SerialPortManager.instance().sendCommand("GNGGA COM1 10\r\n");
+                                SerialPortManager.instance().sendCommand("GPGGA COM1 10\r\n");
+                                SerialPortManager.instance().sendCommand("GPHDT COM1 0.05\r\n");
+                                SerialPortManager.instance().sendCommand("SAVECONFIG\r\n");
+                            }
+
+
+                        } catch (Exception e) {
+                        }
+                    }{
+                        if (DataSaved.gpsType == 1) {
+                            //Log.d("Programmo","Programmo");
+                            SerialPortManager.instance().sendCommand("SET,DEVICE.LOGLIST,GST:2000|GGA:100|HDT:100|GPLLQ:100|\r\n");
+                           Thread.sleep(500);
+                            SerialPortManager.instance().sendCommand("set,ports.reset,2\r\n");
+
+                        }
+
+                    }
+
+                } else {
+
+                    Toast.makeText(ctx.getApplicationContext(), "Serial COM Fail", Toast.LENGTH_LONG).show();
+                    try {
+                        mOpened = false;
+                        SerialPortManager.instance().close();
+                    } catch (Exception e) {
+
+                    }
+                }
+            } catch (Exception e) {
+
+                Toast.makeText(ctx.getApplicationContext(), "Exception Serial COM Fail", Toast.LENGTH_LONG).show();
+                try {
+                    mOpened = false;
+                    SerialPortManager.instance().close();
+
+                } catch (Exception ex) {
+
+                }
+            }
+        } else {
+
+            mOpened = false;
+        }
+    }
+
+}

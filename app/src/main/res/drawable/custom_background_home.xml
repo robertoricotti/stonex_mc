@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+
+    <!-- View background color -->
+    <solid
+        android:color="@color/gray" >
+    </solid>
+
+    <!-- View border color and width -->
+    <stroke
+        android:width="0dp"
+        android:color="@color/application_table_line_color" >
+    </stroke>
+
+    <!-- The radius makes the corners rounded -->
+    <corners
+        android:topLeftRadius="0dp"
+        android:topRightRadius="0dp"
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp">
+        <!--android:radius="5dp" -->
+    </corners>
+    <gradient
+        android:startColor="@color/btn_bottom_color"
+        android:centerColor="@color/btn_bottom_color"
+        android:endColor="@color/btn_bottom_color"
+        android:angle="0">
+    </gradient>
+
+</shape>

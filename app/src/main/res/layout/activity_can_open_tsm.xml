@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Bg_yellow"
+    android:keepScreenOn="true"
+    tools:context="gui.tech_menu.CanOpenTSM">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:alpha="1"
+        android:background="@color/_____cancel_text"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtProgress"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="0%"
+        android:textColor="@color/white"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="TSM CanOpen Setup - CONNECT 1 SENSOR AT A TIME "
+        android:textAlignment="center"
+        android:textColor="@color/dark_gray"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/top10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/centVe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/low85"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <Button
+        android:visibility="invisible"
+        android:id="@+id/goToCanOpen"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="20dp"
+        android:alpha="0.3"
+        android:backgroundTint="@color/_____cancel_text"
+        android:text="Go To\nCanOpen"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top10" />
+
+    <Button
+        android:visibility="invisible"
+        android:id="@+id/backNova"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_marginRight="20dp"
+        android:alpha="0.3"
+        android:backgroundTint="@color/_____cancel_text"
+        android:text="Back To\nNovatron"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top10" />
+
+    <CheckBox
+        android:id="@+id/cbFR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:ems="7"
+        android:text="Frame ID 0x1"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@id/goToCanOpen"
+        app:layout_constraintTop_toBottomOf="@id/goToCanOpen" />
+
+    <CheckBox
+        android:id="@+id/cbB1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:ems="7"
+        android:text="Boom1 ID 0x2"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/cbFR"
+        app:layout_constraintTop_toBottomOf="@id/goToCanOpen" />
+
+    <CheckBox
+        android:id="@+id/cbB2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:ems="7"
+        android:text="Boom2 ID 0x7"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/cbB1"
+        app:layout_constraintTop_toBottomOf="@id/goToCanOpen" />
+
+    <CheckBox
+        android:id="@+id/cbST"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:ems="7"
+        android:text="Stick ID 0x4"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/cbB2"
+        app:layout_constraintTop_toBottomOf="@id/goToCanOpen" />
+
+    <CheckBox
+        android:id="@+id/cbBK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:clickable="false"
+        android:text="Bucket ID 0x5"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@id/cbFR"
+        app:layout_constraintTop_toBottomOf="@id/cbFR" />
+
+    <CheckBox
+        android:id="@+id/cbTL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="Tilt ID 0x6"
+        android:textSize="20sp"
+        android:textStyle="bold"
+
+        app:layout_constraintLeft_toLeftOf="@id/cbB1"
+        app:layout_constraintTop_toTopOf="@id/cbBK" />
+
+    <CheckBox
+        android:id="@+id/cbDef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="Default ID 0x3"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@id/cbB2"
+        app:layout_constraintTop_toTopOf="@id/cbTL" />
+
+    <Button
+        android:visibility="invisible"
+        android:id="@+id/restoreDefault"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:alpha="0.3"
+        android:backgroundTint="@color/_____cancel_text"
+        android:text="Restore\nDefaults"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/storeStxCfg"
+        app:layout_constraintTop_toBottomOf="@id/cbBK" />
+
+    <Button
+        android:id="@+id/storeStxCfg"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/_____cancel_text"
+        android:text="Store\nSTX Setup"
+        android:textColor="@color/bg_white"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@id/centVe"
+        app:layout_constraintRight_toRightOf="@id/centVe"
+        app:layout_constraintTop_toBottomOf="@id/cbBK" />
+
+    <Button
+        android:visibility="invisible"
+        android:id="@+id/saveAll"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:alpha="0.3"
+        android:backgroundTint="@color/_____cancel_text"
+        android:text=""
+        android:textColor="@color/add_text"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/storeStxCfg"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cbBK" />
+
+    <Button
+        android:id="@+id/txt_sA"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:backgroundTint="@color/bg_white"
+        android:text="Source ID:"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@id/low85"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/changeId"
+        app:layout_constraintTop_toBottomOf="@id/restoreDefault" />
+
+    <Button
+        android:id="@+id/txt_dA"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:backgroundTint="@color/bg_white"
+        android:text="Dest. ID:"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@id/low85"
+        app:layout_constraintLeft_toRightOf="@id/changeId"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/restoreDefault" />
+
+    <Button
+        android:id="@+id/changeId"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/_____cancel_text"
+        android:text="Change ID"
+        android:textColor="@color/add_text"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/low85"
+        app:layout_constraintLeft_toLeftOf="@id/centVe"
+        app:layout_constraintRight_toRightOf="@id/centVe"
+        app:layout_constraintTop_toBottomOf="@id/storeStxCfg" />
+
+
+    <Button
+        android:id="@+id/exitS"
+        android:layout_width="140dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/dark_gray"
+        android:gravity="center"
+        android:text="@string/exit"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/low85" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

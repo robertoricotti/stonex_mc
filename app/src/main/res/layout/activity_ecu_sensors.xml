@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="drill_pile.gui.Ecu_Sensors_Activity">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.88" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guideTop"
+        android:background="@color/whiteGray"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/_____cancel_text"
+        android:text="ECU SETUP"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/guideTop"
+        app:layout_constraintBottom_toTopOf="@id/guideLow"
+        android:scrollbarSize="24dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout1  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="MACHINE MODEL"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout2  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="HYDRAULIC TYPE"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout3  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="HEIGHT SENSOR"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout4  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="T-1 SPEED"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout5  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="T-2 SPEED"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout6  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="L-1 SPEED"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout7  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="L-2 SPEED"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout8  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="MAST PITCH 1 SPEED"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout9  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="MAST PITCH 2 SPEED"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout10  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="MAST ROLL 1 SPEED"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout11  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="MAST ROLL 2 SPEED"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout12  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="HAMMER FREQUENCY"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Layout13  !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:textColor="@color/_____cancel_text"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="DROP DOWN MODE"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"/>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/lowerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideLow">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_btn" />
+
+        <TextView
+            android:id="@+id/txtCheckCalib"
+            android:text=""
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="32sp"
+            android:gravity="center"
+            android:ems="5"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="6"
+            android:background="@color/nav_gray_color"
+            />
+        <ImageView
+            android:id="@+id/can1setup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="15dp"
+
+            android:src="@drawable/btn_can1" />
+        <ImageView
+            android:id="@+id/can2setup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="15dp"
+            android:src="@drawable/btn_can2" />
+
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

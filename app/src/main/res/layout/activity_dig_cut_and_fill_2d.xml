@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:keepScreenOn="true">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline26"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline27"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.88" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline196"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.65" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline197"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/panel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/guideline27"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline26">
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideDef"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/guideDef"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+            <ImageView
+                android:id="@+id/showStick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/numero_1"
+                android:layout_weight="1"
+                app:tint="@color/black" />
+            <ImageView
+                android:id="@+id/setReach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/zero_distance"
+                android:layout_weight="1"
+                app:tint="@color/black" />
+            <ImageView
+                android:id="@+id/depthMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rif_inclinato"
+                android:layout_weight="1"
+                app:tint="@color/black" />
+            <ImageView
+                android:id="@+id/zoomC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rotation="45"
+                android:src="@drawable/vertical_center_btn"
+                android:layout_weight="1"
+                android:alpha="0.2"
+                app:tint="@color/black" />
+            <ImageView
+                android:id="@+id/zoomM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/zoom_out_btn"
+                android:alpha="0.2"
+                android:layout_weight="1"
+                app:tint="@color/black" />
+            <ImageView
+                android:id="@+id/zoomP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/zoom_in_btn"
+                android:alpha="0.2"
+                android:layout_weight="1"
+                app:tint="@color/black" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/height_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+
+        android:textAlignment="center"
+        android:textSize="130sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/guideline196"
+        app:layout_constraintEnd_toStartOf="@+id/guideline34"
+        app:layout_constraintStart_toStartOf="@+id/guideline33"
+        app:layout_constraintTop_toTopOf="@+id/guideline197" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/guideline27"
+        app:layout_constraintEnd_toStartOf="@+id/guideline34"
+        app:layout_constraintStart_toStartOf="@+id/guideline33"
+        app:layout_constraintTop_toTopOf="@+id/guideline196">
+
+        <TextView
+            android:id="@+id/slopeY_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|start"
+            android:paddingHorizontal="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            />
+
+        <TextView
+            android:id="@+id/slopeY2D_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom|start"
+            android:paddingBottom="5dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+             />
+
+        <TextView
+            android:id="@+id/slopeX2D_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom|end"
+            android:paddingBottom="5dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+             />
+
+
+        <TextView
+            android:id="@+id/slopeX_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|end"
+            android:paddingHorizontal="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+             />
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/guideline197"
+        app:layout_constraintEnd_toStartOf="@+id/guideline34"
+        app:layout_constraintStart_toStartOf="@+id/guideline33"
+        app:layout_constraintTop_toTopOf="@+id/guideline26">
+
+        <TextView
+            android:id="@+id/bucket_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|start"
+            android:paddingHorizontal="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            />
+
+
+        <TextView
+            android:id="@+id/offset_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingHorizontal="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+             />
+
+        <TextView
+            android:id="@+id/reach_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|end"
+            android:paddingHorizontal="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+             />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/upperDeltaView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/guideline26"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/leftCorner"
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="1.5dp"
+            android:layout_weight="1"
+            android:background="@color/dark_gray"
+            android:gravity="center"
+            android:text="⧗ 0.00"
+            android:textAlignment="center"
+            android:textColor="@color/gray"
+            android:textSize="60sp"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:id="@+id/deltaCenter"
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_weight="1"
+            android:background="@color/dark_gray" />
+
+        <LinearLayout
+            android:id="@+id/rightCorner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_weight="1"
+            android:background="@color/dark_gray"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/navigatorHDT"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="3dp"
+                android:rotation="0"
+                android:src="@drawable/escavatore_alto_icona"
+                app:tint="@color/white">
+            </ImageView>
+
+
+            <TextView
+                android:id="@+id/heading_tv"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="-189.9 °"
+                android:gravity="center|start"
+                android:textSize="40dp"
+                android:textStyle="bold"
+                android:textColor="@color/white">
+
+            </TextView>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lowerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline27">
+
+        <ImageView
+            android:id="@+id/pair"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/go_dig" />
+
+        <ImageView
+            android:id="@+id/bucketEdge"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/benna_misura_cnt" />
+
+        <ImageView
+            android:id="@+id/slope"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/slope_btn" />
+
+        <ImageView
+            android:id="@+id/settingOffset"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/offset_btn" />
+
+        <ImageView
+            android:id="@+id/setZero"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:rotationY="180"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/zero_btn" />
+
+        <ImageView
+            android:id="@+id/laser"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/laser_off" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/allarmeAlt"
+        android:visibility="gone"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/yellow"
+        android:src="@drawable/danger_altezza"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline34"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

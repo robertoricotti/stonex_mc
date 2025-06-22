@@ -1,0 +1,130 @@
+[33mfdd74b18[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mroberto[m[33m, [m[1;32mstonex[m[33m)[m HEAD@{0}: rebase: checkout roberto
+[33mfdd74b18[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mroberto[m[33m, [m[1;32mstonex[m[33m)[m HEAD@{1}: checkout: moving from master to stonex
+[33m1d7dd837[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{2}: commit: v4 verificare interpolazione geoidi usa sembra ok
+[33ma540f3cf[m HEAD@{3}: commit: v4 verificare interpolazione geoidi usa sembra ok
+[33m1ea1155b[m HEAD@{4}: commit: v4 verificare interpolazione geoidi usa sembra ok
+[33m1ef60d8f[m HEAD@{5}: commit: v4 verificare interpolazione geoidi usa
+[33mf77d7bc1[m HEAD@{6}: commit: v4 proj4j 1.4.1 test geoidi usa fallito
+[33m38f172cf[m HEAD@{7}: commit: v4 proj4j 1.4.1 test geoidi usa
+[33m40dbd574[m HEAD@{8}: commit: v4 proj4j 1.4.1 test geoidi usa
+[33mff44e9e7[m HEAD@{9}: commit: v4 proj4j 1.4.1 ma grecia not ok
+[33m946784c0[m HEAD@{10}: commit: v4 waiting for proj4j upgrade
+[33m7e3b917c[m HEAD@{11}: commit: v4 Wheel Loader ok
+[33m81117634[m HEAD@{12}: commit: v4 Wheel Loader ok
+[33m6cc7a946[m HEAD@{13}: commit: v4 Wheel Loader
+[33me43223be[m HEAD@{14}: commit: v4 Da finmire Wheel Loader
+[33m38113a69[m HEAD@{15}: commit: v4 Da iniziare Wheel Loader
+[33med755f69[m HEAD@{16}: commit: v4 Da iniziare Wheel Loader
+[33mf0021e0a[m HEAD@{17}: commit: v4 Da iniziare Wheel Loader
+[33m5344609f[m HEAD@{18}: commit: v4 Da iniziare Wheel Loader
+[33m5265088b[m HEAD@{19}: commit: v4 Da iniziare Wheel Loader
+[33m95603297[m HEAD@{20}: commit: v4 LAma Dozer Grader OK
+[33m6d9d6369[m HEAD@{21}: commit: v4 LAma Dozer Grader OK
+[33mcca6c349[m HEAD@{22}: commit: v4 LAma Dozer Grader OK
+[33m426e05ef[m HEAD@{23}: commit: v4 EXCA OK quai finito
+[33m190e2801[m HEAD@{24}: commit: v4 EXCA OK
+[33md11f92ae[m HEAD@{25}: commit: v4 inizio cab
+[33mbdf5407e[m HEAD@{26}: commit: v4 inizio cab
+[33md0dafc4b[m HEAD@{27}: commit: v4 inizio cab
+[33m09cb86a8[m HEAD@{28}: commit: v4 inizio cab
+[33md85bfdda[m HEAD@{29}: commit: v4 text e point ok GL1.1
+[33mc56b6129[m HEAD@{30}: commit: v4 VBO rimosso
+[33m427437ef[m HEAD@{31}: commit: v4 VBO da bocciare
+[33m658ac160[m HEAD@{32}: commit: v4 VBO and audio OK
+[33m5ff25df8[m HEAD@{33}: commit: v4 VBO REMOVED Mediaplayer in My3DActivity
+[33m45baed7b[m HEAD@{34}: commit: v4 VBO pre removed mediaplayer
+[33m48fcbe02[m HEAD@{35}: commit: v4 boom1+boom2
+[33m38db1980[m HEAD@{36}: commit: v4 boom1
+[33m06885678[m HEAD@{37}: commit: v4 stick GL
+[33m1442b332[m HEAD@{38}: commit: v4 stick GL
+[33m99876459[m HEAD@{39}: commit: v4 pre stick GL
+[33mde5302d2[m HEAD@{40}: commit: v4 attacco and tilt
+[33mc4d4281a[m HEAD@{41}: commit: v4 benna ok
+[33m5772c24c[m HEAD@{42}: commit: da disegnare attacco
+[33m7ebf0f2e[m HEAD@{43}: commit: v4 ancora
+[33m35115c12[m HEAD@{44}: commit: v4 ancora
+[33m9c49f549[m HEAD@{45}: commit: v4 ancora
+[33m19e65c10[m HEAD@{46}: commit: 3.13.2 RELEASE
+[33m0a27ba8a[m HEAD@{47}: commit: 4.0.0 prova implementazione Grecia
+[33m289ca486[m HEAD@{48}: commit: 4.0.0 openGL1 START
+[33m5dee01f6[m HEAD@{49}: commit: 4.0.0 punto di rottura con versione 3
+[33mcb0fd039[m HEAD@{50}: commit: 4.0.0 punto di rottura con versione 3
+[33me9f283ec[m HEAD@{51}: commit: 3.13.1 RELEASE TESTED
+[33m4dfcc49f[m HEAD@{52}: commit: 3.13.0 RELEASE TESTED
+[33m142d67a8[m HEAD@{53}: commit: 3.13.0 RELEASE test dato a Saiko
+[33m36862bbc[m HEAD@{54}: commit: 3.13.0 TODO export DXFTrench
+[33m45336b24[m HEAD@{55}: commit: 3.13.0 aggiunta trench poly mode da finire export dxf
+[33mb2f99a47[m HEAD@{56}: commit: 3.13.0 aggiunta trench poly mode da finire export dxf
+[33m8849a033[m HEAD@{57}: commit: 3.13.0 activity lavoro 70%
+[33m1abe2d9f[m HEAD@{58}: commit: 3.13.0 activity lavoro 70%
+[33md696edbd[m HEAD@{59}: commit: 3.13.0 activity lavoro 65%
+[33mc27cac49[m HEAD@{60}: commit: 3.13.0 activity lavoro 65%
+[33m881eeb00[m HEAD@{61}: commit: 3.13.0 benna disegnata
+[33m45b9267e[m HEAD@{62}: commit: 3.13.0 benna disegnata da json
+[33m3ff95f8f[m HEAD@{63}: commit: 3.13.0 benna disegnata da json
+[33m75d1caae[m HEAD@{64}: commit: 3.13.0 coordinate macchina scalate per openGL
+[33m0fec4f18[m HEAD@{65}: commit: 3.13.0 oggetti 2D ok. si inizia con le macchine
+[33m56ee2017[m HEAD@{66}: commit: 3.13.0 polilinee 2D non funzionano
+[33mcc596eba[m HEAD@{67}: commit: 3.13.0 mancano entità 2d e basta
+[33m9dee141a[m HEAD@{68}: commit: 3.13.0 openGL da integrare oggetti 2D in vista 2D
+[33m90e112c0[m HEAD@{69}: commit: 3.13.0 openGL da integrare oggetti 2D in vista 2D
+[33me9a1a6d6[m HEAD@{70}: commit: 3.13.0 openGL da migliorare vista 2D
+[33ma225035e[m HEAD@{71}: commit: 3.13.0 openGL disegno entità 3D dxf e xml
+[33m0c12d92a[m HEAD@{72}: commit: 3.13.0 openGL step avanti
+[33m141d369e[m HEAD@{73}: commit: 3.12.1 RELEASE
+[33me23ceefa[m HEAD@{74}: commit: 3.12.1 test openGL
+[33m6aaf6e2c[m HEAD@{75}: commit: 3.12.1 test openGL
+[33m3a9c2e67[m HEAD@{76}: commit: 3.12.1 OVERLAY Permission ripristinato
+[33m37af16be[m HEAD@{77}: commit: 3.12.1 dxf export Autocad R12 compatible
+[33m301e749c[m HEAD@{78}: commit: 3.12.1 lambert 72
+[33m18cf1acb[m HEAD@{79}: commit: 3.12.1 lambert 72
+[33m6013d442[m HEAD@{80}: commit: 3.12.0 RELEASE
+[33m238620c1[m HEAD@{81}: commit: 3.11.0 RELEASE
+[33mc897f57a[m HEAD@{82}: commit: 3.11.0 test pick polilinea da canvas
+[33m1459b0d8[m HEAD@{83}: commit: 3.11.0 fill surface from layer
+[33m44169e13[m HEAD@{84}: commit: 3.11.0 fill surface from layer
+[33mdc06a839[m HEAD@{85}: commit: 3.11.0 fill surface from layer
+[33m5f6b9fe3[m HEAD@{86}: commit: 3.11.0 antenna drawing
+[33m08a5bce9[m HEAD@{87}: commit: 3.11.0 antenna drawing
+[33mf1840aa5[m HEAD@{88}: commit: 3.11.0 antenna drawing
+[33m43a65a9c[m HEAD@{89}: commit: 3.11.0 hydro joy
+[33me1daf2bc[m HEAD@{90}: commit: 3.11.0 hydro joy
+[33ma54d4ed9[m HEAD@{91}: commit: 3.11.0 hydro joy
+[33me1be030a[m HEAD@{92}: commit: 3.11.0 hydro joy
+[33m284edbda[m HEAD@{93}: commit: 3.11.0 hydro joy
+[33m8070f8c6[m HEAD@{94}: commit: 3.11.0 hydro joy
+[33mb15cc4d3[m HEAD@{95}: commit: 3.11.0 prime drawClasses ok
+[33m4564cf66[m HEAD@{96}: commit: 3.11.0 prima di nuove drawClasses
+[33m4d65ec51[m HEAD@{97}: commit: 3.10.1 demo Bauma grader AUTO
+[33m7d02fd9d[m HEAD@{98}: commit: 3.10.1 demo Bauma grader AUTO
+[33m9b26db9b[m HEAD@{99}: commit: 3.10.1 demo Bauma grader AUTO
+[33mefb0ea9e[m HEAD@{100}: commit: 3.10.1 demo Bauma grader AUTO
+[33m25ace004[m HEAD@{101}: commit: 3.10.1 demo Bauma grader topview
+[33m7e5431ad[m HEAD@{102}: commit: 3.10.1 demo Bauma
+[33m5cfbd269[m HEAD@{103}: commit: 3.10.1 RELEASE bugfix blade
+[33m3a639686[m HEAD@{104}: commit: 3.10.0 RELEASE
+[33mfde80c74[m HEAD@{105}: commit: 3.10.0 AUTO HANDLING
+[33m47e87c73[m HEAD@{106}: commit: 3.10.0 AUTO HANDLING
+[33m430a6961[m HEAD@{107}: commit: 3.10.0 AUTO HANDLING
+[33mb19f4903[m HEAD@{108}: commit: 3.9.1 AUTO HANDLING
+[33ma42d959b[m HEAD@{109}: commit: 3.9.1 NFR
+[33m5d13de28[m HEAD@{110}: commit: 3.9.1 NFR
+[33m32e05a10[m HEAD@{111}: commit: 3.9.1 NFR
+[33md34701cd[m HEAD@{112}: commit: 3.9.2 ecu to be tested
+[33m29a750cc[m HEAD@{113}: commit: 3.9.2 ecu near to be finished
+[33ma20e823a[m HEAD@{114}: commit: 3.9.2 ecu near to be finished
+[33mb4bdb61f[m HEAD@{115}: commit: 3.9.2 progress bar download S3 timeout
+[33m5302a66f[m HEAD@{116}: commit: 3.9.2 progress bar download S3 timeout
+[33me6fb4074[m HEAD@{117}: commit: 3.9.2 progress bar download S3 timeout
+[33ma20118c9[m HEAD@{118}: commit: 3.9.2 progress bar download S3
+[33m63a643c4[m HEAD@{119}: commit: 3.9.2 ecu and more
+[33m0e779e43[m HEAD@{120}: commit: 3.9.2 ecu and more
+[33md0680114[m HEAD@{121}: commit: 3.9.2 ecu
+[33mc7d75881[m HEAD@{122}: commit: 3.9.2 ecu
+[33md1393bf7[m HEAD@{123}: commit: 3.9.2 ecu
+[33m6e271d7d[m HEAD@{124}: commit: 3.9.1 Release
+[33m60967c7f[m HEAD@{125}: commit: 3.9.0 Release
+[33m904925bf[m HEAD@{126}: commit: 3.8.1 to be tested
+[33ma991144d[m HEAD@{127}: commit: 3.8.1 to be tested
+[33m42055f12[m HEAD@{128}: commit: 3.8.0 release
+[33mbacaca51[m HEAD@{129}: commit: 3.8

@@ -1,0 +1,158 @@
+<resources>
+    <string name="app_name">STX MC</string>
+    <string name="copyright">Copyright © \nAll rights reserved</string>
+    <string name="website">www.stonex.it</string>
+    <string name="save">SALVA</string>
+    <string name="exit">ESCI</string>
+    <string name="machines">MACCHINE</string>
+    <string name="profiles">PROFILI</string>
+    <string name="buckets">SELEZIONA UNA BENNA</string>
+    <string name="settings">SETTAGGI UTENTE</string>
+    <string name="bucket1">BENNA1</string>
+    <string name="bucket2">BENNA2</string>
+    <string name="bucket3">BENNA3</string>
+    <string name="bucket4">BENNA4</string>
+    <string name="bucket5">BENNA5</string>
+    <string name="bucket6">BENNA6</string>
+    <string name="bucket7">BENNA7</string>
+    <string name="bucket8">BENNA8</string>
+    <string name="bucket9">BENNA9</string>
+    <string name="bucket10">BENNA10</string>
+    <string name="sensor">SENSORE</string>
+    <string name="value">VALORE</string>
+    <string name="offset">OFFSET</string>
+    <string name="status">STATO</string>
+    <string name="boom1">BOOM1</string>
+    <string name="boom2">BOOM2</string>
+    <string name="stick_laser">STICK-LASER</string>
+    <string name="bucket">BENNA</string>
+    <string name="frame_picth_roll">CARRO PITCH-ROLL</string>
+    <string name="compass">ROTAZIONE</string>
+    <string name="tilt">TILT</string>
+    <string name="pos">POS</string>
+    <string name="single_slope">SINGOLA PENDENZA</string>
+    <string name="off">OFF</string>
+    <string name="left">LEFT</string>
+    <string name="right">RIGHT</string>
+    <string name="bucket_name">NOME BENNA:</string>
+    <string name="bucket_length">LUNGHEZZA : </string>
+    <string name="bucket_width">LARGHEZZA : </string>
+    <string name="Linkage_L4">L4: </string>
+    <string name="bucket_angle">ANGOLO: </string>
+    <string name="bucket_flat_angle">ANGOLO PIATTO : </string>
+    <string name="reset">RESET</string>
+    <string name="stick_and_laser_calibration">CALIBRAZIONE STICK / LASER</string>
+    <string name="bucket_linkage_calibration">CALIBRAZIONE BUCKET / LINKAGE</string>
+    <string name="mounting_side">LATO MONTAGGIO</string>
+    <string name="info">INFO</string>
+    <string name="machine_name">NOME MACCHINA</string>
+    <string name="picth_and_roll_calibration">CALIBRAZIONE PITCH / ROLL</string>
+    <string name="boom2_calibration">CALIBRAZIONE BOOM 2</string>
+    <string name="boom1_calibration">CALIBRAZIONE BOOM 1</string>
+    <string name="tilt_calibration">CALIBRAZIONE TILT</string>
+    <string name="height_deadband">TOLL. ALTEZZA</string>
+    <string name="flat_angle_deadband">TOLL. ANGOLARE</string>
+    <string name="yes">SI</string>
+    <string name="no">NO</string>
+    <string name="close_app">SICURO DI VOLER CHIUDERE L"'"APPLICAZIONE?</string>
+    <string name="ok">OK</string>
+    <string name="set">SET</string>
+    <string name="height_alarm">ALLARME ALTEZZA</string>
+    <string name="use_tilt">USA SENSORE TILT</string>
+    <string name="use_bucket">USA SENSORE BENNA</string>
+    <string name="len">LUNGHEZZA </string>
+    <string name="angle">ANGOLO </string>
+    <string name="txt_tiltangle">ANGOLO TILT: </string>
+    <string name="gps_calib">CALIBRAZIONE ANTENNE</string>
+    <string name="gnss_setup">SETTAGGIO GPS</string>
+    <string name="set_laser_offset">IMPOSTARE ALTEZZA LASER?</string>
+    <string name="units">DISTANZE</string>
+    <string name="unitsA">ANGOLI</string>
+    <string name="viewport">VISTA</string>
+    <string name="user_units">UNITA DI MISURA</string>
+    <string name="audio">VOLUME" / "SUONI</string>
+
+
+
+
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="quick_setup">SETTAGGI RAPIDI</string>
+    <string name="edit_zeta">VUOI EDITARE LA Z ED APPLICARE IL NUOVO VALORE AL GPS?</string>
+
+    <string name="laserOK">LASER OK</string>
+    <string name="laserKO">RAGGIO FUORI PORTATA</string>
+    <string name="disabled">DISABILITATO</string>
+    <string name="slopeX">PENDENZA X</string>
+    <string name="slopeY">PENDENZA Y</string>
+    <string name="toast_select_bucket">SELEZIONARE LA BENNA PRIMA DI IMPOSTARE I VALORI</string>
+    <string name="toast_hold_to_set">TIENI PREMUTO PER SELEZIONARE</string>
+    <string name="toast_cantset_heading">ERRORE ORIENTAMENTO</string>
+
+    <string name="powercycle_sensor">SI PREGA DI RESETTARE L\'ALIMENTAZIONE AL SENSORE</string>
+    <string name="infoNr">Supporto Tecnico</string>
+    <string name="infoMessage">mc@stonex.it</string>
+    <string name="touch_e_go">SPOSTARE L\'ESCAVATORE E RIPOSIZIONARE LA BENNA SULLO STESSO PUNTO DI RIFERIMENTO E POI PREMERE L\'IMMAGINE 2 PER TORNARE ALLA SCHERMATA DI LAVORO</string>
+    <string name="pick_1">POSIZIONARE LA BENNA SU UN RIFERIMENTO E PREMERE L\'IMMAGINE 1</string>
+    <string name="selectproject">SELEZIONA UN PROGETTO</string>
+    <string name="project">PROGETTI</string>
+    <string name="flat_surface">SUPERFICIE\n PIANA</string>
+    <string name="ab_surface">SUPERFICIE\n DA A>>B</string>
+    <string name="cross_section">SUPERFICIE\n DA POLILINEA</string>
+
+    <string name="lumen">LUMINOSITA\'</string>
+    <string name="exit_proj">USCIRE?\n TUTTI I DATI ANDRANNO PERSI</string>
+    <string name="area">AREA\n PIATTA</string>
+    <string name="messages">MESSAGGI</string>
+
+    <string name="mostraTriangoli">Mostra Triangoli</string>
+    <string name="mostraColore">Mostra Colore Superficie</string>
+    <string name="mostraPunti">Mostra Punti</string>
+    <string name="mostraPoly">Mostra 3D Polylinee</string>
+    <string name="mostraNome">Mostra Testo Punto</string>
+
+    <string name="projectWindow">RAGGIO SUPERFICIE</string>
+    <string name="polylinee">POLYLINEE</string>
+    <string name="puntip">PUNTI</string>
+    <string name="mostraGradiente">Mostra Gradiente Superficie</string>
+    <string name="bucket11">BENNA11</string>
+    <string name="bucket12">BENNA12</string>
+    <string name="bucket13">BENNA13</string>
+    <string name="bucket14">BENNA14</string>
+    <string name="bucket15">BENNA15</string>
+    <string name="bucket16">BENNA16</string>
+    <string name="bucket17">BENNA17</string>
+    <string name="bucket18">BENNA18</string>
+    <string name="bucket19">BENNA19</string>
+    <string name="bucket20">BENNA20</string>
+    <string name="yaw_drift_compensation">COMPENSAZIONE DELLA DERIVA</string>
+
+    <string name="quick">ATTACCO\nRAPIDO</string>
+    <string name="mostraUtils">"Mostra oggetti 2D "</string>
+    <string name="selectafile">SELEZIONA UN FILE!</string>
+    <string name="machines_setup">PARAMETRI MACCHINA</string>
+    <string name="com_debug">CAN DEBUG</string>
+    <string name="trincea">TRINCEA\nDRENAGGIO</string>
+    <string name="dtm">MODELLO DEL TERRENO</string>
+    <string name="usb_file_tr">FILE >> USB</string>
+    <string name="cloud_file_tr">FILE >> CLOUD</string>
+    <string name="local_projects">PROGETTI LOCALI</string>
+    <string name="punto_salvato">PUNTO AGGIUNTO</string>
+    <string name="punto_rimosso">PUNTO ELIMINATO</string>
+    <string name="off_grid">OFF SURFACE</string>
+    <string name="file_exists">Il File Esiste Già</string>
+    <string name="overwrite">SOVRASCRIVERE ?</string>
+    <string name="delete_file">ELIMINARE IL FILE SELEZIONATO?</string>
+    <string name="select_file">SELEZIONA UN FILE</string>
+    <string name="deleted">ELIMINATO</string>
+    <string name="showAlign">" Mostra Allineamento Macchina"</string>
+    <string name="add_surface">NUOVA SUPERFICIE</string>
+    <string name="add_surface_ask">AGGIUNGI AL PROGETTO ATTUALE</string>
+    <string name="add_surface_nope">CREA NUOVO</string>
+    <string name="enter_filename">INSERIRE IL NOME DEL FILE</string>
+    <string name="fydro_no">CONTROLLO IDRAULICO NON ANCORA IMPLEMENTATO</string>
+    <string name="treddi_acxtive">Profili disponibili solo in modalità 1D/2D</string>
+    <string name="treddi_off">Disponibile Solo In Modalità 3D</string>
+
+
+</resources>

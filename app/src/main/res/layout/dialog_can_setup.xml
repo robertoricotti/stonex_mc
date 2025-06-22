@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bg_gray">
+    <TextView
+        android:id="@+id/itolo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/_____cancel_text"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center" />
+    <RadioButton
+        android:layout_marginVertical="20dp"
+        android:id="@+id/rb1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:buttonTint="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/itolo"
+        app:layout_constraintBottom_toTopOf="@id/rb2"
+        android:textSize="18sp"
+        android:text="125 kbps "
+        />
+    <RadioButton
+        android:layout_marginVertical="20dp"
+        android:id="@+id/rb2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:buttonTint="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/rb1"
+        app:layout_constraintBottom_toTopOf="@id/rb3"
+        android:textSize="18sp"
+        android:text="250 kbps "
+        />
+    <RadioButton
+        android:layout_marginVertical="20dp"
+        android:id="@+id/rb3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:buttonTint="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/rb2"
+        app:layout_constraintBottom_toTopOf="@id/rb4"
+        android:textSize="18sp"
+        android:text="500 kbps "
+        />
+    <RadioButton
+        android:layout_marginVertical="20dp"
+        android:id="@+id/rb4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:buttonTint="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/rb3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="18sp"
+        android:text="1000 kbps"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

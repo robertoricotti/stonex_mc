@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_gray">
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/mezzeria"
+        app:layout_constraintGuide_percent="0.5"/>
+
+<ImageView
+    android:id="@+id/macchina"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintLeft_toRightOf="@id/mezzeria"
+    android:src="@drawable/wa_sfondo"
+    android:rotationY="180"/>
+
+    <CheckBox
+        android:id="@+id/ckExca"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EXCAVATOR"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+    <CheckBox
+        android:id="@+id/ckWheel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WHEEL LOADER"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toBottomOf="@id/ckExca"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+    <CheckBox
+        android:id="@+id/ckDozer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DOZER"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toBottomOf="@id/ckWheel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+    <CheckBox
+        android:visibility="gone"
+        android:id="@+id/ckDozer6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DOZER 6-WAY BLADE"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toBottomOf="@id/ckDozer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+    <CheckBox
+
+        android:id="@+id/ckGrader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GRADER"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toBottomOf="@id/ckDozer6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+    <CheckBox
+        android:visibility="gone"
+        android:id="@+id/ckDrilling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DRILLING MACHINE"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toBottomOf="@id/ckGrader"
+        app:layout_constraintLeft_toLeftOf="parent"
+
+        />
+    <CheckBox
+        android:visibility="gone"
+        android:id="@+id/ckPileDriver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PILEDRIVER MACHINE"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintTop_toBottomOf="@id/ckDrilling"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

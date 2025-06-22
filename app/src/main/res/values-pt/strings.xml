@@ -1,0 +1,157 @@
+<resources>
+    <string name="app_name">STX MC</string>
+    <string name="copyright">Copyright © \nAll rights reserved</string>
+    <string name="website">www.stonex.it</string>
+    <string name="save">SALVAR</string>
+    <string name="exit">ESC</string>
+    <string name="machines">MÁQUINAS</string>
+    <string name="profiles">PERFIS</string>
+    <string name="buckets">SELECIONE UMA CAÇAMBA</string>
+    <string name="settings">CONFIGURAÇÕES USUÁRIO</string>
+    <string name="bucket1">CAÇAMBA 1</string>
+    <string name="bucket2">CAÇAMBA 2</string>
+    <string name="bucket3">CAÇAMBA 3</string>
+    <string name="bucket4">CAÇAMBA 4</string>
+    <string name="bucket5">CAÇAMBA 5</string>
+    <string name="bucket6">CAÇAMBA 6</string>
+    <string name="bucket7">CAÇAMBA 7</string>
+    <string name="bucket8">CAÇAMBA 8</string>
+    <string name="bucket9">CAÇAMBA 9</string>
+    <string name="bucket10">CAÇAMBA 10</string>
+    <string name="sensor">SENSOR</string>
+    <string name="value">VALOR</string>
+    <string name="offset">DESVIO</string>
+    <string name="status">ESTADO</string>
+    <string name="boom1">BRAÇO 1</string>
+    <string name="boom2">BRAÇO 2</string>
+    <string name="stick_laser">LASER DA LANÇA</string>
+    <string name="bucket">BACIA</string>
+    <string name="frame_picth_roll">INCLINAÇÃO DE QUADRO</string>
+    <string name="compass">BÚSSOLA</string>
+    <string name="tilt">INCLINAÇÃO</string>
+    <string name="pos">POSIÇÃO</string>
+    <string name="single_slope">INCLINAÇÃO ÚNICA</string>
+    <string name="off">DESLIGADO</string>
+    <string name="left">ESQUERDA</string>
+    <string name="right">DIREITA</string>
+    <string name="bucket_name">NOME CAÇAMBA:</string>
+    <string name="bucket_length">COMPRIMENTO CAÇAMBA:</string>
+    <string name="bucket_width">LARGURA DA BACIA:</string>
+    <string name="Linkage_L4">LIGAÇÃO L4:</string>
+    <string name="bucket_angle">ÂNGULO BACIA:</string>
+    <string name="bucket_flat_angle">ÂNGULO PLANO BACIA:</string>
+    <string name="reset">REINICIAR</string>
+    <string name="stick_and_laser_calibration">CALIBRAÇÃO DE LANÇA / LASER</string>
+    <string name="bucket_linkage_calibration">CALIBRAÇÃO DE BACIA / LIGAÇÃO</string>
+    <string name="mounting_side">LADO DE MONTAGEM</string>
+    <string name="info">INFORMAÇÕES</string>
+    <string name="machine_name">NOME DA MÁQUINA</string>
+    <string name="picth_and_roll_calibration">CALIBRAÇÃO DE PITCH / ROLL</string>
+    <string name="boom2_calibration">CALIBRAÇÃO DE BRAÇO 2</string>
+    <string name="boom1_calibration">CALIBRAÇÃO DE BRAÇO 1</string>
+    <string name="tilt_calibration">CALIBRAÇÃO DE INCLINAÇÃO</string>
+    <string name="height_deadband">FAIXA DE ALTURA</string>
+    <string name="flat_angle_deadband">FAIXA DE ÂNGULO PLANO</string>
+    <string name="yes">SIM</string>
+    <string name="no">NÃO</string>
+    <string name="close_app">TEM CERTEZA DE QUE DESEJA FECHAR ESTE APP?</string>
+    <string name="ok">OK</string>
+    <string name="set">DEFINIR</string>
+    <string name="height_alarm">ALARME DE ALTURA</string>
+    <string name="use_tilt">USAR SENSOR DE INCLINAÇÃO</string>
+    <string name="use_bucket">USAR SENSOR DE BACIA</string>
+    <string name="len">COMPRIMENTO</string>
+    <string name="angle">ÂNGULO</string>
+    <string name="txt_tiltangle">ÂNGULO DE INCLINAÇÃO: </string>
+    <string name="gps_calib">CALIBRAÇÃO DE ANTENA</string>
+    <string name="gnss_setup">CONFIGURAÇÃO GNSS</string>
+    <string name="set_laser_offset">DEFINIR ALTURA DO LASER?</string>
+    <string name="units">DISTÂNCIA</string>
+    <string name="unitsA">ÂNGULO</string>
+    <string name="viewport">JANELA DE VISUALIZAÇÃO</string>
+    <string name="user_units">UNIDADES DE MEDIDA</string>
+    <string name="audio">ÁUDIO</string>
+    <string name="slopeX">INCLINAÇÃO X</string>
+    <string name="slopeY">INCLINAÇÃO Y</string>
+
+
+
+
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="quick_setup">CONFIGURAÇÕES RÁPIDAS</string>
+    <string name="edit_zeta">QUER EDITAR O Z E APLICAR O NOVO VALOR AO GPS?</string>
+
+    <string name="laserOK">LASER OK</string>
+    <string name="laserKO">LASER FORA DE ALCANCE</string>
+    <string name="disabled">DESATIVADO</string>
+    <string name="toast_select_bucket">SELECIONE O CAÇAMBA PARA CALIBRAR</string>
+    <string name="toast_hold_to_set">MANTENHA PRESSIONADO PARA DEFINIR</string>
+    <string name="toast_cantset_heading">ERRO AO DEFINIR A ORIENTAÇÃO</string>
+
+    <string name="powercycle_sensor">POR FAVOR, REDEFINA A ENERGIA DO SENSOR</string>
+    <string name="infoNr">Telefone Técnico</string>
+    <string name="infoMessage">Special.Projects@stonex.it</string>
+    <string name="touch_e_go">" MOVER O ESCAVADOR E REPOSICIONAR A CAÇAMBA NO MESMO PONTO DE REFERÊNCIA E, EM SEGUIDA, PRESSIONAR A IMAGEM 2 PARA RETORNAR À TELA DE TRABALHO"</string>
+    <string name="pick_1">COLOQUE O CAÇAMBA SOBRE UM PONTO DE REFERÊNCIA E, EM SEGUIDA, PRESSIONE A IMAGEM 1</string>
+    <string name="selectproject">SELECIONE UM PROJETO</string>
+    <string name="project">PROJETOS</string>
+    <string name="flat_surface">SUPERFÍCIE\n PLANA</string>
+    <string name="ab_surface">SUPERFÍCIE\n A>>B</string>
+    <string name="cross_section">SUPERFÍCIE\n DE POLILINA</string>
+
+    <string name="lumen">BRILHO</string>
+    <string name="exit_proj">SAIR?\n TODOS OS DADOS SERÃO PERDIDOS</string>
+    <string name="area">PLANO\n ÁREA</string>
+    <string name="messages">MENSAGENS</string>
+
+    <string name="mostraTriangoli">Mostrar triângulos</string>
+    <string name="mostraColore">Mostrar cor da superfície</string>
+    <string name="mostraPunti">Mostrar pontos</string>
+    <string name="mostraPoly">Mostrar polilinhas 3D</string>
+    <string name="mostraNome">Mostrar texto pontos</string>
+
+    <string name="projectWindow">JANELA DE SUPERFÍCIE</string>
+    <string name="polylinee">POLILINHAS</string>
+    <string name="puntip">PONTOS</string>
+    <string name="mostraGradiente">Mostrar Gradiente Superfície</string>
+    <string name="bucket11">CAÇAMBA 11</string>
+    <string name="bucket12">CAÇAMBA 12</string>
+    <string name="bucket13">CAÇAMBA 13</string>
+    <string name="bucket14">CAÇAMBA 14</string>
+    <string name="bucket15">CAÇAMBA 15</string>
+    <string name="bucket16">CAÇAMBA 16</string>
+    <string name="bucket17">CAÇAMBA 17</string>
+    <string name="bucket18">CAÇAMBA 18</string>
+    <string name="bucket19">CAÇAMBA 19</string>
+    <string name="bucket20">CAÇAMBA 20</string>
+    <string name="yaw_drift_compensation">COMPENSAÇÃO DE DERIVA</string>
+    <string name="quick">ACOPLADOR\nRÁPIDO</string>
+    <string name="mostraUtils">"Mostrar objetos 2D "</string>
+    <string name="selectafile">" SELECIONE UM ARQUIVO!"</string>
+    <string name="machines_setup">CONFIGURAÇÕES DA MÁQUINA</string>
+    <string name="com_debug">CAN DEBUG</string>
+    <string name="trincea">VALA\nDRENAGEM</string>
+    <string name="dtm">MODELO DE TERRENO</string>
+    <string name="usb_file_tr">TRANSFERÊNCIA DE FICHEIROS\nUSB</string>
+    <string name="cloud_file_tr">TRANSFERÊNCIA DE FICHEIROS\nCLOUD</string>
+    <string name="local_projects">PASTA DE PROJETOS\nLOCAIS</string>
+    <string name="punto_salvato">PONTO ADICIONADO</string>
+    <string name="punto_rimosso">PONTO REMOVIDO</string>
+    <string name="off_grid">OFF SURFACE</string>
+    <string name="file_exists">O ficheiro já existe</string>
+    <string name="overwrite">SOBRESCREVER?</string>
+    <string name="delete_file">APAGAR FICHEIRO SELECIONADO?</string>
+    <string name="select_file">SELECIONE UM ARQUIVO</string>
+    <string name="deleted">EXCLUÍDO</string>
+    <string name="showAlign">Mostrar alinhamento da máquina</string>
+    <string name="add_surface">NOVA SUPERFÍCIE</string>
+    <string name="add_surface_ask">ADICIONE AO PROJETO ATUAL</string>
+    <string name="add_surface_nope">CRIAR NOVO</string>
+    <string name="enter_filename">INSERIR NOME DO ARQUIVO</string>
+    <string name="fydro_no">CONTROLO HIDRÁULICO AINDA NÃO IMPLEMENTADO</string>
+    <string name="treddi_acxtive">Perfis Disponíveis apenas no modo 1D/2D</string>
+    <string name="treddi_off">Disponível apenas no modo 3D</string>
+
+
+</resources>

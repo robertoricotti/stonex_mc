@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval" >
+
+    <!-- View background color -->
+    <solid
+        android:color="@color/gray" >
+    </solid>
+
+    <!-- View border color and width -->
+    <stroke
+        android:width="80dp"
+        android:color="@color/_____cancel_text" >
+    </stroke>
+
+    <!-- The radius makes the corners rounded -->
+    <corners
+        android:topLeftRadius="100sp"
+        android:topRightRadius="100sp"
+        android:bottomLeftRadius="100sp"
+        android:bottomRightRadius="100sp">
+        <!--android:radius="5dp" -->
+    </corners>
+    <gradient
+        android:startColor="@color/transparent"
+        android:centerColor="@color/transparent"
+        android:endColor="@color/transparent"
+        android:angle="45">
+    </gradient>
+
+</shape>

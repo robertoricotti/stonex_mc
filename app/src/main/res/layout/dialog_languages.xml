@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/light_gray"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/v33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/v66"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/v75"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h66"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.50"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h99"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75"/>
+    <ImageView
+        android:id="@+id/flagEN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_eng"
+        android:padding="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/v33"
+        app:layout_constraintBottom_toTopOf="@id/h33"/>
+    <ImageView
+        android:id="@+id/flagUS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_usa"
+        android:padding="30dp"
+        app:layout_constraintLeft_toRightOf="@id/v33"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/v66"
+        app:layout_constraintBottom_toTopOf="@id/h33"
+        android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagIT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_ita"
+        android:padding="30dp"
+        app:layout_constraintLeft_toRightOf="@id/v66"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/v75"
+        app:layout_constraintBottom_toTopOf="@id/h33"
+        android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagNL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_nl"
+        android:padding="30dp"
+        app:layout_constraintLeft_toRightOf="@id/v75"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/h33"
+        android:contentDescription="TODO" />
+
+    <ImageView
+        android:id="@+id/flagDEU"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_deu"
+        android:padding="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/h33"
+        app:layout_constraintRight_toLeftOf="@id/v33"
+        app:layout_constraintBottom_toTopOf="@id/h66"
+        android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagESP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_esp"
+        android:padding="30dp"
+        app:layout_constraintLeft_toRightOf="@id/v33"
+        app:layout_constraintTop_toBottomOf="@id/h33"
+        app:layout_constraintRight_toLeftOf="@id/v66"
+        app:layout_constraintBottom_toTopOf="@id/h66"
+        android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagFR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_fra"
+        android:padding="30dp"
+        app:layout_constraintLeft_toRightOf="@id/v66"
+        app:layout_constraintTop_toBottomOf="@id/h33"
+        app:layout_constraintRight_toLeftOf="@id/v75"
+        app:layout_constraintBottom_toTopOf="@id/h66"
+        android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagRUS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ru"
+        android:padding="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/h66"
+        app:layout_constraintRight_toLeftOf="@id/v33"
+        app:layout_constraintBottom_toBottomOf="@id/h99"
+        android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagCHN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cn"
+        android:padding="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/h99"
+        app:layout_constraintTop_toBottomOf="@id/h66"
+        app:layout_constraintRight_toLeftOf="@id/v66"
+        app:layout_constraintLeft_toRightOf="@id/v33"
+        android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagPUR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pt"
+        android:padding="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/h66"
+        app:layout_constraintTop_toBottomOf="@id/h33"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/v75"
+        android:contentDescription="TODO" />
+
+    <ImageView
+        android:id="@+id/flagGRE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/el"
+        android:padding="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/h99"
+        app:layout_constraintRight_toLeftOf="@id/v33"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagKOR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/kr"
+        android:padding="30dp"
+       app:layout_constraintBottom_toTopOf="@id/h99"
+        app:layout_constraintTop_toBottomOf="@id/h66"
+        app:layout_constraintRight_toLeftOf="@id/v75"
+        app:layout_constraintLeft_toRightOf="@id/v66"
+        android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagRUM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/rm"
+        android:padding="30dp"
+        app:layout_constraintBottom_toTopOf="@id/h99"
+        app:layout_constraintTop_toBottomOf="@id/h66"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/v75"
+        android:contentDescription="TODO" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/centerV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.09" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/centH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.17" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/centH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.17" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/lowH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.91" />
+    <LinearLayout
+        android:id="@+id/layGeo"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toBottomOf="@id/centH2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/custom_background_transp">
+        <CheckBox
+            android:id="@+id/geo1"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="g2018u0.bin"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:buttonTint="@color/blue"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            />
+        <CheckBox
+            android:id="@+id/geo2"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="g2012ba0.bin"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:buttonTint="@color/blue"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            />
+        <CheckBox
+            android:id="@+id/geo3"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="nlgeo2018.ugf"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:buttonTint="@color/blue"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            />
+        <CheckBox
+            android:id="@+id/geo4"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="belgium_hbg18.ugf"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:buttonTint="@color/blue"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            />
+        <CheckBox
+            android:id="@+id/geo5"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="egm08_ww2_5mgh.ugf"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:buttonTint="@color/blue"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvSP"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/light_gray"
+        android:gravity="center"
+        android:text="COORDINATE REFERENCE SYSTEMS"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/topH"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/usaSP"
+        android:layout_width="60dp"
+        android:layout_height="0dp"
+        android:rotation="90"
+        android:src="@drawable/baseline_upload_126"
+        app:layout_constraintBottom_toTopOf="@id/topH"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/GROUNDblue" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="left"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/centH"
+        app:layout_constraintTop_toBottomOf="@id/topH">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="2dp"
+            android:spinnerMode="dropdown"
+            />
+        <TextView
+            android:id="@+id/inUso"
+            android:layout_marginLeft="50dp"
+            android:text=""
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:textStyle="italic|bold"
+            android:textColor="@color/bg_stonex_blue"/>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintBottom_toBottomOf="@id/centH"
+        app:layout_constraintTop_toTopOf="@id/centH" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/centH2"
+        app:layout_constraintTop_toBottomOf="@id/centH">
+
+        <EditText
+            android:id="@+id/cercaSP"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:focusableInTouchMode="false"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/startSerach"
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_refresh" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintBottom_toTopOf="@id/centH2"
+        app:layout_constraintTop_toTopOf="@id/centH2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_viewSP"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/lowH"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layGeo" />
+
+
+    <Button
+        android:id="@+id/dismiss"
+        android:layout_width="130dp"
+        android:layout_height="0dp"
+        android:backgroundTint="@color/_____cancel_text"
+        android:text="@string/exit"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lowH" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/light_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lowH" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:alpha="0.7"
+        android:background="@color/_____cancel_text"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="Sending..."
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/progressBar"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@id/progressBar"
+        app:layout_constraintRight_toRightOf="@id/progressBar"
+        app:layout_constraintTop_toTopOf="@id/progressBar"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

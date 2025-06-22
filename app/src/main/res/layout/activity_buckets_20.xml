@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:background="@color/application_table_line_color">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottomH85"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottomH90"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.88" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h_MID"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2125" />
+
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline51"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/linea2_H"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.425" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/linea3_H"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6375" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/V1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/V2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/V3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6" />
+
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/V4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/lowerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bottomH90">
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/back_btn" />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="6"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            app:tint="@color/light_gray" />
+
+        <ImageView
+            android:id="@+id/pair"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:rotation="0"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/go_dig" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/imageBucket1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/blue"
+        android:scaleType="fitCenter"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket1"
+        app:layout_constraintEnd_toStartOf="@+id/V1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline51"
+        app:srcCompat="@drawable/bucket_1" />
+
+    <TextView
+        android:id="@+id/nameBucket1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/bucket1"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/h_MID"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket1"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket1" />
+
+    <ImageButton
+        android:id="@+id/imageBucket2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/blue"
+        android:scaleType="fitCenter"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket2"
+        app:layout_constraintEnd_toStartOf="@+id/V2"
+        app:layout_constraintStart_toStartOf="@+id/V1"
+        app:layout_constraintTop_toTopOf="@+id/guideline51"
+        app:srcCompat="@drawable/bucket_2" />
+
+    <ImageButton
+        android:id="@+id/imageBucket3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/blue"
+        android:scaleType="fitCenter"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket3"
+        app:layout_constraintEnd_toStartOf="@+id/V3"
+        app:layout_constraintStart_toStartOf="@+id/V2"
+        app:layout_constraintTop_toTopOf="@+id/guideline51"
+        app:srcCompat="@drawable/bucket_3" />
+
+    <ImageButton
+        android:id="@+id/imageBucket4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/blue"
+        android:scaleType="fitCenter"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket4"
+        app:layout_constraintEnd_toStartOf="@+id/V4"
+        app:layout_constraintStart_toStartOf="@+id/V3"
+        app:layout_constraintTop_toTopOf="@+id/guideline51"
+        app:srcCompat="@drawable/bucket_4" />
+
+    <ImageButton
+        android:id="@+id/imageBucket5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/blue"
+        android:scaleType="fitCenter"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/V4"
+        app:layout_constraintTop_toTopOf="@+id/guideline51"
+        app:srcCompat="@drawable/bucket_5" />
+
+    <ImageButton
+        android:id="@+id/imageBucket6"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket6"
+        app:layout_constraintEnd_toStartOf="@+id/V1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/h_MID"
+        app:srcCompat="@drawable/bucket_6" />
+
+    <ImageButton
+        android:id="@+id/imageBucket7"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket7"
+        app:layout_constraintEnd_toStartOf="@+id/V2"
+        app:layout_constraintStart_toStartOf="@+id/V1"
+        app:layout_constraintTop_toTopOf="@+id/h_MID"
+        app:srcCompat="@drawable/bucket_7" />
+
+    <ImageButton
+        android:id="@+id/imageBucket8"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket8"
+        app:layout_constraintEnd_toStartOf="@+id/V3"
+        app:layout_constraintStart_toStartOf="@+id/V2"
+        app:layout_constraintTop_toTopOf="@+id/h_MID"
+        app:srcCompat="@drawable/bucket_8" />
+
+    <ImageButton
+        android:id="@+id/imageBucket9"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket9"
+        app:layout_constraintEnd_toStartOf="@+id/V4"
+        app:layout_constraintStart_toStartOf="@+id/V3"
+        app:layout_constraintTop_toTopOf="@+id/h_MID"
+        app:srcCompat="@drawable/bucket_9" />
+
+    <ImageButton
+        android:id="@+id/imageBucket10"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/V4"
+        app:layout_constraintTop_toTopOf="@+id/h_MID"
+        app:srcCompat="@drawable/bucket_10" />
+
+    <TextView
+        android:id="@+id/nameBucket2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/bucket2"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/h_MID"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket2"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket2" />
+
+    <TextView
+        android:id="@+id/nameBucket3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/bucket3"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/h_MID"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket3"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket3" />
+
+    <TextView
+        android:id="@+id/nameBucket4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/bucket4"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/h_MID"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket4"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket4" />
+
+    <TextView
+        android:id="@+id/nameBucket5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/bucket5"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/h_MID"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket5"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket5" />
+
+    <TextView
+        android:id="@+id/nameBucket6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket6"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea2_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket6"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket6" />
+
+    <TextView
+        android:id="@+id/nameBucket7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket7"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea2_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket7"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket7" />
+
+    <TextView
+        android:id="@+id/nameBucket8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket8"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea2_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket8"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket8" />
+
+    <TextView
+        android:id="@+id/nameBucket9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket9"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea2_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket9"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket9" />
+
+    <TextView
+        android:id="@+id/nameBucket10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket10"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea2_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket10"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket10" />
+    <ImageButton
+        android:id="@+id/imageBucket11"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket11"
+        app:layout_constraintEnd_toStartOf="@+id/V1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linea2_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket11"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea3_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket11"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket11" />
+    <ImageButton
+        android:id="@+id/imageBucket12"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket12"
+        app:layout_constraintEnd_toStartOf="@+id/V2"
+        app:layout_constraintStart_toEndOf="@id/V1"
+        app:layout_constraintTop_toTopOf="@+id/linea2_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket12"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea3_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket12"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket12" />
+    <ImageButton
+        android:id="@+id/imageBucket13"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket13"
+        app:layout_constraintEnd_toStartOf="@+id/V3"
+        app:layout_constraintStart_toEndOf="@id/V2"
+        app:layout_constraintTop_toTopOf="@+id/linea2_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket13"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea3_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket13"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket13" />
+    <ImageButton
+        android:id="@+id/imageBucket14"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket14"
+        app:layout_constraintEnd_toStartOf="@+id/V4"
+        app:layout_constraintStart_toEndOf="@id/V3"
+        app:layout_constraintTop_toTopOf="@+id/linea2_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket14"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea3_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket14"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket14" />
+    <ImageButton
+        android:id="@+id/imageBucket15"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/V4"
+        app:layout_constraintTop_toTopOf="@+id/linea2_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket15"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linea3_H"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket15"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket15" />
+    <ImageButton
+        android:id="@+id/imageBucket16"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket16"
+        app:layout_constraintEnd_toStartOf="@+id/V1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linea3_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket16"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/bottomH85"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket16"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket16" />
+    <ImageButton
+        android:id="@+id/imageBucket17"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket17"
+        app:layout_constraintEnd_toStartOf="@+id/V2"
+        app:layout_constraintStart_toEndOf="@id/V1"
+        app:layout_constraintTop_toTopOf="@+id/linea3_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket17"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/bottomH85"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket17"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket17" />
+    <ImageButton
+        android:id="@+id/imageBucket18"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket18"
+        app:layout_constraintEnd_toStartOf="@+id/V3"
+        app:layout_constraintStart_toEndOf="@id/V2"
+        app:layout_constraintTop_toTopOf="@+id/linea3_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket18"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/bottomH85"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket18"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket18" />
+    <ImageButton
+        android:id="@+id/imageBucket19"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket19"
+        app:layout_constraintEnd_toStartOf="@+id/V4"
+        app:layout_constraintStart_toEndOf="@id/V3"
+        app:layout_constraintTop_toTopOf="@+id/linea3_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket19"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/bottomH85"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket19"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket19" />
+
+    <ImageButton
+        android:id="@+id/imageBucket20"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/blue"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameBucket20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/V4"
+        app:layout_constraintTop_toTopOf="@+id/linea3_H"
+        app:srcCompat="@drawable/bucket_1" />
+    <TextView
+        android:id="@+id/nameBucket20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bucket20"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/bottomH85"
+        app:layout_constraintEnd_toEndOf="@+id/imageBucket20"
+        app:layout_constraintStart_toStartOf="@+id/imageBucket20" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:background="@color/_____cancel_text"
+        android:alpha="0.7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
