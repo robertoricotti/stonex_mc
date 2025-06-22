@@ -210,7 +210,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
-
+//Qui ogni activity è in onCreate
 
     }
 
@@ -234,8 +234,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
                 h = Double.MAX_VALUE;
             }
             visibleActivity = activity;
-            Actualactivity = String.valueOf(activity);
-
+            Actualactivity = String.valueOf(activity);//
             m_updateUI(activity, true);
 
 
