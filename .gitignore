@@ -1,19 +1,13 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+# Ignora tutto per default
+*
 
-# Project exclude paths
-/can/build/
-/can/build/intermediates/javac/debug/classes/
+# Ma non ignorare queste cartelle:
+!app/
+!mylibrary/
+!gradle/
+!.idea/
+!build.gradle
+!settings.gradle
+!gradlew
+!gradlew.bat
+!local.properties
