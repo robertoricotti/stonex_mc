@@ -107,6 +107,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static String geoidFilePath_GR = null;
     public static String geoidFilePath_USA2012 = null;
     public static String geoidFilePath_USA2018 = null;
+    public static String geoidFilePath_DEU = null;
     public static String gridFile_GR = "";
     public static String LICENSE_KEY;
     public static String DEVICE_SN = "";
@@ -174,12 +175,13 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             Log.d("machinestate", "null");
         }
 
-
-        geoidFilePath_NL = copyGeoidFromAssets(this, "nlgeo2018.ugf", "nlgeo2018.ugf");
-        geoidFilePath_BG = copyGeoidFromAssets(this, "belgium_hbg18.ugf", "belgium_hbg18.ugf");
-        geoidFilePath_GR = copyGeoidFromExternalStorage(this, Environment.getExternalStorageDirectory().toString() + folderPath+ "/Geoids/"+"egm08_ww2_5mgh.ugf", "egm08_ww2_5mgh.ugf");
-        geoidFilePath_USA2018 = copyGeoidFromAssets(this, "g2018u0.bin", "g2018u0.bin");
-        geoidFilePath_USA2012 = copyGeoidFromAssets(this, "g2012bu0.bin", "g2012bu0.bin");
+        String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
+        geoidFilePath_NL = copyGeoidFromExternalStorage(this, pp + "nlgeo2018.ugf", "nlgeo2018.ugf");
+        geoidFilePath_BG = copyGeoidFromExternalStorage(this, pp + "belgium_hbg18.ugf", "belgium_hbg18.ugf");
+        geoidFilePath_GR = copyGeoidFromExternalStorage(this, pp + "egm08_ww2_5mgh.ugf", "egm08_ww2_5mgh.ugf");
+        geoidFilePath_USA2018 = copyGeoidFromExternalStorage(this, pp + "g2018u0.bin", "g2018u0.bin");
+        geoidFilePath_USA2012 = copyGeoidFromExternalStorage(this, pp + "g2012bu0.bin", "g2012bu0.bin");
+        geoidFilePath_DEU = copyGeoidFromExternalStorage(this, pp + "GCG2016.GGF", "GCG2016.GGF");
 
         gridFile_GR = copyGeoidFromAssets(this, "greece_2km_v1_0.gsb", "greece_2km_v1_0.gsb");
 
@@ -210,7 +212,11 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
-//Qui ogni activity è in onCreate
+/*
+git add .
+git commit -m "Messaggio"
+git push
+ */
 
     }
 
@@ -616,6 +622,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             return null;
         }
     }
+
     public static String copyGeoidFromExternalStorage(Context context, String sourcePath, String outFileName) {
         File sourceFile = new File(sourcePath);
         File outFile = new File(context.getCacheDir(), outFileName);

@@ -175,10 +175,12 @@ public class NmeaListener {
                                     mLon_1 = mLon_1 * -1;
                                     //se è W moltiplica il risultato *-1
                                 }
-                                Quota1 = DataSaved.offset_Z_antenna + Double.parseDouble(ggaZ1.replace(",", ".")) + Double.parseDouble(ggaZ2.replace(",", "."));
-                                Deg2UTM deg2UTM = new Deg2UTM(mLat_1, mLon_1, Quota1, DataSaved.S_CRS,MyApp.GEOIDE_PATH);
+
+                                double qtemp = DataSaved.offset_Z_antenna + Double.parseDouble(ggaZ1.replace(",", ".")) + Double.parseDouble(ggaZ2.replace(",", "."));
+                                Deg2UTM deg2UTM = new Deg2UTM(mLat_1, mLon_1, qtemp, DataSaved.S_CRS,MyApp.GEOIDE_PATH);
                                 Nord1 = deg2UTM.getNorthing();
                                 Est1 = deg2UTM.getEasting();
+                                Quota1=deg2UTM.getQuota();
                                 mChar = deg2UTM.getLetter();
                                 mZone = deg2UTM.getZone();
 

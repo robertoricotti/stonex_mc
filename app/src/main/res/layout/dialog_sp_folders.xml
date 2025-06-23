@@ -41,13 +41,13 @@
     <LinearLayout
         android:id="@+id/layGeo"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="60dp"
         app:layout_constraintTop_toBottomOf="@id/centH2"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:gravity="center"
         android:orientation="horizontal"
-        android:background="@drawable/custom_background_transp">
+        android:background="@drawable/custom_background_test3d_box">
         <CheckBox
             android:id="@+id/geo1"
             android:layout_weight="1"
@@ -55,8 +55,10 @@
             android:layout_height="25dp"
             android:text="g2018u0.bin"
             android:textSize="18sp"
-            android:textStyle="italic"
-            android:buttonTint="@color/blue"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:ems="5"
+            android:buttonTint="@color/white"
             android:layout_marginVertical="5dp"
             android:layout_marginStart="2dp"
             />
@@ -66,9 +68,11 @@
             android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:text="g2012ba0.bin"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:ems="5"
             android:textSize="18sp"
-            android:textStyle="italic"
-            android:buttonTint="@color/blue"
+            android:buttonTint="@color/white"
             android:layout_marginVertical="5dp"
             android:layout_marginStart="2dp"
             />
@@ -77,10 +81,12 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
+            android:ems="5"
             android:text="nlgeo2018.ugf"
             android:textSize="18sp"
-            android:textStyle="italic"
-            android:buttonTint="@color/blue"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:buttonTint="@color/white"
             android:layout_marginVertical="5dp"
             android:layout_marginStart="2dp"
             />
@@ -89,10 +95,12 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
+            android:ems="5"
             android:text="belgium_hbg18.ugf"
             android:textSize="18sp"
-            android:textStyle="italic"
-            android:buttonTint="@color/blue"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:buttonTint="@color/white"
             android:layout_marginVertical="5dp"
             android:layout_marginStart="2dp"
             />
@@ -101,13 +109,42 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
+            android:ems="5"
             android:text="egm08_ww2_5mgh.ugf"
             android:textSize="18sp"
-            android:textStyle="italic"
-            android:buttonTint="@color/blue"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:buttonTint="@color/white"
             android:layout_marginVertical="5dp"
             android:layout_marginStart="2dp"
             />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layGeo2"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toBottomOf="@id/layGeo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/custom_background_test3d_box">
+        <CheckBox
+            android:id="@+id/geo6"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:ems="5"
+            android:text="GCG2016.GGF"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:buttonTint="@color/white"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            />
+
 
     </LinearLayout>
 
@@ -212,7 +249,7 @@
         app:layout_constraintBottom_toTopOf="@+id/lowH"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layGeo" />
+        app:layout_constraintTop_toBottomOf="@+id/layGeo2" />
 
 
     <Button

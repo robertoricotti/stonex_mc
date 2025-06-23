@@ -25,9 +25,9 @@ import utils.MyData;
  ***************************************/
 
 public class Deg2UTM {
-    static int rows,cols;
     static GeoideInterpolation geoideInterpolationGGF;
     static GeoidBinLite geoidBin;
+    static GGFGeoide ggfGeoide;
     static double[] quota;
     static double mLat_;
     static double mLon_;
@@ -39,14 +39,16 @@ public class Deg2UTM {
     public static boolean geoidError;
 
     public Deg2UTM(double Lat, double Lon, double Z, String crs, String geoidPath) {
-        Log.d("myLoggy", "Init: " + new File(geoidPath).length());
-            switch (crs) {
+
+        switch (crs) {
                 case _NONE:
                     Northing = Lat;
                     Easting = Lon;
                     Quota = Z;
+                    geoidError = false;
                     break;
                 case _UTM:
+                    geoidError = false;
                     Quota = Z;
                     Zone = (int) Math.floor(Lon / 6 + 31);
                     if (Lat < -72)
@@ -96,32 +98,36 @@ public class Deg2UTM {
 
                     break;
                 default:
-                    Log.d("myLoggy", "inizio"+Lat+"   "+Lon+"  "+Z);
+                    ;
                     quota = new double[1];
                     mLat_ = Lat;
                     mLon_ = Lon;
                     try {
-                        if (geoidPath != null) {
+                        if (geoidPath != null&&!geoidPath.equals("null")&&!geoidPath.isEmpty()) {
 
                             if(geoidPath.substring(geoidPath.lastIndexOf(".")+1).equalsIgnoreCase("bin")){
-
-                                Log.d("myLoggy", mLat_+"  "+mLat_+"  "+Z+"BIN "+geoidError);
-
-                                rows=2041;
-                                cols=4201;
-
-                                geoidBin=new GeoidBinLite(geoidPath, 24.0, -130.0, 0.01, 0.01, rows, cols);
+                                Log.d("Geoid","BIN   " + geoidPath);
+                                geoidBin=new GeoidBinLite(new File(geoidPath));
                                 if(geoidBin.isInGrid(mLat_,mLon_)){
                                     geoidError = false;
-                                    quota[0]=geoidBin.getOrthometricHeight(mLat_,mLon_,0);
-                                    Log.d("myLoggy", "Q:  "+quota[0]);
+                                    quota[0]=geoidBin.getOrthometricHeight(mLat_,mLon_,Z);
+
                                 }else {
                                     geoidError = true;
                                     quota[0]=Z;
                                 }
-                            }else {
-                                /// GGF, UGF
+                            } else if (geoidPath.substring(geoidPath.lastIndexOf(".")+1).equalsIgnoreCase("ggf")) {
+                                //GGF
+                                Log.d("Geoid","GGF   " + geoidPath);
+                                ggfGeoide=new GGFGeoide(geoidPath);
 
+                                ggfGeoide.load();
+
+                                quota[0]=ggfGeoide.interpolate(mLat_,mLon_)+Z;
+
+                            } else {
+                                ///  UGF
+                                Log.d("Geoid","UGF   " + geoidPath);
                                 geoideInterpolationGGF = new GeoideInterpolation(geoidPath);
                                 geoideInterpolationGGF.readHeader();
                                 if (geoideInterpolationGGF.internalLetturaGeoide(mLat_, mLon_, Z, quota, false)) {
@@ -144,10 +150,10 @@ public class Deg2UTM {
                             Easting = result.x;
                             Northing = result.y;
                             Quota = quota[0];
-                            Log.d("myLoggy", quota[0] + " mia quota " + Quota);
+
                         }
                     } catch (IOException e) {
-                        Log.d("myLoggy", geoidPath + "  " + e.toString());
+                        Log.e("myLoggy", geoidPath + "  " + e.toString());
                     }
                     break;
 

@@ -74,7 +74,7 @@ android {
     }
     dependencies {
 
-        implementation 'androidx.core:core:1.13.1'
+        implementation 'androidx.core:core:1.13.0'
 
         //cp libs
         implementation files('libs/cpsdk.cpbase.v2.0.2.aar')

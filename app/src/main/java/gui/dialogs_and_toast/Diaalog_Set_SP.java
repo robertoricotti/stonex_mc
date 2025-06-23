@@ -47,7 +47,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class Diaalog_Set_SP {
-    CheckBox geo1, geo2, geo3, geo4, geo5;
+    CheckBox geo1, geo2, geo3, geo4, geo5,geo6;
     CustomQwertyDialog customQwertyDialog;
     String mTesto;
     int perc = 0;
@@ -115,6 +115,7 @@ public class Diaalog_Set_SP {
         geo3 = dialog.findViewById(R.id.geo3);
         geo4 = dialog.findViewById(R.id.geo4);
         geo5 = dialog.findViewById(R.id.geo5);
+        geo6=dialog.findViewById(R.id.geo6);
 
     }
 
@@ -197,6 +198,18 @@ public class Diaalog_Set_SP {
             if (geo5.isChecked()) {
                 MyData.push("usaGeoide", String.valueOf(true));
                 MyData.push("geoidPath", MyApp.geoidFilePath_GR);
+            } else {
+                MyData.push("usaGeoide", String.valueOf(false));
+                MyData.push("geoidPath", null);
+            }
+            checkGeo(MyData.get_String("geoidPath"));
+
+        });
+        geo6.setOnClickListener(view -> {
+
+            if (geo6.isChecked()) {
+                MyData.push("usaGeoide", String.valueOf(true));
+                MyData.push("geoidPath", MyApp.geoidFilePath_DEU);
             } else {
                 MyData.push("usaGeoide", String.valueOf(false));
                 MyData.push("geoidPath", null);
@@ -1414,36 +1427,50 @@ public class Diaalog_Set_SP {
             geo3.setChecked(false);
             geo4.setChecked(false);
             geo5.setChecked(false);
+            geo6.setChecked(false);
         } else if (s.equals(MyApp.geoidFilePath_USA2012)) {
             geo1.setChecked(false);
             geo2.setChecked(true);
             geo3.setChecked(false);
             geo4.setChecked(false);
             geo5.setChecked(false);
+            geo6.setChecked(false);
         } else if (s.equals(MyApp.geoidFilePath_NL)) {
             geo1.setChecked(false);
             geo2.setChecked(false);
             geo3.setChecked(true);
             geo4.setChecked(false);
             geo5.setChecked(false);
+            geo6.setChecked(false);
         } else if (s.equals(MyApp.geoidFilePath_BG)) {
             geo1.setChecked(false);
             geo2.setChecked(false);
             geo3.setChecked(false);
             geo4.setChecked(true);
             geo5.setChecked(false);
+            geo6.setChecked(false);
         } else if (s.equals(MyApp.geoidFilePath_GR)) {
             geo1.setChecked(false);
             geo2.setChecked(false);
             geo3.setChecked(false);
             geo4.setChecked(false);
             geo5.setChecked(true);
+            geo6.setChecked(false);
+        } else if (s.equals(MyApp.geoidFilePath_DEU)) {
+            geo1.setChecked(false);
+            geo2.setChecked(false);
+            geo3.setChecked(false);
+            geo4.setChecked(false);
+            geo5.setChecked(false);
+            geo6.setChecked(true);
         } else {
             geo1.setChecked(false);
             geo2.setChecked(false);
             geo3.setChecked(false);
             geo4.setChecked(false);
             geo5.setChecked(false);
+            geo6.setChecked(false);
+
         }
     }
 
