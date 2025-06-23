@@ -11,6 +11,7 @@ import android.util.Log;
 import org.locationtech.proj4j.ProjCoordinate;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import gui.MyApp;
@@ -25,6 +26,7 @@ import utils.MyData;
  ***************************************/
 
 public class Deg2UTM {
+
     static GeoideInterpolation geoideInterpolationGGF;
     static GeoidBinLite geoidBin;
     static GGFGeoide ggfGeoide;
@@ -39,7 +41,7 @@ public class Deg2UTM {
     public static boolean geoidError;
 
     public Deg2UTM(double Lat, double Lon, double Z, String crs, String geoidPath) {
-
+Log.w("Dimens",new File(geoidPath).length()+"");
         switch (crs) {
                 case _NONE:
                     Northing = Lat;
@@ -117,16 +119,26 @@ public class Deg2UTM {
                                     quota[0]=Z;
                                 }
                             } else if (geoidPath.substring(geoidPath.lastIndexOf(".")+1).equalsIgnoreCase("ggf")) {
-                                //GGF
-                                Log.d("Geoid","GGF   " + geoidPath);
-                                ggfGeoide=new GGFGeoide(geoidPath);
+                                //GGF TODO
+                                Log.d("Geoid","GGF   " + mLat_+ " "+mLon_);
+/*
+                                if(ggfGeoide.isInGrid(mLat_,mLon_)){
+                                    geoidError = false;
+                                    double mZ= ggfGeoide.getGeoidSeparation(mLat_,mLon_);
+                                    Log.d("Geoid","GGF   " + mZ);
+                                    quota[0]=Z-mZ;
+                                }else {
 
-                                ggfGeoide.load();
-
-                                quota[0]=ggfGeoide.interpolate(mLat_,mLon_)+Z;
+                                    geoidError = true;
+                                    quota[0]=Z;
+                                    Log.e("Geoid","GGF   " + quota[0]);
+                                }
+*/
+                                quota[0]=Z;
 
                             } else {
                                 ///  UGF
+                                ggfGeoide = new GGFGeoide(geoidPath);
                                 Log.d("Geoid","UGF   " + geoidPath);
                                 geoideInterpolationGGF = new GeoideInterpolation(geoidPath);
                                 geoideInterpolationGGF.readHeader();
@@ -150,6 +162,7 @@ public class Deg2UTM {
                             Easting = result.x;
                             Northing = result.y;
                             Quota = quota[0];
+                            Log.d("OutCoord",Northing+"  "+Easting+"  "+Quota);
 
                         }
                     } catch (IOException e) {

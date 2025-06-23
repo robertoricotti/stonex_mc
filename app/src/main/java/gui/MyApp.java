@@ -181,7 +181,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         geoidFilePath_GR = copyGeoidFromExternalStorage(this, pp + "egm08_ww2_5mgh.ugf", "egm08_ww2_5mgh.ugf");
         geoidFilePath_USA2018 = copyGeoidFromExternalStorage(this, pp + "g2018u0.bin", "g2018u0.bin");
         geoidFilePath_USA2012 = copyGeoidFromExternalStorage(this, pp + "g2012bu0.bin", "g2012bu0.bin");
-        geoidFilePath_DEU = copyGeoidFromExternalStorage(this, pp + "GCG2016.GGF", "GCG2016.GGF");
+        geoidFilePath_DEU = copyGeoidFromExternalStorage(this, pp + "GCG2016v2023.GGF", "GCG2016v2023.GGF");
 
         gridFile_GR = copyGeoidFromAssets(this, "greece_2km_v1_0.gsb", "greece_2km_v1_0.gsb");
 

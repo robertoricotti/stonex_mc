@@ -240,12 +240,54 @@ public class Diaalog_Set_SP {
 
                         // Invia il file tramite CAN
                         switch (selectedFileName) {
+                            //GERMANY__WEST_OF_6_E__ETRS89__UTM_ZONE_31N__N_ZE__5651
+                            case "GERMANY__WEST_OF_6_E__ETRS89__UTM_ZONE_31N__N_ZE__5651.SP":
+                                MyData.push("crs", "5651");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "GERMANY__WEST_OF_6_E__ETRS89__UTM_ZONE_31N__ZE_N__5649.SP":
+                                MyData.push("crs", "5649");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "GERMANY__6_E_TO_12_E__ETRS89__UTM_ZONE_32N__ZE_N__4647.SP":
+                                MyData.push("crs", "4647");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "GERMANY__6_E_TO_12_E__ETRS89__UTM_ZONE_32N__N_ZE__5652.SP":
+                                MyData.push("crs", "5652");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "GERMANY__EAST_OF_12_E__ETRS89__UTM_ZONE_33N__N_ZE__5653.SP":
+                                MyData.push("crs", "5653");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "GERMANY__EAST_OF_12_E__ETRS89__UTM_ZONE_33N__ZE_N__5650.SP":
+                                MyData.push("crs", "5660");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
                             //g2012ba0
                             case "USA__ALASKA__144_W_TO_141_W__NAD83_2011__ALASKA_ZONE_2__6395.SP":
                                 MyData.push("crs", "6395");
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 activity.recreate();
-
                                 ReadProjectService.startCRS();
                                 dialog.dismiss();
                                 break;
