@@ -25,8 +25,8 @@ public class NmeaGenerator {
 
 
             double lat, lon;
-            lat = 50;//to test
-            lon = 9;//to test
+            lat = 38  ;//to test
+            lon = -8.231456;//to test
             NmeaListener.VRMS_ = "0.014";
             Calendar now = Calendar.getInstance();
             DecimalFormat decimalFormat = new DecimalFormat("0.0000000000", DecimalFormatSymbols.getInstance(Locale.US));

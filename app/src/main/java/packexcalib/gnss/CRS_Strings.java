@@ -11,7 +11,7 @@ public class CRS_Strings {
     public static final String _28992 = "RDNAPTRANS2018";
     public static final String _28991 = "NL ON_SH AMERSFOORT RD OLD";
     public static final String _UTM = "UTM";
-    public static final String _NONE = "USE .SP FILE";
+    public static final String _NONE = ".SP FILE";
 
     public CRS_Strings() {
 

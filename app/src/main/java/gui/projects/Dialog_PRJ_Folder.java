@@ -301,7 +301,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                 Handler handler1 = new Handler(activity.getMainLooper());
                 handler1.postDelayed(() -> {
                     try {
-                        MyData.push("crs", "USE .SP FILE");
+                        MyData.push("crs", ".SP FILE");
                         DataSaved.S_CRS = MyData.get_String("crs");
                         switch (DataSaved.my_comPort) {
                             case 0:
