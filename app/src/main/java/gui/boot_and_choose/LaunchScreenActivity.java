@@ -93,6 +93,7 @@ public class LaunchScreenActivity extends BaseClass {
         Dialog_Trench.leftW_d=0.5f;
         Dialog_Trench.rightW_d=0.5f;
         LayerAdapter.selectA=true;
+        //FileCreator.generateSPFilesFromCases(this);
 
 
         count = new CountDownTimer(3000, 1) {

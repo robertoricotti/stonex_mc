@@ -240,7 +240,564 @@ public class Diaalog_Set_SP {
 
                         // Invia il file tramite CAN
                         switch (selectedFileName) {
-                            //GERMANY__WEST_OF_6_E__ETRS89__UTM_ZONE_31N__N_ZE__5651
+                            //FINLAND
+                            case "Finland_ETRS89-GK19FIN_3873.SP":
+                                MyData.push("crs", "3873");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-20FIN_3874.SP":
+                                MyData.push("crs", "3874");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-21FIN_3875.SP":
+                                MyData.push("crs", "3875");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-22FIN_3876.SP":
+                                MyData.push("crs", "3876");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-23FIN_3877.SP":
+                                MyData.push("crs", "3877");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-24FIN_3878.SP":
+                                MyData.push("crs", "3878");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-25FIN_3879.SP":
+                                MyData.push("crs", "3879");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-26FIN_3880.SP":
+                                MyData.push("crs", "3880");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-27FIN_3881.SP":
+                                MyData.push("crs", "3881");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-28FIN_3882.SP":
+                                MyData.push("crs", "3882");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-29FIN_3883.SP":
+                                MyData.push("crs", "3883");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-30FIN_3884.SP":
+                                MyData.push("crs", "3884");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89GK-31FIN_3885.SP":
+                                MyData.push("crs", "3885");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Finland_ETRS89TM-35FIN(EN)_3067.SP":
+                                MyData.push("crs", "3067");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            //ICELAND
+                            case "Iceland_ISN93_3057.SP":
+                                MyData.push("crs", "3057");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            //FRANCE
+                            case "France_RGF93CC42_3942.SP":
+                                MyData.push("crs", "3942");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "France_RGF93CC43_3943.SP":
+                                MyData.push("crs", "3943");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "France_RGF93CC44_3944.SP":
+                                MyData.push("crs", "3944");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "France_RGF93CC45_3945.SP":
+                                MyData.push("crs", "3945");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "France_RGF93CC46_3946.SP":
+                                MyData.push("crs", "3946");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "France_RGF93CC47_3947.SP":
+                                MyData.push("crs", "3947");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "France_RGF93CC48_3948.SP":
+                                MyData.push("crs", "3948");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "France_RGF93CC49_3949.SP":
+                                MyData.push("crs", "3949");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "France_RGF93CC50_3950.SP":
+                                MyData.push("crs", "3950");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+
+                            ///
+                            //AUSTRALIA
+                            case "Australia_GDA2020-MGA-Zone48_7848.SP":
+                                MyData.push("crs", "7848");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone49_7849.SP":
+                                MyData.push("crs", "7849");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone50_7850.SP":
+                                MyData.push("crs", "7850");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone51_7851.SP":
+                                MyData.push("crs", "7851");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone52_7852.SP":
+                                MyData.push("crs", "7852");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone53_7853.SP":
+                                MyData.push("crs", "7853");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone54_7854.SP":
+                                MyData.push("crs", "7854");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone55_7855.SP":
+                                MyData.push("crs", "7855");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone56_7856.SP":
+                                MyData.push("crs", "7856");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone57_7857.SP":
+                                MyData.push("crs", "7857");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Australia_GDA2020-MGA-Zone58_7858.SP":
+                                MyData.push("crs", "7858");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            //CANADA
+                            case "CANADA__102_W_TO_96_W__NAD83_CSRS__UTM_ZONE_14N__3158.SP":
+                                MyData.push("crs", "3158");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__108_W_TO_102_W__NAD83_CSRS__UTM_ZONE_13N__2957.SP":
+                                MyData.push("crs", "2957");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__108_W_TO_102_W__SOUTH_OF_60_N__NAD83_CSRS98__UTM_ZONE_13N__2151.SP":
+                                MyData.push("crs", "2151");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__114_W_TO_108_W__NAD83_CSRS__UTM_ZONE_12N__2956.SP":
+                                MyData.push("crs", "2956");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__114_W_TO_108_W__SOUTH_OF_60_N__NAD83_CSRS98__UTM_ZONE_12N__2152.SP":
+                                MyData.push("crs", "2152");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__120_W_TO_114_W__NAD83_CSRS__UTM_ZONE_11N__2955.SP":
+                                MyData.push("crs", "2955");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__120_W_TO_114_W__SOUTH_OF_60_N__NAD83_CSRS98__UTM_ZONE_11N__2153.SP":
+                                MyData.push("crs", "2153");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__126_W_TO_120_W__NAD83_CSRS__UTM_ZONE_10N__3157.SP":
+                                MyData.push("crs", "3157");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__132_W_TO_126_W__NAD83_CSRS__UTM_ZONE_9N__3156.SP":
+                                MyData.push("crs", "3156");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__138_W_TO_132_W__NAD83_CSRS__UTM_ZONE_8N__3155.SP":
+                                MyData.push("crs", "3155");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__144_W_TO_138_W__NAD83_CSRS__UTM_ZONE_7N__3154.SP":
+                                MyData.push("crs", "3154");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__48_W_TO_42_W__NAD83__UTM_ZONE_23N__26923.SP":
+                                MyData.push("crs", "26923");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__54_W_TO_48_W__NAD27__UTM_ZONE_22N__26722.SP":
+                                MyData.push("crs", "26722");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__54_W_TO_48_W__NAD83_CSRS__UTM_ZONE_22N__3761.SP":
+                                MyData.push("crs", "3761");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__54_W_TO_48_W__NAD83__UTM_ZONE_22N__26922.SP":
+                                MyData.push("crs", "26922");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__60_W_TO_54_W_AND_NAD27__NAD27__UTM_ZONE_21N__26721.SP":
+                                MyData.push("crs", "26721");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__60_W_TO_54_W__NAD83_CSRS__UTM_ZONE_21N__2962.SP":
+                                MyData.push("crs", "2962");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__60_W_TO_54_W__NAD83__UTM_ZONE_21N__26921.SP":
+                                MyData.push("crs", "26921");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__66_W_TO_60_W__NAD83_CSRS__UTM_ZONE_20N__2961.SP":
+                                MyData.push("crs", "2961");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__66_W_TO_60_W__SOUTH_OF_60_N__NAD83_CSRS98__UTM_ZONE_20N__2038.SP":
+                                MyData.push("crs", "2038");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__72_W_TO_66_W__NAD83_CSRS__UTM_ZONE_19N__2960.SP":
+                                MyData.push("crs", "2960");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__72_W_TO_66_W__SOUTH_OF_62_N__NAD83_CSRS98__UTM_ZONE_19N__2037.SP":
+                                MyData.push("crs", "2037");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__78_W_TO_72_W__NAD83_CSRS__UTM_ZONE_18N__2959.SP":
+                                MyData.push("crs", "2959");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__84_W_TO_78_W__NAD83_CSRS__UTM_ZONE_17N__2958.SP":
+                                MyData.push("crs", "2958");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__90_W_TO_84_W__NAD83_CSRS__UTM_ZONE_16N__3160.SP":
+                                MyData.push("crs", "3160");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__96_W_TO_90_W__NAD83_CSRS__UTM_ZONE_15N__3159.SP":
+                                MyData.push("crs", "3159");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__ALBERTA__115_5_W_TO_112_5_W__NAD27__ALBERTA_3TM_REF_MERID_114_W__3772.SP":
+                                MyData.push("crs", "3772");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__ALBERTA__115_5_W_TO_112_5_W__NAD83_CSRS__ALBERTA_3TM_REF_MERID_114_W__3780.SP":
+                                MyData.push("crs", "3780");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__ALBERTA__115_5_W_TO_112_5_W__NAD83__ALBERTA_3TM_REF_MERID_114_W__3776.SP":
+                                MyData.push("crs", "3776");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__ALBERTA__118_5_W_TO_115_5_W__NAD27__ALBERTA_3TM_REF_MERID_117_W__3773.SP":
+                                MyData.push("crs", "3773");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__ALBERTA__118_5_W_TO_115_5_W__NAD83_CSRS__ALBERTA_3TM_REF_MERID_117_W__3781.SP":
+                                MyData.push("crs", "3781");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__ALBERTA__118_5_W_TO_115_5_W__NAD83__ALBERTA_3TM_REF_MERID_117_W__3777.SP":
+                                MyData.push("crs", "3777");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__ALBERTA__EAST_OF_112_5_W__NAD27__ALBERTA_3TM_REF_MERID_111_W__3771.SP":
+                                MyData.push("crs", "3771");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__ALBERTA__EAST_OF_112_5_W__NAD83_CSRS__ALBERTA_3TM_REF_MERID_111_W__3779.SP":
+                                MyData.push("crs", "3779");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__ALBERTA__EAST_OF_112_5_W__NAD83__ALBERTA_3TM_REF_MERID_111_W__3775.SP":
+                                MyData.push("crs", "3775");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+
+                            case "CANADA__YUKON__NAD83__YUKON_ALBERS__3578.SP":
+                                MyData.push("crs", "3578");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                                //
+                            case "Canada_NAD83(CSRS)-MTM-Nova Scotia-Zone4_8082.SP":
+                                MyData.push("crs", "8082");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            case "Canada_NAD83(CSRS)-MTM-Nova Scotia-Zone5_8083.SP":
+                                MyData.push("crs", "8083");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                                break;
+                            //
+                            //GERMANY
                             case "GERMANY__WEST_OF_6_E__ETRS89__UTM_ZONE_31N__N_ZE__5651.SP":
                                 MyData.push("crs", "5651");
                                 DataSaved.S_CRS = MyData.get_String("crs");
