@@ -109,6 +109,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static String geoidFilePath_USA2018 = null;
     public static String geoidFilePath_DEU = null;
     public static String gridFile_GR = "";
+    public static String riga20 = "";
     public static String LICENSE_KEY;
     public static String DEVICE_SN = "";
     public static Activity visibleActivity;
@@ -182,6 +183,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         geoidFilePath_USA2018 = copyGeoidFromExternalStorage(this, pp + "g2018u0.bin", "g2018u0.bin");
         geoidFilePath_USA2012 = copyGeoidFromExternalStorage(this, pp + "g2012bu0.bin", "g2012bu0.bin");
         geoidFilePath_DEU = copyGeoidFromAssets(this, "DEUTSCH_GEOID.GGF", "DEUTSCH_GEOID.GGF");
+        riga20 = copyGeoidFromAssets(this, "RIGA20.UGF", "RIGA20.UGF");
 
         gridFile_GR = copyGeoidFromAssets(this, "greece_2km_v1_0.gsb", "greece_2km_v1_0.gsb");
 

@@ -144,6 +144,65 @@
             android:layout_marginVertical="5dp"
             android:layout_marginStart="2dp"
             />
+        <CheckBox
+            android:id="@+id/geo7"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:ems="5"
+            android:text="RIGA20.UGF"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:buttonTint="@color/white"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            />
+        <CheckBox
+            android:id="@+id/geo8"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:ems="5"
+            android:text="RIGA20.UGF"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:buttonTint="@color/white"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            android:visibility="invisible"
+            />
+        <CheckBox
+            android:id="@+id/geo9"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:ems="5"
+            android:text="RIGA20.UGF"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:buttonTint="@color/white"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            android:visibility="invisible"
+            />
+        <CheckBox
+            android:id="@+id/geo10"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:ems="5"
+            android:text="RIGA20.UGF"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textStyle="italic|bold"
+            android:buttonTint="@color/white"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="2dp"
+            android:visibility="invisible"
+            />
 
 
     </LinearLayout>
@@ -189,17 +248,28 @@
             android:layout_marginHorizontal="2dp"
             android:spinnerMode="dropdown"
             />
-        <TextView
-            android:id="@+id/inUso"
-            android:layout_marginLeft="50dp"
-            android:text=""
-            android:gravity="center"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="16sp"
-            android:layout_weight="1"
-            android:textStyle="italic|bold"
-            android:textColor="@color/bg_stonex_blue"/>
+            app:layout_constraintBottom_toTopOf="@id/centH2"
+            app:layout_constraintTop_toBottomOf="@id/centH">
+
+            <EditText
+                android:id="@+id/cercaSP"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:focusableInTouchMode="false"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:id="@+id/startSerach"
+                android:padding="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/btn_refresh" />
+
+        </LinearLayout>
 
 
     </LinearLayout>
@@ -211,28 +281,7 @@
         app:layout_constraintBottom_toBottomOf="@id/centH"
         app:layout_constraintTop_toTopOf="@id/centH" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/centH2"
-        app:layout_constraintTop_toBottomOf="@id/centH">
 
-        <EditText
-            android:id="@+id/cercaSP"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:focusableInTouchMode="false"
-            android:textSize="22sp" />
-
-        <ImageView
-            android:id="@+id/startSerach"
-            android:padding="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/btn_refresh" />
-
-    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
