@@ -2,6 +2,7 @@ package services;
 
 
 import static gui.MyApp.gridFile_GR;
+import static packexcalib.gnss.CRS_Strings._NONE;
 import static services.UpdateValuesService.resultWgs;
 import static services.UpdateValuesService.UTM;
 import static services.UpdateValuesService.WGS84;
@@ -693,8 +694,35 @@ public class ReadProjectService extends Service {
         String s = MyData.get_String("crs");
         MyGeoide.setGeoid(MyData.get_String("geoidPath"));
         if (s != null) {
-            if (!s.equals("UTM") && !s.equals("NONE")) {
-                if(!s.equals("2100")) {
+            if (!s.equals("UTM") && !s.equals(_NONE)) {
+                if(s.equals("2100")) {
+                    try {
+                        crsFactory = new CRSFactory();
+                        ctFactory = new CoordinateTransformFactory();
+                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
+                        try {
+                            UTM = crsFactory.createFromParameters("EPSG:2100",
+                                    "+proj=tmerc +lat_0=0 +lon_0=24 +k=0.9996 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=-199.87,74.79,246.62,0,0,0,0 +units=m " +
+                                            "+nadgrids="+gridFile_GR+" +no_defs");
+                        }catch (UnsupportedParameterException e) {
+                            Log.e("ExcpCRS",Log.getStackTraceString(e));
+                            UTM=crsFactory.createFromName("epsg:"+DataSaved.S_CRS);
+                        } catch (InvalidValueException e) {
+                            Log.e("ExcpCRS",Log.getStackTraceString(e));
+                            UTM=crsFactory.createFromName("epsg:"+DataSaved.S_CRS);
+                        } catch (UnknownAuthorityCodeException e) {
+                            Log.e("ExcpCRS",Log.getStackTraceString(e));
+                            UTM=crsFactory.createFromName("epsg:"+DataSaved.S_CRS);
+                        }
+
+                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
+                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
+                        Log.d("ExcpCRS", "S: " + MyData.get_String("crs") + "  C: " + DataSaved.S_CRS + "    " + result.toString());
+                    } catch (Exception e) {
+                        Log.e("ExcpCRS", Log.getStackTraceString(e));
+                    }
+                }else {
+                    ////////
                     try {
                         result=new ProjCoordinate();
                         resultWgs=new ProjCoordinate();
@@ -710,39 +738,15 @@ public class ReadProjectService extends Service {
                         } catch (UnknownAuthorityCodeException e) {
                             Log.d("SDF", Log.getStackTraceString(e));
                         }
-
                         wgsToUtm = ctFactory.createTransform(WGS84, UTM);
                         utmToWgs = ctFactory.createTransform(UTM, WGS84);
                         Log.d("ExcpCRS", "S: " + MyData.get_String("crs") + "  C: " + DataSaved.S_CRS + "    " + result.toString());
                     } catch (Exception e) {
                         Log.e("ExcpCRS", Log.getStackTraceString(e));
                     }
-                }else {
-                    try {
-                        crsFactory = new CRSFactory();
-                        ctFactory = new CoordinateTransformFactory();
-                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
-                        try {
-                            UTM = crsFactory.createFromParameters("EPSG:2100",
-                                    "+proj=tmerc +lat_0=0 +lon_0=24 +k=0.9996 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=-199.87,74.79,246.62,0,0,0,0 +units=m " +
-                                            "+nadgrids="+gridFile_GR+" +no_defs");
-                        }catch (UnsupportedParameterException e) {
-                            Log.e("TestGre",Log.getStackTraceString(e));
-                            UTM=crsFactory.createFromName("epsg:"+DataSaved.S_CRS);
-                        } catch (InvalidValueException e) {
-                            Log.e("TestGre",Log.getStackTraceString(e));
-                            UTM=crsFactory.createFromName("epsg:"+DataSaved.S_CRS);
-                        } catch (UnknownAuthorityCodeException e) {
-                            Log.e("TestGre",Log.getStackTraceString(e));
-                            UTM=crsFactory.createFromName("epsg:"+DataSaved.S_CRS);
-                        }
 
-                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
-                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
-                        Log.d("ExcpCRS", "S: " + MyData.get_String("crs") + "  C: " + DataSaved.S_CRS + "    " + result.toString());
-                    } catch (Exception e) {
-                        Log.e("ExcpCRS", Log.getStackTraceString(e));
-                    }
+                    ///////////
+
                 }
             }
             byte speed = 0;

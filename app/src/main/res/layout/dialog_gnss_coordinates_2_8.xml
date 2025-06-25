@@ -443,24 +443,26 @@ android:id="@+id/crsimg"
 
     <ImageView
         android:id="@+id/_btnclose"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         android:rotationY="180"
-        android:src="@drawable/btn_clear"
+        android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/_btnSavex"
-        app:tint="@color/_____cancel_text" />
+
+        app:tint="@color/_____cancel_text"
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/_btnSavex"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:padding="2dp"
-        android:src="@drawable/save_btn"
+        android:src="@drawable/close_web"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/_btnclose"
         app:layout_constraintLeft_toRightOf="@id/_editZ"
+        app:tint="@color/_____cancel_text"
         />
     <ImageView
         android:id="@+id/_editZ"

@@ -37,6 +37,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -101,15 +104,16 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static int errorCode;
     public static int KEY_LEVEL;
     public static final long timeUI = 65;
+    public static String[] geoidAll=new String[]{};
     public static String GEOIDE_PATH = null;
-    public static String geoidFilePath_NL = null;
+    /*public static String geoidFilePath_NL = null;
     public static String geoidFilePath_BG = null;
     public static String geoidFilePath_GR = null;
     public static String geoidFilePath_USA2012 = null;
     public static String geoidFilePath_USA2018 = null;
-    public static String geoidFilePath_DEU = null;
+    public static String geoidFilePath_DEU = null;*/
     public static String gridFile_GR = "";
-    public static String riga20 = "";
+    //public static String riga20 = "";
     public static String LICENSE_KEY;
     public static String DEVICE_SN = "";
     public static Activity visibleActivity;
@@ -177,13 +181,9 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         }
 
         String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
-        geoidFilePath_NL = copyGeoidFromExternalStorage(this, pp + "nlgeo2018.ugf", "nlgeo2018.ugf");
-        geoidFilePath_BG = copyGeoidFromExternalStorage(this, pp + "belgium_hbg18.ugf", "belgium_hbg18.ugf");
-        geoidFilePath_GR = copyGeoidFromExternalStorage(this, pp + "egm08_ww2_5mgh.ugf", "egm08_ww2_5mgh.ugf");
-        geoidFilePath_USA2018 = copyGeoidFromExternalStorage(this, pp + "g2018u0.bin", "g2018u0.bin");
-        geoidFilePath_USA2012 = copyGeoidFromExternalStorage(this, pp + "g2012bu0.bin", "g2012bu0.bin");
-        geoidFilePath_DEU = copyGeoidFromAssets(this, "DEUTSCH_GEOID.GGF", "DEUTSCH_GEOID.GGF");
-        riga20 = copyGeoidFromAssets(this, "RIGA20.UGF", "RIGA20.UGF");
+
+        geoidAll=listFilesInFolderGeoid(pp);
+        Log.d("GEOIDALL", Arrays.toString(geoidAll));
 
         gridFile_GR = copyGeoidFromAssets(this, "greece_2km_v1_0.gsb", "greece_2km_v1_0.gsb");
 
@@ -645,5 +645,32 @@ git push
             return null;
         }
     }
+    public static String[] listFilesInFolderGeoid(String folderPath) {
+
+        File folder = new File(folderPath);
+
+        if (!folder.exists() || !folder.isDirectory()) {
+            return new String[0]; // Cartella non valida
+        }
+
+        File[] files = folder.listFiles();
+
+        if (files == null || files.length == 0) {
+            return new String[0]; // Nessun file presente
+        }
+
+        List<String> ugfFiles = new ArrayList<>();
+        for (File file : files) {
+            if (file.isFile() && (file.getName().toLowerCase().endsWith(".ugf")||
+                    file.getName().toLowerCase().endsWith(".bin")||
+                    file.getName().toLowerCase().endsWith(".ggf"))) {
+                ugfFiles.add(file.getAbsolutePath());
+            }
+        }
+
+        return ugfFiles.toArray(new String[0]);
+    }
+
+
 
 }

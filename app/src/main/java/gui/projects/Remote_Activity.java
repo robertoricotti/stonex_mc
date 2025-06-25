@@ -491,7 +491,7 @@ public class Remote_Activity extends AppCompatActivity {
                         filesIN.add(new ProjectFileAdapter.FileItem(folderName, true, folderSize));
                         adapterMC.notifyItemInserted(filesIN.size() - 1); // Notifica l'adapter
                     });
-                    Log.w("S3Size", folderName + " Size: " + folderSize + " bytes");
+                    Log.d("S3Size", folderName + " Size: " + folderSize + " bytes");
                 }
 
                 @Override
@@ -514,7 +514,6 @@ public class Remote_Activity extends AppCompatActivity {
                         filesIN.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize));
                         adapterMC.notifyItemInserted(filesIN.size() - 1); // Notifica l'adapter
                     });
-                    //Log.w("S3Size", fileName + " Size: " + fileSize + " bytes");
                 }
 
                 @Override

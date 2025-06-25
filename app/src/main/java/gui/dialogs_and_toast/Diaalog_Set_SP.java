@@ -1,5 +1,6 @@
 package gui.dialogs_and_toast;
 
+import static gui.MyApp.geoidAll;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static utils.CanFileTransfer.sendFileViaCAN;
 import static utils.CanFileTransfer.sendFileViaSerial;
@@ -7,9 +8,11 @@ import static utils.CanFileTransfer.sendFileViaSerial;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,7 +25,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import gui.MyApp;
@@ -45,15 +51,17 @@ import utils.CanFileTransfer;
 import utils.FullscreenActivity;
 import utils.MyData;
 import utils.MyDeviceManager;
+import utils.MyEpsgNumber;
 
 public class Diaalog_Set_SP {
-    CheckBox geo1, geo2, geo3, geo4, geo5,geo6,geo7;
+    List<ProjectFileAdapter.FileItem> arraySPOriginale = new ArrayList<>();
+   TextView geoidStatus;
     CustomQwertyDialog customQwertyDialog;
     String mTesto;
     int perc = 0;
     Activity activity;
     public Dialog dialog;
-    Button dismiss;
+    ImageView dismiss;
     TextView messaggio;
     ImageView usaSP, startSearch;
     RecyclerView recyclerViewSP;
@@ -68,8 +76,6 @@ public class Diaalog_Set_SP {
     Spinner spinner;
     String selectedFolder;
     TextView inUso;
-
-
 
 
     public Diaalog_Set_SP(Activity activity) {
@@ -110,18 +116,14 @@ public class Diaalog_Set_SP {
         messaggio = dialog.findViewById(R.id.msg);
         spinner = dialog.findViewById(R.id.spinner);
         inUso = dialog.findViewById(R.id.tvSP);
-        geo1 = dialog.findViewById(R.id.geo1);
-        geo2 = dialog.findViewById(R.id.geo2);
-        geo3 = dialog.findViewById(R.id.geo3);
-        geo4 = dialog.findViewById(R.id.geo4);
-        geo5 = dialog.findViewById(R.id.geo5);
-        geo6=dialog.findViewById(R.id.geo6);
-        geo7=dialog.findViewById(R.id.geo7);
+        geoidStatus=dialog.findViewById(R.id.geoidStatus);
+
 
     }
 
     public void init() {
         checkGeo(MyData.get_String("geoidPath"));
+
         arrayFiles = new ArrayList<>();
         arraySP = new ArrayList<>();
         spAdapter = new ProjectFileAdapter(arraySP);
@@ -148,88 +150,46 @@ public class Diaalog_Set_SP {
             inUso.setText(s1);
         }
 
+        arraySPOriginale.clear();
+        arraySPOriginale.addAll(arraySP);
 
     }
 
     public void onClick() {
-        geo1.setOnClickListener(view -> {
-            if (geo1.isChecked()) {
-                MyData.push("usaGeoide", String.valueOf(true));
-                MyData.push("geoidPath", MyApp.geoidFilePath_USA2018);
-            } else {
-                MyData.push("usaGeoide", String.valueOf(false));
-                MyData.push("geoidPath", null);
-            }
-            checkGeo(MyData.get_String("geoidPath"));
-        });
-        geo2.setOnClickListener(view -> {
-            if (geo2.isChecked()) {
-                MyData.push("usaGeoide", String.valueOf(true));
-                MyData.push("geoidPath", MyApp.geoidFilePath_USA2012);
-            } else {
-                MyData.push("usaGeoide", String.valueOf(false));
-                MyData.push("geoidPath", null);
-            }
-            checkGeo(MyData.get_String("geoidPath"));
-        });
-        geo3.setOnClickListener(view -> {
-            if (geo3.isChecked()) {
-                MyData.push("usaGeoide", String.valueOf(true));
-                MyData.push("geoidPath", MyApp.geoidFilePath_NL);
-            } else {
-                MyData.push("usaGeoide", String.valueOf(false));
-                MyData.push("geoidPath", null);
-            }
-            checkGeo(MyData.get_String("geoidPath"));
+        geoidStatus.setOnClickListener(view -> {
+            // Crea una copia dell'array geoidAll e forza la prima posizione a "DISABLE"
+            CustomMenuLista customMenu=new CustomMenuLista(activity,"GEOID FILES");
+            String[] menuItems = Arrays.copyOf(geoidAll, geoidAll.length);
 
-        });
-        geo4.setOnClickListener(view -> {
-            if (geo4.isChecked()) {
-                MyData.push("usaGeoide", String.valueOf(true));
-                MyData.push("geoidPath", MyApp.geoidFilePath_BG);
-            } else {
-                MyData.push("usaGeoide", String.valueOf(false));
-                MyData.push("geoidPath", null);
+            if (menuItems.length > 0) {
+                menuItems[0] = activity.getResources().getString(R.string.disabled);
+            }else {
+                new CustomToast(activity,"No Geoid Found").show_error();
+                MyGeoide.setGeoid(null);
+                checkGeo(null);
             }
-            checkGeo(MyData.get_String("geoidPath"));
+            List<String> menuItemsL = Arrays.asList(menuItems);
+            customMenu.show(menuItemsL, new CustomMenu.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(String selectedItem) {
+
+                    new CustomToast(activity, "Geoid: " + selectedItem).show_added();
+                    if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
+                        MyGeoide.setGeoid("null");
+                        MyData.push("usaGeoide", String.valueOf(false));
+                        checkGeo(MyData.get_String("geoidPath"));
+                    } else {
+                        MyGeoide.setGeoid(selectedItem);
+                        MyData.push("usaGeoide", String.valueOf(true));
+                        checkGeo(MyData.get_String("geoidPath"));
+
+                    }
+                }
+            });
 
         });
-        geo5.setOnClickListener(view -> {
 
-            if (geo5.isChecked()) {
-                MyData.push("usaGeoide", String.valueOf(true));
-                MyData.push("geoidPath", MyApp.geoidFilePath_GR);
-            } else {
-                MyData.push("usaGeoide", String.valueOf(false));
-                MyData.push("geoidPath", null);
-            }
-            checkGeo(MyData.get_String("geoidPath"));
 
-        });
-        geo6.setOnClickListener(view -> {
-
-            if (geo6.isChecked()) {
-                MyData.push("usaGeoide", String.valueOf(true));
-                MyData.push("geoidPath", MyApp.geoidFilePath_DEU);
-            } else {
-                MyData.push("usaGeoide", String.valueOf(false));
-                MyData.push("geoidPath", null);
-            }
-            checkGeo(MyData.get_String("geoidPath"));
-
-        });
-        geo7.setOnClickListener(view -> {
-
-            if (geo7.isChecked()) {
-                MyData.push("usaGeoide", String.valueOf(true));
-                MyData.push("geoidPath", MyApp.riga20);
-            } else {
-                MyData.push("usaGeoide", String.valueOf(false));
-                MyData.push("geoidPath", null);
-            }
-            checkGeo(MyData.get_String("geoidPath"));
-
-        });
         cercaSP.setOnClickListener(view -> {
             if (!customQwertyDialog.dialog.isShowing()) {
                 customQwertyDialog.show(cercaSP);
@@ -250,2284 +210,64 @@ public class Diaalog_Set_SP {
                     try {
                         MyData.push("LastSP", selectedFileName);
                         inUso.setText(selectedFileName);
-
-                        // Invia il file tramite CAN
-                        switch (selectedFileName) {
-
-                            //SWEDEN
-                            case "Sweden_SWEREF99-1200_3007.SP":
-                                MyData.push("crs", "3007");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-1330_3008.SP":
-                                MyData.push("crs", "3008");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-1415_3012.SP":
-                                MyData.push("crs", "3012");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-1500_3009.SP":
-                                MyData.push("crs", "3009");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-1545_3013.SP":
-                                MyData.push("crs", "3013");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-1630_3010.SP":
-                                MyData.push("crs", "3010");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-1800_3011.SP":
-                                MyData.push("crs", "3011");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-1845_3015.SP":
-                                MyData.push("crs", "3015");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-2015_3016.SP":
-                                MyData.push("crs", "3016");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-2145_3017.SP":
-                                MyData.push("crs", "3017");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-2315_3018.SP":
-                                MyData.push("crs", "3018");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Sweden_SWEREF99-TM_3006.SP":
-                                MyData.push("crs", "3006");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            //PORTUGAL
-                            case "PORTUGAL__MAINLAND__ONSHORE__ETRS89__PORTUGAL_TM06__3763.SP":
-                                MyData.push("crs", "3763");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            //LATVIA
-                            case "LATVIA__LKS92__LATVIA_TM__3059.SP":
-                                MyData.push("crs", "3059");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            //
-                            //JAPAN
-                            case "JAPAN__ZONE_III__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_III__2445.SP":
-                                MyData.push("crs", "2445");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_III__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_III__6671.SP":
-                                MyData.push("crs", "6671");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_III__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_III__30163.SP":
-                                MyData.push("crs", "30163");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_II__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_II__2444.SP":
-                                MyData.push("crs", "2444");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_II__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_II__6670.SP":
-                                MyData.push("crs", "6670");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_II__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_II__30162.SP":
-                                MyData.push("crs", "30162");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_IV__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_IV__2446.SP":
-                                MyData.push("crs", "2446");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_IV__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_IV__6672.SP":
-                                MyData.push("crs", "6672");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_IV__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_IV__30164.SP":
-                                MyData.push("crs", "30164");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_IX__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_IX__2451.SP":
-                                MyData.push("crs", "2451");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_IX__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_IX__6677.SP":
-                                MyData.push("crs", "6677");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_IX__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_IX__30169.SP":
-                                MyData.push("crs", "30169");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_I__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_I__2443.SP":
-                                MyData.push("crs", "2443");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_I__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_I__6669.SP":
-                                MyData.push("crs", "6669");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_I__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_I__30161.SP":
-                                MyData.push("crs", "30161");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_VIII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_VIII__2450.SP":
-                                MyData.push("crs", "2450");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_VIII__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_VIII__6676.SP":
-                                MyData.push("crs", "6676");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_VIII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_VIII__30168.SP":
-                                MyData.push("crs", "30168");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_VII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_VII__2449.SP":
-                                MyData.push("crs", "2449");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_VII__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_VII__6675.SP":
-                                MyData.push("crs", "6675");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_VII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_VII__30167.SP":
-                                MyData.push("crs", "30167");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_VI__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_VI__2448.SP":
-                                MyData.push("crs", "2448");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_VI__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_VI__6674.SP":
-                                MyData.push("crs", "6674");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_VI__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_VI__30166.SP":
-                                MyData.push("crs", "30166");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_V__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_V__2447.SP":
-                                MyData.push("crs", "2447");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_V__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_V__6673.SP":
-                                MyData.push("crs", "6673");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_V__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_V__30165.SP":
-                                MyData.push("crs", "30165");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XIII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XIII__2455.SP":
-                                MyData.push("crs", "2455");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XIII__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_XIII__6681.SP":
-                                MyData.push("crs", "6681");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XIII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XIII__30173.SP":
-                                MyData.push("crs", "30173");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XII__2454.SP":
-                                MyData.push("crs", "2454");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XII__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_XII__6680.SP":
-                                MyData.push("crs", "6680");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XII__30172.SP":
-                                MyData.push("crs", "30172");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XIV__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XIV__2456.SP":
-                                MyData.push("crs", "2456");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XIV__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_XIV__6682.SP":
-                                MyData.push("crs", "6682");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XIV__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XIV__30174.SP":
-                                MyData.push("crs", "30174");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XI__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XI__2453.SP":
-                                MyData.push("crs", "2453");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XI__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_XI__6679.SP":
-                                MyData.push("crs", "6679");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XI__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XI__30171.SP":
-                                MyData.push("crs", "30171");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XVIII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XVIII__2460.SP":
-                                MyData.push("crs", "2460");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XVIII__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_XVIII__6686.SP":
-                                MyData.push("crs", "6686");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XVIII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XVIII__30178.SP":
-                                MyData.push("crs", "30178");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XVII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XVII__2459.SP":
-                                MyData.push("crs", "2459");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XVII__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_XVII__6685.SP":
-                                MyData.push("crs", "6685");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XVII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XVII__30177.SP":
-                                MyData.push("crs", "30177");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XVI__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XVI__2458.SP":
-                                MyData.push("crs", "2458");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XVI__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_XVI__6684.SP":
-                                MyData.push("crs", "6684");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XVI__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XVI__30176.SP":
-                                MyData.push("crs", "30176");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XV__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XV__2457.SP":
-                                MyData.push("crs", "2457");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XV__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_XV__6683.SP":
-                                MyData.push("crs", "6683");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_XV__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XV__30175.SP":
-                                MyData.push("crs", "30175");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_X__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_X__2452.SP":
-                                MyData.push("crs", "2452");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_X__JGD2011__JAPAN_PLANE_RECTANGULAR_CS_X__6678.SP":
-                                MyData.push("crs", "6678");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "JAPAN__ZONE_X__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_X__30170.SP":
-                                MyData.push("crs", "30170");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            //
-                            //ITALY
-                            case "ITALY__12_E_TO_18_E__IGM95__UTM_ZONE_33N__3065.SP":
-                                MyData.push("crs", "3065");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__12_E_TO_18_E__RDN2008__UTM_ZONE_33N__N_E__6708.SP":
-                                MyData.push("crs", "6708");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__EAST_OF_12_E__MONTE_MARIO__ITALY_ZONE_2__3004.SP":
-                                MyData.push("crs", "3004");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__EAST_OF_12_E__MONTE_MARIO__ROME__ITALY_ZONE_2__26592.SP":
-                                MyData.push("crs", "26592");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__EAST_OF_18_E__RDN2008__UTM_ZONE_34N__N_E__6709.SP":
-                                MyData.push("crs", "6709");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__EMILIA_ROMAGNA__MONTE_MARIO__TM_EMILIA_ROMAGNA__5659.SP":
-                                MyData.push("crs", "5659");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__INCLUDING_SAN_MARINO_AND_VATICAN__IGM95__4982.SP":
-                                MyData.push("crs", "4982");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__INCLUDING_SAN_MARINO_AND_VATICAN__RDN2008__6704.SP":
-                                MyData.push("crs", "6704");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__RDN2008__ITALY_ZONE__N_E__6875.SP":
-                                MyData.push("crs", "6875");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__RDN2008__ZONE_12__N_E__6876.SP":
-                                MyData.push("crs", "6876");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__WEST_OF_12_E__IGM95__UTM_ZONE_32N__3064.SP":
-                                MyData.push("crs", "3064");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__WEST_OF_12_E__MONTE_MARIO__ITALY_ZONE_1__3003.SP":
-                                MyData.push("crs", "3003");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__WEST_OF_12_E__MONTE_MARIO__ROME__ITALY_ZONE_1__26591.SP":
-                                MyData.push("crs", "26591");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "ITALY__WEST_OF_12_E__RDN2008__UTM_ZONE_32N__N_E__6707.SP":
-                                MyData.push("crs", "6707");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            //
-                            //ALBANIA
-                            case "Albania_ETRS89-TM2010_6870.SP":
-                                MyData.push("crs", "6870");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            //FINLAND
-                            case "Finland_ETRS89-GK19FIN_3873.SP":
-                                MyData.push("crs", "3873");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-20FIN_3874.SP":
-                                MyData.push("crs", "3874");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-21FIN_3875.SP":
-                                MyData.push("crs", "3875");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-22FIN_3876.SP":
-                                MyData.push("crs", "3876");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-23FIN_3877.SP":
-                                MyData.push("crs", "3877");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-24FIN_3878.SP":
-                                MyData.push("crs", "3878");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-25FIN_3879.SP":
-                                MyData.push("crs", "3879");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-26FIN_3880.SP":
-                                MyData.push("crs", "3880");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-27FIN_3881.SP":
-                                MyData.push("crs", "3881");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-28FIN_3882.SP":
-                                MyData.push("crs", "3882");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-29FIN_3883.SP":
-                                MyData.push("crs", "3883");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-30FIN_3884.SP":
-                                MyData.push("crs", "3884");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89GK-31FIN_3885.SP":
-                                MyData.push("crs", "3885");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Finland_ETRS89TM-35FIN(EN)_3067.SP":
-                                MyData.push("crs", "3067");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            //ICELAND
-                            case "Iceland_ISN93_3057.SP":
-                                MyData.push("crs", "3057");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            //FRANCE
-                            case "France_RGF93CC42_3942.SP":
-                                MyData.push("crs", "3942");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "France_RGF93CC43_3943.SP":
-                                MyData.push("crs", "3943");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "France_RGF93CC44_3944.SP":
-                                MyData.push("crs", "3944");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "France_RGF93CC45_3945.SP":
-                                MyData.push("crs", "3945");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "France_RGF93CC46_3946.SP":
-                                MyData.push("crs", "3946");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "France_RGF93CC47_3947.SP":
-                                MyData.push("crs", "3947");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "France_RGF93CC48_3948.SP":
-                                MyData.push("crs", "3948");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "France_RGF93CC49_3949.SP":
-                                MyData.push("crs", "3949");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "France_RGF93CC50_3950.SP":
-                                MyData.push("crs", "3950");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-
-                            ///
-                            //AUSTRALIA
-                            case "Australia_GDA2020-MGA-Zone48_7848.SP":
-                                MyData.push("crs", "7848");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone49_7849.SP":
-                                MyData.push("crs", "7849");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone50_7850.SP":
-                                MyData.push("crs", "7850");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone51_7851.SP":
-                                MyData.push("crs", "7851");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone52_7852.SP":
-                                MyData.push("crs", "7852");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone53_7853.SP":
-                                MyData.push("crs", "7853");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone54_7854.SP":
-                                MyData.push("crs", "7854");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone55_7855.SP":
-                                MyData.push("crs", "7855");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone56_7856.SP":
-                                MyData.push("crs", "7856");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone57_7857.SP":
-                                MyData.push("crs", "7857");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Australia_GDA2020-MGA-Zone58_7858.SP":
-                                MyData.push("crs", "7858");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            //CANADA
-                            case "CANADA__102_W_TO_96_W__NAD83_CSRS__UTM_ZONE_14N__3158.SP":
-                                MyData.push("crs", "3158");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__108_W_TO_102_W__NAD83_CSRS__UTM_ZONE_13N__2957.SP":
-                                MyData.push("crs", "2957");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__108_W_TO_102_W__SOUTH_OF_60_N__NAD83_CSRS98__UTM_ZONE_13N__2151.SP":
-                                MyData.push("crs", "2151");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__114_W_TO_108_W__NAD83_CSRS__UTM_ZONE_12N__2956.SP":
-                                MyData.push("crs", "2956");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__114_W_TO_108_W__SOUTH_OF_60_N__NAD83_CSRS98__UTM_ZONE_12N__2152.SP":
-                                MyData.push("crs", "2152");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__120_W_TO_114_W__NAD83_CSRS__UTM_ZONE_11N__2955.SP":
-                                MyData.push("crs", "2955");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__120_W_TO_114_W__SOUTH_OF_60_N__NAD83_CSRS98__UTM_ZONE_11N__2153.SP":
-                                MyData.push("crs", "2153");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__126_W_TO_120_W__NAD83_CSRS__UTM_ZONE_10N__3157.SP":
-                                MyData.push("crs", "3157");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__132_W_TO_126_W__NAD83_CSRS__UTM_ZONE_9N__3156.SP":
-                                MyData.push("crs", "3156");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__138_W_TO_132_W__NAD83_CSRS__UTM_ZONE_8N__3155.SP":
-                                MyData.push("crs", "3155");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__144_W_TO_138_W__NAD83_CSRS__UTM_ZONE_7N__3154.SP":
-                                MyData.push("crs", "3154");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__48_W_TO_42_W__NAD83__UTM_ZONE_23N__26923.SP":
-                                MyData.push("crs", "26923");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__54_W_TO_48_W__NAD27__UTM_ZONE_22N__26722.SP":
-                                MyData.push("crs", "26722");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__54_W_TO_48_W__NAD83_CSRS__UTM_ZONE_22N__3761.SP":
-                                MyData.push("crs", "3761");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__54_W_TO_48_W__NAD83__UTM_ZONE_22N__26922.SP":
-                                MyData.push("crs", "26922");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__60_W_TO_54_W_AND_NAD27__NAD27__UTM_ZONE_21N__26721.SP":
-                                MyData.push("crs", "26721");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__60_W_TO_54_W__NAD83_CSRS__UTM_ZONE_21N__2962.SP":
-                                MyData.push("crs", "2962");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__60_W_TO_54_W__NAD83__UTM_ZONE_21N__26921.SP":
-                                MyData.push("crs", "26921");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__66_W_TO_60_W__NAD83_CSRS__UTM_ZONE_20N__2961.SP":
-                                MyData.push("crs", "2961");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__66_W_TO_60_W__SOUTH_OF_60_N__NAD83_CSRS98__UTM_ZONE_20N__2038.SP":
-                                MyData.push("crs", "2038");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__72_W_TO_66_W__NAD83_CSRS__UTM_ZONE_19N__2960.SP":
-                                MyData.push("crs", "2960");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__72_W_TO_66_W__SOUTH_OF_62_N__NAD83_CSRS98__UTM_ZONE_19N__2037.SP":
-                                MyData.push("crs", "2037");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__78_W_TO_72_W__NAD83_CSRS__UTM_ZONE_18N__2959.SP":
-                                MyData.push("crs", "2959");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__84_W_TO_78_W__NAD83_CSRS__UTM_ZONE_17N__2958.SP":
-                                MyData.push("crs", "2958");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__90_W_TO_84_W__NAD83_CSRS__UTM_ZONE_16N__3160.SP":
-                                MyData.push("crs", "3160");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__96_W_TO_90_W__NAD83_CSRS__UTM_ZONE_15N__3159.SP":
-                                MyData.push("crs", "3159");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__ALBERTA__115_5_W_TO_112_5_W__NAD27__ALBERTA_3TM_REF_MERID_114_W__3772.SP":
-                                MyData.push("crs", "3772");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__ALBERTA__115_5_W_TO_112_5_W__NAD83_CSRS__ALBERTA_3TM_REF_MERID_114_W__3780.SP":
-                                MyData.push("crs", "3780");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__ALBERTA__115_5_W_TO_112_5_W__NAD83__ALBERTA_3TM_REF_MERID_114_W__3776.SP":
-                                MyData.push("crs", "3776");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__ALBERTA__118_5_W_TO_115_5_W__NAD27__ALBERTA_3TM_REF_MERID_117_W__3773.SP":
-                                MyData.push("crs", "3773");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__ALBERTA__118_5_W_TO_115_5_W__NAD83_CSRS__ALBERTA_3TM_REF_MERID_117_W__3781.SP":
-                                MyData.push("crs", "3781");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__ALBERTA__118_5_W_TO_115_5_W__NAD83__ALBERTA_3TM_REF_MERID_117_W__3777.SP":
-                                MyData.push("crs", "3777");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__ALBERTA__EAST_OF_112_5_W__NAD27__ALBERTA_3TM_REF_MERID_111_W__3771.SP":
-                                MyData.push("crs", "3771");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__ALBERTA__EAST_OF_112_5_W__NAD83_CSRS__ALBERTA_3TM_REF_MERID_111_W__3779.SP":
-                                MyData.push("crs", "3779");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__ALBERTA__EAST_OF_112_5_W__NAD83__ALBERTA_3TM_REF_MERID_111_W__3775.SP":
-                                MyData.push("crs", "3775");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "CANADA__YUKON__NAD83__YUKON_ALBERS__3578.SP":
-                                MyData.push("crs", "3578");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                                //
-                            case "Canada_NAD83(CSRS)-MTM-Nova Scotia-Zone4_8082.SP":
-                                MyData.push("crs", "8082");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "Canada_NAD83(CSRS)-MTM-Nova Scotia-Zone5_8083.SP":
-                                MyData.push("crs", "8083");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            //
-                            //GERMANY
-                            case "GERMANY__WEST_OF_6_E__ETRS89__UTM_ZONE_31N__N_ZE__5651.SP":
-                                MyData.push("crs", "5651");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "GERMANY__WEST_OF_6_E__ETRS89__UTM_ZONE_31N__ZE_N__5649.SP":
-                                MyData.push("crs", "5649");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "GERMANY__6_E_TO_12_E__ETRS89__UTM_ZONE_32N__ZE_N__4647.SP":
-                                MyData.push("crs", "4647");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "GERMANY__6_E_TO_12_E__ETRS89__UTM_ZONE_32N__N_ZE__5652.SP":
-                                MyData.push("crs", "5652");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "GERMANY__EAST_OF_12_E__ETRS89__UTM_ZONE_33N__N_ZE__5653.SP":
-                                MyData.push("crs", "5653");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "GERMANY__EAST_OF_12_E__ETRS89__UTM_ZONE_33N__ZE_N__5650.SP":
-                                MyData.push("crs", "5660");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            //g2012ba0
-                            case "USA__ALASKA__144_W_TO_141_W__NAD83_2011__ALASKA_ZONE_2__6395.SP":
-                                MyData.push("crs", "6395");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALASKA__148_W_TO_144_W__NAD83_2011__ALASKA_ZONE_3__6396.SP":
-                                MyData.push("crs", "6396");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALASKA__152_W_TO_148_W__NAD83_2011__ALASKA_ZONE_4__6397.SP":
-                                MyData.push("crs", "6397");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALASKA__160_W_TO_156_W__NAD83_2011__ALASKA_ZONE_6__6399.SP":
-                                MyData.push("crs", "6399");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALASKA__156_W_TO_152_W__NAD83_2011__ALASKA_ZONE_5__6398.SP":
-                                MyData.push("crs", "6398");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALASKA__PANHANDLE__NAD83_2011__ALASKA_ZONE_1__6394.SP":
-                                MyData.push("crs", "6394");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALASKA__164_W_TO_160_W__NAD83_2011__ALASKA_ZONE_7__6400.SP":
-                                MyData.push("crs", "6400");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALASKA__NORTH_OF_54_5_N__168_W_TO_164_W__NAD83_2011__ALASKA_ZONE_8__6401.SP":
-                                MyData.push("crs", "6401");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALASKA__NORTH_OF_54_5_N__WEST_OF_168_W__NAD83_2011__ALASKA_ZONE_9__6402.SP":
-                                MyData.push("crs", "6402");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALASKA__ALEUTIAN_ISLANDS__NAD83_2011__ALASKA_ZONE_10__6403.SP":
-                                MyData.push("crs", "6403");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            /*
-                             *
-                             */
-
-                            //g2018u0
-                            case "USA__ALABAMA__SPCS__E__NAD83_HARN__ALABAMA_EAST__2759.SP":
-                                MyData.push("crs", "2759");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ALABAMA__SPCS__W__NAD83_HARN__ALABAMA_WEST__2760.SP":
-                                MyData.push("crs", "2760");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ARIZONA__SPCS__E__NAD83__ARIZONA_EAST__26948.SP":
-                                MyData.push("crs", "26948");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ARIZONA__SPCS__C__NAD83__ARIZONA_CENTRAL__26949.SP":
-                                MyData.push("crs", "26949");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ARIZONA__SPCS__W__NAD83__ARIZONA_WEST__26950.SP":
-                                MyData.push("crs", "26950");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ARKANSAS__SPCS__N__NAD83__ARKANSAS_NORTH__26951.SP":
-                                MyData.push("crs", "26951");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ARKANSAS__SPCS__S__NAD83__ARKANSAS_SOUTH__26952.SP":
-                                MyData.push("crs", "26952");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__CALIFORNIA__SPCS__1__NAD83__CALIFORNIA_ZONE_1__26941.SP":
-                                MyData.push("crs", "26941");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__CALIFORNIA__SPCS__2__NAD83__CALIFORNIA_ZONE_2__26942.SP":
-                                MyData.push("crs", "26942");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__CALIFORNIA__SPCS__3__NAD83__CALIFORNIA_ZONE_3__26943.SP":
-                                MyData.push("crs", "26943");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__CALIFORNIA__SPCS__4__NAD83__CALIFORNIA_ZONE_4__26944.SP":
-                                MyData.push("crs", "26944");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__CALIFORNIA__SPCS83__5__NAD83__CALIFORNIA_ZONE_5__26945.SP":
-                                MyData.push("crs", "26945");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__CALIFORNIA__SPCS__6__NAD83__CALIFORNIA_ZONE_6__26946.SP":
-                                MyData.push("crs", "26946");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__TEXAS__SPCS__N__NAD83__TEXAS_NORTH__32137.SP":
-                                MyData.push("crs", "32137");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__TEXAS__SPCS__NC__NAD83__TEXAS_NORTH_CENTRAL__32138.SP":
-                                MyData.push("crs", "32138");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__TEXAS__SPCS__C__NAD83__TEXAS_CENTRAL__32139.SP":
-                                MyData.push("crs", "32139");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__TEXAS__SPCS83__SC__NAD83__TEXAS_SOUTH_CENTRAL__32140.SP":
-                                MyData.push("crs", "32140");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__TEXAS__SPCS83__S__NAD83__TEXAS_SOUTH__32141.SP":
-                                MyData.push("crs", "32141");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WISCONSIN__SPCS__N__NAD83__WISCONSIN_NORTH__32152.SP":
-                                MyData.push("crs", "32152");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            case "USA__WISCONSIN__SPCS__C__NAD83__WISCONSIN_CENTRAL__32153.SP":
-                                MyData.push("crs", "32153");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WISCONSIN__SPCS__S__NAD83__WISCONSIN_SOUTH__32154.SP":
-                                MyData.push("crs", "32154");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WYOMING__SPCS__E__NAD83__WYOMING_EAST__32155.SP":
-                                MyData.push("crs", "32155");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WYOMING__SPCS__EC__NAD83__WYOMING_EAST_CENTRAL__32156.SP":
-                                MyData.push("crs", "32156");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WYOMING__SPCS__WC__NAD83__WYOMING_WEST_CENTRAL__32157.SP":
-                                MyData.push("crs", "32157");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WYOMING__SPCS__W__NAD83__WYOMING_WEST__32158.SP":
-                                MyData.push("crs", "32158");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__UTAH__SPCS__N__NAD83__UTAH_NORTH__32142.SP":
-                                MyData.push("crs", "32142");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__UTAH__SPCS__C__NAD83__UTAH_CENTRAL__32143.SP":
-                                MyData.push("crs", "32143");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__UTAH__SPCS__S__NAD83__UTAH_SOUTH__32144.SP":
-                                MyData.push("crs", "32144");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__VERMONT__NAD83__VERMONT__32145.SP":
-                                MyData.push("crs", "32145");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__VIRGINIA__SPCS__N__NAD83__VIRGINIA_NORTH__32146.SP":
-                                MyData.push("crs", "32146");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__VIRGINIA__SPCS__S__NAD83__VIRGINIA_SOUTH__32147.SP":
-                                MyData.push("crs", "32147");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WASHINGTON__SPCS83__N__NAD83__WASHINGTON_NORTH__32148.SP":
-                                MyData.push("crs", "32148");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WASHINGTON__SPCS83__S__NAD83__WASHINGTON_SOUTH__32149.SP":
-                                MyData.push("crs", "32149");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WEST_VIRGINIA__SPCS__N__NAD83__WEST_VIRGINIA_NORTH__32150.SP":
-                                MyData.push("crs", "32150");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__WEST_VIRGINIA__SPCS__S__NAD83__WEST_VIRGINIA_SOUTH__32151.SP":
-                                MyData.push("crs", "32151");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__COLORADO__SPCS__C__NAD83__COLORADO_CENTRAL__26954.SP":
-                                MyData.push("crs", "26954");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__COLORADO__SPCS__S__NAD83__COLORADO_SOUTH__26955.SP":
-                                MyData.push("crs", "26955");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__CONNECTICUT__NAD83__CONNECTICUT__26956.SP":
-                                MyData.push("crs", "26956");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__DELAWARE__NAD83__DELAWARE__26957.SP":
-                                MyData.push("crs", "26957");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__FLORIDA__SPCS__E__NAD83__FLORIDA_EAST__26958.SP":
-                                MyData.push("crs", "26958");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__FLORIDA__SPCS__N__NAD83__FLORIDA_NORTH__26960.SP":
-                                MyData.push("crs", "26960");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__HAWAII__ISLAND_OF_HAWAII__ONSHORE__NAD83__HAWAII_ZONE_1__26961.SP":
-                                MyData.push("crs", "26961");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__HAWAII__MAUI__KAHOOLAWE__LANAI__MOLOKAI__ONSHORE__NAD83__HAWAII_ZONE_2__26962.SP":
-                                MyData.push("crs", "26962");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__HAWAII__OAHU__ONSHORE__NAD83__HAWAII_ZONE_3__26963.SP":
-                                MyData.push("crs", "26963");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__HAWAII__KAUAI__ONSHORE__NAD83__HAWAII_ZONE_4__26964.SP":
-                                MyData.push("crs", "26964");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__HAWAII__NIIHAU__ONSHORE__NAD83__HAWAII_ZONE_5__26965.SP":
-                                MyData.push("crs", "26965");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__IDAHO__SPCS__E__NAD83__IDAHO_EAST__26968.SP":
-                                MyData.push("crs", "26968");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__IDAHO__SPCS__C__NAD83__IDAHO_CENTRAL__26969.SP":
-                                MyData.push("crs", "26969");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__IDAHO__SPCS__W__NAD83__IDAHO_WEST__26970.SP":
-                                MyData.push("crs", "26970");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ILLINOIS__SPCS__E__NAD83__ILLINOIS_EAST__26971.SP":
-                                MyData.push("crs", "26971");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__ILLINOIS__SPCS__W__NAD83__ILLINOIS_WEST__26972.SP":
-                                MyData.push("crs", "26972");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__INDIANA__SPCS__E__NAD83__INDIANA_EAST__26973.SP":
-                                MyData.push("crs", "26973");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__INDIANA__SPCS__W__NAD83__INDIANA_WEST__26974.SP":
-                                MyData.push("crs", "26974");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__IOWA__SPCS__N__NAD83__IOWA_NORTH__26975.SP":
-                                MyData.push("crs", "26975");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__IOWA__SPCS__S__NAD83__IOWA_SOUTH__26976.SP":
-                                MyData.push("crs", "26976");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__KANSAS__SPCS__N__NAD83__KANSAS_NORTH__26977.SP":
-                                MyData.push("crs", "26977");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__KANSAS__SPCS__S__NAD83__KANSAS_SOUTH__26978.SP":
-                                MyData.push("crs", "26978");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__KENTUCKY__SPCS__N__NAD83__KENTUCKY_NORTH__2205.SP":
-                                MyData.push("crs", "2205");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__KENTUCKY__SPCS__S__NAD83__KENTUCKY_SOUTH__26980.SP":
-                                MyData.push("crs", "26980");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__LOUISIANA__SPCS__N__NAD83__LOUISIANA_NORTH__26981.SP":
-                                MyData.push("crs", "26981");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__LOUISIANA__NAD83__LOUISIANA_OFFSHORE__32199.SP":
-                                MyData.push("crs", "32199");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__LOUISIANA__SPCS83__S__NAD83__LOUISIANA_SOUTH__26982.SP":
-                                MyData.push("crs", "26982");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MAINE__SPCS__E__NAD83__MAINE_EAST__26983.SP":
-                                MyData.push("crs", "26983");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MAINE__SPCS__W__NAD83__MAINE_WEST__26984.SP":
-                                MyData.push("crs", "26984");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MARYLAND__NAD83__MARYLAND__26985.SP":
-                                MyData.push("crs", "26985");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MASSACHUSETTS__SPCS__MAINLAND__NAD83__MASSACHUSETTS_MAINLAND__26986.SP":
-                                MyData.push("crs", "26986");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MASSACHUSETTS__SPCS__ISLANDS__NAD83__MASSACHUSETTS_ISLAND__26987.SP":
-                                MyData.push("crs", "26987");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MICHIGAN__SPCS__N__NAD83__MICHIGAN_NORTH__26988.SP":
-                                MyData.push("crs", "26988");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MICHIGAN__SPCS__C__NAD83__MICHIGAN_CENTRAL__26989.SP":
-                                MyData.push("crs", "26989");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MICHIGAN__SPCS__S__NAD83__MICHIGAN_SOUTH__26990.SP":
-                                MyData.push("crs", "26990");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MINNESOTA__SPCS__N__NAD83__MINNESOTA_NORTH__26991.SP":
-                                MyData.push("crs", "26991");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MINNESOTA__SPCS__C__NAD83__MINNESOTA_CENTRAL__26992.SP":
-                                MyData.push("crs", "26992");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MINNESOTA__SPCS__S__NAD83__MINNESOTA_SOUTH__26993.SP":
-                                MyData.push("crs", "26993");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MISSISSIPPI__SPCS__E__NAD83__MISSISSIPPI_EAST__26994.SP":
-                                MyData.push("crs", "26994");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MISSISSIPPI__SPCS__W__NAD83__MISSISSIPPI_WEST__26995.SP":
-                                MyData.push("crs", "26995");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MISSOURI__SPCS__E__NAD83__MISSOURI_EAST__26996.SP":
-                                MyData.push("crs", "26996");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MISSOURI__SPCS__C__NAD83__MISSOURI_CENTRAL__26997.SP":
-                                MyData.push("crs", "26997");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MISSOURI__SPCS__W__NAD83__MISSOURI_WEST__26998.SP":
-                                MyData.push("crs", "26998");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__MONTANA__NAD83__MONTANA__32100.SP":
-                                MyData.push("crs", "32100");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEBRASKA__NAD83__NEBRASKA__32104.SP":
-                                MyData.push("crs", "32104");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEVADA__SPCS__W__NAD83__NEVADA_WEST__32109.SP":
-                                MyData.push("crs", "32109");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEVADA__SPCS__E__NAD83__NEVADA_EAST__32107.SP":
-                                MyData.push("crs", "32107");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEVADA__SPCS__C__NAD83__NEVADA_CENTRAL__32108.SP":
-                                MyData.push("crs", "32108");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEW_JERSEY__NAD83__NEW_JERSEY__32111.SP":
-                                MyData.push("crs", "32111");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEW_HAMPSHIRE__NAD83__NEW_HAMPSHIRE__32110.SP":
-                                MyData.push("crs", "32110");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEW_MEXICO__SPCS__E__NAD83__NEW_MEXICO_EAST__32112.SP":
-                                MyData.push("crs", "32112");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEW_MEXICO__SPCS83__C__NAD83__NEW_MEXICO_CENTRAL__32113.SP":
-                                MyData.push("crs", "32113");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEW_MEXICO__SPCS83__W__NAD83__NEW_MEXICO_WEST__32114.SP":
-                                MyData.push("crs", "32114");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            ///
-                            case "USA__NEW_YORK__SPCS__E__NAD83__NEW_YORK_EAST__32115.SP":
-                                MyData.push("crs", "32115");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEW_YORK__SPCS__C__NAD83__NEW_YORK_CENTRAL__32116.SP":
-                                MyData.push("crs", "32116");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEW_YORK__SPCS__W__NAD83__NEW_YORK_WEST__32117.SP":
-                                MyData.push("crs", "32117");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NEW_YORK__SPCS__LONG_ISLAND__NAD83__NEW_YORK_LONG_ISLAND__32118.SP":
-                                MyData.push("crs", "32118");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NORTH_CAROLINA__NAD83__NORTH_CAROLINA__32119.SP":
-                                MyData.push("crs", "32119");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NORTH_DAKOTA__SPCS__N__NAD83__NORTH_DAKOTA_NORTH__32120.SP":
-                                MyData.push("crs", "32120");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__NORTH_DAKOTA__SPCS__S__NAD83__NORTH_DAKOTA_SOUTH__32121.SP":
-                                MyData.push("crs", "32121");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__OHIO__SPCS__N__NAD83__OHIO_NORTH__32122.SP":
-                                MyData.push("crs", "32122");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__OHIO__SPCS__S__NAD83__OHIO_SOUTH__32123.SP":
-                                MyData.push("crs", "32123");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__OKLAHOMA__SPCS__N__NAD83__OKLAHOMA_NORTH__32124.SP":
-                                MyData.push("crs", "32124");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__OKLAHOMA__SPCS__S__NAD83__OKLAHOMA_SOUTH__32125.SP":
-                                MyData.push("crs", "32125");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__OREGON__SPCS__N__NAD83__OREGON_NORTH__32126.SP":
-                                MyData.push("crs", "32126");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__OREGON__SPCS__S__NAD83__OREGON_SOUTH__32127.SP":
-                                MyData.push("crs", "32127");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__PENNSYLVANIA__SPCS__N__NAD83__PENNSYLVANIA_NORTH__32128.SP":
-                                MyData.push("crs", "32128");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__PENNSYLVANIA__SPCS__S__NAD83__PENNSYLVANIA_SOUTH__32129.SP":
-                                MyData.push("crs", "32129");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__RHODE_ISLAND__NAD83__RHODE_ISLAND__32130.SP":
-                                MyData.push("crs", "32130");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__SOUTH_CAROLINA__NAD83__SOUTH_CAROLINA__32133.SP":
-                                MyData.push("crs", "32133");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__SOUTH_DAKOTA__SPCS__N__NAD83__SOUTH_DAKOTA_NORTH__32134.SP":
-                                MyData.push("crs", "32134");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__SOUTH_DAKOTA__SPCS__S__NAD83__SOUTH_DAKOTA_SOUTH__32135.SP":
-                                MyData.push("crs", "32135");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "USA__TENNESSEE__NAD83__TENNESSEE__32136.SP":
-                                MyData.push("crs", "32136");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-
-                            case "BELGIUM_ONSHORE_BD72_BELGIAN_LAMBERT_72_31370.SP":
-                                //belgio
-                                MyData.push("crs", "31370");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-                            case "RDNAPTRANS2018.SP":
-                                //olanda
-                                MyData.push("crs", "28992");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-
-                                ReadProjectService.startCRS();
-                                dialog.dismiss();
-                                break;
-
-                            //////////////////NO GEOIDS
-                            case "UTM_AUTO_ZONE.SP":
-                                //utm
+                        String match=getCrsCodeFromFileName(selectedFileName);
+
+                        if(match!=null){
+                            if(match.equals("UTM")){
+                                //UTM autozone
                                 MyData.push("crs", "UTM");
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 activity.recreate();
-
                                 dialog.dismiss();
-                                break;
-                            case "Greece_HEPOS_GGRS87_TM87_Grid_w_Geoid.SP":
-                                //grecia
-                                MyData.push("crs", "2100");
+                            }else {
+                                MyData.push("crs", match);
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 activity.recreate();
-
                                 ReadProjectService.startCRS();
                                 dialog.dismiss();
-                                break;
-                            default:
-                                //invia file SP
-                                usaSP.setEnabled(false);
-                                MyData.push("crs", ".SP FILE");
-                                DataSaved.S_CRS = MyData.get_String("crs");
-                                switch (DataSaved.my_comPort) {
-                                    case 0:
-                                        // Copia il file da assets a una directory accessibile
-                                        String filePath = copyAssetFileToTemp(folderPath, selectedFileName);
-                                        sendFileViaCAN(filePath, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
-                                            @Override
-                                            public void onProgressUpdate(int percentage) {
-                                                perc = percentage;
-                                            }
-                                        });
-                                        break;
-                                    case 1:
-                                    case 2:
-                                        //send via serial
-                                        String filePathS = copyAssetFileToTemp(folderPath, selectedFileName);
-                                        SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
-                                        Thread.sleep(500);
-                                        sendFileViaSerial(filePathS, new CanFileTransfer.ProgressCallback() {
-                                            @Override
-                                            public void onProgressUpdate(int percentage) {
-                                                perc = percentage;
-                                            }
-                                        });
-                                        break;
-                                    default:
-                                        Thread.sleep(500);
-                                        dialog.dismiss();
-                                        break;
+                            }
+                        }else {
+                            //invia file SP
+                            usaSP.setEnabled(false);
+                            MyData.push("crs", ".SP FILE");
+                            MyGeoide.setGeoid(null);
+                            DataSaved.S_CRS = MyData.get_String("crs");
+                            switch (DataSaved.my_comPort) {
+                                case 0:
+                                    // Copia il file da assets a una directory accessibile
+                                    String filePath = copyAssetFileToTemp(folderPath, selectedFileName);
+                                    sendFileViaCAN(filePath, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
+                                        @Override
+                                        public void onProgressUpdate(int percentage) {
+                                            perc = percentage;
+                                        }
+                                    });
+                                    break;
+                                case 1:
+                                case 2:
+                                    //send via serial
+                                    String filePathS = copyAssetFileToTemp(folderPath, selectedFileName);
+                                    SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
+                                    Thread.sleep(500);
+                                    sendFileViaSerial(filePathS, new CanFileTransfer.ProgressCallback() {
+                                        @Override
+                                        public void onProgressUpdate(int percentage) {
+                                            perc = percentage;
+                                        }
+                                    });
+                                    break;
+                                default:
+                                    Thread.sleep(500);
+                                    dialog.dismiss();
+                                    break;
 
 
-                                }
-                                usaSP.setEnabled(true);
-                                break;
+                            }
+                            usaSP.setEnabled(true);
                         }
+
+
+
 
                     } catch (Exception e) {
                         new CustomToast(activity, "SP ERROR").show_error();
@@ -2536,6 +276,8 @@ public class Diaalog_Set_SP {
                 }, 100); // 100 milliseconds delay
             }
         });
+
+
         startSearch.setOnClickListener(view -> {
             try {
                 cercaSP.getText().toString();
@@ -2578,6 +320,7 @@ public class Diaalog_Set_SP {
     }
 
     private void sortFiles(String mPath) {
+
         AssetManager assetManager = activity.getApplicationContext().getAssets(); // Ottiene l'AssetManager
         String folderPath = mPath; // Specifica la cartella all'interno di "assets" da cui vuoi leggere i file
 
@@ -2594,7 +337,10 @@ public class Diaalog_Set_SP {
                         // Aggiungi il file all'array con il parametro `isFolder` impostato su `false`
                         long fileSize = getFileSizeFromAssets(assetManager, folderPath + "/" + fileName);
                         arraySP.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize));
+                        arraySPOriginale.clear();
+                        arraySPOriginale.addAll(arraySP);
                         spAdapter.notifyDataSetChanged();
+
                     }
                 }
 
@@ -2678,73 +424,14 @@ public class Diaalog_Set_SP {
     }
 
     public void checkGeo(String s) {
-        MyGeoide.setGeoid(s);
-        if (s.equals(MyApp.geoidFilePath_USA2018)) {
-            geo1.setChecked(true);
-            geo2.setChecked(false);
-            geo3.setChecked(false);
-            geo4.setChecked(false);
-            geo5.setChecked(false);
-            geo6.setChecked(false);
-            geo7.setChecked(false);
-        } else if (s.equals(MyApp.geoidFilePath_USA2012)) {
-            geo1.setChecked(false);
-            geo2.setChecked(true);
-            geo3.setChecked(false);
-            geo4.setChecked(false);
-            geo5.setChecked(false);
-            geo6.setChecked(false);
-            geo7.setChecked(false);
-        } else if (s.equals(MyApp.geoidFilePath_NL)) {
-            geo1.setChecked(false);
-            geo2.setChecked(false);
-            geo3.setChecked(true);
-            geo4.setChecked(false);
-            geo5.setChecked(false);
-            geo6.setChecked(false);
-            geo7.setChecked(false);
-        } else if (s.equals(MyApp.geoidFilePath_BG)) {
-            geo1.setChecked(false);
-            geo2.setChecked(false);
-            geo3.setChecked(false);
-            geo4.setChecked(true);
-            geo5.setChecked(false);
-            geo6.setChecked(false);
-            geo7.setChecked(false);
-        } else if (s.equals(MyApp.geoidFilePath_GR)) {
-            geo1.setChecked(false);
-            geo2.setChecked(false);
-            geo3.setChecked(false);
-            geo4.setChecked(false);
-            geo5.setChecked(true);
-            geo6.setChecked(false);
-            geo7.setChecked(false);
-        } else if (s.equals(MyApp.geoidFilePath_DEU)) {
-            geo1.setChecked(false);
-            geo2.setChecked(false);
-            geo3.setChecked(false);
-            geo4.setChecked(false);
-            geo5.setChecked(false);
-            geo6.setChecked(true);
-            geo7.setChecked(false);
-        }else if (s.equals(MyApp.riga20)) {
-            geo1.setChecked(false);
-            geo2.setChecked(false);
-            geo3.setChecked(false);
-            geo4.setChecked(false);
-            geo5.setChecked(false);
-            geo6.setChecked(false);
-            geo7.setChecked(true);
-        } else {
-            geo1.setChecked(false);
-            geo2.setChecked(false);
-            geo3.setChecked(false);
-            geo4.setChecked(false);
-            geo5.setChecked(false);
-            geo6.setChecked(false);
-            geo7.setChecked(false);
-
+        if(MyData.get_String("geoidPath").equals("null")||MyData.get_String("geoidPath")==null||MyData.get_String("geoidPath").isEmpty()){
+            geoidStatus.setText("GEOID DISABLED");
+            geoidStatus.setTextColor(Color.GRAY);
+        }else {
+            geoidStatus.setText(MyData.get_String("geoidPath"));
+            geoidStatus.setTextColor(Color.CYAN);
         }
+
     }
 
     private void updateView() {
@@ -2754,8 +441,6 @@ public class Diaalog_Set_SP {
                 // Update View
 
                 try {
-
-
                     if (CanFileTransfer.sending) {
                         messaggio.setText("Sending...\n" + perc + " %");
                         progressBar.setVisibility(View.VISIBLE);
@@ -2790,15 +475,12 @@ public class Diaalog_Set_SP {
     }
 
     public void cerca(String testo) {
-        // Lista temporanea per contenere i file che corrispondono al testo cercato
         List<ProjectFileAdapter.FileItem> risultatiFiltrati = new ArrayList<>();
         Log.d("SpinnerTEST", "Testo cercato: " + testo);
 
-        // Itera su tutti gli elementi di arraySP
-        for (ProjectFileAdapter.FileItem item : arraySP) {
+        for (ProjectFileAdapter.FileItem item : arraySPOriginale) {
             Log.d("SpinnerTEST", "Nome del file: " + item.getName());
 
-            // Controlla se il nome del file contiene la stringa di testo cercata (case insensitive)
             if (item.getName().toLowerCase().contains(testo.toLowerCase())) {
                 Log.d("SpinnerTEST", "Elemento trovato: dentro IF " + item.getName());
                 risultatiFiltrati.add(item);
@@ -2807,16 +489,14 @@ public class Diaalog_Set_SP {
             }
         }
 
-        // Aggiorna arraySP con i risultati filtrati
+        // Aggiorna arraySP (che alimenta l'adapter)
         arraySP.clear();
         arraySP.addAll(risultatiFiltrati);
-
-        // Notifica l'adattatore delle modifiche
         spAdapter.notifyDataSetChanged();
 
-        // Log per il debugging
         Log.d("SpinnerTEST", "Numero di elementi trovati: " + arraySP.size());
     }
+
 
     private String copyAssetFileToTemp(String folderPath, String fileName) throws IOException {
         AssetManager assetManager = activity.getApplicationContext().getAssets();
@@ -2891,5 +571,35 @@ public class Diaalog_Set_SP {
         }
 
     }
+    public static String getCrsCodeFromFileName(String fileName) {
+        if (fileName == null || !fileName.endsWith(".SP")) {
+            return null;
+        }else if (fileName.equals("UTM_AUTO_ZONE.SP")) {
+            return "UTM";
+        }else {
+
+            // Rimuove l'estensione .SP
+            String methodName = fileName.substring(0, fileName.length() - 3);
+
+            try {
+                // Ottiene il campo statico della classe MyEpsgNumber con quel nome
+                java.lang.reflect.Field field = MyEpsgNumber.class.getField(methodName);
+
+                // Verifica se il campo è statico e di tipo int
+                if (java.lang.reflect.Modifier.isStatic(field.getModifiers()) && field.getType() == int.class) {
+                    int value = field.getInt(null); // null per static field
+                    return String.valueOf(value);
+                }
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                // Campo non trovato o accesso non consentito
+                return null;
+            }
+
+            return null;
+        }
+
+
+    }
+
 
 }

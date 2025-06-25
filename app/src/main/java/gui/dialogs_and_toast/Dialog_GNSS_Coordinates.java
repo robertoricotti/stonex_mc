@@ -53,7 +53,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     ProgressBar progressBar;
     Activity activity;
     public Dialog alertDialog;
-    ImageView save, exit, title, BTConnect, serialCon, editZ, rtkMode;
+    ImageView save,  title, BTConnect, serialCon, editZ, rtkMode;
     TextView txmchdt, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon;
     Button cqpiu, cqmeno;
     TextView tvCq,frame,boom1,boom2,stick,bucket,tilt;
@@ -97,7 +97,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
     private void findView() {
         LanguageSetter.setLocale(activity, "en");
-        exit = alertDialog.findViewById(R.id._btnclose);//
+
         title = alertDialog.findViewById(R.id.titleG);//
         txSat = alertDialog.findViewById(R.id.txSat);//
         txAge = alertDialog.findViewById(R.id.txage);//
@@ -287,7 +287,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
             }
             progressBar.setVisibility(View.VISIBLE);
             new CustomToast(activity, "...WAIT...").show();
-            exit.setVisibility(View.INVISIBLE);
+
             save.setVisibility(View.INVISIBLE);
             editZ.setVisibility(View.INVISIBLE);
 
@@ -309,10 +309,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                 }
             }
         });
-        exit.setOnClickListener(view -> {
-            stopUpdatingCoordinates();
-            alertDialog.dismiss();
-        });
+
         cqpiu.setOnClickListener(view -> {
             DataSaved.Max_CQ3D += 0.01;
             init();

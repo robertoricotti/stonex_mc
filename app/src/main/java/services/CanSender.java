@@ -131,6 +131,7 @@ public class CanSender extends Service {
             if (DataSaved.my_comPort == 4) {
                 EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
                 EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
+                EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
                 NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
                 NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
                 NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());

@@ -38,7 +38,6 @@ public class Deg2UTM {
 
 
     public Deg2UTM(double Lat, double Lon, double Z, String crs, String geoidPath) {
-        Log.w("Dimens", new File(geoidPath).length() + "");
         switch (crs) {
             case _NONE:
                 Northing = Lat;
@@ -125,11 +124,11 @@ public class Deg2UTM {
                                     if (ggfGeoide.isInGrid(mLat_, mLon_)) {
                                         geoidError = false;
                                         quota[0] = Z - ggfGeoide.getUndulation(mLat_, mLon_);
-                                        Log.w("Geoid", "OK   " + mLat_ + " " + mLon_ + "  " + ggfGeoide.getUndulation(mLat_, mLon_));
+                                        Log.d("Geoid", "OK   " + mLat_ + " " + mLon_ + "  " + ggfGeoide.getUndulation(mLat_, mLon_));
                                     } else {
                                         geoidError = true;
                                         quota[0] = Z;
-                                        Log.e("Geoid", "KO   " + mLat_ + " " + mLon_ + "  " + quota[0]);
+                                        Log.d("Geoid", "KO   " + mLat_ + " " + mLon_ + "  " + quota[0]);
 
                                     }
                                 } catch (Exception e) {

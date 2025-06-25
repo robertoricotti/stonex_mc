@@ -128,8 +128,9 @@ public class NmeaListener {
             } else {
 
                 if (mNmea1.contains(mNmea2)) {
-                    Log.w("Inizio", DataSaved.S_CRS+"   "+(NMEA0183));
+
                     NmeaInput = NMEA0183.split(",");
+                    Log.d("Inizio", DataSaved.S_CRS+"   "+Arrays.toString(NmeaInput));
                     switch (NmeaInput[0]) {
 
                         case "$GNGGA":

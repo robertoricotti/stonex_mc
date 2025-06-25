@@ -1,6 +1,7 @@
 package gui.projects;
 
 
+import static gui.dialogs_and_toast.Diaalog_Set_SP.getCrsCodeFromFileName;
 import static utils.CanFileTransfer.sendFileViaCAN;
 import static utils.CanFileTransfer.sendFileViaSerial;
 
@@ -9,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,6 +28,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.stx_dig.R;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import gui.BaseClass;
@@ -33,7 +38,9 @@ import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.boot_and_choose.Nuova_Choose;
 import gui.dialogs_and_toast.CustomToast;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.MyGeoide;
 import serial.SerialPortManager;
+import services.ReadProjectService;
 import utils.CanFileTransfer;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -292,47 +299,80 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
         usaSP.setOnClickListener(view -> {
 
-
             if (spAdapter.getSelectedItem() == -1) {
                 new CustomToast(activity, "SELECT A SP FILE TO USE").show();
             } else {
+
+                String selectedFileName=arraySP.get(spAdapter.getSelectedItem()).getName();
 
                 usaSP.setEnabled(false);
                 Handler handler1 = new Handler(activity.getMainLooper());
                 handler1.postDelayed(() -> {
                     try {
-                        MyData.push("crs", ".SP FILE");
-                        DataSaved.S_CRS = MyData.get_String("crs");
-                        switch (DataSaved.my_comPort) {
-                            case 0:
-                                String filename = mPath + "/" + spAdapter.getSelectedFilePath();
-                                sendFileViaCAN(filename, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
-                                    @Override
-                                    public void onProgressUpdate(int percentage) {
-                                        perc = percentage;
-                                    }
-                                });
-                                break;
+                        MyData.push("LastSP", selectedFileName);
 
-                            case 1:
-                            case 2:
-                                //send via serial
-                                String filename1 = mPath + "/" + spAdapter.getSelectedFilePath();
-                                SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
-                                Thread.sleep(500);
-                                sendFileViaSerial(filename1, new CanFileTransfer.ProgressCallback() {
-                                    @Override
-                                    public void onProgressUpdate(int percentage) {
-                                        perc = percentage;
-                                    }
-                                });
-                                break;
+                        String match=getCrsCodeFromFileName(selectedFileName);
+
+                        if(match!=null){
+                            if(match.equals("UTM")){
+                                //UTM autozone
+                                MyData.push("crs", "UTM");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                dialog.dismiss();
+                            }else {
+                                MyData.push("crs", match);
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                activity.recreate();
+                                ReadProjectService.startCRS();
+                                dialog.dismiss();
+                            }
+                        }else {
+                            //invia file SP
+                            usaSP.setEnabled(false);
+                            MyData.push("crs", ".SP FILE");
+                            MyGeoide.setGeoid(null);
+                            DataSaved.S_CRS = MyData.get_String("crs");
+                            switch (DataSaved.my_comPort) {
+                                case 0:
+                                    // Copia il file da assets a una directory accessibile
+                                    String filePath = copyAssetFileToTemp(mPath, selectedFileName);
+                                    sendFileViaCAN(filePath, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
+                                        @Override
+                                        public void onProgressUpdate(int percentage) {
+                                            perc = percentage;
+                                        }
+                                    });
+                                    break;
+                                case 1:
+                                case 2:
+                                    //send via serial
+                                    String filePathS = copyAssetFileToTemp(mPath, selectedFileName);
+                                    SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
+                                    Thread.sleep(500);
+                                    sendFileViaSerial(filePathS, new CanFileTransfer.ProgressCallback() {
+                                        @Override
+                                        public void onProgressUpdate(int percentage) {
+                                            perc = percentage;
+                                        }
+                                    });
+                                    break;
+                                default:
+                                    Thread.sleep(500);
+                                    dialog.dismiss();
+                                    break;
+
+
+                            }
+                            usaSP.setEnabled(true);
                         }
 
 
-                    } catch (Exception e) {
 
+
+                    } catch (Exception e) {
                         new CustomToast(activity, "SP ERROR").show_error();
+                        Log.e("SP_ERROR", "Error sending file", e);
                     }
 
 
@@ -434,5 +474,26 @@ public class Dialog_PRJ_Folder extends BaseClass {
         }, 100);
     }
 
+    private String copyAssetFileToTemp(String folderPath, String fileName) throws IOException {
+        AssetManager assetManager = activity.getApplicationContext().getAssets();
 
+        // Percorso completo nel pacchetto degli assets
+        String assetPath = folderPath + "/" + fileName;
+
+        // Directory temporanea in cui copiare il file
+        File tempFile = new File(activity.getCacheDir(), fileName);
+
+        try (InputStream inputStream = assetManager.open(assetPath);
+             FileOutputStream outputStream = new FileOutputStream(tempFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        }
+
+        // Restituisce il percorso del file copiato
+        return tempFile.getAbsolutePath();
+    }
 }

@@ -11,13 +11,16 @@ public class MyGeoide {
     public static void setGeoid(String geoid) {
         if(MyData.get_String("geoidPath")==null){
             MyData.push("geoidPath","null");
+            MyData.push("usaGeoide", String.valueOf(false));
         }else {
             MyData.push("geoidPath", geoid);
             String s = String.valueOf(geoid);
             if (s.equalsIgnoreCase("null")) {
                 MyApp.GEOIDE_PATH = null;
+                MyData.push("usaGeoide", String.valueOf(false));
             } else {
                 MyApp.GEOIDE_PATH = geoid;
+                MyData.push("usaGeoide", String.valueOf(true));
             }
         }
     }

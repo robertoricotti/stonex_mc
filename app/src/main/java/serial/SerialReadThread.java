@@ -100,7 +100,7 @@ public class SerialReadThread extends Thread {
         handler_tl.postDelayed(timeoutRunnable_tl, 3000);
         serialEmpty = false;
         NmeaListener.NmeaStandard(received);
-       //Log.d("Programmo",received);
+       Log.d("Programmo",received);
         if (MyApp.visibleActivity instanceof Nuovo_Gps || MyApp.visibleActivity instanceof Serial_Msg_Debug) {
             EventBus.getDefault().post(new CMD_Event(received));
             EventBus.getDefault().post(new SerialEvent(received));
