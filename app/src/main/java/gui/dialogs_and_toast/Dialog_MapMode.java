@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -38,7 +39,7 @@ public class Dialog_MapMode {
 
     TextView valore, massimo, minimo, medio;
     SeekBar seekBar;
-    Button save, dismiss;
+    ImageView save;
     int colore, triangoli, punti, poly, testi, utils, json;
     RecyclerView recyclerViewLayers;
 
@@ -71,12 +72,10 @@ public class Dialog_MapMode {
         save = dialog.findViewById(R.id.exit);
         seekBar = dialog.findViewById(R.id.seekbar);
         valore = dialog.findViewById(R.id.txtraggio);
-        dismiss = dialog.findViewById(R.id.dismiss);
         massimo = dialog.findViewById(R.id.massimo);
         minimo = dialog.findViewById(R.id.minimo);
         medio = dialog.findViewById(R.id.medio);
         recyclerViewLayers = dialog.findViewById(R.id.recyclerViewLayers);
-        dismiss.setVisibility(View.INVISIBLE);
 
 
     }
@@ -210,9 +209,7 @@ public class Dialog_MapMode {
             //activity.recreate();
 
         });
-        dismiss.setOnClickListener(view -> {
-            dialog.dismiss();
-        });
+
     }
 
 

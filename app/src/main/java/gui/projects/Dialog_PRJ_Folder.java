@@ -49,7 +49,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
     int perc = 0;
     Activity activity;
     public Dialog dialog;
-    Button exit;
+    ImageView exit;
     TextView titFiles, titSP, messaggio;
     ImageView usaSP, usaFile, deleteFile, deleteSP;
     RecyclerView recyclerViewFiles, recyclerViewSP;

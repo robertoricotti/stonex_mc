@@ -136,18 +136,7 @@
         app:tint="@color/black"
         />
 
-    <Button
-        android:id="@+id/dismiss"
-        android:layout_width="130dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/_____cancel_text"
-        android:text="@string/exit"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/lowH"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -185,5 +174,16 @@
         app:layout_constraintRight_toRightOf="@id/progressBar"
         app:layout_constraintTop_toTopOf="@id/progressBar"
         app:layout_constraintVertical_bias="0.0" />
-
+    <ImageView
+        android:id="@+id/dismiss"
+        android:layout_width="130dp"
+        android:layout_height="0dp"
+        android:backgroundTint="@color/_____cancel_text"
+        app:layout_constraintTop_toBottomOf="@id/lowH"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:src="@drawable/close_web"
+        android:padding="5dp"
+        app:tint="@color/_____cancel_text"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

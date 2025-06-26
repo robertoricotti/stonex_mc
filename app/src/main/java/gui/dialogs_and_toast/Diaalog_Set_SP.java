@@ -157,23 +157,27 @@ public class Diaalog_Set_SP {
 
     public void onClick() {
         geoidStatus.setOnClickListener(view -> {
-            // Crea una copia dell'array geoidAll e forza la prima posizione a "DISABLE"
-            CustomMenuLista customMenu=new CustomMenuLista(activity,"GEOID FILES");
-            String[] menuItems = Arrays.copyOf(geoidAll, geoidAll.length);
+            CustomMenuLista customMenu = new CustomMenuLista(activity, "GEOID FILES");
 
-            if (menuItems.length > 0) {
-                menuItems[0] = activity.getResources().getString(R.string.disabled);
-            }else {
-                new CustomToast(activity,"No Geoid Found").show_error();
+            if (geoidAll == null || geoidAll.length == 0) {
+                new CustomToast(activity, "No Geoid Found").show_error();
                 MyGeoide.setGeoid(null);
                 checkGeo(null);
+                return;
             }
+
+            // Crea un nuovo array con spazio per "DISABLED" + tutti gli elementi di geoidAll
+            String[] menuItems = new String[geoidAll.length + 1];
+            menuItems[0] = activity.getResources().getString(R.string.disabled);
+            System.arraycopy(geoidAll, 0, menuItems, 1, geoidAll.length);
+
             List<String> menuItemsL = Arrays.asList(menuItems);
+
             customMenu.show(menuItemsL, new CustomMenu.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(String selectedItem) {
-
                     new CustomToast(activity, "Geoid: " + selectedItem).show_added();
+
                     if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
                         MyGeoide.setGeoid("null");
                         MyData.push("usaGeoide", String.valueOf(false));
@@ -182,12 +186,14 @@ public class Diaalog_Set_SP {
                         MyGeoide.setGeoid(selectedItem);
                         MyData.push("usaGeoide", String.valueOf(true));
                         checkGeo(MyData.get_String("geoidPath"));
-
                     }
                 }
             });
-
         });
+
+
+
+
 
 
         cercaSP.setOnClickListener(view -> {

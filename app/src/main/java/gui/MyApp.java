@@ -180,9 +180,31 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             Log.d("machinestate", "null");
         }
 
+        String nlgeo =copyGeoidFromAssets(this,"nlgeo2018.ugf","nlgeo2018.ugf");
+        String belg=copyGeoidFromAssets(this,"belgium_hbg18.ugf","belgium_hbg18.ugf");
+        String deu =copyGeoidFromAssets(this,"DEUTSCH_GEOID.GGF","DEUTSCH_GEOID.GGF");
+
         String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
 
         geoidAll=listFilesInFolderGeoid(pp);
+
+        // Crea un nuovo array con spazio per i 3 elementi aggiuntivi
+        int originalLength = geoidAll != null ? geoidAll.length : 0;
+        String[] newGeoidAll = new String[originalLength + 3];
+
+// Se l'array originale non è nullo, copialo
+        if (geoidAll != null) {
+            System.arraycopy(geoidAll, 0, newGeoidAll, 0, originalLength);
+        }
+
+// Aggiungi le 3 nuove stringhe
+        newGeoidAll[originalLength] = nlgeo;
+        newGeoidAll[originalLength + 1] = belg;
+        newGeoidAll[originalLength + 2] = deu;
+
+// Sovrascrivi l'array originale
+        geoidAll = newGeoidAll;
+
         Log.d("GEOIDALL", Arrays.toString(geoidAll));
 
         gridFile_GR = copyGeoidFromAssets(this, "greece_2km_v1_0.gsb", "greece_2km_v1_0.gsb");

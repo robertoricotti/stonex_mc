@@ -5,173 +5,154 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_gray">
+
     <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:id="@+id/mezzeria"
-        app:layout_constraintGuide_percent="0.5"/>
-    <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/fine"
-        app:layout_constraintGuide_percent="0.9"/>
+        app:layout_constraintGuide_percent="0.5" />
+
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/fine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/orizzontale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/orizzontale"
-        app:layout_constraintGuide_percent="0.3"/>
+        app:layout_constraintGuide_percent="0.3" />
+
     <View
         android:id="@+id/gradiente"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="10dp"
         android:background="@drawable/gradient"
+        app:layout_constraintBottom_toTopOf="@id/minimo"
         app:layout_constraintLeft_toRightOf="@id/fine"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/massimo"
-        app:layout_constraintBottom_toTopOf="@id/minimo"
 
         />
-<TextView
-    android:id="@+id/massimo"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    app:layout_constraintLeft_toRightOf="@id/fine"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    android:layout_marginTop="5dp"
-    android:textSize="14dp"
-    android:textStyle="bold"
-    android:maxLines="1"
-    android:textColor="@color/black"
-    android:text="00000000.000"/>
+
+    <TextView
+        android:id="@+id/massimo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:maxLines="1"
+        android:text="00000000.000"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/fine"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/medio"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text="00000000.000"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/gradiente"
         app:layout_constraintLeft_toRightOf="@id/fine"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/gradiente"
-        app:layout_constraintBottom_toBottomOf="@id/gradiente"
-        android:textSize="14dp"
-        android:maxLines="1"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:text="00000000.000"/>
+        app:layout_constraintTop_toTopOf="@id/gradiente" />
+
     <TextView
         android:id="@+id/minimo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/fine"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/orizzontale"
         android:layout_marginBottom="5dp"
-        android:textSize="14dp"
         android:maxLines="1"
-        android:textStyle="bold"
+        android:text="00000000.000"
         android:textColor="@color/black"
-        android:text="00000000.000"/>
-
-
-
-
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/orizzontale"
+        app:layout_constraintLeft_toRightOf="@id/fine"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
         android:id="@+id/mTitolo"
-        android:layout_marginTop="2dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
         android:text="@string/projectWindow"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintRight_toRightOf="@id/mezzeria"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
         android:id="@+id/seekbar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginHorizontal="20dp"
+        android:max="10"
+        android:min="1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/fine"
-        app:layout_constraintTop_toBottomOf="@id/mTitolo"
+        app:layout_constraintTop_toBottomOf="@id/mTitolo" />
 
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:min="1"
-        android:max="10"
-        />
     <TextView
         android:id="@+id/txtraggio"
-        android:layout_marginTop="2dp"
-        android:layout_marginLeft="20dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="20sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/transparent"
         android:gravity="top|center"
         android:text="100"
         android:textColor="@color/black"
-        android:background="@color/transparent"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/mezzeria"
-      app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-
-    <Button
+    <ImageView
         android:id="@+id/exit"
         android:layout_width="130dp"
         android:layout_height="50dp"
-        android:backgroundTint="@color/bg_sfsblue"
-        android:text="OK"
-        android:textColor="@color/white"
-        android:textSize="22sp"
+        android:src="@drawable/close_web"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-
-       />
-    <Button
-        android:id="@+id/dismiss"
-        android:layout_width="130dp"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/_____cancel_text"
-        android:text="@string/exit"
-        android:textColor="@color/white"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/exit"
-       android:visibility="gone"
-        />
+        app:tint="@color/_____cancel_text" />
 
-<ScrollView
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/orizzontale"
-    app:layout_constraintBottom_toTopOf="@id/exit"
-    app:layout_constraintRight_toRightOf="parent"
-    android:layout_marginHorizontal="1dp"
-    android:background="@color/white">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewLayers"
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/my_layer_row" />
+        android:layout_marginHorizontal="1dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/exit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/orizzontale">
 
-</ScrollView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewLayers"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/my_layer_row" />
+
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -605,6 +605,7 @@ public class ReadProjectService extends Service {
     }
 
     private void copiaFacce() {
+        DataSaved.dxfFacesGL_2D=new ArrayList<>();
         for (Face3D face : DataSaved.dxfFaces) {
             // Copia i 3 o 4 punti della faccia, azzerando la Z
             Point3D p1 = new Point3D(face.getP1().getX(), face.getP1().getY(), 0);
