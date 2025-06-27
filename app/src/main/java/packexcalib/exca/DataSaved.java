@@ -1,7 +1,5 @@
 package packexcalib.exca;
 
-import android.graphics.PointF;
-
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
@@ -14,6 +12,7 @@ import dxf.DxfText;
 import dxf.Face3D;
 import dxf.Layer;
 import dxf.Line;
+import dxf.PNEZDPoint;
 import dxf.Point3D;
 import dxf.Polyline;
 import dxf.Polyline_2D;
@@ -201,27 +200,27 @@ public class DataSaved {
     public static double larghezzaFrame = 2.2;
     public static double lunghezzaFrame = 3.5;
     public static String S_CRS;
-    public static List<Layer> dxfLayers_DTM= new ArrayList<>();
-    public static List<Layer> dxfLayers_POLY= new ArrayList<>();
-    public static List<Layer> dxfLayers_POINT= new ArrayList<>();
+    public static List<Layer> dxfLayers_DTM = new ArrayList<>();
+    public static List<Layer> dxfLayers_POLY = new ArrayList<>();
+    public static List<Layer> dxfLayers_POINT = new ArrayList<>();
     public static List<Face3D> dxfFaces = new ArrayList<>();
     public static List<Face3D> dxfFacesGL_2D = new ArrayList<>();
     public static List<Face3D> filteredFaces = new ArrayList<>();
     public static List<Face3D> filteredFacesGL_2D = new ArrayList<>();
-    public static List<Polyline_2D> polylines_2D= new ArrayList<>();
-    public static List<Polyline> polylines= new ArrayList<>();
-    public static List<Polyline> polylinesGL_2D= new ArrayList<>();
-    public static List<Line> lines_2D= new ArrayList<>();
+    public static List<Polyline_2D> polylines_2D = new ArrayList<>();
+    public static List<Polyline> polylines = new ArrayList<>();
+    public static List<Polyline> polylinesGL_2D = new ArrayList<>();
+    public static List<Line> lines_2D = new ArrayList<>();
     public static Polyline selectedPoly;
     public static Polyline selectedPoly_OFFSET;
-    public static List<Polyline> filteredPolylines= new ArrayList<>();
-    public static List<Polyline> filteredPolylinesGL_2D= new ArrayList<>();
-    public static List<Point3D> points= new ArrayList<>();
-    public static List<Point3D> filteredPoints= new ArrayList<>();
-    public static List<Arc> arcs= new ArrayList<>();
-    public static List<Circle> circles= new ArrayList<>();
-    public static List<DxfText> dxfTexts= new ArrayList<>();
-    public static List<DxfText> filteredDxfTexts= new ArrayList<>();
+    public static List<Polyline> filteredPolylines = new ArrayList<>();
+    public static List<Polyline> filteredPolylinesGL_2D = new ArrayList<>();
+    public static List<Point3D> points = new ArrayList<>();
+    public static List<Point3D> filteredPoints = new ArrayList<>();
+    public static List<Arc> arcs = new ArrayList<>();
+    public static List<Circle> circles = new ArrayList<>();
+    public static List<DxfText> dxfTexts = new ArrayList<>();
+    public static List<DxfText> filteredDxfTexts = new ArrayList<>();
     public static int Colore_Surf;
     public static int Triangoli_Surf;
     public static int Punti_Surf;
@@ -230,7 +229,7 @@ public class DataSaved {
     public static int ShowUtils;
     public static int ShowJson;
     public static double RaggioDXF;
-    public static List<Point3D> stakedPoints= new ArrayList<>();
+    public static List<Point3D> stakedPoints = new ArrayList<>();
     public static int isAutoSnap;
     public static int temaSoftware;
     public static Point3D nearestPoint;
@@ -269,7 +268,7 @@ public class DataSaved {
     public static int showAlign;
 
     ///////////canvas data
-    public static List<CanvasSegment> canvasSegment=new ArrayList<>();
+    public static List<CanvasSegment> canvasSegment = new ArrayList<>();
 
     public static double larghezza_Carro;
     public static double lunghrzza_Carro;
@@ -277,19 +276,23 @@ public class DataSaved {
     public static double lunghezza_Frame;
     public static double larghezza_Braccio;
 
-    public static double []glL_AnchorView;
-    public static float[][]GL_Bucket_Coord=new float[12][3];
+    public static double[] glL_AnchorView;
+    public static float[][] GL_Bucket_Coord = new float[12][3];
 
-    public static Point3DF[] GL_BENNA=new Point3DF[100];
-    public static float[] GL_ATTACCO=new float[100];
-    public static Point3DF[] GL_STICK=new Point3DF[100];
-    public static Point3DF[] GL_BOOM1=new Point3DF[100];
-    public static Point3DF[] GL_BOOM1_2=new Point3DF[100];
-    public static Point3DF[] GL_FRAME_BASE=new Point3DF[100];
-    public static Point3DF[] GL_LAMA=new Point3DF[100];
-    public static Point3DF[] GL_WHEEL=new Point3DF[100];
+    public static Point3DF[] GL_BENNA = new Point3DF[100];
+    public static float[] GL_ATTACCO = new float[100];
+    public static Point3DF[] GL_STICK = new Point3DF[100];
+    public static Point3DF[] GL_BOOM1 = new Point3DF[100];
+    public static Point3DF[] GL_BOOM1_2 = new Point3DF[100];
+    public static Point3DF[] GL_FRAME_BASE = new Point3DF[100];
+    public static Point3DF[] GL_LAMA = new Point3DF[100];
+    public static Point3DF[] GL_WHEEL = new Point3DF[100];
 
 
+    /**
+     * PNEZD
+     */
+    public static List<PNEZDPoint> pnezdPoints = new ArrayList<>();
 
 
 }

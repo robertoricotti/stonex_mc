@@ -48,7 +48,6 @@ import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Ecu_Sensors_Activity;
 import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.boot_and_choose.LaunchScreenActivity;
-import gui.boot_and_choose.Nuova_Choose;
 import gui.buckets.BucketCalib;
 import gui.buckets.BucketCalibTilt;
 import gui.buckets.BucketChooserActivity;
@@ -424,9 +423,7 @@ git push
 
 
     private void updateAll(Activity activity) {
-        if (activity instanceof Nuova_Choose) {
-            ((Nuova_Choose) activity).updateUI();
-        } else if (activity instanceof PickProject) {
+        if (activity instanceof PickProject) {
             ((PickProject) activity).updateUI();
         } else if (activity instanceof Ecu_Sensors_Activity) {
             ((Ecu_Sensors_Activity) activity).updateUI();

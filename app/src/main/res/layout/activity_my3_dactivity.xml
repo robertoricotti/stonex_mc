@@ -302,7 +302,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/custom_background_test3d_box"
-            android:gravity="center|left"
+            android:gravity="center"
             android:orientation="horizontal"
             android:visibility="visible">
 
@@ -319,7 +319,7 @@
                 android:id="@+id/txtDist"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:ems="4"
                 android:background="@color/transparent"
                 android:gravity="center"
                 android:text="_.___ \n_.___"

@@ -88,7 +88,6 @@ public class LaunchScreenActivity extends BaseClass {
         //Log.d("mud", Build.MODEL);
 
         ExcavatorLib.Excavator(new double[100]);
-        //Nuova_Choose.firstLaunch = false;
         ExcavatorMenuActivity.firstLaunch=false;
         Dialog_Trench.leftW_d=0.5f;
         Dialog_Trench.rightW_d=0.5f;

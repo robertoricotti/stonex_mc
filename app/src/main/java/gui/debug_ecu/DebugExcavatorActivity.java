@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -27,7 +26,6 @@ import android.widget.TextView;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
-import gui.boot_and_choose.Nuova_Choose;
 import gui.dialogs_and_toast.CustomToast;
 import gui.digging_excavator.Digging1D;
 import gui.digging_excavator.Digging2D;

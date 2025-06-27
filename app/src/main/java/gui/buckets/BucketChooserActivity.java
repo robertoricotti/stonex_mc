@@ -17,7 +17,6 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.boot_and_choose.ExcavatorMenuActivity;
-import gui.boot_and_choose.Nuova_Choose;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_user_settings.DialogUnitOfMeasure;
 import gui.digging_excavator.Digging1D;

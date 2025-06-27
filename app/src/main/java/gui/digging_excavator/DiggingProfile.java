@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 import gui.BaseClass;
 import gui.boot_and_choose.ExcavatorMenuActivity;
-import gui.boot_and_choose.Nuova_Choose;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset;
 import gui.draw_class.DrawProfile;

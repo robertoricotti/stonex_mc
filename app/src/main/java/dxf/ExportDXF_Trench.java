@@ -71,7 +71,7 @@ public class ExportDXF_Trench {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + "/" + filename))) {
             DXFWriteMethods.testa(writer, 3);
-            DXFWriteMethods.writeLayer(writer, trenchLayer.getLayerName(), 2);
+            DXFWriteMethods.writeLayer(writer, trenchLayer.getLayerName(), 1);
             DXFWriteMethods.writeLayer(writer, polylineLayer.getLayerName(), 6);
             DXFWriteMethods.writeLayer(writer, "LAYER_POINTS", 4);
             DXFWriteMethods.endLayers(writer);

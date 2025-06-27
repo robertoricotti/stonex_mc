@@ -9,7 +9,6 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.boot_and_choose.ExcavatorMenuActivity;
-import gui.boot_and_choose.Nuova_Choose;
 
 public class Hydro_Lobby extends BaseClass {
     ImageView back;

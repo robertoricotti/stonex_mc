@@ -2,7 +2,6 @@ package gui.digging_excavator;
 
 
 import static gui.MyApp.hAlarm;
-import static gui.MyApp.isApollo;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -22,7 +21,6 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.boot_and_choose.ExcavatorMenuActivity;
-import gui.boot_and_choose.Nuova_Choose;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset;
 import gui.dialogs_and_toast.DialogSlope;

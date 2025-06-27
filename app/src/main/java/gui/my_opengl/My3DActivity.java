@@ -524,13 +524,25 @@ public class My3DActivity extends BaseClass {
                     DataSaved.bucketEdge = -1;
                 switch (DataSaved.bucketEdge) {
                     case 1:
-                        bucketEdge.setImageResource(R.drawable.benna_misura_destra);
+                        if(DataSaved.isWL==0) {
+                            bucketEdge.setImageResource(R.drawable.benna_misura_destra);
+                        }else {
+                            bucketEdge.setImageResource(R.drawable.lama_misura_destra);
+                        }
                         break;
                     case 0:
-                        bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
+                        if(DataSaved.isWL==0) {
+                            bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
+                        }else {
+                            bucketEdge.setImageResource(R.drawable.lama_misura_cnt);
+                        }
                         break;
                     case -1:
-                        bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
+                        if(DataSaved.isWL==0) {
+                            bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
+                        }else {
+                            bucketEdge.setImageResource(R.drawable.lama_misura_sinistra);
+                        }
                         break;
                 }
             }
@@ -669,13 +681,25 @@ public class My3DActivity extends BaseClass {
             btn_show.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
             switch (DataSaved.bucketEdge) {
                 case 1:
-                    bucketEdge.setImageResource(R.drawable.benna_misura_destra);
+                    if(DataSaved.isWL==0) {
+                        bucketEdge.setImageResource(R.drawable.benna_misura_destra);
+                    }else {
+                        bucketEdge.setImageResource(R.drawable.lama_misura_destra);
+                    }
                     break;
                 case 0:
-                    bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
+                    if(DataSaved.isWL==0) {
+                        bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
+                    }else {
+                        bucketEdge.setImageResource(R.drawable.lama_misura_cnt);
+                    }
                     break;
                 case -1:
-                    bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
+                    if(DataSaved.isWL==0) {
+                        bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
+                    }else {
+                        bucketEdge.setImageResource(R.drawable.lama_misura_sinistra);
+                    }
                     break;
             }
             if (DataSaved.isLowerEdge) {
@@ -765,6 +789,8 @@ public class My3DActivity extends BaseClass {
     }
 
     private void setupBoxes() {
+        view1.setBackgroundColor(MyColorClass.colorConstraint);
+        view2.setBackgroundColor(MyColorClass.colorConstraint);
         if (glVista3d) {
             freccia.setVisibility(View.INVISIBLE);
         } else {
@@ -783,8 +809,17 @@ public class My3DActivity extends BaseClass {
         }
         if (!isCutFill) {
             boxLeft.setVisibility(View.VISIBLE);
-            boxCent.setVisibility(View.VISIBLE);
+            if(DataSaved.isAutoSnap>0) {
+                frameCent.setVisibility(View.VISIBLE);
+                boxCent.setVisibility(View.GONE);
+            }else {
+                frameCent.setVisibility(View.GONE);
+                boxCent.setVisibility(View.VISIBLE);
+
+            }
             boxRight.setVisibility(View.VISIBLE);
+            txtCutFill.setVisibility(View.GONE);
+            inizioValue = 0.0f;
             if (DataSaved.colorMode == 0) {
                 colorUp = R.drawable.custom_background_test3d_rosso;
                 colorDown = R.drawable.custom_background_test3d_box_blu;
@@ -795,107 +830,115 @@ public class My3DActivity extends BaseClass {
                 colorGreen = R.drawable.custom_background_test3d_verde;
             }
         } else {
+            txtCutFill.setVisibility(View.VISIBLE);
             if((MyData.get_Int("digStartUp") == 1)) {
                 boxLeft.setVisibility(View.VISIBLE);
-                boxCent.setVisibility(View.VISIBLE);
                 boxRight.setVisibility(View.VISIBLE);
+                if(DataSaved.isAutoSnap>0) {
+                    frameCent.setVisibility(View.VISIBLE);
+                    boxCent.setVisibility(View.GONE);
+                }else {
+                    frameCent.setVisibility(View.GONE);
+                    boxCent.setVisibility(View.VISIBLE);
+
+                }
                 colorUp = R.drawable.custom_background_test3d_box;
                 colorDown = R.drawable.custom_background_test3d_box;
                 colorGreen = R.drawable.custom_background_test3d_box;
             }else {
                 boxLeft.setVisibility(View.GONE);
-                Log.d("autr",DataSaved.isAutoSnap+"");
-                if(DataSaved.isAutoSnap>0) {
-                    boxCent.setVisibility(View.VISIBLE);
-                }else {
-                    boxCent.setVisibility(View.GONE);
-                }
                 boxRight.setVisibility(View.GONE);
+                boxCent.setVisibility(View.GONE);
+                if(DataSaved.isAutoSnap>0) {
+                    frameCent.setVisibility(View.VISIBLE);
+                }else {
+                    frameCent.setVisibility(View.GONE);
+
+                }
+
             }
+            {
+
+                if (DataSaved.typeView != 1) {
+                    inizioValue = 0.42f;
+                } else {
+                    inizioValue = 0.32f;
+                }
+                switch (DataSaved.bucketEdge) {
+                    case -1:
+                        if (TriangleService.ltOffGrid) {
+                            txtCutFill.setText("-.---");
+                            txtCutFill.setTextColor(Color.WHITE);
+                            txtCutFill.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
+                        } else {
+                            if (TriangleService.quota3D_SX > DataSaved.deadbandH) {
+                                txtCutFill.setBackground(getResources().getDrawable(colorUpCF));
+                                txtCutFill.setTextColor(Color.WHITE);
+                                txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
+                            } else if (TriangleService.quota3D_SX < -DataSaved.deadbandH) {
+                                txtCutFill.setTextColor(Color.WHITE);
+                                txtCutFill.setBackground(getResources().getDrawable(colorDownCF));
+                                txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
+                            } else if (TriangleService.quota3D_SX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
+                                txtCutFill.setTextColor(Color.DKGRAY);
+
+                                txtCutFill.setBackground(getDrawable(colorGreenCF));
+                                txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
+                            }
+                        }
+                        break;
+
+                    case 0:
+                        if (TriangleService.ctOffGrid) {
+                            txtCutFill.setText("-.---");
+                            txtCutFill.setTextColor(Color.WHITE);
+                            txtCutFill.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
+                        } else {
+                            if (TriangleService.quota3D_CT > DataSaved.deadbandH) {
+                                txtCutFill.setTextColor(Color.WHITE);
+                                txtCutFill.setBackground(getResources().getDrawable(colorUpCF));
+                                txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                            } else if (TriangleService.quota3D_CT < -DataSaved.deadbandH) {
+                                txtCutFill.setTextColor(Color.WHITE);
+                                txtCutFill.setBackground(getResources().getDrawable(colorDownCF));
+                                txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                            } else if (TriangleService.quota3D_CT >= -DataSaved.deadbandH && TriangleService.quota3D_CT <= DataSaved.deadbandH) {
+                                txtCutFill.setTextColor(Color.DKGRAY);
+                                txtCutFill.setBackground(getDrawable(colorGreenCF));
+                                txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                            }
+                        }
+                        break;
+
+                    case 1:
+                        if (TriangleService.rtOffGrid) {
+                            txtCutFill.setText("-.---");
+                            txtCutFill.setTextColor(Color.WHITE);
+                            txtCutFill.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
+                        } else {
+                            if (TriangleService.quota3D_DX > DataSaved.deadbandH) {
+                                txtCutFill.setTextColor(Color.WHITE);
+                                txtCutFill.setBackground(getResources().getDrawable(colorUpCF));
+                                txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                            } else if (TriangleService.quota3D_DX < -DataSaved.deadbandH) {
+                                txtCutFill.setTextColor(Color.WHITE);
+                                txtCutFill.setBackground(getResources().getDrawable(colorDownCF));
+                                txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                            } else if (TriangleService.quota3D_DX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
+                                txtCutFill.setTextColor(Color.DKGRAY);
+                                txtCutFill.setBackground(getDrawable(colorGreenCF));
+                                txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                            }
+                        }
+                        break;
+                }
+
+            }
+
 
         }
-        view1.setBackgroundColor(MyColorClass.colorConstraint);
-        view2.setBackgroundColor(MyColorClass.colorConstraint);
-        if (isCutFill) {
-            txtCutFill.setVisibility(View.VISIBLE);
-            if (DataSaved.typeView != 1) {
-                inizioValue = 0.42f;
-            } else {
-                inizioValue = 0.32f;
-            }
-            switch (DataSaved.bucketEdge) {
-                case -1:
-                    if (TriangleService.ltOffGrid) {
-                        txtCutFill.setText("-.---");
-                        txtCutFill.setTextColor(Color.WHITE);
-                        txtCutFill.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
-                    } else {
-                        if (TriangleService.quota3D_SX > DataSaved.deadbandH) {
-                            txtCutFill.setBackground(getResources().getDrawable(colorUpCF));
-                            txtCutFill.setTextColor(Color.WHITE);
-                            txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
-                        } else if (TriangleService.quota3D_SX < -DataSaved.deadbandH) {
-                            txtCutFill.setTextColor(Color.WHITE);
-                            txtCutFill.setBackground(getResources().getDrawable(colorDownCF));
-                            txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
-                        } else if (TriangleService.quota3D_SX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
-                            txtCutFill.setTextColor(Color.DKGRAY);
 
-                            txtCutFill.setBackground(getDrawable(colorGreenCF));
-                            txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
-                        }
-                    }
-                    break;
 
-                case 0:
-                    if (TriangleService.ctOffGrid) {
-                        txtCutFill.setText("-.---");
-                        txtCutFill.setTextColor(Color.WHITE);
-                        txtCutFill.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
-                    } else {
-                        if (TriangleService.quota3D_CT > DataSaved.deadbandH) {
-                            txtCutFill.setTextColor(Color.WHITE);
-                            txtCutFill.setBackground(getResources().getDrawable(colorUpCF));
-                            txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
-                        } else if (TriangleService.quota3D_CT < -DataSaved.deadbandH) {
-                            txtCutFill.setTextColor(Color.WHITE);
-                            txtCutFill.setBackground(getResources().getDrawable(colorDownCF));
-                            txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
-                        } else if (TriangleService.quota3D_CT >= -DataSaved.deadbandH && TriangleService.quota3D_CT <= DataSaved.deadbandH) {
-                            txtCutFill.setTextColor(Color.DKGRAY);
-                            txtCutFill.setBackground(getDrawable(colorGreenCF));
-                            txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
-                        }
-                    }
-                    break;
-
-                case 1:
-                    if (TriangleService.rtOffGrid) {
-                        txtCutFill.setText("-.---");
-                        txtCutFill.setTextColor(Color.WHITE);
-                        txtCutFill.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
-                    } else {
-                        if (TriangleService.quota3D_DX > DataSaved.deadbandH) {
-                            txtCutFill.setTextColor(Color.WHITE);
-                            txtCutFill.setBackground(getResources().getDrawable(colorUpCF));
-                            txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
-                        } else if (TriangleService.quota3D_DX < -DataSaved.deadbandH) {
-                            txtCutFill.setTextColor(Color.WHITE);
-                            txtCutFill.setBackground(getResources().getDrawable(colorDownCF));
-                            txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
-                        } else if (TriangleService.quota3D_DX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
-                            txtCutFill.setTextColor(Color.DKGRAY);
-                            txtCutFill.setBackground(getDrawable(colorGreenCF));
-                            txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
-                        }
-                    }
-                    break;
-            }
-
-        } else {
-            txtCutFill.setVisibility(View.GONE);
-            inizioValue = 0.0f;
-        }
 
         switch (DataSaved.typeView) {
 
@@ -1002,7 +1045,7 @@ public class My3DActivity extends BaseClass {
         }
         ///
         if (DataSaved.isAutoSnap == 0) {
-            frameCent.setVisibility(View.GONE);
+
 
             if (TriangleService.ctOffGrid) {
                 boxCent.setText("-.---");
@@ -1030,8 +1073,6 @@ public class My3DActivity extends BaseClass {
 
         } else {
 
-            frameCent.setVisibility(View.VISIBLE);
-            boxCent.setVisibility(View.GONE);
             String offsetS = "";
             double rot;
             double rotFix = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));

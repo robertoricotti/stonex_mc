@@ -29,7 +29,6 @@ import com.example.stx_dig.R;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.ExcavatorMenuActivity;
-import gui.boot_and_choose.Nuova_Choose;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset_3D;
 import gui.dialogs_and_toast.Dialog_Edit_Coordinate_Demo;

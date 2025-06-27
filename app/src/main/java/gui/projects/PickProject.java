@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 import gui.BaseClass;
 import gui.boot_and_choose.ExcavatorMenuActivity;
-import gui.boot_and_choose.Nuova_Choose;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
 import packexcalib.exca.DataSaved;

@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
-import gui.boot_and_choose.Nuova_Choose;
 import gui.buckets.BucketChooserActivity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.DebugExcavatorActivity;
