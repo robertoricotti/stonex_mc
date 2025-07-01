@@ -1,0 +1,7 @@
+[
+{
+  "directory": "C:/Developement/mc_bitbucket/app/.cxx/RelWithDebInfo/6dk4j3bh/arm64-v8a",
+  "command": "C:\\Users\\rricotti\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=aarch64-none-linux-android26 --sysroot=C:/Users/rricotti/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dnative_lib_EXPORTS -IC:/Developement/mc_bitbucket/app/src/main/cpp/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O2 -g -DNDEBUG -fPIC -std=gnu++14 -o CMakeFiles\\native-lib.dir\\native-lib.cpp.o -c C:\\Developement\\mc_bitbucket\\app\\src\\main\\cpp\\native-lib.cpp",
+  "file": "C:\\Developement\\mc_bitbucket\\app\\src\\main\\cpp\\native-lib.cpp"
+}
+]

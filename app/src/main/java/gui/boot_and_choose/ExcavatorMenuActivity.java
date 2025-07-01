@@ -4,6 +4,8 @@ package gui.boot_and_choose;
 import static gui.MyApp.KEY_LEVEL;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static services.ReadProjectService.numbers;
+import static services.UpdateValuesService.firstLaunch;
+import static services.UpdateValuesService.startedService;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -62,9 +64,9 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
     Dialog_SSID dialogSsid;
     boolean hasAuto = false;
 
-    public static boolean startedService;
+
     int indexMachineSelected;
-    public static boolean firstLaunch;
+
 
     DialogPassword dialogPassword;
 
@@ -100,7 +102,7 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
             MyDeviceManager.WiFiEnable(this, 1);
         }
 
-        DataSaved.xyz = 1;
+
         if (KEY_LEVEL == 11 || KEY_LEVEL == 33 || KEY_LEVEL == 34 || KEY_LEVEL == 35 || KEY_LEVEL == 36) {
             hasAuto = true;
         } else {

@@ -33,7 +33,8 @@ import androidx.constraintlayout.widget.Guideline;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
-import gui.boot_and_choose.ExcavatorMenuActivity;
+
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset_3D;
@@ -435,7 +436,7 @@ public class My3DActivity extends BaseClass {
             } catch (Exception e) {
                 Log.e("testGL", Log.getStackTraceString(e));
             }
-            startActivity(new Intent(this, ExcavatorMenuActivity.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
         });
         gl_facce.setOnClickListener(view -> {

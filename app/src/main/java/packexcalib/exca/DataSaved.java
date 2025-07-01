@@ -238,7 +238,7 @@ public class DataSaved {
 
     public static int lockUnlock;
     public static int typeView;
-    public static int xyz;
+
     public static double offsetYaw;
     public static boolean isLowerEdge;//detect the lowest bucket edge
     public static int useYawFrame;

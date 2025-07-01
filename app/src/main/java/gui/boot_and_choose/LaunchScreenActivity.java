@@ -72,6 +72,7 @@ public class LaunchScreenActivity extends BaseClass {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen_dig);
         FullscreenActivity.setFullScreen(this);
+        MyDeviceManager.setSize(this);
 
         images = new int[]{R.drawable.img_step_1, R.drawable.img_step_2, R.drawable.img_step_3};
 
@@ -88,7 +89,7 @@ public class LaunchScreenActivity extends BaseClass {
         //Log.d("mud", Build.MODEL);
 
         ExcavatorLib.Excavator(new double[100]);
-        ExcavatorMenuActivity.firstLaunch=false;
+        UpdateValuesService.firstLaunch=false;
         Dialog_Trench.leftW_d=0.5f;
         Dialog_Trench.rightW_d=0.5f;
         LayerAdapter.selectA=true;
@@ -264,10 +265,7 @@ public class LaunchScreenActivity extends BaseClass {
         if (!directory.exists()) {
             directory.mkdir();
         }
-        directory = new File(path + "/As-Built");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
+
         directory = new File(path + "/GNSS FirmWare");
         if (!directory.exists()) {
             directory.mkdir();
@@ -353,6 +351,14 @@ public class LaunchScreenActivity extends BaseClass {
         if (!directory.exists()) {
             directory.mkdir();
         }
+        try {
+            File f=new File(path+ "/As-Built");
+            if(f.exists()){
+                f.delete();
+            }
+        } catch (Exception e) {
+            //do nothing
+        }
         scriviLic(MyApp.LICENSE_KEY);
     }
 
@@ -404,7 +410,7 @@ public class LaunchScreenActivity extends BaseClass {
             case 35:
             case 36:
                 Intent intent;
-                intent = new Intent(this, ExcavatorMenuActivity.class);
+                intent = new Intent(this, Activity_Home_Page.class);
                 startActivity(intent);
                 finish();
                 break;

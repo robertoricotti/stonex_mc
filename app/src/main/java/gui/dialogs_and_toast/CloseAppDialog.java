@@ -1,7 +1,7 @@
 package gui.dialogs_and_toast;
 
 import static gui.MyApp.isApollo;
-import static gui.boot_and_choose.ExcavatorMenuActivity.startedService;
+import static services.UpdateValuesService.startedService;
 
 import android.app.Activity;
 import android.app.Dialog;

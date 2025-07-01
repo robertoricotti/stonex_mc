@@ -900,7 +900,7 @@ BucketChooserActivity extends BaseClass {
             }
         });
 
-        bucket7.setOnClickListener((View v) -> {
+        bucket17.setOnClickListener((View v) -> {
             if(unitOfMeasure==4||unitOfMeasure==5){
                 if(!dialogUnitOfMeasure.alertDialog.isShowing()){
                     dialogUnitOfMeasure.show();

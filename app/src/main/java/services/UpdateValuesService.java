@@ -1,6 +1,5 @@
 package services;
 
-import static gui.boot_and_choose.ExcavatorMenuActivity.startedService;
 
 import android.app.Service;
 import android.content.Context;
@@ -34,10 +33,10 @@ public class UpdateValuesService extends Service {
     public static CoordinateTransform wgsToUtm, utmToWgs;
     public static ProjCoordinate result, resultWgs;
     long startTime, stopTime;
-
+    public static boolean startedService;
     public static boolean isUpodating;
 
-
+    public static boolean firstLaunch;
     private Executor mExecutor;
     private static final int THREAD_POOL_SIZE = 1;
 
@@ -1469,11 +1468,11 @@ public class UpdateValuesService extends Service {
                 }
 
                 DataSaved.S_CRS = MyData.get_String("crs");
-                try {
+               /* try {
                     DataSaved.xyz = MyData.get_Int("xyz");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di xyz: " + e.getMessage());
-                }
+                }*/
 
                 try {
                     DataSaved.Colore_Surf = MyData.get_Int("Colore_Surf");

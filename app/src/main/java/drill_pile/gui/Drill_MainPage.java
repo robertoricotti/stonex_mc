@@ -1,9 +1,10 @@
 package drill_pile.gui;
 
 
-import static gui.boot_and_choose.ExcavatorMenuActivity.firstLaunch;
-import static gui.boot_and_choose.ExcavatorMenuActivity.startedService;
+
 import static gui.dialogs_and_toast.DialogPassword.isTech;
+import static services.UpdateValuesService.firstLaunch;
+import static services.UpdateValuesService.startedService;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -78,7 +79,7 @@ public class Drill_MainPage extends BaseClass {
             MyDeviceManager.WiFiEnable(this, 1);
         }
 
-        DataSaved.xyz = 1;
+
     }
 
     private void disableAll() {

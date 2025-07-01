@@ -1,0 +1,29 @@
+{
+  "buildFiles": [
+    "C:\\Developement\\mc_bitbucket\\app\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\rricotti\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Developement\\mc_bitbucket\\app\\.cxx\\RelWithDebInfo\\6dk4j3bh\\armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\rricotti\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Developement\\mc_bitbucket\\app\\.cxx\\RelWithDebInfo\\6dk4j3bh\\armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "native-lib::@6890427a1f51a3e7e1df": {
+      "artifactName": "native-lib",
+      "abi": "armeabi-v7a",
+      "output": "C:\\Developement\\mc_bitbucket\\app\\build\\intermediates\\cxx\\RelWithDebInfo\\6dk4j3bh\\obj\\armeabi-v7a\\libnative-lib.so",
+      "runtimeFiles": [
+        "C:\\Developement\\mc_bitbucket\\app\\src\\main\\cpp\\src\\main\\jniLibs\\armeabi-v7a\\libproj.so"
+      ]
+    }
+  }
+}

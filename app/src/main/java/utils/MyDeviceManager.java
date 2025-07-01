@@ -105,6 +105,25 @@ public class MyDeviceManager {
         }
         return s;
     }
+    public static void setSize(Activity activity){
+        String s="";
+        String s2="";
+        if(Build.BRAND.equals("APOLLO2_10")){
+            s="wm density 204";
+            s2="settings put system font_scale 0.85";
+            Apollo2 apollo2 = Apollo2.getInstance(activity);
+            apollo2.exec(s);
+            apollo2.exec(s2);
+
+        }else if(Build.BRAND.equals("SRT8PROS")){
+            s="wm density 200";
+            s2="settings put system font_scale 1";
+            VanCmd.exec(s, 0);
+            VanCmd.exec(s2, 0);
+        }
+
+    }
+
 
     public static void OUT1(Activity activity, int out) {
 

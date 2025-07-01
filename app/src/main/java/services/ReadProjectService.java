@@ -220,7 +220,7 @@ public class ReadProjectService extends Service {
                                             case "XML":
                                                 parserStatus = "Reading Polylines...";
 
-                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, DataSaved.xyz, isFeet);
+                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, isFeet);
 
                                                 DataSaved.polylines = landXMLPOLY.getPolylines();
                                                 DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
@@ -254,7 +254,7 @@ public class ReadProjectService extends Service {
                                             case "xml":
                                             case "XML":
                                                 parserStatus = "Reading Points...";
-                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, DataSaved.xyz, isFeet);
+                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, isFeet);
 
                                                 DataSaved.points = landXMLPOINT.getPoints();
                                                 DataSaved.dxfTexts = landXMLPOINT.getTexts();
@@ -319,9 +319,9 @@ public class ReadProjectService extends Service {
                                     DataSaved.dxfFaces = new ArrayList<>();
 
 
-                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, DataSaved.xyz, isFeet);
+                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, isFeet);
 
-                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, DataSaved.xyz, isFeet);
+                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, isFeet);
 
 
                                     DataSaved.dxfFaces = landXMLData.getFaces();
@@ -358,7 +358,7 @@ public class ReadProjectService extends Service {
                                                 parserStatus = "Reading Polylines...";
 
                                                 Log.d("CACHE", "Cache non trovata, parsifico: " + DataSaved.progettoSelected_POLY);
-                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, DataSaved.xyz, isFeet);
+                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, isFeet);
 
                                                 DataSaved.polylines = landXMLPOLY.getPolylines();
                                                 DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
@@ -394,7 +394,7 @@ public class ReadProjectService extends Service {
                                                 parserStatus = "Reading Points...";
 
 
-                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, DataSaved.xyz, isFeet);
+                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, isFeet);
 
                                                 DataSaved.points = landXMLPOINT.getPoints();
                                                 DataSaved.dxfTexts = landXMLPOINT.getTexts();

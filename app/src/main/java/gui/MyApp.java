@@ -46,6 +46,7 @@ import java.util.concurrent.TimeUnit;
 
 import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Ecu_Sensors_Activity;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.boot_and_choose.LaunchScreenActivity;
 import gui.buckets.BucketCalib;
@@ -138,9 +139,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         registerActivityLifecycleCallbacks(this);
         if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
 
-
-            if (!Build.BRAND.equals("APOLLO2_7") && !Build.BRAND.equals("APOLLO2_12_PRO") && !Build.BRAND.equals("APOLLO2_12_PLUS") && !Build.BRAND.equals("APOLLO2_10")) {
-            }
             isApollo = true;
             //folderPath = "/Stx_Dig";
             folderPath = "/StonexMachineControl";
@@ -182,6 +180,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         String nlgeo =copyGeoidFromAssets(this,"nlgeo2018.ugf","nlgeo2018.ugf");
         String belg=copyGeoidFromAssets(this,"belgium_hbg18.ugf","belgium_hbg18.ugf");
         String deu =copyGeoidFromAssets(this,"DEUTSCH_GEOID.GGF","DEUTSCH_GEOID.GGF");
+        String riga =copyGeoidFromAssets(this,"RIGA20.UGF","RIGA20.UGF");
 
         String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
 
@@ -189,19 +188,20 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
         // Crea un nuovo array con spazio per i 3 elementi aggiuntivi
         int originalLength = geoidAll != null ? geoidAll.length : 0;
-        String[] newGeoidAll = new String[originalLength + 3];
+        String[] newGeoidAll = new String[originalLength + 4];
 
-// Se l'array originale non è nullo, copialo
+        // Se l'array originale non è nullo, copialo
         if (geoidAll != null) {
             System.arraycopy(geoidAll, 0, newGeoidAll, 0, originalLength);
         }
 
-// Aggiungi le 3 nuove stringhe
+        // Aggiungi le 3 nuove stringhe
         newGeoidAll[originalLength] = nlgeo;
         newGeoidAll[originalLength + 1] = belg;
         newGeoidAll[originalLength + 2] = deu;
+        newGeoidAll[originalLength + 3] = riga;
 
-// Sovrascrivi l'array originale
+        // Sovrascrivi l'array originale
         geoidAll = newGeoidAll;
 
         Log.d("GEOIDALL", Arrays.toString(geoidAll));
@@ -275,8 +275,8 @@ git push
         try {
             LanguageSetter.setLocale(activity, MyData.get_String("language"));
             FullscreenActivity.setFullScreen(activity);
-        } catch (Exception e) {
-            //Toast.makeText(activity,"Failed to set Language",Toast.LENGTH_LONG).show();
+        } catch (Exception ignored) {
+
         }
 
 
@@ -506,6 +506,9 @@ git push
 
         } else if (activity instanceof ExcavatorMenuActivity) {
             ((ExcavatorMenuActivity) activity).updateUI();
+
+        }else if (activity instanceof Activity_Home_Page) {
+            ((Activity_Home_Page) activity).updateUI();
 
         }
 
