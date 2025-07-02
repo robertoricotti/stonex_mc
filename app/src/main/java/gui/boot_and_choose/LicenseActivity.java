@@ -284,7 +284,7 @@ public class LicenseActivity extends BaseClass {
                         case 35:
                         case 36:
                             Intent intent;
-                            intent = new Intent(this, ExcavatorMenuActivity.class);
+                            intent = new Intent(this, Activity_Home_Page.class);
                             startActivity(intent);
                             overridePendingTransition(0,0);
                             finish();
@@ -320,7 +320,7 @@ public class LicenseActivity extends BaseClass {
                 case 35:
                 case 36:
                     Intent intent;
-                    intent = new Intent(this, ExcavatorMenuActivity.class);
+                    intent = new Intent(this, Activity_Home_Page.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     finish();

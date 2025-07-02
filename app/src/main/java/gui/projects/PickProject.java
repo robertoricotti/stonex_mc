@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,7 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import gui.BaseClass;
-import gui.boot_and_choose.ExcavatorMenuActivity;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
 import packexcalib.exca.DataSaved;
@@ -31,13 +32,14 @@ import utils.MyData;
 public class PickProject extends BaseClass {
     CustomQwertyDialog customQwertyDialog;
     Dialog_PRJ_Folder dialogPrjFolder;
-    String path=Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";;
+    String path = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
+    ;
     RecyclerView recyclerView;
     ImageView back, confirm, rename;
     String fileName = "";
     ProjectFileAdapter projectAdapter;
     ArrayList<ProjectFileAdapter.FileItem> arrayFiles;
-
+    TextView titolone;
     ImageView deletaFile;
 
     @Override
@@ -56,7 +58,8 @@ public class PickProject extends BaseClass {
         confirm = findViewById(R.id.confirm);
         deletaFile = findViewById(R.id.deleteFile);
         rename = findViewById(R.id.imgCopy);
-        customQwertyDialog=new CustomQwertyDialog(this);
+        titolone=findViewById(R.id.titolone);
+        customQwertyDialog = new CustomQwertyDialog(this);
 
     }
 
@@ -70,7 +73,7 @@ public class PickProject extends BaseClass {
         for (File file : files) {
             boolean isFolder = file.isDirectory();
             long size = file.isDirectory() ? getFolderSize(file) : file.length();
-            arrayFiles.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size));
+            arrayFiles.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size, file.getAbsolutePath()));
         }
         projectAdapter = new ProjectFileAdapter(arrayFiles);
         recyclerView.setAdapter(projectAdapter);
@@ -80,13 +83,23 @@ public class PickProject extends BaseClass {
 
 
     }
-    public void updateUI(){
+
+    public void updateUI() {
         try {
-            if(projectAdapter.getSelectedItem()>-1){
+            String s = MyData.get_String("progettoSelected");
+            s = s.replace("/storage/emulated/0/StonexMachineControl", "");
+            s = s.substring(0, s.lastIndexOf("/"));
+            titolone.setText(s);
+        } catch (Exception e) {
+            titolone.setText("SELECT A PROJECT");
+        }
+        try {
+
+            if (projectAdapter.getSelectedItem() > -1) {
                 deletaFile.setVisibility(View.VISIBLE);
                 rename.setVisibility(View.VISIBLE);
                 confirm.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 deletaFile.setVisibility(View.INVISIBLE);
                 rename.setVisibility(View.INVISIBLE);
                 confirm.setVisibility(View.INVISIBLE);
@@ -107,8 +120,8 @@ public class PickProject extends BaseClass {
         rename.setOnClickListener(view -> {
             if (projectAdapter != null) {
                 if (projectAdapter.getSelectedItem() > -1) {
-                    if(!customQwertyDialog.dialog.isShowing()){
-                        customQwertyDialog.show(999,projectAdapter,path,projectAdapter.getSelectedFilePath());
+                    if (!customQwertyDialog.dialog.isShowing()) {
+                        customQwertyDialog.show(999, projectAdapter, path, projectAdapter.getSelectedFilePath());
                     }
                 }
             }
@@ -116,7 +129,7 @@ public class PickProject extends BaseClass {
         back.setOnClickListener((View v) -> {
 
             disableAll();
-            startActivity(new Intent(this, Projects.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
             overridePendingTransition(0, 0);
             finish();
         });
@@ -174,7 +187,7 @@ public class PickProject extends BaseClass {
                         MyData.push("progettoSelected", fileName);
 
                         startService(new Intent(this, UpdateValuesService.class));
-                        startActivity(new Intent(this, ExcavatorMenuActivity.class));
+                        startActivity(new Intent(this, Activity_Home_Page.class));
 
                         overridePendingTransition(0, 0);
                         finish();
@@ -195,7 +208,7 @@ public class PickProject extends BaseClass {
 
                     // Crea un nuovo AlertDialog.Builder
                     AlertDialog.Builder builder = new AlertDialog.Builder(PickProject.this);
-                    builder.setTitle(" "+getResources().getString(R.string.delete_file));
+                    builder.setTitle(" " + getResources().getString(R.string.delete_file));
                     builder.setIcon(getResources().getDrawable(R.drawable.delete));
 
 
@@ -221,7 +234,7 @@ public class PickProject extends BaseClass {
                         arrayFiles.remove(selectedItem);
                         projectAdapter.notifyItemRemoved(selectedItem);
                         projectAdapter.notifyItemRangeChanged(selectedItem, arrayFiles.size());
-                        new CustomToast(PickProject.this, fileName + " "+getResources().getString(R.string.deleted)).show();
+                        new CustomToast(PickProject.this, fileName + " " + getResources().getString(R.string.deleted)).show();
                         recreate();
 
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/custom_background_transp">
+    android:background="@drawable/sfondo_bottone_trasp">
 
     <ImageView
         android:id="@+id/crsimg"
@@ -82,7 +82,7 @@
         android:layout_height="0dp"
         android:background="@drawable/custom_background_light"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/_btnclose"
+        app:layout_constraintBottom_toTopOf="@id/_btnSavex"
         app:layout_constraintTop_toBottomOf="@id/titleG">
 
         <LinearLayout
@@ -440,17 +440,7 @@
     </LinearLayout>
 
 
-    <ImageView
-        android:id="@+id/_btnclose"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:rotationY="180"
-        android:src="@drawable/btn_close_web"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
 
-        app:tint="@color/_____cancel_text"
-        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/_btnSavex"
@@ -459,7 +449,7 @@
         android:padding="2dp"
         android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/_btnclose"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/_editZ"
         app:tint="@color/_____cancel_text"
          />

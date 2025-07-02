@@ -7,8 +7,10 @@ import static utils.CanFileTransfer.sendFileViaSerial;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,9 +36,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.stx_dig.R;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +59,7 @@ import utils.MyDeviceManager;
 import utils.MyEpsgNumber;
 
 public class Diaalog_Set_SP {
+    String mPath;
     List<ProjectFileAdapter.FileItem> arraySPOriginale = new ArrayList<>();
    TextView geoidStatus;
     CustomQwertyDialog customQwertyDialog;
@@ -93,6 +99,33 @@ public class Diaalog_Set_SP {
         dialog.setContentView(R.layout.dialog_sp_folders);
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
+        }
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.CENTER;
+        dialog.show();
+        FullscreenActivity.setFullScreen(dialog);
+        customQwertyDialog = new CustomQwertyDialog(activity);
+        findView();
+        init();
+        onClick();
+        startUpdating();
+
+    }
+    public void show(String mPath) {
+        this.mPath=mPath;
+        if (MyData.get_String("usaGeoide") == null) {
+            MyData.push("usaGeoide", String.valueOf(false));
+        }
+
+        dialog.create();
+        dialog.setContentView(R.layout.dialog_sp_folders);
+        dialog.setCancelable(false);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
+        }
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();
@@ -203,9 +236,11 @@ public class Diaalog_Set_SP {
         });
         usaSP.setOnClickListener(view -> {
 
+
             if (spAdapter.getSelectedItem() == -1) {
                 new CustomToast(activity, "SELECT A SP FILE TO USE").show();
             } else {
+
 
                 // Supponiamo che "selectedFileName" sia il nome del file selezionato ottenuto dallo spinner
                 String selectedFileName = arraySP.get(spAdapter.getSelectedItem()).getName();
@@ -223,11 +258,23 @@ public class Diaalog_Set_SP {
                                 //UTM autozone
                                 MyData.push("crs", "UTM");
                                 DataSaved.S_CRS = MyData.get_String("crs");
+                                try {
+                                    Log.w("testSP",selectedFolder+"/"+selectedFileName);
+                                    copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
+                                } catch (Exception e) {
+                                    Log.e("testSP",Log.getStackTraceString(e));
+                                }
                                 activity.recreate();
                                 dialog.dismiss();
                             }else {
                                 MyData.push("crs", match);
                                 DataSaved.S_CRS = MyData.get_String("crs");
+                                try {
+                                    Log.w("testSP",selectedFolder+"/"+selectedFileName);
+                                    copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
+                                } catch (Exception e) {
+                                    Log.e("testSP",Log.getStackTraceString(e));
+                                }
                                 activity.recreate();
                                 ReadProjectService.startCRS();
                                 dialog.dismiss();
@@ -342,7 +389,7 @@ public class Diaalog_Set_SP {
                     if (fileName.toLowerCase().endsWith(".sp")) {
                         // Aggiungi il file all'array con il parametro `isFolder` impostato su `false`
                         long fileSize = getFileSizeFromAssets(assetManager, folderPath + "/" + fileName);
-                        arraySP.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize));
+                        arraySP.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize,new File(fileName).getAbsolutePath()));
                         arraySPOriginale.clear();
                         arraySPOriginale.addAll(arraySP);
                         spAdapter.notifyDataSetChanged();
@@ -526,6 +573,37 @@ public class Diaalog_Set_SP {
         // Restituisce il percorso del file copiato
         return tempFile.getAbsolutePath();
     }
+    public void copyFromAssetsToFile(Context context, String assetPath, File destinationFile) throws IOException {
+        AssetManager assetManager = context.getAssets();
+
+        try (InputStream inputStream = assetManager.open(assetPath);
+             OutputStream outputStream = new FileOutputStream(destinationFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        }
+    }
+    public void copyFileToFile(File sourceFile, File destinationFile) throws IOException {
+        if (!sourceFile.exists()) {
+            throw new FileNotFoundException("Il file sorgente non esiste: " + sourceFile.getAbsolutePath());
+        }
+
+        try (InputStream inputStream = new FileInputStream(sourceFile);
+             OutputStream outputStream = new FileOutputStream(destinationFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        }
+    }
+
+
+
 
     private void setupGNSS(String crs) {
         byte speed = 0;

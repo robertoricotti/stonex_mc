@@ -392,7 +392,7 @@ public class Remote_Activity extends AppCompatActivity {
             for (File file : files) {
                 boolean isFolder = file.isDirectory();
                 long size = file.isDirectory() ? getFolderSize(file) : file.length();
-                filesProj.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size));
+                filesProj.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
             }
 
             adapterProj = new ProjectFileAdapter(filesProj);
@@ -488,7 +488,7 @@ public class Remote_Activity extends AppCompatActivity {
                 public void onSuccess(Map<String, Object> result) {
                     folderSize = (long) result.get("size");
                     runOnUiThread(() -> {
-                        filesIN.add(new ProjectFileAdapter.FileItem(folderName, true, folderSize));
+                        filesIN.add(new ProjectFileAdapter.FileItem(folderName, true, folderSize,null));
                         adapterMC.notifyItemInserted(filesIN.size() - 1); // Notifica l'adapter
                     });
                     Log.d("S3Size", folderName + " Size: " + folderSize + " bytes");
@@ -511,7 +511,7 @@ public class Remote_Activity extends AppCompatActivity {
 
                     fileSize = (long) result.get("size");
                     runOnUiThread(() -> {
-                        filesIN.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize));
+                        filesIN.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize,null));
                         adapterMC.notifyItemInserted(filesIN.size() - 1); // Notifica l'adapter
                     });
                 }

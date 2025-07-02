@@ -124,7 +124,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 (holder.getAdapterPosition() == selectedCkPolyPosition) ||
                 (holder.getAdapterPosition() == selectedCkPoiPosition);
 
-        constraintLayout.setBackgroundColor(selectedItem == position ? ContextCompat.getColor(constraintLayout.getContext(), R.color.bg_sfsred) : ContextCompat.getColor(constraintLayout.getContext(), R.color.transparent));
+        constraintLayout.setBackgroundColor(selectedItem == position ? ContextCompat.getColor(constraintLayout.getContext(), R.color.bg_sfsgreen) : ContextCompat.getColor(constraintLayout.getContext(), R.color.transparent));
 
 
         // Imposta gli stati delle checkbox in base alle posizioni selezionate

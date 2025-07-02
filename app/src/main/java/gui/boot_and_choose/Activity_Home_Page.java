@@ -1,12 +1,15 @@
 package gui.boot_and_choose;
 
 import static gui.MyApp.KEY_LEVEL;
+import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static services.ReadProjectService.numbers;
+import static services.UpdateValuesService.firstLaunch;
 import static services.UpdateValuesService.startedService;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -16,47 +19,90 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
+import gui.MyApp;
 import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
+import gui.dialogs_and_toast.DialogPassword;
+import gui.projects.PickProject;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
 import services.UpdateValuesService;
 import utils.LanguageSetter;
 import utils.MyData;
+import utils.MyDeviceManager;
+import utils.WifiHelper;
 
 public class Activity_Home_Page extends AppCompatActivity {
-    ImageView close, toDig;
+    ImageView close, toDig,joblist,lock,keyLic,wif,newProj,toDueD,toMachines,toUser;
     CloseAppDialog closeAppDialog;
     ProgressBar progressBar;
     TextView stringsStat, titolo;
+    DialogPassword dialogPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home_page);
+        findView();
         try {
             LanguageSetter.setLocale(this, MyData.get_String("language"));
         } catch (Exception e) {
             MyData.push("language", "en_GB");
         }
-        setContentView(R.layout.activity_dig_menu);
         if (!startedService) {
             startService(new Intent(this, UpdateValuesService.class));
 
         }
         LanguageSetter.setLocale(this, MyData.get_String("language"));
-        setContentView(R.layout.activity_home_page);
-        findView();
+        if (!firstLaunch) {
+            progressBar.setVisibility(View.VISIBLE);
+            (new Handler()).postDelayed(this::enableAll, 5000);
+            updateUI();
+            firstLaunch = true;
+        } else {
+            updateUI();
+            enableAll(true);
+            firstLaunch = true;
+            MyDeviceManager.WiFiEnable(this, 1);
+        }
+
         onClick();
 
+
+    }
+
+    private void enableAll() {
+        close.setEnabled(true);
+        toDig.setEnabled(true);
+        toDig.setEnabled(true);
+        titolo.setEnabled(true);
+        joblist.setEnabled(true);
+        lock.setEnabled(true);
+        keyLic.setEnabled(true);
+        newProj.setEnabled(true);
+        toDueD.setEnabled(true);
+        toMachines.setEnabled(true);
+        toUser.setEnabled(true);
+        progressBar.setVisibility(View.INVISIBLE);
+        stringsStat.setVisibility(View.INVISIBLE);
     }
 
     private void findView() {
         closeAppDialog = new CloseAppDialog(this);
+        dialogPassword=new DialogPassword(this);
         close = findViewById(R.id.btn_1);
         progressBar = findViewById(R.id.progressBar);
         stringsStat = findViewById(R.id.stringastat);
         toDig = findViewById(R.id.img_7);
         titolo = findViewById(R.id.txtProject);
+        joblist=findViewById(R.id.img_6);
+        lock=findViewById(R.id.btn_2);
+        keyLic=findViewById(R.id.img00);
+        wif=findViewById(R.id.img01);
+        toDueD=findViewById(R.id.img_3);
+        toMachines=findViewById(R.id.img_2);
+        toUser=findViewById(R.id.img_1);
+        newProj=findViewById(R.id.img_4);
         try {
             String s = MyData.get_String("progettoSelected");
             s = s.replace("/storage/emulated/0/StonexMachineControl", "");
@@ -69,10 +115,56 @@ public class Activity_Home_Page extends AppCompatActivity {
 
         progressBar.setVisibility(View.INVISIBLE);
         stringsStat.setVisibility(View.INVISIBLE);
+        if(KEY_LEVEL<3){
+            newProj.setAlpha(0.3f);
+            toDig.setAlpha(0.3f);
+            joblist.setAlpha(0.3f);
+        }
+        if(DataSaved.isWL>0){
+            toDueD.setAlpha(0.3f);
+        }
 
     }
 
     private void onClick() {
+        toDueD.setOnClickListener(view -> {
+            if(DataSaved.isWL>0){
+                new CustomToast(this," ").show_alert();
+            }else {
+                //TODO apri 2D
+            }
+        });
+        keyLic.setOnClickListener(view -> {
+            enableAll(false);
+            startActivity(new Intent(getApplicationContext(), LicenseActivity.class));
+            overridePendingTransition(0, 0);
+            finish();
+        });
+        newProj.setOnClickListener(view -> {
+            if(KEY_LEVEL>2){
+
+        }else {
+            new CustomToast(this,"Missing 3D License").show_error();
+        }
+        });
+        lock.setOnClickListener(view -> {
+            if (!isTech) {
+                if (!dialogPassword.dialog.isShowing()) {
+                    dialogPassword.show();
+                }
+            }
+
+        });
+        joblist.setOnClickListener((View v) -> {
+            if(KEY_LEVEL>2) {
+                enableAll(false);
+                startActivity(new Intent(this, PickProject.class));
+                overridePendingTransition(0, 0);
+                finish();
+            }else {
+                new CustomToast(this,"Missing 3D License").show_error();
+            }
+        });
         close.setOnClickListener(view -> {
             if (!closeAppDialog.alertDialog.isShowing()) {
                 closeAppDialog.show();
@@ -80,6 +172,7 @@ public class Activity_Home_Page extends AppCompatActivity {
         });
 
         toDig.setOnClickListener((View v) -> {
+
             enableAll(false);
             if (KEY_LEVEL > 2) {
                 progressBar.setVisibility(View.VISIBLE);
@@ -96,10 +189,40 @@ public class Activity_Home_Page extends AppCompatActivity {
     private void enableAll(boolean b) {
         close.setEnabled(b);
         toDig.setEnabled(b);
+        toDig.setEnabled(b);
+        titolo.setEnabled(b);
+        joblist.setEnabled(b);
+        lock.setEnabled(b);
+        keyLic.setEnabled(b);
+        newProj.setEnabled(b);
+        toDueD.setEnabled(b);
+        toUser.setEnabled(b);
+        toMachines.setEnabled(b);
     }
 
     public void updateUI() {
         try {
+            try {
+                String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
+                if (ssid != null) {
+
+                    wif.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+
+                } else {
+
+                    wif.setImageResource(R.drawable.wifi_vuoto);
+
+                }
+            } catch (Exception e) {
+                wif.setImageResource(R.drawable.wifi_off_96);
+            }
+
+            if (isTech) {
+                lock.setImageResource(R.drawable.unlock);
+
+            } else {
+                lock.setImageResource(R.drawable.lock);
+            }
             stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " Rows\n");
             switch (DataSaved.isWL) {
                 case 0:

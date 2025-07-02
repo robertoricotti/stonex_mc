@@ -1469,6 +1469,7 @@ public class UpdateValuesService extends Service {
 
                 DataSaved.S_CRS = MyData.get_String("crs");
                /* try {
+               /* try {
                     DataSaved.xyz = MyData.get_Int("xyz");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di xyz: " + e.getMessage());

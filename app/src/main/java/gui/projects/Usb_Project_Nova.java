@@ -253,7 +253,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
             for (File file : files) {
                 boolean isFolder = file.isDirectory();
                 long size = file.isDirectory() ? getFolderSize(file) : file.length();
-                filesProj.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size));
+                filesProj.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
             }
 
             adapterProj = new ProjectFileAdapter(filesProj);
@@ -290,7 +290,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
                     for (File file : files) {
                         boolean isFolder = file.isDirectory();
                         long size = file.isDirectory() ? getFolderSize(file) : file.length();
-                        filesIN.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size));
+                        filesIN.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
                     }
                     adapterMC = new ProjectFileAdapter(filesIN);
                     recyclerIn.setAdapter(adapterMC);

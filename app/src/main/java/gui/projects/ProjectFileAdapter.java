@@ -49,6 +49,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
         String nameFile = fileItem.getName();
         boolean isFolder = fileItem.isFolder();
         long fileSize = fileItem.getSize();
+        String filePath=fileItem.getPath();
 
         // Set item views based on your views and data model
         ConstraintLayout constraintLayout = holder.panel;
@@ -105,6 +106,11 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
         return selectedItem;
     }
 
+    public void setItem(int i) {
+        selectedItem=i;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
         public ConstraintLayout panel;
@@ -138,6 +144,13 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
         }
         return null;
     }
+    public String getSelectedFilePathAbs() {
+        if (selectedItem != RecyclerView.NO_POSITION) {
+            return files.get(selectedItem).getPath();
+        }
+        return null;
+    }
+
 
     public void setSelectedItem(int i) {
         selectedItem = i;
@@ -161,9 +174,9 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
                     Log.e("FileRename", "Errore: Il file con nome " + newName + " esiste già.");
                 } else if (oldFile.renameTo(newFile)) {
                     // Se il file è stato rinominato con successo, aggiorna l'adapter
-                    files.set(selectedItem, new FileItem(newName, selectedFileItem.isFolder(), selectedFileItem.getSize()));
+                    files.set(selectedItem, new FileItem(newName, selectedFileItem.isFolder(), selectedFileItem.getSize(),selectedFileItem.getPath()));
                     notifyItemChanged(selectedItem);
-                    Log.d("FileRename", "File rinominato con successo: " + oldFile.getAbsolutePath() + " -> " + newFile.getAbsolutePath());
+                    Log.d("FileRename", "File rinominato con successo: " + oldFile.getAbsolutePath() + " -> " + oldFile.getAbsolutePath());
                 } else {
                     Log.e("FileRename", "Errore: impossibile rinominare il file.");
                 }
@@ -176,14 +189,16 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
 
     public static class FileItem {
+
         private final String name;
         private final boolean isFolder;
         private final long size;
-
-        public FileItem(String name, boolean isFolder, long size) {
+        private final String path; // Percorso completo del file
+        public FileItem(String name, boolean isFolder, long size, String path) {
             this.name = name;
             this.isFolder = isFolder;
             this.size = size;
+            this.path = path;
         }
 
 
@@ -197,6 +212,10 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
         public long getSize() {
             return size;
+        }
+
+        public String getPath() {
+            return path;
         }
     }
 

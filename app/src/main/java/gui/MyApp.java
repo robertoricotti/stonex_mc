@@ -106,14 +106,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static final long timeUI = 65;
     public static String[] geoidAll=new String[]{};
     public static String GEOIDE_PATH = null;
-    /*public static String geoidFilePath_NL = null;
-    public static String geoidFilePath_BG = null;
-    public static String geoidFilePath_GR = null;
-    public static String geoidFilePath_USA2012 = null;
-    public static String geoidFilePath_USA2018 = null;
-    public static String geoidFilePath_DEU = null;*/
     public static String gridFile_GR = "";
-    //public static String riga20 = "";
     public static String LICENSE_KEY;
     public static String DEVICE_SN = "";
     public static Activity visibleActivity;
@@ -134,13 +127,10 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     @Override
     public void onCreate() {
         super.onCreate();
-
         UpdateValuesService.isUpodating = true;
         registerActivityLifecycleCallbacks(this);
         if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
-
             isApollo = true;
-            //folderPath = "/Stx_Dig";
             folderPath = "/StonexMachineControl";
             if (Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS") || Build.BRAND.equals("APOLLO2_10")) {
                 apollo2 = Apollo2.getInstance(this);
@@ -321,7 +311,7 @@ git push
                         @Override
                         public void run() {
                             try {
-
+Log.d("tetsCRS",DataSaved.S_CRS);
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {
                                     frameCounter += 1;
@@ -385,25 +375,12 @@ git push
                                     }
                                 } else {
                                     hAlarm = false;
-
-                                }
-
-
-                                if (visibleActivity instanceof Digging1D ||
-                                        visibleActivity instanceof Digging_CutAndFill1D ||
-                                        visibleActivity instanceof Digging2D ||
-                                        visibleActivity instanceof Digging_CutAndFill2D ||
-                                        visibleActivity instanceof DiggingProfile ||
-                                        visibleActivity instanceof Digging3D_DXF) {
-
-
                                 }
 
                             } catch (Exception e) {
                                 System.out.println(e);
                                 hAlarm = false;
                             }
-
                             if (hAlarm) {
                                 CanSender.d0 = 1;
                             } else {
@@ -504,10 +481,7 @@ git push
         } else if (activity instanceof My3DActivity) {
             ((My3DActivity) activity).updateUI();
 
-        } else if (activity instanceof ExcavatorMenuActivity) {
-            ((ExcavatorMenuActivity) activity).updateUI();
-
-        }else if (activity instanceof Activity_Home_Page) {
+        } else if (activity instanceof Activity_Home_Page) {
             ((Activity_Home_Page) activity).updateUI();
 
         }

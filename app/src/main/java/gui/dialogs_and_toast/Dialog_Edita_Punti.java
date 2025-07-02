@@ -3,6 +3,7 @@ package gui.dialogs_and_toast;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,6 +43,9 @@ public class Dialog_Edita_Punti {
         dialog.setContentView(R.layout.dialog_edit_punto);
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
+        }
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();

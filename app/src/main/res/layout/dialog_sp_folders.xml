@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/sfondo_bottone_grigio">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/centerV"
@@ -44,10 +45,10 @@
         android:id="@+id/tvSP"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/light_gray"
+        android:background="@drawable/custom_background_test3d"
         android:gravity="center"
         android:text="COORDINATE REFERENCE SYSTEMS"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/topH"
@@ -64,7 +65,7 @@
         app:layout_constraintBottom_toTopOf="@id/topH"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/GROUNDblue" />
+        app:tint="@color/yellow" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -158,7 +159,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/light_gray"
+        android:background="@drawable/custom_background_test3d"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lowH" />
 
@@ -201,6 +202,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/lowH"
-        app:tint="@color/_____cancel_text" />
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@ import static gui.MyApp.isApollo;
 import android.app.Activity;
 import android.app.Dialog;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
@@ -49,6 +50,9 @@ public class EasyConfigDialog {
     public void show() {
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
+        }
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();

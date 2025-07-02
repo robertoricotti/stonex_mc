@@ -3,6 +3,7 @@ package gui.dialogs_and_toast;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -71,6 +72,9 @@ public class Dialog_Point_Poly {
         dialog.setContentView(R.layout.dialog_point_poly);
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
+        }
         WindowManager.LayoutParams wlp = window.getAttributes();
         dialog.getWindow().setLayout(larg, alt);
         wlp.gravity = Gravity.CENTER;

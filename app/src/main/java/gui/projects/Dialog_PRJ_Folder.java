@@ -33,8 +33,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import gui.BaseClass;
-import gui.boot_and_choose.ExcavatorMenuActivity;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
+import gui.dialogs_and_toast.Diaalog_Set_SP;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.MyGeoide;
 import serial.SerialPortManager;
@@ -47,7 +48,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
     int perc = 0;
     Activity activity;
     public Dialog dialog;
-    ImageView exit;
+    ImageView exit,setSP;
     TextView titFiles, titSP, messaggio;
     ImageView usaSP, usaFile, deleteFile, deleteSP;
     RecyclerView recyclerViewFiles, recyclerViewSP;
@@ -59,6 +60,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
     ProgressBar progressBar;
     boolean isUpdating = false;
     private Handler handler;
+    Diaalog_Set_SP diaalogSetSp;
 
 
     public Dialog_PRJ_Folder(Activity activity) {
@@ -94,11 +96,13 @@ public class Dialog_PRJ_Folder extends BaseClass {
         usaSP = dialog.findViewById(R.id.usaSP);
         deleteFile = dialog.findViewById(R.id.deleteFile);
         deleteSP = dialog.findViewById(R.id.deleteSP);
+        setSP=dialog.findViewById(R.id.setSP);
         progressBar = dialog.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
         messaggio = dialog.findViewById(R.id.msg);
         deleteFile.setVisibility(View.INVISIBLE);
         deleteSP.setVisibility(View.INVISIBLE);
+        diaalogSetSp=new Diaalog_Set_SP(activity);
 
     }
 
@@ -132,7 +136,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     }
                     if (file.getName().toLowerCase().endsWith(".sp")) {
                         long size = file.isDirectory() ? getFolderSize(file) : file.length();
-                        arraySP.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size));
+                        arraySP.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
                     }
                 }
             } else {
@@ -147,6 +151,11 @@ public class Dialog_PRJ_Folder extends BaseClass {
     }
 
     public void onClick() {
+        setSP.setOnClickListener(view -> {
+            if(!diaalogSetSp.dialog.isShowing()){
+                diaalogSetSp.show(mPath);
+            }
+        });
         usaFile.setOnClickListener(view -> {
             if (projectAdapter.getSelectedCkTrmPosition() == -1) {
                 new CustomToast(activity, "SELECT A TERRAIN MODEL TO USE").show();
@@ -190,7 +199,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     DataSaved.progettoSelected_POINT = MyData.get_String("progettoSelected_POINT");
                     new CustomToast(activity, "..Saved..").show_long();
                     stopUpdating();
-                    activity.startActivity(new Intent(activity, ExcavatorMenuActivity.class));
+                    activity.startActivity(new Intent(activity, Activity_Home_Page.class));
                     activity.overridePendingTransition(0, 0);
                     activity.finish();
                     dialog.dismiss();
@@ -258,42 +267,58 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
         });
 
-        deleteSP.setOnLongClickListener(view -> {
-            try {
-                int selectedItem = spAdapter.getSelectedItem();
-                if (selectedItem == -1) {
-                    new CustomToast(activity, activity.getResources().getString(R.string.select_file)).show();
-                    return false;
-                }
-
-                ProjectFileAdapter.FileItem selectedFileItem = arraySP.get(selectedItem);
-                fileName = mPath + "/" + selectedFileItem.getName();
-
-                File file = new File(fileName);
-
-                if (selectedFileItem.isFolder()) {
-                    // Delete the folder and its contents
-                    deleteRecursive(file);
-                } else {
-                    // Delete the single file
-                    file.delete();
-                }
-                new CustomToast(activity, activity.getResources().getString(R.string.deleted)).show();
-                arraySP.remove(selectedItem);
-                spAdapter.notifyItemRemoved(selectedItem);
-                spAdapter.notifyItemRangeChanged(selectedItem, arraySP.size());
-            } catch (Exception e) {
-                new CustomToast(activity, activity.getResources().getString(R.string.selectproject)).show();
-            }
-
-            return false;
-        });
-
-
         deleteSP.setOnClickListener(view -> {
-            new CustomToast(activity, "Long Click to delet a file").show();
+            // Crea un nuovo AlertDialog.Builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle(" "+activity.getResources().getString(R.string.delete_file));
+            builder.setIcon(activity.getResources().getDrawable(R.drawable.delete));
+
+            // Aggiungi il pulsante "Sì"
+            builder.setPositiveButton(activity.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    try {
+                        int selectedItem = spAdapter.getSelectedItem();
+                        if (selectedItem == -1) {
+                            new CustomToast(activity, activity.getResources().getString(R.string.select_file)).show();
+
+                        }
+
+                        ProjectFileAdapter.FileItem selectedFileItem = arraySP.get(selectedItem);
+                        fileName = mPath + "/" + selectedFileItem.getName();
+
+                        File file = new File(fileName);
+
+                        if (selectedFileItem.isFolder()) {
+                            // Delete the folder and its contents
+                            deleteRecursive(file);
+                        } else {
+                            // Delete the single file
+                            file.delete();
+                        }
+                        new CustomToast(activity, activity.getResources().getString(R.string.deleted)).show();
+                        arraySP.remove(selectedItem);
+                        spAdapter.notifyItemRemoved(selectedItem);
+                        spAdapter.notifyItemRangeChanged(selectedItem, arrayFiles.size());
+                        spAdapter.setItem(-1);
+                    } catch (Exception e) {
+                        new CustomToast(activity, activity.getResources().getString(R.string.selectproject)).show();
+                        spAdapter.setItem(-1);
+                    }
+                }
+            });
+            builder.setNegativeButton(activity.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    spAdapter.setItem(-1);
+
+                }
+            });
+            builder.show();
 
         });
+
+
 
         usaSP.setOnClickListener(view -> {
 
@@ -448,11 +473,16 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     } else {
                         progressBar.setVisibility(View.INVISIBLE);
                         messaggio.setVisibility(View.INVISIBLE);
-                        deleteSP.setVisibility(View.INVISIBLE);
+
                         if (projectAdapter.getSelectedItem() > -1) {
                             deleteFile.setVisibility(View.VISIBLE);
                         } else {
                             deleteFile.setVisibility(View.INVISIBLE);
+                        }
+                        if (spAdapter.getSelectedItem() > -1) {
+                            deleteSP.setVisibility(View.VISIBLE);
+                        } else {
+                            deleteSP.setVisibility(View.INVISIBLE);
                         }
                         recyclerViewSP.setVisibility(View.VISIBLE);
                         recyclerViewFiles.setVisibility(View.VISIBLE);
