@@ -1,6 +1,7 @@
 package gui.projects;
 
 
+import static gui.MyApp.geoidAll;
 import static gui.dialogs_and_toast.Diaalog_Set_SP.getCrsCodeFromFileName;
 import static utils.CanFileTransfer.sendFileViaCAN;
 import static utils.CanFileTransfer.sendFileViaSerial;
@@ -31,9 +32,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import gui.BaseClass;
 import gui.boot_and_choose.Activity_Home_Page;
+import gui.dialogs_and_toast.CustomMenu;
+import gui.dialogs_and_toast.CustomMenuLista;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Diaalog_Set_SP;
 import packexcalib.exca.DataSaved;
@@ -48,15 +53,15 @@ public class Dialog_PRJ_Folder extends BaseClass {
     int perc = 0;
     Activity activity;
     public Dialog dialog;
-    ImageView exit,setSP;
+    ImageView exit,setSP,setGeoide;
     TextView titFiles, titSP, messaggio;
-    ImageView usaSP, usaFile, deleteFile, deleteSP;
+    ImageView usaSP, usaFile, deleteFile, deleteSP,addSurf;
     RecyclerView recyclerViewFiles, recyclerViewSP;
     ArrayList<ProjectFileAdapter.FileItem> arraySP;
     ArrayList<ProjectAdapter.FileItem> arrayFiles;
     String mPath, fileName, filenamePoly, filenamePoint, filenameJson;
-    ProjectAdapter projectAdapter;
-    ProjectFileAdapter spAdapter;
+     ProjectAdapter projectAdapter;
+     public static ProjectFileAdapter spAdapter;
     ProgressBar progressBar;
     boolean isUpdating = false;
     private Handler handler;
@@ -102,6 +107,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
         messaggio = dialog.findViewById(R.id.msg);
         deleteFile.setVisibility(View.INVISIBLE);
         deleteSP.setVisibility(View.INVISIBLE);
+        setGeoide=dialog.findViewById(R.id.geoidA);
+        addSurf=dialog.findViewById(R.id.add_surf);
         diaalogSetSp=new Diaalog_Set_SP(activity);
 
     }
@@ -119,6 +126,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
         recyclerViewSP.setAdapter(spAdapter);
         recyclerViewSP.setLayoutManager(new LinearLayoutManager(activity));
         recyclerViewSP.setItemViewCacheSize(spAdapter.getItemCount());
+
 
 
     }
@@ -151,9 +159,41 @@ public class Dialog_PRJ_Folder extends BaseClass {
     }
 
     public void onClick() {
+        setGeoide.setOnClickListener(view -> {
+            CustomMenuLista customMenu = new CustomMenuLista(activity, MyData.get_String("geoidPath").substring(MyData.get_String("geoidPath").lastIndexOf("/")));
+
+            if (geoidAll == null || geoidAll.length == 0) {
+                new CustomToast(activity, "No Geoid Found").show_error();
+                MyGeoide.setGeoid(null);
+                return;
+            }
+
+            // Crea un nuovo array con spazio per "DISABLED" + tutti gli elementi di geoidAll
+            String[] menuItems = new String[geoidAll.length + 1];
+            menuItems[0] = activity.getResources().getString(R.string.disabled);
+            System.arraycopy(geoidAll, 0, menuItems, 1, geoidAll.length);
+
+            List<String> menuItemsL = Arrays.asList(menuItems);
+
+            customMenu.show(menuItemsL, new CustomMenu.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(String selectedItem) {
+                    new CustomToast(activity, "Geoid: " + selectedItem).show_added();
+
+                    if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
+                        MyGeoide.setGeoid("null");
+                        MyData.push("usaGeoide", String.valueOf(false));
+                    } else {
+                        MyGeoide.setGeoid(selectedItem);
+                        MyData.push("usaGeoide", String.valueOf(true));
+                    }
+                }
+            });
+        });
         setSP.setOnClickListener(view -> {
             if(!diaalogSetSp.dialog.isShowing()){
-                diaalogSetSp.show(mPath);
+                diaalogSetSp.show(mPath,spAdapter);
+                dialog.dismiss();
             }
         });
         usaFile.setOnClickListener(view -> {
@@ -495,6 +535,15 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         updateView();
 
                     }
+                    if (MyData.get_String("usaGeoide") == null) {
+                        setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
+                    }else {
+                        if(MyData.get_String("usaGeoide").contains("true")){
+                            setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_dialog_on));
+                        }else {
+                            setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
+                        }
+                    }
                 } catch (Exception e) {
                     Log.d("step!", e.toString());
                 }
@@ -524,4 +573,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
         // Restituisce il percorso del file copiato
         return tempFile.getAbsolutePath();
     }
+
+
+
+
 }

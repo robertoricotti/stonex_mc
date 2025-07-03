@@ -228,9 +228,17 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             nameTextView = itemView.findViewById(R.id.path_tv);
             panel = itemView.findViewById(R.id.panel);
             sizeTextView = itemView.findViewById(R.id.size_tv);
-            icon.setOnClickListener((View v) -> {
+            nameTextView.setOnClickListener((View v) -> {
                 if(selectedItem==-1){
                 selectedItem = getAdapterPosition();}
+                else {
+                    selectedItem=-1;
+                }
+                notifyDataSetChanged();
+            });
+            icon.setOnClickListener((View v) -> {
+                if(selectedItem==-1){
+                    selectedItem = getAdapterPosition();}
                 else {
                     selectedItem=-1;
                 }

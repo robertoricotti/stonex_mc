@@ -420,7 +420,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             String fileName = layer.getProjName();
             int lastIndex = fileName.lastIndexOf(".");
             String fileExtension = fileName.substring(lastIndex + 1).toLowerCase();
-            if (fileExtension.equalsIgnoreCase("dxf") || fileExtension.equalsIgnoreCase("xml")) {
+            if (fileExtension.equalsIgnoreCase("pstx") ||fileExtension.equalsIgnoreCase("dxf") || fileExtension.equalsIgnoreCase("xml")) {
                 fileToLayers.putIfAbsent(fileName, new HashSet<>());
                 fileToLayers.get(fileName).add(layer);
             }

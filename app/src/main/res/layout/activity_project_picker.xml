@@ -96,8 +96,8 @@
             android:layout_weight="1"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/done_btn"
-            app:tint="@color/yellow"/>
+            app:srcCompat="@drawable/btn_selection_ok"
+            app:tint="@color/white"/>
 
     </LinearLayout>
 

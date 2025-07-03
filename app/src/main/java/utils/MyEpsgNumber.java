@@ -874,15 +874,15 @@ public class MyEpsgNumber {
 
     public final static int BARBADOS__ONSHORE__BARBADOS_1938__BRITISH_WEST_INDIES_GRID__21291 = 21291;
 
-  //  public final static int BELGIUM__ONSHORE__BD50__BRUSSELS__BELGE_LAMBERT_50__21500 = 21500;
+    public final static int BELGIUM__ONSHORE__BD50__BRUSSELS__BELGE_LAMBERT_50__21500 = 21500;
 
- //   public final static int BELGIUM__ONSHORE__BD72__BELGE_LAMBERT_72__31300 = 31300;
+    public final static int BELGIUM__ONSHORE__BD72__BELGE_LAMBERT_72__31300 = 31300;
 
     public final static int BELGIUM__ONSHORE__BD72__BELGIAN_LAMBERT_72__31370 = 31370;
 
-  //  public final static int BELGIUM__ONSHORE__ETRS89__BELGIAN_LAMBERT_2005__3447 = 3447;
+    public final static int BELGIUM__ONSHORE__ETRS89__BELGIAN_LAMBERT_2005__3447 = 3447;
 
-  //  public final static int BELGIUM__ONSHORE__ETRS89__BELGIAN_LAMBERT_2008__3812 = 3812;
+    public final static int BELGIUM__ONSHORE__ETRS89__BELGIAN_LAMBERT_2008__3812 = 3812;
     public final static int BELIZE__ONSHORE__SIBUN_GORGE_1922__COLONY_GRID__5466 = 5466;
 
     public final static int BERMUDA__BDA2000__4886 = 4886;
@@ -3551,12 +3551,12 @@ public class MyEpsgNumber {
 
     public final static int NAMIBIA__WALVIS_BAY__HARTEBEESTHOEK94__LO15__2046 = 2046;
 
-   // public final static int NETHERLANDS__OFFSHORE__ED50__TM_5_NE__23095 = 23095;
-  //public final static int NETHERLANDS__ONSHORE__AMERSFOORT__RD_NEW__28992 = 28992;
+    public final static int NETHERLANDS__OFFSHORE__ED50__TM_5_NE__23095 = 23095;
+  public final static int NETHERLANDS__ONSHORE__AMERSFOORT__RD_NEW__28992 = 28992;
 
-    public final static int RDNAPTRANS2018 = 28992;
+    //public final static int RDNAPTRANS2018 = 28992;
 
-   // public final static int NETHERLANDS__ONSHORE__AMERSFOORT__RD_OLD__28991 = 28991;
+    public final static int NETHERLANDS__ONSHORE__AMERSFOORT__RD_OLD__28991 = 28991;
 
 
     public final static int NEW_CALEDONIA__162_E_TO_168_E__RGNC91_93__UTM_ZONE_58S__3170 = 3170;

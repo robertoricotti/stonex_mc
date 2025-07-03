@@ -125,6 +125,16 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
             panel = itemView.findViewById(R.id.panel);
             sizeTextView = itemView.findViewById(R.id.size_tv);
 
+            icon.setOnClickListener((View v) -> {
+                if (selectedItem == getAdapterPosition()) {
+                    selectedItem = -1;
+                    notifyDataSetChanged();
+
+                } else {
+                    selectedItem = getAdapterPosition();
+                    notifyDataSetChanged();
+                }
+            });
             nameTextView.setOnClickListener((View v) -> {
                 if (selectedItem == getAdapterPosition()) {
                     selectedItem = -1;
@@ -162,6 +172,9 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
     }
 
     public void renameSelectedFile( String pat,String newName) {
+        if(pat==null&&newName==null){
+            notifyDataSetChanged();
+        }
 
         if (selectedItem != RecyclerView.NO_POSITION && selectedItem < files.size()) {
             File parentDirectory=new File(pat);

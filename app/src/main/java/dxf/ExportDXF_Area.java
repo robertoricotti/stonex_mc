@@ -32,10 +32,6 @@ public class ExportDXF_Area {
     public void generateDXF() throws IOException {
         METER_TO_FEET_CONVERSION = useFeet ? 0.3048006096 : 1.0;
 
-        if (!filename.toLowerCase().endsWith(".dxf")) {
-            filename += ".dxf";
-        }
-
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + "/" + filename))) {
 
             DXFWriteMethods.testa(writer,3);

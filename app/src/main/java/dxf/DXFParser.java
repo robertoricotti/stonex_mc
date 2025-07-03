@@ -46,6 +46,7 @@ public class DXFParser {
                 try {
                     switch (line) {
                         case "LAYER":
+
                             isLayer = true;
                             currentLayer = new Layer(filePath, null, null, true);
 
@@ -88,6 +89,7 @@ public class DXFParser {
                                     isAcDbLayerPresent = true;
                                     br.readLine();
                                     layerName = br.readLine().trim();
+
                                     currentLayer.setProjName(filePath);
                                     currentLayer.setLayerName(layerName);
                                 }

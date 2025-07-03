@@ -37,6 +37,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import utils.MyData;
 import utils.MyDeviceManager;
@@ -45,7 +46,7 @@ import utils.UsbReceiver;
 public class Usb_Project_Nova extends AppCompatActivity {
 
     private final BroadcastReceiver usbReceiver = new UsbReceiver();
-    TextView textView;
+    TextView textView,txt2;
     int controllo = 0;
     private boolean enImport, enExport;
     RecyclerView recyclerProj, recyclerIn;
@@ -95,6 +96,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
         read = findViewById(R.id.new_copy_from_usb);
         write = findViewById(R.id.new_copy_to_usb);
         textView = findViewById(R.id.txt1);
+        txt2=findViewById(R.id.txt2);
         usb_remove = findViewById(R.id.delete);
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
@@ -104,6 +106,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
 
     private void init() {
         readProjectFolder();
+        txt2.setText(APP_PATH);
 
 
     }
@@ -128,7 +131,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
         });
         back.setOnClickListener((View v) -> {
             back.setEnabled(false);
-            startActivity(new Intent(this, Projects.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
             overridePendingTransition(0, 0);
             finish();
         });

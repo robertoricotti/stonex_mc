@@ -57,7 +57,6 @@ public class DialogOffset_3D {
     public void show() {
         dialog.create();
         dialog.setContentView(R.layout.dialog_offset);
-
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
         if (window != null) {

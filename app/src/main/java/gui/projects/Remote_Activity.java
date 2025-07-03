@@ -29,6 +29,7 @@ import java.util.Map;
 
 import cloud.S3Manager;
 import gui.MyApp;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.boot_and_choose.LaunchScreenActivity;
 import gui.dialogs_and_toast.CustomToast;
 import utils.MyData;
@@ -39,7 +40,7 @@ public class Remote_Activity extends AppCompatActivity {
     static String RemoteFilePath = null;
     boolean isF;
     long folderSize, fileSize;
-    TextView txt1;
+    TextView txt1,txt2;
     private boolean enImport, enExport;
     S3Manager s3Manager;
     ProgressBar progressBar;
@@ -87,6 +88,7 @@ public class Remote_Activity extends AppCompatActivity {
         back = findViewById(R.id.back);
         status = findViewById(R.id.status);
         txt1 = findViewById(R.id.txt1);
+        txt2=findViewById(R.id.txt2);
 
 
     }
@@ -99,6 +101,7 @@ public class Remote_Activity extends AppCompatActivity {
         s3Manager = new S3Manager(getApplicationContext(), "AKIAZ24ITFGFIXJSL3G7", "rX0Ndj0R4ULu0r3Z6ibJz8Oa5H7uqULXlYOJJjmR", "stxcloudbucket");
         progressBar.setVisibility(View.INVISIBLE);
         readProjectFolder();
+        txt2.setText(APP_PATH);
 
     /*    s3Manager.getFoldersFiles("downloads/apk_release/", new S3Manager.S3Callback() {
             @Override
@@ -328,7 +331,7 @@ public class Remote_Activity extends AppCompatActivity {
         });
         back.setOnClickListener(view -> {
             back.setEnabled(false);
-            startActivity(new Intent(this, Projects.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
             overridePendingTransition(0, 0);
             finish();
         });

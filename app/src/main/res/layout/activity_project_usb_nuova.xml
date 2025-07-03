@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.88" />
+        app:layout_constraintGuide_percent="0.89" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline209"
@@ -58,13 +58,12 @@
         android:id="@+id/txt2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/application_table_line_color"
+        android:background="@drawable/custom_background_test3d_box"
         android:gravity="center"
         android:padding="3dp"
-        android:text="LOCAL PROJECTS FOLDER"
-        android:textColor="@color/black"
+        android:text=""
+        android:textColor="@color/white"
         android:textSize="20sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/divider48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -139,7 +138,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/nav_gray_color"
+        android:background="@drawable/custom_background_test3d_box"
         app:layout_constraintTop_toTopOf="@+id/guideline132">
 
         <ImageView
@@ -149,10 +148,12 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
+            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/back_btn" />
+            app:tint="@color/white"
+            android:rotation="180"
+            app:srcCompat="@drawable/menu_btn"/>
 
         <ImageView
             android:id="@+id/update"
@@ -161,11 +162,11 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
+            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/btn_refresh"
-            app:tint="@color/nav_gray_color" />
+            app:tint="@color/_____cancel_text" />
 
         <ImageView
             android:id="@+id/read"
@@ -174,9 +175,9 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
+            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
-            app:tint="@color/nav_gray_color"
+            app:tint="@color/_____cancel_text"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/btn_copy_from_usb" />
 
@@ -187,11 +188,11 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
+            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/btn_copy_to_usb"
-            app:tint="@color/nav_gray_color"
+            app:tint="@color/_____cancel_text"
              />
 
         <ImageView
@@ -201,10 +202,11 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
+            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
             android:scaleType="centerInside"
-            android:rotation="90"
+
+            app:tint="@color/white"
             app:srcCompat="@drawable/bt_remove_usb" />
 
     </LinearLayout>

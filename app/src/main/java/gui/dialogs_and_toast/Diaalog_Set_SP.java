@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import gui.MyApp;
+import gui.projects.Dialog_PRJ_Folder;
 import gui.projects.ProjectFileAdapter;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.MyGeoide;
@@ -73,7 +74,7 @@ public class Diaalog_Set_SP {
     RecyclerView recyclerViewSP;
     ArrayList<ProjectFileAdapter.FileItem> arrayFiles, arraySP;
     EditText cercaSP;
-    ProjectFileAdapter spAdapter;
+    ProjectFileAdapter spAdapter,remoteAdapter;
     ProgressBar progressBar;
     boolean isUpdating = false;
     private Handler handler;
@@ -82,15 +83,18 @@ public class Diaalog_Set_SP {
     Spinner spinner;
     String selectedFolder;
     TextView inUso;
+    Dialog_PRJ_Folder dialogPrjFolder;
 
 
     public Diaalog_Set_SP(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
-
+        dialogPrjFolder=new Dialog_PRJ_Folder(activity);
     }
 
     public void show() {
+
+        Log.d("myGeoid",MyData.get_String("geoidPath"));
         if (MyData.get_String("usaGeoide") == null) {
             MyData.push("usaGeoide", String.valueOf(false));
         }
@@ -113,8 +117,11 @@ public class Diaalog_Set_SP {
         startUpdating();
 
     }
-    public void show(String mPath) {
+
+    public void show(String mPath,ProjectFileAdapter remoteAdapter) {
         this.mPath=mPath;
+        this.remoteAdapter=remoteAdapter;
+        Log.w("myGeoid",mPath+"  "+remoteAdapter);
         if (MyData.get_String("usaGeoide") == null) {
             MyData.push("usaGeoide", String.valueOf(false));
         }
@@ -252,39 +259,56 @@ public class Diaalog_Set_SP {
                         MyData.push("LastSP", selectedFileName);
                         inUso.setText(selectedFileName);
                         String match=getCrsCodeFromFileName(selectedFileName);
-
+                        Log.e("testSP",selectedFolder+"/"+selectedFileName+"\n"+mPath);
                         if(match!=null){
+                            Log.d("testSP","match");
                             if(match.equals("UTM")){
                                 //UTM autozone
+                                Log.d("testSP","match AUTOZONE");
                                 MyData.push("crs", "UTM");
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 try {
-                                    Log.w("testSP",selectedFolder+"/"+selectedFileName);
                                     copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
                                 } catch (Exception e) {
                                     Log.e("testSP",Log.getStackTraceString(e));
                                 }
-                                activity.recreate();
+
+
+                                if(!dialogPrjFolder.dialog.isShowing()){
+                                    dialogPrjFolder.show(mPath);
+                                }
                                 dialog.dismiss();
                             }else {
+                                Log.d("testSP","match LISTA");
                                 MyData.push("crs", match);
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 try {
-                                    Log.w("testSP",selectedFolder+"/"+selectedFileName);
                                     copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
                                 } catch (Exception e) {
                                     Log.e("testSP",Log.getStackTraceString(e));
                                 }
-                                activity.recreate();
+
                                 ReadProjectService.startCRS();
+                                //activity.recreate();
+
+
+                                if(!dialogPrjFolder.dialog.isShowing()){
+                                    dialogPrjFolder.show(mPath);
+                                }
                                 dialog.dismiss();
                             }
                         }else {
                             //invia file SP
+                            Log.d("testSP","NO match");
                             usaSP.setEnabled(false);
                             MyData.push("crs", ".SP FILE");
                             MyGeoide.setGeoid(null);
                             DataSaved.S_CRS = MyData.get_String("crs");
+                            try {
+                                copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
+                            } catch (Exception e) {
+                                Log.e("testSP",Log.getStackTraceString(e));
+                            }
                             switch (DataSaved.my_comPort) {
                                 case 0:
                                     // Copia il file da assets a una directory accessibile
@@ -311,6 +335,11 @@ public class Diaalog_Set_SP {
                                     break;
                                 default:
                                     Thread.sleep(500);
+
+
+                                    if(!dialogPrjFolder.dialog.isShowing()){
+                                        dialogPrjFolder.show(mPath);
+                                    }
                                     dialog.dismiss();
                                     break;
 
@@ -348,8 +377,11 @@ public class Diaalog_Set_SP {
 
         });
         dismiss.setOnClickListener(view -> {
-            activity.recreate();
             setupGNSS(DataSaved.S_CRS);
+
+            if(!dialogPrjFolder.dialog.isShowing()){
+                dialogPrjFolder.show(mPath);
+            }
             dialog.dismiss();
         });
         // Aggiungi un listener per gestire la selezione degli elementi dello Spinner
@@ -477,6 +509,7 @@ public class Diaalog_Set_SP {
     }
 
     public void checkGeo(String s) {
+
         if(MyData.get_String("geoidPath").equals("null")||MyData.get_String("geoidPath")==null||MyData.get_String("geoidPath").isEmpty()){
             geoidStatus.setText("GEOID DISABLED");
             geoidStatus.setTextColor(Color.GRAY);

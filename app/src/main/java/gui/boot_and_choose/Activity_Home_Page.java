@@ -19,10 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
-import gui.MyApp;
 import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
+import gui.dialogs_and_toast.Dialog_Create_New_Prj;
 import gui.projects.PickProject;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
@@ -33,11 +33,12 @@ import utils.MyDeviceManager;
 import utils.WifiHelper;
 
 public class Activity_Home_Page extends AppCompatActivity {
-    ImageView close, toDig,joblist,lock,keyLic,wif,newProj,toDueD,toMachines,toUser;
+    ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo;
     CloseAppDialog closeAppDialog;
     ProgressBar progressBar;
     TextView stringsStat, titolo;
     DialogPassword dialogPassword;
+    Dialog_Create_New_Prj dialogCreateNewPrj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,26 +84,29 @@ public class Activity_Home_Page extends AppCompatActivity {
         toDueD.setEnabled(true);
         toMachines.setEnabled(true);
         toUser.setEnabled(true);
+        appInfo.setEnabled(true);
         progressBar.setVisibility(View.INVISIBLE);
         stringsStat.setVisibility(View.INVISIBLE);
     }
 
     private void findView() {
         closeAppDialog = new CloseAppDialog(this);
-        dialogPassword=new DialogPassword(this);
+        dialogPassword = new DialogPassword(this);
+        dialogCreateNewPrj = new Dialog_Create_New_Prj(this);
         close = findViewById(R.id.btn_1);
         progressBar = findViewById(R.id.progressBar);
         stringsStat = findViewById(R.id.stringastat);
         toDig = findViewById(R.id.img_7);
         titolo = findViewById(R.id.txtProject);
-        joblist=findViewById(R.id.img_6);
-        lock=findViewById(R.id.btn_2);
-        keyLic=findViewById(R.id.img00);
-        wif=findViewById(R.id.img01);
-        toDueD=findViewById(R.id.img_3);
-        toMachines=findViewById(R.id.img_2);
-        toUser=findViewById(R.id.img_1);
-        newProj=findViewById(R.id.img_4);
+        joblist = findViewById(R.id.img_6);
+        lock = findViewById(R.id.btn_2);
+        keyLic = findViewById(R.id.img00);
+        wif = findViewById(R.id.img01);
+        toDueD = findViewById(R.id.img_3);
+        toMachines = findViewById(R.id.img_2);
+        toUser = findViewById(R.id.img_1);
+        newProj = findViewById(R.id.img_4);
+        appInfo = findViewById(R.id.btn_3);
         try {
             String s = MyData.get_String("progettoSelected");
             s = s.replace("/storage/emulated/0/StonexMachineControl", "");
@@ -115,22 +119,25 @@ public class Activity_Home_Page extends AppCompatActivity {
 
         progressBar.setVisibility(View.INVISIBLE);
         stringsStat.setVisibility(View.INVISIBLE);
-        if(KEY_LEVEL<3){
+        if (KEY_LEVEL < 3) {
             newProj.setAlpha(0.3f);
             toDig.setAlpha(0.3f);
             joblist.setAlpha(0.3f);
         }
-        if(DataSaved.isWL>0){
+        if (DataSaved.isWL > 0) {
             toDueD.setAlpha(0.3f);
         }
 
     }
 
     private void onClick() {
+        appInfo.setOnClickListener(view -> {
+
+        });
         toDueD.setOnClickListener(view -> {
-            if(DataSaved.isWL>0){
-                new CustomToast(this," ").show_alert();
-            }else {
+            if (DataSaved.isWL > 0) {
+                new CustomToast(this, " ").show_alert();
+            } else {
                 //TODO apri 2D
             }
         });
@@ -141,11 +148,13 @@ public class Activity_Home_Page extends AppCompatActivity {
             finish();
         });
         newProj.setOnClickListener(view -> {
-            if(KEY_LEVEL>2){
-
-        }else {
-            new CustomToast(this,"Missing 3D License").show_error();
-        }
+            if (KEY_LEVEL > 2) {
+                if (!dialogCreateNewPrj.dialog.isShowing()) {
+                    dialogCreateNewPrj.show();
+                }
+            } else {
+                new CustomToast(this, "Missing 3D License").show_error();
+            }
         });
         lock.setOnClickListener(view -> {
             if (!isTech) {
@@ -156,13 +165,13 @@ public class Activity_Home_Page extends AppCompatActivity {
 
         });
         joblist.setOnClickListener((View v) -> {
-            if(KEY_LEVEL>2) {
+            if (KEY_LEVEL > 2) {
                 enableAll(false);
                 startActivity(new Intent(this, PickProject.class));
                 overridePendingTransition(0, 0);
                 finish();
-            }else {
-                new CustomToast(this,"Missing 3D License").show_error();
+            } else {
+                new CustomToast(this, "Missing 3D License").show_error();
             }
         });
         close.setOnClickListener(view -> {
@@ -198,6 +207,7 @@ public class Activity_Home_Page extends AppCompatActivity {
         toDueD.setEnabled(b);
         toUser.setEnabled(b);
         toMachines.setEnabled(b);
+        appInfo.setEnabled(b);
     }
 
     public void updateUI() {

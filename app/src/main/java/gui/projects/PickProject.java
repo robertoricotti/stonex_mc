@@ -33,7 +33,7 @@ public class PickProject extends BaseClass {
     CustomQwertyDialog customQwertyDialog;
     Dialog_PRJ_Folder dialogPrjFolder;
     String path = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
-    ;
+
     RecyclerView recyclerView;
     ImageView back, confirm, rename;
     String fileName = "";
@@ -136,8 +136,6 @@ public class PickProject extends BaseClass {
 
         confirm.setOnClickListener((View v) -> {
             try {
-
-
                 if (projectAdapter.getSelectedItem() == -1) {
                     new CustomToast(this, getResources().getString(R.string.select_file)).show();
                 } else {
@@ -162,8 +160,6 @@ public class PickProject extends BaseClass {
                                     }
                                 }
                             }
-
-                            //TODO dialog per gestire progetti nella cartella
 
                             for (String fileName : dxfPstxFiles) {
                                 Log.d("FolderFiles", fileName);

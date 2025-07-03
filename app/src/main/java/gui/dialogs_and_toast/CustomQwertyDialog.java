@@ -1,9 +1,14 @@
 package gui.dialogs_and_toast;
 
+import static gui.MyApp.folderPath;
+
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -15,7 +20,11 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import java.io.File;
+
 import gui.projects.Dialog_Edita_Punti3D;
+import gui.projects.Dialog_PRJ_Folder;
+import gui.projects.PickProject;
 import gui.projects.ProjectFileAdapter;
 import gui.projects.Punti3DAdapter;
 import utils.FullscreenActivity;
@@ -37,6 +46,7 @@ public class CustomQwertyDialog {
     ProjectFileAdapter projectFileAdapter;
     Punti3DAdapter punti3DAdapter;
     String path = "";
+    Dialog_PRJ_Folder dialogPrjFolder;
 
     boolean c = true;
 
@@ -100,6 +110,7 @@ public class CustomQwertyDialog {
         this.path=path;
         this.flag = flag;
         this.projectFileAdapter = projectFileAdapter;
+        dialogPrjFolder=new Dialog_PRJ_Folder(activity);
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
         if (window != null) {
@@ -248,6 +259,46 @@ public class CustomQwertyDialog {
                     index = -1;
                     flag = -1;
                     dialog.dismiss();
+                }
+
+            } else if (flag==997) {
+
+                if (getName() != null) {
+                    boolean isOK=false;
+                    String fullPath=Environment.getExternalStorageDirectory().getAbsolutePath() + folderPath + "/Projects/"+getName();
+                    File directory = new File(fullPath);
+                    if (!directory.exists()) {
+                        boolean created = directory.mkdirs();
+                        if (created) {
+                            isOK=true;
+                            new CustomToast(activity,fullPath).show_alert();
+                            Log.d("FolderCreation", "Cartella creata: " + fullPath);
+                        } else {
+                            isOK=false;
+                            new CustomToast(activity,getName()+" Error").show_error();
+                            Log.e("FolderCreation", "Errore nella creazione della cartella");
+                        }
+                    } else {
+                        isOK=false;
+                        new CustomToast(activity,getName()+" Already Exists").show_error();
+                        Log.d("FolderCreation", "Cartella già esistente: " + fullPath);
+                    }
+                    index = -1;
+                    flag = -1;
+                    if(isOK){
+                        try {
+
+                            if (!dialogPrjFolder.dialog.isShowing()) {
+                                dialogPrjFolder.show(fullPath);
+                            }
+                        } catch (Exception e) {
+                            dialog.dismiss();
+                        }
+
+                        dialog.dismiss();
+                    }
+                    dialog.dismiss();
+
                 }
 
             } else if (flag==998) {
