@@ -61,7 +61,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
     ArrayList<ProjectAdapter.FileItem> arrayFiles;
     String mPath, fileName, filenamePoly, filenamePoint, filenameJson;
      ProjectAdapter projectAdapter;
-     public static ProjectFileAdapter spAdapter;
+     ProjectFileAdapter spAdapter;
     ProgressBar progressBar;
     boolean isUpdating = false;
     private Handler handler;
@@ -179,7 +179,6 @@ public class Dialog_PRJ_Folder extends BaseClass {
                 @Override
                 public void onItemSelected(String selectedItem) {
                     new CustomToast(activity, "Geoid: " + selectedItem).show_added();
-
                     if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
                         MyGeoide.setGeoid("null");
                         MyData.push("usaGeoide", String.valueOf(false));
