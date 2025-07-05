@@ -12,23 +12,25 @@ import android.widget.ImageView;
 
 import com.example.stx_dig.R;
 
-import gui.projects.Remote_Activity;
 import gui.projects.Usb_Project_Nova;
 import utils.FullscreenActivity;
 
-public class Dialog_Create_New_Prj {
+
+public class Dialog_Add_Surfaces {
     Activity activity;
     public Dialog dialog;
-    ImageView cancel, nuovo, daUsb,dacloud;
-    CustomQwertyDialog customQwertyDialog;
-    public Dialog_Create_New_Prj(Activity activity){
+    ImageView close,usb,flat,ab,area,trincea,triangoli;
+    String mPath;
+
+    public Dialog_Add_Surfaces(Activity activity,String mPath){
         this.activity=activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        this.mPath=mPath;
 
     }
     public void show(){
         dialog.create();
-        dialog.setContentView(R.layout.dialog_create_new_prj);
+        dialog.setContentView(R.layout.dialog_add_new_surgaces);
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
         if (window != null) {
@@ -48,41 +50,25 @@ public class Dialog_Create_New_Prj {
         findView();
         onClick();
     }
+
     private void findView(){
-        customQwertyDialog=new CustomQwertyDialog(activity);
-        cancel=dialog.findViewById(R.id.cancel);
-        nuovo=dialog.findViewById(R.id.nuovo);
-        daUsb =dialog.findViewById(R.id.usb);
-        dacloud=dialog.findViewById(R.id.add);
+        close=dialog.findViewById(R.id.cancel);
+        usb=dialog.findViewById(R.id.usb);
+        flat=dialog.findViewById(R.id.flat);
+        ab=dialog.findViewById(R.id.ab);
+        area=dialog.findViewById(R.id.flatarea);
+        trincea=dialog.findViewById(R.id.trench);
+        triangoli=dialog.findViewById(R.id.terrein);
 
     }
     private void onClick(){
-        cancel.setOnClickListener(view -> {
+        close.setOnClickListener(view -> {
             dialog.dismiss();
         });
-        nuovo.setOnClickListener(view -> {
-
-            if(!customQwertyDialog.dialog.isShowing()){
-                customQwertyDialog.show(997,null,null,null);
-                dialog.dismiss();
-            }
-
-        });
-
-        daUsb.setOnClickListener(view -> {
-
+        usb.setOnClickListener(view -> {
             Intent intent=new Intent(activity, Usb_Project_Nova.class);
-            intent.putExtra("usb","main");
+            intent.putExtra("usb",mPath);
             activity.startActivity(intent);
-            activity.overridePendingTransition(0, 0);
-            activity.finish();
-            dialog.dismiss();
-        });
-        dacloud.setOnClickListener(view -> {
-            new CustomToast(activity, "NOT IMPLEMENTED").show();
-            Intent intent = new Intent(activity, Remote_Activity.class);
-            activity.startActivity(intent);
-            activity.overridePendingTransition(0, 0);
             activity.finish();
             dialog.dismiss();
         });

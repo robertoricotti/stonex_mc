@@ -25,9 +25,19 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
     private int selectedItem = -1;
     private boolean isFold = false;
 
+    private int filterType = 0; // 0 = tutti, 1 = solo cartelle, 2 = solo file
+    private ArrayList<FileItem> originalFiles; // per conservare l'elenco completo
+
     public ProjectFileAdapter(ArrayList<FileItem> filesName) {
         files = filesName;
     }
+    public ProjectFileAdapter(ArrayList<FileItem> filesName, int filterType) {
+        this.originalFiles = new ArrayList<>(filesName);
+        this.filterType = filterType;
+        this.files = new ArrayList<>();
+        applyFilter();
+    }
+
 
     @NonNull
     @Override
@@ -88,6 +98,8 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
                 icon.setImageResource(R.drawable.image_cs);
             } else if (nameFile.startsWith("#AR_#")) {
                 icon.setImageResource(R.drawable.area_image);
+            } else if (nameFile.startsWith("pstx")) {
+                icon.setImageResource(R.drawable.canale_benna);
             }
             sizeTextView.setText(formatSize(fileSize));
         }
@@ -238,5 +250,25 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
+
+    public void setFilterType(int filter) {
+        this.filterType = filter;
+        applyFilter();
+    }
+    private void applyFilter() {
+        files.clear();
+        for (FileItem item : originalFiles) {
+            if (filterType == 0) {
+                files.add(item); // mostra tutto
+            } else if (filterType == 1 && item.isFolder()) {
+                files.add(item); // solo cartelle
+            } else if (filterType == 2 && !item.isFolder()) {
+                files.add(item); // solo file
+            }
+        }
+        selectedItem = -1; // reset selezione
+        notifyDataSetChanged();
+    }
+
 
 }

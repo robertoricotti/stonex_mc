@@ -230,8 +230,9 @@ public class PickProject extends BaseClass {
                         arrayFiles.remove(selectedItem);
                         projectAdapter.notifyItemRemoved(selectedItem);
                         projectAdapter.notifyItemRangeChanged(selectedItem, arrayFiles.size());
+                        projectAdapter.setSelectedItem(-1);
                         new CustomToast(PickProject.this, fileName + " " + getResources().getString(R.string.deleted)).show();
-                        recreate();
+
 
 
                     });

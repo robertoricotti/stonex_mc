@@ -3,6 +3,7 @@ package gui.projects;
 import static gui.MyApp.folderPath;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +13,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.storage.StorageManager;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -36,6 +40,8 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
@@ -54,16 +60,27 @@ public class Usb_Project_Nova extends AppCompatActivity {
     ArrayList<ProjectFileAdapter.FileItem> filesProj, filesIN;
     ProjectFileAdapter adapterProj, adapterMC;
     static String usbPath;
-    ProgressBar progressBar;
-    final String APP_PATH = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
 
+    String APP_PATH = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
+    String s;
     boolean unmount;
+    int filterType;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_usb_nuova);
+        Intent intent=getIntent();
+        s=intent.getStringExtra("usb");
+        if(s.equals("main")){
+            APP_PATH=Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
+            filterType=1;
+        }else {
+            APP_PATH=s;
+            filterType=2;
+        }
+        Log.d("APP_PATH",s);
         usbPath = MyData.get_String("_usbPath");
         findView();
         init();
@@ -71,6 +88,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
         updateUI();
         MyDeviceManager.host(this);
         unmount = false;
+
     }
 
     @Override
@@ -98,8 +116,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
         textView = findViewById(R.id.txt1);
         txt2=findViewById(R.id.txt2);
         usb_remove = findViewById(R.id.delete);
-        progressBar = findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
+
 
 
     }
@@ -124,16 +141,23 @@ public class Usb_Project_Nova extends AppCompatActivity {
                 }
                 new CustomToast(this, "USB EJECTED").show_long();
                 unmount = true;
-                //back.callOnClick();
+
             } catch (Exception e) {
                 new CustomToast(this, e.toString()).show();
             }
         });
         back.setOnClickListener((View v) -> {
-            back.setEnabled(false);
-            startActivity(new Intent(this, Activity_Home_Page.class));
-            overridePendingTransition(0, 0);
-            finish();
+            if(s.equals("main")) {
+                back.setEnabled(false);
+                startActivity(new Intent(this, Activity_Home_Page.class));
+                overridePendingTransition(0, 0);
+                finish();
+            }else {
+                back.setEnabled(false);
+                startActivity(new Intent(this, PickProject.class));
+                overridePendingTransition(0, 0);
+                finish();
+            }
         });
 
         update.setOnClickListener((View v) -> {
@@ -147,7 +171,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
         read.setOnClickListener((View v) -> {
             if (enImport) {
                 showProgress();
-                (new Handler()).postDelayed(this::importFromUSB, 1500);
+                (new Handler()).postDelayed(this::importFromUSB, 500);
 
             }
         });
@@ -155,7 +179,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
         write.setOnClickListener((View v) -> {
             if (enExport) {
                 showProgress();
-                (new Handler()).postDelayed(this::exportToUSB, 1500);
+                (new Handler()).postDelayed(this::exportToUSB, 500);
 
             }
         });
@@ -164,7 +188,6 @@ public class Usb_Project_Nova extends AppCompatActivity {
     }
 
     public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
         read.setVisibility(View.INVISIBLE);
         write.setVisibility(View.INVISIBLE);
         usb_remove.setVisibility(View.INVISIBLE);
@@ -177,7 +200,6 @@ public class Usb_Project_Nova extends AppCompatActivity {
 
     public void hideProgress() {
 
-        progressBar.setVisibility(View.INVISIBLE);
         read.setVisibility(View.VISIBLE);
         write.setVisibility(View.VISIBLE);
         usb_remove.setVisibility(View.VISIBLE);
@@ -188,21 +210,6 @@ public class Usb_Project_Nova extends AppCompatActivity {
     }
 
     public void updateUI() {
-
-        if (progressBar.getVisibility() != View.VISIBLE) {
-            if (UsbReceiver.usbIsConnected) {
-                usb_remove.setVisibility(View.VISIBLE);
-            } else {
-                usb_remove.setVisibility(View.INVISIBLE);
-            }
-        }
-
-        if (progressBar.getVisibility() == View.VISIBLE) {
-            controllo++;
-        }
-        if (controllo > 1000) {
-            hideProgress();
-        }
 
         if (adapterProj != null) {
             enExport = adapterProj.getSelectedItem() > -1;
@@ -259,7 +266,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
                 filesProj.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
             }
 
-            adapterProj = new ProjectFileAdapter(filesProj);
+            adapterProj = new ProjectFileAdapter(filesProj,filterType);
             recyclerProj.setAdapter(adapterProj);
             recyclerProj.setLayoutManager(new LinearLayoutManager(this));
             recyclerProj.setItemViewCacheSize(adapterProj.getItemCount());
@@ -295,7 +302,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
                         long size = file.isDirectory() ? getFolderSize(file) : file.length();
                         filesIN.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
                     }
-                    adapterMC = new ProjectFileAdapter(filesIN);
+                    adapterMC = new ProjectFileAdapter(filesIN,filterType);
                     recyclerIn.setAdapter(adapterMC);
                     recyclerIn.setLayoutManager(new LinearLayoutManager(this));
                     recyclerIn.setItemViewCacheSize(adapterMC.getItemCount());
@@ -318,8 +325,56 @@ public class Usb_Project_Nova extends AppCompatActivity {
             }
         }
     }
+    public void importFromUSB() {
+        String foldername = "STX_MC";
+        showProgress();
+
+        File usbFolder = new File(getStoragePath(this, true), foldername);
+
+        if (usbFolder.exists() && usbFolder.isDirectory()) {
+            if (adapterMC != null && adapterMC.getSelectedItem() > -1) {
+                File selectedFileOrFolder = new File(usbFolder, adapterMC.getSelectedFilePath());
+                File destination = new File(APP_PATH, adapterMC.getSelectedFilePath());
+
+                if (destination.exists()) {
+                    hideProgress(); // nasconde subito lo spinner mentre aspettiamo risposta
+
+                    new AlertDialog.Builder(this)
+                            .setTitle("Sovrascrivere?")
+                            .setMessage("Il file/cartella \"" + destination.getName() + "\" esiste già. Vuoi sovrascrivere?")
+                            .setPositiveButton("Sì", (dialog, which) -> {
+                                showProgress(); // rimostriamo lo spinner
+                                try {
+                                    copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
+                                } catch (Exception e) {
+                                    new CustomToast(this, "Errore: " + e.getMessage()).show_error();
+                                    hideProgress();
+                                }
+                            })
+                            .setNegativeButton("No", (dialog, which) -> {
+                                new CustomToast(this, "Importazione annullata").show();
+                            })
+                            .show();
+                } else {
+                    try {
+                        copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
+                    } catch (Exception e) {
+                        new CustomToast(this, "Errore: " + e.getMessage()).show_error();
+                        hideProgress();
+                    }
+                }
+            } else {
+                new CustomToast(this, "Nessun file selezionato").show();
+                hideProgress();
+            }
+        } else {
+            new CustomToast(this, "Cartella 'STX_MC' non trovata sulla chiavetta USB").show();
+            hideProgress();
+        }
+    }
 
 
+/*
     public void importFromUSB() {
         String foldername = "STX_MC";
         //IN or OUT
@@ -334,32 +389,11 @@ public class Usb_Project_Nova extends AppCompatActivity {
                     File destination = new File(APP_PATH, adapterMC.getSelectedFilePath());
 
                     try {
-
-                        if (selectedFileOrFolder.isDirectory()) {
-                            copyFolder(selectedFileOrFolder, destination);
-                        } else {
-                            if (!destination.exists()) {
-                                InputStream in = new FileInputStream(selectedFileOrFolder);
-                                OutputStream out = new FileOutputStream(destination);
-
-                                byte[] buffer = new byte[1024];
-                                int length;
-                                while ((length = in.read(buffer)) > 0) {
-                                    out.write(buffer, 0, length);
-                                }
-
-                                in.close();
-                                out.close();
-                            }
-                        }
-
-                        new CustomToast(this, "Import successful").show();
-                        hideProgress();
-
-                    } catch (IOException e) {
-                        new CustomToast(this, "Error during import: " + e.getMessage()).show_error();
-                        hideProgress();
+                        copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
+                    } catch (Exception e) {
+                        new CustomToast(this, "Errore: " + e.getMessage()).show_error();
                     }
+
                 } else {
                     new CustomToast(this, "No Files Selected").show();
                 }
@@ -373,8 +407,64 @@ public class Usb_Project_Nova extends AppCompatActivity {
             hideProgress();
         }
     }
+*/
 
 
+    private void exportToUSB() {
+        String nameFolder = "STX_MC";
+        showProgress();
+        File usbFolder = new File(getStoragePath(this, true), nameFolder);
+
+        if (usbFolder.exists() && usbFolder.isDirectory()) {
+            File projectFolder = new File(APP_PATH);
+
+            if (adapterProj != null && adapterProj.getSelectedItem() > -1) {
+                File selectedFileOrFolder = new File(projectFolder, adapterProj.getSelectedFilePath());
+                File destination = new File(usbFolder, adapterProj.getSelectedFilePath());
+
+                if (destination.exists()) {
+                    hideProgress(); // fermiamo subito lo spinner prima della scelta
+
+                    new AlertDialog.Builder(this)
+                            .setTitle("Sovrascrivere?")
+                            .setMessage("Il file/cartella \"" + destination.getName() + "\" esiste già sulla USB. Vuoi sovrascrivere?")
+                            .setPositiveButton("Sì", (dialog, which) -> {
+                                showProgress(); // lo riattiviamo se l'utente accetta
+                                try {
+                                    copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
+                                } catch (Exception e) {
+                                    new CustomToast(this, "Errore: " + e.getMessage()).show_error();
+                                    hideProgress();
+                                }
+                            })
+                            .setNegativeButton("No", (dialog, which) -> {
+                                new CustomToast(this, "Esportazione annullata").show();
+                            })
+                            .show();
+                } else {
+                    try {
+                        copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
+                    } catch (Exception e) {
+                        new CustomToast(this, "Errore: " + e.getMessage()).show_error();
+                        hideProgress();
+                    }
+                }
+            } else {
+                new CustomToast(this, "Nessun file selezionato").show();
+                hideProgress();
+            }
+
+            readProjectFolder();
+            readFromUSB_MC(usbPath);
+
+        } else {
+            new CustomToast(this, "Cartella '" + nameFolder + "' non trovata sulla chiavetta USB").show();
+            (new Handler()).postDelayed(this::hideProgress, 1500);
+        }
+    }
+
+
+    /*
     private void exportToUSB() {
         // MC
         String nameFolder = "STX_MC";
@@ -391,32 +481,11 @@ public class Usb_Project_Nova extends AppCompatActivity {
                     File destination = new File(usbFolder, adapterProj.getSelectedFilePath());
 
                     try {
-
-                        if (selectedFileOrFolder.isDirectory()) {
-                            copyFolder(selectedFileOrFolder, destination);
-                        } else {
-                            if (!destination.exists()) {
-                                InputStream in = new FileInputStream(selectedFileOrFolder);
-                                OutputStream out = new FileOutputStream(destination);
-
-                                byte[] buffer = new byte[1024];
-                                int length;
-                                while ((length = in.read(buffer)) > 0) {
-                                    out.write(buffer, 0, length);
-                                }
-
-                                in.close();
-                                out.close();
-                            }
-                        }
-
-                        new CustomToast(this, "Export successful").show();
-                        hideProgress();
-
-                    } catch (IOException e) {
-                        new CustomToast(this, "Error during export: " + e.getMessage()).show_error();
-                        hideProgress();
+                        copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
+                    } catch (Exception e) {
+                        new CustomToast(this, "Errore: " + e.getMessage()).show_error();
                     }
+
                 } else {
                     new CustomToast(this, "No Files Selected").show();
                     hideProgress();
@@ -432,7 +501,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
         }
     }
 
-
+*/
 
 
 
@@ -564,6 +633,97 @@ public class Usb_Project_Nova extends AppCompatActivity {
             }
         }
         return length;
+    }
+    private void copyWithProgress(File source, File destination, boolean isFolder) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.progress_dialog, null);
+        ProgressBar progressBar = dialogView.findViewById(R.id.progress_bar);
+        TextView progressText = dialogView.findViewById(R.id.progress_text);
+
+        AlertDialog progressDialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+        progressDialog.show();
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() -> {
+            try {
+                if (isFolder) {
+                    long totalSize = getFolderSize(source);
+                    long[] copied = {0};
+                    copyFolderWithProgress(source, destination, totalSize, copied, handler, progressBar, progressText);
+                } else {
+                    long totalSize = source.length();
+                    try (
+                            InputStream in = new FileInputStream(source);
+                            OutputStream out = new FileOutputStream(destination)
+                    ) {
+                        byte[] buffer = new byte[4096];
+                        int length;
+                        long copiedBytes = 0;
+
+                        while ((length = in.read(buffer)) > 0) {
+                            out.write(buffer, 0, length);
+                            copiedBytes += length;
+                            int percent = (int) ((copiedBytes * 100) / totalSize);
+
+                            int finalPercent = percent;
+                            handler.post(() -> {
+                                progressBar.setProgress(finalPercent);
+                                progressText.setText("Copying... " + finalPercent + "%");
+                            });
+                        }
+                    }
+                }
+
+                handler.post(() -> {
+                    progressDialog.dismiss();
+                    hideProgress();
+                    new CustomToast(this, "Import successful").show();
+                    readProjectFolder();
+                    readFromUSB_MC(usbPath);
+                });
+
+            } catch (IOException e) {
+                handler.post(() -> {
+                    progressDialog.dismiss();
+                    hideProgress();
+                    new CustomToast(this, "Error: " + e.getMessage()).show_error();
+                });
+            }
+        });
+    }
+    private void copyFolderWithProgress(File src, File dest, long totalSize, long[] copied, Handler handler, ProgressBar bar, TextView text) throws IOException {
+        if (!dest.exists()) dest.mkdirs();
+        File[] files = src.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                File target = new File(dest, file.getName());
+                if (file.isDirectory()) {
+                    copyFolderWithProgress(file, target, totalSize, copied, handler, bar, text);
+                } else {
+                    try (
+                            InputStream in = new FileInputStream(file);
+                            OutputStream out = new FileOutputStream(target)
+                    ) {
+                        byte[] buffer = new byte[4096];
+                        int length;
+                        while ((length = in.read(buffer)) > 0) {
+                            out.write(buffer, 0, length);
+                            copied[0] += length;
+                            int percent = (int) ((copied[0] * 100) / totalSize);
+                            handler.post(() -> {
+                                bar.setProgress(percent);
+                                text.setText("Copying... " + percent + "%");
+                            });
+                        }
+                    }
+                }
+            }
+        }
     }
 
 

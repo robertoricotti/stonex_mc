@@ -152,8 +152,6 @@ public class Activity_Home_Page extends AppCompatActivity {
                 if (!dialogCreateNewPrj.dialog.isShowing()) {
                     dialogCreateNewPrj.show();
                 }
-            } else {
-                new CustomToast(this, "Missing 3D License").show_error();
             }
         });
         lock.setOnClickListener(view -> {
@@ -170,8 +168,6 @@ public class Activity_Home_Page extends AppCompatActivity {
                 startActivity(new Intent(this, PickProject.class));
                 overridePendingTransition(0, 0);
                 finish();
-            } else {
-                new CustomToast(this, "Missing 3D License").show_error();
             }
         });
         close.setOnClickListener(view -> {
@@ -182,14 +178,12 @@ public class Activity_Home_Page extends AppCompatActivity {
 
         toDig.setOnClickListener((View v) -> {
 
-            enableAll(false);
+
             if (KEY_LEVEL > 2) {
+                enableAll(false);
                 progressBar.setVisibility(View.VISIBLE);
                 stringsStat.setVisibility(View.VISIBLE);
                 startService(new Intent(this, ReadProjectService.class));
-            } else {
-                enableAll(true);
-                new CustomToast(this, "LICENSE MISSED").show_alert();
             }
 
         });

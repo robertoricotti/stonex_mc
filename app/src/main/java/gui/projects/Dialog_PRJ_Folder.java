@@ -41,6 +41,7 @@ import gui.dialogs_and_toast.CustomMenu;
 import gui.dialogs_and_toast.CustomMenuLista;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Diaalog_Set_SP;
+import gui.dialogs_and_toast.Dialog_Add_Surfaces;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.MyGeoide;
 import serial.SerialPortManager;
@@ -66,6 +67,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
     boolean isUpdating = false;
     private Handler handler;
     Diaalog_Set_SP diaalogSetSp;
+    Dialog_Add_Surfaces dialogAddSurfaces;
 
 
     public Dialog_PRJ_Folder(Activity activity) {
@@ -110,6 +112,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
         setGeoide=dialog.findViewById(R.id.geoidA);
         addSurf=dialog.findViewById(R.id.add_surf);
         diaalogSetSp=new Diaalog_Set_SP(activity);
+        dialogAddSurfaces=new Dialog_Add_Surfaces(activity,mPath);
 
     }
 
@@ -159,8 +162,13 @@ public class Dialog_PRJ_Folder extends BaseClass {
     }
 
     public void onClick() {
+        addSurf.setOnClickListener(view -> {
+            if(!dialogAddSurfaces.dialog.isShowing()){
+                dialogAddSurfaces.show();
+            }
+        });
         setGeoide.setOnClickListener(view -> {
-            CustomMenuLista customMenu = new CustomMenuLista(activity, MyData.get_String("geoidPath").substring(MyData.get_String("geoidPath").lastIndexOf("/")));
+            CustomMenuLista customMenu = new CustomMenuLista(activity, "");
 
             if (geoidAll == null || geoidAll.length == 0) {
                 new CustomToast(activity, "No Geoid Found").show_error();

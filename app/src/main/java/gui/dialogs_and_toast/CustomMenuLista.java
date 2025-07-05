@@ -20,6 +20,7 @@ import com.example.stx_dig.R;
 import java.util.List;
 
 import utils.FullscreenActivity;
+import utils.MyData;
 
 public class CustomMenuLista {
     private Activity activity;
@@ -62,7 +63,7 @@ public class CustomMenuLista {
         title = alertDialog.findViewById(R.id.menuTitle);
         listView = alertDialog.findViewById(R.id.listView);
         chiudi=alertDialog.findViewById(R.id.chiudi);
-        title.setText(titolo);
+        title.setText(String.valueOf(MyData.get_String("geoidPath")));
 
         chiudi.setOnClickListener(view -> {
             alertDialog.dismiss();
