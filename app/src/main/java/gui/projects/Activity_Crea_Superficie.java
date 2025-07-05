@@ -1,6 +1,7 @@
 package gui.projects;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -26,6 +27,7 @@ import dxf.Point3D;
 import dxf.Polyline;
 import gui.BaseClass;
 import gui.MyApp;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Dialog_Edit_Zeta;
 import gui.dialogs_and_toast.Dialog_Edita_Punti;
@@ -34,6 +36,7 @@ import gui.dialogs_and_toast.HeadingDialog;
 import gui.dialogs_user_settings.DialogColors;
 import gui.dialogs_user_settings.DialogUnitOfMeasure;
 import gui.draw_class.MyColorClass;
+import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 import packexcalib.exca.ExcavatorLib;
@@ -44,7 +47,8 @@ import utils.MyData;
 import utils.Utils;
 
 public class Activity_Crea_Superficie extends BaseClass {
-    public static List<Face3D>facceTrench;
+    Activity previousActivity;
+    public static List<Face3D> facceTrench;
     public static Polyline polyTrench;
     public static int indexSel;
     static int countPunti;
@@ -123,7 +127,7 @@ public class Activity_Crea_Superficie extends BaseClass {
         DataSaved.scale_Factor3D = MyData.get_Double("scaleFactor3D");
         try {
             tipo = getIntent().getStringExtra("type");
-            percorso = MyData.get_String("progettoSelected").substring(0, MyData.get_String("progettoSelected").lastIndexOf("/"));
+            percorso = getIntent().getStringExtra("mPath");
             Log.d("mioPercorso", percorso);
             switch (tipo) {
                 case "OVER":
@@ -177,8 +181,8 @@ public class Activity_Crea_Superficie extends BaseClass {
                     statiImg.setImageResource(R.drawable.polyline);
                     Canvas_Crea_Superficie.mode = 3;
                     point3DS = new Point3D[0];
-                    facceTrench=new ArrayList<>();
-                    polyTrench=new Polyline();
+                    facceTrench = new ArrayList<>();
+                    polyTrench = new Polyline();
 
                     break;
 
@@ -341,10 +345,10 @@ public class Activity_Crea_Superficie extends BaseClass {
                     break;
                 case 3:
                     //TODO
-                    if(point3DS!=null&&point3DS.length>1) {
+                    if (point3DS != null && point3DS.length > 1) {
                         new Dialog_Trench(this, point3DS).show();
-                    }else {
-                        new CustomToast(this,"Pick at least 2 points").show_alert();
+                    } else {
+                        new CustomToast(this, "Pick at least 2 points").show_alert();
                     }
                     break;
 
@@ -430,9 +434,7 @@ public class Activity_Crea_Superficie extends BaseClass {
                             headingDialog.show();
                         }
                     } else {
-                        startActivity(new Intent(this, Projects.class));
-                        overridePendingTransition(0, 0);
-                        finish();
+                        setAct();
                     }
                     break;
                 case 1:
@@ -441,9 +443,7 @@ public class Activity_Crea_Superficie extends BaseClass {
                             headingDialog.show();
                         }
                     } else {
-                        startActivity(new Intent(this, Projects.class));
-                        overridePendingTransition(0, 0);
-                        finish();
+                        setAct();
                     }
                     break;
 
@@ -453,9 +453,7 @@ public class Activity_Crea_Superficie extends BaseClass {
                             headingDialog.show();
                         }
                     } else {
-                        startActivity(new Intent(this, Projects.class));
-                        overridePendingTransition(0, 0);
-                        finish();
+                        setAct();
                     }
 
                     break;
@@ -468,14 +466,10 @@ public class Activity_Crea_Superficie extends BaseClass {
                                 headingDialog.show();
                             }
                         } else {
-                            startActivity(new Intent(this, Projects.class));
-                            overridePendingTransition(0, 0);
-                            finish();
+                            setAct();
                         }
                     } else {
-                        startActivity(new Intent(this, Projects.class));
-                        overridePendingTransition(0, 0);
-                        finish();
+                        setAct();
                     }
                     break;
             }
@@ -599,8 +593,8 @@ public class Activity_Crea_Superficie extends BaseClass {
 
             }
         }
-        if(Canvas_Crea_Superficie.mode==3){
-            if(point3DS!=null){
+        if (Canvas_Crea_Superficie.mode == 3) {
+            if (point3DS != null) {
                 if (point3DS.length > 0) {
                     remove.setVisibility(View.VISIBLE);
                 } else {
@@ -717,9 +711,9 @@ public class Activity_Crea_Superficie extends BaseClass {
                 pointIndex = 0;
                 break;
             case 3:
-                point3DS=null;
-                Dialog_Trench.leftS_d=0;
-                Dialog_Trench.rightS_d=0;
+                point3DS = null;
+                Dialog_Trench.leftS_d = 0;
+                Dialog_Trench.rightS_d = 0;
                 break;
             case 4:
                 point3DS = null;
@@ -810,6 +804,24 @@ public class Activity_Crea_Superficie extends BaseClass {
 
         // Mostra il dialog
         builder.show();
+    }
+
+    private void setAct() {
+        if (getIntent().getStringExtra("whoPRJ") != null) {
+            if (getIntent().getStringExtra("whoPRJ").equals("DIG")) {
+                startActivity(new Intent(this, My3DActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+            } else {
+                startActivity(new Intent(this, Activity_Home_Page.class));
+                overridePendingTransition(0, 0);
+                finish();
+            }
+        } else {
+            startActivity(new Intent(this, Activity_Home_Page.class));
+            overridePendingTransition(0, 0);
+            finish();
+        }
     }
 
 }

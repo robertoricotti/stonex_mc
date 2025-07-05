@@ -152,6 +152,18 @@
     <string name="fydro_no">CONTROLO HIDRÁULICO AINDA NÃO IMPLEMENTADO</string>
     <string name="treddi_acxtive">Perfis Disponíveis apenas no modo 1D/2D</string>
     <string name="treddi_off">Disponível apenas no modo 3D</string>
+    <!-- novas strings -->
+    <string name="menu_utente">CONFIGURAÇÕES DO USUÁRIO</string>
+    <string name="menu_macchine">CONFIGURAÇÕES DA MÁQUINA</string>
+    <string name="nuovo_progetto">NOVO PROJETO</string>
+    <string name="lista_lavori">LISTA DE TRABALHOS</string>
+    <string name="rimuovi_usb">REMOVER PEN DRIVE</string>
+    <string name="rimozione_sicura">REMOVA O USB COM SEGURANÇA ANTES DE SAIR</string>
+    <string name="progetti_non_trovata">Pasta de projetos não encontrada</string>
+    <string name="stxmc_creata">Pasta STX_MC criada no pen drive</string>
+    <string name="stxmc_fallita">Falha ao criar a pasta STX_MC no pen drive</string>
+    <string name="stxmc_nontrovata">Pen drive não encontrado</string>
+    <string name="sovrascrivere">Sobrescrever?</string>
 
 
 </resources>

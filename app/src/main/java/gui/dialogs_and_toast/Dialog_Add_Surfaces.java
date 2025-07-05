@@ -12,6 +12,9 @@ import android.widget.ImageView;
 
 import com.example.stx_dig.R;
 
+import gui.my_opengl.My3DActivity;
+import gui.projects.Activity_Crea_Superficie;
+import gui.projects.Dialog_PRJ_Folder;
 import gui.projects.Usb_Project_Nova;
 import utils.FullscreenActivity;
 
@@ -21,11 +24,17 @@ public class Dialog_Add_Surfaces {
     public Dialog dialog;
     ImageView close,usb,flat,ab,area,trincea,triangoli;
     String mPath;
+    String chiamata="HOME";
 
     public Dialog_Add_Surfaces(Activity activity,String mPath){
         this.activity=activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         this.mPath=mPath;
+        if (activity instanceof My3DActivity){
+            chiamata="DIG";
+        }else {
+            chiamata="HOME";
+        }
 
     }
     public void show(){
@@ -62,6 +71,7 @@ public class Dialog_Add_Surfaces {
 
     }
     private void onClick(){
+
         close.setOnClickListener(view -> {
             dialog.dismiss();
         });
@@ -71,6 +81,77 @@ public class Dialog_Add_Surfaces {
             activity.startActivity(intent);
             activity.finish();
             dialog.dismiss();
+        });
+
+        flat.setOnClickListener(view -> {
+            Dialog_PRJ_Folder dialogPrjFolder=new Dialog_PRJ_Folder(activity);
+            if(dialogPrjFolder.dialog.isShowing()){
+                dialogPrjFolder.dialog.dismiss();
+            }
+            Intent intent = new Intent(activity, Activity_Crea_Superficie.class);
+            intent.putExtra("proj", "PLAN");
+            intent.putExtra("type", "OVER"); // Passa il valore OVER
+            intent.putExtra("whoPRJ",chiamata);
+            intent.putExtra("mPath",mPath);
+            activity.startActivity(intent);
+            dialog.dismiss();
+            activity.finish();
+        });
+        ab.setOnClickListener(view -> {
+            Dialog_PRJ_Folder dialogPrjFolder=new Dialog_PRJ_Folder(activity);
+            if(dialogPrjFolder.dialog.isShowing()){
+                dialogPrjFolder.dialog.dismiss();
+            }
+            Intent intent = new Intent(activity, Activity_Crea_Superficie.class);
+            intent.putExtra("proj", "AB");
+            intent.putExtra("type", "OVER"); // Passa il valore OVER
+            intent.putExtra("whoPRJ",chiamata);
+            intent.putExtra("mPath",mPath);
+            activity.startActivity(intent);
+            dialog.dismiss();
+            activity.finish();
+        });
+        triangoli.setOnClickListener(view -> {
+            Dialog_PRJ_Folder dialogPrjFolder=new Dialog_PRJ_Folder(activity);
+            if(dialogPrjFolder.dialog.isShowing()){
+                dialogPrjFolder.dialog.dismiss();
+            }
+            Intent intent = new Intent(activity, Activity_Crea_Superficie.class);
+            intent.putExtra("proj", "TRIANGLES");
+            intent.putExtra("type", "OVER"); // Passa il valore OVER
+            intent.putExtra("whoPRJ",chiamata);
+            intent.putExtra("mPath",mPath);
+            activity.startActivity(intent);
+            dialog.dismiss();
+            activity.finish();
+        });
+        area.setOnClickListener(view -> {
+            Dialog_PRJ_Folder dialogPrjFolder=new Dialog_PRJ_Folder(activity);
+            if(dialogPrjFolder.dialog.isShowing()){
+                dialogPrjFolder.dialog.dismiss();
+            }
+            Intent intent = new Intent(activity, Activity_Crea_Superficie.class);
+            intent.putExtra("proj", "AREA");
+            intent.putExtra("type", "OVER"); // Passa il valore OVER
+            intent.putExtra("whoPRJ",chiamata);
+            intent.putExtra("mPath",mPath);
+            activity.startActivity(intent);
+            dialog.dismiss();
+            activity.finish();
+        });
+        trincea.setOnClickListener(view -> {
+            Dialog_PRJ_Folder dialogPrjFolder=new Dialog_PRJ_Folder(activity);
+            if(dialogPrjFolder.dialog.isShowing()){
+                dialogPrjFolder.dialog.dismiss();
+            }
+            Intent intent = new Intent(activity, Activity_Crea_Superficie.class);
+            intent.putExtra("proj", "TRENCH");
+            intent.putExtra("type", "OVER"); // Passa il valore OVER
+            intent.putExtra("whoPRJ",chiamata);
+            intent.putExtra("mPath",mPath);
+            activity.startActivity(intent);
+            dialog.dismiss();
+            activity.finish();
         });
     }
 }

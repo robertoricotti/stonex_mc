@@ -31,8 +31,10 @@ import dxf.ExportDXF_Area;
 import dxf.ExportDXF_Trench;
 import dxf.ExportDXF_Triangles;
 import gui.MyApp;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
+import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -125,9 +127,7 @@ public class SaveFileDialog {
                                     DataSaved.progettoSelected_POLY = path + "/" + filename;
                                     DataSaved.progettoSelected_POINT = path + "/" + filename;
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
 
                                 } catch (IOException e) {
@@ -154,9 +154,7 @@ public class SaveFileDialog {
                                     DataSaved.progettoSelected_POLY = path + "/" + filenamea;
                                     DataSaved.progettoSelected_POINT = path + "/" + filenamea;
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
                                 } catch (IOException e) {
                                     new CustomToast(activity, e.toString()).show_error();
@@ -181,9 +179,7 @@ public class SaveFileDialog {
                                     DataSaved.progettoSelected_POLY = path + "/" + filenameb;
                                     DataSaved.progettoSelected_POINT = path + "/" + filenameb;
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
                                 } catch (Exception e) {
                                     Log.e("ErrDXF", e.toString());
@@ -204,9 +200,7 @@ public class SaveFileDialog {
                                     DataSaved.progettoSelected_POLY = path + "/" + filenameDre;
                                     DataSaved.progettoSelected_POINT = path + "/" + filenameDre;
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
                                 } catch (Exception e) {
                                     Log.e("ErrDXF", e.toString());
@@ -228,9 +222,7 @@ public class SaveFileDialog {
                                     DataSaved.progettoSelected_POLY = path + "/" + filenameTri;
                                     DataSaved.progettoSelected_POINT = path + "/" + filenameTri;
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
                                 } catch (Exception e) {
                                     Log.e("ErrDXF", e.toString());
@@ -246,7 +238,7 @@ public class SaveFileDialog {
 
                 }
             }else {
-                //TODO add PRJ
+
                 if (!fileName.getText().toString().equals("") && !fileName.getText().toString().contains(".")){
 
                     if (activity instanceof Activity_Crea_Superficie) {
@@ -264,13 +256,14 @@ public class SaveFileDialog {
                                     generator.generateDXF();
 
                                     MyData.push("progettoSelected", percorso + "/" + filename);
-
+                                    MyData.push("progettoSelected_POLY", percorso + "/" + filename);
+                                    MyData.push("progettoSelected_POINT", percorso + "/" + filename);
                                     DataSaved.progettoSelected = percorso + "/" + filename;
+                                    DataSaved.progettoSelected_POLY = percorso + "/" + filename;
+                                    DataSaved.progettoSelected_POINT = percorso + "/" + filename;
 
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
 
                                 } catch (IOException e) {
@@ -290,13 +283,14 @@ public class SaveFileDialog {
                                 try {
                                     dxfGeneratorAB.generateDXF();
                                     MyData.push("progettoSelected", percorso + "/" + filenamea);
-
+                                    MyData.push("progettoSelected_POLY", percorso + "/" + filenamea);
+                                    MyData.push("progettoSelected_POINT", percorso + "/" + filenamea);
                                     DataSaved.progettoSelected = percorso + "/" + filenamea;
+                                    DataSaved.progettoSelected_POLY = percorso + "/" + filenamea;
+                                    DataSaved.progettoSelected_POINT = percorso + "/" + filenamea;
 
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
                                 } catch (IOException e) {
                                     new CustomToast(activity, e.toString()).show_error();
@@ -315,13 +309,14 @@ public class SaveFileDialog {
                                 try {
                                     dxfGeneratorArea.generateDXF();
                                     MyData.push("progettoSelected", percorso + "/" + filenameb);
-
+                                    MyData.push("progettoSelected_POLY", percorso + "/" + filenameb);
+                                    MyData.push("progettoSelected_POINT", percorso + "/" + filenameb);
                                     DataSaved.progettoSelected = percorso + "/" + filenameb;
+                                    DataSaved.progettoSelected_POLY = percorso + "/" + filenameb;
+                                    DataSaved.progettoSelected_POINT = percorso + "/" + filenameb;
 
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
                                 } catch (Exception e) {
                                     Log.e("ErrDXF", e.toString());
@@ -336,13 +331,14 @@ public class SaveFileDialog {
                                 try {
                                     exportDXFTrench.generateDXF();
                                     MyData.push("progettoSelected", percorso + "/" + filenameDre);
-
+                                    MyData.push("progettoSelected_POLY", percorso + "/" + filenameDre);
+                                    MyData.push("progettoSelected_POINT", percorso + "/" + filenameDre);
                                     DataSaved.progettoSelected = percorso + "/" + filenameDre;
+                                    DataSaved.progettoSelected_POLY = percorso + "/" + filenameDre;
+                                    DataSaved.progettoSelected_POINT = percorso + "/" + filenameDre;
 
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
                                 } catch (Exception e) {
                                     Log.e("ErrDXF", e.toString());
@@ -359,13 +355,14 @@ public class SaveFileDialog {
                                 try {
                                     dxfGeneratorTriangles.generateDXF();
                                     MyData.push("progettoSelected", percorso + "/" + filenameTri);
-
+                                    MyData.push("progettoSelected_POLY", percorso + "/" + filenameTri);
+                                    MyData.push("progettoSelected_POINT", percorso + "/" + filenameTri);
                                     DataSaved.progettoSelected = percorso + "/" + filenameTri;
+                                    DataSaved.progettoSelected_POLY = percorso + "/" + filenameTri;
+                                    DataSaved.progettoSelected_POINT = percorso + "/" + filenameTri;
 
                                     new CustomToast(activity, "File Saved").show();
-                                    activity.startActivity(new Intent(activity, Projects.class));
-                                    activity.overridePendingTransition(0, 0);
-                                    activity.finish();
+                                    setAct();
                                     dialog.dismiss();
                                 } catch (Exception e) {
                                     Log.e("ErrDXF", e.toString());
@@ -387,5 +384,20 @@ public class SaveFileDialog {
         exit.setOnClickListener((View vw) -> {
             dialog.dismiss();
         });
+    }
+
+    private void setAct(){
+        if(activity.getIntent().getStringExtra("whoPRJ")!=null){
+            if(activity.getIntent().getStringExtra("whoPRJ").equals("DIG")){
+                activity.startActivity(new Intent(activity, Activity_Home_Page.class));
+                activity.finish();
+            }else {
+                activity.startActivity(new Intent(activity, PickProject.class));
+                activity.finish();
+            }
+        }else {
+            activity.startActivity(new Intent(activity, Activity_Home_Page.class));
+            activity.finish();
+        }
     }
 }

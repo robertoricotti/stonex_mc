@@ -146,4 +146,17 @@
     <string name="fydro_no">Ο ΥΔΡΑΥΛΙΚΟΣ ΕΛΕΓΧΟΣ ΔΕΝ ΕΧΕΙ ΥΛΟΠΟΙΗΣΗ ΑΚΟΜΑ</string>
     <string name="treddi_acxtive">Προφίλ Διαθέσιμα μόνο σε λειτουργία 1D/2D</string>
     <string name="treddi_off">Διαθέσιμο μόνο σε λειτουργία 3D</string>
+    <!-- nuove stringhe -->
+    <string name="menu_utente">ΡΥΘΜΙΣΕΙΣ ΧΡΗΣΤΗ</string>
+    <string name="menu_macchine">ΡΥΘΜΙΣΕΙΣ ΜΗΧΑΝΗΜΑΤΟΣ</string>
+    <string name="nuovo_progetto">ΝΕΟ ΕΡΓΟ</string>
+    <string name="lista_lavori">ΛΙΣΤΑ ΕΡΓΑΣΙΩΝ</string>
+    <string name="rimuovi_usb">ΑΦΑΙΡΕΣΗ USB STICK</string>
+    <string name="rimozione_sicura">ΑΣΦΑΛΗΣ ΑΦΑΙΡΕΣΗ USB ΠΡΙΝ ΤΗΝ ΕΞΟΔΟ</string>
+    <string name="progetti_non_trovata">Ο φάκελος έργων δεν βρέθηκε</string>
+    <string name="stxmc_creata">Ο φάκελος STX_MC δημιουργήθηκε στο USB stick</string>
+    <string name="stxmc_fallita">Αποτυχία δημιουργίας του φακέλου STX_MC στο USB stick</string>
+    <string name="stxmc_nontrovata">Δεν βρέθηκε το USB stick</string>
+    <string name="sovrascrivere">Επικάλυψη;</string>
+
 </resources>

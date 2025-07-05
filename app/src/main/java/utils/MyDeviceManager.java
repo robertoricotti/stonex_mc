@@ -171,25 +171,25 @@ public class MyDeviceManager {
     }
 
     public static void host(Activity activity) {
-/*
+
         if (GEN1) {
             ApolloPro.getInstance(activity).setUsbHost(1);
         } else if (GEN2) {
             Apollo2.getInstance(activity).setUsbHost(1);
         }
 
- */
+
     }
 
     public static void periph(Activity activity) {
-/*
+
         if (GEN1) {
             ApolloPro.getInstance(activity).setUsbHost(0);
         } else if (GEN2) {
             Apollo2.getInstance(activity).setUsbHost(0);
         }
 
- */
+
     }
 
     public static float getVoltage() {

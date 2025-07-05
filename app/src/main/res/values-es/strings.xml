@@ -152,5 +152,18 @@
     <string name="fydro_no">CONTROL HIDRÁULICO AÚN NO IMPLEMENTADO</string>
     <string name="treddi_acxtive">Perfiles disponibles solo en modo 1D/2D</string>
     <string name="treddi_off">Disponible sólo en modo 3D</string>
+    <!-- nuevas cadenas -->
+    <string name="menu_utente">AJUSTES DE USUARIO</string>
+    <string name="menu_macchine">AJUSTES DE MÁQUINA</string>
+    <string name="nuovo_progetto">NUEVO PROYECTO</string>
+    <string name="lista_lavori">LISTA DE TRABAJOS</string>
+    <string name="rimuovi_usb">QUITAR MEMORIA USB</string>
+    <string name="rimozione_sicura">EXTRAER USB DE FORMA SEGURA ANTES DE SALIR</string>
+    <string name="progetti_non_trovata">Carpeta de proyectos no encontrada</string>
+    <string name="stxmc_creata">Carpeta STX_MC creada en la memoria USB</string>
+    <string name="stxmc_fallita">Error al crear la carpeta STX_MC en la memoria USB</string>
+    <string name="stxmc_nontrovata">Memoria USB no encontrada</string>
+    <string name="sovrascrivere">¿Sobrescribir?</string>
+
 
 </resources>

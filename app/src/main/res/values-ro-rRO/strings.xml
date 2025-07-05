@@ -146,4 +146,17 @@
     <string name="fydro_no">CONTROL HIDRAULIC NU ESTE INCA IMPLEMENTAT</string>
     <string name="treddi_acxtive">Profiluri Disponibil numai în modul 1D/2D</string>
     <string name="treddi_off">Disponibil numai în modul 3D</string>
+    <!-- șiruri noi -->
+    <string name="menu_utente">SETĂRI UTILIZATOR</string>
+    <string name="menu_macchine">SETĂRI MAȘINĂ</string>
+    <string name="nuovo_progetto">PROIECT NOU</string>
+    <string name="lista_lavori">LISTĂ LUCRĂRI</string>
+    <string name="rimuovi_usb">SCOATE STICK-UL USB</string>
+    <string name="rimozione_sicura">SCOATE USB ÎN SIGURANȚĂ ÎNAINTE DE IEȘIRE</string>
+    <string name="progetti_non_trovata">Folderul cu proiecte nu a fost găsit</string>
+    <string name="stxmc_creata">Folderul STX_MC a fost creat pe stick-ul USB</string>
+    <string name="stxmc_fallita">Crearea folderului STX_MC pe stick-ul USB a eșuat</string>
+    <string name="stxmc_nontrovata">Stick USB negăsit</string>
+    <string name="sovrascrivere">Suprascrieți?</string>
+
 </resources>

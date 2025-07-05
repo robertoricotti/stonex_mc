@@ -147,6 +147,18 @@
     <string name="fydro_no">HYDRAULISCHE STEUERUNG NOCH NICHT IMPLEMENTIERT</string>
     <string name="treddi_acxtive">Profile nur im 1D/2D-Modus verfügbar</string>
     <string name="treddi_off">Nur im 3D-Modus verfügbar</string>
+    <!-- nuove stringhe -->
+    <string name="menu_utente">BENUTZEREINSTELLUNGEN</string>
+    <string name="menu_macchine">MASCHINENEINSTELLUNGEN</string>
+    <string name="nuovo_progetto">NEUES PROJEKT</string>
+    <string name="lista_lavori">ARBEITSLISTE</string>
+    <string name="rimuovi_usb">USB-STICK ENTFERNEN</string>
+    <string name="rimozione_sicura">USB SICHER ENTFERNEN VOR DEM BEENDEN</string>
+    <string name="progetti_non_trovata">Projektordner nicht gefunden</string>
+    <string name="stxmc_creata">Ordner STX_MC auf dem USB-Stick erstellt</string>
+    <string name="stxmc_fallita">Erstellen des Ordners STX_MC auf dem USB-Stick fehlgeschlagen</string>
+    <string name="stxmc_nontrovata">USB-Stick nicht gefunden</string>
+    <string name="sovrascrivere">Überschreiben?</string>
 
 
 </resources>

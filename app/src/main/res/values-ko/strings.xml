@@ -144,4 +144,18 @@
     <string name="fydro_no">아직 유압 제어가 구현되지 않음</string>
     <string name="treddi_acxtive">1D/2D 모드에서만 사용 가능한 프로파일</string>
     <string name="treddi_off">3D 모드에서만 사용 가능</string>
+
+    <!-- 새로운 문자열 -->
+    <string name="menu_utente">사용자 설정</string>
+    <string name="menu_macchine">기계 설정</string>
+    <string name="nuovo_progetto">새 프로젝트</string>
+    <string name="lista_lavori">작업 목록</string>
+    <string name="rimuovi_usb">USB 메모리 제거</string>
+    <string name="rimozione_sicura">종료 전에 USB 안전하게 제거</string>
+    <string name="progetti_non_trovata">프로젝트 폴더를 찾을 수 없습니다</string>
+    <string name="stxmc_creata">USB 메모리에 STX_MC 폴더가 생성되었습니다</string>
+    <string name="stxmc_fallita">USB 메모리에 STX_MC 폴더 생성 실패</string>
+    <string name="stxmc_nontrovata">USB 메모리를 찾을 수 없습니다</string>
+    <string name="sovrascrivere">덮어쓰시겠습니까?</string>
+
 </resources>

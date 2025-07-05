@@ -148,6 +148,18 @@
     <string name="fydro_no">ГИДРАВЛИЧЕСКОЕ УПРАВЛЕНИЕ ЕЩЕ НЕ РЕАЛИЗОВАНО</string>
     <string name="treddi_acxtive">Профили Доступно только в режиме 1D/2D</string>
     <string name="treddi_off">Доступно только в 3D-режиме</string>
+    <!-- новые строки -->
+    <string name="menu_utente">НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ</string>
+    <string name="menu_macchine">НАСТРОЙКИ МАШИНЫ</string>
+    <string name="nuovo_progetto">НОВЫЙ ПРОЕКТ</string>
+    <string name="lista_lavori">СПИСОК РАБОТ</string>
+    <string name="rimuovi_usb">ИЗВЛЕЧЬ USB-НОСИТЕЛЬ</string>
+    <string name="rimozione_sicura">БЕЗОПАСНОЕ ИЗВЛЕЧЕНИЕ USB ПЕРЕД ВЫХОДОМ</string>
+    <string name="progetti_non_trovata">Папка с проектами не найдена</string>
+    <string name="stxmc_creata">Папка STX_MC создана на USB-носителе</string>
+    <string name="stxmc_fallita">Не удалось создать папку STX_MC на USB-носителе</string>
+    <string name="stxmc_nontrovata">USB-носитель не найден</string>
+    <string name="sovrascrivere">Перезаписать?</string>
 
 
 </resources>

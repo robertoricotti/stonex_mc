@@ -45,6 +45,7 @@ import java.util.concurrent.Executors;
 
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
+import services.UpdateValuesService;
 import utils.MyData;
 import utils.MyDeviceManager;
 import utils.UsbReceiver;
@@ -52,7 +53,7 @@ import utils.UsbReceiver;
 public class Usb_Project_Nova extends AppCompatActivity {
 
     private final BroadcastReceiver usbReceiver = new UsbReceiver();
-    TextView textView,txt2;
+    TextView textView, txt2;
     int controllo = 0;
     private boolean enImport, enExport;
     RecyclerView recyclerProj, recyclerIn;
@@ -71,16 +72,17 @@ public class Usb_Project_Nova extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_usb_nuova);
-        Intent intent=getIntent();
-        s=intent.getStringExtra("usb");
-        if(s.equals("main")){
-            APP_PATH=Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
-            filterType=1;
-        }else {
-            APP_PATH=s;
-            filterType=2;
+
+        Intent intent = getIntent();
+        s = intent.getStringExtra("usb");
+        if (s.equals("main")) {
+            APP_PATH = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
+            filterType = 1;
+        } else {
+            APP_PATH = s;
+            filterType = 2;
         }
-        Log.d("APP_PATH",s);
+        Log.d("APP_PATH", s);
         usbPath = MyData.get_String("_usbPath");
         findView();
         init();
@@ -114,9 +116,8 @@ public class Usb_Project_Nova extends AppCompatActivity {
         read = findViewById(R.id.new_copy_from_usb);
         write = findViewById(R.id.new_copy_to_usb);
         textView = findViewById(R.id.txt1);
-        txt2=findViewById(R.id.txt2);
+        txt2 = findViewById(R.id.txt2);
         usb_remove = findViewById(R.id.delete);
-
 
 
     }
@@ -132,14 +133,14 @@ public class Usb_Project_Nova extends AppCompatActivity {
     private void onClick() {
         usb_remove.setOnClickListener(view -> {
             try {
-                if (Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")) {
+                if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
                     Apollo2 apollo2 = Apollo2.getInstance(this);
                     apollo2.exec("umount " + usbPath);
 
                 } else {
                     VanCmd.exec("umount " + usbPath, 0);
                 }
-                new CustomToast(this, "USB EJECTED").show_long();
+                new CustomToast(this, getResources().getString(R.string.rimuovi_usb)).show_alert();
                 unmount = true;
 
             } catch (Exception e) {
@@ -147,16 +148,32 @@ public class Usb_Project_Nova extends AppCompatActivity {
             }
         });
         back.setOnClickListener((View v) -> {
-            if(s.equals("main")) {
-                back.setEnabled(false);
-                startActivity(new Intent(this, Activity_Home_Page.class));
-                overridePendingTransition(0, 0);
-                finish();
+            if(!UsbReceiver.usbIsConnected) {
+                if (s.equals("main")) {
+                    back.setEnabled(false);
+                    startActivity(new Intent(this, Activity_Home_Page.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                } else {
+                    back.setEnabled(false);
+                    startActivity(new Intent(this, PickProject.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                }
             }else {
-                back.setEnabled(false);
-                startActivity(new Intent(this, PickProject.class));
-                overridePendingTransition(0, 0);
-                finish();
+                    // Crea un nuovo AlertDialog.Builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(Usb_Project_Nova.this);
+                builder.setTitle(getResources().getString(R.string.rimozione_sicura));
+                builder.setIcon(getResources().getDrawable(R.drawable.bt_remove_usb));
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                });
+                // Aggiungi il pulsante "No"
+                builder.setNegativeButton(" ", (dialog, which) -> {
+                });
+                // Mostra il dialog
+                builder.show();
+
+
             }
         });
 
@@ -190,7 +207,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
     public void showProgress() {
         read.setVisibility(View.INVISIBLE);
         write.setVisibility(View.INVISIBLE);
-        usb_remove.setVisibility(View.INVISIBLE);
+        usb_remove.setEnabled(false);
         update.setVisibility(View.INVISIBLE);
         recyclerIn.setVisibility(View.INVISIBLE);
         recyclerProj.setVisibility(View.INVISIBLE);
@@ -202,7 +219,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
 
         read.setVisibility(View.VISIBLE);
         write.setVisibility(View.VISIBLE);
-        usb_remove.setVisibility(View.VISIBLE);
+        usb_remove.setEnabled(true);
         update.setVisibility(View.VISIBLE);
         recyclerIn.setVisibility(View.VISIBLE);
         recyclerProj.setVisibility(View.VISIBLE);
@@ -210,7 +227,11 @@ public class Usb_Project_Nova extends AppCompatActivity {
     }
 
     public void updateUI() {
-
+        if (UsbReceiver.usbIsConnected) {
+            usb_remove.setVisibility(View.VISIBLE);
+        } else {
+            usb_remove.setVisibility(View.INVISIBLE);
+        }
         if (adapterProj != null) {
             enExport = adapterProj.getSelectedItem() > -1;
         } else {
@@ -263,15 +284,15 @@ public class Usb_Project_Nova extends AppCompatActivity {
             for (File file : files) {
                 boolean isFolder = file.isDirectory();
                 long size = file.isDirectory() ? getFolderSize(file) : file.length();
-                filesProj.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
+                filesProj.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size, file.getAbsolutePath()));
             }
 
-            adapterProj = new ProjectFileAdapter(filesProj,filterType);
+            adapterProj = new ProjectFileAdapter(filesProj, filterType);
             recyclerProj.setAdapter(adapterProj);
             recyclerProj.setLayoutManager(new LinearLayoutManager(this));
             recyclerProj.setItemViewCacheSize(adapterProj.getItemCount());
         } else {
-            new CustomToast(this, "Projects folder not found").show_alert();
+            new CustomToast(this, getResources().getString(R.string.progetti_non_trovata)).show_alert();
         }
     }
 
@@ -300,9 +321,9 @@ public class Usb_Project_Nova extends AppCompatActivity {
                     for (File file : files) {
                         boolean isFolder = file.isDirectory();
                         long size = file.isDirectory() ? getFolderSize(file) : file.length();
-                        filesIN.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
+                        filesIN.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size, file.getAbsolutePath()));
                     }
-                    adapterMC = new ProjectFileAdapter(filesIN,filterType);
+                    adapterMC = new ProjectFileAdapter(filesIN, filterType);
                     recyclerIn.setAdapter(adapterMC);
                     recyclerIn.setLayoutManager(new LinearLayoutManager(this));
                     recyclerIn.setItemViewCacheSize(adapterMC.getItemCount());
@@ -311,20 +332,21 @@ public class Usb_Project_Nova extends AppCompatActivity {
                     try {
                         //qui copiare un pdf nella usbFolder
                         if (inFolder.mkdir()) {
-                            new CustomToast(this, "Folder 'STX_MC' created on USB stick").show();
+                            new CustomToast(this, getResources().getString(R.string.stxmc_creata)).show();
                         } else {
-                            new CustomToast(this, "Failed to create folder 'STX_MC' on USB stick").show_error();
+                            new CustomToast(this,getResources().getString(R.string.stxmc_fallita) ).show_error();
                         }
                     } catch (Exception e) {
-                        new CustomToast(this, "Failed to create folder 'STX_MC' on USB stick").show_error();
+                        new CustomToast(this, getResources().getString(R.string.stxmc_fallita)).show_error();
                     }
 
                 }
             } else {
-                new CustomToast(this, "USB stick not found").show_alert();
+                new CustomToast(this, getResources().getString(R.string.stxmc_nontrovata)).show_alert();
             }
         }
     }
+
     public void importFromUSB() {
         String foldername = "STX_MC";
         showProgress();
@@ -340,74 +362,38 @@ public class Usb_Project_Nova extends AppCompatActivity {
                     hideProgress(); // nasconde subito lo spinner mentre aspettiamo risposta
 
                     new AlertDialog.Builder(this)
-                            .setTitle("Sovrascrivere?")
-                            .setMessage("Il file/cartella \"" + destination.getName() + "\" esiste già. Vuoi sovrascrivere?")
-                            .setPositiveButton("Sì", (dialog, which) -> {
+                            .setTitle(getResources().getString(R.string.sovrascrivere))
+                            .setMessage(" \"" + destination.getName() + "\" "+getResources().getString(R.string.sovrascrivere))
+                            .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                                 showProgress(); // rimostriamo lo spinner
                                 try {
                                     copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
                                 } catch (Exception e) {
-                                    new CustomToast(this, "Errore: " + e.getMessage()).show_error();
+                                    new CustomToast(this, "Error: " + e.getMessage()).show_error();
                                     hideProgress();
                                 }
                             })
-                            .setNegativeButton("No", (dialog, which) -> {
-                                new CustomToast(this, "Importazione annullata").show();
+                            .setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
+
                             })
                             .show();
                 } else {
                     try {
                         copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
                     } catch (Exception e) {
-                        new CustomToast(this, "Errore: " + e.getMessage()).show_error();
+                        new CustomToast(this, "Error: " + e.getMessage()).show_error();
                         hideProgress();
                     }
                 }
             } else {
-                new CustomToast(this, "Nessun file selezionato").show();
+                new CustomToast(this, getResources().getString(R.string.select_file)).show();
                 hideProgress();
             }
         } else {
-            new CustomToast(this, "Cartella 'STX_MC' non trovata sulla chiavetta USB").show();
+
             hideProgress();
         }
     }
-
-
-/*
-    public void importFromUSB() {
-        String foldername = "STX_MC";
-        //IN or OUT
-        showProgress();
-        File usbFolder = new File(getStoragePath(this, true), foldername);
-
-        if (usbFolder.exists() && usbFolder.isDirectory()) {
-
-            if (adapterMC != null) {
-                if (adapterMC.getSelectedItem() > -1) {
-                    File selectedFileOrFolder = new File(usbFolder, adapterMC.getSelectedFilePath());
-                    File destination = new File(APP_PATH, adapterMC.getSelectedFilePath());
-
-                    try {
-                        copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
-                    } catch (Exception e) {
-                        new CustomToast(this, "Errore: " + e.getMessage()).show_error();
-                    }
-
-                } else {
-                    new CustomToast(this, "No Files Selected").show();
-                }
-            }
-
-            readProjectFolder();
-            readFromUSB_MC(usbPath);
-
-        } else {
-            new CustomToast(this, "Folder '" + "STX_MC" + "' not found on USB stick").show();
-            hideProgress();
-        }
-    }
-*/
 
 
     private void exportToUSB() {
@@ -426,31 +412,31 @@ public class Usb_Project_Nova extends AppCompatActivity {
                     hideProgress(); // fermiamo subito lo spinner prima della scelta
 
                     new AlertDialog.Builder(this)
-                            .setTitle("Sovrascrivere?")
-                            .setMessage("Il file/cartella \"" + destination.getName() + "\" esiste già sulla USB. Vuoi sovrascrivere?")
-                            .setPositiveButton("Sì", (dialog, which) -> {
+                            .setTitle(R.string.sovrascrivere)
+                            .setMessage(" \"" + destination.getName() + "\" "+getResources().getString(R.string.sovrascrivere))
+                            .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                                 showProgress(); // lo riattiviamo se l'utente accetta
                                 try {
                                     copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
                                 } catch (Exception e) {
-                                    new CustomToast(this, "Errore: " + e.getMessage()).show_error();
+                                    new CustomToast(this, "Error: " + e.getMessage()).show_error();
                                     hideProgress();
                                 }
                             })
-                            .setNegativeButton("No", (dialog, which) -> {
-                                new CustomToast(this, "Esportazione annullata").show();
+                            .setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
+
                             })
                             .show();
                 } else {
                     try {
                         copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
                     } catch (Exception e) {
-                        new CustomToast(this, "Errore: " + e.getMessage()).show_error();
+                        new CustomToast(this, "Error: " + e.getMessage()).show_error();
                         hideProgress();
                     }
                 }
             } else {
-                new CustomToast(this, "Nessun file selezionato").show();
+
                 hideProgress();
             }
 
@@ -458,51 +444,10 @@ public class Usb_Project_Nova extends AppCompatActivity {
             readFromUSB_MC(usbPath);
 
         } else {
-            new CustomToast(this, "Cartella '" + nameFolder + "' non trovata sulla chiavetta USB").show();
+
             (new Handler()).postDelayed(this::hideProgress, 1500);
         }
     }
-
-
-    /*
-    private void exportToUSB() {
-        // MC
-        String nameFolder = "STX_MC";
-        showProgress();
-        File usbFolder = new File(getStoragePath(this, true), nameFolder);
-
-        if (usbFolder.exists() && usbFolder.isDirectory()) {
-
-            File projectFolder = new File(APP_PATH);
-
-            if (adapterProj != null) {
-                if (adapterProj.getSelectedItem() > -1) {
-                    File selectedFileOrFolder = new File(projectFolder, adapterProj.getSelectedFilePath());
-                    File destination = new File(usbFolder, adapterProj.getSelectedFilePath());
-
-                    try {
-                        copyWithProgress(selectedFileOrFolder, destination, selectedFileOrFolder.isDirectory());
-                    } catch (Exception e) {
-                        new CustomToast(this, "Errore: " + e.getMessage()).show_error();
-                    }
-
-                } else {
-                    new CustomToast(this, "No Files Selected").show();
-                    hideProgress();
-                }
-            }
-
-            readProjectFolder();
-            readFromUSB_MC(usbPath);
-
-        } else {
-            new CustomToast(this, "Folder '" + nameFolder + "' not found on USB stick").show();
-            (new Handler()).postDelayed(this::hideProgress, 1500);
-        }
-    }
-
-*/
-
 
 
     @SuppressLint("PrivateApi")
@@ -577,8 +522,6 @@ public class Usb_Project_Nova extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -634,6 +577,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
         }
         return length;
     }
+
     private void copyWithProgress(File source, File destination, boolean isFolder) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.progress_dialog, null);
@@ -696,6 +640,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
             }
         });
     }
+
     private void copyFolderWithProgress(File src, File dest, long totalSize, long[] copied, Handler handler, ProgressBar bar, TextView text) throws IOException {
         if (!dest.exists()) dest.mkdirs();
         File[] files = src.listFiles();

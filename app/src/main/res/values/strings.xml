@@ -142,6 +142,18 @@
     <string name="treddi_acxtive">Profiles Availables only in 1D/2D mode</string>
     <string name="treddi_off">Available Only in 3D Mode</string>
 
+    <!-- nuove stringhe -->
+    <string name="menu_utente">USER SETTINGS</string>
+    <string name="menu_macchine">MACHINE SETTINGS</string>
+    <string name="nuovo_progetto">NEW PROJECT</string>
+    <string name="lista_lavori">JOB LIST</string>
+    <string name="rimuovi_usb">REMOVE USB STICK</string>
+    <string name="rimozione_sicura">SAFETY USB REMOVE BEFORE EXIT</string>
+    <string name="progetti_non_trovata">Projects folder not found</string>
+    <string name="stxmc_creata">Folder STX_MC created on USB stick</string>
+    <string name="stxmc_fallita">Failed to create folder STX_MC on USB stick</string>
+    <string name="stxmc_nontrovata">USB stick not found</string>
+    <string name="sovrascrivere">Overwrite?</string>
 
     <string-array name="radio_proto">
         <item>Satel</item><!-- 0 -->

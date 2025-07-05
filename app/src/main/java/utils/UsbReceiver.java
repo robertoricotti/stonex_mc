@@ -24,18 +24,18 @@ public class UsbReceiver extends BroadcastReceiver {
             UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             if (device != null) {
                 // Device is attached
-                Log.d(TAG, "USB device attached: " + device.getDeviceName());
                 usbIsConnected=true;
-                //new CustomToast(MyApp.visibleActivity,"USB CONNESSO "+device.getDeviceName()).show_long();
+                //new CustomToast(MyApp.visibleActivity,usbIsConnected+"   "+"USB device attached: " + device.getDeviceName()).show_error();
+
                 // Handle the attached device
             }
         } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
             UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             if (device != null) {
                 // Device is detached
-                Log.d(TAG, "USB device detached: " + device.getDeviceName());
                 usbIsConnected=false;
-                //new CustomToast(MyApp.visibleActivity,"USB RILEVATA "+device.getDeviceName()).show_long();
+                //new CustomToast(MyApp.visibleActivity,usbIsConnected+"   "+"USB device detached: " + device.getDeviceName()).show_error();
+
                 // Handle the detached device
             }
         }
