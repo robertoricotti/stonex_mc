@@ -182,19 +182,15 @@ public class E_Bubble extends BaseClass {
             if (s.equals("A1D")) {
 
                 startActivity(new Intent(this, Digging1D.class));
-                overridePendingTransition(0, 0);
                 finish();
             } else if (s.equals("C1D")) {
                 startActivity(new Intent(this, Digging_CutAndFill1D.class));
-                overridePendingTransition(0, 0);
                 finish();
             } else if (s.equals("E1D")) {
                 startActivity(new Intent(this, ExcavatorMenuActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             } else {
                 startActivity(new Intent(this, ExcavatorMenuActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });

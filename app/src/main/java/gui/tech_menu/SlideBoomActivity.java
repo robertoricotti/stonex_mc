@@ -178,7 +178,6 @@ public class SlideBoomActivity extends AppCompatActivity {
             esc.setEnabled(false);
             save.setEnabled(false);
             startActivity(new Intent(this, MachineSettings.class));
-            overridePendingTransition(0, 0);
             finish();
         });
         save.setOnClickListener((View v) -> {

@@ -199,7 +199,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ProfileCalibAuto.class);
             intent.putExtra("indexProfile", 1);
             startActivity(intent);
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -208,7 +207,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ProfileCalibAuto.class);
             intent.putExtra("indexProfile", 2);
             startActivity(intent);
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -217,7 +215,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ProfileCalibAuto.class);
             intent.putExtra("indexProfile", 3);
             startActivity(intent);
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -226,7 +223,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ProfileCalibAuto.class);
             intent.putExtra("indexProfile", 4);
             startActivity(intent);
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -235,7 +231,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ProfileCalibAuto.class);
             intent.putExtra("indexProfile", 5);
             startActivity(intent);
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -244,7 +239,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ProfileCalibAuto.class);
             intent.putExtra("indexProfile", 6);
             startActivity(intent);
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -252,7 +246,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
             disableAll();
             startService(new Intent(this, UpdateValuesService.class));
             startActivity(new Intent(this, ExcavatorMenuActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -266,7 +259,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
                     case 0:
                         if (KEY_LEVEL > 0) {
                             startActivity(new Intent(this, Digging1D.class));
-                            overridePendingTransition(0, 0);
                             finish();
                         } else {
 
@@ -276,7 +268,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
                     case 1:
                         if (KEY_LEVEL > 1) {
                             startActivity(new Intent(this, Digging2D.class));
-                            overridePendingTransition(0, 0);
                             finish();
                         } else {
 
@@ -297,7 +288,6 @@ public class ProfilesMenuActivity extends AppCompatActivity {
             } else {
 
                 startActivity(new Intent(this, DiggingProfile.class));
-                overridePendingTransition(0, 0);
             }
 
             finish();

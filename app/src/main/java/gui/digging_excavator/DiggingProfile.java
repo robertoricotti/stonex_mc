@@ -167,7 +167,6 @@ public class DiggingProfile extends BaseClass {
         profileMenu.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, ProfilesMenuActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 

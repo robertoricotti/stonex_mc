@@ -394,7 +394,6 @@ public class Grading3D_DXF extends BaseClass {
             MyData.push("scaleFactor_vista2D", String.valueOf(DataSaved.scale_FactorVista2D));
             disableAll();
             startActivity(new Intent(this, ExcavatorMenuActivity.class));
-            overridePendingTransition(0, 0);
             finish();
             whats = null;
         });

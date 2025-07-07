@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidDomInspection -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/custom_background_home"
+    android:background="@color/bg_gray"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.12" />
+        app:layout_constraintGuide_percent="0.09" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline60"
@@ -46,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.88" />
+        app:layout_constraintGuide_percent="0.89" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline58_B"
         android:layout_width="wrap_content"
@@ -54,22 +55,44 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.85" />
 
-    <TextView
-        android:id="@+id/machinesTitle"
+
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/nav_gray_color"
         android:gravity="center"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textColor="@color/black"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline57"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/guideline57"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/img00"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/baseline_live_help_96"
+            app:tint="@color/white" />
+        <TextView
+            android:id="@+id/txtProject"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="path/topat/projetc name"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="italic" />
+        <ImageView
+            android:id="@+id/img01"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/wifi_vuoto"
+            app:tint="@color/white" />
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/m4"
         android:layout_width="0dp"
@@ -82,22 +105,27 @@
         app:layout_constraintTop_toTopOf="@+id/guideline63">
 
         <ImageView
+            android:padding="15dp"
             android:id="@+id/img_mac_4"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="10dp"
-            app:srcCompat="@drawable/machines_btn" />
+            android:layout_weight="0.35"
+            android:layout_margin="10dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/sfondo_bottone_trasparente"
+            app:srcCompat="@drawable/machines_btn"
+            app:tint="@color/_____cancel_text"
+            />
 
         <TextView
             android:id="@+id/name_mac_4"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center|start"
+            android:gravity="center"
             android:text="TextView"
-            android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textColor="@color/_____cancel_text"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -109,32 +137,35 @@
             <ImageView
                 android:id="@+id/conM4"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/debug_btn" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/gnss_setup_btn"
+                app:tint="@color/_____cancel_text"/>
 
             <ImageView
                 android:id="@+id/gotoBuck4"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/bucket_btn" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/benna_vuota1"
+                app:tint="@color/_____cancel_text"/>
 
             <ImageView
                 android:id="@+id/modify_mac_4"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/button_go_tech_menu" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/button_go_tech_menu"
+                app:tint="@color/_____cancel_text"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -150,22 +181,27 @@
         app:layout_constraintTop_toTopOf="@+id/guideline62">
 
         <ImageView
+            android:paddingHorizontal="15dp"
             android:id="@+id/img_mac_3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="10dp"
-            app:srcCompat="@drawable/machines_btn" />
+            android:layout_weight="0.35"
+            android:layout_margin="10dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/sfondo_bottone_trasparente"
+            app:srcCompat="@drawable/machines_btn"
+            app:tint="@color/_____cancel_text"
+            />
 
         <TextView
             android:id="@+id/name_mac_3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center|start"
+            android:gravity="center"
             android:text="TextView"
-            android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textColor="@color/_____cancel_text"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -177,32 +213,35 @@
             <ImageView
                 android:id="@+id/conM3"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/debug_btn" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/gnss_setup_btn"
+                app:tint="@color/_____cancel_text"/>
 
             <ImageView
                 android:id="@+id/gotoBuck3"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/bucket_btn" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/benna_vuota1"
+                app:tint="@color/_____cancel_text" />
 
             <ImageView
                 android:id="@+id/modify_mac_3"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/button_go_tech_menu" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/button_go_tech_menu"
+                app:tint="@color/_____cancel_text"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -218,22 +257,27 @@
         app:layout_constraintTop_toTopOf="@+id/guideline60">
 
         <ImageView
+            android:paddingHorizontal="15dp"
             android:id="@+id/img_mac_2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="10dp"
-            app:srcCompat="@drawable/machines_btn" />
+            android:layout_weight="0.35"
+            android:layout_margin="10dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/sfondo_bottone_trasparente"
+            app:srcCompat="@drawable/machines_btn"
+            app:tint="@color/_____cancel_text"
+            />
 
         <TextView
             android:id="@+id/name_mac_2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center|start"
+            android:gravity="center"
             android:text="TextView"
-            android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textColor="@color/_____cancel_text"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -245,32 +289,35 @@
             <ImageView
                 android:id="@+id/conM2"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/debug_btn" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/gnss_setup_btn"
+                app:tint="@color/_____cancel_text"/>
 
             <ImageView
                 android:id="@+id/gotoBuck2"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/bucket_btn" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/benna_vuota1"
+                app:tint="@color/_____cancel_text" />
 
             <ImageView
                 android:id="@+id/modify_mac_2"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/button_go_tech_menu" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/button_go_tech_menu"
+                app:tint="@color/_____cancel_text"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -287,22 +334,26 @@
         app:layout_constraintTop_toTopOf="@+id/guideline61">
 
         <ImageView
+            android:paddingHorizontal="15dp"
             android:id="@+id/img_mac_1"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="10dp"
-            app:srcCompat="@drawable/machines_btn" />
+            android:layout_height="wrap_content"
+            android:layout_weight="0.35"
+            android:layout_margin="10dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/sfondo_bottone_trasparente"
+            app:srcCompat="@drawable/machines_btn"
+            app:tint="@color/_____cancel_text"/>
 
         <TextView
             android:id="@+id/name_mac_1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center|start"
+            android:gravity="center"
             android:text="TextView"
-            android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textColor="@color/_____cancel_text"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -314,32 +365,35 @@
             <ImageView
                 android:id="@+id/conM1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/debug_btn" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/gnss_setup_btn"
+                app:tint="@color/_____cancel_text"/>
 
             <ImageView
                 android:id="@+id/gotoBuck1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/bucket_btn" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/benna_vuota1"
+                app:tint="@color/_____cancel_text"/>
 
             <ImageView
                 android:id="@+id/modify_mac_1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/black_border"
-                android:padding="10dp"
-                app:srcCompat="@drawable/button_go_tech_menu" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:padding="15dp"
+                app:srcCompat="@drawable/button_go_tech_menu"
+                app:tint="@color/_____cancel_text"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -348,6 +402,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
+        android:background="@drawable/custom_background_test3d_box"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -360,33 +415,69 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
             android:padding="5dp"
             android:scaleType="centerInside"
-            android:src="@drawable/back_btn" />
+            android:rotation="180"
+            app:tint="@color/white"
+            app:srcCompat="@drawable/menu_btn" />
+
+        <ImageView
+            android:id="@+id/imgMove"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="4"
+            android:padding="15dp"
+            android:scaleType="centerInside" />
+        <ImageView
+            android:id="@+id/deleteFile"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/delete_raw"
+            android:layout_weight="1"
+            android:padding="10dp"
+            app:tint="@color/white"
+            android:scaleType="centerInside"
+            android:visibility="invisible"
+
+            />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
-            android:layout_weight="6"
-            android:src="@drawable/dot_center_btn"
-            android:background="@color/nav_gray_color"
-            android:padding="5dp"
-            app:tint="@color/light_gray" />
-
+            android:layout_weight="4"
+            android:padding="15dp"
+            android:scaleType="centerInside" />
         <ImageView
-            android:id="@+id/pair"
+            android:id="@+id/btn_3"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/info_96"
+            android:layout_weight="1"
+            android:padding="10dp"
+            app:tint="@color/white"
+            android:scaleType="centerInside"
+            />
+        <ImageView
+            android:id="@+id/lockunlock"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/dig_btn" />
+            app:srcCompat="@drawable/teck_lock"
+            app:tint="@color/white"
+            />
+
     </LinearLayout>
     <ProgressBar
         android:id="@+id/progressBar"

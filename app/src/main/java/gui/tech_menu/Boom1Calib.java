@@ -135,7 +135,6 @@ public class Boom1Calib extends AppCompatActivity {
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
                     startActivity(new Intent(getApplicationContext(), MachineSettings.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 }
             } else {
@@ -147,7 +146,6 @@ public class Boom1Calib extends AppCompatActivity {
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
                     startActivity(new Intent(getApplicationContext(), MachineSettings.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 }
             }
@@ -158,7 +156,6 @@ public class Boom1Calib extends AppCompatActivity {
             save.setEnabled(false);
             startService(new Intent(getApplicationContext(), UpdateValuesService.class));
             startActivity(new Intent(getApplicationContext(), MachineSettings.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 

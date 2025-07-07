@@ -130,7 +130,6 @@ public class PickProject extends BaseClass {
 
             disableAll();
             startActivity(new Intent(this, Activity_Home_Page.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -184,8 +183,6 @@ public class PickProject extends BaseClass {
 
                         startService(new Intent(this, UpdateValuesService.class));
                         startActivity(new Intent(this, Activity_Home_Page.class));
-
-                        overridePendingTransition(0, 0);
                         finish();
                     }
                 }

@@ -160,14 +160,12 @@ public class MachineSettings extends BaseClass {
         startcalib.setOnClickListener(view -> {
             disableAll();
             startActivity(new Intent(this, GPS_Autocalib.class));
-            overridePendingTransition(0, 0);
             finish();
         });
         sensorDamping.setOnClickListener(view -> {
             if (isApollo) {
                 disableAll();
                 startActivity(new Intent(this, DampingActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             } else {
                 new CustomToast(this, "Not Implemented via BT").show();
@@ -178,14 +176,12 @@ public class MachineSettings extends BaseClass {
             disableAll();
             startService(new Intent(this, UpdateValuesService.class));
             startActivity(new Intent(this, ExcavatorChooserActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
         info.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, MachineInfoCalib.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -194,7 +190,6 @@ public class MachineSettings extends BaseClass {
             if (DataSaved.isWL < 1) {
                 disableAll();
                 startActivity(new Intent(this, Boom1Calib.class));
-                overridePendingTransition(0, 0);
                 finish();
             } else {
                 if (DataSaved.L_Boom1 == -1) {
@@ -211,7 +206,6 @@ public class MachineSettings extends BaseClass {
         boom2.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, Boom2Calib.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -219,12 +213,10 @@ public class MachineSettings extends BaseClass {
             if (DataSaved.isWL < 2) {
                 disableAll();
                 startActivity(new Intent(this, LinkageCalib.class));
-                overridePendingTransition(0, 0);
                 finish();
             } else {
                 disableAll();
                 startActivity(new Intent(this, Tilt_Blade.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -232,14 +224,12 @@ public class MachineSettings extends BaseClass {
         stick.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, StickCalib.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
         frame.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, FrameCalib.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -247,12 +237,10 @@ public class MachineSettings extends BaseClass {
             if (DataSaved.isWL < 2) {
                 disableAll();
                 startActivity(new Intent(this, XYZ_Calib.class));
-                overridePendingTransition(0, 0);
                 finish();
             } else {
                 disableAll();
                 startActivity(new Intent(this, XYZ_Calib_Dozer.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
 
@@ -261,14 +249,12 @@ public class MachineSettings extends BaseClass {
         tilt.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, TiltCalib.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
         file.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, PickMachine.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -286,7 +272,6 @@ public class MachineSettings extends BaseClass {
         slideBoom.setOnClickListener(view -> {
             disableAll();
             startActivity(new Intent(this, SlideBoomActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
     }

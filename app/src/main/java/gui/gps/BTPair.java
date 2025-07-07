@@ -103,7 +103,6 @@ public class BTPair extends AppCompatActivity {
         btn_exit.setOnClickListener(view -> {
             disableAll();
             startActivity(new Intent(BTPair.this, Nuovo_Gps.class));
-            overridePendingTransition(0, 0);
             finish();
         });
         btn_search.setOnClickListener(view -> {
@@ -128,7 +127,6 @@ public class BTPair extends AppCompatActivity {
                     pairWithDevice(selectedDeviceInfo.getDeviceAddress());
                     disableAll();
                     startActivity(new Intent(BTPair.this, Nuovo_Gps.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(BTPair.this, "IMPOSSIBLE TO PAIR").show();

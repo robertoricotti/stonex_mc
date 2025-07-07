@@ -332,7 +332,6 @@ public class ProfileCalibAuto extends AppCompatActivity {
             Intent intent = new Intent(this, ProfileCalibManual.class);
             intent.putExtra("indexProfile", indexProfile);
             startActivity(intent);
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -343,7 +342,6 @@ public class ProfileCalibAuto extends AppCompatActivity {
                 disableAll();
                 save();
                 startActivity(new Intent(this, ProfilesMenuActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -351,7 +349,6 @@ public class ProfileCalibAuto extends AppCompatActivity {
         exit.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, ProfilesMenuActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 

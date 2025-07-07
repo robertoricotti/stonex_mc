@@ -332,7 +332,6 @@ public class Remote_Activity extends AppCompatActivity {
         back.setOnClickListener(view -> {
             back.setEnabled(false);
             startActivity(new Intent(this, Activity_Home_Page.class));
-            overridePendingTransition(0, 0);
             finish();
         });
     }

@@ -1,0 +1,146 @@
+package gui.dialogs_and_toast;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.cp.cputils.Apollo2;
+import com.cp.cputils.ApolloPro;
+import com.example.stx_dig.BuildConfig;
+import com.example.stx_dig.R;
+
+import gui.MyApp;
+import packexcalib.exca.DataSaved;
+import utils.FullscreenActivity;
+import utils.MyData;
+import utils.MyDeviceManager;
+
+
+public class Dialog_InfoApp {
+    Activity activity;
+    public Dialog dialog;
+    ImageView close;
+    TextView textView;
+
+    public Dialog_InfoApp(Activity activity) {
+        this.activity = activity;
+        dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+    }
+
+    public void show() {
+        dialog.create();
+        dialog.setContentView(R.layout.dialog_infoapp);
+        dialog.setCancelable(false);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
+        }
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.CENTER;
+
+        // Calcola 75% della larghezza dello schermo
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = (int) (displayMetrics.widthPixels * 0.75);
+        int height = (int) (displayMetrics.heightPixels * 0.85);
+        dialog.getWindow().setLayout(width, height);
+        dialog.show();
+        findView();
+        onClick();
+
+    }
+
+    private void findView() {
+        close = dialog.findViewById(R.id.chiudi);
+        textView = dialog.findViewById(R.id.testo);
+
+        String s=MyData.get_String("progettoSelected");
+        s = s.replace("/storage/emulated/0/StonexMachineControl", "");
+        s = s.substring(0, s.lastIndexOf("/"));
+        String s2="";
+        if (Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")) {
+            Apollo2 apollo2 = Apollo2.getInstance(activity);
+            s2 = apollo2.getDeviceSN();
+        } else {
+            ApolloPro apolloPro = ApolloPro.getInstance(activity);
+            s2 = apolloPro.getDeviceSN();
+        }
+        textView.setText(
+                        "STX MC v " + BuildConfig.VERSION_NAME + "\n\n" +
+                                "Device: "+ Build.BRAND+"  S/N: "+s2  +"\n\n"+
+                                "Support: "+MyData.get_String("techInfo")+"\n\n"+
+                        "License Code: " + MyApp.LICENSE_KEY + " " + licenzaStringa() + "\n\n"+
+                                "Machine: "+DataSaved.machineName+"\n\n"+
+                                "Project: "+ s+"\n"+
+                "CRS: "+MyData.get_String("LastSP")+"\n"+
+                                "Geoid: "+MyData.get_String("geoidPath")+"\n"
+
+        );
+    }
+
+    private void onClick() {
+        close.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+    }
+
+    private String licenzaStringa() {
+        switch (MyApp.KEY_LEVEL) {
+            case -1:
+            case 0:
+                return "No License";
+
+
+            case 1:
+                return "Dig 1D License No AUTO ";
+
+
+            case 2:
+                return "Dig 1D / 2D License No AUTO";
+
+
+            case 3:
+                return "MC 1D / 2D / 3DEasy License No AUTO";
+
+
+            case 4:
+                return "MC 1D / 2D / 3DPRO License No AUTO";
+
+
+            case 10:
+                return "Drill License No AUTO";
+
+
+            case 11:
+                return "Drill License + AUTO";
+
+
+            case 33:
+                return "MC 1D License AUTO ENABLED";
+
+
+            case 34:
+                return "MC 1D / 2D License AUTO ENABLED";
+
+
+            case 35:
+                return "MC 1D / 2D / 3DEasy License AUTO ENABLED";
+
+
+            case 36:
+                return "MC 1D / 2D / 3DPRO License AUTO ENABLED";
+
+
+        }
+        return "";
+    }
+}

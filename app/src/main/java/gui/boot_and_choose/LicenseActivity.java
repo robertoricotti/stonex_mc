@@ -258,7 +258,6 @@ public class LicenseActivity extends BaseClass {
 
                     }
                     startActivity(new Intent(this, LaunchScreenActivity.class));
-                    overridePendingTransition(0, 0);
                     finish();
 
                 });
@@ -271,7 +270,6 @@ public class LicenseActivity extends BaseClass {
                             Intent intent1;
                             intent1 = new Intent(this, Drill_MainPage.class);
                             startActivity(intent1);
-                            overridePendingTransition(0,0);
                             finish();
                             break;
 
@@ -286,7 +284,6 @@ public class LicenseActivity extends BaseClass {
                             Intent intent;
                             intent = new Intent(this, Activity_Home_Page.class);
                             startActivity(intent);
-                            overridePendingTransition(0,0);
                             finish();
                             break;
                     }
@@ -307,7 +304,6 @@ public class LicenseActivity extends BaseClass {
                     Intent intent1;
                     intent1 = new Intent(this, Drill_MainPage.class);
                     startActivity(intent1);
-                    overridePendingTransition(0,0);
                     finish();
                     break;
 
@@ -322,7 +318,6 @@ public class LicenseActivity extends BaseClass {
                     Intent intent;
                     intent = new Intent(this, Activity_Home_Page.class);
                     startActivity(intent);
-                    overridePendingTransition(0,0);
                     finish();
                     break;
                 default:
@@ -370,7 +365,6 @@ public class LicenseActivity extends BaseClass {
                     }
 
                     startActivity(new Intent(this, LaunchScreenActivity.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 } else if (s.equals("QWEDSAZXC")) {
                     isTech = true;

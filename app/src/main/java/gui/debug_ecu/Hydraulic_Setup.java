@@ -75,7 +75,6 @@ public class Hydraulic_Setup extends BaseClass {
         });
         back.setOnClickListener(view -> {
             startActivity(new Intent(this, Hydro_Lobby.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -183,7 +182,7 @@ public class Hydraulic_Setup extends BaseClass {
                         image.setImageResource(R.drawable.dozer_machines_btn);
                         break;
                     case 1:
-                        image.setImageResource(R.drawable.cartoon_grader);
+                        image.setImageResource(R.drawable.cartoon_graderr);
                         break;
 
 

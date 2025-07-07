@@ -203,7 +203,6 @@ public class StickCalib extends AppCompatActivity {
                     save();
                     startService(new Intent(this, UpdateValuesService.class));
                     startActivity(new Intent(this, MachineSettings.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 }
             } else {
@@ -215,7 +214,6 @@ public class StickCalib extends AppCompatActivity {
                     save();
                     startService(new Intent(this, UpdateValuesService.class));
                     startActivity(new Intent(this, MachineSettings.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 }
             }
@@ -226,7 +224,6 @@ public class StickCalib extends AppCompatActivity {
             esc.setEnabled(false);
             startService(new Intent(this, UpdateValuesService.class));
             startActivity(new Intent(this, MachineSettings.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 

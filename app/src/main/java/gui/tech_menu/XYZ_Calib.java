@@ -107,7 +107,6 @@ public class XYZ_Calib extends AppCompatActivity {
             MyData.push("M" + indexMachineSelected + "_distG1_G2", Utils.writeMetri(dist.getText().toString()));
             startService(new Intent(this, UpdateValuesService.class));
             startActivity(new Intent(this, MachineSettings.class));
-            overridePendingTransition(0, 0);
             finish();
 
 
@@ -116,7 +115,6 @@ public class XYZ_Calib extends AppCompatActivity {
             exit.setEnabled(false);
             save.setEnabled(false);
             startActivity(new Intent(this, MachineSettings.class));
-            overridePendingTransition(0, 0);
             finish();
         });
         dx.setOnClickListener(view -> {

@@ -28,7 +28,6 @@ public class Hydro_Lobby extends BaseClass {
             if(!press) {
                 press = true;
                 startActivity(new Intent(this, ExcavatorMenuActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -36,7 +35,6 @@ public class Hydro_Lobby extends BaseClass {
             if(!press) {
                 press = true;
                 startActivity(new Intent(this, Hydraulic_Setup.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
 
@@ -45,7 +43,6 @@ public class Hydro_Lobby extends BaseClass {
             if(!press) {
                 press = true;
                 startActivity(new Intent(this, Joy_Interface_Setup.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
 

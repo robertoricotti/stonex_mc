@@ -881,6 +881,11 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di profileSelected: " + e.getMessage());
                 }
+                try {
+                    DataSaved.machineName = MyData.get_String("M" + indexMach + "_Name");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di machineName: " + e.getMessage());
+                }
 
                 try {
                     DataSaved.lrBoom1 = MyData.get_Int("M" + indexMach + "_Boom1_MountPos");

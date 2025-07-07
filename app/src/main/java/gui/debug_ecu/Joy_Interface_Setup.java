@@ -31,7 +31,6 @@ public class Joy_Interface_Setup extends AppCompatActivity {
             if (!press) {
                 press = true;
                 startActivity(new Intent(this, Hydro_Lobby.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });

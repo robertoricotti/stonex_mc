@@ -220,7 +220,6 @@ public class Tilt_Blade extends AppCompatActivity {
             MyData.push("M" + indexMachineSelected + "_OffsetFrameX", String.valueOf(DataSaved.offsetRoll));
             startActivity(new Intent(this,MachineSettings.class));
             startService(new Intent(this, UpdateValuesService.class));
-            overridePendingTransition(0,0);
             finish();
 
         });
@@ -230,7 +229,6 @@ public class Tilt_Blade extends AppCompatActivity {
             DataSaved.offsetPitch=MyData.get_Double("M" + indexMachineSelected + "_OffsetFrameY");
             DataSaved.offsetRoll=MyData.get_Double("M" + indexMachineSelected + "_OffsetFrameX");
             startActivity(new Intent(this,MachineSettings.class));
-            overridePendingTransition(0,0);
             finish();
         });
 

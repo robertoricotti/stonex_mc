@@ -57,7 +57,6 @@ public class Serial_Msg_Debug extends AppCompatActivity {
         back.setOnClickListener(view -> {
             back.setEnabled(false);
             startActivity(new Intent(this, Nuovo_Gps.class));
-            overridePendingTransition(0, 0);
             finish();
         });
         playpause.setOnClickListener(view -> {

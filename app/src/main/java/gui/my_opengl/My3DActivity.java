@@ -407,13 +407,11 @@ public class My3DActivity extends BaseClass {
                     } else {
                         disableAll();
                         startActivity(new Intent(this, Projects.class));
-                        overridePendingTransition(0, 0);
                         finish();
                     }
                 } catch (Exception e) {
                     disableAll();
                     startActivity(new Intent(this, Projects.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 }
             }

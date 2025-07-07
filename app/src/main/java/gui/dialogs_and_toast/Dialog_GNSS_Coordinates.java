@@ -75,12 +75,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     public void show() {
 
         alertDialog.create();
-        if (Build.BRAND.equals("SRT8PROS")) {
-            alertDialog.setContentView(R.layout.dialog_gnss_coordinates_2);
-        } else if (Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("qti")||Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")) {
-            alertDialog.setContentView(R.layout.dialog_gnss_coordinates_2_8);
-        }
-
+        alertDialog.setContentView(R.layout.dialog_gnss_coordinates_2);
         alertDialog.setCancelable(false);
         Window window = alertDialog.getWindow();
         if (window != null) {

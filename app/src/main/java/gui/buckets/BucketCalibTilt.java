@@ -258,7 +258,6 @@ public class BucketCalibTilt extends AppCompatActivity {
             Intent intent = new Intent(this, PickBucket.class);
             intent.putExtra("indexBucket", indexBucket);
             startActivity(intent);
-            overridePendingTransition(0, 0);
             finish();
         });
         plusBuck.setOnClickListener((View v) -> {
@@ -297,7 +296,6 @@ public class BucketCalibTilt extends AppCompatActivity {
                         store();
                         startService(new Intent(this, UpdateValuesService.class));
                         startActivity(new Intent(this, BucketChooserActivity.class));
-                        overridePendingTransition(0, 0);
                         finish();
                     }
                 }
@@ -313,7 +311,6 @@ public class BucketCalibTilt extends AppCompatActivity {
                         store();
                         startService(new Intent(this, UpdateValuesService.class));
                         startActivity(new Intent(this, BucketChooserActivity.class));
-                        overridePendingTransition(0, 0);
                         finish();
                     }
                 }
@@ -324,7 +321,6 @@ public class BucketCalibTilt extends AppCompatActivity {
             disableAll();
             startService(new Intent(this, UpdateValuesService.class));
             startActivity(new Intent(this, BucketChooserActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 

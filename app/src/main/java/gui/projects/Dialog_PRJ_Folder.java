@@ -247,7 +247,6 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     new CustomToast(activity, "..Saved..").show_long();
                     stopUpdating();
                     activity.startActivity(new Intent(activity, Activity_Home_Page.class));
-                    activity.overridePendingTransition(0, 0);
                     activity.finish();
                     dialog.dismiss();
 
@@ -546,7 +545,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
                     }else {
                         if(MyData.get_String("usaGeoide").contains("true")){
-                            setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_dialog_on));
+                            setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_selezionato));
                         }else {
                             setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
                         }

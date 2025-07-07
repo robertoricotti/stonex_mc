@@ -1,9 +1,12 @@
 package gui.tech_menu;
 
-import static gui.MyApp.KEY_LEVEL;
+import static gui.MyApp.errorCode;
+import static gui.dialogs_and_toast.DialogPassword.isTech;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,43 +17,45 @@ import android.widget.TextView;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
-import gui.debug_ecu.Can_Msg_Debug;
-import gui.debug_ecu.DebugExcavatorActivity;
-import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.CustomToast;
+import gui.dialogs_and_toast.DialogPassword;
+import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
+import gui.dialogs_and_toast.Dialog_InfoApp;
 import gui.dialogs_user_settings.DialogUnitOfMeasure;
-import gui.digging_excavator.Digging1D;
-import gui.digging_excavator.Digging2D;
-import gui.digging_excavator.DiggingProfile;
-import gui.boot_and_choose.ExcavatorMenuActivity;
+import gui.gps.Nuovo_Gps;
 import packexcalib.exca.DataSaved;
-import services.ReadProjectService;
 import services.UpdateValuesService;
 import utils.MyData;
+import utils.WifiHelper;
 
 public class ExcavatorChooserActivity extends BaseClass {
     DialogUnitOfMeasure dialogUnitOfMeasure;
     LinearLayout m1, m2, m3, m4;
-    ImageView machine1, machine2, machine3, machine4;
+    ImageView machine1, machine2, machine3, machine4, lockUnlock;
     TextView nameMachine1, nameMachine2, nameMachine3, nameMachine4;
     ImageView canM1, canM2, canM3, canM4;
     ImageView bucketM1, bucketM2, bucketM3, bucketM4;
     ImageView settingsM1, settingsM2, settingsM3, settingsM4;
-    ImageView back, toDig;
-    TextView headerMachine;
+    ImageView back;
+    ImageView img00, img01, btn_3;
+    TextView txtProject;
+
     private boolean isDefault_1, isDefault_2, isDefault_3, isDefault_4;
 
-    int indexMachineSelected, isWL1, isWL2, isWL3, isWL4,unitOfMeasure;
+    int indexMachineSelected, isWL1, isWL2, isWL3, isWL4, unitOfMeasure;
 
     DialogPassword dialogPassword;
     ProgressBar progressBar;
+    Dialog_InfoApp dialogInfoApp;
+    Dialog_GNSS_Coordinates dialogGnssCoordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-            setContentView(R.layout.activity_machines);
+        setContentView(R.layout.activity_machines);
 
 
         findView();
@@ -59,10 +64,16 @@ public class ExcavatorChooserActivity extends BaseClass {
         onLongClick();
         updateUI();
         dialogPassword = new DialogPassword(this);
-        dialogUnitOfMeasure=new DialogUnitOfMeasure(this);
+        dialogUnitOfMeasure = new DialogUnitOfMeasure(this);
+        dialogInfoApp = new Dialog_InfoApp(this);
+        dialogGnssCoordinates=new Dialog_GNSS_Coordinates(this);
     }
 
     private void findView() {
+        btn_3 = findViewById(R.id.btn_3);
+        img00 = findViewById(R.id.img00);
+        img01 = findViewById(R.id.img01);
+        txtProject = findViewById(R.id.txtProject);
         m1 = findViewById(R.id.m1);
         m2 = findViewById(R.id.m2);
         m3 = findViewById(R.id.m3);
@@ -87,17 +98,17 @@ public class ExcavatorChooserActivity extends BaseClass {
         settingsM2 = findViewById(R.id.modify_mac_2);
         settingsM3 = findViewById(R.id.modify_mac_3);
         settingsM4 = findViewById(R.id.modify_mac_4);
-        headerMachine = findViewById(R.id.machinesTitle);
+        lockUnlock = findViewById(R.id.lockunlock);
+
         back = findViewById(R.id.back);
-        toDig = findViewById(R.id.pair);
+
         progressBar = findViewById(R.id.progressBar);
     }
 
     private void init() {
         progressBar.setVisibility(View.INVISIBLE);
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        unitOfMeasure=MyData.get_Int("Unit_Of_Measure");
-        headerMachine.setText(MyData.get_String("M" + indexMachineSelected + "_Name"));
+        unitOfMeasure = MyData.get_Int("Unit_Of_Measure");
         nameMachine1.setText(MyData.get_String("M1_Name"));
         nameMachine2.setText(MyData.get_String("M2_Name"));
         nameMachine3.setText(MyData.get_String("M3_Name"));
@@ -107,113 +118,112 @@ public class ExcavatorChooserActivity extends BaseClass {
         isDefault_3 = MyData.get_Double("M" + 3 + "_LengthBoom1") == -1d;
         isDefault_4 = MyData.get_Double("M" + 4 + "_LengthBoom1") == -1d;
         isWL1 = MyData.get_Int("M" + 1 + "_isWL");
-        isWL2 =  MyData.get_Int("M" + 2 + "_isWL");
-        isWL3 =  MyData.get_Int("M" + 3 + "_isWL");
-        isWL4 =  MyData.get_Int("M" + 4 + "_isWL");
-        switch (DataSaved.isWL){
-            case 0:
-                toDig.setImageResource(R.drawable.machines_btn);
-                break;
-            case 1:
-                toDig.setImageResource(R.drawable.wheel_machines_btn);
-                break;
-            case 2:
-                toDig.setImageResource(R.drawable.dozer_machines_btn);
-                break;
-            default:
-                toDig.setImageResource(R.drawable.machines_btn);
-                break;
-        }
-        if (DataSaved.isCanOpen == 1) {
-            canM1.setImageResource(R.drawable.debug_btn);
-            canM2.setImageResource(R.drawable.debug_btn);
-            canM3.setImageResource(R.drawable.debug_btn);
-            canM4.setImageResource(R.drawable.debug_btn);
-        } else {
-            canM1.setImageResource(R.drawable.debug_btn_tsm);
-            canM2.setImageResource(R.drawable.debug_btn_tsm);
-            canM3.setImageResource(R.drawable.debug_btn_tsm);
-            canM4.setImageResource(R.drawable.debug_btn_tsm);
-        }
+        isWL2 = MyData.get_Int("M" + 2 + "_isWL");
+        isWL3 = MyData.get_Int("M" + 3 + "_isWL");
+        isWL4 = MyData.get_Int("M" + 4 + "_isWL");
+
+
     }
 
     public void updateUI() {
+        try {
+            if (DataSaved.gpsOk && errorCode == 0) {
+                img00.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+            } else {
+                img00.setImageTintList(ColorStateList.valueOf(Color.RED));
+            }
+            String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
+            if (ssid != null) {
 
-        headerMachine.setText( MyData.get_String("M" + indexMachineSelected + "_Name"));
+                img01.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+
+            } else {
+
+                img01.setImageResource(R.drawable.wifi_vuoto);
+
+            }
+        } catch (Exception e) {
+            img01.setImageResource(R.drawable.wifi_off_96);
+        }
+        if (isTech) {
+            lockUnlock.setImageResource(R.drawable.unlock);
+
+        } else {
+            lockUnlock.setImageResource(R.drawable.lock);
+        }
+
+
         if (isWL1 == 1) {
             machine1.setImageResource(R.drawable.wheel_machines_btn);
 
-        }else if(isWL1==2||isWL1==3){
+        } else if (isWL1 == 2 || isWL1 == 3) {
             machine1.setImageResource(R.drawable.dozer_machines_btn);
             bucketM1.setVisibility(View.INVISIBLE);
 
-        } else if (isWL1==4) {
+        } else if (isWL1 == 4) {
             machine1.setImageResource(R.drawable.grader_btn);
             bucketM1.setVisibility(View.INVISIBLE);
         }
         if (isWL2 == 1) {
             machine2.setImageResource(R.drawable.wheel_machines_btn);
-        }else if(isWL2==2){
+        } else if (isWL2 == 2) {
             machine2.setImageResource(R.drawable.dozer_machines_btn);
             bucketM2.setVisibility(View.INVISIBLE);
-        }else if (isWL2==4) {
+        } else if (isWL2 == 4) {
             machine2.setImageResource(R.drawable.grader_btn);
             bucketM2.setVisibility(View.INVISIBLE);
         }
         if (isWL3 == 1) {
             machine3.setImageResource(R.drawable.wheel_machines_btn);
-        }else if(isWL3==2){
+        } else if (isWL3 == 2) {
             machine3.setImageResource(R.drawable.dozer_machines_btn);
             bucketM3.setVisibility(View.INVISIBLE);
-        }else if (isWL3==4) {
+        } else if (isWL3 == 4) {
             machine3.setImageResource(R.drawable.grader_btn);
             bucketM3.setVisibility(View.INVISIBLE);
         }
         if (isWL4 == 1) {
             machine4.setImageResource(R.drawable.wheel_machines_btn);
-        }else if(isWL4==2){
+        } else if (isWL4 == 2) {
             machine4.setImageResource(R.drawable.dozer_machines_btn);
             bucketM4.setVisibility(View.INVISIBLE);
-        }else if (isWL4==4) {
+        } else if (isWL4 == 4) {
             machine4.setImageResource(R.drawable.grader_btn);
             bucketM4.setVisibility(View.INVISIBLE);
         }
-        m1.setBackgroundColor(indexMachineSelected == 1 ? getColor(R.color.orange) : getColor(R.color.transparent));
+        //m1.setBackgroundColor(indexMachineSelected == 1 ? getColor(R.color.orange) : getColor(R.color.transparent));
+        m1.setBackground(indexMachineSelected == 1 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_1) {
             m1.setAlpha(0.2f);
         } else {
             m1.setAlpha(1.0f);
         }
-        m2.setBackgroundColor(indexMachineSelected == 2 ? getColor(R.color.orange) : getColor(R.color.transparent));
+        m2.setBackground(indexMachineSelected == 2 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_2) {
             m2.setAlpha(0.2f);
         } else {
             m2.setAlpha(1.0f);
         }
-        m3.setBackgroundColor(indexMachineSelected == 3 ? getColor(R.color.orange) : getColor(R.color.transparent));
+        m3.setBackground(indexMachineSelected == 3 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_3) {
             m3.setAlpha(0.2f);
         } else {
             m3.setAlpha(1.0f);
         }
-        m4.setBackgroundColor(indexMachineSelected == 4 ? getColor(R.color.orange) : getColor(R.color.transparent));
+        m4.setBackground(indexMachineSelected == 4 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_4) {
             m4.setAlpha(0.2f);
         } else {
             m4.setAlpha(1.0f);
-        }
-        if(DataSaved.isWL==2||DataSaved.isWL==3||DataSaved.isWL==4){
-            toDig.setImageResource(R.drawable.go_grade);
-        }else {
-            toDig.setImageResource(R.drawable.go_dig);
         }
 
 
     }
 
     private void disableAll() {
+        btn_3.setEnabled(false);
+        lockUnlock.setEnabled(false);
         back.setEnabled(false);
-        toDig.setEnabled(false);
         machine1.setEnabled(false);
         machine2.setEnabled(false);
         machine3.setEnabled(false);
@@ -232,9 +242,10 @@ public class ExcavatorChooserActivity extends BaseClass {
         settingsM4.setEnabled(false);
 
     }
+
     private void enableAll() {
+        lockUnlock.setEnabled(true);
         back.setEnabled(true);
-        toDig.setEnabled(true);
         machine1.setEnabled(true);
         machine2.setEnabled(true);
         machine3.setEnabled(true);
@@ -254,66 +265,36 @@ public class ExcavatorChooserActivity extends BaseClass {
     }
 
     private void onClick() {
-        back.setOnClickListener((View v) -> {
-            disableAll();
-            startService(new Intent(this, UpdateValuesService.class));
-            startActivity(new Intent(getApplicationContext(), ExcavatorMenuActivity.class));
-            overridePendingTransition(0, 0);
-            finish();
+        img00.setOnClickListener(view -> {
+            if (!dialogGnssCoordinates.alertDialog.isShowing()) {
+                dialogGnssCoordinates.show();
+            }
         });
-
-        toDig.setOnClickListener((View v) -> {
-            disableAll();
-            startService(new Intent(this, UpdateValuesService.class));
-            int profile =  MyData.get_Int("ProfileSelected");
-            int typeView =  MyData.get_Int("indexView");
-            if (profile == 0) {
-                switch (typeView) {
-                    case 0:
-                        if(KEY_LEVEL>0) {
-                            startActivity(new Intent(this, Digging1D.class));
-                            overridePendingTransition(0, 0);
-                            finish();
-                        }else {
-                            enableAll();
-                            new CustomToast(this,"LICENSE MISSED").show_alert();
-                        }
-                        break;
-                    case 1:
-                        if(KEY_LEVEL>1) {
-                            startActivity(new Intent(this, Digging2D.class));
-                            overridePendingTransition(0, 0);
-                            finish();
-                        }else {
-                            enableAll();
-                            new CustomToast(this,"LICENSE MISSED").show_alert();
-                        }
-                        break;
-                    case 2:
-                    case 3:
-                        if(KEY_LEVEL>2) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            startService(new Intent(this, ReadProjectService.class));
-                        }else {
-                            enableAll();
-                            new CustomToast(this,"LICENSE MISSED").show_alert();
-                        }
-                        break;
-
+        btn_3.setOnClickListener(view -> {
+            if (!dialogInfoApp.dialog.isShowing()) {
+                dialogInfoApp.show();
+            }
+        });
+        lockUnlock.setOnClickListener(view -> {
+            if (!isTech) {
+                if (!dialogPassword.dialog.isShowing()) {
+                    dialogPassword.show();
                 }
-            } else {
-                startActivity(new Intent(this, DiggingProfile.class));
-                overridePendingTransition(0, 0);
-                finish();
             }
 
         });
+        back.setOnClickListener((View v) -> {
+            disableAll();
+            startService(new Intent(this, UpdateValuesService.class));
+            startActivity(new Intent(getApplicationContext(), Activity_Home_Page.class));
+            finish();
+        });
+
 
         bucketM1.setOnClickListener((View v) -> {
             if (indexMachineSelected == 1) {
                 bucketM1.setEnabled(false);
                 startActivity(new Intent(this, BucketChooserActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -322,7 +303,6 @@ public class ExcavatorChooserActivity extends BaseClass {
             if (indexMachineSelected == 2) {
                 bucketM2.setEnabled(false);
                 startActivity(new Intent(this, BucketChooserActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -331,7 +311,6 @@ public class ExcavatorChooserActivity extends BaseClass {
             if (indexMachineSelected == 3) {
                 bucketM3.setEnabled(false);
                 startActivity(new Intent(this, BucketChooserActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -340,135 +319,150 @@ public class ExcavatorChooserActivity extends BaseClass {
             if (indexMachineSelected == 4) {
                 bucketM4.setEnabled(false);
                 startActivity(new Intent(this, BucketChooserActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
 
         settingsM1.setOnClickListener((View v) -> {
-            if(unitOfMeasure==4||unitOfMeasure==5) {
-                if(!dialogUnitOfMeasure.alertDialog.isShowing()) {
-                    new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
-                    dialogUnitOfMeasure.show();
-                }
-
-            }else {
-                if (indexMachineSelected == 1 && !dialogPassword.dialog.isShowing()) {
-                    dialogPassword.show();
+            if (indexMachineSelected == 1) {
+                if (isTech) {
+                    if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                        if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                            new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                            dialogUnitOfMeasure.show();
+                        }
+                    } else {
+                        disableAll();
+                        startActivity(new Intent(this, MachineSettings.class));
+                        finish();
+                    }
+                } else {
+                    String lucchettoChiuso = "\uD83D\uDD12";
+                    new CustomToast(this, lucchettoChiuso).show();
                 }
             }
+
+
         });
 
         settingsM2.setOnClickListener((View v) -> {
-            if(unitOfMeasure==4||unitOfMeasure==5) {
-                if(!dialogUnitOfMeasure.alertDialog.isShowing()) {
-                    new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
-                    dialogUnitOfMeasure.show();
-                }
-            }else {
-                if (indexMachineSelected == 2 && !dialogPassword.dialog.isShowing()) {
-                    dialogPassword.show();
+            if (indexMachineSelected == 2) {
+                if (isTech) {
+                    if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                        if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                            new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                            dialogUnitOfMeasure.show();
+                        }
+                    } else {
+                        disableAll();
+                        startActivity(new Intent(this, MachineSettings.class));
+                        finish();
+                    }
+                } else {
+                    String lucchettoChiuso = "\uD83D\uDD12";
+                    new CustomToast(this, lucchettoChiuso).show();
                 }
             }
+
+
         });
 
         settingsM3.setOnClickListener((View v) -> {
-            if(unitOfMeasure==4||unitOfMeasure==5) {
-                if(!dialogUnitOfMeasure.alertDialog.isShowing()) {
-                    new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
-                    dialogUnitOfMeasure.show();
-                }
-            }else {
-                if (indexMachineSelected == 3 && !dialogPassword.dialog.isShowing()) {
-                    dialogPassword.show();
+            if (indexMachineSelected == 3) {
+                if (isTech) {
+                    if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                        if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                            new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                            dialogUnitOfMeasure.show();
+                        }
+                    } else {
+                        disableAll();
+                        startActivity(new Intent(this, MachineSettings.class));
+                        finish();
+                    }
+                } else {
+                    String lucchettoChiuso = "\uD83D\uDD12";
+                    new CustomToast(this, lucchettoChiuso).show();
                 }
             }
+
+
         });
 
         settingsM4.setOnClickListener((View v) -> {
-            if(unitOfMeasure==4||unitOfMeasure==5) {
-                if(!dialogUnitOfMeasure.alertDialog.isShowing()) {
-                    new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
-                    dialogUnitOfMeasure.show();
-                }
-            }else {
-                if (indexMachineSelected == 4 && !dialogPassword.dialog.isShowing()) {
-                    dialogPassword.show();
+            if (indexMachineSelected == 4) {
+                if (isTech) {
+                    if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                        if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                            new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                            dialogUnitOfMeasure.show();
+                        }
+                    } else {
+                        disableAll();
+                        startActivity(new Intent(this, MachineSettings.class));
+                        finish();
+                    }
+                } else {
+                    String lucchettoChiuso = "\uD83D\uDD12";
+                    new CustomToast(this, lucchettoChiuso).show();
                 }
             }
+
+
         });
         canM1.setOnClickListener(view -> {
             if (indexMachineSelected == 1) {
-                canM1.setEnabled(false);
-                if(DataSaved.isWL<2) {
-                    startActivity(new Intent(ExcavatorChooserActivity.this, DebugExcavatorActivity.class));
-                    overridePendingTransition(0, 0);
+                if (isTech) {
+                    disableAll();
+                    startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
                     finish();
-                }else {
-                    Intent intent=new Intent(ExcavatorChooserActivity.this, Can_Msg_Debug.class);
-                    intent.putExtra("chi","choose");
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
-                    finish();
+                } else {
+                    String lucchettoChiuso = "\uD83D\uDD12";
+                    new CustomToast(this, lucchettoChiuso).show();
                 }
             }
         });
         canM2.setOnClickListener(view -> {
-            if (indexMachineSelected == 2) {
-                canM2.setEnabled(false);
-                if(DataSaved.isWL<2) {
-                    startActivity(new Intent(ExcavatorChooserActivity.this, DebugExcavatorActivity.class));
-                    overridePendingTransition(0, 0);
-                    finish();
-                }else {
 
-                    Intent intent=new Intent(ExcavatorChooserActivity.this, Can_Msg_Debug.class);
-                    intent.putExtra("chi","choose");
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
+            if (indexMachineSelected == 2) {
+                if (isTech) {
+                    disableAll();
+                    startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
                     finish();
+                } else {
+                    String lucchettoChiuso = "\uD83D\uDD12";
+                    new CustomToast(this, lucchettoChiuso).show();
                 }
             }
+
 
         });
         canM3.setOnClickListener(view -> {
             if (indexMachineSelected == 3) {
-                canM3.setEnabled(false);
-                if(DataSaved.isWL<2) {
-                    startActivity(new Intent(ExcavatorChooserActivity.this, DebugExcavatorActivity.class));
-                    overridePendingTransition(0, 0);
+                if (isTech) {
+                    disableAll();
+                    startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
                     finish();
-                }else {
-
-                    Intent intent=new Intent(ExcavatorChooserActivity.this, Can_Msg_Debug.class);
-                    intent.putExtra("chi","choose");
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
-                    finish();
+                } else {
+                    String lucchettoChiuso = "\uD83D\uDD12";
+                    new CustomToast(this, lucchettoChiuso).show();
                 }
             }
 
         });
         canM4.setOnClickListener(view -> {
             if (indexMachineSelected == 4) {
-                canM4.setEnabled(false);
-                if(DataSaved.isWL<2) {
-                    startActivity(new Intent(ExcavatorChooserActivity.this, DebugExcavatorActivity.class));
-                    overridePendingTransition(0, 0);
+                if (isTech) {
+                    disableAll();
+                    startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
                     finish();
-                }else {
-
-                    Intent intent=new Intent(ExcavatorChooserActivity.this, Can_Msg_Debug.class);
-                    intent.putExtra("chi","choose");
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
-                    finish();
+                } else {
+                    String lucchettoChiuso = "\uD83D\uDD12";
+                    new CustomToast(this, lucchettoChiuso).show();
                 }
             }
-
         });
     }
-
 
 
     private void onLongClick() {
@@ -497,11 +491,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             MyData.push("MachineSelected", "4");
             indexMachineSelected = 4;
             startService(new Intent(this, UpdateValuesService.class));
-            if(DataSaved.isWL==2||DataSaved.isWL==3||DataSaved.isWL==4){
-                toDig.setImageResource(R.drawable.go_grade);
-            }
+
         });
     }
+
 
     @SuppressLint("MissingSuperCall")
     @Override

@@ -50,6 +50,7 @@ import event_bus.CMD_Event;
 import event_bus.CanEvents;
 import drill_pile.gui.Drill_MainPage;
 import gui.MyApp;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.Serial_Msg_Debug;
@@ -58,6 +59,7 @@ import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
+import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import serial.OpenSerialPort;
@@ -520,9 +522,8 @@ public class Nuovo_Gps extends AppCompatActivity {
                     case 10:
                     case 11:
                         Intent intent1;
-                        intent1 = new Intent(this, Drill_MainPage.class);
+                        intent1 = new Intent(this, ExcavatorChooserActivity.class);
                         startActivity(intent1);
-                        overridePendingTransition(0, 0);
                         finish();
                         break;
 
@@ -535,9 +536,8 @@ public class Nuovo_Gps extends AppCompatActivity {
                     case 35:
                     case 36:
                         Intent intent;
-                        intent = new Intent(this, ExcavatorMenuActivity.class);
+                        intent = new Intent(this, ExcavatorChooserActivity.class);
                         startActivity(intent);
-                        overridePendingTransition(0, 0);
                         finish();
                         break;
                 }
@@ -558,11 +558,9 @@ public class Nuovo_Gps extends AppCompatActivity {
                     Intent intent = new Intent(this, Can_Msg_Debug.class);
                     intent.putExtra("chi", "gps");
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     startActivity(new Intent(this, Serial_Msg_Debug.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 }
             }

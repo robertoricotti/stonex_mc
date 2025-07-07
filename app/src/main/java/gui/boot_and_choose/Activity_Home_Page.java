@@ -1,6 +1,7 @@
 package gui.boot_and_choose;
 
 import static gui.MyApp.KEY_LEVEL;
+import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static services.ReadProjectService.numbers;
 import static services.UpdateValuesService.firstLaunch;
@@ -8,6 +9,8 @@ import static services.UpdateValuesService.startedService;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -23,7 +26,10 @@ import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_Create_New_Prj;
+import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
+import gui.dialogs_and_toast.Dialog_InfoApp;
 import gui.projects.PickProject;
+import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
 import services.UpdateValuesService;
@@ -39,6 +45,8 @@ public class Activity_Home_Page extends AppCompatActivity {
     TextView stringsStat, titolo;
     DialogPassword dialogPassword;
     Dialog_Create_New_Prj dialogCreateNewPrj;
+    Dialog_InfoApp dialogInfoApp;
+    Dialog_GNSS_Coordinates dialogGnssCoordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +101,8 @@ public class Activity_Home_Page extends AppCompatActivity {
         closeAppDialog = new CloseAppDialog(this);
         dialogPassword = new DialogPassword(this);
         dialogCreateNewPrj = new Dialog_Create_New_Prj(this);
+        dialogInfoApp = new Dialog_InfoApp(this);
+        dialogGnssCoordinates=new Dialog_GNSS_Coordinates(this);
         close = findViewById(R.id.btn_1);
         progressBar = findViewById(R.id.progressBar);
         stringsStat = findViewById(R.id.stringastat);
@@ -131,8 +141,15 @@ public class Activity_Home_Page extends AppCompatActivity {
     }
 
     private void onClick() {
+        toMachines.setOnClickListener(view -> {
+            enableAll(false);
+            startActivity(new Intent(this, ExcavatorChooserActivity.class));
+            finish();
+        });
         appInfo.setOnClickListener(view -> {
-
+            if (!dialogInfoApp.dialog.isShowing()) {
+                dialogInfoApp.show();
+            }
         });
         toDueD.setOnClickListener(view -> {
             if (DataSaved.isWL > 0) {
@@ -142,10 +159,9 @@ public class Activity_Home_Page extends AppCompatActivity {
             }
         });
         keyLic.setOnClickListener(view -> {
-            enableAll(false);
-            startActivity(new Intent(getApplicationContext(), LicenseActivity.class));
-            overridePendingTransition(0, 0);
-            finish();
+            if (!dialogGnssCoordinates.alertDialog.isShowing()){
+                dialogGnssCoordinates.show();
+            }
         });
         newProj.setOnClickListener(view -> {
             if (KEY_LEVEL > 2) {
@@ -166,7 +182,6 @@ public class Activity_Home_Page extends AppCompatActivity {
             if (KEY_LEVEL > 2) {
                 enableAll(false);
                 startActivity(new Intent(this, PickProject.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -206,6 +221,11 @@ public class Activity_Home_Page extends AppCompatActivity {
 
     public void updateUI() {
         try {
+            if (DataSaved.gpsOk && errorCode == 0) {
+                keyLic.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+            } else {
+                keyLic.setImageTintList(ColorStateList.valueOf(Color.RED));
+            }
             try {
                 String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
                 if (ssid != null) {

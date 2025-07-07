@@ -265,7 +265,6 @@ public class MachineInfoCalib extends AppCompatActivity {
                 save();
                 startService(new Intent(this, UpdateValuesService.class));
                 startActivity(new Intent(this, MachineSettings.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -275,7 +274,6 @@ public class MachineInfoCalib extends AppCompatActivity {
             save.setEnabled(false);
             startService(new Intent(getApplicationContext(), UpdateValuesService.class));
             startActivity(new Intent(this, MachineSettings.class));
-            overridePendingTransition(0, 0);
             finish();
         });
     }

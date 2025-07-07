@@ -104,7 +104,6 @@ public class Grade2D extends AppCompatActivity {
         back.setOnClickListener(view -> {
             disableAll();
             startActivity(new Intent(this, ExcavatorMenuActivity.class));
-            overridePendingTransition(0, 0);
             finish();
 
         });

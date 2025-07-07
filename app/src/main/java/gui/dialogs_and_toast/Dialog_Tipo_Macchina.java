@@ -141,7 +141,7 @@ public class Dialog_Tipo_Macchina {
                 ckGrader.setChecked(true);
                 ckDrill.setChecked(false);
                 ckPile.setChecked(false);
-                macchina.setImageResource(R.drawable.cartoon_grader);
+                macchina.setImageResource(R.drawable.cartoon_graderr);
                 macchina.setRotationY(180);
                 break;
             case 5:

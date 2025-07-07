@@ -75,7 +75,6 @@ public class Can_Msg_Debug extends AppCompatActivity {
                     break;
             }
 
-            overridePendingTransition(0, 0);
             finish();
         });
         playpause.setOnClickListener(view ->{

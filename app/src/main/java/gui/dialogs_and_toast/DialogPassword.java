@@ -134,7 +134,6 @@ public class DialogPassword {
         if (isTech) {
             if (activity instanceof ExcavatorChooserActivity) {
                 activity.startActivity(new Intent(activity, MachineSettings.class));
-                activity.overridePendingTransition(0, 0);
                 activity.finish();
                 tmp = "";
                 dialog.dismiss();
@@ -152,15 +151,16 @@ public class DialogPassword {
             if (tmp.equals("000000") || tmp.equals("QWEDSAZXC") && !isTech) {
                 isTech = true;
 
-                if (activity instanceof ExcavatorChooserActivity) {
+                /*if (activity instanceof ExcavatorChooserActivity) {
+
                     activity.startActivity(new Intent(activity, MachineSettings.class));
-                    activity.overridePendingTransition(0, 0);
                     activity.finish();
                     tmp = "";
                     dialog.dismiss();
                 }else {
                     dialog.dismiss();
-                }
+                }*/
+                dialog.dismiss();
             } else if (tmp.equals("696969") || tmp.equals("1234567890") && !isTech2 && activity instanceof MachineSettings) {
 
                 isTech2 = true;
@@ -174,7 +174,6 @@ public class DialogPassword {
                         activity.startActivity(new Intent(activity, CanOpenTSM.class));}
 
                     }
-                    activity.overridePendingTransition(0, 0);
                     activity.finish();
 
                 }

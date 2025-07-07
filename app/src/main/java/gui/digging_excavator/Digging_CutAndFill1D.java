@@ -156,7 +156,6 @@ public class Digging_CutAndFill1D extends BaseClass {
         back.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(getApplicationContext(), Digging1D.class));
-            overridePendingTransition(0, 0);
             finish();
         });
         toBubble.setOnClickListener((View v) -> {

@@ -545,7 +545,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 1);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -568,7 +567,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 2);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -591,7 +589,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 3);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -614,7 +611,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 4);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -637,7 +633,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 5);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -660,7 +655,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 6);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -683,7 +677,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 7);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -706,7 +699,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 8);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -729,7 +721,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 9);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -752,7 +743,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 10);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -777,7 +767,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 11);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -800,7 +789,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 12);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -823,7 +811,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 13);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -846,7 +833,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 14);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -869,7 +855,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 15);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -892,7 +877,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 16);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -915,7 +899,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 17);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();
@@ -938,7 +921,6 @@ BucketChooserActivity extends BaseClass {
                         intent = new Intent(this, BucketCalibTilt.class);
                     intent.putExtra("indexBucket", 18);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.toast_select_bucket)).show();

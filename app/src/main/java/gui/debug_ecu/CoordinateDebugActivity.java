@@ -109,7 +109,6 @@ public class CoordinateDebugActivity extends AppCompatActivity {
         back.setOnClickListener((View v) -> {
             back.setEnabled(false);
             startActivity(new Intent(this, DebugExcavatorActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
     }

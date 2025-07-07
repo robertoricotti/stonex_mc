@@ -810,16 +810,13 @@ public class Activity_Crea_Superficie extends BaseClass {
         if (getIntent().getStringExtra("whoPRJ") != null) {
             if (getIntent().getStringExtra("whoPRJ").equals("DIG")) {
                 startActivity(new Intent(this, My3DActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             } else {
                 startActivity(new Intent(this, Activity_Home_Page.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         } else {
             startActivity(new Intent(this, Activity_Home_Page.class));
-            overridePendingTransition(0, 0);
             finish();
         }
     }

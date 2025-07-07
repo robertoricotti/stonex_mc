@@ -53,7 +53,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
-            android:src="@drawable/btn_key_license"
+            android:src="@drawable/baseline_live_help_96"
             app:tint="@color/white" />
         <TextView
             android:id="@+id/txtProject"
@@ -77,43 +77,84 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/lowerView"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:gravity="center"
         android:orientation="horizontal"
-        android:padding="1.5dp"
+        android:background="@drawable/custom_background_test3d_box"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/botla">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/botla">
 
         <ImageView
             android:id="@+id/btn_1"
-            android:layout_width="35dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
-            android:src="@drawable/power_off_btn"
-            app:tint="@color/white" />
+            android:scaleType="centerInside"
+            app:tint="@color/white"
+            app:srcCompat="@drawable/power_off_btn" />
 
         <ImageView
-            android:id="@+id/btn_2"
-            android:layout_width="35dp"
+            android:id="@+id/imgMove"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="4"
+            android:padding="15dp"
+            android:scaleType="centerInside" />
+        <ImageView
+            android:id="@+id/deleteFile"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/delete_raw"
             android:layout_weight="1"
-            android:background="@drawable/custom_background_test3d_box"
-            android:padding="5dp"
-            android:src="@drawable/teck_lock"
-            app:tint="@color/white" />
+            android:padding="10dp"
+            app:tint="@color/white"
+            android:scaleType="centerInside"
+            android:visibility="invisible"
 
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="4"
+            android:padding="15dp"
+            android:scaleType="centerInside" />
         <ImageView
             android:id="@+id/btn_3"
-            android:layout_width="35dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/info_96"
             android:layout_weight="1"
-            android:background="@drawable/custom_background_test3d_box"
+            android:padding="10dp"
+            app:tint="@color/white"
+            android:scaleType="centerInside"
+            />
+        <ImageView
+            android:id="@+id/btn_2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
             android:padding="5dp"
-            android:src="@drawable/info"
-            app:tint="@color/white" />
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/teck_lock"
+            app:tint="@color/white"
+            />
 
     </LinearLayout>
     <ImageView
@@ -122,7 +163,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="35dp"
         android:layout_marginHorizontal="45dp"
-        android:background="@drawable/sfondo_bottone_trasp"
+        android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:src="@drawable/bottone_user_set"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -150,7 +191,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="35dp"
         android:layout_marginHorizontal="45dp"
-        android:background="@drawable/sfondo_bottone_trasp"
+        android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:src="@drawable/bottone_selez_machine"
         app:layout_constraintLeft_toRightOf="@id/v1"
@@ -180,7 +221,7 @@
         android:layout_marginTop="35dp"
         android:layout_marginHorizontal="45dp"
         android:layout_weight="1"
-        android:background="@drawable/sfondo_bottone_trasp"
+        android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:src="@drawable/bottone_duedi"
         app:layout_constraintLeft_toRightOf="@id/v2"
@@ -210,7 +251,7 @@
         android:layout_marginTop="35dp"
         android:layout_marginHorizontal="45dp"
         android:layout_weight="1"
-        android:background="@drawable/sfondo_bottone_trasp"
+        android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:src="@drawable/bottone_add_prj"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -239,7 +280,7 @@
         android:layout_marginTop="35dp"
         android:layout_marginHorizontal="45dp"
         android:layout_weight="1"
-        android:background="@drawable/sfondo_bottone_trasp"
+        android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:src="@drawable/bottone_lista_lavori"
         app:layout_constraintLeft_toRightOf="@id/v1"
@@ -269,7 +310,7 @@
         android:layout_marginTop="35dp"
         android:layout_marginHorizontal="45dp"
         android:layout_weight="1"
-        android:background="@drawable/sfondo_bottone_trasp"
+        android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:src="@drawable/bottone_scava"
         app:layout_constraintLeft_toRightOf="@id/v2"

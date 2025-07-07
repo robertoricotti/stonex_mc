@@ -406,7 +406,6 @@ public class DebugExcavatorActivity extends BaseClass {
                     case 0:
                         if(KEY_LEVEL>0) {
                             startActivity(new Intent(this, Digging1D.class));
-                            overridePendingTransition(0, 0);
                             finish();
                         }else {
                             enableAll();
@@ -416,7 +415,6 @@ public class DebugExcavatorActivity extends BaseClass {
                     case 1:
                         if(KEY_LEVEL>1) {
                             startActivity(new Intent(this, Digging2D.class));
-                            overridePendingTransition(0, 0);
                             finish();
                         }else {
                             enableAll();
@@ -436,7 +434,6 @@ public class DebugExcavatorActivity extends BaseClass {
                 }
             } else {
                 startActivity(new Intent(this, DiggingProfile.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -444,14 +441,12 @@ public class DebugExcavatorActivity extends BaseClass {
         back.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, ExcavatorMenuActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
         coord.setOnClickListener((View v) -> {
             Intent intent=new Intent(this, Can_Msg_Debug.class);
             intent.putExtra("chi","debug");
             startActivity(intent);
-            overridePendingTransition(0, 0);
             finish();
         });
         voltage.setOnClickListener(view -> {

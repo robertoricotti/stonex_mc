@@ -325,7 +325,6 @@ public class Digging2D extends BaseClass {
             disableAll();
             MyData.push("scaleFactor", String.valueOf(DataSaved.scale_Factor));
             startActivity(new Intent(this, ExcavatorMenuActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 

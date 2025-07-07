@@ -228,7 +228,6 @@ public class Projects extends BaseClass {
         back.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, ExcavatorMenuActivity.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -241,7 +240,6 @@ public class Projects extends BaseClass {
                     case 0:
                         if (KEY_LEVEL > 0) {
                             startActivity(new Intent(this, Digging1D.class));
-                            overridePendingTransition(0, 0);
                             finish();
                         } else {
                             enableAll();
@@ -251,7 +249,6 @@ public class Projects extends BaseClass {
                     case 1:
                         if (KEY_LEVEL > 1) {
                             startActivity(new Intent(this, Digging2D.class));
-                            overridePendingTransition(0, 0);
                             finish();
                         } else {
                             enableAll();
@@ -271,7 +268,6 @@ public class Projects extends BaseClass {
                 }
             } else {
                 startActivity(new Intent(this, DiggingProfile.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
 
@@ -282,7 +278,6 @@ public class Projects extends BaseClass {
         load.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, PickProject.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 
@@ -298,7 +293,6 @@ public class Projects extends BaseClass {
         usb.setOnClickListener((View v) -> {
             disableAll();
             startActivity(new Intent(this, Usb_Project_Nova.class));
-            overridePendingTransition(0, 0);
             finish();
         });
 

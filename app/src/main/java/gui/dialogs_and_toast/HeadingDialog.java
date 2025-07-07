@@ -254,7 +254,6 @@ public class HeadingDialog {
         yes.setOnClickListener((View v) -> {
             if (activity instanceof Activity_Crea_Superficie ) {
                 activity.startActivity(new Intent(activity, Projects.class));
-                activity.overridePendingTransition(0, 0);
                 activity.finish();
 
             } else {

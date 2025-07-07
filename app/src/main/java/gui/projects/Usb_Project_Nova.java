@@ -152,12 +152,10 @@ public class Usb_Project_Nova extends AppCompatActivity {
                 if (s.equals("main")) {
                     back.setEnabled(false);
                     startActivity(new Intent(this, Activity_Home_Page.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     back.setEnabled(false);
                     startActivity(new Intent(this, PickProject.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 }
             }else {

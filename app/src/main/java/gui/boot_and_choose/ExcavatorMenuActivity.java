@@ -351,7 +351,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
 
             disableAll();
             startActivity(new Intent(getApplicationContext(), LicenseActivity.class));
-            overridePendingTransition(0, 0);
             finish();
 
 
@@ -377,7 +376,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
             if (true) {
                 disableAll();
                 startActivity(new Intent(this, DebugExcavatorActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
         });
@@ -386,7 +384,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
             if (DataSaved.isWL == 0) {
                 disableAll();
                 startActivity(new Intent(this, BucketChooserActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
 
@@ -398,7 +395,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
             if (true) {
                 disableAll();
                 startActivity(new Intent(this, ExcavatorChooserActivity.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
 
@@ -409,7 +405,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
                 if (DataSaved.portView < 2) {
                     disableAll();
                     startActivity(new Intent(this, ProfilesMenuActivity.class));
-                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     new CustomToast(this, getResources().getString(R.string.treddi_acxtive)).show_alert();
@@ -419,7 +414,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
                     if (isTech) {
                         disableAll();
                         startActivity(new Intent(this, Hydro_Lobby.class));
-                        overridePendingTransition(0, 0);
                         finish();
                     } else {
                         String lucchettoChiuso = "\uD83D\uDD12";
@@ -438,7 +432,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
             if (DataSaved.portView >= 2) {
                 disableAll();
                 startActivity(new Intent(this, Projects.class));
-                overridePendingTransition(0, 0);
                 finish();
 
             } else {
@@ -473,7 +466,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
 
                 disableAll();
                 startActivity(new Intent(getApplicationContext(), Nuovo_Gps.class));
-                overridePendingTransition(0, 0);
                 finish();
 
             } else {
@@ -488,7 +480,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
             if (true) {
                 disableAll();
                 startActivity(new Intent(getApplicationContext(), ExUserSettings.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
 
@@ -503,7 +494,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
                     case 0:
                         if (KEY_LEVEL > 0) {
                             startActivity(new Intent(this, Digging1D.class));
-                            overridePendingTransition(0, 0);
                             finish();
                         } else {
                             enableAll();
@@ -513,7 +503,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
                     case 1:
                         if (KEY_LEVEL > 1) {
                             startActivity(new Intent(this, Digging2D.class));
-                            overridePendingTransition(0, 0);
                             finish();
                         } else {
                             enableAll();
@@ -535,7 +524,6 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
                 }
             } else {
                 startActivity(new Intent(this, DiggingProfile.class));
-                overridePendingTransition(0, 0);
                 finish();
             }
 

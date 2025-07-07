@@ -20,6 +20,7 @@ import dxf.Segment;
 import gui.my_opengl.Point3DF;
 
 public class DataSaved {
+    public static String machineName;
     public static boolean alwaysOnTop;
     public static int screenOr;
     public static int boudrateCAN1;
