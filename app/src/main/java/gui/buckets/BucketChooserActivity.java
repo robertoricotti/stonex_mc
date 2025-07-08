@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_user_settings.DialogUnitOfMeasure;
@@ -23,6 +24,8 @@ import gui.digging_excavator.Digging1D;
 import gui.digging_excavator.Digging2D;
 import gui.digging_excavator.DiggingProfile;
 
+import gui.my_opengl.My3DActivity;
+import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
 import services.UpdateValuesService;
@@ -34,12 +37,12 @@ BucketChooserActivity extends BaseClass {
     int unitOfMeasure;
     private boolean hasTilt1, hasTilt2, hasTilt3, hasTilt4, hasTilt5, hasTilt6, hasTilt7, hasTilt8, hasTilt9, hasTilt10;
     private boolean hasTilt11, hasTilt12, hasTilt13, hasTilt14, hasTilt15, hasTilt16, hasTilt17, hasTilt18, hasTilt19, hasTilt20;
-    ImageButton bucket1, bucket2, bucket3, bucket4, bucket5, bucket6, bucket7, bucket8, bucket9, bucket10;
+    ImageView bucket1, bucket2, bucket3, bucket4, bucket5, bucket6, bucket7, bucket8, bucket9, bucket10;
 
-    ImageButton bucket11, bucket12, bucket13, bucket14, bucket15, bucket16, bucket17, bucket18, bucket19, bucket20;
+    ImageView bucket11, bucket12, bucket13, bucket14, bucket15, bucket16, bucket17, bucket18, bucket19, bucket20;
     TextView bucketName1, bucketName2, bucketName3, bucketName4, bucketName5, bucketName6, bucketName7, bucketName8, bucketName9, bucketName10;
     TextView bucketName11, bucketName12, bucketName13, bucketName14, bucketName15, bucketName16, bucketName17, bucketName18, bucketName19, bucketName20;
-    ImageView back, toDig;
+    ImageView back;
     private boolean isDefault_1, isDefault_2, isDefault_3, isDefault_4, isDefault_5, isDefault_6, isDefault_7, isDefault_8, isDefault_9, isDefault_10;
     private boolean isDefault_11, isDefault_12, isDefault_13, isDefault_14, isDefault_15, isDefault_16, isDefault_17, isDefault_18, isDefault_19, isDefault_20;
 
@@ -47,6 +50,7 @@ BucketChooserActivity extends BaseClass {
     int indexMachineSelected;
 
     ProgressBar progressBar;
+    Intent goBackIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +61,22 @@ BucketChooserActivity extends BaseClass {
         onClick();
         onLongClick();
         updateUI();
+        try {
 
+            String whoDig=getIntent().getStringExtra("whoDig");
+            if(whoDig==null) {
+                goBackIntent = new Intent(this, Activity_Home_Page.class);
+            }else {
+                if(whoDig.contains("ExcavatorChooserActivity")){
+                    goBackIntent=new Intent(this, ExcavatorChooserActivity.class);
+                }else if (whoDig.contains("My3DActivity")){
+                    goBackIntent=new Intent(this, My3DActivity.class);
+                }
+            }
+        } catch (Exception e) {
+
+            goBackIntent = new Intent(this, Activity_Home_Page.class);
+        }
 
     }
 
@@ -108,7 +127,7 @@ BucketChooserActivity extends BaseClass {
         bucketName20 = findViewById(R.id.nameBucket20);
 
         back = findViewById(R.id.back);
-        toDig = findViewById(R.id.pair);
+
         progressBar = findViewById(R.id.progressBar);
         dialogUnitOfMeasure=new DialogUnitOfMeasure(this);
 
@@ -191,24 +210,6 @@ BucketChooserActivity extends BaseClass {
     }
 
     public void updateUI() {
-        switch (DataSaved.isWL){
-            case 0:
-                toDig.setImageResource(R.drawable.go_dig);
-                break;
-
-            case 1:
-                toDig.setImageResource(R.drawable.go_dig);
-                break;
-
-            case 2:
-                toDig.setImageResource(R.drawable.go_grade);
-                break;
-
-            default:
-                toDig.setImageResource(R.drawable.go_dig);
-                break;
-        }
-
         if (hasTilt1) {
             bucket1.setImageResource(R.drawable.benna_tilt_1);
 
@@ -331,7 +332,7 @@ BucketChooserActivity extends BaseClass {
             bucket20.setImageResource(R.drawable.benna_vuota20);
         }
 
-        bucket1.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 1 ? R.color.orange : R.color.light_gray));
+        bucket1.setBackground(indexBucketSelected == 1 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
 
         if (isDefault_1) {
             bucket1.setAlpha(0.2f);
@@ -339,124 +340,124 @@ BucketChooserActivity extends BaseClass {
             bucket1.setAlpha(1.0f);
         }
 
-        bucket2.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 2 ? R.color.orange : R.color.light_gray));
+        bucket2.setBackground(indexBucketSelected == 2 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_2) {
             bucket2.setAlpha(0.2f);
         } else {
             bucket2.setAlpha(1.0f);
         }
 
-        bucket3.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 3 ? R.color.orange : R.color.light_gray));
+        bucket3.setBackground(indexBucketSelected == 3 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_3) {
             bucket3.setAlpha(0.2f);
         } else {
             bucket3.setAlpha(1.0f);
         }
 
-        bucket4.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 4 ? R.color.orange : R.color.light_gray));
+        bucket4.setBackground(indexBucketSelected == 4 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_4) {
             bucket4.setAlpha(0.2f);
         } else {
             bucket4.setAlpha(1.0f);
         }
 
-        bucket5.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 5 ? R.color.orange : R.color.light_gray));
+        bucket5.setBackground(indexBucketSelected == 5 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_5) {
             bucket5.setAlpha(0.2f);
         } else {
             bucket5.setAlpha(1.0f);
         }
 
-        bucket6.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 6 ? R.color.orange : R.color.light_gray));
+        bucket6.setBackground(indexBucketSelected == 6 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_6) {
             bucket6.setAlpha(0.2f);
         } else {
             bucket6.setAlpha(1.0f);
         }
 
-        bucket7.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 7 ? R.color.orange : R.color.light_gray));
+        bucket7.setBackground(indexBucketSelected == 7 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_7) {
             bucket7.setAlpha(0.2f);
         } else {
             bucket7.setAlpha(1.0f);
         }
 
-        bucket8.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 8 ? R.color.orange : R.color.light_gray));
+        bucket8.setBackground(indexBucketSelected == 8 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_8) {
             bucket8.setAlpha(0.2f);
         } else {
             bucket8.setAlpha(1.0f);
         }
 
-        bucket9.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 9 ? R.color.orange : R.color.light_gray));
+        bucket9.setBackground(indexBucketSelected == 9 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_9) {
             bucket9.setAlpha(0.2f);
         } else {
             bucket9.setAlpha(1.0f);
         }
 
-        bucket10.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 10 ? R.color.orange : R.color.light_gray));
+        bucket10.setBackground(indexBucketSelected == 10 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_10) {
             bucket10.setAlpha(0.2f);
         } else {
             bucket10.setAlpha(1.0f);
         }
 
-        bucket11.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 11 ? R.color.orange : R.color.light_gray));
+        bucket11.setBackground(indexBucketSelected == 11 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_11) {
             bucket11.setAlpha(0.2f);
         } else {
             bucket11.setAlpha(1.0f);
         }
-        bucket12.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 12 ? R.color.orange : R.color.light_gray));
+        bucket12.setBackground(indexBucketSelected == 12 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_12) {
             bucket12.setAlpha(0.2f);
         } else {
             bucket12.setAlpha(1.0f);
         }
-        bucket13.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 13 ? R.color.orange : R.color.light_gray));
+        bucket13.setBackground(indexBucketSelected == 13 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_13) {
             bucket13.setAlpha(0.2f);
         } else {
             bucket13.setAlpha(1.0f);
         }
-        bucket14.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 14 ? R.color.orange : R.color.light_gray));
+        bucket14.setBackground(indexBucketSelected == 14 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_14) {
             bucket14.setAlpha(0.2f);
         } else {
             bucket14.setAlpha(1.0f);
         }
-        bucket15.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 15 ? R.color.orange : R.color.light_gray));
+        bucket15.setBackground(indexBucketSelected == 15 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_15) {
             bucket15.setAlpha(0.2f);
         } else {
             bucket15.setAlpha(1.0f);
         }
-        bucket16.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 16 ? R.color.orange : R.color.light_gray));
+        bucket16.setBackground(indexBucketSelected == 16 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_16) {
             bucket16.setAlpha(0.2f);
         } else {
             bucket16.setAlpha(1.0f);
         }
-        bucket17.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 17 ? R.color.orange : R.color.light_gray));
+        bucket17.setBackground(indexBucketSelected == 17 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_17) {
             bucket17.setAlpha(0.2f);
         } else {
             bucket17.setAlpha(1.0f);
         }
-        bucket18.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 18 ? R.color.orange : R.color.light_gray));
+        bucket18.setBackground(indexBucketSelected == 18 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_18) {
             bucket18.setAlpha(0.2f);
         } else {
             bucket18.setAlpha(1.0f);
         }
-        bucket19.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 19 ? R.color.orange : R.color.light_gray));
+        bucket19.setBackground(indexBucketSelected == 19 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_19) {
             bucket19.setAlpha(0.2f);
         } else {
             bucket19.setAlpha(1.0f);
         }
-        bucket20.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), indexBucketSelected == 20 ? R.color.orange : R.color.light_gray));
+        bucket20.setBackground(indexBucketSelected == 20 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_20) {
             bucket20.setAlpha(0.2f);
         } else {
@@ -498,7 +499,6 @@ BucketChooserActivity extends BaseClass {
         bucket18.setEnabled(false);
         bucket19.setEnabled(false);
         bucket20.setEnabled(false);
-        toDig.setEnabled(false);
         back.setEnabled(false);
 
     }
@@ -523,7 +523,6 @@ BucketChooserActivity extends BaseClass {
         bucket18.setEnabled(true);
         bucket19.setEnabled(true);
         bucket20.setEnabled(true);
-        toDig.setEnabled(true);
         back.setEnabled(true);
 
     }
@@ -981,56 +980,11 @@ BucketChooserActivity extends BaseClass {
         back.setOnClickListener((View v) -> {
             disableAll();
             startService(new Intent(this, UpdateValuesService.class));
-            startActivity(new Intent(this, ExcavatorMenuActivity.class));
-            overridePendingTransition(0, 0);
+            startActivity(goBackIntent);
             finish();
         });
 
-        toDig.setOnClickListener((View v) -> {
-            disableAll();
-            startService(new Intent(this, UpdateValuesService.class));
-            int profile = MyData.get_Int("ProfileSelected");
-            int typeView = MyData.get_Int("indexView");
-            if (profile == 0) {
-                switch (typeView) {
-                    case 0:
-                        if(KEY_LEVEL>0) {
-                            startActivity(new Intent(this, Digging1D.class));
-                            overridePendingTransition(0, 0);
-                            finish();
-                        }else {
-                            enableAll();
-                            new CustomToast(this,"LICENSE MISSED").show_alert();
-                        }
-                        break;
-                    case 1:
-                        if(KEY_LEVEL>1) {
-                            startActivity(new Intent(this, Digging2D.class));
-                            overridePendingTransition(0, 0);
-                            finish();
-                        }else {
-                            enableAll();
-                            new CustomToast(this,"LICENSE MISSED").show_alert();
-                        }
-                        break;
-                    case 2:
-                    case 3:
-                        if(KEY_LEVEL>2) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            startService(new Intent(this, ReadProjectService.class));
-                        }else {
-                            enableAll();
-                            new CustomToast(this,"LICENSE MISSED").show_alert();
-                        }
-                        break;
 
-                }
-            } else {
-                startActivity(new Intent(this, DiggingProfile.class));
-                overridePendingTransition(0, 0);
-            }
-
-        });
     }
 
 

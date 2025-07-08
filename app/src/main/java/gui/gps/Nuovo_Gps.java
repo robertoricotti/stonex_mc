@@ -194,9 +194,9 @@ public class Nuovo_Gps extends AppCompatActivity {
             saveAll.setVisibility(View.VISIBLE);
         }
         if (DataSaved.gpsOk) {
-            gpsStat.setImageResource(R.drawable.gps_si);
+            gpsStat.setImageTintList(getColorStateList(R.color.green));
         } else {
-            gpsStat.setImageResource(R.drawable.gps_no);
+            gpsStat.setImageTintList(getColorStateList(R.color.red));
         }
         if (isRead3) {
             defaultF.setVisibility(View.VISIBLE);

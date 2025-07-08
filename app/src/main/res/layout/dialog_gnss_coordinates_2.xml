@@ -451,7 +451,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/_editZ"
-        app:tint="@color/_____cancel_text"
+
          />
     <ImageView
         android:id="@+id/_editZ"

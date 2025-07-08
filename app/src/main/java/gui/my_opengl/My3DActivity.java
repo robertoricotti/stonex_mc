@@ -34,6 +34,7 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 
+import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
 import gui.dialogs_and_toast.CustomToast;
@@ -101,7 +102,7 @@ public class My3DActivity extends BaseClass {
 
     TextView boxLeft, boxCent, boxRight, txtCutFill, txtDist;
     LinearLayout sideBar, frameCent;
-    ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto;
+    ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto,gl_benne;
     ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce;
     ImageView gl_bright,gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
     public static boolean isPan, glFace, glPoint, glText, glVista3d, glPoly, glFilter, glGradient, glFill;
@@ -234,6 +235,7 @@ public class My3DActivity extends BaseClass {
         lucchetto = findViewById(R.id.lockOr);
         txtDist = findViewById(R.id.txtDist);
         gl_bright=findViewById(R.id.gl_bright);
+        gl_benne=findViewById(R.id.gl_benne);
         allarmeAlt = findViewById(R.id.allarmeAlt);
         allarmeAlt.setVisibility(View.GONE);
         dialogMapMode = new Dialog_MapMode(this);
@@ -262,6 +264,12 @@ public class My3DActivity extends BaseClass {
     }
 
     private void onClick() {
+        gl_benne.setOnClickListener(view -> {
+            Intent i = new Intent(this, BucketChooserActivity.class);
+            i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+            startActivity(i);
+            finish();
+        });
         gl_bright.setOnClickListener(view -> {
             if (!dialogColors.dialog.isShowing()) {
                 dialogColors.show();

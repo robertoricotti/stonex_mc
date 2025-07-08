@@ -62,7 +62,7 @@
             android:background="@drawable/custom_background_test3d_box"
             android:gravity="center"
             android:layout_weight="1"
-            android:text="path/topat/projetc name"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="italic" />

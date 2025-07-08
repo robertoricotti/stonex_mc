@@ -30,7 +30,7 @@
             android:id="@+id/chiudiWeb"
             android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:background="@color/white"
+
             android:src="@drawable/btn_close_web"
             />
     </LinearLayout>
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="22sp"
-        android:text="Open WebUI to set this GNSS"
+        android:text="Open WebUI to set GNSS"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/imgIndicazione"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -82,17 +82,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/light_gray"
+                android:background="@drawable/custom_background_test3d_box"
+                app:tint="@color/white"
                 android:orientation="horizontal">
 
                 <CheckBox
                     android:id="@+id/smc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/_____cancel_text"
+                    android:buttonTint="@color/white"
                     android:ems="5"
                     android:text="SMC"
-                    android:textColor="@color/_____cancel_text"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -100,10 +101,10 @@
                     android:id="@+id/s980"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/_____cancel_text"
+                    android:buttonTint="@color/white"
                     android:ems="5"
                     android:text="S980+"
-                    android:textColor="@color/_____cancel_text"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -112,10 +113,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:buttonTint="@color/_____cancel_text"
+                    android:buttonTint="@color/white"
                     android:ems="5"
                     android:text="SC600+  "
-                    android:textColor="@color/_____cancel_text"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -123,7 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
-                    android:backgroundTint="@color/_____cancel_text"
+                    android:backgroundTint="@color/white"
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
@@ -134,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@color/nav_gray_color"
+                    android:background="@drawable/custom_background_test3d_box"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -144,7 +145,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:scaleType="centerInside"
-                        android:src="@drawable/wifi_vuoto" />
+                        android:src="@drawable/wifi_vuoto"
+                        app:tint="@color/white"/>
 
                     <TextView
                         android:id="@+id/txssid"
@@ -152,7 +154,7 @@
                         android:layout_height="wrap_content"
                         android:text="SSID"
                         android:textAlignment="center"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="18sp"
 
                         />
@@ -167,7 +169,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/light_gray"
+                android:background="@drawable/custom_background_test3d_box"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -175,10 +177,10 @@
                     android:id="@+id/can"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/_____cancel_text"
+                    android:buttonTint="@color/white"
                     android:ems="5"
                     android:text="CANBus"
-                    android:textColor="@color/_____cancel_text"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -186,10 +188,10 @@
                     android:id="@+id/hsl0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/_____cancel_text"
+                    android:buttonTint="@color/white"
                     android:ems="5"
                     android:text="tty/HSL0"
-                    android:textColor="@color/_____cancel_text"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -197,10 +199,10 @@
                     android:id="@+id/hsl2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/_____cancel_text"
+                    android:buttonTint="@color/white"
                     android:ems="5"
                     android:text="tty/HSL2"
-                    android:textColor="@color/_____cancel_text"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -208,10 +210,10 @@
                     android:id="@+id/wk0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/_____cancel_text"
+                    android:buttonTint="@color/white"
                     android:ems="5"
                     android:text="tty/WK0"
-                    android:textColor="@color/_____cancel_text"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -220,9 +222,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:buttonTint="@color/_____cancel_text"
+                    android:buttonTint="@color/white"
                     android:text="DEMO"
-                    android:textColor="@color/_____cancel_text"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -1316,7 +1318,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.88" />
+        app:layout_constraintGuide_percent="0.89" />
 
     <LinearLayout
         android:id="@+id/lowerView"
@@ -1336,10 +1338,12 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="#D6D7DC"
+            android:background="@drawable/custom_background_test3d_box"
+            app:tint="@color/white"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/back_btn" />
+            android:rotation="180"
+            app:srcCompat="@drawable/menu_btn" />
 
         <ImageView
             android:id="@+id/clearLog"
@@ -1348,10 +1352,11 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="#D6D7DC"
+            android:background="@drawable/custom_background_test3d_box"
+            app:tint="@color/white"
             android:gravity="center"
             android:padding="5dp"
-            android:src="@drawable/gnss_setup_btn"
+            android:src="@drawable/baseline_live_help_96"
             android:textSize="28sp"
             android:textStyle="bold" />
 
@@ -1362,12 +1367,12 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="#D6D7DC"
+            android:background="@drawable/custom_background_test3d_box"
+            app:tint="@color/white"
             android:gravity="center"
             android:padding="5dp"
             android:src="@drawable/btn_todebug"
-            android:textSize="28sp"
-            app:tint="@color/black" />
+            android:textSize="28sp" />
 
         <ImageView
             android:id="@+id/readR"
@@ -1376,7 +1381,8 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="#D6D7DC"
+            android:background="@drawable/custom_background_test3d_box"
+            app:tint="@color/white"
             android:gravity="center"
             android:padding="5dp"
             android:src="@drawable/btn_copy_from_usb"
@@ -1390,7 +1396,8 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="#D6D7DC"
+            android:background="@drawable/custom_background_test3d_box"
+            app:tint="@color/white"
             android:gravity="center"
             android:padding="5dp"
             android:src="@drawable/btn_web_switch"

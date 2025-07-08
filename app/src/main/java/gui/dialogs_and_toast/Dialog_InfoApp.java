@@ -1,13 +1,11 @@
 package gui.dialogs_and_toast;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -20,9 +18,7 @@ import com.example.stx_dig.R;
 
 import gui.MyApp;
 import packexcalib.exca.DataSaved;
-import utils.FullscreenActivity;
 import utils.MyData;
-import utils.MyDeviceManager;
 
 
 public class Dialog_InfoApp {
@@ -62,12 +58,17 @@ public class Dialog_InfoApp {
     private void findView() {
         close = dialog.findViewById(R.id.chiudi);
         textView = dialog.findViewById(R.id.testo);
+        String s = "";
+        try {
+            s = MyData.get_String("progettoSelected");
+            s = s.replace("/storage/emulated/0/StonexMachineControl", "");
+            s = s.substring(0, s.lastIndexOf("/"));
+        } catch (Exception e) {
+            s="";
+        }
 
-        String s=MyData.get_String("progettoSelected");
-        s = s.replace("/storage/emulated/0/StonexMachineControl", "");
-        s = s.substring(0, s.lastIndexOf("/"));
-        String s2="";
-        if (Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")) {
+        String s2 = "";
+        if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             Apollo2 apollo2 = Apollo2.getInstance(activity);
             s2 = apollo2.getDeviceSN();
         } else {
@@ -75,14 +76,14 @@ public class Dialog_InfoApp {
             s2 = apolloPro.getDeviceSN();
         }
         textView.setText(
-                        "STX MC v " + BuildConfig.VERSION_NAME + "\n\n" +
-                                "Device: "+ Build.BRAND+"  S/N: "+s2  +"\n\n"+
-                                "Support: "+MyData.get_String("techInfo")+"\n\n"+
-                        "License Code: " + MyApp.LICENSE_KEY + " " + licenzaStringa() + "\n\n"+
-                                "Machine: "+DataSaved.machineName+"\n\n"+
-                                "Project: "+ s+"\n"+
-                "CRS: "+MyData.get_String("LastSP")+"\n"+
-                                "Geoid: "+MyData.get_String("geoidPath")+"\n"
+                "STX MC v " + BuildConfig.VERSION_NAME + "\n\n" +
+                        "Device: " + Build.BRAND + "  S/N: " + s2 + "\n\n" +
+                        "Support: " + MyData.get_String("techInfo") + "\n\n" +
+                        "License Code: " + MyApp.LICENSE_KEY + " " + licenzaStringa() + "\n\n" +
+                        "Machine: " + DataSaved.machineName + "\n\n" +
+                        "Project: " + s + "\n" +
+                        "CRS: " + MyData.get_String("LastSP") + "\n" +
+                        "Geoid: " + MyData.get_String("geoidPath") + "\n"
 
         );
     }

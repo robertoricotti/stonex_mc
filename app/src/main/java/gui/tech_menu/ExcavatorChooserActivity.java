@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
+import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
 import gui.dialogs_and_toast.CustomToast;
@@ -66,7 +67,8 @@ public class ExcavatorChooserActivity extends BaseClass {
         dialogPassword = new DialogPassword(this);
         dialogUnitOfMeasure = new DialogUnitOfMeasure(this);
         dialogInfoApp = new Dialog_InfoApp(this);
-        dialogGnssCoordinates=new Dialog_GNSS_Coordinates(this);
+        dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
+
     }
 
     private void findView() {
@@ -294,7 +296,9 @@ public class ExcavatorChooserActivity extends BaseClass {
         bucketM1.setOnClickListener((View v) -> {
             if (indexMachineSelected == 1) {
                 bucketM1.setEnabled(false);
-                startActivity(new Intent(this, BucketChooserActivity.class));
+                Intent i = new Intent(this, BucketChooserActivity.class);
+                i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+                startActivity(i);
                 finish();
             }
         });
@@ -302,7 +306,9 @@ public class ExcavatorChooserActivity extends BaseClass {
         bucketM2.setOnClickListener((View v) -> {
             if (indexMachineSelected == 2) {
                 bucketM2.setEnabled(false);
-                startActivity(new Intent(this, BucketChooserActivity.class));
+                Intent i = new Intent(this, BucketChooserActivity.class);
+                i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+                startActivity(i);
                 finish();
             }
         });
@@ -310,7 +316,9 @@ public class ExcavatorChooserActivity extends BaseClass {
         bucketM3.setOnClickListener((View v) -> {
             if (indexMachineSelected == 3) {
                 bucketM3.setEnabled(false);
-                startActivity(new Intent(this, BucketChooserActivity.class));
+                Intent i = new Intent(this, BucketChooserActivity.class);
+                i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+                startActivity(i);
                 finish();
             }
         });
@@ -318,7 +326,9 @@ public class ExcavatorChooserActivity extends BaseClass {
         bucketM4.setOnClickListener((View v) -> {
             if (indexMachineSelected == 4) {
                 bucketM4.setEnabled(false);
-                startActivity(new Intent(this, BucketChooserActivity.class));
+                Intent i = new Intent(this, BucketChooserActivity.class);
+                i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+                startActivity(i);
                 finish();
             }
         });
@@ -337,8 +347,11 @@ public class ExcavatorChooserActivity extends BaseClass {
                         finish();
                     }
                 } else {
-                    String lucchettoChiuso = "\uD83D\uDD12";
-                    new CustomToast(this, lucchettoChiuso).show();
+
+                        if (!dialogPassword.dialog.isShowing()) {
+                            dialogPassword.show();
+                        }
+
                 }
             }
 
@@ -359,8 +372,9 @@ public class ExcavatorChooserActivity extends BaseClass {
                         finish();
                     }
                 } else {
-                    String lucchettoChiuso = "\uD83D\uDD12";
-                    new CustomToast(this, lucchettoChiuso).show();
+                    if (!dialogPassword.dialog.isShowing()) {
+                        dialogPassword.show();
+                    }
                 }
             }
 
@@ -381,8 +395,9 @@ public class ExcavatorChooserActivity extends BaseClass {
                         finish();
                     }
                 } else {
-                    String lucchettoChiuso = "\uD83D\uDD12";
-                    new CustomToast(this, lucchettoChiuso).show();
+                    if (!dialogPassword.dialog.isShowing()) {
+                        dialogPassword.show();
+                    }
                 }
             }
 
@@ -403,8 +418,9 @@ public class ExcavatorChooserActivity extends BaseClass {
                         finish();
                     }
                 } else {
-                    String lucchettoChiuso = "\uD83D\uDD12";
-                    new CustomToast(this, lucchettoChiuso).show();
+                    if (!dialogPassword.dialog.isShowing()) {
+                        dialogPassword.show();
+                    }
                 }
             }
 
@@ -417,8 +433,9 @@ public class ExcavatorChooserActivity extends BaseClass {
                     startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
                     finish();
                 } else {
-                    String lucchettoChiuso = "\uD83D\uDD12";
-                    new CustomToast(this, lucchettoChiuso).show();
+                    if (!dialogPassword.dialog.isShowing()) {
+                        dialogPassword.show();
+                    }
                 }
             }
         });
@@ -430,8 +447,9 @@ public class ExcavatorChooserActivity extends BaseClass {
                     startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
                     finish();
                 } else {
-                    String lucchettoChiuso = "\uD83D\uDD12";
-                    new CustomToast(this, lucchettoChiuso).show();
+                    if (!dialogPassword.dialog.isShowing()) {
+                        dialogPassword.show();
+                    }
                 }
             }
 
@@ -444,8 +462,9 @@ public class ExcavatorChooserActivity extends BaseClass {
                     startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
                     finish();
                 } else {
-                    String lucchettoChiuso = "\uD83D\uDD12";
-                    new CustomToast(this, lucchettoChiuso).show();
+                    if (!dialogPassword.dialog.isShowing()) {
+                        dialogPassword.show();
+                    }
                 }
             }
 
@@ -457,8 +476,9 @@ public class ExcavatorChooserActivity extends BaseClass {
                     startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
                     finish();
                 } else {
-                    String lucchettoChiuso = "\uD83D\uDD12";
-                    new CustomToast(this, lucchettoChiuso).show();
+                    if (!dialogPassword.dialog.isShowing()) {
+                        dialogPassword.show();
+                    }
                 }
             }
         });

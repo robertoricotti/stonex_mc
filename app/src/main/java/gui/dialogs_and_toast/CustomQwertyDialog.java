@@ -40,7 +40,7 @@ public class CustomQwertyDialog {
     Button bz, bx, bc, bv, bb, bn, bm, space, chiocc, bpunto;
     Button maiuscola;
     int txtLen = 40;
-    boolean capital = false;
+    boolean capital = true;
     int flag,position;
     int index = -1;
     ProjectFileAdapter projectFileAdapter;
@@ -216,10 +216,10 @@ public class CustomQwertyDialog {
         space = dialog.findViewById(R.id.space);
         if (capital) {
             maiuscola.setBackgroundTintList(ContextCompat.getColorStateList(activity, R.color.light_yellow));
-            space.setText("-");
+            space.setText("_");
         } else {
             maiuscola.setBackgroundTintList(ContextCompat.getColorStateList(activity, R.color.bg_gray));
-            space.setText("_");
+            space.setText("-");
         }
         setupChar(capital);
     }
@@ -230,10 +230,10 @@ public class CustomQwertyDialog {
             setupChar(capital);
             if (capital) {
                 maiuscola.setBackgroundTintList(ContextCompat.getColorStateList(activity, R.color.light_yellow));
-                space.setText("-");
+                space.setText("_");
             } else {
                 maiuscola.setBackgroundTintList(ContextCompat.getColorStateList(activity, R.color.bg_gray));
-                space.setText("_");
+                space.setText("-");
             }
         });
         space.setOnClickListener((View v) -> {
@@ -836,7 +836,7 @@ public class CustomQwertyDialog {
             s[23] = "B";
             s[24] = "N";
             s[25] = "M";
-            s[26] = "-";
+            s[26] = "_";
 
         } else {
             s[0] = "q";
@@ -865,7 +865,7 @@ public class CustomQwertyDialog {
             s[23] = "b";
             s[24] = "n";
             s[25] = "m";
-            s[26] = "_";
+            s[26] = "-";
 
 
         }

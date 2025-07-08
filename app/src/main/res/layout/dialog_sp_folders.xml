@@ -205,6 +205,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/lowH"
-        app:tint="@color/white" />
+      />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
