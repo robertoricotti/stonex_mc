@@ -47,6 +47,8 @@ import utils.MyData;
 import utils.Utils;
 
 public class Activity_Crea_Superficie extends BaseClass {
+    //TODO planimetria di sfondo in 2D per aggiunta superficie
+
     Activity previousActivity;
     public static List<Face3D> facceTrench;
     public static Polyline polyTrench;

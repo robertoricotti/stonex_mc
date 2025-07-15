@@ -3,12 +3,12 @@ package services;
 
 import static gui.MyApp.gridFile_GR;
 import static packexcalib.gnss.CRS_Strings._NONE;
-import static services.UpdateValuesService.resultWgs;
 import static services.UpdateValuesService.UTM;
 import static services.UpdateValuesService.WGS84;
 import static services.UpdateValuesService.crsFactory;
 import static services.UpdateValuesService.ctFactory;
 import static services.UpdateValuesService.result;
+import static services.UpdateValuesService.resultWgs;
 import static services.UpdateValuesService.utmToWgs;
 import static services.UpdateValuesService.wgsToUtm;
 
@@ -146,7 +146,6 @@ public class ReadProjectService extends Service {
                             }
 
 
-
                         }
                         if (mettiPunti) {
                             int lastIndexPOINT = nomeProgettoPOINT.lastIndexOf(".");
@@ -164,7 +163,7 @@ public class ReadProjectService extends Service {
                             }
                         }
                         parserStatus = "Reading TRM...";
-                        if (fileExtensionTRM.equalsIgnoreCase("dxf")||fileExtensionTRM.equalsIgnoreCase("pstx")) {
+                        if (fileExtensionTRM.equalsIgnoreCase("dxf") || fileExtensionTRM.equalsIgnoreCase("pstx")) {
                             if (MyApp.KEY_LEVEL == 4 || MyApp.KEY_LEVEL == 36) {
                                 isFinishedDTM = false;
 
@@ -487,7 +486,7 @@ public class ReadProjectService extends Service {
     }
 
     private void copiaFacce() {
-        DataSaved.dxfFacesGL_2D=new ArrayList<>();
+        DataSaved.dxfFacesGL_2D = new ArrayList<>();
         for (Face3D face : DataSaved.dxfFaces) {
             // Copia i 3 o 4 punti della faccia, azzerando la Z
             Point3D p1 = new Point3D(face.getP1().getX(), face.getP1().getY(), 0);
@@ -505,7 +504,7 @@ public class ReadProjectService extends Service {
     }
 
     private void copiaPoly() {
-        DataSaved.polylinesGL_2D=new ArrayList<>();
+        DataSaved.polylinesGL_2D = new ArrayList<>();
         for (Polyline poly : DataSaved.polylines) {
             List<Point3D> newVertices = new ArrayList<>();
             for (Point3D pt : poly.getVertices()) {
@@ -579,7 +578,7 @@ public class ReadProjectService extends Service {
         MyGeoide.setGeoid(MyData.get_String("geoidPath"));
         if (s != null) {
             if (!s.equals("UTM") && !s.equals(_NONE)) {
-                if(s.equals("2100")) {
+                if (s.equals("2100")) {
                     try {
                         crsFactory = new CRSFactory();
                         ctFactory = new CoordinateTransformFactory();
@@ -587,16 +586,17 @@ public class ReadProjectService extends Service {
                         try {
                             UTM = crsFactory.createFromParameters("EPSG:2100",
                                     "+proj=tmerc +lat_0=0 +lon_0=24 +k=0.9996 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=-199.87,74.79,246.62,0,0,0,0 +units=m " +
-                                            "+nadgrids="+gridFile_GR+" +no_defs");
-                        }catch (UnsupportedParameterException e) {
-                            Log.e("ExcpCRS",Log.getStackTraceString(e));
-                            UTM=crsFactory.createFromName("epsg:"+DataSaved.S_CRS);
+                                            "+nadgrids=" + gridFile_GR + " +no_defs");
+                            Log.d("ExcpCRS", "trasformetion OK");
+                        } catch (UnsupportedParameterException e) {
+                            Log.e("ExcpCRS", Log.getStackTraceString(e));
+                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
                         } catch (InvalidValueException e) {
-                            Log.e("ExcpCRS",Log.getStackTraceString(e));
-                            UTM=crsFactory.createFromName("epsg:"+DataSaved.S_CRS);
+                            Log.e("ExcpCRS", Log.getStackTraceString(e));
+                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
                         } catch (UnknownAuthorityCodeException e) {
-                            Log.e("ExcpCRS",Log.getStackTraceString(e));
-                            UTM=crsFactory.createFromName("epsg:"+DataSaved.S_CRS);
+                            Log.e("ExcpCRS", Log.getStackTraceString(e));
+                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
                         }
 
                         wgsToUtm = ctFactory.createTransform(WGS84, UTM);
@@ -605,11 +605,11 @@ public class ReadProjectService extends Service {
                     } catch (Exception e) {
                         Log.e("ExcpCRS", Log.getStackTraceString(e));
                     }
-                }else {
+                } else {
                     ////////
                     try {
-                        result=new ProjCoordinate();
-                        resultWgs=new ProjCoordinate();
+                        result = new ProjCoordinate();
+                        resultWgs = new ProjCoordinate();
                         crsFactory = new CRSFactory();
                         ctFactory = new CoordinateTransformFactory();
                         WGS84 = crsFactory.createFromName("epsg:" + "4326");

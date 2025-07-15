@@ -63,6 +63,7 @@ public class Activity_Home_Page extends AppCompatActivity {
 
         }
         LanguageSetter.setLocale(this, MyData.get_String("language"));
+        enableAll(false);
         if (!firstLaunch) {
             progressBar.setVisibility(View.VISIBLE);
             (new Handler()).postDelayed(this::enableAll, 5000);
@@ -123,7 +124,7 @@ public class Activity_Home_Page extends AppCompatActivity {
             s = s.substring(0, s.lastIndexOf("/"));
             titolo.setText(s);
         } catch (Exception e) {
-            titolo.setText("SELECT A PROJECT");
+            titolo.setText(" ");
         }
 
 

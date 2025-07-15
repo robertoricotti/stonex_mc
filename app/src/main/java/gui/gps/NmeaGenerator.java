@@ -22,8 +22,6 @@ public class NmeaGenerator {
 
     public static String generateGPGGA() {
         try {
-
-
             double lat, lon;
             lat = 38  ;//to test
             lon = -8.231456;//to test

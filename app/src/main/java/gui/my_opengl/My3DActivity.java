@@ -260,15 +260,23 @@ public class My3DActivity extends BaseClass {
         panel2.addView(layer2Canvas);
         panel1.setBackgroundColor(MyColorClass.colorSfondo);
         panel2.setBackgroundColor(MyColorClass.colorSfondo);
-
+        if(DataSaved.isWL==0){
+            gl_benne.setVisibility(View.VISIBLE);
+        }else {
+            gl_benne.setVisibility(View.GONE);
+        }
     }
 
     private void onClick() {
         gl_benne.setOnClickListener(view -> {
-            Intent i = new Intent(this, BucketChooserActivity.class);
-            i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
-            startActivity(i);
-            finish();
+            if(DataSaved.isWL==0) {
+                Intent i = new Intent(this, BucketChooserActivity.class);
+                i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+                startActivity(i);
+                finish();
+            }else {
+                //TODO settaggio lama
+            }
         });
         gl_bright.setOnClickListener(view -> {
             if (!dialogColors.dialog.isShowing()) {
@@ -653,6 +661,7 @@ public class My3DActivity extends BaseClass {
     }
 
     public void updateUI() {
+
         try {
             Log.d("FacceFil",DataSaved.filteredFaces.size()+"");
             if (hAlarm) {

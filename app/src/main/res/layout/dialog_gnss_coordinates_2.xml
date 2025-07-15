@@ -319,7 +319,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1.5"
+            android:layout_weight="0.5"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -444,8 +444,8 @@
 
     <ImageView
         android:id="@+id/_btnSavex"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="2dp"
         android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -455,8 +455,8 @@
          />
     <ImageView
         android:id="@+id/_editZ"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="2dp"
         android:src="@drawable/btn_benchmark"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -467,8 +467,8 @@
 
     <ImageView
         android:id="@+id/_switchRadio"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
        app:layout_constraintLeft_toLeftOf="parent"

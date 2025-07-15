@@ -47,7 +47,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:text="Open WebUI to set GNSS"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/imgIndicazione"
@@ -94,7 +94,7 @@
                     android:ems="5"
                     android:text="SMC"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -105,7 +105,7 @@
                     android:ems="5"
                     android:text="S980+"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -117,7 +117,7 @@
                     android:ems="5"
                     android:text="SC600+  "
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <Button
@@ -128,7 +128,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:visibility="invisible" />
 
                 <LinearLayout
@@ -155,7 +155,7 @@
                         android:text="SSID"
                         android:textAlignment="center"
                         android:textColor="@color/white"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
 
                         />
                 </LinearLayout>
@@ -181,7 +181,7 @@
                     android:ems="5"
                     android:text="CANBus"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -192,7 +192,7 @@
                     android:ems="5"
                     android:text="tty/HSL0"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -203,7 +203,7 @@
                     android:ems="5"
                     android:text="tty/HSL2"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -214,7 +214,7 @@
                     android:ems="5"
                     android:text="tty/WK0"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -225,7 +225,7 @@
                     android:buttonTint="@color/white"
                     android:text="DEMO"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <Button
@@ -236,7 +236,7 @@
                     android:ems="1"
                     android:text="W"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:visibility="invisible" />
             </LinearLayout>
 
@@ -259,7 +259,7 @@
                     android:buttonTint="@color/black"
                     android:ems="5"
                     android:text="20Hz"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -269,7 +269,7 @@
                     android:buttonTint="@color/black"
                     android:ems="5"
                     android:text="10Hz"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -279,7 +279,7 @@
                     android:buttonTint="@color/black"
                     android:ems="5"
                     android:text="5Hz"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -289,7 +289,7 @@
                     android:layout_weight="2"
                     android:buttonTint="@color/black"
                     android:text="Off    "
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <Button
@@ -301,7 +301,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write0"
@@ -312,7 +312,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <View
@@ -334,7 +334,7 @@
                     android:buttonTint="@color/black"
                     android:ems="5"
                     android:text="RADIO"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -345,7 +345,7 @@
                     android:buttonTint="@color/black"
                     android:ems="5"
                     android:text="NTRIP"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <Button
@@ -357,7 +357,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write1"
@@ -368,7 +368,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -390,7 +390,7 @@
                     android:ems="6"
                     android:text=" RADIO CH: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -403,7 +403,7 @@
                     android:gravity="center_vertical"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <Button
@@ -415,7 +415,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write2"
@@ -426,7 +426,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -448,7 +448,7 @@
                     android:ems="6"
                     android:text=" RADIO Fq: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -460,7 +460,7 @@
                     android:gravity="center_vertical|right"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
 
                     />
@@ -471,7 +471,7 @@
                     android:gravity="center_vertical"
                     android:text="."
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -482,7 +482,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
 
                     />
@@ -501,7 +501,7 @@
                     android:ems="5"
                     android:text="DEFAULT"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <androidx.legacy.widget.Space
                     android:layout_width="wrap_content"
@@ -517,7 +517,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write3"
@@ -528,7 +528,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -550,7 +550,7 @@
                     android:ems="6"
                     android:text=" Protocol: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -562,7 +562,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -579,7 +579,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write4"
@@ -590,7 +590,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -612,7 +612,7 @@
                     android:ems="6"
                     android:text=" Spacing: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -624,7 +624,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -641,7 +641,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write5"
@@ -652,7 +652,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -664,7 +664,7 @@
                 android:gravity="center"
                 android:text="PRIORITY NETWORK"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -717,7 +717,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/writeNet"
@@ -728,7 +728,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
 
             </LinearLayout>
@@ -741,7 +741,7 @@
                 android:gravity="center"
                 android:text="APN CONFIG"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -757,7 +757,7 @@
                     android:ems="6"
                     android:text=" APN: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -769,7 +769,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -786,7 +786,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write6"
@@ -797,7 +797,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -819,7 +819,7 @@
                     android:ems="6"
                     android:text=" USER: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -831,7 +831,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -848,7 +848,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write7"
@@ -859,7 +859,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -881,7 +881,7 @@
                     android:ems="6"
                     android:text=" PASSWORD: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -893,7 +893,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -910,7 +910,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write8"
@@ -921,7 +921,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -933,7 +933,7 @@
                 android:gravity="center"
                 android:text="NTRIP CLIENT"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -949,7 +949,7 @@
                     android:ems="6"
                     android:text=" IP: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -961,7 +961,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -978,7 +978,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write28"
@@ -989,7 +989,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -1011,7 +1011,7 @@
                     android:ems="6"
                     android:text=" PORT: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -1023,7 +1023,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -1040,7 +1040,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write38"
@@ -1051,7 +1051,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -1073,7 +1073,7 @@
                     android:ems="6"
                     android:text=" M_POINT: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -1085,7 +1085,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -1102,7 +1102,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write11"
@@ -1113,7 +1113,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -1135,7 +1135,7 @@
                     android:ems="6"
                     android:text=" GGA Upload: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -1147,7 +1147,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -1164,7 +1164,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write12"
@@ -1175,7 +1175,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -1197,7 +1197,7 @@
                     android:ems="6"
                     android:text=" USER ID: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -1209,7 +1209,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -1226,7 +1226,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write9"
@@ -1237,7 +1237,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -1259,7 +1259,7 @@
                     android:ems="6"
                     android:text=" PASSWORD: "
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -1271,7 +1271,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:textColor="@color/blue"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <androidx.legacy.widget.Space
@@ -1288,7 +1288,7 @@
                     android:ems="5"
                     android:text="READ"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/write10"
@@ -1299,7 +1299,7 @@
                     android:ems="5"
                     android:text="WRITE"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 

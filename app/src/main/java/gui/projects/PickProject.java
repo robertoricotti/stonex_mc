@@ -91,7 +91,7 @@ public class PickProject extends BaseClass {
             s = s.substring(0, s.lastIndexOf("/"));
             titolone.setText(s);
         } catch (Exception e) {
-            titolone.setText("SELECT A PROJECT");
+            titolone.setText(getResources().getString(R.string.selectproject));
         }
         try {
 

@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/panel"
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="50dp">
 
         <TextView
             android:id="@+id/path_tv"
@@ -19,7 +19,7 @@
             android:paddingHorizontal="10dp"
             android:text="NOME_LAYER"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/guid1"
@@ -109,7 +109,7 @@
             android:layout_height="match_parent"
             android:buttonTint="@color/_____cancel_text"
             android:gravity="center|left"
-            android:text="POLYLINES &amp; \nOBJECTS"
+            android:text="POLYLINES"
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold"

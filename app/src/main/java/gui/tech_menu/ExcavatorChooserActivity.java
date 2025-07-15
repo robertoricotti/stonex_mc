@@ -343,7 +343,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                         }
                     } else {
                         disableAll();
-                        startActivity(new Intent(this, MachineSettings.class));
+                        startActivity(new Intent(this, Nuova_Machine_Settings.class));
                         finish();
                     }
                 } else {

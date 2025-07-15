@@ -5,12 +5,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.cp.cputils.Apollo2;
 import com.cp.cputils.ApolloPro;
+import com.cp.cputils.shellcommand.CpCmd;
+import com.cpdevice.cpbase.CPSDKException;
 import com.cpdevice.cpcomm.frame.ICPCanFrame;
 import com.van.jni.VanCmd;
 
@@ -114,10 +114,17 @@ public class MyDeviceManager {
             Apollo2 apollo2 = Apollo2.getInstance(activity);
             apollo2.exec(s);
             apollo2.exec(s2);
+            try {
+                new CpCmd().exceCmd("settings put system font_scale 0.85");
+                new CpCmd().exceCmd("wm density 204");
+            } catch (Exception ignored) {
+
+            }
+
 
         }else if(Build.BRAND.equals("SRT8PROS")){
             s="wm density 200";
-            s2="settings put system font_scale 1";
+            s2="settings put system font_scale 1.0";
             VanCmd.exec(s, 0);
             VanCmd.exec(s2, 0);
         }
