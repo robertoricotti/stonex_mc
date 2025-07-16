@@ -82,6 +82,7 @@ import gui.tech_menu.FrameCalib;
 import gui.tech_menu.GPS_Autocalib;
 import gui.tech_menu.LinkageCalib;
 import gui.tech_menu.MachineSettings;
+import gui.tech_menu.Nuova_Machine_Settings;
 import gui.tech_menu.SlideBoomActivity;
 import gui.tech_menu.StickCalib;
 import gui.tech_menu.TiltCalib;
@@ -483,6 +484,9 @@ Log.d("tetsCRS",DataSaved.S_CRS);
 
         } else if (activity instanceof Activity_Home_Page) {
             ((Activity_Home_Page) activity).updateUI();
+
+        }else if (activity instanceof Nuova_Machine_Settings) {
+            ((Nuova_Machine_Settings) activity).updateUI();
 
         }
 

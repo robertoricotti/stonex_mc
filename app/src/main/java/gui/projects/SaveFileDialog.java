@@ -41,6 +41,7 @@ import utils.MyData;
 
 
 public class SaveFileDialog {
+    static double conversionFactor=1;
     static boolean isPRO;
     Activity activity;
     public Dialog dialog;
@@ -82,6 +83,25 @@ public class SaveFileDialog {
         save = dialog.findViewById(R.id.save);
         exit = dialog.findViewById(R.id.exit);
         fileName = dialog.findViewById(R.id.fileName);
+        switch (MyData.get_Int("Unit_Of_Measure")){
+            case 0:
+            case 1:
+                conversionFactor=1;
+                break;
+
+            case 2:
+            case 3:
+                conversionFactor=0.3048006096;
+                break;
+            case 4:
+            case 5:
+                conversionFactor=0.3048006096;
+                break;
+            case 6:
+            case 7:
+                conversionFactor=0.3048;
+                break;
+        }
         if(isPRO){
             fileExtension=".pstx";
         }else {
@@ -116,7 +136,7 @@ public class SaveFileDialog {
                                 String filename = fileName.getText().toString() + fileExtension;
 
                                 //DXFGenerator generator = new DXFGenerator(centerPoint, param[0], filename, path, useFeet);
-                                ExportDXF_1P generator=new ExportDXF_1P(centerPoint, param[0], filename, path, useFeet);
+                                ExportDXF_1P generator=new ExportDXF_1P(centerPoint, param[0], filename, path, conversionFactor);
                                 try {
                                     generator.generateDXF();
 
@@ -142,7 +162,7 @@ public class SaveFileDialog {
                                 String filenamea = fileName.getText().toString() + fileExtension;
 
                                 //DXFGeneratorAB dxfGeneratorAB = new DXFGeneratorAB(Activity_Crea_Superficie.puntiAB, filenamea, path, useFeet);
-                                ExportDXF_AB dxfGeneratorAB = new ExportDXF_AB(Activity_Crea_Superficie.puntiAB, filenamea, path, useFeet);
+                                ExportDXF_AB dxfGeneratorAB = new ExportDXF_AB(Activity_Crea_Superficie.puntiAB, filenamea, path, conversionFactor);
 
 
                                 try {
@@ -168,7 +188,7 @@ public class SaveFileDialog {
                                 String filenameb = fileName.getText().toString() + fileExtension;
 
                                 //DxfGeneratorArea dxfGeneratorArea = new DxfGeneratorArea(Activity_Crea_Superficie.coordinateP, filenameb, path, useFeet);
-                                ExportDXF_Area dxfGeneratorArea = new ExportDXF_Area(Activity_Crea_Superficie.coordinateP, filenameb, path, useFeet);
+                                ExportDXF_Area dxfGeneratorArea = new ExportDXF_Area(Activity_Crea_Superficie.coordinateP, filenameb, path, conversionFactor);
 
                                 try {
                                     dxfGeneratorArea.generateDXF();
@@ -190,7 +210,7 @@ public class SaveFileDialog {
 
                             case 3:
                                 String filenameDre = fileName.getText().toString() + fileExtension;
-                                ExportDXF_Trench exportDXFTrench=new ExportDXF_Trench(Activity_Crea_Superficie.point3DS,leftW_d,rightW_d,leftS_d,rightS_d,filenameDre,path,useFeet);
+                                ExportDXF_Trench exportDXFTrench=new ExportDXF_Trench(Activity_Crea_Superficie.point3DS,leftW_d,rightW_d,leftS_d,rightS_d,filenameDre,path,conversionFactor);
                                 try {
                                     exportDXFTrench.generateDXF();
                                     MyData.push("progettoSelected", path + "/" + filenameDre);
@@ -211,7 +231,7 @@ public class SaveFileDialog {
 
                             case 4:
                                 String filenameTri = fileName.getText().toString() + fileExtension;
-                                ExportDXF_Triangles dxfGeneratorTriangles = new ExportDXF_Triangles(Activity_Crea_Superficie.point3DS, filenameTri, path, useFeet);
+                                ExportDXF_Triangles dxfGeneratorTriangles = new ExportDXF_Triangles(Activity_Crea_Superficie.point3DS, filenameTri, path, conversionFactor);
 
                                 try {
                                     dxfGeneratorTriangles.generateDXF();
@@ -251,7 +271,7 @@ public class SaveFileDialog {
                                 String filename = fileName.getText().toString() + fileExtension;
 
                                 //DXFGenerator generator = new DXFGenerator(centerPoint, param[0], filename, percorso, useFeet);
-                                ExportDXF_1P generator=new ExportDXF_1P(centerPoint, param[0], filename, percorso, useFeet);
+                                ExportDXF_1P generator=new ExportDXF_1P(centerPoint, param[0], filename, percorso, conversionFactor);
                                 try {
                                     generator.generateDXF();
 
@@ -278,7 +298,7 @@ public class SaveFileDialog {
                                 String filenamea = fileName.getText().toString() + fileExtension;
 
                                 //DXFGeneratorAB dxfGeneratorAB = new DXFGeneratorAB(Activity_Crea_Superficie.puntiAB, filenamea, percorso, useFeet);
-                                ExportDXF_AB dxfGeneratorAB = new ExportDXF_AB(Activity_Crea_Superficie.puntiAB, filenamea, percorso, useFeet);
+                                ExportDXF_AB dxfGeneratorAB = new ExportDXF_AB(Activity_Crea_Superficie.puntiAB, filenamea, percorso, conversionFactor);
 
                                 try {
                                     dxfGeneratorAB.generateDXF();
@@ -304,7 +324,7 @@ public class SaveFileDialog {
                                 String filenameb = fileName.getText().toString() + fileExtension;
 
                                 //DxfGeneratorArea dxfGeneratorArea = new DxfGeneratorArea(Activity_Crea_Superficie.coordinateP, filenameb, percorso, useFeet);
-                                ExportDXF_Area dxfGeneratorArea = new ExportDXF_Area(Activity_Crea_Superficie.coordinateP, filenameb, percorso, useFeet);
+                                ExportDXF_Area dxfGeneratorArea = new ExportDXF_Area(Activity_Crea_Superficie.coordinateP, filenameb, percorso, conversionFactor);
 
                                 try {
                                     dxfGeneratorArea.generateDXF();
@@ -327,7 +347,7 @@ public class SaveFileDialog {
 
                             case 3:
                                 String filenameDre = fileName.getText().toString() + fileExtension;
-                                ExportDXF_Trench exportDXFTrench=new ExportDXF_Trench(Activity_Crea_Superficie.point3DS,leftW_d,rightW_d,leftS_d,rightS_d,filenameDre,percorso,useFeet);
+                                ExportDXF_Trench exportDXFTrench=new ExportDXF_Trench(Activity_Crea_Superficie.point3DS,leftW_d,rightW_d,leftS_d,rightS_d,filenameDre,percorso,conversionFactor);
                                 try {
                                     exportDXFTrench.generateDXF();
                                     MyData.push("progettoSelected", percorso + "/" + filenameDre);
@@ -350,7 +370,7 @@ public class SaveFileDialog {
                             case 4:
                                 String filenameTri = fileName.getText().toString() + fileExtension;
                                 //DxfGeneratorTriangles dxfGeneratorTriangles = new DxfGeneratorTriangles(Activity_Crea_Superficie.point3DS, filenameTri, percorso, useFeet);
-                                ExportDXF_Triangles dxfGeneratorTriangles = new ExportDXF_Triangles(Activity_Crea_Superficie.point3DS, filenameTri, percorso, useFeet);
+                                ExportDXF_Triangles dxfGeneratorTriangles = new ExportDXF_Triangles(Activity_Crea_Superficie.point3DS, filenameTri, percorso, conversionFactor);
 
                                 try {
                                     dxfGeneratorTriangles.generateDXF();

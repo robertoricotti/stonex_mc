@@ -37,6 +37,8 @@ public class Utils {
         int index = MyData.get_Int("Unit_Of_Measure");
         if (index == 2 || index == 3 || index == 4 || index == 5) {
             return String.format("%.4f", v / 0.3048006096).replace(",", ".");
+        } else if (index==6||index==7) {
+            return String.format("%.4f", v / 0.3048).replace(",", ".");
         } else {
             return String.format("%.3f", v).replace(",", ".");
         }
@@ -62,6 +64,8 @@ public class Utils {
                 return Math.abs(feet) + "' " + fractionInches + "\"";
             }
 
+        } else if (index == 6 || index == 7) {
+            return String.format("%.4f", v / 0.3048).replace(",", ".");
         } else {
             return String.format("%.3f", v).replace(",", ".");
         }
@@ -99,6 +103,9 @@ public class Utils {
             }
             double meters = totalInches * 0.0254;
             return String.valueOf(meters);
+        } else if (index==6||index==7) {
+            double v = Double.parseDouble(str);
+            return String.format("%.4f", v * 0.3048).replace(",", ".");
         } else {
             double v = Double.parseDouble(str);
             return String.format("%.3f", v).replace(",", ".");
@@ -124,7 +131,9 @@ public class Utils {
                 return Math.abs(feet) + "' " + fractionInches + "\"";
             }
 
-        } else {
+        } else if (index==6||index==7) {
+            return String.format("%.3f", v / 0.3048).replace(",", ".");
+        }else {
             return String.format("%.2f", v).replace(",", ".");
         }
     }
@@ -135,7 +144,7 @@ public class Utils {
         double p = Double.parseDouble(str);
 
         int index = MyData.get_Int("Unit_Of_Measure");
-        if (index == 1 || index == 3 || index == 5) {
+        if (index == 1 || index == 3 || index == 5||index==7) {
             //convertire % deg
             return String.format("%.3f", Math.toDegrees(Math.atan(p / 100))).replace(",", ".");
         } else {
@@ -147,7 +156,7 @@ public class Utils {
     public static String readAngolo(String str) {
         double p = (Double.parseDouble(str));
         int index = MyData.get_Int("Unit_Of_Measure");
-        if (index == 1 || index == 3 || index == 5) {
+        if (index == 1 || index == 3 || index == 5||index==7) {
             double a = Math.toRadians(Double.parseDouble(str));
             //convertire % in deg
 
@@ -161,7 +170,7 @@ public class Utils {
     public static String readAngoloLITE(String str) {
         double p = (Double.parseDouble(str));
         int index = MyData.get_Int("Unit_Of_Measure");
-        if (index == 1 || index == 3 || index == 5) {
+        if (index == 1 || index == 3 || index == 5||index==7) {
             double a = Math.toRadians(Double.parseDouble(str));
             //convertire % in deg
 
@@ -173,7 +182,7 @@ public class Utils {
 
     public static String getGradiSimbol() {
         int index = MyData.get_Int("Unit_Of_Measure");
-        if (index == 0 || index == 2 || index == 4)
+        if (index == 0 || index == 2 || index == 4|| index==6)
             return " °";
         else
             return " %";
@@ -185,8 +194,10 @@ public class Utils {
         if (index == 0 || index == 1)
             return "[m]";
         else if (index == 2 || index == 3)
-            return "[ft]";
-        else
+            return "[US ft]";
+        else if (index==6||index==7) {
+            return "[Int ft]";
+        } else
             return "[ft in]";
     }
     public static String getMetriSimbolCoords() {
@@ -194,8 +205,11 @@ public class Utils {
         if (index == 0 || index == 1)
             return "[m]";
         else if (index == 2 || index == 3||index == 4 || index == 5)
-            return "[ft]";
-        else
+            return "[US ft]";
+
+        else if (index==6||index==7) {
+            return "[Int ft]";
+        } else
             return "[ft in]";
     }
 
@@ -220,6 +234,8 @@ public class Utils {
                 return Math.abs(feet) + "' " + fractionInches + "\"";
             }
 
+        } else if (index == 6 || index == 7) {
+            return String.format("%.2f", v / 0.3048).replace(",", ".");
         } else {
             return String.format("%.2f", v).replace(",", ".");
         }
@@ -233,6 +249,8 @@ public class Utils {
 
         if (index == 2 || index == 3 || index == 4 || index == 5) {
             return String.format("%.2f", v / 0.3048006096).replace(",", ".");
+        } else if (index==6||index==7) {
+            return String.format("%.2f", v / 0.3048).replace(",", ".");
         } else {
             return String.format("%.2f", v).replace(",", ".");
         }
@@ -318,6 +336,9 @@ public class Utils {
                 return String.valueOf(meters);
             }
 
+        } else if (index == 6 || index == 7) {
+            double v = Double.parseDouble(str);
+            return String.format("%.4f", v * 0.3048).replace(",", ".");
         } else {
             double v = Double.parseDouble(str);
             return String.format("%.3f", v).replace(",", ".");
@@ -388,5 +409,3 @@ public class Utils {
 
 
 }
-
-

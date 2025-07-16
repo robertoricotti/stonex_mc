@@ -14,19 +14,19 @@ public class ExportDXF_1P {
     private double sideLength;
     private String filename;
     private String path;
-    private boolean useFeet;  // nuovo parametro per specificare l'uso di piedi
+    private double  conversionFactor;  // nuovo parametro per specificare l'uso di piedi
     private double METER_TO_FEET_CONVERSION;  // Fattore di conversione metri -> piedi
 
-    public ExportDXF_1P(double[] centerPoint, double sideLength, String filename, String path, boolean useFeet) {
+    public ExportDXF_1P(double[] centerPoint, double sideLength, String filename, String path, double conversionFactor) {
         this.centerPoint = centerPoint;
         this.sideLength = sideLength;
         this.filename = filename;
         this.path = path;
-        this.useFeet = useFeet;
+        this.conversionFactor = conversionFactor;
     }
 
     public void generateDXF() throws IOException {
-        METER_TO_FEET_CONVERSION = useFeet ? 0.3048006096 : 1.0;
+        METER_TO_FEET_CONVERSION = conversionFactor;
         double halfSide = sideLength / 2;
         double z = centerPoint[2];
 

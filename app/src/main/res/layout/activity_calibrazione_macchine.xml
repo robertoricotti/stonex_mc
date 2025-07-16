@@ -32,8 +32,18 @@
             android:padding="5dp"
             android:src="@drawable/baseline_live_help_96"
             app:tint="@color/white" />
-        <TextView
+        <ImageView
+
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/baseline_live_help_96"
+            app:tint="@color/transparent" />
+        <EditText
             android:id="@+id/mch_name"
+            android:maxLines="1"
+            android:focusableInTouchMode="false"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/custom_background_test3d_box"
@@ -364,14 +374,15 @@
                    android:layout_width="match_parent"
                    android:layout_height="match_parent"
                    android:orientation="vertical"
+                   android:gravity="center"
                    >
                    <TextView
                        android:id="@+id/toFrame"
-                       android:layout_width="match_parent"
+                       android:layout_width="wrap_content"
                        android:layout_height="50dp"
                        android:background="@color/bg_stonex_blue"
                        android:textSize="16sp"
-                       android:ems="5"
+                       android:ems="15"
                        android:gravity="center"
                        android:text="FRAME"
                        android:textStyle="bold"
@@ -379,11 +390,11 @@
                        android:layout_marginVertical="5dp"/>
                    <TextView
                        android:id="@+id/toBoom1"
-                       android:layout_width="match_parent"
+                       android:ems="15"
+                       android:layout_width="wrap_content"
                        android:layout_height="50dp"
                        android:background="@color/bg_stonex_blue"
                        android:textSize="16sp"
-                       android:ems="5"
                        android:gravity="center"
                        android:text="BOOM 1"
                        android:textStyle="bold"
@@ -391,11 +402,11 @@
                        android:layout_marginVertical="5dp"/>
                    <TextView
                        android:id="@+id/toBoom2"
-                       android:layout_width="match_parent"
+                       android:ems="15"
+                       android:layout_width="wrap_content"
                        android:layout_height="50dp"
                        android:background="@color/bg_stonex_blue"
                        android:textSize="16sp"
-                       android:ems="5"
                        android:gravity="center"
                        android:text="BOOM 2"
                        android:textStyle="bold"
@@ -403,11 +414,11 @@
                        android:layout_marginVertical="5dp"/>
                    <TextView
                        android:id="@+id/toStick"
-                       android:layout_width="match_parent"
+                       android:ems="15"
+                       android:layout_width="wrap_content"
                        android:layout_height="50dp"
                        android:background="@color/bg_stonex_blue"
                        android:textSize="16sp"
-                       android:ems="5"
                        android:gravity="center"
                        android:text="STICK - LASER"
                        android:textStyle="bold"
@@ -415,11 +426,11 @@
                        android:layout_marginVertical="5dp"/>
                    <TextView
                        android:id="@+id/toDogBone"
-                       android:layout_width="match_parent"
+                       android:ems="15"
+                       android:layout_width="wrap_content"
                        android:layout_height="50dp"
                        android:background="@color/bg_stonex_blue"
                        android:textSize="16sp"
-                       android:ems="5"
                        android:gravity="center"
                        android:text="LINKAGE - BUCKET"
                        android:textStyle="bold"
@@ -427,11 +438,11 @@
                        android:layout_marginVertical="5dp"/>
                    <TextView
                        android:id="@+id/toTilt"
-                       android:layout_width="match_parent"
+                       android:ems="15"
+                       android:layout_width="wrap_content"
                        android:layout_height="50dp"
                        android:background="@color/bg_stonex_blue"
                        android:textSize="16sp"
-                       android:ems="5"
                        android:gravity="center"
                        android:text="TILT"
                        android:textStyle="bold"
@@ -439,11 +450,11 @@
                        android:layout_marginVertical="5dp"/>
                    <TextView
                        android:id="@+id/toxyz"
-                       android:layout_width="match_parent"
+                       android:ems="15"
+                       android:layout_width="wrap_content"
                        android:layout_height="50dp"
                        android:background="@color/bg_stonex_blue"
                        android:textSize="16sp"
-                       android:ems="5"
                        android:gravity="center"
                        android:text="ΔX ΔY ΔZ"
                        android:textStyle="bold"

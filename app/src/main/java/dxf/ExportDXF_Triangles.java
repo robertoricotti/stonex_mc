@@ -30,20 +30,20 @@ public class ExportDXF_Triangles {
     private Point3D[] point3DS;
     private String filename;
     private String path;
-    private boolean useFeet;
+    private double conversionFactor;
     static String label;
     private double METER_TO_FEET_CONVERSION;
 
-    public ExportDXF_Triangles(Point3D[] point3DS, String filename, String path, boolean useFeet) {
+    public ExportDXF_Triangles(Point3D[] point3DS, String filename, String path, double conversionFactor) {
         this.point3DS = point3DS;
         this.filename = filename;
         this.path = path;
-        this.useFeet = useFeet;
+        this.conversionFactor = conversionFactor;
     }
     public void generateDXF() throws IOException {
         coordinates=new ArrayList<>();
         outCoords=new ArrayList<>();
-        METER_TO_FEET_CONVERSION = useFeet ? 0.3048006096 : 1.0;
+        METER_TO_FEET_CONVERSION = conversionFactor;
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + "/" + filename))) {
             DXFWriteMethods.testa(writer,3);

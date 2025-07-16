@@ -19,18 +19,18 @@ public class ExportDXF_Area {
     private List<double[]> coordinates; // Lista di coordinate [x, y, z]
     private String filename;
     private String path;
-    private boolean useFeet;
+    private double conversionFactor;
     private double METER_TO_FEET_CONVERSION;
     static double z;
 
-    public ExportDXF_Area(List<double[]> coordinates, String filename, String path, boolean useFeet) {
+    public ExportDXF_Area(List<double[]> coordinates, String filename, String path, double conversionFactor) {
         this.coordinates = coordinates;
         this.filename = filename;
         this.path = path;
-        this.useFeet = useFeet;
+        this.conversionFactor = conversionFactor;
     }
     public void generateDXF() throws IOException {
-        METER_TO_FEET_CONVERSION = useFeet ? 0.3048006096 : 1.0;
+        METER_TO_FEET_CONVERSION = conversionFactor;
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + "/" + filename))) {
 

@@ -124,23 +124,35 @@
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
-        app:layout_constraintEnd_toStartOf="@+id/cbxft"
+        app:layout_constraintEnd_toStartOf="@+id/cbxINft"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline117" />
-
+    <CheckBox
+        android:id="@+id/cbxINft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Int ft"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline147"
+        app:layout_constraintEnd_toStartOf="@+id/cbxft"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/cbxm"
+        app:layout_constraintTop_toTopOf="@+id/guideline117" />
     <CheckBox
         android:id="@+id/cbxft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ft"
+        android:text="US ft"
         android:textColor="@color/black"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
         app:layout_constraintEnd_toStartOf="@+id/cbxinch"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cbxm"
+        app:layout_constraintStart_toEndOf="@+id/cbxINft"
         app:layout_constraintTop_toTopOf="@+id/guideline117" />
 
     <CheckBox

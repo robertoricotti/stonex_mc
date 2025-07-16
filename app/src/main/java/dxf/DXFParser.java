@@ -21,9 +21,9 @@ import services.ReadProjectService;
 public class DXFParser {
     static Map<String, Integer> layerColors = new HashMap<>();
 
-    public static DXFData parseDXF(String filePath, boolean isFeet) {
+    public static DXFData parseDXF(String filePath, double conversionFactor) {
         DXFData dxfData = new DXFData();
-        double conversionFactor = isFeet ? 0.3048006096 : 1.0;
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String colorCode = "";
             Layer currentLayer = null;

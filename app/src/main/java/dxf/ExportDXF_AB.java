@@ -19,16 +19,16 @@ public class ExportDXF_AB {
     private Point3D[] points; // Array con punti da A a F
     private String filename;
     private String path;
-    private boolean useFeet; // Nuovo parametro per l'uso di piedi
+    private double conversionFactor; // Nuovo parametro per l'uso di piedi
     private double METER_TO_FEET_CONVERSION; // Conversione metri -> piedi
-    public ExportDXF_AB(Point3D[] points, String filename, String path, boolean useFeet) {
+    public ExportDXF_AB(Point3D[] points, String filename, String path, double conversionFactor) {
         this.points = points;
         this.filename = filename;
         this.path = path;
-        this.useFeet = useFeet;
+        this.conversionFactor = conversionFactor;
     }
     public void generateDXF() throws IOException {
-        METER_TO_FEET_CONVERSION = useFeet ? 0.3048006096 : 1.0;
+        METER_TO_FEET_CONVERSION = conversionFactor;
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + "/" + filename))) {
             DXFWriteMethods.testa(writer,3);

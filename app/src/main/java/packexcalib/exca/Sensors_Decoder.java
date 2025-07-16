@@ -3,7 +3,6 @@ package packexcalib.exca;
 import android.util.Log;
 
 import gui.gps.NmeaGenerator;
-import services.CanService;
 import utils.UnitsConversion;
 
 
@@ -51,10 +50,9 @@ public class Sensors_Decoder {
             switch (DataSaved.isWL) {
                 case 0://escavatore
                 case 1://wheel loader
-                    switch (DataSaved.isCanOpen) {
-
+                    switch (DataSaved.isCanOpen) {//MOBA TODO replace with newer sensors
                         case 1:
-                            countTiltRot++;
+                           /* countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
                                 countTiltRot = 0;
                                 DataSaved.isTiltRotator = true;
@@ -420,10 +418,10 @@ public class Sensors_Decoder {
 
 
                             }
-                            ExcavatorLib.Excavator(values);
+                            ExcavatorLib.Excavator(values);*/
                             break;
                         case 2:
-                        case 3:
+                        case 3://TSM
                             countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
                                 countTiltRot = 0;
@@ -778,153 +776,8 @@ public class Sensors_Decoder {
                             }
                             ExcavatorLib.Excavator(values);
                             break;
-                        case 4:
-                            countTiltRot++;
-                            if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
-                                countTiltRot = 0;
-                                DataSaved.isTiltRotator = true;
-
-                                if (PGNExtractor.extractPGN(id) == PGN_Tiltrotator) {
-                                    double cost = (PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]}) * 100d) * 0.01d;
-
-                                    Deg_Roto = cost * (1d / 128d) - 200d;
-                                } else if (PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS) {
-                                    double costa = (PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[0], data[1]}) * 100d) * 0.01d;
-
-                                    Deg_Roto = costa * (1d / 128d) - 0d;
-                                } else if (PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon) {
-                                    double costa = (PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[0], data[1]}) * 100d) * 0.01d;
-
-                                    Deg_Roto = costa * (1d / 128d) - 0d;
-
-                                }
-                                if (DataSaved.reverseRotator == 1) {
-                                    Deg_Roto = Deg_Roto * -1;
-                                }
-
-
-                            }
-                            if (countTiltRot > 500) {
-                                DataSaved.isTiltRotator = false;
-                            }
-                            switch (id) {
-                                case 0x181:
-                                    int degpitch = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    double degDpitch = degpitch * 0.01;
-                                    int degroll = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    double degDroll = degroll * 0.01;
-                                    switch (DataSaved.lrFrame) {
-                                        case 0:
-                                            Deg_pitch = 0;
-                                            Deg_roll = 0;
-                                            break;
-                                        case 1:
-                                            Deg_pitch = degDpitch;
-                                            Deg_roll = degDroll;
-                                            break;
-                                        case 2:
-                                            Deg_pitch = degDroll;
-                                            Deg_roll = -degDpitch;
-                                            break;
-                                        case 3:
-                                            Deg_pitch = -degDpitch;
-                                            Deg_roll = -degDroll;
-                                            break;
-                                        case 4:
-                                            Deg_pitch = -degDroll;
-                                            Deg_roll = degDpitch;
-                                            break;
-                                    }
-
-
-                                    break;
-
-                                case 0x182:
-                                    int deg1 = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-
-                                    double degD1 = deg1 * 0.01;
-                                    Deg_boom1 = degD1 * DataSaved.lrBoom1;
-                                    if (Deg_boom1 > 180) {
-                                        Deg_boom1 -= 360;
-                                    }
-                                    if (Deg_boom1 < -180) {
-                                        Deg_boom1 += 360;
-                                    }
-
-                                    break;
-
-                                case 0x187:
-                                    int deg2 = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-
-                                    double degD2 = deg2 * 0.01;
-                                    Deg_boom2 = degD2 * DataSaved.lrBoom2;
-                                    if (Deg_boom2 > 180) {
-                                        Deg_boom2 -= 360;
-                                    }
-                                    if (Deg_boom2 < -180) {
-                                        Deg_boom2 += 360;
-                                    }
-
-
-                                    break;
-
-                                case 0x184:
-                                    int degS = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-
-                                    double degDS = degS * 0.01;
-                                    Deg_stick = degDS * DataSaved.lrStick;
-                                    if (Deg_stick > 180) {
-                                        Deg_stick -= 360;
-                                    } else if (Deg_stick < -180) {
-                                        Deg_stick += 360;
-                                    }
-
-                                    break;
-
-                                case 0x185:
-                                    int degB = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-
-                                    double degDB = degB * 0.01;
-                                    Deg_bucket = degDB * DataSaved.lrBucket;
-                                    if (Deg_bucket > 180) {
-                                        Deg_bucket -= 360;
-                                    }
-                                    if (Deg_bucket < -180) {
-                                        Deg_bucket += 360;
-                                    }
-
-                                    break;
-                                case 0x183:
-                                    flagDefault += 100;
-                                    break;
-                                case 0x386:
-                                    int degA = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    int degT = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    double degAd = degA * 0.01;
-                                    double degTd = degT * 0.01;
-                                    Deg_Benna_W_Tilt = degAd;
-                                    Deg_tilt = degTd;
-
-                                    if (Deg_Benna_W_Tilt > 180) {
-                                        Deg_Benna_W_Tilt -= 360;
-                                    }
-                                    if (Deg_Benna_W_Tilt < -180) {
-                                        Deg_Benna_W_Tilt += 360;
-                                    }
-
-                                    if (Deg_tilt > 180) {
-                                        Deg_tilt -= 360;
-                                    }
-                                    if (Deg_tilt < -180) {
-                                        Deg_tilt += 360;
-                                    }
-                                    break;
-
-                            }
-                            ExcavatorLib.Excavator(values);
-                            break;
                         case 5:
-                        //demo ROLLER
+                            //demo ROLLER
                             switch (id) {
                                 case 0x385:
 
@@ -1209,8 +1062,6 @@ public class Sensors_Decoder {
                                     qZ /= qnorm;
 
 
-
-
                                     switch (DataSaved.lrBucket) {
                                         case 0:
                                             eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
@@ -1355,7 +1206,6 @@ public class Sensors_Decoder {
 
         return new double[]{roll, pitch, yaw};
     }
-
 
 
 }

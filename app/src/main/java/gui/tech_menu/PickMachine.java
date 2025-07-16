@@ -70,7 +70,7 @@ public class PickMachine extends AppCompatActivity {
     private void onClick() {
         back.setOnClickListener((View v) -> {
             back.setEnabled(false);
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
 
@@ -184,7 +184,7 @@ public class PickMachine extends AppCompatActivity {
             catch (Exception ignored) {}
             confirm.setEnabled(false);
             startService(new Intent(this, UpdateValuesService.class));
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
     }
     public void leggi_nuova(){
@@ -219,6 +219,8 @@ public class PickMachine extends AppCompatActivity {
             String [] wiL=reader.readNext();
             String [] palol=reader.readNext();
             String [] lamal=reader.readNext();
+            String [] between=reader.readNext();
+            String [] g1g2l=reader.readNext();
 
 
             MyData.push("M" + indexMachineSelected + "_Name", arrayFiles.get(machinesAdapter.getSelectedItem()).replace(".csv",""));
@@ -287,7 +289,8 @@ public class PickMachine extends AppCompatActivity {
             MyData.push("M"+indexMachineSelected+ "_Bucket_" + "0" + "_Width_L",wiL[1]);
             MyData.push("M"+indexMachineSelected+ "_Bucket_" + "0" + "_Palo",palol[1]);
             MyData.push("M"+indexMachineSelected+ "_Bucket_" + "0" + "_Lama",lamal[1]);
-
+            MyData.push("M"+indexMachineSelected+ "_Bucket_" + "0" + "_Between",between[1]);
+            MyData.push("M" + indexMachineSelected + "_distG1_G2", g1g2l[1]);
             reader.close();
 
         }
@@ -296,7 +299,8 @@ public class PickMachine extends AppCompatActivity {
         }
         confirm.setEnabled(false);
         startService(new Intent(this, UpdateValuesService.class));
-        startActivity(new Intent(this, MachineSettings.class));
+        startActivity(new Intent(this, Nuova_Machine_Settings.class));
+        overridePendingTransition(0, 0);
         finish();
     }
     @SuppressLint("MissingSuperCall")

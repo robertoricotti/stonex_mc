@@ -26,7 +26,7 @@ import utils.MyData;
 public class DialogUnitOfMeasure {
     Activity activity;
     public Dialog alertDialog;
-    CheckBox cbxm, cbxft, cbxinch;
+    CheckBox cbxm, cbxft, cbxinch,cbxINft;
     CheckBox cbxdegree, cbxpercent;
     Button save, exit;
     int index = 0;
@@ -65,6 +65,7 @@ public class DialogUnitOfMeasure {
     private void findView() {
         cbxm = alertDialog.findViewById(R.id.cbxm);
         cbxft = alertDialog.findViewById(R.id.cbxft);
+        cbxINft=alertDialog.findViewById(R.id.cbxINft);
         cbxinch = alertDialog.findViewById(R.id.cbxinch);
         cbxdegree = alertDialog.findViewById(R.id.cbxdegree);
         cbxpercent = alertDialog.findViewById(R.id.cbxpercent);
@@ -103,6 +104,14 @@ public class DialogUnitOfMeasure {
                 cbxinch.setChecked(true);
                 cbxpercent.setChecked(true);
                 break;
+            case 6:
+                cbxINft.setChecked(true);
+                cbxdegree.setChecked(true);
+                break;
+            case 7:
+                cbxINft.setChecked(true);
+                cbxpercent.setChecked(true);
+                break;
         }
     }
 
@@ -129,6 +138,12 @@ public class DialogUnitOfMeasure {
             }
             if (cbxinch.isChecked() && cbxpercent.isChecked()) {
                 index = 5;
+            }
+            if (cbxINft.isChecked() && cbxdegree.isChecked()) {
+                index = 6;
+            }
+            if (cbxINft.isChecked() && cbxpercent.isChecked()) {
+                index = 7;
             }
             MyData.push("Unit_Of_Measure", String.valueOf(index));
 
@@ -157,6 +172,7 @@ public class DialogUnitOfMeasure {
             if (cbxm.isChecked()) {
                 cbxft.setChecked(false);
                 cbxinch.setChecked(false);
+                cbxINft.setChecked(false);
             }
         });
 
@@ -164,6 +180,7 @@ public class DialogUnitOfMeasure {
             if (cbxft.isChecked()) {
                 cbxm.setChecked(false);
                 cbxinch.setChecked(false);
+                cbxINft.setChecked(false);
             }
         });
 
@@ -171,6 +188,14 @@ public class DialogUnitOfMeasure {
             if (cbxinch.isChecked()) {
                 cbxm.setChecked(false);
                 cbxft.setChecked(false);
+                cbxINft.setChecked(false);
+            }
+        });
+        cbxINft.setOnCheckedChangeListener((CompoundButton c, boolean b) -> {
+            if (cbxINft.isChecked()) {
+                cbxm.setChecked(false);
+                cbxft.setChecked(false);
+                cbxinch.setChecked(false);
             }
         });
 

@@ -67,7 +67,7 @@ public class ReadProjectService extends Service {
     public static String parserStatus = "Wait Reading Files....";
     public static int numbers;
     public static boolean isFinishedDTM, isFinishedPOLY, isFinishedPOINT;
-
+    static double conversionFactor=1;
     public ReadProjectService() {
     }
 
@@ -84,6 +84,25 @@ public class ReadProjectService extends Service {
         isFinishedDTM = false;
         isFinishedPOLY = false;
         isFinishedPOINT = false;
+        switch (MyData.get_Int("Unit_Of_Measure")){
+            case 0:
+            case 1:
+                conversionFactor=1;
+                break;
+
+            case 2:
+            case 3:
+                conversionFactor=0.3048006096;
+                break;
+            case 4:
+            case 5:
+                conversionFactor=0.3048006096;
+                break;
+            case 6:
+            case 7:
+                conversionFactor=0.3048;
+                break;
+        }
         mExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         mExecutor.execute(new MyAsync_Excecutor());
     }
@@ -183,9 +202,9 @@ public class ReadProjectService extends Service {
                                 if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
                                     DataSaved.filteredFaces = new ArrayList<>();
                                     DataSaved.dxfFaces = new ArrayList<>();
-                                    dxfData = DXFParser.parseDXF(nomeProgettoTRM, isFeet);
+                                    dxfData = DXFParser.parseDXF(nomeProgettoTRM, conversionFactor);
 
-                                    dxfData = DXFParser.parseDXF(nomeProgettoTRM, isFeet);
+                                    dxfData = DXFParser.parseDXF(nomeProgettoTRM, conversionFactor);
                                     DataSaved.dxfFaces = dxfData.getFaces();
                                     DataSaved.dxfLayers_DTM = dxfData.getLayers();
                                     copiaFacce();
@@ -206,9 +225,9 @@ public class ReadProjectService extends Service {
                                             case "pstx":
 
                                                 parserStatus = "Reading Polylines...";
-                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, isFeet);
+                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
 
-                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, isFeet);
+                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                                 DataSaved.polylines = dxfDataPoly.getPolylines();
                                                 DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
                                                 DataSaved.arcs = dxfDataPoly.getArcs();
@@ -221,7 +240,7 @@ public class ReadProjectService extends Service {
 
                                                 parserStatus = "Reading Polylines...";
 
-                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, isFeet);
+                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
 
                                                 DataSaved.polylines = landXMLPOLY.getPolylines();
                                                 DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
@@ -245,16 +264,16 @@ public class ReadProjectService extends Service {
                                             case "dxf":
                                             case "pstx":
                                                 parserStatus = "Reading Points...";
-                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, isFeet);
+                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
 
-                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, isFeet);
+                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                                 DataSaved.points = dxfDataPoint.getPoints();
                                                 DataSaved.dxfTexts = dxfDataPoint.getTexts();
                                                 DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
                                                 break;
                                             case "xml":
                                                 parserStatus = "Reading Points...";
-                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, isFeet);
+                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
 
                                                 DataSaved.points = landXMLPOINT.getPoints();
                                                 DataSaved.dxfTexts = landXMLPOINT.getTexts();
@@ -319,9 +338,9 @@ public class ReadProjectService extends Service {
                                     DataSaved.dxfFaces = new ArrayList<>();
 
 
-                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, isFeet);
+                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor);
 
-                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, isFeet);
+                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor);
 
 
                                     DataSaved.dxfFaces = landXMLData.getFaces();
@@ -342,9 +361,9 @@ public class ReadProjectService extends Service {
                                             case "dxf":
                                             case "pstx":
                                                 parserStatus = "Reading Polylines...";
-                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, isFeet);
+                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
 
-                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, isFeet);
+                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                                 DataSaved.polylines = dxfDataPoly.getPolylines();
                                                 DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
                                                 DataSaved.arcs = dxfDataPoly.getArcs();
@@ -357,7 +376,7 @@ public class ReadProjectService extends Service {
                                                 parserStatus = "Reading Polylines...";
 
                                                 Log.d("CACHE", "Cache non trovata, parsifico: " + DataSaved.progettoSelected_POLY);
-                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, isFeet);
+                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
 
                                                 DataSaved.polylines = landXMLPOLY.getPolylines();
                                                 DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
@@ -381,9 +400,9 @@ public class ReadProjectService extends Service {
                                             case "dxf":
                                             case "pstx":
                                                 parserStatus = "Reading Points...";
-                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, isFeet);
+                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
 
-                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, isFeet);
+                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                                 DataSaved.points = dxfDataPoint.getPoints();
                                                 DataSaved.dxfTexts = dxfDataPoint.getTexts();
                                                 DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
@@ -392,7 +411,7 @@ public class ReadProjectService extends Service {
                                                 parserStatus = "Reading Points...";
 
 
-                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, isFeet);
+                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
 
                                                 DataSaved.points = landXMLPOINT.getPoints();
                                                 DataSaved.dxfTexts = landXMLPOINT.getTexts();

@@ -29,10 +29,10 @@ import services.ReadProjectService;
 
 public class LandXMLParser {
 
-    public static LandXMLData parseLandXML(String filePath, int xyz, boolean isFeet) {
+    public static LandXMLData parseLandXML(String filePath, int xyz, double conversionFactor) {
         int colorIndex = 0;
         LandXMLData landXMLData = new LandXMLData();
-        double conversionFactor = isFeet ? 0.3048006096 : 1.0;
+
 
         try {
             File inputFile = new File(filePath);

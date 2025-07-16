@@ -27,6 +27,7 @@ import gui.projects.Dialog_PRJ_Folder;
 import gui.projects.PickProject;
 import gui.projects.ProjectFileAdapter;
 import gui.projects.Punti3DAdapter;
+import gui.tech_menu.Nuova_Machine_Settings;
 import utils.FullscreenActivity;
 
 public class CustomQwertyDialog {
@@ -253,6 +254,9 @@ public class CustomQwertyDialog {
         });
 
         bok.setOnClickListener((View v) -> {
+            if (activity instanceof Nuova_Machine_Settings){
+                ((Nuova_Machine_Settings)activity).saveName();
+            }
             if (flag == 999) {
                 if (getName() != null) {
                     projectFileAdapter.renameSelectedFile(path,getName());

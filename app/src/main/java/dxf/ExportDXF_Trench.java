@@ -33,7 +33,7 @@ public class ExportDXF_Trench {
    static Layer trenchLayer,polylineLayer;
     private String filename;
     private String path;
-    private boolean useFeet;
+    private double conversionFactor;
     private double METER_TO_FEET_CONVERSION;
     static String label;
 
@@ -41,7 +41,7 @@ public class ExportDXF_Trench {
                             double leftWidth, double rightWidth,
                             double leftSlopeDeg, double rightSlopeDeg,
                             String filename, String path,
-                            boolean useFeet) {
+                            double conversionFactor) {
         this.centerLinePoints = centerLinePoints;
         this.leftWidth = leftWidth;
         this.rightWidth = rightWidth;
@@ -50,13 +50,13 @@ public class ExportDXF_Trench {
 
         this.filename = filename;
         this.path = path;
-        this.useFeet = useFeet;
+        this.conversionFactor = conversionFactor;
         trenchLayer=new Layer(filename,"TRENCH", Color.YELLOW,true);
         polylineLayer=new Layer(filename,"CENTER LINE",Color.MAGENTA,true);
     }
 
     public void generateDXF() throws IOException {
-        METER_TO_FEET_CONVERSION = useFeet ? 0.3048006096 : 1.0;
+        METER_TO_FEET_CONVERSION = conversionFactor;
         coordinates=new ArrayList<>();
 
         List<Point3D> centerLineList = Arrays.asList(centerLinePoints);
