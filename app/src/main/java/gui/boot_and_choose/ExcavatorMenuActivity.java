@@ -361,7 +361,7 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
         lock.setOnClickListener(view -> {
             if (!isTech) {
                 if (!dialogPassword.dialog.isShowing()) {
-                    dialogPassword.show();
+                    dialogPassword.show(-1);
                 }
             }
 

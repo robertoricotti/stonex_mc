@@ -84,7 +84,7 @@ public class CanOpenTSM extends AppCompatActivity {
             if (!isSend) {
                 exit.setEnabled(false);
                 startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-                startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+                startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                 finish();
             }
 

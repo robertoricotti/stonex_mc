@@ -218,7 +218,7 @@ public class Tilt_Blade extends AppCompatActivity {
             MyData.push("M" + indexMachineSelected + "_Bucket_MountPos", String.valueOf(bucketMountPos));
             MyData.push("M" + indexMachineSelected + "_OffsetFrameY", String.valueOf(DataSaved.offsetPitch));
             MyData.push("M" + indexMachineSelected + "_OffsetFrameX", String.valueOf(DataSaved.offsetRoll));
-            startActivity(new Intent(this,MachineSettings.class));
+            startActivity(new Intent(this,Nuova_Machine_Settings.class));
             startService(new Intent(this, UpdateValuesService.class));
             finish();
 
@@ -228,7 +228,7 @@ public class Tilt_Blade extends AppCompatActivity {
             DataSaved.lrBucket=MyData.get_Int("M" + indexMachineSelected + "_Bucket_MountPos");
             DataSaved.offsetPitch=MyData.get_Double("M" + indexMachineSelected + "_OffsetFrameY");
             DataSaved.offsetRoll=MyData.get_Double("M" + indexMachineSelected + "_OffsetFrameX");
-            startActivity(new Intent(this,MachineSettings.class));
+            startActivity(new Intent(this,Nuova_Machine_Settings.class));
             finish();
         });
 

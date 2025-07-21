@@ -17,9 +17,11 @@ import android.widget.EditText;
 
 import com.example.stx_dig.R;
 
+import gui.gps.Nuovo_Gps;
 import gui.tech_menu.CanOpenTSM;
 import gui.tech_menu.ExcavatorChooserActivity;
 import gui.tech_menu.MachineSettings;
+import gui.tech_menu.Nuova_Machine_Settings;
 import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -36,6 +38,7 @@ public class DialogPassword {
     String tmp = "";
     Button maiuscola;
     boolean capital=true;
+    int whoCall=-1;
 
 
 
@@ -53,7 +56,8 @@ public class DialogPassword {
         }
     }
 
-    public void show() {
+    public void show(int whoCall) {
+        this.whoCall=whoCall;
         FullscreenActivity.setFullScreen(dialog);
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
@@ -131,14 +135,14 @@ public class DialogPassword {
         tmp="";
         indexMachineSelected = MyData.get_Int("MachineSelected");
         value.setText(tmp);
-        if (isTech) {
+       /* if (isTech) {
             if (activity instanceof ExcavatorChooserActivity) {
                 activity.startActivity(new Intent(activity, MachineSettings.class));
                 activity.finish();
                 tmp = "";
                 dialog.dismiss();
             }
-        }
+        }*/
         setupChar(true);
 
 
@@ -150,30 +154,26 @@ public class DialogPassword {
 
             if (tmp.equals("000000") || tmp.equals("QWEDSAZXC") && !isTech) {
                 isTech = true;
-
-                /*if (activity instanceof ExcavatorChooserActivity) {
-
-                    activity.startActivity(new Intent(activity, MachineSettings.class));
+                if(whoCall==1){
+                    activity.startActivity(new Intent(activity, Nuovo_Gps.class));
+                    activity.finish();
+                    tmp = "";
+                    dialog.dismiss();
+                }else if (whoCall==2){
+                    activity.startActivity(new Intent(activity, Nuova_Machine_Settings.class));
                     activity.finish();
                     tmp = "";
                     dialog.dismiss();
                 }else {
                     dialog.dismiss();
-                }*/
+                }
+
                 dialog.dismiss();
-            } else if (tmp.equals("696969") || tmp.equals("1234567890") && !isTech2 && activity instanceof MachineSettings) {
+            } else if (tmp.equals("696969") || tmp.equals("1234567890") && !isTech2 && activity instanceof Nuova_Machine_Settings) {
 
                 isTech2 = true;
-                if (activity instanceof MachineSettings) {
-                    if (DataSaved.isCanOpen == 2) {
-                        if(isApollo){
-                        activity.startActivity(new Intent(activity, CanOpenTSM.class));
-                        }
-                    } else if (DataSaved.isCanOpen == 3) {
-                        if(isApollo){
-                        activity.startActivity(new Intent(activity, CanOpenTSM.class));}
-
-                    }
+                if (activity instanceof Nuova_Machine_Settings) {
+                    activity.startActivity(new Intent(activity, CanOpenTSM.class));
                     activity.finish();
 
                 }

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +34,7 @@ public class Boom2Calib extends AppCompatActivity {
     CheckBox off, left, right;
     TextView boom2Angle, boom2OffsetAngle, textBoom2;
     Button minusOffset, plusOffset, setOffset;
-    Button save, esc;
+    ImageView save, esc;
     int indexMachineSelected, count = 0;
     private boolean minusPressed, plusPressed;
 
@@ -161,7 +162,7 @@ public class Boom2Calib extends AppCompatActivity {
                     save.setEnabled(false);
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-                    startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+                    startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                     finish();
                 }
             }
@@ -174,7 +175,7 @@ public class Boom2Calib extends AppCompatActivity {
                     save.setEnabled(false);
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-                    startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+                    startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                     finish();
                 }
             }
@@ -184,7 +185,7 @@ public class Boom2Calib extends AppCompatActivity {
             esc.setEnabled(false);
             save.setEnabled(false);
             startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-            startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+            startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
             finish();
         });
 

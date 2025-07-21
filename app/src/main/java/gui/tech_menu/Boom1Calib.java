@@ -37,7 +37,7 @@ public class Boom1Calib extends AppCompatActivity {
     CheckBox off, left, right;
     TextView boom1Angle, boom1OffsetAngle, textBoom1;
     Button minusOffset, plusOffset, setOffset;
-    Button save, esc;
+    ImageView save, esc;
     ImageView img_hiddenpin;
 
     int indexMachineSelected, count = 0;

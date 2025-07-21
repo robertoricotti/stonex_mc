@@ -41,7 +41,7 @@ public class FrameCalib extends AppCompatActivity {
     TextView pitchAngle, pitchOffsetAngle, rollAngle, rollOffsetAngle, textPitchL, textRollL, tempHDT;
     Button minusOffsetPitch, plusOffsetPitch, setOffsetPitch, minusOffsetRoll, plusOffsetRoll, setOffsetRoll;
     ImageView infoMount;
-    Button save, esc;
+    ImageView save, esc;
     int countZero,countZeroP;
     boolean minusPressedP, plusPressedP, minusPressedR, plusPressedR;
     int indexMachineSelected;
@@ -238,7 +238,7 @@ public class FrameCalib extends AppCompatActivity {
                     save.setEnabled(false);
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-                    startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+                    startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                     finish();
                 }
             } else {
@@ -249,7 +249,7 @@ public class FrameCalib extends AppCompatActivity {
                     save.setEnabled(false);
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-                    startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+                    startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                     finish();
                 }
             }
@@ -266,7 +266,7 @@ public class FrameCalib extends AppCompatActivity {
             esc.setEnabled(false);
             save.setEnabled(false);
             startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-            startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+            startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
             finish();
         });
 

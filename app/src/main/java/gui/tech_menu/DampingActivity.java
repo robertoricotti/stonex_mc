@@ -35,11 +35,8 @@ public class DampingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Build.BRAND.equals("SRT8PROS")){
-        setContentView(R.layout.activity_damping);}
-        else {
-            setContentView(R.layout.activity_damping_7);
-        }
+        setContentView(R.layout.activity_damping_7);
+
         if (DataSaved.isCanOpen==3||DataSaved.isCanOpen==2){
             readTSM();
             (new Handler()).postDelayed(this::readTSM, 1000);
@@ -81,7 +78,7 @@ public class DampingActivity extends AppCompatActivity {
         back.setOnClickListener((View v) -> {
             if(!isSend){
                 back.setEnabled(false);
-                startActivity(new Intent(this, MachineSettings.class));
+                startActivity(new Intent(this, Nuova_Machine_Settings.class));
                 }
             finish();
         });

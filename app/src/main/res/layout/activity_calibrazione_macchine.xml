@@ -176,7 +176,7 @@
                     android:layout_height="60dp"
                     android:background="@drawable/sfondo_bottone_trasparente"
                     app:srcCompat="@drawable/machines_btn"
-
+                    android:scaleType="centerCrop"
                     android:layout_marginHorizontal="20dp"
                     />
                 <ImageView
@@ -185,7 +185,7 @@
                     android:layout_height="60dp"
                     android:background="@drawable/sfondo_bottone_trasparente"
                     app:srcCompat="@drawable/wheel_machines_btn"
-
+                    android:scaleType="centerCrop"
                     android:layout_marginHorizontal="20dp"
                     />
                 <ImageView
@@ -194,7 +194,7 @@
                     android:layout_height="60dp"
                     android:background="@drawable/sfondo_bottone_trasparente"
                     app:srcCompat="@drawable/dozer_machines_btn"
-
+                    android:scaleType="centerCrop"
                     android:layout_marginHorizontal="20dp"
                     />
                 <ImageView
@@ -203,7 +203,7 @@
                     android:layout_height="60dp"
                     android:background="@drawable/sfondo_bottone_trasparente"
                     app:srcCompat="@drawable/grader_btn"
-
+                    android:scaleType="centerCrop"
                     android:layout_marginHorizontal="20dp"
                     />
 
@@ -353,7 +353,7 @@
                     android:textStyle="bold"
                     android:textColor="@color/_____cancel_text"
                     android:textSize="18sp"
-                    android:text="SENSORS SETUP"
+                    android:text="MACHINE SETUP"
                     android:layout_weight="1"
                     android:gravity="center"
                     />
@@ -369,6 +369,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
+                android:visibility="gone"
                 >
                <LinearLayout
                    android:layout_width="match_parent"
@@ -464,6 +465,109 @@
 
                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/light_gray"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/bt_canopen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:src="@drawable/keyboard_arrow_down_96"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/_____cancel_text"
+                    android:textSize="18sp"
+                    android:text="CAN SENSORS CONFIG"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    app:tint="@color/transparent"
+                    android:src="@drawable/keyboard_arrow_down_96"/>
+
+            </LinearLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constr_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    >
+                    <TextView
+                        android:id="@+id/toCanOpen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:background="@color/light_yellow"
+                        android:textSize="16sp"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="CAN-OPEN SETUP"
+                        android:textStyle="bold"
+                        android:textColor="@color/_____cancel_text"
+                        android:layout_marginVertical="5dp"/>
+                    <TextView
+                        android:id="@+id/toDamping"
+                        android:ems="15"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:background="@color/red"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:text="SENSORS SPEED"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_marginVertical="5dp"/>
+                    <TextView
+                        android:id="@+id/toCan1"
+                        android:ems="15"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:text="CAN 1 Baudrate"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_marginVertical="5dp"/>
+                    <TextView
+                        android:id="@+id/toCan2"
+                        android:ems="15"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:text="CAN 2 Baudrate"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_marginVertical="5dp"/>
+
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"
+                />
         </LinearLayout>
 
     </ScrollView>

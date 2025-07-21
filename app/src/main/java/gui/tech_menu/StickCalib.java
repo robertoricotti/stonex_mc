@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -34,7 +35,7 @@ public class StickCalib extends AppCompatActivity {
     CheckBox off, left, right, isExt;
     TextView stickAngle, stickOffsetAngle, textLength, textLV, textLH,titolao;
     Button minusOffset, plusOffset, setOffset, setExt;
-    Button save, esc;
+    ImageView save, esc;
 
     int indexMachineSelected, count = 0;
 
@@ -202,7 +203,7 @@ public class StickCalib extends AppCompatActivity {
                     esc.setEnabled(false);
                     save();
                     startService(new Intent(this, UpdateValuesService.class));
-                    startActivity(new Intent(this, MachineSettings.class));
+                    startActivity(new Intent(this, Nuova_Machine_Settings.class));
                     finish();
                 }
             } else {
@@ -213,7 +214,7 @@ public class StickCalib extends AppCompatActivity {
                     esc.setEnabled(false);
                     save();
                     startService(new Intent(this, UpdateValuesService.class));
-                    startActivity(new Intent(this, MachineSettings.class));
+                    startActivity(new Intent(this, Nuova_Machine_Settings.class));
                     finish();
                 }
             }
@@ -223,7 +224,7 @@ public class StickCalib extends AppCompatActivity {
             save.setEnabled(false);
             esc.setEnabled(false);
             startService(new Intent(this, UpdateValuesService.class));
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
 

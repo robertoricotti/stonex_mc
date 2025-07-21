@@ -199,7 +199,7 @@ public class MachineSettings extends BaseClass {
                     MyData.push("M" + indexMachineSelected + "_LengthBoom1", "-1");
                     DataSaved.L_Boom1 = -1;
                 }
-                ;
+
             }
         });
 
@@ -261,7 +261,7 @@ public class MachineSettings extends BaseClass {
         canopenB.setOnClickListener(view -> {
             if (isApollo) {
                 if (!dialogPassword.dialog.isShowing()) {
-                    dialogPassword.show();
+                    dialogPassword.show(-1);
                 }
             } else {
                 new CustomToast(this, "Not Implemented").show();

@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray">
+    android:background="@drawable/sfondo_bottone_trasparente">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline94"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.09" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline99"
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.89" />
 
     <TextView
         android:layout_width="0dp"
@@ -89,7 +89,7 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline111"
         app:layout_constraintEnd_toStartOf="@+id/infoMount"
@@ -104,7 +104,7 @@
         android:text="@string/angle"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline100"
         app:layout_constraintEnd_toStartOf="@+id/infoAngle"
@@ -121,7 +121,7 @@
         android:maxLines="1"
         android:paddingHorizontal="30dp"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline99"
         app:layout_constraintEnd_toEndOf="parent"
@@ -136,7 +136,7 @@
         android:text="@string/len"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline99"
         app:layout_constraintEnd_toStartOf="@+id/infoLength"
@@ -144,10 +144,10 @@
         app:layout_constraintTop_toTopOf="@+id/guideline111"
         app:layout_constraintVertical_bias="1.0" />
 
-    <Button
+    <ImageView
         android:id="@+id/save"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
         android:text="@string/save"
@@ -158,12 +158,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/centV"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline100" />
+        app:layout_constraintTop_toTopOf="@+id/guideline100"
+        android:src="@drawable/save_btn"/>
 
-    <Button
+    <ImageView
         android:id="@+id/exit"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/dark_gray"
         android:gravity="center"
         android:text="@string/exit"
@@ -174,7 +175,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/centV"
-        app:layout_constraintTop_toTopOf="@+id/guideline100" />
+        app:layout_constraintTop_toTopOf="@+id/guideline100"
+        android:src="@drawable/btn_close_web"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -195,12 +197,12 @@
             android:gravity="center"
             android:text="0.00"
             android:textColor="@color/black"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/offsetMinus"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="60dp"
             android:layout_marginHorizontal="10dp"
             android:backgroundTint="@color/dark_gray"
@@ -218,12 +220,12 @@
             android:gravity="center"
             android:text="0.00"
             android:textColor="@color/black"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/offsetPlus"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="60dp"
             android:backgroundTint="@color/dark_gray"
             android:text="+"

@@ -172,7 +172,7 @@ public class TiltCalib extends AppCompatActivity {
             exit.setEnabled(false);
             save.setEnabled(false);
             startService(new Intent(this, UpdateValuesService.class));
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
 
@@ -186,7 +186,7 @@ public class TiltCalib extends AppCompatActivity {
                     save.setEnabled(false);
                     save();
                     startService(new Intent(this, UpdateValuesService.class));
-                    startActivity(new Intent(this, MachineSettings.class));
+                    startActivity(new Intent(this, Nuova_Machine_Settings.class));
                     finish();
                 }
             } else {
@@ -197,7 +197,7 @@ public class TiltCalib extends AppCompatActivity {
                     save.setEnabled(false);
                     save();
                     startService(new Intent(this, UpdateValuesService.class));
-                    startActivity(new Intent(this, MachineSettings.class));
+                    startActivity(new Intent(this, Nuova_Machine_Settings.class));
                     finish();
                 }
             }

@@ -103,7 +103,7 @@ public class XYZ_Calib_Dozer extends BaseClass {
             MyData.push("M"+indexMachineSelected+"_Bucket_"+"0"+"_Palo", Utils.writeMetri(altPalo.getText().toString()));
             MyData.push("M"+indexMachineSelected+"_Bucket_"+"0"+"_Between", Utils.writeMetri(distBetween.getText().toString()));
             startService(new Intent(this, UpdateValuesService.class));
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
 
 
@@ -111,7 +111,7 @@ public class XYZ_Calib_Dozer extends BaseClass {
         exit.setOnClickListener(view -> {
             exit.setEnabled(false);
             save.setEnabled(false);
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
         dx.setOnClickListener(view -> {

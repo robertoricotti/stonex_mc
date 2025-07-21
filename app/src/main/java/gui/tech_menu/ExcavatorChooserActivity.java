@@ -280,7 +280,7 @@ public class ExcavatorChooserActivity extends BaseClass {
         lockUnlock.setOnClickListener(view -> {
             if (!isTech) {
                 if (!dialogPassword.dialog.isShowing()) {
-                    dialogPassword.show();
+                    dialogPassword.show(-1);
                 }
             }
 
@@ -349,7 +349,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                 } else {
 
                         if (!dialogPassword.dialog.isShowing()) {
-                            dialogPassword.show();
+                            dialogPassword.show(2);
                         }
 
                 }
@@ -368,12 +368,12 @@ public class ExcavatorChooserActivity extends BaseClass {
                         }
                     } else {
                         disableAll();
-                        startActivity(new Intent(this, MachineSettings.class));
+                        startActivity(new Intent(this, Nuova_Machine_Settings.class));
                         finish();
                     }
                 } else {
                     if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show();
+                        dialogPassword.show(2);
                     }
                 }
             }
@@ -391,12 +391,12 @@ public class ExcavatorChooserActivity extends BaseClass {
                         }
                     } else {
                         disableAll();
-                        startActivity(new Intent(this, MachineSettings.class));
+                        startActivity(new Intent(this, Nuova_Machine_Settings.class));
                         finish();
                     }
                 } else {
                     if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show();
+                        dialogPassword.show(2);
                     }
                 }
             }
@@ -414,12 +414,12 @@ public class ExcavatorChooserActivity extends BaseClass {
                         }
                     } else {
                         disableAll();
-                        startActivity(new Intent(this, MachineSettings.class));
+                        startActivity(new Intent(this, Nuova_Machine_Settings.class));
                         finish();
                     }
                 } else {
                     if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show();
+                        dialogPassword.show(2);
                     }
                 }
             }
@@ -434,7 +434,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     finish();
                 } else {
                     if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show();
+                        dialogPassword.show(1);
                     }
                 }
             }
@@ -448,7 +448,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     finish();
                 } else {
                     if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show();
+                        dialogPassword.show(1);
                     }
                 }
             }
@@ -463,7 +463,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     finish();
                 } else {
                     if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show();
+                        dialogPassword.show(1);
                     }
                 }
             }
@@ -477,7 +477,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     finish();
                 } else {
                     if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show();
+                        dialogPassword.show(1);
                     }
                 }
             }

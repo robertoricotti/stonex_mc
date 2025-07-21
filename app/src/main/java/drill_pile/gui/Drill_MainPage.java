@@ -199,7 +199,7 @@ public class Drill_MainPage extends BaseClass {
         lock.setOnClickListener(view -> {
             if (!isTech) {
                 if (!dialogPassword.dialog.isShowing()) {
-                    dialogPassword.show();
+                    dialogPassword.show(-1);
                 }
             }
         });

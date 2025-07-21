@@ -223,7 +223,7 @@ public class CanService extends Service {
 
             }
 
-            if (id > 0x560106A && MyDeviceManager.serialCom(DataSaved.my_comPort).equals("CAN")) {
+            if (id == 0x18FF0510 && MyDeviceManager.serialCom(DataSaved.my_comPort).equals("CAN")) {
 
                 NmeaListener.NmeaSTX(id, msg);
                 nmeaSTX_Disc = false;

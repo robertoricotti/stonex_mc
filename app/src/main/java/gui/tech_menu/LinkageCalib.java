@@ -5,12 +5,14 @@ import static utils.Utils.isNumeric;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,7 +36,7 @@ public class LinkageCalib extends AppCompatActivity {
     CheckBox off, left, right, cbtop,cbtopRev;
     TextView dogBoneAngle, dogBoneOffsetAngle, textL1, textL2, textL3, textL4;
     Button minusOffset, plusOffset, setOffset;
-    Button save, esc;
+    ImageView save, esc;
     CheckBox hasQuick;
     int indexMachineSelected;
 
@@ -242,7 +244,7 @@ public class LinkageCalib extends AppCompatActivity {
                     save.setEnabled(false);
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-                    startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+                    startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                     finish();
                 }
             } else {
@@ -253,7 +255,7 @@ public class LinkageCalib extends AppCompatActivity {
                     save.setEnabled(false);
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-                    startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+                    startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                     finish();
                 }
             }
@@ -264,7 +266,7 @@ public class LinkageCalib extends AppCompatActivity {
             esc.setEnabled(false);
             save.setEnabled(false);
             startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-            startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+            startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
             finish();
         });
 

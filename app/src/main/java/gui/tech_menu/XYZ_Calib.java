@@ -106,7 +106,7 @@ public class XYZ_Calib extends AppCompatActivity {
             MyData.push("M" + indexMachineSelected + "_OffsetGPS2", dHdt.getText().toString());
             MyData.push("M" + indexMachineSelected + "_distG1_G2", Utils.writeMetri(dist.getText().toString()));
             startService(new Intent(this, UpdateValuesService.class));
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
 
 
@@ -114,7 +114,7 @@ public class XYZ_Calib extends AppCompatActivity {
         exit.setOnClickListener(view -> {
             exit.setEnabled(false);
             save.setEnabled(false);
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
         dx.setOnClickListener(view -> {
