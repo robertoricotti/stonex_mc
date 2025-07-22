@@ -49,11 +49,19 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     public static boolean menu1_visible, menu2_visible,menu3_visible;
     DialogPassword dialogPassword;
     Dialog_CanBaud dialogCanBaud;
+    int small,bigg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibrazione_macchine);
+        if(Build.BRAND.equals("APOLLO2_7")){
+            bigg=90;
+            small=70;
+        }else {
+            bigg=110;
+            small=90;
+        }
         findView();
         onClick();
         updateCK();
@@ -451,14 +459,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
 
         switch (DataSaved.isWL) {
             case 0:
-                excaP.width = 110;
-                excaP.height = 110;
-                wheelP.width=90;
-                wheelP.height=90;
-                graderP.width=90;
-                graderP.height=90;
-                dozerP.width=90;
-                dozerP.height=90;
+                excaP.width = bigg;
+                excaP.height = bigg;
+                wheelP.width=small;
+                wheelP.height=small;
+                graderP.width=small;
+                graderP.height=small;
+                dozerP.width=small;
+                dozerP.height=small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
@@ -473,14 +481,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 break;
             case 1:
-                excaP.width = 90;
-                excaP.height = 90;
-                wheelP.width=110;
-                wheelP.height=110;
-                graderP.width=90;
-                graderP.height=90;
-                dozerP.width=90;
-                dozerP.height=90;
+                excaP.width = small;
+                excaP.height = small;
+                wheelP.width=bigg;
+                wheelP.height=bigg;
+                graderP.width=small;
+                graderP.height=small;
+                dozerP.width=small;
+                dozerP.height=small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
@@ -496,14 +504,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 2:
             case 3:
-                excaP.width = 90;
-                excaP.height = 90;
-                wheelP.width=90;
-                wheelP.height=90;
-                graderP.width=90;
-                graderP.height=90;
-                dozerP.width=110;
-                dozerP.height=110;
+                excaP.width = small;
+                excaP.height = small;
+                wheelP.width=small;
+                wheelP.height=small;
+                graderP.width=small;
+                graderP.height=small;
+                dozerP.width=bigg;
+                dozerP.height=bigg;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
@@ -518,14 +526,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 break;
             case 4:
-                excaP.width = 90;
-                excaP.height = 90;
-                wheelP.width=90;
-                wheelP.height=90;
-                graderP.width=110;
-                graderP.height=110;
-                dozerP.width=90;
-                dozerP.height=90;
+                excaP.width = small;
+                excaP.height = small;
+                wheelP.width=small;
+                wheelP.height=small;
+                graderP.width=bigg;
+                graderP.height=bigg;
+                dozerP.width=small;
+                dozerP.height=small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);

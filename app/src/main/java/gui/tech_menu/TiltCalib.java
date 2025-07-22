@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,9 +29,9 @@ import utils.MyData;
 import utils.Utils;
 
 public class TiltCalib extends AppCompatActivity {
-    Button save, exit;
+    ImageView save, exit;
 
-    Button bucket1, bucket2, bucket3, bucket4, bucket5, bucket6, bucket7, bucket8, bucket9, bucket10;
+   ImageView bennaMeno,bennaPiu,bennaSelezionata;
 
     EditText tiltLength;
 
@@ -54,13 +55,8 @@ public class TiltCalib extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.BRAND.equals("SRT8PROS")) {
-            setContentView(R.layout.activity_tilt_config);
-        } else if (Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
-            setContentView(R.layout.activity_tilt_config_7);
-        } else {
-            setContentView(R.layout.activity_tilt_config_7);
-        }
+        setContentView(R.layout.activity_tilt_config_7);
+
 
         findView();
         init();
@@ -74,16 +70,9 @@ public class TiltCalib extends AppCompatActivity {
     private void findView() {
         save = findViewById(R.id.save);
         exit = findViewById(R.id.exit);
-        bucket1 = findViewById(R.id.bucket1);
-        bucket2 = findViewById(R.id.bucket2);
-        bucket3 = findViewById(R.id.bucket3);
-        bucket4 = findViewById(R.id.bucket4);
-        bucket5 = findViewById(R.id.bucket5);
-        bucket6 = findViewById(R.id.bucket6);
-        bucket7 = findViewById(R.id.bucket7);
-        bucket8 = findViewById(R.id.bucket8);
-        bucket9 = findViewById(R.id.bucket9);
-        bucket10 = findViewById(R.id.bucket10);
+        bennaMeno=findViewById(R.id.bennaMeno);
+        bennaPiu=findViewById(R.id.bennaPiu);
+        bennaSelezionata=findViewById(R.id.bennaSelezionata);
         tiltLength = findViewById(R.id.tiltLength);
         tiltLT = findViewById(R.id.tiltLT);
         cbxOff = findViewById(R.id.cbxOff);
@@ -104,8 +93,9 @@ public class TiltCalib extends AppCompatActivity {
 
         try {
             cbxInvTR.setChecked(DataSaved.reverseRotator == 1);
+            currentBucket = MyData.get_Int("BucketSelected");
         } catch (Exception e) {
-
+            currentBucket = 1;
         }
 
 
@@ -139,17 +129,151 @@ public class TiltCalib extends AppCompatActivity {
     @SuppressLint("DefaultLocale")
     public void updateUI() {
 
+        switch (currentBucket){
+            case 1:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_1));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota1));
+                }
+                break;
+            case 2:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_2));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota2));
+                }
+                break;
+            case 3:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_3));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota3));
+                }
+                break;
+            case 4:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_4));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota4));
+                }
+                break;
+            case 5:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_5));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota5));
+                }
+                break;
+            case 6:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_6));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota6));
+                }
+                break;
+            case 7:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_7));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota7));
+                }
+                break;
+            case 8:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_8));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota8));
+                }
+                break;
+            case 9:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_9));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota9));
+                }
+                break;
+            case 10:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_10));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota10));
+                }
+                break;
+            case 11:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_11));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota11));
+                }
+                break;
+            case 12:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_12));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota12));
+                }
+                break;
+            case 13:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_13));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota13));
+                }
+                break;
+            case 14:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_14));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota14));
+                }
+                break;
+            case 15:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_15));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota15));
+                }
+                break;
+            case 16:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_16));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota16));
+                }
+                break;
+            case 17:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_17));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota17));
+                }
+                break;
+            case 18:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_18));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota18));
+                }
+                break;
+            case 19:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_19));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota19));
+                }
+                break;
+            case 20:
+                if(DataSaved.lrTilt!=0){
+                    bennaSelezionata.setImageResource((R.drawable.benna_tilt_20));
+                }else {
+                    bennaSelezionata.setImageResource((R.drawable.benna_vuota20));
+                }
+                break;
 
-        bucket1.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 1 ? R.color.blue : R.color.dark_gray));
-        bucket2.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 2 ? R.color.blue : R.color.dark_gray));
-        bucket3.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 3 ? R.color.blue : R.color.dark_gray));
-        bucket4.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 4 ? R.color.blue : R.color.dark_gray));
-        bucket5.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 5 ? R.color.blue : R.color.dark_gray));
-        bucket6.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 6 ? R.color.blue : R.color.dark_gray));
-        bucket7.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 7 ? R.color.blue : R.color.dark_gray));
-        bucket8.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 8 ? R.color.blue : R.color.dark_gray));
-        bucket9.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 9 ? R.color.blue : R.color.dark_gray));
-        bucket10.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), currentBucket == 10 ? R.color.blue : R.color.dark_gray));
+        }
+
+
         angleTv.setText(String.format("%.02f", ExcavatorLib.correctDeltaAngle).replace(",", "."));
         offsetTv.setText(String.format("%.02f", DataSaved.offsetTiltDeltaAngle).replace(",", "."));
         angleTV_2.setText(String.format("%.02f", Sensors_Decoder.Deg_Benna_W_Tilt).replace(",", ".") + " " + String.format("%.02f", Sensors_Decoder.Deg_tilt).replace(",", "."));
@@ -168,6 +292,22 @@ public class TiltCalib extends AppCompatActivity {
 
 
     private void onClick() {
+        bennaPiu.setOnClickListener(view -> {
+            currentBucket+=1;
+            if(currentBucket>=20){
+                currentBucket=20;
+            }
+            MyData.push("BucketSelected", String.valueOf(currentBucket));
+            updateValues();
+        });
+        bennaMeno.setOnClickListener(view -> {
+            currentBucket-=1;
+            if(currentBucket<=1){
+                currentBucket=1;
+            }
+            MyData.push("BucketSelected", String.valueOf(currentBucket));
+            updateValues();
+        });
         exit.setOnClickListener((View v) -> {
             exit.setEnabled(false);
             save.setEnabled(false);
@@ -212,55 +352,7 @@ public class TiltCalib extends AppCompatActivity {
             DataSaved.offsetTiltDeltaAngle += 0.1;
         });
 
-        bucket1.setOnClickListener((View v) -> {
-            currentBucket = 1;
-            updateValues();
-        });
 
-        bucket2.setOnClickListener((View v) -> {
-            currentBucket = 2;
-            updateValues();
-        });
-
-        bucket3.setOnClickListener((View v) -> {
-            currentBucket = 3;
-            updateValues();
-        });
-
-        bucket4.setOnClickListener((View v) -> {
-            currentBucket = 4;
-            updateValues();
-        });
-
-        bucket5.setOnClickListener((View v) -> {
-            currentBucket = 5;
-            updateValues();
-        });
-
-        bucket6.setOnClickListener((View v) -> {
-            currentBucket = 6;
-            updateValues();
-        });
-
-        bucket7.setOnClickListener((View v) -> {
-            currentBucket = 7;
-            updateValues();
-        });
-
-        bucket8.setOnClickListener((View v) -> {
-            currentBucket = 8;
-            updateValues();
-        });
-
-        bucket9.setOnClickListener((View v) -> {
-            currentBucket = 9;
-            updateValues();
-        });
-
-        bucket10.setOnClickListener((View v) -> {
-            currentBucket = 10;
-            updateValues();
-        });
 
         tiltLength.setOnClickListener((View v) -> {
             if (indexMeasure == 4 || indexMeasure == 5) {

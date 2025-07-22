@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -30,7 +31,8 @@ import utils.MyData;
 import utils.Utils;
 
 public class Tilt_Blade extends AppCompatActivity {
-    Button save,cancex,setPitch,setRoll;
+    Button setPitch,setRoll;
+    ImageView save,cancex;
     int indexMachineSelected, bucketMountPos;
     CheckBox off,fw,bw,vert_up,vert_dw;
     CustomNumberDialog numberDialog;
