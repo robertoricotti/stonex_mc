@@ -144,7 +144,7 @@ public class ExUserSettings extends BaseClass {
         indexTypeViewSelected = MyData.get_Int("indexView");
         indexUnitOfMeasureSelected = MyData.get_Int("Unit_Of_Measure");
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        indexBucketSelected = MyData.get_Int("BucketSelected");
+        indexBucketSelected = MyData.get_Int("M"+indexMachineSelected+"BucketSelected");
         intLang = MyData.get_String("language");
         setDeadbandH.setText("+/- " + Utils.readUnitOfMeasureLITE(MyData.get_String("Deadband_H")));
         setDeadbandFlatAngle.setText("+/- " + Utils.readAngolo(MyData.get_String("Deadband_FlatAngle") ) + " " + Utils.getGradiSimbol());

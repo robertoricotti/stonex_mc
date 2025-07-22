@@ -144,7 +144,7 @@ public class Digging1D extends BaseClass {
         heightPivot = MyData.get_String("Pivot_Height_Alarm").replace(",", ".");
 
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        indexBucketSelected = MyData.get_Int("BucketSelected");
+        indexBucketSelected = MyData.get_Int("M"+indexMachineSelected+"BucketSelected");
 
         draw1D = new Draw1D(this);
 

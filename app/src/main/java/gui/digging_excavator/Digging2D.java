@@ -174,7 +174,7 @@ public class Digging2D extends BaseClass {
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         heightPivot = MyData.get_String("Pivot_Height_Alarm").replace(",", ".");
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        indexBucketSelected = MyData.get_Int("BucketSelected");
+        indexBucketSelected = MyData.get_Int("M"+indexMachineSelected+"BucketSelected");
         if (DataSaved.lrTilt != 0) {
             layer1_tilt = new Draw2D_Layer1_Tilt(this);
             layer2_tilt = new Draw2D_Layer2_Tilt(this);

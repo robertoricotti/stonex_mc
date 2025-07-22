@@ -91,18 +91,18 @@ public class TiltCalib extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void init() {
 
-        try {
-            cbxInvTR.setChecked(DataSaved.reverseRotator == 1);
-            currentBucket = MyData.get_Int("BucketSelected");
-        } catch (Exception e) {
-            currentBucket = 1;
-        }
+
 
 
         indexMachineSelected = MyData.get_Int("MachineSelected");
 
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
-
+        try {
+            cbxInvTR.setChecked(DataSaved.reverseRotator == 1);
+            currentBucket = MyData.get_Int("M" + indexMachineSelected+"BucketSelected");
+        } catch (Exception e) {
+            currentBucket = 1;
+        }
         if (indexMeasure == 4 || indexMeasure == 5) {
             numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
         } else {
@@ -297,7 +297,7 @@ public class TiltCalib extends AppCompatActivity {
             if(currentBucket>=20){
                 currentBucket=20;
             }
-            MyData.push("BucketSelected", String.valueOf(currentBucket));
+            MyData.push("M"+indexMachineSelected+"BucketSelected", String.valueOf(currentBucket));
             updateValues();
         });
         bennaMeno.setOnClickListener(view -> {
@@ -305,7 +305,7 @@ public class TiltCalib extends AppCompatActivity {
             if(currentBucket<=1){
                 currentBucket=1;
             }
-            MyData.push("BucketSelected", String.valueOf(currentBucket));
+            MyData.push("M"+indexMachineSelected+"BucketSelected", String.valueOf(currentBucket));
             updateValues();
         });
         exit.setOnClickListener((View v) -> {

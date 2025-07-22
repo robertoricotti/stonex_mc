@@ -35,7 +35,7 @@ public class UpdateValuesService extends Service {
     long startTime, stopTime;
     public static boolean startedService;
     public static boolean isUpodating;
-
+    static int indexBucket = 0;
     public static boolean firstLaunch;
     private Executor mExecutor;
     private static final int THREAD_POOL_SIZE = 1;
@@ -95,21 +95,22 @@ public class UpdateValuesService extends Service {
                     indexMach = 1;
                 }
 
-                String b = MyData.get_String("BucketSelected");
-                if (b == null) {
-                    MyData.push("BucketSelected", "1");
-                    b = "1";
-                }
-                int indexBucket = 0;
-                try {
-                    indexBucket = Integer.parseInt(b);
 
-                } catch (NumberFormatException e) {
-                    indexBucket = 1;
-                }
 
 
                 for (int i = 1; i <= 4; i++) {
+                    String b = MyData.get_String("M" + i +"BucketSelected");
+                    if (b == null) {
+                        MyData.push("M" + i +"BucketSelected", "1");
+                        b = "1";
+                    }
+
+                    try {
+                        indexBucket = Integer.parseInt(b);
+
+                    } catch (NumberFormatException e) {
+                        indexBucket = 1;
+                    }
                     String nameM = MyData.get_String("M" + i + "_Name");
                     String reverseRoto = MyData.get_String("M" + i + "revTiltRot");
                     String lengthBoom1 = MyData.get_String("M" + i + "_LengthBoom1");

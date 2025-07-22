@@ -206,7 +206,7 @@ public class Digging3D_DXF extends BaseClass {
         txcutfill = findViewById(R.id.txtcutfill3d);
         lucchetto = findViewById(R.id.lucchetto);
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        indexBucketSelected = MyData.get_Int("BucketSelected");
+        indexBucketSelected = MyData.get_Int("M"+indexMachineSelected+"BucketSelected");
         layer1Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer1_Tilt(this) : new DrawDXF_Layer1(this);
         layer2Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer2_Tilt(this) : new DrawDXF_Layer2(this);
 

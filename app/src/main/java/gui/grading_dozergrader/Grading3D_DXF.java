@@ -194,7 +194,7 @@ public class Grading3D_DXF extends BaseClass {
         lucchetto = findViewById(R.id.lucchetto);
         hydro_set = findViewById(R.id.hydro_setup);
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        indexBucketSelected = MyData.get_Int("BucketSelected");
+        indexBucketSelected = MyData.get_Int("M"+indexMachineSelected+"BucketSelected");
         layer2Canvas = new Grade_DrawDXF_Layer2(this);
         topViewCanvas = new Grade_Top_View_DXF(this);
         autoL = findViewById(R.id.auto_l);

@@ -121,7 +121,7 @@ public class Digging_CutAndFill2D extends BaseClass {
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         heightPivot = MyData.get_String("Pivot_Height_Alarm").replace(",", ".");
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        indexBucketSelected = MyData.get_Int("BucketSelected");
+        indexBucketSelected = MyData.get_Int("M"+indexMachineSelected+"BucketSelected");
         flatAngleBar = new FlatAngleBar(this);
         centerLed.addView(flatAngleBar);
         switch (DataSaved.bucketEdge) {

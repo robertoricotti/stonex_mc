@@ -137,9 +137,8 @@ BucketChooserActivity extends BaseClass {
         progressBar.setVisibility(View.INVISIBLE);
 
         unitOfMeasure= MyData.get_Int("Unit_Of_Measure");
-        indexBucketSelected = MyData.get_Int("BucketSelected");
         indexMachineSelected = MyData.get_Int("MachineSelected");
-
+        indexBucketSelected = MyData.get_Int("M" + indexMachineSelected +"BucketSelected");
         bucketName1.setText(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + 1 + "_Name"));
         bucketName2.setText(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + 2 + "_Name"));
         bucketName3.setText(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + 3 + "_Name"));
@@ -991,7 +990,7 @@ BucketChooserActivity extends BaseClass {
 
     private void onLongClick() {
         bucket1.setOnLongClickListener((View v) -> {
-            MyData.push("BucketSelected", "1");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "1");
             indexBucketSelected = 1;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -999,14 +998,14 @@ BucketChooserActivity extends BaseClass {
 
         bucket2.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "2");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "2");
             indexBucketSelected = 2;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
         });
 
         bucket3.setOnLongClickListener((View v) -> {
-            MyData.push("BucketSelected", "3");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "3");
             indexBucketSelected = 3;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1014,7 +1013,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket4.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "4");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "4");
             indexBucketSelected = 4;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1022,7 +1021,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket5.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "5");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "5");
             indexBucketSelected = 5;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1030,7 +1029,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket6.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "6");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "6");
             indexBucketSelected = 6;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1038,7 +1037,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket7.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "7");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "7");
             indexBucketSelected = 7;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1046,7 +1045,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket8.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "8");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "8");
             indexBucketSelected = 8;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1054,7 +1053,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket9.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "9");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "9");
             indexBucketSelected = 9;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1062,7 +1061,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket10.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "10");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "10");
             indexBucketSelected = 10;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1072,7 +1071,7 @@ BucketChooserActivity extends BaseClass {
 
 
         bucket11.setOnLongClickListener((View v) -> {
-            MyData.push("BucketSelected", "11");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "11");
             indexBucketSelected = 11;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1080,14 +1079,14 @@ BucketChooserActivity extends BaseClass {
 
         bucket12.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "12");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "12");
             indexBucketSelected = 12;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
         });
 
         bucket13.setOnLongClickListener((View v) -> {
-            MyData.push("BucketSelected", "13");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "13");
             indexBucketSelected = 13;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1095,7 +1094,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket14.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "14");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "14");
             indexBucketSelected = 14;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1103,7 +1102,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket15.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "15");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "15");
             indexBucketSelected =15;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1111,7 +1110,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket16.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "16");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "16");
             indexBucketSelected = 16;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1119,7 +1118,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket17.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "17");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "17");
             indexBucketSelected = 17;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1127,7 +1126,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket18.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "18");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "18");
             indexBucketSelected = 18;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1135,7 +1134,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket19.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "19");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "19");
             indexBucketSelected = 19;
             startService(new Intent(this, UpdateValuesService.class));
             return true;
@@ -1143,7 +1142,7 @@ BucketChooserActivity extends BaseClass {
 
         bucket20.setOnLongClickListener((View v) -> {
 
-            MyData.push("BucketSelected", "20");
+            MyData.push("M"+indexMachineSelected+"BucketSelected", "20");
             indexBucketSelected = 20;
             startService(new Intent(this, UpdateValuesService.class));
             return true;

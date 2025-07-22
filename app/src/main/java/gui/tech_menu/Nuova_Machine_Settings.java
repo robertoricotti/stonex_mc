@@ -56,7 +56,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibrazione_macchine);
         if(Build.BRAND.equals("APOLLO2_7")){
-            bigg=90;
+            bigg=80;
             small=70;
         }else {
             bigg=110;

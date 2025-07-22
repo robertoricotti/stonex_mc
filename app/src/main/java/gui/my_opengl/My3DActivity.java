@@ -174,7 +174,7 @@ public class My3DActivity extends BaseClass {
         indexMachineSelected = MyData.get_Int("MachineSelected");
         if(DataSaved.isWL==0) {
             try {
-                indexBucketSelected = MyData.get_Int("BucketSelected");
+                indexBucketSelected = MyData.get_Int("M" + indexMachineSelected +"BucketSelected");
                 bucketName = MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucketSelected + "_Name").toUpperCase();
 
             } catch (Exception e) {

@@ -118,7 +118,7 @@ public class DiggingProfile extends BaseClass {
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         heightPivot = MyData.get_String("Pivot_Height_Alarm").replace(",", ".");
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        indexBucketSelected = MyData.get_Int("BucketSelected");
+        indexBucketSelected = MyData.get_Int("M"+indexMachineSelected+"BucketSelected");
         indexProfileSelected = MyData.get_Int("ProfileSelected");
         indexOPSelected = MyData.get_Int("Profile" + indexProfileSelected + "_OP");
 
