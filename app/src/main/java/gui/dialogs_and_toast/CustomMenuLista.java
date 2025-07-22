@@ -2,6 +2,7 @@ package gui.dialogs_and_toast;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.view.Gravity;
@@ -35,7 +36,7 @@ public class CustomMenuLista {
     public CustomMenuLista(Activity activity, String titolo) {
         this.activity = activity;
         this.titolo=titolo;
-        alertDialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        alertDialog = new Dialog(activity);
         listAdapter = new ArrayAdapter<>(activity, R.layout.simple_list_item);
 
     }
@@ -43,9 +44,7 @@ public class CustomMenuLista {
         alertDialog.create();
         alertDialog.setContentView(R.layout.layout_custom_menu_lista);
         Window window = alertDialog.getWindow();
-        if (window != null) {
-            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
-        }
+
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         if(Build.BRAND.equals("SRT8PROS")){

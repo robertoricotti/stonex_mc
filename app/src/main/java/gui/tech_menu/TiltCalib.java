@@ -3,9 +3,12 @@ package gui.tech_menu;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -37,7 +40,7 @@ public class TiltCalib extends AppCompatActivity {
 
     Button minus, plus, set;
 
-    TextView angleTv, offsetTv, tiltLT, angleTV_2;
+    TextView angleTv, offsetTv, tiltLT, angleTV_2,titolo;
 
     CheckBox cbxOff, cbxLeft, cbxRight, cbxInvTR;
 
@@ -56,8 +59,6 @@ public class TiltCalib extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tilt_config_7);
-
-
         findView();
         init();
         updateUI();
@@ -68,6 +69,7 @@ public class TiltCalib extends AppCompatActivity {
     }
 
     private void findView() {
+        titolo=findViewById(R.id.titolo);
         save = findViewById(R.id.save);
         exit = findViewById(R.id.exit);
         bennaMeno=findViewById(R.id.bennaMeno);
@@ -273,7 +275,7 @@ public class TiltCalib extends AppCompatActivity {
 
         }
 
-
+titolo.setText(getString(R.string.tilt_calibration)+" n:"+currentBucket);
         angleTv.setText(String.format("%.02f", ExcavatorLib.correctDeltaAngle).replace(",", "."));
         offsetTv.setText(String.format("%.02f", DataSaved.offsetTiltDeltaAngle).replace(",", "."));
         angleTV_2.setText(String.format("%.02f", Sensors_Decoder.Deg_Benna_W_Tilt).replace(",", ".") + " " + String.format("%.02f", Sensors_Decoder.Deg_tilt).replace(",", "."));
