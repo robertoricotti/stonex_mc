@@ -125,7 +125,7 @@
 
     <string name="quick">ΓΡΗΓΟΡΟΣ\n ΣΥΝΔΕΣΜΟΣ</string>
     <string name="mostraUtils">Εμφάνιση αντικειμένων 2D</string>
-    <string name="machines_setup">ΡΥΘΜΙΣΕΙΣ ΜΗΧΑΝΗΣ</string>
+    <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
     <string name="usb_file_tr">ΜΕΤΑΦΟΡΑ ΑΡΧΕΙΟΥ USB</string>
     <string name="cloud_file_tr">ΜΕΤΑΦΟΡΑ ΑΡΧΕΙΟΥ CLOUD</string>

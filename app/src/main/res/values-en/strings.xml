@@ -128,7 +128,7 @@
     <string name="quick">QUICK\n COUPLER</string>
     <string name="mostraUtils">Show 2D Objects</string>
     <string name="selectafile">SELECT A FILE!</string>
-    <string name="machines_setup">MACHINE SETTINGS</string>
+    <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
     <string name="trincea">TRENCH\nDRAINAGE</string>
     <string name="dtm">TERRAIN MODEL</string>

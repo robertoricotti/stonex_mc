@@ -5,7 +5,7 @@
     <string name="save">OPSLAAN</string>
     <string name="exit">AFSLUITEN</string>
     <string name="machines">MACHINES</string>
-    <string name="machines_setup">MACHINE-INSTELLINGEN</string>
+    <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
     <string name="profiles">PROFIELEN</string>
     <string name="buckets">SELECTEER EEN BAK</string>

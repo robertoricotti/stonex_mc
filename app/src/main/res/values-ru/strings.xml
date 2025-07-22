@@ -125,7 +125,7 @@
     <string name="quick">БЫСТРАЯ\nМУФТА</string>
     <string name="mostraUtils">" Показать 2D-объекты"</string>
     <string name="selectafile">"ВЫБЕРИТЕ ФАЙЛ! "</string>
-    <string name="machines_setup">НАСТРОЙКИ МАШИНЫ</string>
+    <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">" ОТЛАДКА CAN"</string>
     <string name="trincea">ТРАНШЕЯ\nДРЕНАЖ</string>
     <string name="dtm">МОДЕЛЬ МЕСТНОСТИ</string>

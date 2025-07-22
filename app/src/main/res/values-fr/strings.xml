@@ -126,7 +126,7 @@
     <string name="quick">COUPLEUR\nRAPIDE</string>
     <string name="mostraUtils">"Afficher les objets 2D "</string>
     <string name="selectafile">SÉLECTIONNEZ UN FICHIER!</string>
-    <string name="machines_setup">PARAM DE LA MACHINE</string>
+    <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
     <string name="trincea">TRANCHÉE\nDRAINAGE</string>
     <string name="dtm">MODÈLE DE TERRAIN</string>

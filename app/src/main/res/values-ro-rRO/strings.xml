@@ -125,7 +125,7 @@
     <string name="yaw_drift_compensation">COMPENSAREA DRIFT</string>
     <string name="quick">CUPLIER\nRAPID</string>
     <string name="mostraUtils">"Afișați obiecte 2D "</string>
-    <string name="machines_setup">MAŠINAQE ĆAĆIPEN</string>
+    <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
     <string name="usb_file_tr">TRANSFER DE FIȘIERE\nUSB</string>
     <string name="cloud_file_tr">TRANSFER DE FIȘIERE\nCLOUD</string>

@@ -231,10 +231,11 @@
 
         <ImageView
             android:id="@+id/bennaMeno"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
             android:rotation="180"
             android:src="@drawable/btn_fwd"
+            android:layout_weight="0.5"
             app:tint="@color/_____cancel_text" />
 
         <ImageView
@@ -246,9 +247,10 @@
 
         <ImageView
             android:id="@+id/bennaPiu"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
             android:src="@drawable/btn_fwd"
+            android:layout_weight="0.5"
             app:tint="@color/_____cancel_text" />
 
 

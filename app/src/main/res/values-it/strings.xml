@@ -130,7 +130,7 @@
     <string name="quick">ATTACCO\nRAPIDO</string>
     <string name="mostraUtils">"Mostra oggetti 2D "</string>
     <string name="selectafile">SELEZIONA UN FILE!</string>
-    <string name="machines_setup">PARAMETRI MACCHINA</string>
+    <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
     <string name="trincea">TRINCEA\nDRENAGGIO</string>
     <string name="dtm">MODELLO DEL TERRENO</string>

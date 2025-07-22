@@ -14,13 +14,13 @@ import android.widget.TextView;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.CustomToast;
 import gui.projects.Dialog_PRJ_Folder;
 import gui.digging_excavator.Digging1D;
 import gui.digging_excavator.Digging2D;
 import gui.digging_excavator.DiggingProfile;
-import gui.boot_and_choose.ExcavatorMenuActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Sensors_Decoder;
 import services.ReadProjectService;
@@ -360,8 +360,7 @@ public class ExUserSettings extends BaseClass {
         back.setOnClickListener((View v) -> {
             disableAll();
             startService(new Intent(this, UpdateValuesService.class));
-            startActivity(new Intent(this, ExcavatorMenuActivity.class));
-            overridePendingTransition(0, 0);
+            startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
         });
         laserOnOff.setOnClickListener(view -> {

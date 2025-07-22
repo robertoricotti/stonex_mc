@@ -126,7 +126,7 @@
     <string name="quick">快速接头</string>
     <string name="mostraUtils">" 显示 2D 对象"</string>
     <string name="selectafile">选择一个文件！</string>
-    <string name="machines_setup">" 机器设置"</string>
+    <string name="machines_setup">机器设置</string>
     <string name="com_debug">通讯调试</string>
     <string name="trincea">沟渠 - 排水</string>
     <string name="dtm">地形模型</string>

@@ -20,6 +20,7 @@ import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
+import gui.debug_ecu.Can_Msg_Debug;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
@@ -273,9 +274,11 @@ public class ExcavatorChooserActivity extends BaseClass {
             }
         });
         btn_3.setOnClickListener(view -> {
-            if (!dialogInfoApp.dialog.isShowing()) {
-                dialogInfoApp.show();
-            }
+            disableAll();
+            Intent intent = new Intent(this, Can_Msg_Debug.class);
+            intent.putExtra("chi","menu");
+            startActivity(intent);
+            finish();
         });
         lockUnlock.setOnClickListener(view -> {
             if (!isTech) {

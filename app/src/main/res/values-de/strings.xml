@@ -124,7 +124,7 @@
     <string name="quick">SCHNELLWECHSLER</string>
     <string name="mostraUtils">"2D-Objekte anzeigen "</string>
     <string name="selectafile">WÄHLEN SIE EINE DATEI!</string>
-    <string name="machines_setup">MASCHINENEINSTELLUNGEN</string>
+    <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
     <string name="trincea">GRABEN\nENTWÄSSERUNG</string>
     <string name="dtm">GELÄNDEMODELL</string>

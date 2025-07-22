@@ -121,7 +121,7 @@
     <string name="quick">퀵 커플러</string>
     <string name="mostraUtils">" 2D 개체 표시"</string>
     <string name="selectafile">" 파일을 선택하세요!"</string>
-    <string name="machines_setup">" 기계 설정"</string>
+    <string name="machines_setup">기계 설정</string>
     <string name="com_debug">CAN 디버그</string>
     <string name="trincea">트렌치 - 배수</string>
     <string name="dtm">지형 모델</string>

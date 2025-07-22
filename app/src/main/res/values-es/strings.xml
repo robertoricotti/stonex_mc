@@ -129,7 +129,7 @@
     <string name="quick">ACOPLADOR\nRÁPIDO</string>
     <string name="mostraUtils">"Mostrar objetos 2D "</string>
     <string name="selectafile">SELECCIONE UN ARCHIVO!</string>
-    <string name="machines_setup">" AJUSTES DE LA MÁQUINA"</string>
+    <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
     <string name="trincea">ZANJA\nDRENAJE</string>
     <string name="dtm">MODELO DE TERRENO</string>

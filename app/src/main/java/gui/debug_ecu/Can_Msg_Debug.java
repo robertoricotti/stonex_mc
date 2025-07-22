@@ -15,7 +15,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import event_bus.CanEvents;
 import drill_pile.gui.Drill_MainPage;
@@ -66,12 +70,12 @@ public class Can_Msg_Debug extends AppCompatActivity {
                 case "drill_main":
                     startActivity(new Intent(this,Drill_MainPage.class));
                     break;
+                case "menu":
+                    startActivity(new Intent(this, ExcavatorChooserActivity.class));
+                    break;
                 default:
-                    if(DataSaved.isWL<2) {
-                        startActivity(new Intent(this, DebugExcavatorActivity.class));
-                    }else {
-                        startActivity(new Intent(this, ExcavatorChooserActivity.class));
-                    }
+                    startActivity(new Intent(this, ExcavatorChooserActivity.class));
+
                     break;
             }
 
@@ -97,25 +101,28 @@ public class Can_Msg_Debug extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     public void CanEvents(CanEvents canEvents) {
-
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss.SS", Locale.getDefault());
+        String currentTimeString = timeFormat.format(new Date());
         if (b_playC) {
 
             if(extended.isChecked()) {
                 if(canEvents.id>2047||canEvents.id<0) {
 
-                    itemListC.add("CAN_"+canEvents.channel+"    "+canEvents.candata);
+                    itemListC.add(currentTimeString+"  CAN_"+canEvents.channel+"    "+canEvents.candata);
                     adapterC.notifyDataSetChanged();
-                    listViewC.smoothScrollToPositionFromTop(0, itemListC.size() - 1);
-                    if (adapterC.getCount() > 100) {
+                    listViewC.smoothScrollToPosition(itemListC.size() - 1);
+                    listViewC.setSelection(itemListC.size() - 1);
+                    if (adapterC.getCount() > 500) {
                         clearListC();
                     }
                 }
             }else {
                 if(canEvents.id<=2047) {
-                    itemListC.add("CAN_"+canEvents.channel+"    "+canEvents.candata);
+                    itemListC.add(currentTimeString+"  CAN_"+canEvents.channel+"    "+canEvents.candata);
                     adapterC.notifyDataSetChanged();
-                    listViewC.smoothScrollToPositionFromTop(0, itemListC.size() - 1);
-                    if (adapterC.getCount() > 100) {
+                    listViewC.smoothScrollToPosition(itemListC.size() - 1);
+                    listViewC.setSelection(itemListC.size() - 1);
+                    if (adapterC.getCount() > 500) {
                         clearListC();
                     }
                 }

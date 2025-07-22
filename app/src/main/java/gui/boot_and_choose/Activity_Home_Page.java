@@ -28,6 +28,7 @@ import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_Create_New_Prj;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
+import gui.dialogs_user_settings.ExUserSettings;
 import gui.projects.PickProject;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
@@ -202,6 +203,11 @@ public class Activity_Home_Page extends AppCompatActivity {
                 startService(new Intent(this, ReadProjectService.class));
             }
 
+        });
+        toUser.setOnClickListener(view -> {
+            enableAll(false);
+            startActivity(new Intent(this, ExUserSettings.class));
+            finish();
         });
     }
 

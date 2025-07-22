@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_gray">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topla"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.09" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/centa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.49" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/botla"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.89" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/topla"
+        app:layout_constraintBottom_toBottomOf="@id/botla"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@color/light_gray"
+                    android:src="@drawable/baseline_flag_24"
+                    android:layout_weight="0.1"
+                    />
+                <TextView
+                    android:id="@+id/tvLocale"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:background="@color/light_gray"
+                    android:text="LOCALE"
+                    android:paddingHorizontal="20dp"
+                    android:textStyle="bold|italic"
+                    android:gravity="center|left"
+                    />
+                <ImageView
+                    android:id="@+id/imgLocale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:src="@drawable/btn_ita"
+                    android:background="@color/light_gray"
+                    android:layout_weight="1"
+                    android:padding="10dp"/>
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@color/light_gray"
+                    android:src="@drawable/tolleranza_metri_"
+                    android:layout_weight="0.1"
+                    />
+                <TextView
+                    android:id="@+id/tvVert"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:background="@color/light_gray"
+                    android:text="@string/height_deadband"
+                    android:paddingHorizontal="20dp"
+                    android:textStyle="bold|italic"
+                    android:gravity="center|left"
+                    />
+                <TextView
+                    android:id="@+id/tvVertValue"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:background="@color/light_gray"
+                    android:text="+/- 0.02 [m]"
+                    android:paddingHorizontal="20dp"
+                    android:textStyle="bold|italic"
+                    android:gravity="center|left"
+                    />
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@color/light_gray"
+                    android:src="@drawable/tolleranza_angolo"
+                    android:layout_weight="0.1"
+                    />
+                <TextView
+                    android:id="@+id/tvAng"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:background="@color/light_gray"
+                    android:text="@string/flat_angle_deadband"
+                    android:paddingHorizontal="20dp"
+                    android:textStyle="bold|italic"
+                    android:gravity="center|left"
+                    />
+                <TextView
+                    android:id="@+id/tvAngValue"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:background="@color/light_gray"
+                    android:text="+/- 5.00°"
+                    android:paddingHorizontal="20dp"
+                    android:textStyle="bold|italic"
+                    android:gravity="center|left"
+                    />
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"
+                />
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/topla"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/img00"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/baseline_live_help_96"
+            app:tint="@color/white" />
+        <TextView
+            android:id="@+id/txtProject"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="italic" />
+        <ImageView
+            android:id="@+id/img01"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/wifi_vuoto"
+            app:tint="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lowerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:background="@drawable/custom_background_test3d_box"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/botla">
+
+        <ImageView
+            android:id="@+id/btn_1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:tint="@color/white"
+            android:rotation="180"
+            app:srcCompat="@drawable/menu_btn" />
+
+        <ImageView
+            android:id="@+id/imgMove"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="4"
+            android:padding="15dp"
+            android:scaleType="centerInside" />
+        <ImageView
+            android:id="@+id/deleteFile"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/delete_raw"
+            android:layout_weight="1"
+            android:padding="10dp"
+            app:tint="@color/white"
+            android:scaleType="centerInside"
+            android:visibility="invisible"
+
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="4"
+            android:padding="15dp"
+            android:scaleType="centerInside" />
+        <ImageView
+            android:id="@+id/btn_3"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/info_96"
+            android:layout_weight="1"
+            android:padding="10dp"
+            app:tint="@color/white"
+            android:scaleType="centerInside"
+            />
+        <ImageView
+            android:id="@+id/btn_2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/teck_lock"
+            app:tint="@color/white"
+            />
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
