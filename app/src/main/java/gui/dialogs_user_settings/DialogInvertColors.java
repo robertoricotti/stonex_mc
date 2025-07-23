@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.stx_dig.R;
@@ -18,7 +19,7 @@ public class DialogInvertColors {
     public Dialog dialog;
     public Activity activity;
 
-    Button save, exit;
+    ImageView save, exit;
     LinearLayout def,opt;
 
     public DialogInvertColors(Activity activity) {

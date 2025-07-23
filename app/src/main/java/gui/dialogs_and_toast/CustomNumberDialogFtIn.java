@@ -101,7 +101,7 @@ public class CustomNumberDialogFtIn {
         c = true;
         value_ft.setBackgroundColor(ContextCompat.getColor(activity, R.color.light_yellow));
         value_in.setBackgroundColor(Color.TRANSPARENT);
-        String depth = realValue.getText().toString();
+        String depth = realValue.getText().toString().replace("+/-","").replace(Utils.getMetriSimbol(),"");
         if (depth.length() > 0) {
             value_ft.setText(depth.split("'")[0].trim());
             value_in.setText(depth.split("'")[1].trim());
@@ -417,8 +417,8 @@ public class CustomNumberDialogFtIn {
                     String mioValore = value_ft.getText().toString().trim() + "'" + value_in.getText().toString().trim() + " " + value_fraction.getText().toString().trim() + "\"".toString();
 
                     if(flag==0){
-
-                            MyData.push("Unit_Of_Measure", Utils.writeMetri(mioValore));
+                        Log.d("Puttanai",mioValore+"\n"+(realValue.getText().toString().replace("+/-","")));
+                        MyData.push("Deadband_H", Utils.writeMetri(mioValore));
                         realValue.setText(mioValore);
                         }else {
                             realValue.setText(mioValore);

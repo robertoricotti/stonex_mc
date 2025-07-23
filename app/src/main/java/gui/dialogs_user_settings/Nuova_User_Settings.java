@@ -1,7 +1,13 @@
 package gui.dialogs_user_settings;
 
+import static gui.MyApp.errorCode;
+import static gui.dialogs_and_toast.DialogPassword.isTech;
+
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,19 +18,24 @@ import com.example.stx_dig.R;
 
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
-import gui.dialogs_and_toast.CustomToast;
+import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.Sensors_Decoder;
 import services.UpdateValuesService;
 import utils.LanguageSetter;
 import utils.MyData;
 import utils.Utils;
+import utils.WifiHelper;
 
 public class Nuova_User_Settings extends AppCompatActivity {
 
     ImageView status, wifi, back, info, lock;
+    DialogHeightAlarm dialogHeightAlarm;
+    DialogPassword dialogPassword;
     CustomNumberDialogFtIn customNumberDialogFtIn;
+    DialogInvertColors dialogInvertColors;
     DialogDeadbandFlatAngle dialogDeadbandFlatAngle;
     DialogDeadbandH dialogDeadbandH;
     DialogLanguages dialogLanguages;
@@ -32,7 +43,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_InfoApp dialogInfoApp;
     DialogColors dialogColors;
-    TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue;
+    TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue,tvVert,tvAng;
     EditText tvVertValue;
     ImageView imgLocale, imgLse, imgCutFill;
     String intLang="";
@@ -54,6 +65,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
     }
 
     private void findView() {
+        dialogPassword=new DialogPassword(this);
+        dialogHeightAlarm=new DialogHeightAlarm(this);
+        dialogInvertColors=new DialogInvertColors(this);
         customNumberDialogFtIn=new CustomNumberDialogFtIn(this,0);
         dialogDeadbandFlatAngle=new DialogDeadbandFlatAngle(this);
         dialogDeadbandH =new DialogDeadbandH(this);
@@ -76,6 +90,8 @@ public class Nuova_User_Settings extends AppCompatActivity {
         imgLocale = findViewById(R.id.imgLocale);
         imgLse = findViewById(R.id.imgLse);
         imgCutFill = findViewById(R.id.imgCutFill);
+        tvVert=findViewById(R.id.tvVert);
+        tvAng=findViewById(R.id.tvAng);
 
     }
 
@@ -84,6 +100,34 @@ public class Nuova_User_Settings extends AppCompatActivity {
     }
 
     private void onClick() {
+        lock.setOnClickListener(view -> {
+            if (!isTech) {
+                if (!dialogPassword.dialog.isShowing()) {
+                    dialogPassword.show(-1);
+                }
+            }
+
+        });
+        tvHAlarmValue.setOnClickListener(view -> {
+            if (!dialogHeightAlarm.alertDialog.isShowing()) {
+                dialogHeightAlarm.show();
+            }
+        });
+        imgLse.setOnClickListener(view -> {
+            if (DataSaved.laserOn == 0) {
+                DataSaved.laserOn = 1;
+                MyData.push("laserOn", String.valueOf(DataSaved.laserOn));
+            } else if (DataSaved.laserOn == 1) {
+                DataSaved.monumentRelease = 0;
+                DataSaved.laserOn = 0;
+                MyData.push("laserOn", String.valueOf(DataSaved.laserOn));
+            }
+        });
+        imgCutFill.setOnClickListener(view -> {
+            if(!dialogInvertColors.dialog.isShowing()){
+                dialogInvertColors.show();
+            }
+        });
         tvAngValue.setOnClickListener(view -> {
             if(!dialogDeadbandFlatAngle.dialog.isShowing()){
                 dialogDeadbandFlatAngle.show();
@@ -91,7 +135,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
         });
         tvVertValue.setOnClickListener(view -> {
             if(MyData.get_String("Unit_Of_Measure").equals("4")||MyData.get_String("Unit_Of_Measure").equals("5")){
-               new CustomToast(this,"Change u-nit Of Measure to set Tolerance").show_error();
+                if(!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(tvVertValue);
+                }
             }else {
                 if (!dialogDeadbandH.dialog.isShowing()) {
                     dialogDeadbandH.show();
@@ -133,8 +179,48 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
     public void updateUI() {
         try {
-            tvAngValue.setText("+/- " + Utils.readAngolo(MyData.get_String("Deadband_FlatAngle") ) + " " + Utils.getGradiSimbol());
-            tvVertValue.setText("+/- " + Utils.readSensorCalibration(MyData.get_String("Deadband_H")));
+            if (isTech) {
+                lock.setImageResource(R.drawable.unlock);
+
+            } else {
+                lock.setImageResource(R.drawable.lock);
+            }
+            if (DataSaved.gpsOk && errorCode == 0) {
+                status.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+            } else {
+                status.setImageTintList(ColorStateList.valueOf(Color.RED));
+            }
+            String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
+            if (ssid != null) {
+
+                wifi.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+
+            } else {
+
+                wifi.setImageResource(R.drawable.wifi_vuoto);
+
+            }
+
+            if (MyData.get_Double("Pivot_Height_Alarm") == 10000000.0d) {
+                tvHAlarmValue.setText("OFF");
+            } else {
+                tvHAlarmValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(MyData.get_Double("Pivot_Height_Alarm"))));
+            }
+            switch (DataSaved.laserOn) {
+                case 0:
+                    imgLse.setImageResource(R.drawable.laser_off_btn);
+                    Sensors_Decoder.flagLaser = -100;
+                    Sensors_Decoder.flagLaserConnected = -100;
+                    break;
+                case 1:
+                    imgLse.setImageResource(R.drawable.laser_on_btn);
+                    break;
+
+            }
+            tvVert.setText(getString(R.string.height_deadband)+"  (+/-) ");
+            tvAng.setText(getString(R.string.flat_angle_deadband)+"  (+/-) ");
+            tvAngValue.setText(Utils.readAngolo(MyData.get_String("Deadband_FlatAngle") ) +  Utils.getGradiSimbol());
+            tvVertValue.setText(Utils.readSensorCalibration(MyData.get_String("Deadband_H"))+Utils.getMetriSimbol());
             tvBrightValue.setText(String.format("%.0f", DataSaved.myBrightness * 100) + "%");
             tvUomValue.setText(Utils.getMetriSimbol().replace("[", "").replace("]", "") + " / " + Utils.getGradiSimbol());
             switch (intLang) {
@@ -181,8 +267,18 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     imgLocale.setImageResource(R.drawable.baseline_help_96);
                     break;
             }
-        } catch (Exception ignored) {
+            switch (DataSaved.colorMode){
+                case 0:
+                    imgCutFill.setImageResource(R.drawable.cutfillred);
+                    break;
 
+                case 1:
+                    imgCutFill.setImageResource(R.drawable.cutfillblu);
+                    break;
+            }
+        } catch (Exception ex) {
+            MyData.push("Deadband_H","0.025");
+            Log.d("Panerai",Log.getStackTraceString(ex));
         }
     }
 

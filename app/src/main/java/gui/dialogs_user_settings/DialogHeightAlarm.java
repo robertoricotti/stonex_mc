@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.stx_dig.R;
@@ -26,7 +27,8 @@ import utils.Utils;
 public class DialogHeightAlarm {
     Activity activity;
     public Dialog alertDialog;
-    Button canc, save, set, reset, plus, minus;
+    ImageView save,canc;
+    Button  set, reset, plus, minus;
     EditText value, delta;
     TextView title;
     boolean p_pressed, m_pressed;
@@ -41,11 +43,8 @@ public class DialogHeightAlarm {
     public DialogHeightAlarm(Activity activity) {
         this.activity = activity;
         alertDialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
-        if (isApollo) {
-            alertDialog.setContentView(R.layout.dialog_alarm_pivot);
-        } else {
-            alertDialog.setContentView(R.layout.dialog_alarm_pivot);
-        }
+        alertDialog.setContentView(R.layout.dialog_alarm_pivot);
+
         alertDialog.setCancelable(false);
     }
 

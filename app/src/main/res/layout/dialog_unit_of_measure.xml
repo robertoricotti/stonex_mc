@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.55" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline119"
@@ -76,27 +76,29 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.65" />
 
-    <Button
+    <ImageView
         android:id="@+id/save"
-        android:layout_width="130dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/blue"
         android:text="@string/save"
         android:textColor="@color/white"
         android:textSize="25sp"
+        android:src="@drawable/save_btn"
         app:layout_constraintBottom_toTopOf="@+id/guideline116"
         app:layout_constraintEnd_toStartOf="@+id/exit"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline115" />
 
-    <Button
+    <ImageView
         android:id="@+id/exit"
-        android:layout_width="130dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/dark_gray"
         android:text="@string/exit"
         android:textColor="@color/white"
         android:textSize="25sp"
+        android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toTopOf="@+id/guideline116"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/save"
@@ -121,7 +123,7 @@
         android:layout_height="wrap_content"
         android:text="m"
         android:textColor="@color/black"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
         app:layout_constraintEnd_toStartOf="@+id/cbxINft"
@@ -134,7 +136,7 @@
         android:layout_height="wrap_content"
         android:text="Int ft"
         android:textColor="@color/black"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
         app:layout_constraintEnd_toStartOf="@+id/cbxft"
@@ -147,7 +149,7 @@
         android:layout_height="wrap_content"
         android:text="US ft"
         android:textColor="@color/black"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
         app:layout_constraintEnd_toStartOf="@+id/cbxinch"
@@ -161,7 +163,7 @@
         android:layout_height="wrap_content"
         android:text="ft in"
         android:textColor="@color/black"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
         app:layout_constraintEnd_toStartOf="@+id/guideline114"

@@ -32,7 +32,7 @@ public class DialogColors {
     public Activity activity;
     View img0, img1, img2;
     ImageView sel0, sel1, sel2;
-    Button save, exit;
+    ImageView save, exit;
     TextView titolo;
     SeekBar lumin;
     int colorMode = 0;

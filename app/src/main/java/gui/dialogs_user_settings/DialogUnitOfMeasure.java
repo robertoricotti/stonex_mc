@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 
 import com.example.stx_dig.R;
 
@@ -28,7 +29,7 @@ public class DialogUnitOfMeasure {
     public Dialog alertDialog;
     CheckBox cbxm, cbxft, cbxinch,cbxINft;
     CheckBox cbxdegree, cbxpercent;
-    Button save, exit;
+    ImageView save, exit;
     int index = 0;
 
 

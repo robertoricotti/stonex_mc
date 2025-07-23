@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -24,7 +25,7 @@ public class DialogBrightness {
     public Dialog dialog;
     TextView titolo;
 
-    Button save, exit;
+    ImageView save, exit;
     int index = 0;
     SeekBar lumin;
 
@@ -45,12 +46,8 @@ public class DialogBrightness {
         wlp.gravity = Gravity.CENTER;
         dialog.show();
 
-        if (MyData.get_String("BUILD").equals("APOLLO2_7")|| Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")) {
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        }else {
-            dialog.getWindow().setLayout(900, 400);
-        }
         FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
