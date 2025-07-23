@@ -162,8 +162,6 @@ public class DialogLanguages {
     private void restart(){
         if(!flagactivity) {
             flagactivity=true;
-            activity.startActivity(new Intent(activity, ExUserSettings.class));
-            activity.overridePendingTransition(0, 0);
             activity.recreate();
         }
     }

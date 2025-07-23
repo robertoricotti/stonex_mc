@@ -62,7 +62,7 @@
     <string name="boom1_calibration">ΡΥΘΜΙΣΗ BOOM 1</string>
     <string name="tilt_calibration">ΡΥΘΜΙΣΗ ΚΛΙΣΗΣ</string>
     <string name="height_deadband">ΖΩΝΗ ΑΛΛΑΓΗΣ ΥΨΟΥΣ</string>
-    <string name="flat_angle_deadband">ΖΩΝΗ ΑΛΛΑΓΗΣ ΓΩΝΙΑΣ ΕΠΙΠΕΔΟΥ</string>
+    <string name="flat_angle_deadband">ΓΩΝΙΑΚΟ ΝΕΚΡΟ ΣΗΜΕΙΟ</string>
     <string name="yes">ΝΑΙ</string>
     <string name="no">ΟΧΙ</string>
     <string name="close_app">ΕΙΣΤΕ ΣΙΓΟΥΡΟΙ ΟΤΙ ΘΕΛΕΤΕ ΝΑ ΚΛΕΙΣΕΤΕ ΑΥΤΗ ΤΗΝ ΕΦΑΡΜΟΓΗ;</string>

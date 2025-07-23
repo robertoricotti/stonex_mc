@@ -77,6 +77,12 @@
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
         <activity
+            android:name="gui.dialogs_user_settings.Nuova_User_Settings"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
             android:name="gui.tech_menu.Nuova_Machine_Settings"
             android:autoRemoveFromRecents="true"
             android:exported="false"

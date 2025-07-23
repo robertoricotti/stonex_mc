@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.stx_dig.R;
@@ -22,7 +23,7 @@ import utils.Utils;
 public class DialogDeadbandH {
     Activity activity;
     public Dialog dialog;
-    Button canc, save;
+    ImageView canc, save;
     EditText value;
     TextView title, measure;
     Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bdot, bcanc, bdel;
@@ -36,11 +37,9 @@ public class DialogDeadbandH {
 
     public void show(){
         dialog.create();
-        if(isApollo){
-        dialog.setContentView(R.layout.dialog_height_deadband);}
-        else {
-            dialog.setContentView(R.layout.dialog_height_deadband_s80);
-        }
+
+        dialog.setContentView(R.layout.dialog_height_deadband);
+
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
@@ -49,7 +48,7 @@ public class DialogDeadbandH {
         FullscreenActivity.setFullScreen(dialog);
         findView();
         onClick();
-        value.setText(Utils.readUnitOfMeasureLITE(MyData.get_String("Deadband_H")));
+        value.setText(Utils.readSensorCalibration(MyData.get_String("Deadband_H")));
         measure.setText(Utils.getMetriSimbol());
     }
 
@@ -178,7 +177,7 @@ public class DialogDeadbandH {
         });
 
         bcanc.setOnClickListener((View v) -> {
-            value.setText(Utils.readUnitOfMeasure("0"));
+            value.setText(Utils.readSensorCalibration("0"));
             c = true;
         });
 

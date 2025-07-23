@@ -29,6 +29,7 @@ import gui.dialogs_and_toast.Dialog_Create_New_Prj;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
 import gui.dialogs_user_settings.ExUserSettings;
+import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.projects.PickProject;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
@@ -52,13 +53,14 @@ public class Activity_Home_Page extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_page);
-        findView();
         try {
             LanguageSetter.setLocale(this, MyData.get_String("language"));
         } catch (Exception e) {
             MyData.push("language", "en_GB");
         }
+        setContentView(R.layout.activity_home_page);
+        findView();
+
         if (!startedService) {
             startService(new Intent(this, UpdateValuesService.class));
 
@@ -206,7 +208,7 @@ public class Activity_Home_Page extends AppCompatActivity {
         });
         toUser.setOnClickListener(view -> {
             enableAll(false);
-            startActivity(new Intent(this, ExUserSettings.class));
+            startActivity(new Intent(this, Nuova_User_Settings.class));
             finish();
         });
     }

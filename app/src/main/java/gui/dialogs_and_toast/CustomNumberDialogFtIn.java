@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -29,12 +30,14 @@ import gui.projects.Punti3DAdapter;
 import gui.tech_menu.SlideBoomActivity;
 import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;
+import utils.MyData;
 import utils.Utils;
 
 public class CustomNumberDialogFtIn {
     String fraction = "7/8";
     Activity activity;
     EditText realValue, value_ft, value_in, value_fraction;
+
     public Dialog dialog;
     Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bdot, bminus, bdel, bok;
     int dec;
@@ -64,11 +67,7 @@ public class CustomNumberDialogFtIn {
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();
-        if (Build.BRAND.equals("SRT8PROS")) {
-            dialog.getWindow().setLayout(1000, 650);
-        } else {
-            dialog.getWindow().setLayout(800, 550);
-        }
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
@@ -85,11 +84,7 @@ public class CustomNumberDialogFtIn {
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();
-        if (Build.BRAND.equals("SRT8PROS")) {
-            dialog.getWindow().setLayout(1000, 650);
-        } else {
-            dialog.getWindow().setLayout(800, 550);
-        }
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
@@ -100,7 +95,7 @@ public class CustomNumberDialogFtIn {
     /////////
 
 
-    /////////
+
     private void init() {
         indexFtIn = 0;
         c = true;
@@ -420,10 +415,16 @@ public class CustomNumberDialogFtIn {
                 if (isNumeric(value_ft.getText().toString()) && isNumericInch(value_in.getText().toString())) {
 
                     String mioValore = value_ft.getText().toString().trim() + "'" + value_in.getText().toString().trim() + " " + value_fraction.getText().toString().trim() + "\"".toString();
-                    realValue.setText(mioValore);
 
-                        if (flag == -1) {
-                            DataSaved.line_Offset = Double.parseDouble(Utils.writeMetri(realValue.getText().toString()));
+                    if(flag==0){
+
+                            MyData.push("Unit_Of_Measure", Utils.writeMetri(mioValore));
+                        realValue.setText(mioValore);
+                        }else {
+                            realValue.setText(mioValore);
+                            if (flag == -1) {
+                                DataSaved.line_Offset = Double.parseDouble(Utils.writeMetri(realValue.getText().toString()));
+                            }
                         }
 
 

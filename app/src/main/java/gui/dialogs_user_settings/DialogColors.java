@@ -255,11 +255,10 @@ public class DialogColors {
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        dialog.getWindow().setLayout(800, 400);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         wlp.gravity = Gravity.CENTER;
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
-
         findView();
         setup();
         onClick();

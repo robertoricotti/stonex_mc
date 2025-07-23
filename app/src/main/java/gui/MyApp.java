@@ -56,6 +56,7 @@ import gui.debug_ecu.DebugExcavatorActivity;
 import gui.debug_ecu.Hydraulic_Setup;
 import gui.dialogs_and_toast.SensorAlertDialog;
 import gui.dialogs_user_settings.ExUserSettings;
+import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.digging_excavator.Digging1D;
 import gui.digging_excavator.Digging2D;
 import gui.digging_excavator.Digging3D_DXF;
@@ -226,6 +227,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
+
 /*
 git add .
 git commit -m "Messaggio"
@@ -263,13 +265,13 @@ git push
             layoutParams.screenBrightness = DataSaved.myBrightness;
 
         }
+
         try {
             LanguageSetter.setLocale(activity, MyData.get_String("language"));
             FullscreenActivity.setFullScreen(activity);
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            Toast.makeText(activity,"Failed to set Language",Toast.LENGTH_LONG).show();
         }
-
 
     }
 
@@ -417,8 +419,8 @@ Log.d("tetsCRS",DataSaved.S_CRS);
             ((BucketChooserActivity) activity).updateUI();
         } else if (activity instanceof DebugExcavatorActivity) {
             ((DebugExcavatorActivity) activity).updateUI();
-        } else if (activity instanceof ExUserSettings) {
-            ((ExUserSettings) activity).updateUI();
+        } else if (activity instanceof Nuova_User_Settings) {
+            ((Nuova_User_Settings) activity).updateUI();
         } else if (activity instanceof Digging1D) {
             ((Digging1D) activity).updateUI();
         } else if (activity instanceof Digging2D) {

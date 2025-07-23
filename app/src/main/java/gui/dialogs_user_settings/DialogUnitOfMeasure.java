@@ -49,12 +49,9 @@ public class DialogUnitOfMeasure {
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         alertDialog.show();
-        if (MyData.get_String("BUILD").equals("APOLLO2_7")||Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")) {
 
-            alertDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        }else {
-            alertDialog.getWindow().setLayout(900, 400);
-        }
+        alertDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
         FullscreenActivity.setFullScreen(alertDialog);
         findView();
         init();

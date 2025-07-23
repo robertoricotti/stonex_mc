@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +25,7 @@ import utils.Utils;
 public class DialogDeadbandFlatAngle {
     Activity activity;
     public Dialog dialog;
-    Button canc, save;
+    ImageView canc, save;
     EditText value;
     TextView title, measure;
     Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bdot, bcanc, bdel;
