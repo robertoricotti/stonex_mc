@@ -28,6 +28,7 @@ import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_Create_New_Prj;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
+import gui.dialogs_and_toast.Dialog_To_DueDi;
 import gui.dialogs_user_settings.ExUserSettings;
 import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.projects.PickProject;
@@ -49,6 +50,7 @@ public class Activity_Home_Page extends AppCompatActivity {
     Dialog_Create_New_Prj dialogCreateNewPrj;
     Dialog_InfoApp dialogInfoApp;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_To_DueDi dialogToDueDi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +109,7 @@ public class Activity_Home_Page extends AppCompatActivity {
         dialogCreateNewPrj = new Dialog_Create_New_Prj(this);
         dialogInfoApp = new Dialog_InfoApp(this);
         dialogGnssCoordinates=new Dialog_GNSS_Coordinates(this);
+        dialogToDueDi=new Dialog_To_DueDi(this);
         close = findViewById(R.id.btn_1);
         progressBar = findViewById(R.id.progressBar);
         stringsStat = findViewById(R.id.stringastat);
@@ -137,6 +140,9 @@ public class Activity_Home_Page extends AppCompatActivity {
             newProj.setAlpha(0.3f);
             toDig.setAlpha(0.3f);
             joblist.setAlpha(0.3f);
+
+        }else {
+            DataSaved.portView=2;
         }
         if (DataSaved.isWL > 0) {
             toDueD.setAlpha(0.3f);
@@ -160,6 +166,10 @@ public class Activity_Home_Page extends AppCompatActivity {
                 new CustomToast(this, " ").show_alert();
             } else {
                 //TODO apri 2D
+                if(!dialogToDueDi.dialog.isShowing()){
+                    dialogToDueDi.show();
+                }
+
             }
         });
         keyLic.setOnClickListener(view -> {

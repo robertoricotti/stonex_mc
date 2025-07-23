@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.dialogs_and_toast.CustomToast;
 import gui.digging_excavator.Digging1D;
@@ -245,7 +246,7 @@ public class ProfilesMenuActivity extends AppCompatActivity {
         back.setOnClickListener((View v) -> {
             disableAll();
             startService(new Intent(this, UpdateValuesService.class));
-            startActivity(new Intent(this, ExcavatorMenuActivity.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
         });
 
@@ -253,44 +254,15 @@ public class ProfilesMenuActivity extends AppCompatActivity {
             disableAll();
             startService(new Intent(this, UpdateValuesService.class));
             int profile = MyData.get_Int("ProfileSelected");
-            int typeView = MyData.get_Int("indexView");
             if (profile == 0) {
-                switch (typeView) {
-                    case 0:
-                        if (KEY_LEVEL > 0) {
-                            startActivity(new Intent(this, Digging1D.class));
-                            finish();
-                        } else {
-
-                            new CustomToast(this, "LICENSE MISSED").show_alert();
-                        }
-                        break;
-                    case 1:
-                        if (KEY_LEVEL > 1) {
-                            startActivity(new Intent(this, Digging2D.class));
-                            finish();
-                        } else {
-
-                            new CustomToast(this, "LICENSE MISSED").show_alert();
-                        }
-                        break;
-                    case 2:
-                    case 3:
-                        if (KEY_LEVEL > 2) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            startService(new Intent(this, ReadProjectService.class));
-                        } else {
-
-                            new CustomToast(this, "LICENSE MISSED").show_alert();
-                        }
-                        break;
-                }
+                new CustomToast(this,"No Profile Selected").show_error();
             } else {
 
                 startActivity(new Intent(this, DiggingProfile.class));
+                finish();
             }
 
-            finish();
+
         });
     }
 

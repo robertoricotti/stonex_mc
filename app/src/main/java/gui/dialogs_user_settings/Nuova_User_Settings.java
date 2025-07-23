@@ -32,6 +32,7 @@ import utils.WifiHelper;
 public class Nuova_User_Settings extends AppCompatActivity {
 
     ImageView status, wifi, back, info, lock;
+    DialogAudioSystem dialogAudioSystem;
     DialogHeightAlarm dialogHeightAlarm;
     DialogPassword dialogPassword;
     CustomNumberDialogFtIn customNumberDialogFtIn;
@@ -47,6 +48,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
     EditText tvVertValue;
     ImageView imgLocale, imgLse, imgCutFill;
     String intLang="";
+    int indexAudioSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
     }
 
     private void findView() {
+        dialogAudioSystem=new DialogAudioSystem(this);
         dialogPassword=new DialogPassword(this);
         dialogHeightAlarm=new DialogHeightAlarm(this);
         dialogInvertColors=new DialogInvertColors(this);
@@ -97,9 +100,15 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
     private void init() {
         intLang = MyData.get_String("language");
+        indexAudioSelected = MyData.get_Int("indexAudioSystem");
     }
 
     private void onClick() {
+        tvAudioValue.setOnClickListener(view -> {
+            if (!dialogAudioSystem.alertDialog.isShowing()) {
+                dialogAudioSystem.show();
+            }
+        });
         lock.setOnClickListener(view -> {
             if (!isTech) {
                 if (!dialogPassword.dialog.isShowing()) {
@@ -179,6 +188,8 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
     public void updateUI() {
         try {
+            indexAudioSelected = MyData.get_Int("indexAudioSystem");
+            tvAudioValue.setText(indexAudioSelected == 0 ? "OFF" : ("ON / " + MyData.get_Int("volumeAudioSystem") * 10) + " %");
             if (isTech) {
                 lock.setImageResource(R.drawable.unlock);
 

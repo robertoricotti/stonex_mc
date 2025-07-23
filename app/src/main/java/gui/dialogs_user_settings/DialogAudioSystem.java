@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.view.Gravity;
@@ -17,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import com.example.stx_dig.R;
 
@@ -29,7 +31,7 @@ public class DialogAudioSystem {
     Activity activity;
    public Dialog alertDialog;
     CheckBox cbxOn, cbxOff,cbOn2;
-    Button save, exit;
+    ImageView save, exit;
     int index = 0;
     SeekBar volume;
 
@@ -42,23 +44,18 @@ public class DialogAudioSystem {
     public void show() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
-        if(isApollo){
-        builder.setView(inflater.inflate(R.layout.dialog_audio, null));}
-        else {
-            builder.setView(inflater.inflate(R.layout.dialog_audio_s80, null));
-        }
+        builder.setView(inflater.inflate(R.layout.dialog_audio, null));
         builder.setCancelable(false);
         alertDialog = builder.create();
         Window window = alertDialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
+        }
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         alertDialog.show();
-        if (MyData.get_String("BUILD").equals("APOLLO2_7")|| Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")) {
+        alertDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
-            alertDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        }else {
-            alertDialog.getWindow().setLayout(900, 400);
-        }
         FullscreenActivity.setFullScreen(alertDialog);
         findView();
         init();
