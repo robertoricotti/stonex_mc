@@ -1,6 +1,8 @@
 package gui.tech_menu;
 
+import static gui.MyApp.KEY_LEVEL;
 import static gui.MyApp.errorCode;
+import static gui.boot_and_choose.LaunchScreenActivity.hasAuto;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 
 import android.annotation.SuppressLint;
@@ -19,8 +21,10 @@ import com.example.stx_dig.R;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
+import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.buckets.BucketChooserActivity;
 import gui.debug_ecu.Can_Msg_Debug;
+import gui.debug_ecu.Hydro_Lobby;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
@@ -161,40 +165,39 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         } else if (isWL1 == 2 || isWL1 == 3) {
             machine1.setImageResource(R.drawable.dozer_machines_btn);
-            bucketM1.setVisibility(View.INVISIBLE);
+            bucketM1.setImageResource(R.drawable.ecu_96);
 
         } else if (isWL1 == 4) {
             machine1.setImageResource(R.drawable.grader_btn);
-            bucketM1.setVisibility(View.INVISIBLE);
+            bucketM1.setImageResource(R.drawable.ecu_96);
         }
         if (isWL2 == 1) {
             machine2.setImageResource(R.drawable.wheel_machines_btn);
         } else if (isWL2 == 2) {
             machine2.setImageResource(R.drawable.dozer_machines_btn);
-            bucketM2.setVisibility(View.INVISIBLE);
+            bucketM2.setImageResource(R.drawable.ecu_96);
         } else if (isWL2 == 4) {
             machine2.setImageResource(R.drawable.grader_btn);
-            bucketM2.setVisibility(View.INVISIBLE);
+            bucketM2.setImageResource(R.drawable.ecu_96);
         }
         if (isWL3 == 1) {
             machine3.setImageResource(R.drawable.wheel_machines_btn);
         } else if (isWL3 == 2) {
             machine3.setImageResource(R.drawable.dozer_machines_btn);
-            bucketM3.setVisibility(View.INVISIBLE);
+            bucketM3.setImageResource(R.drawable.ecu_96);
         } else if (isWL3 == 4) {
             machine3.setImageResource(R.drawable.grader_btn);
-            bucketM3.setVisibility(View.INVISIBLE);
+            bucketM3.setImageResource(R.drawable.ecu_96);
         }
         if (isWL4 == 1) {
             machine4.setImageResource(R.drawable.wheel_machines_btn);
         } else if (isWL4 == 2) {
             machine4.setImageResource(R.drawable.dozer_machines_btn);
-            bucketM4.setVisibility(View.INVISIBLE);
+            bucketM4.setImageResource(R.drawable.ecu_96);
         } else if (isWL4 == 4) {
             machine4.setImageResource(R.drawable.grader_btn);
-            bucketM4.setVisibility(View.INVISIBLE);
+            bucketM4.setImageResource(R.drawable.ecu_96);
         }
-        //m1.setBackgroundColor(indexMachineSelected == 1 ? getColor(R.color.orange) : getColor(R.color.transparent));
         m1.setBackground(indexMachineSelected == 1 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_1) {
             m1.setAlpha(0.2f);
@@ -298,41 +301,105 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         bucketM1.setOnClickListener((View v) -> {
             if (indexMachineSelected == 1) {
-                bucketM1.setEnabled(false);
-                Intent i = new Intent(this, BucketChooserActivity.class);
-                i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
-                startActivity(i);
-                finish();
+                if(isWL1==0||isWL1==1) {
+                    bucketM1.setEnabled(false);
+                    Intent i = new Intent(this, BucketChooserActivity.class);
+                    i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+                    startActivity(i);
+                    finish();
+                }else {
+                    if (hasAuto) {
+                        if (isTech) {
+                            disableAll();
+                            startActivity(new Intent(this, Hydro_Lobby.class));
+                            finish();
+                        } else {
+                            if (!dialogPassword.dialog.isShowing()) {
+                                dialogPassword.show(3);
+                            }
+                        }
+                    } else {
+                        new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
+                    }
+                }
             }
         });
 
         bucketM2.setOnClickListener((View v) -> {
             if (indexMachineSelected == 2) {
-                bucketM2.setEnabled(false);
-                Intent i = new Intent(this, BucketChooserActivity.class);
-                i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
-                startActivity(i);
-                finish();
+                if(isWL2==0||isWL2==1) {
+                    bucketM2.setEnabled(false);
+                    Intent i = new Intent(this, BucketChooserActivity.class);
+                    i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+                    startActivity(i);
+                    finish();
+                }else {
+                    if (hasAuto) {
+                        if (isTech) {
+                            disableAll();
+                            startActivity(new Intent(this, Hydro_Lobby.class));
+                            finish();
+                        } else {
+                            if (!dialogPassword.dialog.isShowing()) {
+                                dialogPassword.show(3);
+                            }
+                        }
+                    } else {
+                        new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
+                    }
+                }
             }
         });
 
         bucketM3.setOnClickListener((View v) -> {
             if (indexMachineSelected == 3) {
-                bucketM3.setEnabled(false);
-                Intent i = new Intent(this, BucketChooserActivity.class);
-                i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
-                startActivity(i);
-                finish();
+                if(isWL3==0||isWL3==1) {
+                    bucketM3.setEnabled(false);
+                    Intent i = new Intent(this, BucketChooserActivity.class);
+                    i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+                    startActivity(i);
+                    finish();
+                }else {
+                    if (hasAuto) {
+                        if (isTech) {
+                            disableAll();
+                            startActivity(new Intent(this, Hydro_Lobby.class));
+                            finish();
+                        } else {
+                            if (!dialogPassword.dialog.isShowing()) {
+                                dialogPassword.show(3);
+                            }
+                        }
+                    } else {
+                        new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
+                    }
+                }
             }
         });
 
         bucketM4.setOnClickListener((View v) -> {
             if (indexMachineSelected == 4) {
-                bucketM4.setEnabled(false);
-                Intent i = new Intent(this, BucketChooserActivity.class);
-                i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
-                startActivity(i);
-                finish();
+                if(isWL4==0||isWL4==1) {
+                    bucketM4.setEnabled(false);
+                    Intent i = new Intent(this, BucketChooserActivity.class);
+                    i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
+                    startActivity(i);
+                    finish();
+                }else {
+                    if (hasAuto) {
+                        if (isTech) {
+                            disableAll();
+                            startActivity(new Intent(this, Hydro_Lobby.class));
+                            finish();
+                        } else {
+                            if (!dialogPassword.dialog.isShowing()) {
+                                dialogPassword.show(3);
+                            }
+                        }
+                    } else {
+                        new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
+                    }
+                }
             }
         });
 

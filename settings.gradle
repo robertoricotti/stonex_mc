@@ -3,7 +3,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
+
         maven {url 'https://jitpack.io'}
         maven{url 'https://mvnrepository.com/artifact/org.locationtech.proj4j/proj4j-epsg'}
         maven{url 'https://mvnrepository.com/artifact/org.locationtech.proj4j/proj4j'}
@@ -14,6 +14,7 @@ dependencyResolutionManagement {
         maven{url 'https://mvnrepository.com/artifact/commons-io/commons-io'}
 
         maven {url "https://repo.osgeo.org/repository/geotools-releases/"}
+        maven {url 'https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on'}
 
 
 

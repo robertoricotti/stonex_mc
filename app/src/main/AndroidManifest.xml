@@ -76,6 +76,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
+        <!-- android:networkSecurityConfig="@xml/network_security_config" !-->
+
         <activity
             android:name="gui.dialogs_user_settings.Nuova_User_Settings"
             android:autoRemoveFromRecents="true"

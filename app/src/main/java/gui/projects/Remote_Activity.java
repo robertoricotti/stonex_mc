@@ -1,6 +1,7 @@
 package gui.projects;
 
 import static gui.MyApp.folderPath;
+import static services.UpdateValuesService.result;
 
 import android.content.Intent;
 import android.os.Build;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import cloud.S3Manager;
+import cloud.S3ManagerSingleton;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.boot_and_choose.LaunchScreenActivity;
@@ -42,7 +44,7 @@ public class Remote_Activity extends AppCompatActivity {
     long folderSize, fileSize;
     TextView txt1,txt2;
     private boolean enImport, enExport;
-    S3Manager s3Manager;
+    S3ManagerSingleton s3Manager;
     ProgressBar progressBar;
     ImageView download, upload, refresh, back, status;
     RecyclerView recyclerProj, recyclerIn;
@@ -98,7 +100,8 @@ public class Remote_Activity extends AppCompatActivity {
         download.setAlpha(0.3f);
         upload.setEnabled(false);
         upload.setAlpha(0.3f);
-        s3Manager = new S3Manager(getApplicationContext(), "AKIAZ24ITFGFIXJSL3G7", "rX0Ndj0R4ULu0r3Z6ibJz8Oa5H7uqULXlYOJJjmR", "stxcloudbucket");
+        //s3Manager = new S3Manager(getApplicationContext(), "AKIAZ24ITFGFIXJSL3G7", "rX0Ndj0R4ULu0r3Z6ibJz8Oa5H7uqULXlYOJJjmR", "stxcloudbucket");
+        s3Manager=S3ManagerSingleton.getInstance(this);
         progressBar.setVisibility(View.INVISIBLE);
         readProjectFolder();
         txt2.setText(APP_PATH);
@@ -170,7 +173,7 @@ public class Remote_Activity extends AppCompatActivity {
         refresh.setOnClickListener(view -> {
             readProjectFolder();
             progressBar.setVisibility(View.VISIBLE);
-            s3Manager.getTreeFromS3(serials, new S3Manager.S3Callback() {
+            s3Manager.getTreeFromS3(serials, new S3ManagerSingleton.S3Callback() {
                 @Override
                 public void onSuccess(Map<String, Object> result) {
                     // Eseguito nel thread di rete, puoi aggiornare la UI con runOnUiThread
@@ -187,6 +190,7 @@ public class Remote_Activity extends AppCompatActivity {
                     // Gestisci l'errore
                     runOnUiThread(() -> Log.e("S3Tree", "Errore durante la generazione dell'albero", e));
                     progressBar.setVisibility(View.INVISIBLE);
+
                 }
             });
 
@@ -207,7 +211,7 @@ public class Remote_Activity extends AppCompatActivity {
                 }
                 if (!isTheSame) {
                     if (isF) {
-                        s3Manager.uploadFolderToS3(APP_PATH + "/" + LocalFilePath, "serials/" + s + "/Projects/" + LocalFilePath, new S3Manager.S3Callback() {
+                        s3Manager.uploadFolderToS3(APP_PATH + "/" + LocalFilePath, "serials/" + s + "/Projects/" + LocalFilePath, new S3ManagerSingleton.S3Callback() {
                             @Override
                             public void onSuccess(Map<String, Object> result) {
                                 runOnUiThread(() -> {
@@ -251,7 +255,7 @@ public class Remote_Activity extends AppCompatActivity {
                 }
                 if(!theSame) {
                     if (isF) {
-                        s3Manager.downloadFolderFromS3(MyApp.visibleActivity,RemoteFilePath, APP_PATH + "/" + adapterMC.getSelectedFilePath(), new S3Manager.S3Callback() {
+                        s3Manager.downloadFolderFromS3(RemoteFilePath, APP_PATH + "/" + adapterMC.getSelectedFilePath(), new S3ManagerSingleton.S3Callback() {
                             @Override
                             public void onSuccess(Map<String, Object> result) {
                                 runOnUiThread(() -> {
@@ -290,7 +294,7 @@ public class Remote_Activity extends AppCompatActivity {
                     builder.setPositiveButton(R.string.yes, (dialog, which) -> {
 
                         if (isF) {
-                            s3Manager.downloadFolderFromS3(MyApp.visibleActivity,RemoteFilePath, APP_PATH + "/" + adapterMC.getSelectedFilePath(), new S3Manager.S3Callback() {
+                            s3Manager.downloadFolderFromS3(RemoteFilePath, APP_PATH + "/" + adapterMC.getSelectedFilePath(), new S3ManagerSingleton.S3Callback() {
                                 @Override
                                 public void onSuccess(Map<String, Object> result) {
                                     runOnUiThread(() -> {
@@ -485,7 +489,7 @@ public class Remote_Activity extends AppCompatActivity {
         if (braceIndex != -1) {
             String folderName = entry.substring(0, braceIndex).trim();
 
-            s3Manager.getFolderSize("serials/" + s + "/Projects/" + folderName, new S3Manager.S3Callback() {
+            s3Manager.getFolderSize("serials/" + s + "/Projects/" + folderName, new S3ManagerSingleton.S3Callback() {
                 @Override
                 public void onSuccess(Map<String, Object> result) {
                     folderSize = (long) result.get("size");
@@ -507,7 +511,7 @@ public class Remote_Activity extends AppCompatActivity {
             // Riconosce un file
             String fileName = entry.substring(0, entry.indexOf("=null")).trim();
 
-            s3Manager.getFileSize("serials/" + s + "/Projects/" + fileName, new S3Manager.S3Callback() {
+            s3Manager.getFileSize("serials/" + s + "/Projects/" + fileName, new S3ManagerSingleton.S3Callback() {
                 @Override
                 public void onSuccess(Map<String, Object> result) {
 

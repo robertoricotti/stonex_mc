@@ -261,5 +261,22 @@ public class MyDeviceManager {
         }
     }
 
+    public static String getMacAddress(Activity activity){
+        if (GEN1) {
+            return ApolloPro.getInstance(activity).getDeviceMacAddress();
+        } else if (GEN2) {
+            return Apollo2.getInstance(activity).getDeviceMacAddress();
+        }
+        return "";
+    }
+    public static String getDeviceSN(Activity activity){
+        if (GEN1) {
+            return ApolloPro.getInstance(activity).getDeviceSN().toUpperCase();
+        } else if (GEN2) {
+            return Apollo2.getInstance(activity).getDeviceSN().toUpperCase();
+        }
+        return "";
+    }
+
 
 }

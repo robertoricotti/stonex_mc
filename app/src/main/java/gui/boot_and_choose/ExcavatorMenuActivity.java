@@ -103,11 +103,7 @@ public class ExcavatorMenuActivity extends AppCompatActivity {
         }
 
 
-        if (KEY_LEVEL == 11 || KEY_LEVEL == 33 || KEY_LEVEL == 34 || KEY_LEVEL == 35 || KEY_LEVEL == 36) {
-            hasAuto = true;
-        } else {
-            hasAuto = false;
-        }
+        hasAuto = KEY_LEVEL == 11 || KEY_LEVEL == 33 || KEY_LEVEL == 34 || KEY_LEVEL == 35 || KEY_LEVEL == 36;
     }
 
     private void disableAll() {

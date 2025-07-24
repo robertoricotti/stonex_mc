@@ -127,13 +127,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             }
         });
         saveToFile.setOnClickListener((View v) -> {
+            saveName();
             if (MyData.get_String("M" + machineSel + "_Name").equals("")) {
                 new CustomToast(Nuova_Machine_Settings.this, "MISSING NAME").show();
             } else {
-                if (MyData.get_String("M" + machineSel + "_Name").equals("EXCAVATOR 1") ||
-                        MyData.get_String("M" + machineSel + "_Name").equals("EXCAVATOR 2") ||
-                        MyData.get_String("M" + machineSel + "_Name").equals("WHEEL LOADER 1") ||
-                        MyData.get_String("M" + machineSel + "_Name").equals("DOZER 1")
+                if (MyData.get_String("M" + machineSel + "_Name").equals("DEFAULT 1") ||
+                        MyData.get_String("M" + machineSel + "_Name").equals("DEFAULT 2") ||
+                        MyData.get_String("M" + machineSel + "_Name").equals("DEFAULT 3") ||
+                        MyData.get_String("M" + machineSel + "_Name").equals("DEFAULT 4")
                 ) {
                     new CustomToast(Nuova_Machine_Settings.this, "CHANGE MACHINE NAME BEFORE SAVE").show_alert();
                 } else {
@@ -183,9 +184,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             if (ckCloud.isChecked()) {
                 ckCloud.setChecked(false);
                 MyData.push("M" + machineSel + "_is40", "0");
+                DataSaved.is40=0;
             } else if (!ckCloud.isChecked()) {
                 ckCloud.setChecked(true);
                 MyData.push("M" + machineSel + "_is40", "1");
+                DataSaved.is40=0;
             }
         });
         ckDO.setOnClickListener(view -> {

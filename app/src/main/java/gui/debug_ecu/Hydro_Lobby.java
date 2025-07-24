@@ -9,6 +9,8 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.boot_and_choose.ExcavatorMenuActivity;
+import gui.tech_menu.ExcavatorChooserActivity;
+import gui.tech_menu.Nuova_Machine_Settings;
 
 public class Hydro_Lobby extends BaseClass {
     ImageView back;
@@ -27,7 +29,7 @@ public class Hydro_Lobby extends BaseClass {
         back.setOnClickListener(view ->  {
             if(!press) {
                 press = true;
-                startActivity(new Intent(this, ExcavatorMenuActivity.class));
+                startActivity(new Intent(this, ExcavatorChooserActivity.class));
                 finish();
             }
         });

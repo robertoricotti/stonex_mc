@@ -17,6 +17,7 @@ import android.widget.EditText;
 
 import com.example.stx_dig.R;
 
+import gui.debug_ecu.Hydro_Lobby;
 import gui.gps.Nuovo_Gps;
 import gui.tech_menu.CanOpenTSM;
 import gui.tech_menu.ExcavatorChooserActivity;
@@ -164,7 +165,12 @@ public class DialogPassword {
                     activity.finish();
                     tmp = "";
                     dialog.dismiss();
-                }else {
+                } else if (whoCall==3) {
+                    activity.startActivity(new Intent(activity, Hydro_Lobby.class));
+                    activity.finish();
+                    tmp = "";
+                    dialog.dismiss();
+                } else {
                     dialog.dismiss();
                 }
 

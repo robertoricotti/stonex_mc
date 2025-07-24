@@ -161,12 +161,14 @@ public class Hydraulic_Setup extends BaseClass {
     public void updateUI() {
         if (CanService.ECU_Connected) {
             ecuStat.setImageResource(R.drawable.ok_ecu_bosch);
+            ecuStat.setImageTintList(getColorStateList(R.color.green));
             if (isSendingTest) {
                 MyDeviceManager.CanWrite(1, 2051, 8, new byte[]{(byte) pageCounter, 0, 0, (byte) 0, 0, 0, 0, 1});
 
             }
         } else {
             ecuStat.setImageResource(R.drawable.ko_ecu_bosch);
+            ecuStat.setImageTintList(getColorStateList(R.color.white));
             pageCounter = 0;
         }
         pageNum.setText(" " + (pageCounter + 1) + " / " + maxPage + "\n" + definition(pageCounter));

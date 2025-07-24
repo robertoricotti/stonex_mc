@@ -180,14 +180,8 @@ public class UpdateValuesService extends Service {
 
 
                     if (nameM == null) {
-                        if (i == 1 || i == 2) {
-                            MyData.push("M" + i + "_Name", ("EXCAVATOR " + i).toUpperCase());
-                        } else if (i == 3) {
-                            MyData.push("M" + i + "_Name", ("WHEEL LOADER " + (i - 2)).toUpperCase());
+                        MyData.push("M" + i + "_Name", ("DEFULT " + i).toUpperCase());
 
-                        } else if (i == 4) {
-                            MyData.push("M" + i + "_Name", ("DOZER " + (i - 3)).toUpperCase());
-                        }
                     }
                     if (reverseRoto == null) {
                         MyData.push("M" + i + "revTiltRot", "0");

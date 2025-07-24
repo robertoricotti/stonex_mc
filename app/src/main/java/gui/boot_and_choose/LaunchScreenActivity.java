@@ -1,5 +1,6 @@
 package gui.boot_and_choose;
 
+import static gui.MyApp.KEY_LEVEL;
 import static gui.MyApp.folderPath;
 import static gui.MyApp.visibleActivity;
 
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import cloud.WebSocketPlugin;
 import drill_pile.gui.Drill_MainPage;
 import gui.BaseClass;
 import gui.MyApp;
@@ -65,6 +67,7 @@ public class LaunchScreenActivity extends BaseClass {
     TextView textView;
     int isAutoStart = 0;
     ImageView animazione;
+    public static boolean hasAuto;
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
@@ -73,6 +76,8 @@ public class LaunchScreenActivity extends BaseClass {
         setContentView(R.layout.activity_launch_screen_dig);
         FullscreenActivity.setFullScreen(this);
         MyDeviceManager.setSize(this);
+        Log.d("MyMac",MyDeviceManager.getMacAddress(this)+"\n"+MyDeviceManager.getDeviceSN(this));
+        WebSocketPlugin.getWebSocketPluginInstance(this).start();
 
         images = new int[]{R.drawable.img_step_1, R.drawable.img_step_2, R.drawable.img_step_3};
 
@@ -86,7 +91,7 @@ public class LaunchScreenActivity extends BaseClass {
 
         textView = findViewById(R.id.textView5);
         textView.setText("STX MC " + BuildConfig.VERSION_NAME);
-        //Log.d("mud", Build.MODEL);
+
 
         ExcavatorLib.Excavator(new double[100]);
         UpdateValuesService.firstLaunch=false;
@@ -129,7 +134,7 @@ public class LaunchScreenActivity extends BaseClass {
                         startActivity(new Intent(LaunchScreenActivity.this, LicenseActivity.class));
                         finish();
                     }
-
+                    hasAuto = KEY_LEVEL == 11 || KEY_LEVEL == 33 || KEY_LEVEL == 34 || KEY_LEVEL == 35 || KEY_LEVEL == 36;
                 } catch (Exception e) {
                     new CustomToast(LaunchScreenActivity.this, "No License CODE").show_error();
                     startActivity(new Intent(LaunchScreenActivity.this, LicenseActivity.class));
