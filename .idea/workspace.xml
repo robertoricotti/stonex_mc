@@ -16,36 +16,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="nuovo gradle">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/libs/myCPLibs.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/ExcavatorMenuActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketChooserActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketChooserActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/DebugExcavatorActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/DebugExcavatorActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydraulic_Setup.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydraulic_Setup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydro_Lobby.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydro_Lobby.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging1D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging1D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging3D_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging3D_DXF.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/DiggingProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/DiggingProfile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill1D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill1D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/e_bubble/E_Bubble.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grade2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grade2D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grading3D_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grading3D_DXF.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/profiles/ProfilesMenuActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/profiles/ProfilesMenuActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Projects.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Projects.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
-    </list>
+    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="nuovo gradle e appid rename" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -179,7 +150,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753376338224</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="nuovo gradle e appid rename">
+      <option name="closed" value="true" />
+      <created>1753516969853</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1753516969853</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -195,7 +174,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="nuovo gradle" />
-    <option name="LAST_COMMIT_MESSAGE" value="nuovo gradle" />
+    <MESSAGE value="nuovo gradle e appid rename" />
+    <option name="LAST_COMMIT_MESSAGE" value="nuovo gradle e appid rename" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

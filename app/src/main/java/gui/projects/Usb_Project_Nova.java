@@ -472,7 +472,7 @@ public class Usb_Project_Nova extends AppCompatActivity {
             Method DiskInfo_IsUsb = diskInfoClaszz.getMethod("isUsb");
 
             Method DiskInfo_IsSd = diskInfoClaszz.getMethod("isSd");
-
+            @SuppressWarnings("unchecked")
             List<Object> List_VolumeInfo = (List<Object>) StorageManager_getVolumes.invoke(mStorageManager);
 
             assert List_VolumeInfo != null;
