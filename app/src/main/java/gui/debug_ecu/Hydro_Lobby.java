@@ -8,9 +8,7 @@ import android.widget.ImageView;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
-import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.tech_menu.ExcavatorChooserActivity;
-import gui.tech_menu.Nuova_Machine_Settings;
 
 public class Hydro_Lobby extends BaseClass {
     ImageView back;

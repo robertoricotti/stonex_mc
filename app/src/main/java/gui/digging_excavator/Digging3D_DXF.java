@@ -28,7 +28,7 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.MyApp;
-import gui.boot_and_choose.ExcavatorMenuActivity;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset_3D;
 import gui.dialogs_and_toast.Dialog_Edit_Coordinate_Demo;
@@ -116,7 +116,7 @@ public class Digging3D_DXF extends BaseClass {
 
         if (DataSaved.dxfFaces == null) {
             new CustomToast(this, "Error Project").show_error();
-            startActivity(new Intent(this, ExcavatorMenuActivity.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
         } else {
             try {
@@ -420,7 +420,7 @@ public class Digging3D_DXF extends BaseClass {
             MyData.push("scaleFactor_vista1D", String.valueOf(DataSaved.scale_FactorVista1D));
             MyData.push("scaleFactor_vista2D", String.valueOf(DataSaved.scale_FactorVista2D));
             disableAll();
-            startActivity(new Intent(this, ExcavatorMenuActivity.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
             whats = null;
         });

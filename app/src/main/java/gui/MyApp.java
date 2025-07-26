@@ -47,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Ecu_Sensors_Activity;
 import gui.boot_and_choose.Activity_Home_Page;
-import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.boot_and_choose.LaunchScreenActivity;
 import gui.buckets.BucketCalib;
 import gui.buckets.BucketCalibTilt;
@@ -55,7 +54,6 @@ import gui.buckets.BucketChooserActivity;
 import gui.debug_ecu.DebugExcavatorActivity;
 import gui.debug_ecu.Hydraulic_Setup;
 import gui.dialogs_and_toast.SensorAlertDialog;
-import gui.dialogs_user_settings.ExUserSettings;
 import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.digging_excavator.Digging1D;
 import gui.digging_excavator.Digging2D;
@@ -63,7 +61,6 @@ import gui.digging_excavator.Digging3D_DXF;
 import gui.digging_excavator.DiggingProfile;
 import gui.digging_excavator.Digging_CutAndFill1D;
 import gui.digging_excavator.Digging_CutAndFill2D;
-import gui.e_bubble.E_Bubble;
 import gui.gps.Nuovo_Gps;
 import gui.grading_dozergrader.Grading3D_DXF;
 import gui.my_opengl.My3DActivity;
@@ -431,9 +428,7 @@ Log.d("tetsCRS",DataSaved.S_CRS);
             ((Digging_CutAndFill2D) activity).updateUI();
         } else if (activity instanceof DiggingProfile) {
             ((DiggingProfile) activity).updateUI();
-        } else if (activity instanceof E_Bubble) {
-            ((E_Bubble) activity).updateUI();
-        } else if (activity instanceof ProfileCalibAuto) {
+        }  else if (activity instanceof ProfileCalibAuto) {
             ((ProfileCalibAuto) activity).updateUI();
         } else if (activity instanceof ProfileCalibManual) {
             ((ProfileCalibManual) activity).updateUI();

@@ -48,10 +48,7 @@ import java.util.List;
 
 import event_bus.CMD_Event;
 import event_bus.CanEvents;
-import drill_pile.gui.Drill_MainPage;
 import gui.MyApp;
-import gui.boot_and_choose.Activity_Home_Page;
-import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.Serial_Msg_Debug;
 import gui.dialogs_and_toast.CustomMenu;

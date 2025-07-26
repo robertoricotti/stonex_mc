@@ -25,7 +25,7 @@ import android.widget.TextView;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
-import gui.boot_and_choose.ExcavatorMenuActivity;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Diaalog_Set_SP;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
@@ -227,7 +227,7 @@ public class Projects extends BaseClass {
 
         back.setOnClickListener((View v) -> {
             disableAll();
-            startActivity(new Intent(this, ExcavatorMenuActivity.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
         });
 

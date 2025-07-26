@@ -28,7 +28,6 @@ import gui.dialogs_and_toast.Dialog_TouchGo;
 import gui.dialogs_and_toast.EasyConfigDialog;
 import gui.dialogs_and_toast.LaserDialog;
 import gui.draw_class.FlatAngleBar;
-import gui.e_bubble.E_Bubble;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Excavator_RealValues;
@@ -158,14 +157,7 @@ public class Digging_CutAndFill1D extends BaseClass {
             startActivity(new Intent(getApplicationContext(), Digging1D.class));
             finish();
         });
-        toBubble.setOnClickListener((View v) -> {
-            disableAll();
-            Intent intent = new Intent(getApplicationContext(), E_Bubble.class);
-            intent.putExtra("who", "C1D");
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-            finish();
-        });
+
 
 
         setZero.setOnClickListener((View v) -> {

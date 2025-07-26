@@ -1,33 +1,22 @@
 package gui.buckets;
 
-import static gui.MyApp.KEY_LEVEL;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.boot_and_choose.Activity_Home_Page;
-import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_user_settings.DialogUnitOfMeasure;
-import gui.digging_excavator.Digging1D;
-import gui.digging_excavator.Digging2D;
-import gui.digging_excavator.DiggingProfile;
 
 import gui.my_opengl.My3DActivity;
 import gui.tech_menu.ExcavatorChooserActivity;
-import packexcalib.exca.DataSaved;
-import services.ReadProjectService;
 import services.UpdateValuesService;
 import utils.MyData;
 

@@ -21,7 +21,6 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.boot_and_choose.Activity_Home_Page;
-import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset;
 import gui.dialogs_and_toast.DialogSlope;

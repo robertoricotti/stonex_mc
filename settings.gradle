@@ -12,7 +12,6 @@ dependencyResolutionManagement {
         maven{url 'https://mvnrepository.com/artifact/org.gavaghan/geodesy'}
         maven{url 'https://mvnrepository.com/artifact/com.android.support/customtabs'}
         maven{url 'https://mvnrepository.com/artifact/commons-io/commons-io'}
-
         maven {url "https://repo.osgeo.org/repository/geotools-releases/"}
         maven {url 'https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on'}
 
@@ -20,6 +19,6 @@ dependencyResolutionManagement {
 
     }
 }
-rootProject.name = "STX DIGGING"
+rootProject.name = "STX MC"
 include ':app'
 

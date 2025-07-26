@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+    <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+    </layouts>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="nuovo gradle">
-      <change afterPath="$PROJECT_DIR$/.idea/AndroidProjectSystem.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/libs/myCPLibs.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/cloud/S3Credentials.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/cloud/S3ManagerSingleton.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/ExcavatorMenuActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/ExcavatorMenuActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LaunchScreenActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LaunchScreenActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/StartActivityOnBootReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/StartActivityOnBootReceiver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/libs/myCPLibs.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/ExcavatorMenuActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketChooserActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketChooserActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/DebugExcavatorActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/DebugExcavatorActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydraulic_Setup.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydraulic_Setup.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydro_Lobby.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydro_Lobby.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/DialogPassword.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/DialogPassword.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Remote_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Remote_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging1D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging1D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging3D_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging3D_DXF.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/DiggingProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/DiggingProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill1D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill1D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/e_bubble/E_Bubble.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grade2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grade2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grading3D_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grading3D_DXF.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/profiles/ProfilesMenuActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/profiles/ProfilesMenuActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Projects.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Projects.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydraulic_setup.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydraulic_setup.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_lobby.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_lobby.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_machine_picker.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_machine_picker.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,7 +54,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Pixel_XL_API_33.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -59,33 +63,35 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="30KUcz8Yurs2Vt60CLuFiNUiSZO" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Android App.app.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
-      <module name="STX_DIGGING.app" />
+      <module name="STX_MC.app" />
       <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -165,6 +171,15 @@
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
     </task>
+    <task id="LOCAL-00001" summary="nuovo gradle">
+      <option name="closed" value="true" />
+      <created>1753376338224</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1753376338224</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -181,5 +196,31 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="nuovo gradle" />
     <option name="LAST_COMMIT_MESSAGE" value="nuovo gradle" />
+  </component>
+  <component name="play_dynamic_filters_status">
+    <option name="appIdToCheckInfo">
+      <map>
+        <entry key="com.example.stx_digging">
+          <value>
+            <CheckInfo lastCheckTimestamp="1753512683765" />
+          </value>
+        </entry>
+        <entry key="com.example.stx_digging.test">
+          <value>
+            <CheckInfo lastCheckTimestamp="1753512683765" />
+          </value>
+        </entry>
+        <entry key="com.example.stx_mc">
+          <value>
+            <CheckInfo lastCheckTimestamp="1753515839106" />
+          </value>
+        </entry>
+        <entry key="com.example.stx_mc.test">
+          <value>
+            <CheckInfo lastCheckTimestamp="1753515839105" />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

@@ -10,8 +10,9 @@ import android.os.Build;
 import com.cp.cputils.Apollo2;
 import com.cp.cputils.ApolloPro;
 import com.cp.cputils.shellcommand.CpCmd;
-import com.cpdevice.cpbase.CPSDKException;
+
 import com.cpdevice.cpcomm.frame.ICPCanFrame;
+
 import com.van.jni.VanCmd;
 
 
@@ -111,6 +112,7 @@ public class MyDeviceManager {
         if(Build.BRAND.equals("APOLLO2_10")){
             s="wm density 204";
             s2="settings put system font_scale 0.85";
+
             Apollo2 apollo2 = Apollo2.getInstance(activity);
             apollo2.exec(s);
             apollo2.exec(s2);
@@ -163,6 +165,8 @@ public class MyDeviceManager {
                     VanCmd.exec("echo \"100008\" >/dev/gpio_dev", 0);
                 } else if (GEN2) {
                     Apollo2.getInstance(activity).setOutput2(0);
+
+
                 }
                 break;
 

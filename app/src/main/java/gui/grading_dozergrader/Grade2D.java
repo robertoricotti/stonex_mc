@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
-import gui.boot_and_choose.ExcavatorMenuActivity;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.DialogSlope;
 import gui.dialogs_and_toast.Dialog_Sensors_Setting;
 import packexcalib.exca.DataSaved;
@@ -103,7 +103,7 @@ public class Grade2D extends AppCompatActivity {
     private void onClick() {
         back.setOnClickListener(view -> {
             disableAll();
-            startActivity(new Intent(this, ExcavatorMenuActivity.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
 
         });

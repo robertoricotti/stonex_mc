@@ -1,6 +1,5 @@
 package gui.tech_menu;
 
-import static gui.MyApp.KEY_LEVEL;
 import static gui.MyApp.errorCode;
 import static gui.boot_and_choose.LaunchScreenActivity.hasAuto;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
@@ -21,7 +20,6 @@ import com.example.stx_dig.R;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
-import gui.boot_and_choose.ExcavatorMenuActivity;
 import gui.buckets.BucketChooserActivity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.Hydro_Lobby;

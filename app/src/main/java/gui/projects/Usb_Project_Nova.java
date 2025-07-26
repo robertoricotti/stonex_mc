@@ -54,7 +54,6 @@ public class Usb_Project_Nova extends AppCompatActivity {
 
     private final BroadcastReceiver usbReceiver = new UsbReceiver();
     TextView textView, txt2;
-    int controllo = 0;
     private boolean enImport, enExport;
     RecyclerView recyclerProj, recyclerIn;
     ImageView back, update, read, write, usb_remove;
