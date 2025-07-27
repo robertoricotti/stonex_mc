@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray">
+    android:background="@drawable/sfondo_bottone_trasparente">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline32"
@@ -63,17 +63,13 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.33" />
 
-    <Button
+    <ImageView
         android:id="@+id/save"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
-        android:text="@string/save"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="22sp"
-        android:textStyle="bold"
+      android:src="@drawable/save_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exit"
         app:layout_constraintStart_toEndOf="@+id/load"
@@ -81,15 +77,11 @@
 
     <ImageButton
         android:id="@+id/load"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
-        android:backgroundTint="@color/yellow"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/yellow"
         android:gravity="center"
-        android:text="load"
-        android:textAllCaps="true"
-        android:textColor="@color/_____cancel_text"
-        android:textSize="25sp"
-        android:textStyle="bold"
+        android:padding="3dp"
         android:src="@drawable/upload"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -97,17 +89,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline89" />
 
-    <Button
+    <ImageView
         android:id="@+id/exit"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/dark_gray"
         android:gravity="center"
-        android:text="@string/exit"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="22sp"
-        android:textStyle="bold"
+        android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/save"
@@ -230,7 +218,7 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline32"
         app:layout_constraintEnd_toStartOf="@+id/guideline158"
@@ -245,7 +233,7 @@
         android:gravity="center"
         android:maxLength="10"
         android:maxLines="1"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:focusableInTouchMode="false"
         app:layout_constraintBottom_toTopOf="@+id/guideline32"
@@ -262,7 +250,7 @@
         android:focusableInTouchMode="false"
         android:gravity="center"
         android:maxLines="1"
-        android:textSize="30sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline67"
         app:layout_constraintEnd_toStartOf="@+id/guideline25"
@@ -278,7 +266,7 @@
         android:focusableInTouchMode="false"
         android:gravity="center"
         android:maxLines="1"
-        android:textSize="30sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline67"
         app:layout_constraintEnd_toStartOf="@+id/guideline16"
@@ -294,7 +282,7 @@
         android:focusableInTouchMode="false"
         android:gravity="center"
         android:maxLines="1"
-        android:textSize="30sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline67"
         app:layout_constraintEnd_toEndOf="parent"
@@ -322,7 +310,7 @@
         android:text="@string/bucket_length"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bucketLength"
         app:layout_constraintEnd_toStartOf="@+id/guideline158"
@@ -338,7 +326,7 @@
         android:text="@string/bucket_width"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bucketWidth"
         app:layout_constraintEnd_toStartOf="@+id/guideline16"
@@ -354,7 +342,7 @@
         android:text="L4:"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bucket_L4"
         app:layout_constraintEnd_toEndOf="parent"
@@ -371,7 +359,7 @@
         android:text="@string/bucket_angle"
         android:textAllCaps="true"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/guideline101"
@@ -388,7 +376,7 @@
         android:text="@string/bucket_flat_angle"
         android:textAllCaps="true"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
         app:layout_constraintEnd_toEndOf="parent"
@@ -417,7 +405,7 @@
             android:backgroundTint="@color/dark_gray"
             android:text="-"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <TextView
@@ -441,7 +429,7 @@
             android:backgroundTint="@color/dark_gray"
             android:text="+"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <Button
@@ -453,7 +441,7 @@
             android:backgroundTint="@color/dark_gray"
             android:text="@string/set"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -502,7 +490,7 @@
             android:backgroundTint="@color/dark_gray"
             android:text="@string/set"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Button
@@ -540,7 +528,7 @@
             android:backgroundTint="@color/dark_gray"
             android:text="-"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -564,7 +552,7 @@
             android:backgroundTint="@color/dark_gray"
             android:text="+"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <Button
@@ -576,7 +564,7 @@
             android:backgroundTint="@color/dark_gray"
             android:text="@string/set"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -589,7 +577,7 @@
         android:text="@string/txt_tiltangle"
         android:textAllCaps="true"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
         app:layout_constraintEnd_toStartOf="@+id/guideline101"
@@ -629,14 +617,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/bucketAngle"
-        app:layout_constraintStart_toEndOf="@+id/bucketAngle"
-        app:layout_constraintTop_toTopOf="@+id/guideline67"
-        app:srcCompat="@drawable/info" />
+
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -647,41 +628,12 @@
         app:layout_constraintTop_toTopOf="@+id/guideline67"
         app:srcCompat="@drawable/info" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_gray"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
-        app:layout_constraintStart_toEndOf="@+id/tiltLevelAngle"
-        app:layout_constraintTop_toTopOf="@+id/guideline68"
-        app:srcCompat="@drawable/info" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/bkl"
-        app:layout_constraintStart_toEndOf="@+id/tinyBucket"
-        app:layout_constraintTop_toTopOf="@+id/bkl"
-        app:srcCompat="@drawable/info" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_gray"
-        app:layout_constraintBottom_toTopOf="@+id/bucketWidth"
-        app:layout_constraintStart_toEndOf="@+id/bwdt"
-        app:layout_constraintTop_toTopOf="@+id/bwdt"
-        app:srcCompat="@drawable/info" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_gray"
-        app:layout_constraintBottom_toTopOf="@+id/bucket_L4"
-        app:layout_constraintStart_toEndOf="@+id/l4"
-        app:layout_constraintTop_toTopOf="@+id/l4"
-        app:srcCompat="@drawable/info" />
+
+
+
 
     <View
         android:layout_width="1dp"

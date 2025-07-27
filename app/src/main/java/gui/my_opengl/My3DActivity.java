@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +38,7 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset_3D;
+import gui.dialogs_and_toast.Dialog_Add_Pnezd;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_MapMode;
 import gui.dialogs_and_toast.Dialog_Point_Poly;
@@ -67,6 +67,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
+    static boolean PNEZD_FUNCTION;
     ImageView allarmeAlt;
     String bucketName;
     int indexMachineSelected,indexBucketSelected;
@@ -98,25 +99,26 @@ public class My3DActivity extends BaseClass {
     Dialog_PRJ_Folder dialogPrjFolder;
     DialogColors dialogColors;
     DialogAudioSystem dialogAudioSystem;
+    Dialog_Add_Pnezd dialogAddPnezd;
     private MyGLSurfaceView glSurfaceView;
 
     TextView boxLeft, boxCent, boxRight, txtCutFill, txtDist;
     LinearLayout sideBar, frameCent;
     ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto,gl_benne;
-    ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce;
-    ImageView gl_bright,gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
+    ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce,btn_pnezd;
+    ImageView gl_pnezd,gl_bright,gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
     public static boolean isPan, glFace, glPoint, glText, glVista3d, glPoly, glFilter, glGradient, glFill;
     DialogOffset_3D dialogOffset;
     Dialog_Point_Poly dialogPointPoly;
     static String whats = null;
     boolean serviseStrarted;
-
+    String pathToPNEZD;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkBooleans();
         serviseStrarted = false;
-        setContentView(R.layout.activity_my3_dactivity); // <-- il nome del layout
+        setContentView(R.layout.activity_my3_dactivity);
         progress = findViewById(R.id.progress);
         loading = findViewById(R.id.loading);
         progress.setClickable(true);
@@ -128,6 +130,10 @@ public class My3DActivity extends BaseClass {
             }
         }
         try {
+
+            pathToPNEZD = MyData.get_String("progettoSelected");
+            pathToPNEZD = pathToPNEZD.substring(0, pathToPNEZD.lastIndexOf("/"));
+            pathToPNEZD=pathToPNEZD+"/"+(pathToPNEZD.substring(pathToPNEZD.lastIndexOf("/"),pathToPNEZD.length()+1));
             if (whats == null) {
                 Intent intent = getIntent();
                 whats = intent.getStringExtra("whats");
@@ -204,6 +210,7 @@ public class My3DActivity extends BaseClass {
         gl_filter = findViewById(R.id.gl_filter);
         gl_folder = findViewById(R.id.gl_folder);
         gl_gradient = findViewById(R.id.gl_gradient);
+        gl_pnezd=findViewById(R.id.gl_pnezd);
         btn_hide = findViewById(R.id.btn_hide);
         btn_show = findViewById(R.id.btn_show);
         sideBar = findViewById(R.id.sideLayout);
@@ -212,6 +219,7 @@ public class My3DActivity extends BaseClass {
         btn_zoomP = findViewById(R.id.gl_zoomP);
         btn_zoomM = findViewById(R.id.gl_zoomM);
         btn_croce = findViewById(R.id.gl_croce);
+        btn_pnezd=findViewById(R.id.btn_pnezd);
         bucketEdge = findViewById(R.id.bucketEdge);
         boxLeft = findViewById(R.id.txtLeft);
         boxCent = findViewById(R.id.txtCent);
@@ -246,6 +254,7 @@ public class My3DActivity extends BaseClass {
         dialogOffset = new DialogOffset_3D(this);
         dialogPointPoly = new Dialog_Point_Poly(this);
         dialogBrightness=new DialogBrightness(this);
+        dialogAddPnezd=new Dialog_Add_Pnezd(this, pathToPNEZD);
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
@@ -405,6 +414,16 @@ public class My3DActivity extends BaseClass {
                 dialogGnssCoordinates.show();
             }
         });
+        gl_pnezd.setOnClickListener(view -> {
+            no_touch_menu.removeCallbacks(timeOutTouch);
+            no_touch_menu.postDelayed(timeOutTouch, delay);
+           PNEZD_FUNCTION=!PNEZD_FUNCTION;
+        });
+        btn_pnezd.setOnClickListener(view -> {
+            if(!dialogAddPnezd.dialog.isShowing()){
+                dialogAddPnezd.show();
+            }
+        });
         gl_folder.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
@@ -415,7 +434,7 @@ public class My3DActivity extends BaseClass {
 
                     String s2 = s.substring(s.lastIndexOf("/"));
                     boolean isDir = s.equals("/storage/emulated/0/StonexMachineControl/Projects");
-                    //Log.d("mioProgetto",s+"  "+s2);
+                    //Log.d("mioProgetto",pathToPNEZD+"  "+s2);
                     if (!isDir) {
                         if (!dialogPrjFolder.dialog.isShowing()) {
                             dialogPrjFolder.show(s);
@@ -663,7 +682,11 @@ public class My3DActivity extends BaseClass {
     public void updateUI() {
 
         try {
-            Log.d("FacceFil",DataSaved.filteredFaces.size()+"");
+            if(PNEZD_FUNCTION){
+                btn_pnezd.setVisibility(View.VISIBLE);
+            }else {
+                btn_pnezd.setVisibility(View.GONE);
+            }
             if (hAlarm) {
                 allarmeAlt.setVisibility(View.VISIBLE);
             } else {

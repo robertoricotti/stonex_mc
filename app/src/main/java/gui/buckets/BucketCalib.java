@@ -42,8 +42,8 @@ import utils.Utils;
 
 
 public class BucketCalib extends AppCompatActivity {
-    Button esc, save, offsetZeroMinus, offsetZeroPlus, offsetZero, offsetZeroFlat;
-    ImageButton load;
+    Button  offsetZeroMinus, offsetZeroPlus, offsetZero, offsetZeroFlat;
+    ImageView esc, save,load;
     EditText nameBucket, lengthBucket, widthBucket, L4Bucket;
     CheckBox off, left, right, top,topRev;
     TextView bucketAngle, bucketFlatAngle, bucketAngleOffset, bucketFlatAngleOffset, textLength, textWidth, textL4;
@@ -56,26 +56,20 @@ public class BucketCalib extends AppCompatActivity {
     int indexMeasure = 0;
 
     CustomQwertyDialog qwertyDialog;
-    ImageView infoAngolo, infoFlat;
+
     PopupImageDialog angolo, flat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (Build.BRAND.equals("SRT8PROS")) {
-            setContentView(R.layout.activity_bucket_calib_2);
-        } else if (Build.BRAND.equals("SRT7PROS")||Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("qti")||Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")) {
-            setContentView(R.layout.activity_bucket_calib_7);
-        } else {
-            setContentView(R.layout.activity_bucket_calib_7);
+        setContentView(R.layout.activity_bucket_calib_7);
 
-        }
+
         findView();
         init();
         onClick();
         onLongClick();
-        onTouch();
         updateUI();
 
     }
@@ -151,8 +145,7 @@ public class BucketCalib extends AppCompatActivity {
         bucketAngleOffset = findViewById(R.id.bucketAngleOffset);
         bucketFlatAngleOffset = findViewById(R.id.bucketAngleFlatOffset);
         load = findViewById(R.id.load);
-        infoAngolo = findViewById(R.id.infoAngolo);
-        infoFlat = findViewById(R.id.infoFlat);
+
         top = findViewById(R.id.cbTop);
         topRev = findViewById(R.id.cbTopRev);
 
@@ -372,25 +365,6 @@ public class BucketCalib extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private void onTouch() {
-        infoAngolo.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                angolo.show();
-            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                angolo.dialog.dismiss();
-            }
-            return false;
-        });
-        infoFlat.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                flat.show();
-            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                flat.dialog.dismiss();
-            }
-            return false;
-        });
-    }
 
     @Override
     protected void onDestroy() {

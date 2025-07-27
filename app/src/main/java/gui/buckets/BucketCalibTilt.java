@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -42,8 +43,8 @@ public class BucketCalibTilt extends AppCompatActivity {
     EditText name, bucketLength, bucketWidth, L4;
     Button minusTiltLevelAngle, plusTiltLevelAngle, setTiltLevelAngle;
     Button setFlatAngle, offsetZero, plusBuck, minusBuck;
-    Button save, exit;
-    ImageButton load;
+    ImageView save, exit;
+    ImageView load;
     TextView offsetBucketAngle, offsetFlatAngle, offsetTiltLevelAngle;
     TextView bucketAngleTv, flatAngleTv, tiltLevelAngleTv;
     CheckBox cbxOff, cbxLeft, cbxRight, cbTOff, cbTL, cbTR, top,topRev;
@@ -58,13 +59,8 @@ public class BucketCalibTilt extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (Build.BRAND.equals("SRT8PROS")) {
-            setContentView(R.layout.activity_bucket_tilt_calib);
-        } else if (Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") ||Build.BRAND.equals("APOLLO2_10")|| Build.BRAND.equals("qti")||Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")) {
-            setContentView(R.layout.activity_bucket_tilt_calib_7);
-        } else {
-            setContentView(R.layout.activity_bucket_tilt_calib_7);
-        }
+        setContentView(R.layout.activity_bucket_tilt_calib_7);
+
         findView();
         init();
         updateUI();
