@@ -66,25 +66,31 @@
         android:configChanges="orientation|screenSize|screenLayout"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/androidstxmcver01"
+        android:icon="@drawable/icona_mc_test_2_resized"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@drawable/androidstxmcver01"
+        android:roundIcon="@drawable/icona_mc_test_2_resized"
         android:supportsRtl="true"
         android:theme="@style/Theme.Stx_dig"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
-        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
-        <!-- android:networkSecurityConfig="@xml/network_security_config" !-->
+        <!-- android:networkSecurityConfig="@xml/network_security_config" ! -->
+        <activity
+            android:name="gui.boot_and_choose.LicenseFail_Activity"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
             android:name="gui.dialogs_user_settings.Nuova_User_Settings"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="gui.tech_menu.Nuova_Machine_Settings"
             android:autoRemoveFromRecents="true"
@@ -200,7 +206,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.grading_dozergrader.Grade2D"
             android:autoRemoveFromRecents="true"
@@ -278,7 +283,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.gps.BTPair"
             android:autoRemoveFromRecents="true"
@@ -297,7 +301,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.projects.PickProject"
             android:autoRemoveFromRecents="true"
@@ -406,7 +409,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.tech_menu.PickMachine"
             android:autoRemoveFromRecents="true"
@@ -431,7 +433,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.boot_and_choose.LaunchScreenActivity"
             android:autoRemoveFromRecents="true"

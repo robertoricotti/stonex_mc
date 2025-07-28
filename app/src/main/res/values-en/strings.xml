@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">STX MC</string>
+    <string name="error_license">License expired or missing\nPlease contact your local dealer to resolve the issue.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>
     <string name="save">SAVE</string>

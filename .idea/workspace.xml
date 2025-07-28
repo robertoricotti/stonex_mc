@@ -29,6 +29,12 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_license_fail.xml">
+        <config>
+          <state>Landscape</state>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -56,31 +62,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="before gestire revoke">
-      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LicenseFail_Activity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/restart_app.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_license_fail.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_MainPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LaunchScreenActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LaunchScreenActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LicenseActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/DebugExcavatorActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/DebugExcavatorActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_InfoApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_InfoApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_To_DueDi.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_To_DueDi.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/HeadingDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/HeadingDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/DialogViewport.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/ExUserSettings.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging3D_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging3D_DXF.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grading3D_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grading3D_DXF.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Projects.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/SaveFileDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/SaveFileDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/VerifyLicense.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-el/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-el/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-es/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-es/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-fr/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-fr/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ko/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ko/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-nl-rNL/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-nl-rNL/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-pt/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-pt/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ro-rRO/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ro-rRO/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-zh/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-zh/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +92,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Pixel_XL_API_33.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -153,6 +155,11 @@
     ]
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="android.template.-2025587020">
+      <recent name="gui.boot_and_choose" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="STX_MC.app" />
@@ -275,7 +282,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753697780606</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="before gestire revoke">
+      <option name="closed" value="true" />
+      <created>1753723438676</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1753723438676</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

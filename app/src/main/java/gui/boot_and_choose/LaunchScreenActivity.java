@@ -134,9 +134,7 @@ public class LaunchScreenActivity extends BaseClass {
 
                 try {
                     MyDeviceManager.hideBar(visibleActivity);
-                    MyDeviceManager.periph(visibleActivity);
 
-Log.d("DioMaier",licenseType+"");
                     if (licenseType > -1) {
                         createSystemFolders();
                         initColori();
@@ -146,8 +144,8 @@ Log.d("DioMaier",licenseType+"");
                     } else {
                         new CustomToast(LaunchScreenActivity.this, "LICENSE IS MISSED").show_alert();
                         MyDeviceManager.showBar(visibleActivity);
-                       // finishAndRemoveTask();
-                       // finish();
+                       startActivity(new Intent(LaunchScreenActivity.this,LicenseFail_Activity.class));
+                       finish();
                     }
                     hasAuto = licenseType == 5 ;
                 } catch (Exception e) {
