@@ -19,13 +19,7 @@ public class FullscreenActivity {
 
         WindowManager.LayoutParams layoutParams = myActivity.getWindow().getAttributes();
         myActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (myActivity instanceof LaunchScreenActivity) {
-            layoutParams.screenBrightness = 1.0f;
-        } else {
-            layoutParams.screenBrightness = DataSaved.myBrightness;
-        }
-       // myActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-
+        layoutParams.screenBrightness = DataSaved.myBrightness;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             myActivity.getWindow().setDecorFitsSystemWindows(false);
@@ -78,7 +72,7 @@ public class FullscreenActivity {
 
     public static void setFullScreen(Dialog dialog) {
         WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
-        layoutParams.screenBrightness = 1.0f; // Imposta il valore desiderato compreso tra 0.0f e 1.0f
+        layoutParams.screenBrightness = DataSaved.myBrightness; // Imposta il valore desiderato compreso tra 0.0f e 1.0f
         dialog.getWindow().setAttributes(layoutParams);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

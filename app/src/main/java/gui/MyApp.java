@@ -126,6 +126,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     @Override
     public void onCreate() {
         super.onCreate();
+
         UpdateValuesService.isUpodating = true;
         registerActivityLifecycleCallbacks(this);
         if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
@@ -264,8 +265,9 @@ git push
         }
 
         try {
-            LanguageSetter.setLocale(activity, MyData.get_String("language"));
             FullscreenActivity.setFullScreen(activity);
+            LanguageSetter.setLocale(activity, MyData.get_String("language"));
+
         } catch (Exception e) {
             Toast.makeText(activity,"Failed to set Language",Toast.LENGTH_LONG).show();
         }

@@ -528,15 +528,6 @@
 
 
 
-    <ImageButton
-        android:id="@+id/infoFlat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/bucketAngleFlat"
-        app:layout_constraintStart_toEndOf="@+id/bucketAngleFlat"
-        app:layout_constraintTop_toTopOf="@+id/guideline69"
-        app:srcCompat="@drawable/info" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

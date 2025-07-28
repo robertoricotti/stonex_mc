@@ -196,7 +196,7 @@ public class DataSaved {
     public static String progettoSelected_POINT;
     public static double offset_Z_antenna;
     public static int isWL;
-    public static float myBrightness;
+    public static float myBrightness=1.0f;
     public static double larghezzaBoom = 0.4;
     public static double larghezzaFrame = 2.2;
     public static double lunghezzaFrame = 3.5;

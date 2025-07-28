@@ -34,12 +34,12 @@ import utils.MyDeviceManager;
 
 public class WebSocketPlugin {
 
-    private static final String WS_URL = "ws://3.72.156.11:3001";
+    private static final String WS_URL = "wss://licensemc.stonexpositioning.com/api/v1/ws";
     private static final String SECRET_KEY_BASE64 = "Q6E2ZK3g1/XSO4VXxMGNehYmQUaJv8+M26j+xqlsgFs=";
 
     private static final String DEVICE_SN = MyDeviceManager.getDeviceSN(MyApp.visibleActivity);//passare
 
-    private static final String MAC_ADDRESS = MyDeviceManager.getMacAddress(MyApp.visibleActivity);//passare
+    private static final String MAC_ADDRESS = MyDeviceManager.getMacAddress(MyApp.visibleActivity).trim();//passare
 
     private static S3ManagerSingleton s3ManagerSingleton;
 
@@ -77,6 +77,7 @@ public class WebSocketPlugin {
                 currentTry = 0;
                 System.out.println("Connected to WebSocket server.");
                 try {
+
                     JSONObject payload = new JSONObject();
                     payload.put("serial_number", DEVICE_SN);
                     payload.put("mac_address", MAC_ADDRESS);
@@ -90,7 +91,7 @@ public class WebSocketPlugin {
                     message.put("encrypted", encryptedMessage.getString("encrypted"));
                     message.put("hmac", encryptedMessage.getString("hmac"));
 
-                    System.out.println("Sending authentication message...");
+                    Log.d("Auth",payload.toString());
                     ws.send(message.toString());
 
                 } catch (Exception e) {
@@ -112,7 +113,7 @@ public class WebSocketPlugin {
                             JSONObject update = new JSONObject();
                             update.put("type", "check_updates");
                             update.put("timeStamp", System.currentTimeMillis());
-                            update.put("licenceID", "none");
+                            update.put("licenceID", "none");//activation code
                             ws.send(update.toString());
 
                             s3ManagerSingleton.setWebSocket(ws);
@@ -123,10 +124,12 @@ public class WebSocketPlugin {
                             JSONObject data = response.optJSONObject("data");
                             if (data != null) {
                                 decryptAndAcknowledge(ws, data);
+
                             } else {
                                 // da sostituire con codice di revoke
                                 delayedSend(ws, new JSONObject().put("status", "restore_ack").put("type", "restore_ack").put("activated", true).put("timeStamp", System.currentTimeMillis()), 2000);
                             }
+
                             break;
 
                         case "no_updates":

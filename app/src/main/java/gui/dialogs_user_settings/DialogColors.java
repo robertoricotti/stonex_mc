@@ -2,26 +2,19 @@ package gui.dialogs_user_settings;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
-import gui.digging_excavator.Digging3D_DXF;
 import gui.draw_class.MyColorClass;
-import gui.grading_dozergrader.Grading3D_DXF;
-import gui.my_opengl.My3DActivity;
-import gui.projects.Activity_Crea_Superficie;
 import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -50,15 +43,15 @@ public class DialogColors {
 
     private void findView() {
         lumin = dialog.findViewById(R.id.luminosita);
-        titolo=dialog.findViewById(R.id.titoloF);
+        titolo = dialog.findViewById(R.id.titoloF);
         save = dialog.findViewById(R.id.save);
         exit = dialog.findViewById(R.id.exit);
         img0 = dialog.findViewById(R.id.img_0);
         img1 = dialog.findViewById(R.id.img_1);
         img2 = dialog.findViewById(R.id.img_2);
-        sel0=dialog.findViewById(R.id.sel0);
-        sel1=dialog.findViewById(R.id.sel1);
-        sel2=dialog.findViewById(R.id.sel2);
+        sel0 = dialog.findViewById(R.id.sel0);
+        sel1 = dialog.findViewById(R.id.sel1);
+        sel2 = dialog.findViewById(R.id.sel2);
         try {
             colorMode = MyData.get_Int("Tema_SW");
 
@@ -83,17 +76,17 @@ public class DialogColors {
             }
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
 
-                titolo.setText(activity.getResources().getString(R.string.lumen)+"\n"+progress*10+"%");
+                titolo.setText(activity.getResources().getString(R.string.lumen) + "\n" + progress * 10 + "%");
 
 
             }
         });
 
         save.setOnClickListener(view -> {
-            DataSaved.myBrightness=Float.parseFloat(String.valueOf((float) lumin.getProgress()/10));
+            DataSaved.myBrightness = Float.parseFloat(String.valueOf((float) lumin.getProgress() / 10));
             MyData.push("brightness", String.valueOf(DataSaved.myBrightness));
             DataSaved.temaSoftware = colorMode;
             MyData.push("Tema_SW", String.valueOf(colorMode));
@@ -133,7 +126,7 @@ public class DialogColors {
                     MyColorClass.colorX_2D = (activity.getResources().getColor(R.color.GROUNDred));
                     MyColorClass.colorY_2D = (activity.getResources().getColor(R.color.GROUNDblue));
                     //MyColorClass.groundTransparency = Color.parseColor("#50FFFF00");
-                   // MyColorClass.groundTransparency = Color.parseColor("#50BBBBBB");
+                    // MyColorClass.groundTransparency = Color.parseColor("#50BBBBBB");
                     MyColorClass.utilitiesColor = (activity.getResources().getColor(R.color.orange));
                     MyColorClass.jsonColor = (activity.getResources().getColor(R.color.red));
                     break;
@@ -177,9 +170,7 @@ public class DialogColors {
 
             }
             dialog.dismiss();
-            if (activity instanceof Digging3D_DXF|| activity instanceof Grading3D_DXF||activity instanceof Activity_Crea_Superficie|| activity instanceof My3DActivity) {
-                activity.recreate();
-            }
+            activity.recreate();
 
 
         });
@@ -205,8 +196,8 @@ public class DialogColors {
     }
 
     private void setup() {
-        lumin.setProgress((int) (DataSaved.myBrightness*10));
-        titolo.setText(activity.getResources().getString(R.string.lumen)+"\n"+String.format("%.0f",DataSaved.myBrightness*100)+"%");
+        lumin.setProgress((int) (DataSaved.myBrightness * 10));
+        titolo.setText(activity.getResources().getString(R.string.lumen) + "\n" + String.format("%.0f", DataSaved.myBrightness * 100) + "%");
         switch (colorMode) {
             case 0:
                 sel0.setVisibility(View.VISIBLE);

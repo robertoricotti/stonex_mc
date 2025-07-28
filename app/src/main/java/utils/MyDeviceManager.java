@@ -269,7 +269,8 @@ public class MyDeviceManager {
         if (GEN1) {
             return ApolloPro.getInstance(activity).getDeviceMacAddress();
         } else if (GEN2) {
-            return Apollo2.getInstance(activity).getDeviceMacAddress();
+            return Apollo2.getInstance(activity).getDeviceMacAddress()
+                    ;
         }
         return "";
     }

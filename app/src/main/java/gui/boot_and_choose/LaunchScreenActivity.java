@@ -45,8 +45,6 @@ import gui.projects.LayerAdapter;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import services.UpdateValuesService;
-import utils.FileCreator;
-import utils.FullscreenActivity;
 import utils.MyData;
 import utils.MyDeviceManager;
 import utils.VerifyLicense;
@@ -74,9 +72,8 @@ public class LaunchScreenActivity extends BaseClass {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen_dig);
-        FullscreenActivity.setFullScreen(this);
         MyDeviceManager.setSize(this);
-        Log.d("MyMac",MyDeviceManager.getMacAddress(this)+"\n"+MyDeviceManager.getDeviceSN(this));
+        Log.d("MyMac",MyDeviceManager.getMacAddress(this)+"    "+MyDeviceManager.getDeviceSN(this));
         WebSocketPlugin.getWebSocketPluginInstance(this).start();
 
         images = new int[]{R.drawable.img_step_1, R.drawable.img_step_2, R.drawable.img_step_3};

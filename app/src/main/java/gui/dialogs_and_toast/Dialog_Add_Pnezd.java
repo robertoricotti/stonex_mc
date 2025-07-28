@@ -34,11 +34,12 @@ public class Dialog_Add_Pnezd {
     public Dialog dialog;
     ImageView save,cancel,lista,removelast;
     String path="";
+    String filepath;
     ScrollView customView ;
     RecyclerView recyclerView ;
     boolean showingRecycler = false;
     public Dialog_Add_Pnezd(Activity activity,String path){
-        Log.d("toPNEZD", "Cartella: " + path);
+        Log.w("Dialog_Add_Pnezd", "Cartella: " + path);
         this.activity=activity;
         this.path=path;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
@@ -52,13 +53,14 @@ public class Dialog_Add_Pnezd {
 
         String folderName = folder.getName();
         File csvFile = new File(folder, folderName + ".csv");
-        path = csvFile.getAbsolutePath();  // aggiorna path al file vero
+        filepath = csvFile.getAbsolutePath();  // aggiorna path al file vero
 
         if (!csvFile.exists()) {
             try (FileWriter writer = new FileWriter(csvFile)) {
                 writer.write("P,N,E,Z,D\n"); // intestazione
                 writer.flush();
                 Log.d("Dialog_Add_Pnezd", "Creato file CSV: " + csvFile.getAbsolutePath());
+                filepath= csvFile.getAbsolutePath();
             } catch (IOException e) {
                 Log.e("Dialog_Add_Pnezd", "Errore nella creazione del CSV: " + e.getMessage());
             }
@@ -103,7 +105,7 @@ public class Dialog_Add_Pnezd {
             dialog.dismiss();
         });
         removelast.setOnClickListener(view -> {
-            File file = new File(path);
+            File file = new File(filepath);
             if (!file.exists()) {
                 Log.w("Dialog_Add_Pnezd", "File CSV non esiste.");
                 return;
@@ -141,7 +143,7 @@ public class Dialog_Add_Pnezd {
 
             // Se visibile, aggiorna la lista
             if (showingRecycler) {
-                List<PNEZDPoint> nuoviPunti = leggiCSV(path);
+                List<PNEZDPoint> nuoviPunti = leggiCSV(filepath);
                 PNEZDAdapter adapter = new PNEZDAdapter(nuoviPunti);
                 recyclerView.setAdapter(adapter);
             }
@@ -158,14 +160,14 @@ public class Dialog_Add_Pnezd {
             aggiungiPuntoAlCSV(nuovoPunto);
 
             if (showingRecycler) {
-                List<PNEZDPoint> punti = leggiCSV(path);
+                List<PNEZDPoint> punti = leggiCSV(filepath);
                 PNEZDAdapter adapter = new PNEZDAdapter(punti);
                 recyclerView.setAdapter(adapter);
             }
         });
         lista.setOnClickListener(v -> {
             if (!showingRecycler) {
-                List<PNEZDPoint> punti = leggiCSV(path);
+                List<PNEZDPoint> punti = leggiCSV(filepath);
                 PNEZDAdapter adapter = new PNEZDAdapter(punti);
                 recyclerView.setLayoutManager(new LinearLayoutManager(activity));
                 recyclerView.setAdapter(adapter);
@@ -212,7 +214,7 @@ public class Dialog_Add_Pnezd {
     private int getNextPointNumber() {
         int maxNumber = 0;
 
-        File file = new File(path);
+        File file = new File(filepath);
         if (!file.exists()) return 1; // se non esiste ancora
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -243,7 +245,7 @@ public class Dialog_Add_Pnezd {
         return maxNumber + 1;
     }
     private void aggiungiPuntoAlCSV(PNEZDPoint punto) {
-        try (FileWriter writer = new FileWriter(path, true)) {
+        try (FileWriter writer = new FileWriter(filepath, true)) {
             String riga = punto.getPointNumber() + "," +
                     punto.getNorthing() + "," +
                     punto.getEasting() + "," +

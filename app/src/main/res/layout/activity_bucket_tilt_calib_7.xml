@@ -617,24 +617,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/bucketAngleFlat"
-        app:layout_constraintStart_toEndOf="@+id/bucketAngleFlat"
-        app:layout_constraintTop_toTopOf="@+id/guideline67"
-        app:srcCompat="@drawable/info" />
-
-
-
-
-
-
-
-
     <View
         android:layout_width="1dp"
         android:layout_height="0dp"

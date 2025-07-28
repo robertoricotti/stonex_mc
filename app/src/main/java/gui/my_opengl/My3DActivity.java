@@ -132,8 +132,8 @@ public class My3DActivity extends BaseClass {
         try {
 
             pathToPNEZD = MyData.get_String("progettoSelected");
-            pathToPNEZD = pathToPNEZD.substring(0, pathToPNEZD.lastIndexOf("/"));
-            pathToPNEZD=pathToPNEZD+"/"+(pathToPNEZD.substring(pathToPNEZD.lastIndexOf("/"),pathToPNEZD.length()+1));
+            pathToPNEZD = pathToPNEZD.substring(0,pathToPNEZD.lastIndexOf("/"));
+            Log.d("Dialog_Add_Pnezd",pathToPNEZD);
             if (whats == null) {
                 Intent intent = getIntent();
                 whats = intent.getStringExtra("whats");

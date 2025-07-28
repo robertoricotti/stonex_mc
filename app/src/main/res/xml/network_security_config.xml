@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">3.72.156.11</domain>
+        <domain includeSubdomains="true">licensemc.stonexpositioning.com/api/v1/ws</domain>
     </domain-config>
 </network-security-config>

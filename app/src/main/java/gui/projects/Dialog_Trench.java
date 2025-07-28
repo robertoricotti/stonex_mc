@@ -18,7 +18,6 @@ import com.example.stx_dig.R;
 import dxf.Point3D;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
-import okhttp3.internal.Util;
 import utils.FullscreenActivity;
 import utils.MyData;
 import utils.Utils;

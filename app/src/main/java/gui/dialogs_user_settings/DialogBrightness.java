@@ -3,13 +3,11 @@ package gui.dialogs_user_settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -34,6 +32,7 @@ public class DialogBrightness {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
     }
+
     public void show() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -54,30 +53,32 @@ public class DialogBrightness {
         onClick();
 
     }
-    private void findView(){
+
+    private void findView() {
 
         lumin = dialog.findViewById(R.id.luminosita);
         save = dialog.findViewById(R.id.save);
         exit = dialog.findViewById(R.id.exit);
-        titolo= dialog.findViewById(R.id.titoloF);
+        titolo = dialog.findViewById(R.id.titoloF);
     }
+
     private void init() {
-        lumin.setProgress((int) (DataSaved.myBrightness*10));
-        titolo.setText(activity.getResources().getString(R.string.lumen)+"\n\n"+String.format("%.0f",DataSaved.myBrightness*100)+"%");
+        lumin.setProgress((int) (DataSaved.myBrightness * 10));
+        titolo.setText(activity.getResources().getString(R.string.lumen) + "\n\n" + String.format("%.0f", DataSaved.myBrightness * 100) + "%");
 
     }
-    private void onClick(){
-        exit.setOnClickListener((View v) ->{
+
+    private void onClick() {
+        exit.setOnClickListener((View v) -> {
             dialog.dismiss();
         });
 
         save.setOnClickListener((View v) -> {
-            DataSaved.myBrightness=Float.parseFloat(String.valueOf((float) lumin.getProgress()/10));
+            DataSaved.myBrightness = Float.parseFloat(String.valueOf((float) lumin.getProgress() / 10));
             MyData.push("brightness", String.valueOf(DataSaved.myBrightness));
-            WindowManager.LayoutParams layoutParams = activity.getWindow().getAttributes();
-            layoutParams.screenBrightness = DataSaved.myBrightness; // Imposta il valore desiderato compreso tra 0.0f e 1.0f
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+            FullscreenActivity.setFullScreen(activity);
             dialog.dismiss();
+
         });
         lumin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -92,10 +93,10 @@ public class DialogBrightness {
             }
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
 
-                titolo.setText(activity.getResources().getString(R.string.lumen)+"\n\n"+progress*10+"%");
+                titolo.setText(activity.getResources().getString(R.string.lumen) + "\n\n" + progress * 10 + "%");
 
 
             }

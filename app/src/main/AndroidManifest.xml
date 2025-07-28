@@ -75,6 +75,7 @@
         android:theme="@style/Theme.Stx_dig"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
         <!-- android:networkSecurityConfig="@xml/network_security_config" !-->
 
@@ -282,12 +283,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.e_bubble.E_Bubble"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="gui.gps.BTPair"
             android:autoRemoveFromRecents="true"
@@ -450,12 +446,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.boot_and_choose.ExcavatorMenuActivity"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="gui.boot_and_choose.LaunchScreenActivity"
             android:autoRemoveFromRecents="true"
