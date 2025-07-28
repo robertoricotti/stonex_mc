@@ -34,7 +34,6 @@ import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
-import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -79,7 +78,7 @@ public class SaveFileDialog {
     }
 
     private void findView() {
-        isPRO= MyApp.KEY_LEVEL==4||MyApp.KEY_LEVEL==36;
+        isPRO= MyApp.licenseType >1;
         save = dialog.findViewById(R.id.save);
         exit = dialog.findViewById(R.id.exit);
         fileName = dialog.findViewById(R.id.fileName);

@@ -19,7 +19,6 @@ import com.example.stx_dig.BuildConfig;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
-import gui.boot_and_choose.LicenseActivity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
@@ -27,7 +26,6 @@ import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_SSID;
 import gui.dialogs_user_settings.Dialog_QR;
 import gui.gps.Nuovo_Gps;
-import packexcalib.exca.DataSaved;
 import services.UpdateValuesService;
 import utils.LanguageSetter;
 import utils.MyData;
@@ -189,10 +187,7 @@ public class Drill_MainPage extends BaseClass {
 
         });
         keyLic.setOnClickListener(view -> {
-            disableAll();
-            startActivity(new Intent(getApplicationContext(), LicenseActivity.class));
-            overridePendingTransition(0, 0);
-            finish();
+
         });
 
 

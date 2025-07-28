@@ -54,7 +54,6 @@ import gui.gps.NmeaGenerator;
 import gui.grade_draw_class.Grade_DrawDXF_Layer1;
 import gui.grade_draw_class.Grade_DrawDXF_Layer2;
 import gui.projects.Dialog_PRJ_Folder;
-import gui.projects.Projects;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
@@ -441,12 +440,12 @@ public class My3DActivity extends BaseClass {
                         }
                     } else {
                         disableAll();
-                        startActivity(new Intent(this, Projects.class));
+                        startActivity(new Intent(this, Activity_Home_Page.class));
                         finish();
                     }
                 } catch (Exception e) {
                     disableAll();
-                    startActivity(new Intent(this, Projects.class));
+                    startActivity(new Intent(this, Activity_Home_Page.class));
                     finish();
                 }
             }

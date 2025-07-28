@@ -1,6 +1,6 @@
 package gui.dialogs_and_toast;
 
-import static gui.MyApp.KEY_LEVEL;
+import static gui.MyApp.licenseType;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -70,7 +70,7 @@ public class Dialog_To_DueDi {
         });
         to1d.setOnClickListener(view -> {
             DataSaved.portView=0;
-            if (KEY_LEVEL > 0) {
+            if (licenseType > -1) {
                 activity.startActivity(new Intent(activity, Digging1D.class));
                 activity.finish();
                 dialog.dismiss();
@@ -81,7 +81,7 @@ public class Dialog_To_DueDi {
         });
         to2d.setOnClickListener(view -> {
             DataSaved.portView=1;
-            if (KEY_LEVEL > 1) {
+            if (licenseType > 0) {
                 activity.startActivity(new Intent(activity, Digging2D.class));
                 activity.finish();
                 dialog.dismiss();

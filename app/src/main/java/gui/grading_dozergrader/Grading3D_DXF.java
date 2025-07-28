@@ -1,6 +1,6 @@
 package gui.grading_dozergrader;
 
-import static gui.MyApp.KEY_LEVEL;
+import static gui.MyApp.licenseType;
 import static gui.MyApp.hAlarm;
 import static gui.grade_draw_class.Grade_Top_View_DXF.giroFrecciaDozer;
 import static services.ReadProjectService.isFinishedDTM;
@@ -43,7 +43,6 @@ import gui.gps.NmeaGenerator;
 import gui.grade_draw_class.Grade_DrawDXF_Layer2;
 import gui.grade_draw_class.Grade_Top_View_DXF;
 import gui.projects.Dialog_PRJ_Folder;
-import gui.projects.Projects;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
@@ -202,7 +201,7 @@ public class Grading3D_DXF extends BaseClass {
     }
 
     private void init() {
-        if (KEY_LEVEL == 11 || KEY_LEVEL == 33 || KEY_LEVEL == 34 || KEY_LEVEL == 35 || KEY_LEVEL == 36) {
+        if (licenseType == 5 ) {
             hydro_set.setVisibility(View.VISIBLE);
         } else {
             hydro_set.setVisibility(View.GONE);
@@ -440,13 +439,13 @@ public class Grading3D_DXF extends BaseClass {
                         }
                     } else {
                         disableAll();
-                        startActivity(new Intent(this, Projects.class));
+                        startActivity(new Intent(this, Activity_Home_Page.class));
                         overridePendingTransition(0, 0);
                         finish();
                     }
                 } catch (Exception e) {
                     disableAll();
-                    startActivity(new Intent(this, Projects.class));
+                    startActivity(new Intent(this, Activity_Home_Page.class));
                     overridePendingTransition(0, 0);
                     finish();
                 }
@@ -863,7 +862,7 @@ public class Grading3D_DXF extends BaseClass {
         } else {
             txtwait.setVisibility(View.VISIBLE);
         }
-        if (MyApp.KEY_LEVEL == 33 || MyApp.KEY_LEVEL == 34 || MyApp.KEY_LEVEL == 35 || MyApp.KEY_LEVEL == 36) {
+        if (MyApp.licenseType == 5) {
             if (CanService.isAutoL) {
                 autoL.setVisibility(View.VISIBLE);
                 autoL.setImageResource(R.drawable.auto_test_rosso);

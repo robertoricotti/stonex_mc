@@ -69,7 +69,6 @@ import gui.profiles.ProfileCalibManual;
 import gui.profiles.ProfilesMenuActivity;
 import gui.projects.Activity_Crea_Superficie;
 import gui.projects.PickProject;
-import gui.projects.Projects;
 import gui.projects.Remote_Activity;
 import gui.projects.Usb_Project_Nova;
 import gui.tech_menu.Boom1Calib;
@@ -101,12 +100,13 @@ import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
     public static int errorCode;
-    public static int KEY_LEVEL;
+    public static String activationCode="none";
+    public static String restoreCode;
+    public static int licenseType =-1;
     public static final long timeUI = 65;
     public static String[] geoidAll=new String[]{};
     public static String GEOIDE_PATH = null;
     public static String gridFile_GR = "";
-    public static String LICENSE_KEY;
     public static String DEVICE_SN = "";
     public static Activity visibleActivity;
     public static String Actualactivity;
@@ -476,8 +476,6 @@ Log.d("tetsCRS",DataSaved.S_CRS);
             ((Activity_Crea_Superficie) activity).updateUI();
         } else if (activity instanceof Hydraulic_Setup) {
             ((Hydraulic_Setup) activity).updateUI();
-        } else if (activity instanceof Projects) {
-            ((Projects) activity).updateUI();
         } else if (activity instanceof My3DActivity) {
             ((My3DActivity) activity).updateUI();
 

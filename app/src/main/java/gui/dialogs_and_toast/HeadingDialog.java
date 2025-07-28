@@ -17,10 +17,10 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.digging_excavator.Digging2D;
 import gui.digging_excavator.Digging_CutAndFill2D;
 import gui.projects.Activity_Crea_Superficie;
-import gui.projects.Projects;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
@@ -253,7 +253,7 @@ public class HeadingDialog {
         });
         yes.setOnClickListener((View v) -> {
             if (activity instanceof Activity_Crea_Superficie ) {
-                activity.startActivity(new Intent(activity, Projects.class));
+                activity.startActivity(new Intent(activity, Activity_Home_Page.class));
                 activity.finish();
 
             } else {

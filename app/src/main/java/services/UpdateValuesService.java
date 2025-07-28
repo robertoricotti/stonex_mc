@@ -817,7 +817,7 @@ public class UpdateValuesService extends Service {
 
 
                 try {
-                    MyApp.LICENSE_KEY = MyData.get_String("licenza");
+                    MyApp.activationCode = MyData.get_String("licenza");
                 } catch (Exception e) {
 
                 }

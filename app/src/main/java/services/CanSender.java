@@ -4,7 +4,6 @@ package services;
 import static gui.MyApp.isApollo;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
-import static packexcalib.gnss.CRS_Strings._NONE;
 import static serial.SerialReadThread.serialEmpty;
 import static services.CanService.nmeaSTX_Disc;
 
@@ -86,7 +85,7 @@ public class CanSender extends Service {
 
         @Override
         public void run() {
-            if (MyApp.KEY_LEVEL == 33 || MyApp.KEY_LEVEL == 34 || MyApp.KEY_LEVEL == 35 || MyApp.KEY_LEVEL == 36) {
+            if (MyApp.licenseType == 5) {
                 try {
 
                     slope = UnitsConversion.limitInt((int) (ExcavatorLib.correctRoll * 100), Short.MIN_VALUE, Short.MAX_VALUE);

@@ -47,7 +47,6 @@ import gui.draw_class.Top_View_DXF;
 import gui.gps.NmeaGenerator;
 import gui.grade_draw_class.Grade_Top_View_DXF;
 import gui.projects.Dialog_PRJ_Folder;
-import gui.projects.Projects;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
@@ -469,13 +468,13 @@ public class Digging3D_DXF extends BaseClass {
                         }
                     } else {
                         disableAll();
-                        startActivity(new Intent(this, Projects.class));
+                        startActivity(new Intent(this, Activity_Home_Page.class));
                         overridePendingTransition(0, 0);
                         finish();
                     }
                 } catch (Exception e) {
                     disableAll();
-                    startActivity(new Intent(this, Projects.class));
+                    startActivity(new Intent(this, Activity_Home_Page.class));
                     overridePendingTransition(0, 0);
                     finish();
                 }

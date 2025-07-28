@@ -1,6 +1,6 @@
 package gui.boot_and_choose;
 
-import static gui.MyApp.KEY_LEVEL;
+import static gui.MyApp.licenseType;
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static services.ReadProjectService.numbers;
@@ -29,7 +29,6 @@ import gui.dialogs_and_toast.Dialog_Create_New_Prj;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
 import gui.dialogs_and_toast.Dialog_To_DueDi;
-import gui.dialogs_user_settings.ExUserSettings;
 import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.projects.PickProject;
 import gui.tech_menu.ExcavatorChooserActivity;
@@ -136,7 +135,7 @@ public class Activity_Home_Page extends AppCompatActivity {
 
         progressBar.setVisibility(View.INVISIBLE);
         stringsStat.setVisibility(View.INVISIBLE);
-        if (KEY_LEVEL < 3) {
+        if (licenseType < 2) {
             newProj.setAlpha(0.3f);
             toDig.setAlpha(0.3f);
             joblist.setAlpha(0.3f);
@@ -178,7 +177,7 @@ public class Activity_Home_Page extends AppCompatActivity {
             }
         });
         newProj.setOnClickListener(view -> {
-            if (KEY_LEVEL > 2) {
+            if (licenseType > 1) {
                 if (!dialogCreateNewPrj.dialog.isShowing()) {
                     dialogCreateNewPrj.show();
                 }
@@ -193,7 +192,7 @@ public class Activity_Home_Page extends AppCompatActivity {
 
         });
         joblist.setOnClickListener((View v) -> {
-            if (KEY_LEVEL > 2) {
+            if (licenseType > 1) {
                 enableAll(false);
                 startActivity(new Intent(this, PickProject.class));
                 finish();
@@ -208,7 +207,7 @@ public class Activity_Home_Page extends AppCompatActivity {
         toDig.setOnClickListener((View v) -> {
 
 
-            if (KEY_LEVEL > 2) {
+            if (licenseType > 1) {
                 enableAll(false);
                 progressBar.setVisibility(View.VISIBLE);
                 stringsStat.setVisibility(View.VISIBLE);

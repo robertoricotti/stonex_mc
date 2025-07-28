@@ -40,7 +40,7 @@ import dxf.Face3D;
 import dxf.Point3D;
 import dxf.Polyline;
 import gui.MyApp;
-import gui.boot_and_choose.LicenseActivity;
+import gui.boot_and_choose.Activity_Home_Page;
 import gui.my_opengl.My3DActivity;
 import gui.projects.PickProject;
 import landxml.LandXMLData;
@@ -137,7 +137,7 @@ public class ReadProjectService extends Service {
             }
 
 
-            if (MyApp.KEY_LEVEL == 4 || MyApp.KEY_LEVEL == 36 || MyApp.KEY_LEVEL == 3 || MyApp.KEY_LEVEL == 35) {
+            if (MyApp.licenseType >1) {
                 if (!nomeProgettoTRM.equals("")) {
                     try {
                         if (mettiPoly) {
@@ -183,7 +183,7 @@ public class ReadProjectService extends Service {
                         }
                         parserStatus = "Reading TRM...";
                         if (fileExtensionTRM.equalsIgnoreCase("dxf") || fileExtensionTRM.equalsIgnoreCase("pstx")) {
-                            if (MyApp.KEY_LEVEL == 4 || MyApp.KEY_LEVEL == 36) {
+                            if (MyApp.licenseType >1) {
                                 isFinishedDTM = false;
 
                                 DataSaved.projectTAG = "DXF";
@@ -316,7 +316,7 @@ public class ReadProjectService extends Service {
                             }
 
                         } else if (fileExtensionTRM.equalsIgnoreCase("xml")) {
-                            if (MyApp.KEY_LEVEL == 4 || MyApp.KEY_LEVEL == 36) {
+                            if (MyApp.licenseType >1) {
 
                                 isFinishedDTM = false;
                                 DataSaved.projectTAG = "XML";
@@ -543,8 +543,7 @@ public class ReadProjectService extends Service {
             @Override
             public void run() {
                 DataSaved.isAutoSnap = 0;
-
-                Intent intent = new Intent(MyApp.visibleActivity, LicenseActivity.class);
+                Intent intent = new Intent(MyApp.visibleActivity, Activity_Home_Page.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 MyApp.visibleActivity.finish();

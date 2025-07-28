@@ -48,7 +48,6 @@ import java.util.List;
 
 import event_bus.CMD_Event;
 import event_bus.CanEvents;
-import gui.MyApp;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.Serial_Msg_Debug;
 import gui.dialogs_and_toast.CustomMenu;
@@ -515,30 +514,10 @@ public class Nuovo_Gps extends AppCompatActivity {
         });
         back.setOnClickListener(view -> {
             if (!showWebUI) {
-                switch (MyApp.KEY_LEVEL) {
-                    case 10:
-                    case 11:
-                        Intent intent1;
-                        intent1 = new Intent(this, ExcavatorChooserActivity.class);
-                        startActivity(intent1);
-                        finish();
-                        break;
-
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 33:
-                    case 34:
-                    case 35:
-                    case 36:
-                        Intent intent;
-                        intent = new Intent(this, ExcavatorChooserActivity.class);
-                        startActivity(intent);
-                        finish();
-                        break;
-                }
-
+                Intent intent;
+                intent = new Intent(this, ExcavatorChooserActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
         gpsStat.setOnClickListener(view -> {

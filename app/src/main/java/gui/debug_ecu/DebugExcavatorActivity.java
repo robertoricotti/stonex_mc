@@ -1,7 +1,7 @@
 package gui.debug_ecu;
 
 
-import static gui.MyApp.KEY_LEVEL;
+import static gui.MyApp.licenseType;
 import static services.CanService.boom1Disc;
 import static services.CanService.boom2Disc;
 import static services.CanService.bucketDisc;
@@ -404,7 +404,7 @@ public class DebugExcavatorActivity extends BaseClass {
             if (profile == 0) {
                 switch (typeView) {
                     case 0:
-                        if(KEY_LEVEL>0) {
+                        if(licenseType >-1) {
                             startActivity(new Intent(this, Digging1D.class));
                             finish();
                         }else {
@@ -413,7 +413,7 @@ public class DebugExcavatorActivity extends BaseClass {
                         }
                         break;
                     case 1:
-                        if(KEY_LEVEL>1) {
+                        if(licenseType >0) {
                             startActivity(new Intent(this, Digging2D.class));
                             finish();
                         }else {
@@ -423,7 +423,7 @@ public class DebugExcavatorActivity extends BaseClass {
                         break;
                     case 2:
                     case 3:
-                        if(KEY_LEVEL>2) {
+                        if(licenseType >1) {
                             progressBar.setVisibility(View.VISIBLE);
                             startService(new Intent(this, ReadProjectService.class));
                         }else {

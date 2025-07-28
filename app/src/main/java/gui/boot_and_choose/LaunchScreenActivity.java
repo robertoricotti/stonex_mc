@@ -1,7 +1,8 @@
 package gui.boot_and_choose;
 
-import static gui.MyApp.KEY_LEVEL;
+import static gui.MyApp.licenseType;
 import static gui.MyApp.folderPath;
+import static gui.MyApp.restoreCode;
 import static gui.MyApp.visibleActivity;
 
 import android.Manifest;
@@ -30,7 +31,11 @@ import com.example.stx_dig.BuildConfig;
 import com.example.stx_dig.R;
 import com.opencsv.CSVWriter;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -47,7 +52,7 @@ import packexcalib.exca.ExcavatorLib;
 import services.UpdateValuesService;
 import utils.MyData;
 import utils.MyDeviceManager;
-import utils.VerifyLicense;
+import utils.NetworkUtils;
 
 
 @SuppressLint("CustomSplashScreen")
@@ -72,12 +77,11 @@ public class LaunchScreenActivity extends BaseClass {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen_dig);
+        readCode();
         MyDeviceManager.setSize(this);
         Log.d("MyMac",MyDeviceManager.getMacAddress(this)+"    "+MyDeviceManager.getDeviceSN(this));
         WebSocketPlugin.getWebSocketPluginInstance(this).start();
-
         images = new int[]{R.drawable.img_step_1, R.drawable.img_step_2, R.drawable.img_step_3};
-
         isAutoStart = 0;
         DataSaved.lastProjectName = "";
         DataSaved.lastProjectNamePOLY = "";
@@ -96,6 +100,16 @@ public class LaunchScreenActivity extends BaseClass {
         Dialog_Trench.rightW_d=0.5f;
         LayerAdapter.selectA=true;
 
+        if(licenseType==-1) {
+            if (NetworkUtils.isInternetAvailable(this)) {
+                //cerca dal server
+                WebSocketPlugin.getWebSocketPluginInstance(this).start();
+            } else {
+                readCode();
+                //cerca in locale
+            }
+        }
+
 
         count = new CountDownTimer(3000, 1) {
             @Override
@@ -110,32 +124,37 @@ public class LaunchScreenActivity extends BaseClass {
 
                 MyData.push("BUILD", deviceId.toString());
 
+
                 startMe();
+
 
             }
 
             private void startMe() {
+
                 try {
                     MyDeviceManager.hideBar(visibleActivity);
                     MyDeviceManager.periph(visibleActivity);
-                    MyApp.LICENSE_KEY = MyData.get_String("licenza");
-                    MyApp.KEY_LEVEL = VerifyLicense.getTypeLicense(MyData.get_String("licenza"));
-                    if (VerifyLicense.getTypeLicense(MyApp.LICENSE_KEY) > 0) {
+
+Log.d("DioMaier",licenseType+"");
+                    if (licenseType > -1) {
                         createSystemFolders();
                         initColori();
                         startService(new Intent(visibleActivity, UpdateValuesService.class));
-                        (new Handler()).postDelayed(LaunchScreenActivity.this::goMain, 4000);
+                        (new Handler()).postDelayed(LaunchScreenActivity.this::goMain, 3500);
 
                     } else {
-                        new CustomToast(LaunchScreenActivity.this, "ENTER A LICENSE CODE").show_alert();
-                        startActivity(new Intent(LaunchScreenActivity.this, LicenseActivity.class));
-                        finish();
+                        new CustomToast(LaunchScreenActivity.this, "LICENSE IS MISSED").show_alert();
+                        MyDeviceManager.showBar(visibleActivity);
+                       // finishAndRemoveTask();
+                       // finish();
                     }
-                    hasAuto = KEY_LEVEL == 11 || KEY_LEVEL == 33 || KEY_LEVEL == 34 || KEY_LEVEL == 35 || KEY_LEVEL == 36;
+                    hasAuto = licenseType == 5 ;
                 } catch (Exception e) {
                     new CustomToast(LaunchScreenActivity.this, "No License CODE").show_error();
-                    startActivity(new Intent(LaunchScreenActivity.this, LicenseActivity.class));
+                    finishAndRemoveTask();
                     finish();
+
                 }
             }
         };
@@ -144,8 +163,6 @@ public class LaunchScreenActivity extends BaseClass {
 
         init();
         MyData.push("machinestate", "0");
-        //Log.d("Apollo_Brand",Build.MANUFACTURER);
-
 
         startImageSwitch();
     }
@@ -361,7 +378,7 @@ public class LaunchScreenActivity extends BaseClass {
         } catch (Exception e) {
             //do nothing
         }
-        scriviLic(MyApp.LICENSE_KEY);
+
     }
 
     private void requestPermission() {
@@ -394,7 +411,7 @@ public class LaunchScreenActivity extends BaseClass {
             MyDeviceManager.OUT1(visibleActivity, 0);
         }
 
-        switch (MyApp.KEY_LEVEL) {
+        switch (MyApp.licenseType) {
             case 10:
             case 11:
                 Intent intent1;
@@ -403,14 +420,12 @@ public class LaunchScreenActivity extends BaseClass {
                 finish();
                 break;
 
+            case 0:
             case 1:
             case 2:
             case 3:
             case 4:
-            case 33:
-            case 34:
-            case 35:
-            case 36:
+            case 5:
                 Intent intent;
                 intent = new Intent(this, Activity_Home_Page.class);
                 startActivity(intent);
@@ -511,34 +526,7 @@ public class LaunchScreenActivity extends BaseClass {
         }
     }
 
-    private void scriviLic(String licenza) {
-        Log.e("Scrittura", "Init");
-        String s = "";
-        if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
-            Apollo2 apollo2 = Apollo2.getInstance(LaunchScreenActivity.this);
-            s = apollo2.getDeviceSN();
-        } else {
-            ApolloPro apolloPro = ApolloPro.getInstance(LaunchScreenActivity.this);
-            s = apolloPro.getDeviceSN();
-        }
-        String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines";
-        String fileNameL = "Lic.csv";
-        File file1 = new File(pathL, fileNameL);
-        CSVWriter writer1 = null;
 
-        try {
-            writer1 = new CSVWriter(new FileWriter(file1));
-        } catch (IOException e) {
-            Log.e("Scrittura", Log.getStackTraceString(e));
-        }
-        String[] lic = {s, licenza};
-        writer1.writeNext(lic);
-        try {
-            writer1.close();
-        } catch (IOException e) {
-            Log.e("Scrittura", Log.getStackTraceString(e));
-        }
-    }
 
     private void startImageSwitch() {
         handler.postDelayed(new Runnable() {
@@ -554,6 +542,45 @@ public class LaunchScreenActivity extends BaseClass {
         }, 1250);
     }
 
+    public void readCode() {
+        try {
+            // Percorso del file
+            String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines/License.json";
+            File file = new File(pathL);
+
+            if (!file.exists()) {
+                System.out.println("File non trovato: " + pathL);
+                return;
+            }
+
+            // Leggi contenuto del file
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            reader.close();
+
+            // Parsing JSON
+            JSONObject jsonObject = new JSONObject(sb.toString());
+
+            // Ripopola i campi
+            MyApp.activationCode = jsonObject.getString("activationCode");
+            MyApp.restoreCode = jsonObject.getString("restoreCode");
+            String deviceSN = jsonObject.getString("deviceSN");
+            licenseType = jsonObject.getInt("licenseType");
+            String userID = jsonObject.getString("userID");
+            String category = jsonObject.getString("category");
+            long timestamp = jsonObject.getLong("timestamp");
+            String expiry = jsonObject.getString("expiry");
+
+            System.out.println("Campi ricaricati correttamente da JSON");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

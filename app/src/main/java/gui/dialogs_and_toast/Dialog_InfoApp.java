@@ -64,7 +64,7 @@ public class Dialog_InfoApp {
             s = s.replace("/storage/emulated/0/StonexMachineControl", "");
             s = s.substring(0, s.lastIndexOf("/"));
         } catch (Exception e) {
-            s="";
+            s = "";
         }
 
         String s2 = "";
@@ -79,7 +79,7 @@ public class Dialog_InfoApp {
                 "STX MC v " + BuildConfig.VERSION_NAME + "\n\n" +
                         "Device: " + Build.BRAND + "  S/N: " + s2 + "\n\n" +
                         "Support: " + MyData.get_String("techInfo") + "\n\n" +
-                        "License Code: " + MyApp.LICENSE_KEY + " " + licenzaStringa() + "\n\n" +
+                        "License Type:" + licenzaStringa() + "\n\n" +
                         "Machine: " + DataSaved.machineName + "\n\n" +
                         "Project: " + s + "\n" +
                         "CRS: " + MyData.get_String("LastSP") + "\n" +
@@ -95,53 +95,15 @@ public class Dialog_InfoApp {
     }
 
     private String licenzaStringa() {
-        switch (MyApp.KEY_LEVEL) {
-            case -1:
-            case 0:
-                return "No License";
-
-
-            case 1:
-                return "Dig 1D License No AUTO ";
-
-
-            case 2:
-                return "Dig 1D / 2D License No AUTO";
-
-
-            case 3:
-                return "MC 1D / 2D / 3DEasy License No AUTO";
-
-
-            case 4:
-                return "MC 1D / 2D / 3DPRO License No AUTO";
-
-
-            case 10:
-                return "Drill License No AUTO";
-
-
-            case 11:
-                return "Drill License + AUTO";
-
-
-            case 33:
-                return "MC 1D License AUTO ENABLED";
-
-
-            case 34:
-                return "MC 1D / 2D License AUTO ENABLED";
-
-
-            case 35:
-                return "MC 1D / 2D / 3DEasy License AUTO ENABLED";
-
-
-            case 36:
-                return "MC 1D / 2D / 3DPRO License AUTO ENABLED";
-
-
-        }
-        return "";
+        return switch (MyApp.licenseType) {
+            case -1 -> "No License";
+            case 0 -> "Dig 1D License No AUTO ";
+            case 1 -> "Dig 1D / 2D License No AUTO";
+            case 2 -> "MC 1D / 2D / 3DPRO License No AUTO";
+            case 3 -> "MC 1D License AUTO ENABLED";
+            case 4 -> "MC 1D / 2D License AUTO ENABLED";
+            case 5 -> "MC 1D / 2D / 3DPRO License AUTO ENABLED";
+            default -> "";
+        };
     }
 }

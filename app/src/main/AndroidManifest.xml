@@ -200,12 +200,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.boot_and_choose.LicenseActivity"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="gui.grading_dozergrader.Grade2D"
             android:autoRemoveFromRecents="true"
@@ -302,12 +297,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.projects.Projects"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="gui.projects.PickProject"
             android:autoRemoveFromRecents="true"
@@ -416,12 +406,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.dialogs_user_settings.ExUserSettings"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="gui.tech_menu.PickMachine"
             android:autoRemoveFromRecents="true"
