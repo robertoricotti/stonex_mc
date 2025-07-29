@@ -75,16 +75,23 @@ public class Dialog_InfoApp {
             ApolloPro apolloPro = ApolloPro.getInstance(activity);
             s2 = apolloPro.getDeviceSN();
         }
+        String espir="No Limit";
+        if(MyApp.expiry.contains("9999-12-31")){
+            espir="No Limit";
+        }else {
+            espir=MyApp.expiry;
+        }
         textView.setText(
                 "STX MC v " + BuildConfig.VERSION_NAME + "\n\n" +
                         "Device: " + Build.BRAND + "  S/N: " + s2 + "\n\n" +
                         "Support: " + MyData.get_String("techInfo") + "\n\n" +
-                        "License Type:" + licenzaStringa() + "\n\n" +
+                        "License Type: " + licenzaStringa() + "\n\n" +
+                        "Expiry Date: "+espir+"\n\n"+
+                        "Restore Code: "+MyApp.restoreCode+"\n\n"+
                         "Machine: " + DataSaved.machineName + "\n\n" +
                         "Project: " + s + "\n" +
                         "CRS: " + MyData.get_String("LastSP") + "\n" +
                         "Geoid: " + MyData.get_String("geoidPath") + "\n"
-
         );
     }
 

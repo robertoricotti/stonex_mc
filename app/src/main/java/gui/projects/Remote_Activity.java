@@ -1,7 +1,6 @@
 package gui.projects;
 
 import static gui.MyApp.folderPath;
-import static services.UpdateValuesService.result;
 
 import android.content.Intent;
 import android.os.Build;
@@ -28,21 +27,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import cloud.S3Manager;
 import cloud.S3ManagerSingleton;
-import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
-import gui.boot_and_choose.LaunchScreenActivity;
 import gui.dialogs_and_toast.CustomToast;
-import utils.MyData;
 import utils.NetworkUtils;
 
 public class Remote_Activity extends AppCompatActivity {
+    public static boolean isAuthenticated;
     static String LocalFilePath = null;
     static String RemoteFilePath = null;
     boolean isF;
     long folderSize, fileSize;
-    TextView txt1,txt2;
+    TextView txt1, txt2;
     private boolean enImport, enExport;
     S3ManagerSingleton s3Manager;
     ProgressBar progressBar;
@@ -52,10 +48,10 @@ public class Remote_Activity extends AppCompatActivity {
     ProjectFileAdapter adapterProj, adapterMC;
     List<String> serials = List.of("");
     String s;
-    boolean isConnected;
     private Handler handler;
     private boolean mRunning = true;
     final String APP_PATH = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +68,7 @@ public class Remote_Activity extends AppCompatActivity {
     private void findView() {
         recyclerProj = findViewById(R.id.recycler_view_proj);
         recyclerIn = findViewById(R.id.recycler_view_in);
-        isConnected = NetworkUtils.isInternetAvailable(getApplicationContext());
+
         s = "";
         if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             Apollo2 apollo2 = Apollo2.getInstance(this);
@@ -90,7 +86,7 @@ public class Remote_Activity extends AppCompatActivity {
         back = findViewById(R.id.back);
         status = findViewById(R.id.status);
         txt1 = findViewById(R.id.txt1);
-        txt2=findViewById(R.id.txt2);
+        txt2 = findViewById(R.id.txt2);
 
 
     }
@@ -100,8 +96,7 @@ public class Remote_Activity extends AppCompatActivity {
         download.setAlpha(0.3f);
         upload.setEnabled(false);
         upload.setAlpha(0.3f);
-        //s3Manager = new S3Manager(getApplicationContext(), "AKIAZ24ITFGFIXJSL3G7", "rX0Ndj0R4ULu0r3Z6ibJz8Oa5H7uqULXlYOJJjmR", "stxcloudbucket");
-        s3Manager=S3ManagerSingleton.getInstance(this);
+        s3Manager = S3ManagerSingleton.getInstance(this);
         progressBar.setVisibility(View.INVISIBLE);
         readProjectFolder();
         txt2.setText(APP_PATH);
@@ -171,9 +166,10 @@ public class Remote_Activity extends AppCompatActivity {
 
     private void onClick() {
         refresh.setOnClickListener(view -> {
-            readProjectFolder();
+            if (isAuthenticated){
+                readProjectFolder();
             progressBar.setVisibility(View.VISIBLE);
-            s3Manager.getTreeFromS3(serials, new S3ManagerSingleton.S3Callback() {
+            s3Manager.getTreeFromS3V2(serials, new S3ManagerSingleton.S3Callback() {
                 @Override
                 public void onSuccess(Map<String, Object> result) {
                     // Eseguito nel thread di rete, puoi aggiornare la UI con runOnUiThread
@@ -193,10 +189,12 @@ public class Remote_Activity extends AppCompatActivity {
 
                 }
             });
-
+        }else{
+                new CustomToast(Remote_Activity.this,"Not Logged In").show_error();
+            }
         });
         upload.setOnClickListener(view -> {
-
+            if (isAuthenticated){
 
             boolean isTheSame = false;
 
@@ -236,15 +234,19 @@ public class Remote_Activity extends AppCompatActivity {
                         s3Manager.uploadFile(APP_PATH + "/" + LocalFilePath, "serials/" + s + "/Projects/" + LocalFilePath);
                     }
                     (new Handler()).postDelayed(this::refresha, 1000);
-                }else {
+                } else {
                     new CustomToast(Remote_Activity.this, getResources().getString(R.string.file_exists)).show_alert();
                     adapterProj.setSelectedItem(-1);
                 }
             }
+            }else{
+                new CustomToast(Remote_Activity.this,"Not Logged In").show_error();
+            }
         });
 
         download.setOnClickListener(view -> {
-         boolean theSame=false;
+            if (isAuthenticated){
+            boolean theSame = false;
             if (enImport && RemoteFilePath != null) {
                 for (int i = 0; i < filesProj.size(); i++) {
 
@@ -253,13 +255,13 @@ public class Remote_Activity extends AppCompatActivity {
                         theSame = true;
                     }
                 }
-                if(!theSame) {
+                if (!theSame) {
                     if (isF) {
                         s3Manager.downloadFolderFromS3(RemoteFilePath, APP_PATH + "/" + adapterMC.getSelectedFilePath(), new S3ManagerSingleton.S3Callback() {
                             @Override
                             public void onSuccess(Map<String, Object> result) {
                                 runOnUiThread(() -> {
-                                   // Log.d("S3Manager:DownloadFolder", "Cartella scaricata con successo: " + result.get("folderPath"));
+                                    // Log.d("S3Manager:DownloadFolder", "Cartella scaricata con successo: " + result.get("folderPath"));
                                     adapterProj.setSelectedItem(-1);
                                     adapterMC.setSelectedItem(-1);
                                     if (adapterMC != null) {
@@ -286,9 +288,9 @@ public class Remote_Activity extends AppCompatActivity {
                         s3Manager.downloadFile("serials/" + s + "/Projects/" + RemoteFilePath, APP_PATH + "/" + RemoteFilePath);
                     }
                     (new Handler()).postDelayed(this::refresha, 1000);
-                }else {
+                } else {
                     // Crea un nuovo AlertDialog.Builder
-                    AlertDialog.Builder builder=new AlertDialog.Builder(Remote_Activity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Remote_Activity.this);
                     builder.setTitle(R.string.file_exists);
                     builder.setMessage(R.string.overwrite);
                     builder.setPositiveButton(R.string.yes, (dialog, which) -> {
@@ -332,6 +334,9 @@ public class Remote_Activity extends AppCompatActivity {
                 }
 
             }
+            }else{
+                new CustomToast(Remote_Activity.this,"Not Logged In").show_error();
+            }
         });
         back.setOnClickListener(view -> {
             back.setEnabled(false);
@@ -351,15 +356,20 @@ public class Remote_Activity extends AppCompatActivity {
             public void run() {
                 while (mRunning) {
                     // Elabora i dati qui
-                    isConnected = NetworkUtils.isInternetAvailable(getApplicationContext());
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
 
-                            if (isConnected) {
-                                status.setImageResource(R.drawable.cloud_ok);
-                                status.setImageTintList(getColorStateList(R.color.colorStonexBlue));
-                                txt1.setBackgroundColor(getResources().getColor(R.color.colorStonexBlue));
+                            if (NetworkUtils.isInternetAvailable(getApplicationContext())) {
+                                if (isAuthenticated) {
+                                    status.setImageResource(R.drawable.cloud_ok);
+                                    status.setImageTintList(getColorStateList(R.color.element_green));
+                                    txt1.setBackgroundColor(getResources().getColor(R.color.element_green));
+                                } else {
+                                    status.setImageResource(R.drawable.cloud_ok);
+                                    status.setImageTintList(getColorStateList(R.color.colorStonexBlue));
+                                    txt1.setBackgroundColor(getResources().getColor(R.color.colorStonexBlue));
+                                }
                             } else {
                                 status.setImageResource(R.drawable.cloud_ko);
                                 status.setImageTintList(getColorStateList(R.color.red));
@@ -398,7 +408,7 @@ public class Remote_Activity extends AppCompatActivity {
             for (File file : files) {
                 boolean isFolder = file.isDirectory();
                 long size = file.isDirectory() ? getFolderSize(file) : file.length();
-                filesProj.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
+                filesProj.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size, file.getAbsolutePath()));
             }
 
             adapterProj = new ProjectFileAdapter(filesProj);
@@ -494,7 +504,7 @@ public class Remote_Activity extends AppCompatActivity {
                 public void onSuccess(Map<String, Object> result) {
                     folderSize = (long) result.get("size");
                     runOnUiThread(() -> {
-                        filesIN.add(new ProjectFileAdapter.FileItem(folderName, true, folderSize,null));
+                        filesIN.add(new ProjectFileAdapter.FileItem(folderName, true, folderSize, null));
                         adapterMC.notifyItemInserted(filesIN.size() - 1); // Notifica l'adapter
                     });
                     Log.d("S3Size", folderName + " Size: " + folderSize + " bytes");
@@ -517,7 +527,7 @@ public class Remote_Activity extends AppCompatActivity {
 
                     fileSize = (long) result.get("size");
                     runOnUiThread(() -> {
-                        filesIN.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize,null));
+                        filesIN.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize, null));
                         adapterMC.notifyItemInserted(filesIN.size() - 1); // Notifica l'adapter
                     });
                 }

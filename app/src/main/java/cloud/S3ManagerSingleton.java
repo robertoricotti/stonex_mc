@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class S3ManagerSingleton {
     private S3Credentials s3Credentials;
     private AmazonS3Client s3Client;
     private TransferUtility transferUtility;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private  ExecutorService executorService = Executors.newFixedThreadPool(1);
     private final Context appContext;
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledRefresh;
@@ -65,7 +66,11 @@ public class S3ManagerSingleton {
 
         scheduleCredentialRefresh();
     }
-
+    private void ensureExecutor() {
+        if (executorService == null || executorService.isShutdown() || executorService.isTerminated()) {
+            executorService = Executors.newFixedThreadPool(4);
+        }
+    }
     public void shutdown() {
         if (scheduledRefresh != null && !scheduledRefresh.isCancelled()) {
             scheduledRefresh.cancel(true);
@@ -82,8 +87,38 @@ public class S3ManagerSingleton {
     public static boolean isInitialized() {
         return instance != null;
     }
+    public void getTreeFromS3V2(List<String> serials, S3Callback callback) {
+        ensureExecutor();
+        if (s3Credentials == null) {
+            Log.e("S3Manager:GetTree", "AWS credentials not initialized");
+            return;
+        }
+        executorService.execute(() -> {
+            Map<String, Object> tree = new HashMap<>();
+            try {
+                for (String serial : serials) {
+                    String prefix = "serials/" + serial + "/";
+                    ListObjectsRequest request = new ListObjectsRequest()
+                            .withBucketName(s3Credentials.getBucketName())
+                            .withPrefix(prefix);
+                    ObjectListing objectListing = s3Client.listObjects(request);
+                    Map<String, Object> serialTree = new HashMap<>();
+
+                    for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+                        addToTreeWithMetadata(serialTree, objectSummary.getKey(), prefix, objectSummary.getLastModified(), objectSummary.getSize());
+                    }
+
+                    tree.put(serial, serialTree);
+                }
+                callback.onSuccess(tree);
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
+    }
 
     public void uploadFile(String localFilePath, String s3Key) {
+        ensureExecutor();
         if (s3Credentials == null) {
             Log.e("S3Manager:Upload", "AWS credentials not initialized");
             return;
@@ -158,6 +193,7 @@ public class S3ManagerSingleton {
     }
 
     public void getTreeFromS3(List<String> serials, S3Callback callback) {
+        ensureExecutor();
         if (s3Credentials == null) {
             Log.e("S3Manager:GetTree", "AWS credentials not initialized");
             return;
@@ -183,6 +219,7 @@ public class S3ManagerSingleton {
     }
 
     public void createFolder(String folderPath, S3Callback callback) {
+        ensureExecutor();
         if (s3Credentials == null) {
             Log.e("S3Manager:CreateFolder", "AWS credentials not initialized");
             return;
@@ -201,6 +238,7 @@ public class S3ManagerSingleton {
     }
 
     public void deleteFolder(String folderPath, S3Callback callback) {
+        ensureExecutor();
         if (s3Credentials == null) {
             Log.e("S3Manager:DeleteFolder", "AWS credentials not initialized");
             return;
@@ -224,6 +262,7 @@ public class S3ManagerSingleton {
     }
 
     public void uploadFolderToS3(String localFolderPath, String s3TargetPath, S3Callback callback) {
+        ensureExecutor();
         if (s3Credentials == null) {
             Log.e("S3Manager:UploadFolder", "AWS credentials not initialized");
             return;
@@ -247,6 +286,7 @@ public class S3ManagerSingleton {
     }
 
     public void downloadFolderFromS3(String s3FolderPath, String localFolderPath, S3Callback callback) {
+        ensureExecutor();
         if (s3Credentials == null) {
             Log.e("S3Manager:DownloadFolder", "AWS credentials not initialized");
             return;
@@ -294,6 +334,7 @@ public class S3ManagerSingleton {
     }
 
     public void getFileSize(String s3FilePath, S3Callback callback) {
+        ensureExecutor();
         if (s3Credentials == null) {
             Log.e("S3Manager:GetFileSize", "AWS credentials not initialized");
             return;
@@ -317,6 +358,7 @@ public class S3ManagerSingleton {
     }
 
     public void getFoldersFiles(String folderPath, S3Callback callback) {
+        ensureExecutor();
         if (s3Credentials == null) {
             Log.e("S3Manager:GetFoldersFiles", "AWS credentials not initialized");
             return;
@@ -344,6 +386,7 @@ public class S3ManagerSingleton {
         });
     }
     public void getFolderSize(String s3FolderPath, S3Callback callback) {
+        ensureExecutor();
         executorService.execute(() -> {
             try {
                 // Assicurati che il percorso termini con "/"
@@ -478,6 +521,30 @@ public class S3ManagerSingleton {
 
         void onError(Exception e);
     }
+    private void addToTreeWithMetadata(Map<String, Object> tree, String key, String basePrefix, Date lastModified, long size) {
+        String relativePath = key.substring(basePrefix.length());
+        String[] parts = relativePath.split("/");
 
+        Map<String, Object> currentLevel = tree;
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+
+            if (i == parts.length - 1) {
+                // È un file: aggiungi con metadati
+                Map<String, Object> fileData = new HashMap<>();
+                fileData.put("type", "file");
+                fileData.put("name", part);
+                fileData.put("lastModified", lastModified);
+                fileData.put("size", size);
+                currentLevel.put(part, fileData);
+            } else {
+                // È una cartella: prosegui o crea
+                if (!currentLevel.containsKey(part)) {
+                    currentLevel.put(part, new HashMap<String, Object>());
+                }
+                currentLevel = (Map<String, Object>) currentLevel.get(part);
+            }
+        }
+    }
 
 }

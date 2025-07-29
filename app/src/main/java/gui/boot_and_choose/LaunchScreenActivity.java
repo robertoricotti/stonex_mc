@@ -1,8 +1,7 @@
 package gui.boot_and_choose;
 
-import static gui.MyApp.licenseType;
 import static gui.MyApp.folderPath;
-import static gui.MyApp.restoreCode;
+import static gui.MyApp.licenseType;
 import static gui.MyApp.visibleActivity;
 
 import android.Manifest;
@@ -25,19 +24,14 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
-import com.cp.cputils.Apollo2;
-import com.cp.cputils.ApolloPro;
 import com.example.stx_dig.BuildConfig;
 import com.example.stx_dig.R;
-import com.opencsv.CSVWriter;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import cloud.WebSocketPlugin;
 import drill_pile.gui.Drill_MainPage;
@@ -79,7 +73,6 @@ public class LaunchScreenActivity extends BaseClass {
         setContentView(R.layout.activity_launch_screen_dig);
         readCode();
         MyDeviceManager.setSize(this);
-        Log.d("MyMac",MyDeviceManager.getMacAddress(this)+"    "+MyDeviceManager.getDeviceSN(this));
         WebSocketPlugin.getWebSocketPluginInstance(this).start();
         images = new int[]{R.drawable.img_step_1, R.drawable.img_step_2, R.drawable.img_step_3};
         isAutoStart = 0;
@@ -95,12 +88,12 @@ public class LaunchScreenActivity extends BaseClass {
 
 
         ExcavatorLib.Excavator(new double[100]);
-        UpdateValuesService.firstLaunch=false;
-        Dialog_Trench.leftW_d=0.5f;
-        Dialog_Trench.rightW_d=0.5f;
-        LayerAdapter.selectA=true;
+        UpdateValuesService.firstLaunch = false;
+        Dialog_Trench.leftW_d = 0.5f;
+        Dialog_Trench.rightW_d = 0.5f;
+        LayerAdapter.selectA = true;
 
-        if(licenseType==-1) {
+        if (licenseType == -1) {
             if (NetworkUtils.isInternetAvailable(this)) {
                 //cerca dal server
                 WebSocketPlugin.getWebSocketPluginInstance(this).start();
@@ -144,10 +137,10 @@ public class LaunchScreenActivity extends BaseClass {
                     } else {
                         new CustomToast(LaunchScreenActivity.this, "LICENSE IS MISSED").show_alert();
                         MyDeviceManager.showBar(visibleActivity);
-                       startActivity(new Intent(LaunchScreenActivity.this,LicenseFail_Activity.class));
-                       finish();
+                        startActivity(new Intent(LaunchScreenActivity.this, LicenseFail_Activity.class));
+                        finish();
                     }
-                    hasAuto = licenseType == 5 ;
+                    hasAuto = licenseType == 5;
                 } catch (Exception e) {
                     new CustomToast(LaunchScreenActivity.this, "No License CODE").show_error();
                     finishAndRemoveTask();
@@ -369,8 +362,8 @@ public class LaunchScreenActivity extends BaseClass {
             directory.mkdir();
         }
         try {
-            File f=new File(path+ "/As-Built");
-            if(f.exists()){
+            File f = new File(path + "/As-Built");
+            if (f.exists()) {
                 f.delete();
             }
         } catch (Exception e) {
@@ -525,7 +518,6 @@ public class LaunchScreenActivity extends BaseClass {
     }
 
 
-
     private void startImageSwitch() {
         handler.postDelayed(new Runnable() {
             @Override
@@ -571,9 +563,8 @@ public class LaunchScreenActivity extends BaseClass {
             String userID = jsonObject.getString("userID");
             String category = jsonObject.getString("category");
             long timestamp = jsonObject.getLong("timestamp");
-            String expiry = jsonObject.getString("expiry");
+            MyApp.expiry = jsonObject.getString("expiry");
 
-            System.out.println("Campi ricaricati correttamente da JSON");
 
         } catch (Exception e) {
             e.printStackTrace();

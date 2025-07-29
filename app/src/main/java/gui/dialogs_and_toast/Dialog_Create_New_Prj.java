@@ -79,7 +79,6 @@ public class Dialog_Create_New_Prj {
             dialog.dismiss();
         });
         dacloud.setOnClickListener(view -> {
-            new CustomToast(activity, "NOT IMPLEMENTED").show();
             Intent intent = new Intent(activity, Remote_Activity.class);
             activity.startActivity(intent);
             activity.overridePendingTransition(0, 0);

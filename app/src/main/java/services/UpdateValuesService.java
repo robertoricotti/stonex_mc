@@ -816,11 +816,7 @@ public class UpdateValuesService extends Service {
                 }
 
 
-                try {
-                    MyApp.activationCode = MyData.get_String("licenza");
-                } catch (Exception e) {
 
-                }
                 try {
                     DataSaved.screenOr = MyData.get_Int("screenOr");
 

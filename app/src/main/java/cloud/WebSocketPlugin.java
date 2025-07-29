@@ -1,9 +1,11 @@
 package cloud;
 
 import static gui.MyApp.activationCode;
+import static gui.MyApp.copyGeoidFromAssets;
 import static gui.MyApp.folderPath;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.restoreCode;
+
 
 import android.content.Context;
 import android.os.Environment;
@@ -33,11 +35,13 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import gui.MyApp;
+import gui.projects.Remote_Activity;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
+import utils.MyData;
 import utils.MyDeviceManager;
 
 public class WebSocketPlugin {
@@ -133,9 +137,9 @@ public class WebSocketPlugin {
                         case "update_available":
                             JSONObject data = response.optJSONObject("data");
                             if (data != null) {
-                                Log.d("RRR","In IF");
+                                Log.d("RRR", "In IF");
                                 decryptAndAcknowledge(ws, data);
-                                Log.d("RRR","Dopo IF");
+                                Log.d("RRR", "Dopo IF");
                             } else {
                                 // da sostituire con codice di revoke
                                 delayedSend(ws, new JSONObject().put("status", "restore_ack").put("type", "restore_ack").put("activated", true).put("timeStamp", System.currentTimeMillis()), 2000);
@@ -225,7 +229,7 @@ public class WebSocketPlugin {
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivSpec);
         byte[] decrypted = cipher.doFinal(encrypted);
 
-        String stringa=new String(decrypted, StandardCharsets.UTF_8);
+        String stringa = new String(decrypted, StandardCharsets.UTF_8);
         parseCode(stringa);
 
         Log.w("TestM", "Decrypted data: " + new String(decrypted, StandardCharsets.UTF_8));
@@ -234,7 +238,8 @@ public class WebSocketPlugin {
     }
 
     private void handleCommand(WebSocket ws, JSONObject response) throws Exception {
-        Log.d("MyResponse",response.toString());
+        Log.d("MyResponse", response.toString());
+        Remote_Activity.isAuthenticated=false;
         String type = response.optString("type");
         JSONObject license = response.optJSONObject("license");
 
@@ -256,6 +261,7 @@ public class WebSocketPlugin {
         } else if ("temp_credentials".equals(type)) {
             JSONObject credentials = response.optJSONObject("data");
             Log.d("TestM", "Received temp credentials: " + credentials);
+            Remote_Activity.isAuthenticated=true;
             if (credentials == null) {
                 return;
             }
@@ -302,13 +308,14 @@ public class WebSocketPlugin {
 
             // Estrae e popola i campi
             activationCode = jsonObject.getString("activationCode");
+            MyData.push("licenza", activationCode);
             restoreCode = jsonObject.getString("restoreCode");
             String deviceSN = jsonObject.getString("deviceSN");
             licenseType = jsonObject.getInt("licenseType");
             String userID = jsonObject.getString("userID");
             String category = jsonObject.getString("category");
             long timestamp = jsonObject.getLong("timestamp");
-            String expiry = jsonObject.getString("expiry");
+            MyApp.expiry = jsonObject.getString("expiry");
 
             // Percorso della cartella
             String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines";
@@ -328,7 +335,6 @@ public class WebSocketPlugin {
             writer.close();
 
 
-
         } catch (JSONException e) {
             activationCode = "none";
             restoreCode = "none";
@@ -337,8 +343,6 @@ public class WebSocketPlugin {
             e.printStackTrace();
         }
     }
-
-
-
 }
+
 
