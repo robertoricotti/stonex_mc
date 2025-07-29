@@ -52,4 +52,8 @@ public class PNEZDAdapter extends RecyclerView.Adapter<PNEZDAdapter.ViewHolder> 
             descriptionText = itemView.findViewById(R.id.descriptionText);
         }
     }
+    public void updateData(List<PNEZDPoint> newPoints) {
+        this.pointList.clear();
+        this.pointList.addAll(newPoints);
+    }
 }

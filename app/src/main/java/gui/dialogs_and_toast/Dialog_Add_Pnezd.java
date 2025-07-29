@@ -32,16 +32,17 @@ import utils.FullscreenActivity;
 public class Dialog_Add_Pnezd {
     Activity activity;
     public Dialog dialog;
-    ImageView save,cancel,lista,removelast;
-    String path="";
+    ImageView save, cancel, lista, removelast;
+    String path = "";
     String filepath;
-    ScrollView customView ;
-    RecyclerView recyclerView ;
+    ScrollView customView;
+    RecyclerView recyclerView;
     boolean showingRecycler = false;
-    public Dialog_Add_Pnezd(Activity activity,String path){
+    PNEZDAdapter adapter;
+    public Dialog_Add_Pnezd(Activity activity, String path) {
         Log.w("Dialog_Add_Pnezd", "Cartella: " + path);
-        this.activity=activity;
-        this.path=path;
+        this.activity = activity;
+        this.path = path;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
 
 
@@ -60,7 +61,7 @@ public class Dialog_Add_Pnezd {
                 writer.write("P,N,E,Z,D\n"); // intestazione
                 writer.flush();
                 Log.d("Dialog_Add_Pnezd", "Creato file CSV: " + csvFile.getAbsolutePath());
-                filepath= csvFile.getAbsolutePath();
+                filepath = csvFile.getAbsolutePath();
             } catch (IOException e) {
                 Log.e("Dialog_Add_Pnezd", "Errore nella creazione del CSV: " + e.getMessage());
             }
@@ -68,13 +69,19 @@ public class Dialog_Add_Pnezd {
 
 
     }
-    public void show(){
+
+    public void show() {
         dialog.create();
         dialog.setContentView(R.layout.dialog_add_pnezd);
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
         if (window != null) {
-            window.setBackgroundDrawable(new ColorDrawable(Color.WHITE));//necessario per mostrare il layout di sfondo
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            wlp.gravity = Gravity.CENTER;
+            wlp.dimAmount = 0.7f; //  Offusca sfondo (0 = nessun dim, 1 = nero pieno)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); // 🔹 Applica dim
+            window.setAttributes(wlp);
         }
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
@@ -89,17 +96,22 @@ public class Dialog_Add_Pnezd {
         FullscreenActivity.setFullScreen(dialog);
         findView();
         onClick();
+        adapter = new PNEZDAdapter(leggiCSV(filepath));
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setAdapter(adapter);
     }
-    private void findView(){
-        save=dialog.findViewById(R.id.save);
-        cancel=dialog.findViewById(R.id.cancel);
-        lista=dialog.findViewById(R.id.lista);
-        removelast=dialog.findViewById(R.id.remove);
+
+    private void findView() {
+        save = dialog.findViewById(R.id.save);
+        cancel = dialog.findViewById(R.id.cancel);
+        lista = dialog.findViewById(R.id.lista);
+        removelast = dialog.findViewById(R.id.remove);
         customView = dialog.findViewById(R.id.customViewContainer);
         recyclerView = dialog.findViewById(R.id.pointsRecyclerView);
 
     }
-    private void onClick(){
+
+    private void onClick() {
 
         cancel.setOnClickListener(view -> {
             dialog.dismiss();
@@ -142,11 +154,10 @@ public class Dialog_Add_Pnezd {
             }
 
             // Se visibile, aggiorna la lista
-            if (showingRecycler) {
-                List<PNEZDPoint> nuoviPunti = leggiCSV(filepath);
-                PNEZDAdapter adapter = new PNEZDAdapter(nuoviPunti);
-                recyclerView.setAdapter(adapter);
-            }
+
+            List<PNEZDPoint> nuoviPunti = leggiCSV(filepath);
+            adapter.updateData(nuoviPunti); // metodo custom
+            adapter.notifyDataSetChanged();
         });
 
         save.setOnClickListener(view -> {
@@ -159,28 +170,27 @@ public class Dialog_Add_Pnezd {
             PNEZDPoint nuovoPunto = new PNEZDPoint(numero, nord, est, quota, descrizione);
             aggiungiPuntoAlCSV(nuovoPunto);
 
-            if (showingRecycler) {
-                List<PNEZDPoint> punti = leggiCSV(filepath);
-                PNEZDAdapter adapter = new PNEZDAdapter(punti);
-                recyclerView.setAdapter(adapter);
-            }
+
+            List<PNEZDPoint> punti = leggiCSV(filepath);
+            adapter.updateData(punti); // metodo custom
+            adapter.notifyDataSetChanged();
         });
         lista.setOnClickListener(v -> {
-            if (!showingRecycler) {
-                List<PNEZDPoint> punti = leggiCSV(filepath);
-                PNEZDAdapter adapter = new PNEZDAdapter(punti);
-                recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-                recyclerView.setAdapter(adapter);
-            }
+            showingRecycler = !showingRecycler;
+            Log.d("RecyView", filepath + "  " + showingRecycler + "");
+
+            List<PNEZDPoint> punti = leggiCSV(filepath);
+            adapter.updateData(punti); // metodo custom
+            adapter.notifyDataSetChanged();
 
             recyclerView.setVisibility(showingRecycler ? View.GONE : View.VISIBLE);
             customView.setVisibility(showingRecycler ? View.VISIBLE : View.GONE);
-            showingRecycler = !showingRecycler;
+
         });
 
 
-
     }
+
     private List<PNEZDPoint> leggiCSV(String filePath) {
         List<PNEZDPoint> punti = new ArrayList<>();
         File file = new File(filePath);
@@ -192,7 +202,12 @@ public class Dialog_Add_Pnezd {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
+            boolean firstLine = true;
             while ((line = reader.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
                 String[] parts = line.split(",");
                 if (parts.length >= 5) {
                     int pointNumber = Integer.parseInt(parts[0].trim());
@@ -211,6 +226,7 @@ public class Dialog_Add_Pnezd {
 
         return punti;
     }
+
     private int getNextPointNumber() {
         int maxNumber = 0;
 
@@ -244,6 +260,7 @@ public class Dialog_Add_Pnezd {
 
         return maxNumber + 1;
     }
+
     private void aggiungiPuntoAlCSV(PNEZDPoint punto) {
         try (FileWriter writer = new FileWriter(filepath, true)) {
             String riga = punto.getPointNumber() + "," +

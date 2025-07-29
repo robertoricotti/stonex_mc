@@ -151,10 +151,10 @@ public class CanSender extends Service {
                 }
                 payload.put("latitude", mLat_1);
                 payload.put("longitude", mLon_1);
-                payload.put("local_x", String.valueOf(Est1));
-                payload.put("local_y", String.valueOf(Nord1));
-                payload.put("local_z", String.valueOf(Quota1));
-                payload.put("machine_state", status);
+                payload.put("localX", String.valueOf(Est1));
+                payload.put("localY", String.valueOf(Nord1));
+                payload.put("localZ", String.valueOf(Quota1));
+                payload.put("machineState", status);
                 payload.put("description", DataSaved.machineName);
                 WebSocketPlugin.getWebSocketPluginInstance(MyApp.visibleActivity).sendCommand("data_positioning_ack", payload);
                 payload.clear();
