@@ -16,6 +16,7 @@ import com.cp.cputils.ApolloPro;
 import com.example.stx_dig.BuildConfig;
 import com.example.stx_dig.R;
 
+import cloud.WebSocketPlugin;
 import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import utils.MyData;
@@ -81,6 +82,7 @@ public class Dialog_InfoApp {
         }else {
             espir=MyApp.expiry;
         }
+
         textView.setText(
                 "STX MC v " + BuildConfig.VERSION_NAME + "\n\n" +
                         "Device: " + Build.BRAND + "  S/N: " + s2 + "\n\n" +

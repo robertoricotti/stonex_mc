@@ -4,6 +4,11 @@ package services;
 import static gui.MyApp.isApollo;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
+import static packexcalib.gnss.NmeaListener.Est1;
+import static packexcalib.gnss.NmeaListener.Nord1;
+import static packexcalib.gnss.NmeaListener.Quota1;
+import static packexcalib.gnss.NmeaListener.mLat_1;
+import static packexcalib.gnss.NmeaListener.mLon_1;
 import static serial.SerialReadThread.serialEmpty;
 import static services.CanService.nmeaSTX_Disc;
 
@@ -11,18 +16,23 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import cloud.WebSocketPlugin;
 import event_bus.SerialEvent;
 import gui.MyApp;
 import gui.gps.NmeaGenerator;
 import gui.grading_dozergrader.Grading3D_DXF;
+import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
@@ -33,6 +43,7 @@ import utils.UnitsConversion;
 
 
 public class CanSender extends Service {
+    static Map<String, Object> payload;
     public static boolean tryingBTCAN = false;
     int connections = 0;
     int isTechCount, startCanopen;
@@ -40,6 +51,7 @@ public class CanSender extends Service {
     private ScheduledExecutorService senderExecutorGrade_50;
     private ScheduledExecutorService senderExecutor500;
     private ScheduledExecutorService senderExecutor2000;
+    private ScheduledExecutorService scheduledExecutorService1min;
     Executor mExecutor;
     private static final int THREAD_POOL_SIZE = 1;
     byte[] pendenza;
@@ -55,6 +67,7 @@ public class CanSender extends Service {
 
     @Override
     public void onCreate() {
+        payload = new HashMap<>();
 
         mExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
@@ -75,9 +88,12 @@ public class CanSender extends Service {
         senderExecutor500 = Executors.newSingleThreadScheduledExecutor();
         senderExecutor2000 = Executors.newSingleThreadScheduledExecutor();
         senderExecutorGrade_50 = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService1min = Executors.newSingleThreadScheduledExecutor();
+
         senderExecutor500.scheduleAtFixedRate(new AsyncSender500(), 1000, 500, TimeUnit.MILLISECONDS);
         senderExecutor2000.scheduleAtFixedRate(new AsyncSender2000(), 1000, 2000, TimeUnit.MILLISECONDS);
         senderExecutorGrade_50.scheduleAtFixedRate(new gradeSender(), 2000, 50, TimeUnit.MILLISECONDS);
+        scheduledExecutorService1min.scheduleAtFixedRate(new AsyncSender1min(), 1000, 60000, TimeUnit.MILLISECONDS);
         return START_STICKY;
     }
 
@@ -122,6 +138,30 @@ public class CanSender extends Service {
 
     }
 
+    private class AsyncSender1min implements Runnable {
+        @SuppressLint("NewApi")
+        @Override
+        public void run() {
+            if(MyApp.visibleActivity instanceof My3DActivity) {
+                int status = 0;
+                if (DataSaved.gpsOk) {
+                    status = 1;
+                } else {
+                    status = 0;
+                }
+                payload.put("latitude", mLat_1);
+                payload.put("longitude", mLon_1);
+                payload.put("local_x", String.valueOf(Est1));
+                payload.put("local_y", String.valueOf(Nord1));
+                payload.put("local_z", String.valueOf(Quota1));
+                payload.put("machine_state", status);
+                payload.put("description", DataSaved.machineName);
+                WebSocketPlugin.getWebSocketPluginInstance(MyApp.visibleActivity).sendCommand("data_positioning_ack", payload);
+                payload.clear();
+            }
+        }
+    }
+
     private class AsyncSender500 implements Runnable {
         @SuppressLint("NewApi")
         @Override
@@ -136,7 +176,7 @@ public class CanSender extends Service {
                 NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
             }
             try {
-                switch (DataSaved.my_comPort){
+                switch (DataSaved.my_comPort) {
                     case 0:
                         if (!nmeaSTX_Disc) {
                             if (NmeaListener.ggaQuality.equals("4") && Double.parseDouble(NmeaListener.VRMS_) < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt != 999.999) {
@@ -167,8 +207,7 @@ public class CanSender extends Service {
                                     break;
 
                             }
-                            byte msg=0x03;
-
+                            byte msg = 0x03;
 
 
                             MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
@@ -178,14 +217,13 @@ public class CanSender extends Service {
                     case 1:
                     case 2:
                     case 3:
-                        Deg2UTM deg2UTM = new Deg2UTM(NmeaListener.mLat_1, NmeaListener.mLon_1, NmeaListener.Quota1, DataSaved.S_CRS,MyApp.GEOIDE_PATH);
+                        Deg2UTM deg2UTM = new Deg2UTM(mLat_1, mLon_1, Quota1, DataSaved.S_CRS, MyApp.GEOIDE_PATH);
                         DataSaved.gpsOk = gpsStat(NmeaListener.ggaQuality, deg2UTM.getQuota(), serialEmpty);
                         break;
                     case 4:
                         DataSaved.gpsOk = true;
                         break;
                 }
-
 
 
             } catch (Exception e) {
@@ -208,7 +246,7 @@ public class CanSender extends Service {
 
                     }
                     DataSaved.gpsOk = false;
-                    byte msg=0x03;
+                    byte msg = 0x03;
 
 
                     MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
@@ -288,6 +326,9 @@ public class CanSender extends Service {
         }
         if (senderExecutorGrade_50 != null) {
             senderExecutorGrade_50.shutdown();
+        }
+        if (scheduledExecutorService1min != null) {
+            scheduledExecutorService1min.shutdown();
         }
 
 

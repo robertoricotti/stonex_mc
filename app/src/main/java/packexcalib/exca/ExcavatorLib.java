@@ -7,7 +7,10 @@ import static packexcalib.exca.Sensors_Decoder.Deg_Yaw_Tilt;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
+import cloud.WebSocketPlugin;
 import gui.MyApp;
 import gui.digging_excavator.DiggingProfile;
 import packexcalib.gnss.NmeaListener;
@@ -18,6 +21,7 @@ import packexcalib.surfcreator.Surface_4pts;
 import services.TriangleService;
 
 public class ExcavatorLib {
+
     public static double hdt_BOOM, hdt_LAMA;
     static int lowerEdge;
     static double myRollLen, myPitchLen;
@@ -290,6 +294,7 @@ public class ExcavatorLib {
 
                         break;
                 }
+
 
             } else if (GPS_Enabled == 0) {
                 startXYZ = new double[]{0, 0, 0};

@@ -1,11 +1,9 @@
 package cloud;
 
 import static gui.MyApp.activationCode;
-import static gui.MyApp.copyGeoidFromAssets;
 import static gui.MyApp.folderPath;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.restoreCode;
-
 
 import android.content.Context;
 import android.os.Environment;
@@ -24,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +44,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class WebSocketPlugin {
+    private WebSocket webSocket;
 
     private static final String WS_URL = "wss://licensemc.stonexpositioning.com/api/v1/ws";
     private static final String SECRET_KEY_BASE64 = "Q6E2ZK3g1/XSO4VXxMGNehYmQUaJv8+M26j+xqlsgFs=";
@@ -88,6 +88,7 @@ public class WebSocketPlugin {
         client.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(WebSocket ws, Response response) {
+                webSocket=ws;
                 currentTry = 0;
                 Log.d("TestM", "Connected to WebSocket server.");
                 try {
@@ -172,6 +173,7 @@ public class WebSocketPlugin {
 
             @Override
             public void onFailure(WebSocket ws, Throwable t, Response response) {
+                webSocket=null;
                 s3ManagerSingleton.shutdown();
                 Log.d("TestM", "WebSocket error: " + t.getMessage());
 
@@ -188,6 +190,29 @@ public class WebSocketPlugin {
                 }
             }
         });
+    }
+
+    public void sendCommand(String command, Map<String, Object> payload) {
+        if (this.webSocket == null) {
+            System.err.println("WebSocket is not connected.");
+            return;
+        }
+
+        JSONObject message = new JSONObject();
+        try {
+            message.put("type", command);
+            message.put("timeStamp", System.currentTimeMillis());
+
+            if (payload != null) {
+                for (Map.Entry<String, Object> entry : payload.entrySet()) {
+                    message.put(entry.getKey(), entry.getValue());
+                }
+            }
+
+            webSocket.send(message.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private JSONObject encryptAndSign(JSONObject data) throws Exception {
@@ -239,7 +264,7 @@ public class WebSocketPlugin {
 
     private void handleCommand(WebSocket ws, JSONObject response) throws Exception {
         Log.d("MyResponse", response.toString());
-        Remote_Activity.isAuthenticated=false;
+        Remote_Activity.isAuthenticated = false;
         String type = response.optString("type");
         JSONObject license = response.optJSONObject("license");
 
@@ -261,7 +286,7 @@ public class WebSocketPlugin {
         } else if ("temp_credentials".equals(type)) {
             JSONObject credentials = response.optJSONObject("data");
             Log.d("TestM", "Received temp credentials: " + credentials);
-            Remote_Activity.isAuthenticated=true;
+            Remote_Activity.isAuthenticated = true;
             if (credentials == null) {
                 return;
             }
