@@ -11,6 +11,9 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -20,11 +23,13 @@ import dxf.Face3D;
 import dxf.IntersectionFinder;
 import dxf.JTSOffsetHelper;
 import dxf.Layer;
+import dxf.PNEZDPoint;
 import dxf.Point2D;
 import dxf.Point3D;
 import dxf.Polyline;
 import dxf.Segment;
 import gui.my_opengl.GLDrawer;
+import gui.my_opengl.My3DActivity;
 import gui.my_opengl.Point3DF;
 import gui.my_opengl.Vector3D;
 import gui.my_opengl.dozer.My_Lama;
@@ -290,11 +295,74 @@ public class TriangleService extends Service {
                 }
 
 
-                long elapsedTime = System.currentTimeMillis() - startTime;
-                long sleepTime = 100 - elapsedTime;
+
 
 
                 DataSaved.filteredPolylines = getFilteredPolylines();
+
+                if (My3DActivity.PNEZD_FUNCTION) {
+                    try {
+                        String filePath = DataSaved.PNEZDPath; // <-- Qui metti il path corretto
+                        File file = new File(filePath);
+
+                        List<PNEZDPoint> punti = new ArrayList<>();
+
+                        if (file.exists()) {
+                            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                                String line;
+                                boolean firstLine = true;
+
+                                while ((line = br.readLine()) != null) {
+                                    if (firstLine) {
+                                        firstLine = false; // salta intestazione
+                                        continue;
+                                    }
+
+                                    if (line.trim().isEmpty()) continue; // salta righe vuote
+
+                                    String[] parts = line.split(",");
+
+                                    try {
+                                        int pointNumber = Integer.parseInt(parts[0].trim());
+                                        double northing = Double.parseDouble(parts[1].trim());
+                                        double easting = Double.parseDouble(parts[2].trim());
+                                        double elevation = Double.parseDouble(parts[3].trim());
+                                        String description = parts.length > 4 ? parts[4].trim() : "";
+
+                                        Integer color = null;
+                                        if (parts.length > 5 && !parts[5].trim().isEmpty()) {
+                                            color = Integer.parseInt(parts[5].trim());
+                                        }
+
+                                        PNEZDPoint punto;
+                                        if (color != null) {
+                                            punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description, color);
+                                        } else {
+                                            punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description);
+                                        }
+
+                                        punti.add(punto);
+
+                                    } catch (NumberFormatException ex) {
+                                        // ignora righe malformate
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.e("PNEZD", "File non trovato: " + filePath);
+                        }
+
+                        DataSaved.pnezdPoints = punti;
+                        Log.d("PNEZD", DataSaved.pnezdPoints.size()+"    " + filePath);
+                    } catch (Exception e) {
+                        DataSaved.pnezdPoints = new ArrayList<>();
+                        Log.e("PNEZD", "Errore lettura PNEZD: " + e.getMessage());
+                    }
+                }
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                long sleepTime = 100 - elapsedTime;
+                Log.d("SleepTime",sleepTime+"");
                 if (sleepTime > 0) {
                     try {
                         Thread.sleep(sleepTime);

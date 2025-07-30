@@ -1,6 +1,7 @@
 package services;
 
 
+import static gui.MyApp.hAlarm;
 import static gui.MyApp.isApollo;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
@@ -20,6 +21,7 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -35,6 +37,7 @@ import gui.grading_dozergrader.Grading3D_DXF;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
+import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.NmeaListener;
@@ -142,22 +145,27 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
-
-            int status = 0;
-                if (DataSaved.gpsOk) {
-                    status = 1;
-                } else {
-                    status = 0;
-                }
-            if(mLat_1!=0&&mLon_1!=0) {
+            boolean[] bStat = new boolean[8];
+            bStat[0]=DataSaved.gpsOk;//vale 1
+            bStat[1]=DataSaved.isWL==0;//exca  vale 2
+            bStat[2]=DataSaved.isWL==1;//wheel  vale 4
+            bStat[3]=DataSaved.isWL==2;//dozer  vale 8
+            bStat[4]=DataSaved.isWL==4;//grader vale 16
+            bStat[5]=MyApp.visibleActivity instanceof My3DActivity;  //vale 32
+            bStat[6]=CanService.isAuto>0;//macchina in Automatico  vale 64
+            bStat[7]=hAlarm;//allarme attivo  vale 128
+            Log.d("myPayload", Arrays.toString(bStat));
+            byte status = 0;
+            status= PLC_DataTypes_BigEndian.Encode_8_bool_be(bStat);
+            if (mLat_1 != 0 && mLon_1 != 0) {
                 payload.put("latitude", mLat_1);
                 payload.put("longitude", mLon_1);
                 payload.put("localX", String.valueOf(Est1));
                 payload.put("localY", String.valueOf(Nord1));
                 payload.put("localZ", String.valueOf(Quota1));
-                payload.put("machineState", status);//fare mappa stati
-                payload.put("description", DataSaved.machineName);//testo libero
-                Log.d("cazzo", payload.toString());
+                payload.put("machineState", status&0xFF);//bitmask 8 booleans
+                payload.put("description", DataSaved.machineName+"\n"+DataSaved.progettoSelected);//testo libero
+                Log.d("myPayload", payload.toString());
                 WebSocketPlugin.getWebSocketPluginInstance(MyApp.visibleActivity).sendCommand("data_positioning_ack", payload);
                 payload.clear();
             }

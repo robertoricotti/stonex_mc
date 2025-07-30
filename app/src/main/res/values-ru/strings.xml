@@ -5,6 +5,7 @@
     <string name="website">www.stonex.it</string>
     <string name="save">СОХРАНИТЬ</string>
     <string name="exit">ЭСК</string>
+    <string name="rename_file">ПЕРЕИМЕНОВАТЬ ФАЙЛ</string>
     <string name="machines">МАШИНЫ</string>
     <string name="profiles">ПРОФИЛИ</string>
     <string name="buckets">ВЫБЕРИТЕ КОВШ</string>

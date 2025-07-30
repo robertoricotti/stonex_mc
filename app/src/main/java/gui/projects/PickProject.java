@@ -118,13 +118,52 @@ public class PickProject extends BaseClass {
 
     private void onClick() {
         rename.setOnClickListener(view -> {
-            if (projectAdapter != null) {
-                if (projectAdapter.getSelectedItem() > -1) {
-                    if (!customQwertyDialog.dialog.isShowing()) {
-                        customQwertyDialog.show(999, projectAdapter, path, projectAdapter.getSelectedFilePath());
-                    }
+            try {
+                int selectedItem = projectAdapter.getSelectedItem();
+                if (selectedItem == -1) {
+                    new CustomToast(this, getResources().getString(R.string.select_file)).show();
+
+                } else {
+
+                    // Crea un nuovo AlertDialog.Builder
+                    AlertDialog.Builder builder = new AlertDialog.Builder(PickProject.this);
+                    builder.setTitle(" " + getResources().getString(R.string.rename_file)+"?");
+                    builder.setIcon(getResources().getDrawable(R.drawable.rename_96));
+
+
+                    // Aggiungi il pulsante "Sì"
+                    builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
+
+
+                        if (projectAdapter != null) {
+                            if (projectAdapter.getSelectedItem() > -1) {
+                                if (!customQwertyDialog.dialog.isShowing()) {
+                                    customQwertyDialog.show(999, projectAdapter, path, projectAdapter.getSelectedFilePath());
+                                }
+                            }
+                        }
+
+
+                    });
+
+                    // Aggiungi il pulsante "No"
+                    builder.setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
+
+
+                    });
+
+                    // Mostra il dialog
+                    builder.show();
+
                 }
+            } catch (Exception e) {
+                new CustomToast(PickProject.this, getResources().getString(R.string.selectproject)).show();
             }
+
+
+
+            /// ////////
+
         });
         back.setOnClickListener((View v) -> {
 
@@ -154,7 +193,7 @@ public class PickProject extends BaseClass {
                             for (File file : files) {
                                 if (file.isFile()) {
                                     String fileName = file.getName();
-                                    if (fileName.toLowerCase().endsWith(".dxf") || fileName.toLowerCase().endsWith(".pstx") || fileName.toLowerCase().endsWith(".xml") || fileName.toLowerCase().endsWith(".sp")) {
+                                    if (fileName.toLowerCase().endsWith(".dxf") || fileName.toLowerCase().endsWith(".pstx") || fileName.toLowerCase().endsWith(".xml") || fileName.toLowerCase().endsWith(".sp")|| fileName.toLowerCase().endsWith(".csv")) {
                                         dxfPstxFiles.add(fileName);
                                     }
                                 }

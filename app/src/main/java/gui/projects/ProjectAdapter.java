@@ -89,6 +89,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 ckPoi.setVisibility(View.INVISIBLE);
                 ckJson.setVisibility(View.VISIBLE);
                 sizeTextView.setVisibility(View.VISIBLE);
+            }else if(fileExtension.equalsIgnoreCase("csv")) {
+                ckTrm.setVisibility(View.INVISIBLE);
+                ckPoly.setVisibility(View.INVISIBLE);
+                ckPoi.setVisibility(View.INVISIBLE);
+                ckJson.setVisibility(View.INVISIBLE);
+                sizeTextView.setVisibility(View.VISIBLE);
             }else {
                 ckTrm.setVisibility(View.VISIBLE);
                 ckPoly.setVisibility(View.VISIBLE);
@@ -180,7 +186,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 icon.setImageResource(R.drawable.accuracy);
                 break;
             case "csv":
-                icon.setImageResource(R.drawable.mycsv);
+                icon.setImageResource(R.drawable.pnezd_menu);
                 break;
             case "txt":
                 icon.setImageResource(R.drawable.mytxt);

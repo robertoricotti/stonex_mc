@@ -2,27 +2,12 @@ package gui.my_opengl;
 
 import static gui.my_opengl.GL_Methods.createFloatBuffer;
 import static gui.my_opengl.GL_Methods.getJetColor;
-import static gui.my_opengl.GL_Methods.myParseColor;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
-import static services.TriangleService.glLinePoint;
-import static services.TriangleService.glLinePunto;
-import static services.TriangleService.glPuntoTerra;
-import static services.TriangleService.glSegmentEnd;
-import static services.TriangleService.glSegmentPoint;
-import static services.TriangleService.glTerraPunto;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.opengl.GLES11;
-import android.opengl.GLUtils;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -43,6 +28,7 @@ import dxf.DxfText;
 import dxf.Face3D;
 import dxf.Layer;
 import dxf.Line;
+import dxf.PNEZDPoint;
 import dxf.Point3D;
 import dxf.Polyline;
 import dxf.Polyline_2D;
@@ -99,7 +85,7 @@ public class GLDrawer {
                     int drawMode = isTriangle ? GL10.GL_TRIANGLES : GL10.GL_TRIANGLE_FAN;
 
                     gl.glPushMatrix();
-                    gl.glTranslatef(0f, 0f, (float) (-DataSaved.offsetH*scale)); // <-- offset verticale
+                    gl.glTranslatef(0f, 0f, (float) (-DataSaved.offsetH * scale)); // <-- offset verticale
                     // Riempimento semitrasparente
                     if (My3DActivity.glFill) {
                         gl.glColor4f(rgb[0], rgb[1], rgb[2], 0.3f);
@@ -302,7 +288,7 @@ public class GLDrawer {
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 
-    public static void drawLineedge(GL11 gl,float scale){
+    public static void drawLineedge(GL11 gl, float scale) {
         Point3DF pGround = null;
         float[] p = new float[3];
         try {
@@ -311,7 +297,7 @@ public class GLDrawer {
                     p = new float[]{DataSaved.GL_Bucket_Coord[0][0], DataSaved.GL_Bucket_Coord[0][1], DataSaved.GL_Bucket_Coord[0][2]};
                     pGround = new Point3DF((float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
                             (float) (bucketLeftCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                            (float) ((bucketLeftCoord[2]- TriangleService.quota3D_SX) - DataSaved.glL_AnchorView[2]) * scale);
+                            (float) ((bucketLeftCoord[2] - TriangleService.quota3D_SX) - DataSaved.glL_AnchorView[2]) * scale);
                     break;
 
                 case 0:
@@ -321,7 +307,7 @@ public class GLDrawer {
 
                     pGround = new Point3DF((float) (bucketCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
                             (float) (bucketCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                            (float) ((bucketCoord[2]-TriangleService.quota3D_CT) - DataSaved.glL_AnchorView[2]) * scale);
+                            (float) ((bucketCoord[2] - TriangleService.quota3D_CT) - DataSaved.glL_AnchorView[2]) * scale);
                     break;
 
 
@@ -331,7 +317,7 @@ public class GLDrawer {
                     };
                     pGround = new Point3DF((float) (bucketRightCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
                             (float) (bucketRightCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                            (float) ((bucketRightCoord[2]-TriangleService.quota3D_DX) - DataSaved.glL_AnchorView[2]) * scale);
+                            (float) ((bucketRightCoord[2] - TriangleService.quota3D_DX) - DataSaved.glL_AnchorView[2]) * scale);
                     break;
             }
             float[] line = {
@@ -354,7 +340,7 @@ public class GLDrawer {
             FloatBuffer pointBuffer = ByteBuffer.allocateDirect(3 * 4)
                     .order(ByteOrder.nativeOrder())
                     .asFloatBuffer();
-            pointBuffer.put(new float[]{pGround.x,pGround.y,pGround.z}).position(0);
+            pointBuffer.put(new float[]{pGround.x, pGround.y, pGround.z}).position(0);
 
             red = GL_Methods.parseColorToGL(Color.BLUE);
             gl.glColor4f(red[0], red[1], red[2], 1.0f);
@@ -363,7 +349,7 @@ public class GLDrawer {
             gl.glDrawArrays(GL10.GL_POINTS, 0, 1);
             gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         } catch (Exception e) {
-            Log.e("Render",Log.getStackTraceString(e));
+            Log.e("Render", Log.getStackTraceString(e));
         }
 
     }
@@ -446,6 +432,118 @@ public class GLDrawer {
 
     }
 
+    public static void drawPNEZD(GL11 gl, List<PNEZDPoint> points, float radius, float scale) {
+        double[] bucketCenter = DataSaved.glL_AnchorView;
+
+
+        gl.glEnable(GL10.GL_POINT_SMOOTH);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        // Imposta la dimensione dei punti (scalata in base al radius passato)
+        gl.glPointSize(radius * 2 * scale); // moltiplica per 2 per diametro visibile più grande
+        for (PNEZDPoint p : points) {
+
+
+            float x = (float) ((p.getEasting() - bucketCenter[0]) * scale);
+            float y = (float) ((p.getNorthing() - bucketCenter[1]) * scale);
+            float z = (float) ((p.getElevation() - bucketCenter[2]) * scale);
+
+            int color = GL_Methods.myParseColor(Color.WHITE);
+            if(p.getColor()!=null){
+                color=GL_Methods.myParseColor(p.getColor());
+            }
+
+            float[] rgb = GL_Methods.parseColorToGL(color);
+
+            float[] coords = new float[]{x, y, z};
+            FloatBuffer buf = ByteBuffer.allocateDirect(3 * 4)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer();
+            buf.put(coords);
+            buf.position(0);
+
+            gl.glColor4f(rgb[0], rgb[1], rgb[2], 1f);
+            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buf);
+            gl.glDrawArrays(GL10.GL_POINTS, 0, 1);
+        }
+    }
+    public static void drawTextsBilBoardPNEZD(GL11 gl, List<PNEZDPoint> texts, double[] anchor, float charSpacingFactor, float scale, FontAtlas atlas) {
+        FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(4 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        FloatBuffer texBuffer = ByteBuffer.allocateDirect(4 * 2 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisable(GL10.GL_LIGHTING); // testi = non illuminati
+
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, atlas.getTextureId());
+
+        float charW = atlas.getCellSize() * scale * 0.01f;
+        float charH = atlas.getCellSize() * scale * 0.01f;
+        GL11 gl11 = (gl instanceof GL11) ? (GL11) gl : null;
+        if (gl11 == null) return;
+        float[] modelView = new float[16];
+
+        for (PNEZDPoint text : texts) {
+            String str = text.getDescription();
+            if (str == null || str.isEmpty()) continue;
+
+            float baseX = (float) ((text.getEasting() - anchor[0]) * scale);
+            float baseY = (float) ((text.getNorthing() - anchor[1]) * scale);
+            float baseZ = (float) ((text.getElevation() - anchor[2]) * scale);
+
+            gl.glPushMatrix();
+            gl.glTranslatef(baseX, baseY, baseZ);
+
+            // Billboard: rimuove la rotazione dalla matrice modelview
+            gl11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, modelView, 0);
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    modelView[i * 4 + j] = (i == j) ? 1f : 0f; // solo diagonale = no rotazione
+                }
+            }
+            gl.glLoadMatrixf(modelView, 0);
+
+            float xCursor = 0f; // testo locale, centrato sul punto
+
+            for (char c : str.toCharArray()) {
+                RectF uv = atlas.getUV(c);
+
+                float[] vertices = {
+                        xCursor, 0f, 0f,
+                        xCursor + charW, 0f, 0f,
+                        xCursor, charH, 0f,
+                        xCursor + charW, charH, 0f
+                };
+
+                float[] tex = {
+                        uv.left, uv.top,
+                        uv.right, uv.top,
+                        uv.left, uv.bottom,
+                        uv.right, uv.bottom
+                };
+
+                vertexBuffer.clear();
+                texBuffer.clear();
+                vertexBuffer.put(vertices).position(0);
+                texBuffer.put(tex).position(0);
+
+                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+                gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texBuffer);
+                gl.glColor4f(1f, 1f, 1f, 1f);
+                gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+                xCursor += charW * charSpacingFactor;
+            }
+
+            gl.glPopMatrix();
+        }
+
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisable(GL10.GL_TEXTURE_2D);
+    }
 
     public static void drawTextsBilBoard(GL11 gl, List<DxfText> texts, double[] anchor, float charSpacingFactor, float scale, FontAtlas atlas) {
         FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(4 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -527,6 +625,9 @@ public class GLDrawer {
     }
 
 
+
+
+
     private static boolean isLayerEnabled(String layerName) {
         if (layerName == null || layerName.isEmpty()) {
             return false; // Layer nullo o vuoto non è abilitato
@@ -552,7 +653,7 @@ public class GLDrawer {
         return false; // Se il layer non è trovato o non è abilitato
     }
 
-    ///entità solo 2D
+    /// entità solo 2D
     public static void drawLines2D(GL11 gl, List<Line> lines, float lineW, float scale) {
         if (lines == null || lines.isEmpty()) return;
 
@@ -873,7 +974,6 @@ public class GLDrawer {
         }
         return flat;
     }
-
 
 
     // Disegna un cerchio pieno sul piano XY (a z = cz)

@@ -1,6 +1,8 @@
 package gui.my_opengl;
 
 
+import static gui.my_opengl.My3DActivity.PNEZD_FUNCTION;
+
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
@@ -34,6 +36,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public static float[] coloreBoom = new float[]{0.4f, 0.4f, 0.4f, 1f};
     public static float[] coloreBoomScuro = new float[]{0.4f, 0.4f, 0.4f, 1f};
     public static FontAtlas atlas;
+    public static FontAtlas atlasPNEZD;
     public static float charSpacingFactor = 0.5f;//spaziatura fra i caratteri testo
 
     @Override
@@ -42,6 +45,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             GL11 gl11 = (GL11) gl;
             try {
                 atlas = new FontAtlas(gl11, 32, MyColorClass.colorConstraint);
+                atlasPNEZD = new FontAtlas(gl11, 26, MyColorClass.colorConstraint);
 
 
                 if (MyData.get_String("colorBucket") == null) {
@@ -186,6 +190,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
+                            if(PNEZD_FUNCTION){
+                                GLDrawer.drawPNEZD(gl11,DataSaved.pnezdPoints,15f,scale);
+                                GLDrawer.drawTextsBilBoardPNEZD(gl11,DataSaved.pnezdPoints,DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                            }
                             gl.glEnable(GL11.GL_DEPTH_TEST);
 
 
@@ -214,6 +222,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
+                            if(PNEZD_FUNCTION){
+                                GLDrawer.drawPNEZD(gl11,DataSaved.pnezdPoints,15f,scale);
+                                GLDrawer.drawTextsBilBoardPNEZD(gl11,DataSaved.pnezdPoints,DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                            }
                             gl.glEnable(GL11.GL_DEPTH_TEST);
 
                         }
@@ -237,7 +249,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
-
+                            if(PNEZD_FUNCTION){
+                                GLDrawer.drawPNEZD(gl11,DataSaved.pnezdPoints,15f,scale);
+                                GLDrawer.drawTextsBilBoardPNEZD(gl11,DataSaved.pnezdPoints,DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                            }
                             gl11.glEnable(GL10.GL_DEPTH_TEST);
 
 
@@ -265,6 +280,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             }
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
+                            }
+                            if(PNEZD_FUNCTION){
+                                GLDrawer.drawPNEZD(gl11,DataSaved.pnezdPoints,15f,scale);
+                                GLDrawer.drawTextsBilBoardPNEZD(gl11,DataSaved.pnezdPoints,DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
                             }
                             gl11.glEnable(GL10.GL_DEPTH_TEST);
 

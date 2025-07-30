@@ -5,6 +5,7 @@
     <string name="website">www.stonex.it</string>
     <string name="save">SPEICH</string>
     <string name="exit">EXIT</string>
+    <string name="rename_file">DATEI UMBENENNEN</string>
     <string name="machines">MASCHINEN</string>
     <string name="profiles">PROFILE</string>
     <string name="buckets">BAGGERSCHAUFEL</string>

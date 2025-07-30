@@ -5,6 +5,7 @@
     <string name="website">www.stonex.it</string>
     <string name="save">SAUVER</string>
     <string name="exit">SORTIE</string>
+    <string name="rename_file">RENOMMER LE FICHIER</string>
     <string name="machines">MACHINES</string>
     <string name="profiles">PROFILS</string>
     <string name="buckets">"SÉLECTIONNER GODET "</string>

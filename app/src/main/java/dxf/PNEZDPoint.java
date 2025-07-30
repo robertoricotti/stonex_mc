@@ -6,24 +6,26 @@ public class PNEZDPoint {
     private double easting;       // E
     private double elevation;     // Z
     private String description;   // D
-    private int color;             //Opzionale Color
+    private Integer color;        // Colore opzionale (può essere null)
 
-    // Costruttore
+    // Costruttore senza colore
     public PNEZDPoint(int pointNumber, double northing, double easting, double elevation, String description) {
         this.pointNumber = pointNumber;
         this.northing = northing;
         this.easting = easting;
         this.elevation = elevation;
         this.description = description;
+        this.color = null; // Colore non impostato
     }
-    // Costruttore
-    public PNEZDPoint(int pointNumber, double northing, double easting, double elevation, String description,int color) {
+
+    // Costruttore con colore
+    public PNEZDPoint(int pointNumber, double northing, double easting, double elevation, String description, int color) {
         this.pointNumber = pointNumber;
         this.northing = northing;
         this.easting = easting;
         this.elevation = elevation;
         this.description = description;
-        this.color=color;
+        this.color = color;
     }
 
     // Getter e Setter
@@ -67,17 +69,19 @@ public class PNEZDPoint {
         this.description = description;
     }
 
-    // toString per visualizzazione
-    @Override
-    public String toString() {
-        return pointNumber + ", " + northing + ", " + easting + ", " + elevation + ", " + description;
+    // Getter e Setter colore
+    public Integer getColor() {
+        return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(Integer color) {
         this.color = color;
     }
 
-    public int getColor() {
-        return color;
+    // toString
+    @Override
+    public String toString() {
+        return pointNumber + ", " + northing + ", " + easting + ", " + elevation + ", " + description +
+                (color != null ? ", Color: " + color : ", Color: (none)");
     }
 }

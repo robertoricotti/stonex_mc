@@ -689,7 +689,7 @@ public class Diaalog_Set_SP {
 
     }
     public static String getCrsCodeFromFileName(String fileName) {
-        if (fileName == null || !fileName.endsWith(".SP")) {
+        if (fileName == null || !fileName.toLowerCase().endsWith(".sp")) {
             return null;
         }else if (fileName.equals("UTM_AUTO_ZONE.SP")) {
             return "UTM";

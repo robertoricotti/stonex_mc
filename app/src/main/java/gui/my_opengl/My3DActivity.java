@@ -66,7 +66,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
-    static boolean PNEZD_FUNCTION;
+    public static boolean PNEZD_FUNCTION;
     ImageView allarmeAlt;
     String bucketName;
     int indexMachineSelected,indexBucketSelected;
@@ -132,7 +132,9 @@ public class My3DActivity extends BaseClass {
 
             pathToPNEZD = MyData.get_String("progettoSelected");
             pathToPNEZD = pathToPNEZD.substring(0,pathToPNEZD.lastIndexOf("/"));
-            Log.d("Dialog_Add_Pnezd",pathToPNEZD);
+            String pathCompleto=pathToPNEZD+"/"+pathToPNEZD.substring(pathToPNEZD.lastIndexOf("/",pathToPNEZD.length()+1))+".csv";
+            DataSaved.PNEZDPath=pathCompleto;
+            Log.d("Dialog_Add_Pnezd",pathCompleto);
             if (whats == null) {
                 Intent intent = getIntent();
                 whats = intent.getStringExtra("whats");
@@ -683,8 +685,10 @@ public class My3DActivity extends BaseClass {
         try {
             if(PNEZD_FUNCTION){
                 btn_pnezd.setVisibility(View.VISIBLE);
+                gl_pnezd.setImageTintList(ColorStateList.valueOf(Color.GREEN));
             }else {
                 btn_pnezd.setVisibility(View.GONE);
+                gl_pnezd.setImageTintList(ColorStateList.valueOf(Color.WHITE));
             }
             if (hAlarm) {
                 allarmeAlt.setVisibility(View.VISIBLE);

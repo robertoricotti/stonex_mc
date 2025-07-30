@@ -5,6 +5,7 @@
     <string name="website">www.stonex.it</string>
     <string name="save">OPSLAAN</string>
     <string name="exit">AFSLUITEN</string>
+    <string name="rename_file">BESTAND HERNOMEN</string>
     <string name="machines">MACHINES</string>
     <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>

@@ -6,6 +6,7 @@
     <string name="website">www.stonex.it</string>
     <string name="save">저장</string>
     <string name="exit">종료</string>
+    <string name="rename_file">파일 이름 변경</string>
     <string name="machines">기계</string>
     <string name="profiles">프로필</string>
     <string name="buckets">버킷 선택</string>
