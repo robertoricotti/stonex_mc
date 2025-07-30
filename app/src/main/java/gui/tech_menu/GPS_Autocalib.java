@@ -92,7 +92,7 @@ public class GPS_Autocalib extends AppCompatActivity {
     private void onClick() {
         back.setOnClickListener(view -> {
             back.setEnabled(false);
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
         btn1.setOnClickListener(view -> {

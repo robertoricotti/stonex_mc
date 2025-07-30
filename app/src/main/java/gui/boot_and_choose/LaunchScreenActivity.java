@@ -1,5 +1,6 @@
 package gui.boot_and_choose;
 
+import static gui.MyApp.activationCode;
 import static gui.MyApp.folderPath;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.visibleActivity;
@@ -128,6 +129,9 @@ public class LaunchScreenActivity extends BaseClass {
                 try {
                     MyDeviceManager.hideBar(visibleActivity);
 
+                    if(!activationCode.equals(MyData.get_String("licenza"))){
+                        licenseType=-1;
+                    }
                     if (licenseType > -1) {
                         createSystemFolders();
                         initColori();

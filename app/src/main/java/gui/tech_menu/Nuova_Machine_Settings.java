@@ -616,7 +616,6 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         String isWL = MyData.get_String("M" + machineSel + "_isWL");
         String reqSpeed = MyData.get_String("M" + machineSel + "reqSpeed");
         String radioMode = MyData.get_String("M" + machineSel + "radioMode");
-        String licenza = MyData.get_String("licenza");
         String quick = MyData.get_String("M" + machineSel + "_hasQuick");
         String lang = MyData.get_String("language");
         String widR = MyData.get_String("M" + machineSel + "_Bucket_" + "0" + "_Width_R");
@@ -641,10 +640,6 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         String fileName = nameM + ".csv";
         File f = new File(path, fileName);
         CSVWriter writer;
-        String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines";
-        String fileNameL = "Lic.csv";
-        File file1 = new File(pathL, fileNameL);
-        CSVWriter writer1;
 
         try {
             writer = new CSVWriter(new FileWriter(f));
@@ -713,10 +708,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 ApolloPro apolloPro = ApolloPro.getInstance(Nuova_Machine_Settings.this);
                 s = apolloPro.getDeviceSN();
             }
-            writer1 = new CSVWriter(new FileWriter(file1));
-            String[] lic = {s, licenza};
-            writer1.writeNext(lic);
-            writer1.close();
+
         } catch (Exception ignored) {
 
         }

@@ -78,7 +78,6 @@ import gui.tech_menu.ExcavatorChooserActivity;
 import gui.tech_menu.FrameCalib;
 import gui.tech_menu.GPS_Autocalib;
 import gui.tech_menu.LinkageCalib;
-import gui.tech_menu.MachineSettings;
 import gui.tech_menu.Nuova_Machine_Settings;
 import gui.tech_menu.SlideBoomActivity;
 import gui.tech_menu.StickCalib;
@@ -455,9 +454,7 @@ Log.d("tetsCRS",DataSaved.S_CRS);
             ((GPS_Autocalib) activity).updateUI();
         } else if (activity instanceof LinkageCalib) {
             ((LinkageCalib) activity).updateUI();
-        } else if (activity instanceof MachineSettings) {
-            ((MachineSettings) activity).updateUI();
-        } else if (activity instanceof SlideBoomActivity) {
+        }  else if (activity instanceof SlideBoomActivity) {
             ((SlideBoomActivity) activity).updateUI();
         } else if (activity instanceof StickCalib) {
             ((StickCalib) activity).updateUI();

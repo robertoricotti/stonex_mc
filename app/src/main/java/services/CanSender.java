@@ -142,23 +142,26 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
-            if(MyApp.visibleActivity instanceof My3DActivity) {
-                int status = 0;
+
+            int status = 0;
                 if (DataSaved.gpsOk) {
                     status = 1;
                 } else {
                     status = 0;
                 }
+            if(mLat_1!=0&&mLon_1!=0) {
                 payload.put("latitude", mLat_1);
                 payload.put("longitude", mLon_1);
                 payload.put("localX", String.valueOf(Est1));
                 payload.put("localY", String.valueOf(Nord1));
                 payload.put("localZ", String.valueOf(Quota1));
-                payload.put("machineState", status);
-                payload.put("description", DataSaved.machineName);
+                payload.put("machineState", status);//fare mappa stati
+                payload.put("description", DataSaved.machineName);//testo libero
+                Log.d("cazzo", payload.toString());
                 WebSocketPlugin.getWebSocketPluginInstance(MyApp.visibleActivity).sendCommand("data_positioning_ack", payload);
                 payload.clear();
             }
+
         }
     }
 

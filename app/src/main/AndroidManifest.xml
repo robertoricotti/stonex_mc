@@ -373,12 +373,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.tech_menu.MachineSettings"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="gui.digging_excavator.Digging_CutAndFill1D"
             android:autoRemoveFromRecents="true"

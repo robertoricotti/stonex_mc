@@ -177,7 +177,7 @@ public class SlideBoomActivity extends AppCompatActivity {
         esc.setOnClickListener(view -> {
             esc.setEnabled(false);
             save.setEnabled(false);
-            startActivity(new Intent(this, MachineSettings.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
         save.setOnClickListener((View v) -> {
@@ -189,7 +189,7 @@ public class SlideBoomActivity extends AppCompatActivity {
                     esc.setEnabled(false);
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-                    startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+                    startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                     overridePendingTransition(0, 0);
                     finish();
                 }
@@ -202,7 +202,7 @@ public class SlideBoomActivity extends AppCompatActivity {
                     esc.setEnabled(false);
                     save();
                     startService(new Intent(getApplicationContext(), UpdateValuesService.class));
-                    startActivity(new Intent(getApplicationContext(), MachineSettings.class));
+                    startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                     overridePendingTransition(0, 0);
                     finish();
                 }

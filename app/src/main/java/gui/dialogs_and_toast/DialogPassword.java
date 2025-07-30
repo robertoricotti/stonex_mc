@@ -1,13 +1,10 @@
 package gui.dialogs_and_toast;
 
-import static gui.MyApp.isApollo;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -20,10 +17,7 @@ import com.example.stx_dig.R;
 import gui.debug_ecu.Hydro_Lobby;
 import gui.gps.Nuovo_Gps;
 import gui.tech_menu.CanOpenTSM;
-import gui.tech_menu.ExcavatorChooserActivity;
-import gui.tech_menu.MachineSettings;
 import gui.tech_menu.Nuova_Machine_Settings;
-import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;
 import utils.MyData;
 
