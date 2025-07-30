@@ -6,6 +6,7 @@ public class PNEZDPoint {
     private double easting;       // E
     private double elevation;     // Z
     private String description;   // D
+    private int color;             //Opzionale Color
 
     // Costruttore
     public PNEZDPoint(int pointNumber, double northing, double easting, double elevation, String description) {
@@ -14,6 +15,15 @@ public class PNEZDPoint {
         this.easting = easting;
         this.elevation = elevation;
         this.description = description;
+    }
+    // Costruttore
+    public PNEZDPoint(int pointNumber, double northing, double easting, double elevation, String description,int color) {
+        this.pointNumber = pointNumber;
+        this.northing = northing;
+        this.easting = easting;
+        this.elevation = elevation;
+        this.description = description;
+        this.color=color;
     }
 
     // Getter e Setter
@@ -61,5 +71,13 @@ public class PNEZDPoint {
     @Override
     public String toString() {
         return pointNumber + ", " + northing + ", " + easting + ", " + elevation + ", " + description;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
     }
 }

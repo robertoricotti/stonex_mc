@@ -33,7 +33,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintGuide_percent="0.25" />
+        app:layout_constraintGuide_percent="0.1666" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline173"
@@ -45,7 +45,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintGuide_percent="0.4375" />
+        app:layout_constraintGuide_percent="0.3333" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline174"
@@ -57,7 +57,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintGuide_percent="0.625" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline175"
@@ -69,7 +69,18 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintGuide_percent="0.8125" />
+        app:layout_constraintGuide_percent="0.6666" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ultima"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="3dp"
+        android:backgroundTint="@color/dark_gray"
+        android:orientation="horizontal"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintGuide_percent="0.8333" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline159"
@@ -706,7 +717,7 @@
         android:textColor="@color/_____cancel_text"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/bz"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -722,7 +733,7 @@
         android:textColor="@color/_____cancel_text"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/space"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -740,7 +751,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/bx"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -758,7 +769,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/bc"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bz"
@@ -775,7 +786,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/bv"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bx"
@@ -792,7 +803,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/bb"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bc"
@@ -809,7 +820,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/bn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bv"
@@ -826,7 +837,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/bm"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bb"
@@ -843,7 +854,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/bdel"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bn"
@@ -859,7 +870,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toStartOf="@+id/bok"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bm"
@@ -875,10 +886,24 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ultima"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bdel"
         app:layout_constraintTop_toTopOf="@+id/guideline175" />
+    <Button
+        android:id="@+id/bspazio"
+        android:layout_width="400dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="3dp"
+        android:backgroundTint="@color/_____cancel_text"
+        android:text="           "
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ultima" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

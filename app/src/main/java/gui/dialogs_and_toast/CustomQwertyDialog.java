@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -29,10 +31,12 @@ import gui.projects.ProjectFileAdapter;
 import gui.projects.Punti3DAdapter;
 import gui.tech_menu.Nuova_Machine_Settings;
 import utils.FullscreenActivity;
+import utils.MyData;
 
 public class CustomQwertyDialog {
     Activity activity;
     EditText realValue;
+    TextView realValueTV;
     public Dialog dialog;
     EditText value;
     Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bdel, bok;
@@ -40,6 +44,7 @@ public class CustomQwertyDialog {
     Button ba, bs, bd, bf, bg, bh, bj, bk, bl;
     Button bz, bx, bc, bv, bb, bn, bm, space, chiocc, bpunto;
     Button maiuscola;
+    Button barra;
     int txtLen = 40;
     boolean capital = true;
     int flag,position;
@@ -54,11 +59,8 @@ public class CustomQwertyDialog {
     public CustomQwertyDialog(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity);
-        if (Build.BRAND.equals("SRT8PROS")) {
-            dialog.setContentView(R.layout.dialog_qwerty_apollo8);//APOLLO2_10
-        } else if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
-            dialog.setContentView(R.layout.dialog_qwerty_apollo7);
-        }
+        dialog.setContentView(R.layout.dialog_qwerty_apollo7);
+
     }
 
     public void show(EditText realValue) {
@@ -71,18 +73,16 @@ public class CustomQwertyDialog {
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();
-        if (Build.BRAND.equals("SRT8PROS")) {
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, 650);
-        } else {
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, 500);
-        }
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = (int) (displayMetrics.heightPixels * 0.75);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
         FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
         onClick();
         onLongClick();
     }
-
     public void show(EditText realValue, int index, int flag) {
         this.index = index;
         this.flag = flag;
@@ -95,14 +95,36 @@ public class CustomQwertyDialog {
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();
-        if (Build.BRAND.equals("SRT8PROS")) {
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, 650);
-        } else {
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, 500);
-        }
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = (int) (displayMetrics.heightPixels * 0.75);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
         FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
+        onClick();
+        onLongClick();
+    }
+
+    public void show(TextView realValueTV, int index, int flag) {
+        this.index = index;
+        this.flag = flag;
+        this.realValueTV = realValueTV;
+        dialog.setCancelable(true);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
+        }
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.CENTER;
+        dialog.show();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = (int) (displayMetrics.heightPixels * 0.75);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
+        FullscreenActivity.setFullScreen(dialog);
+        findView();
+        initTV();
         onClick();
         onLongClick();
     }
@@ -120,11 +142,10 @@ public class CustomQwertyDialog {
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();
-        if (Build.BRAND.equals("SRT8PROS")) {
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, 650);
-        } else {
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, 500);
-        }
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = (int) (displayMetrics.heightPixels * 0.75);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
         FullscreenActivity.setFullScreen(dialog);
         findView();
         init2(name);
@@ -144,11 +165,10 @@ public class CustomQwertyDialog {
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();
-        if (Build.BRAND.equals("SRT8PROS")) {
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, 650);
-        } else {
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, 500);
-        }
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = (int) (displayMetrics.heightPixels * 0.75);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
         FullscreenActivity.setFullScreen(dialog);
         findView();
         onClick();
@@ -169,6 +189,10 @@ public class CustomQwertyDialog {
     private void init() {
         c = true;
         value.setText(realValue.getText().toString());
+    }
+    private void initTV() {
+        c = true;
+        value.setText(realValueTV.getText().toString());
     }
 
     private void findView() {
@@ -215,6 +239,7 @@ public class CustomQwertyDialog {
         bdel = dialog.findViewById(R.id.bdel);
         bok = dialog.findViewById(R.id.bok);
         space = dialog.findViewById(R.id.space);
+        barra=dialog.findViewById(R.id.bspazio);
         if (capital) {
             maiuscola.setBackgroundTintList(ContextCompat.getColorStateList(activity, R.color.light_yellow));
             space.setText("_");
@@ -236,6 +261,16 @@ public class CustomQwertyDialog {
                 maiuscola.setBackgroundTintList(ContextCompat.getColorStateList(activity, R.color.bg_gray));
                 space.setText("-");
             }
+        });
+        barra.setOnClickListener(view -> {
+            if (c) {
+                value.setText("");
+                c = false;
+            }
+            if (value.getText().toString().length() < txtLen)
+                value.setText(value.getText().toString().concat(caratteri(capital)[27]));
+            else
+                new CustomToast(activity, "STRING TOO LONG!").show();
         });
         space.setOnClickListener((View v) -> {
             if (c) {
@@ -313,7 +348,14 @@ public class CustomQwertyDialog {
                 dialog.dismiss();
 
 
-            } else {
+            } else if (flag==994) {
+                MyData.push("lastDescription",value.getText().toString().trim());
+                index = -1;
+                flag = -1;
+                dialog.dismiss();
+
+
+            }else {
                 realValue.setText(value.getText().toString().trim());
                 c = true;
                 if (index > -1 && flag > -1) {
@@ -812,7 +854,7 @@ public class CustomQwertyDialog {
     }
 
     public String[] caratteri(boolean capital) {
-        String s[] = new String[27];
+        String s[] = new String[28];
         if (capital) {
             s[0] = "Q";
             s[1] = "W";
@@ -841,6 +883,7 @@ public class CustomQwertyDialog {
             s[24] = "N";
             s[25] = "M";
             s[26] = "_";
+            s[27] = "\t";
 
         } else {
             s[0] = "q";
@@ -870,6 +913,7 @@ public class CustomQwertyDialog {
             s[24] = "n";
             s[25] = "m";
             s[26] = "-";
+            s[27] = "\t";
 
 
         }

@@ -35,6 +35,7 @@ public class PNEZDAdapter extends RecyclerView.Adapter<PNEZDAdapter.ViewHolder> 
         holder.pointNumberText.setText("P: " + point.getPointNumber());
         holder.coordinatesText.setText("N: " + point.getNorthing() + " | E: " + point.getEasting() + " | Z: " + point.getElevation());
         holder.descriptionText.setText(point.getDescription());
+        holder.pointColor.setBackgroundColor(point.getColor());
     }
 
     @Override
@@ -43,13 +44,15 @@ public class PNEZDAdapter extends RecyclerView.Adapter<PNEZDAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView pointNumberText, coordinatesText, descriptionText;
+        TextView pointNumberText, coordinatesText, descriptionText,pointColor;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             pointNumberText = itemView.findViewById(R.id.pointNumberText);
             coordinatesText = itemView.findViewById(R.id.coordinatesText);
             descriptionText = itemView.findViewById(R.id.descriptionText);
+            pointColor=itemView.findViewById(R.id.descriptionTextColor);
         }
     }
     public void updateData(List<PNEZDPoint> newPoints) {
