@@ -39,6 +39,7 @@ import gui.my_opengl.My3DActivity;
 import gui.projects.Activity_Crea_Superficie;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
+import packexcalib.exca.Excavator_RealValues;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.NmeaListener;
@@ -56,6 +57,8 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     public Dialog alertDialog;
     ImageView save,  title, BTConnect, serialCon, editZ, rtkMode;
     TextView txmchdt, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon;
+    TextView framA,boomA,boom2A,stickA,bucketA,tiltA;
+    TextView framO,boomO,boom2O,stickO,bucketO,tiltO;
     Button cqpiu, cqmeno;
     TextView tvCq,frame,boom1,boom2,stick,bucket,tilt;
     private boolean isUpdating = false;
@@ -119,6 +122,18 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         imbl = alertDialog.findViewById(R.id.imbl);
         imbc = alertDialog.findViewById(R.id.imbc);
         imbr = alertDialog.findViewById(R.id.imbr);
+        framA=alertDialog.findViewById(R.id.idframeAng);
+        boomA=alertDialog.findViewById(R.id.idboom1Ang);
+        boom2A=alertDialog.findViewById(R.id.idBoom2Ang);
+        stickA=alertDialog.findViewById(R.id.idStickAng);
+        bucketA=alertDialog.findViewById(R.id.idbucketAng);
+        tiltA=alertDialog.findViewById(R.id.idTiltAng);
+        framO=alertDialog.findViewById(R.id.idframeOff);
+        boomO=alertDialog.findViewById(R.id.idboom1Off);
+        boom2O=alertDialog.findViewById(R.id.idBoom2Off);
+        stickO=alertDialog.findViewById(R.id.idStickOff);
+        bucketO=alertDialog.findViewById(R.id.idbucketOff);
+        tiltO=alertDialog.findViewById(R.id.idTiltOff);
         txCrs.setTextSize(14);
         editZ = alertDialog.findViewById(R.id._editZ);
         progressBar = alertDialog.findViewById(R.id.progresss);
@@ -366,23 +381,33 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                         if(b[0]){
                             frame.setBackgroundColor(Color.RED);
                             frame.setTextColor(Color.WHITE);
+                            framO.setText(String.format("%.02f", DataSaved.offsetPitch).replace(",", ".")+"°"+"/"+
+                                    String.format("%.02f", DataSaved.offsetRoll).replace(",", ".")+"°");
                         }else {
                             if(DataSaved.lrFrame!=0) {
                                 frame.setBackgroundColor(Color.GREEN);
                                 frame.setTextColor(Color.DKGRAY);
+                                framA.setText(String.format("%.02f", ExcavatorLib.correctPitch).replace(",", ".")+"°"+"/"+
+                                        String.format("%.02f", ExcavatorLib.correctRoll).replace(",", ".")+"°");
+                                framO.setText(String.format("%.02f", DataSaved.offsetPitch).replace(",", ".")+"°"+"/"+
+                                        String.format("%.02f", DataSaved.offsetRoll).replace(",", ".")+"°");
                             }else {
                                 frame.setBackgroundColor(Color.GRAY);
                                 frame.setTextColor(Color.WHITE);
+
                             }
                         }
 
                         if(b[1]){
                             boom1.setBackgroundColor(Color.RED);
                             boom1.setTextColor(Color.WHITE);
+                            boomO.setText(String.format("%.02f", DataSaved.offsetBoom1).replace(",", ".")+"°");
                         }else {
                             if(DataSaved.lrBoom1!=0) {
                                 boom1.setBackgroundColor(Color.GREEN);
                                 boom1.setTextColor(Color.DKGRAY);
+                                boomA.setText(String.format("%.02f",ExcavatorLib.correctBoom1).replace(",", ".")+"°");
+                                boomO.setText(String.format("%.02f", DataSaved.offsetBoom1).replace(",", ".")+"°");
                             }else {
                                 boom1.setBackgroundColor(Color.GRAY);
                                 boom1.setTextColor(Color.WHITE);
@@ -391,11 +416,13 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                         if(b[2]){
                             boom2.setBackgroundColor(Color.RED);
                             boom2.setTextColor(Color.WHITE);
-
+                            boom2O.setText(String.format("%.02f", DataSaved.offsetBoom2).replace(",", ".")+"°");
                         }else {
                             if(DataSaved.lrBoom2!=0) {
                                 boom2.setBackgroundColor(Color.GREEN);
                                 boom2.setTextColor(Color.DKGRAY);
+                                boom2A.setText(String.format("%.02f",ExcavatorLib.correctBoom2).replace(",", ".")+"°");
+                                boom2O.setText(String.format("%.02f", DataSaved.offsetBoom2).replace(",", ".")+"°");
                             }else {
                                 boom2.setBackgroundColor(Color.GRAY);
                                 boom2.setTextColor(Color.WHITE);
@@ -404,10 +431,13 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                         if(b[3]){
                             stick.setBackgroundColor(Color.RED);
                             stick.setTextColor(Color.WHITE);
+                            stickO.setText(String.format("%.02f", DataSaved.offsetStick).replace(",", ".")+"°");
                         }else {
                             if(DataSaved.lrStick!=0) {
                                 stick.setBackgroundColor(Color.GREEN);
                                 stick.setTextColor(Color.DKGRAY);
+                                stickA.setText(String.format("%.02f",ExcavatorLib.correctStick).replace(",", ".")+"°");
+                                stickO.setText(String.format("%.02f", DataSaved.offsetStick).replace(",", ".")+"°");
                             }else {
                                 stick.setBackgroundColor(Color.GRAY);
                                 stick.setTextColor(Color.WHITE);
@@ -416,10 +446,13 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                         if(b[4]){
                             bucket.setBackgroundColor(Color.RED);
                             bucket.setTextColor(Color.WHITE);
+                            bucketO.setText(String.format("%.02f", DataSaved.offsetBucket).replace(",", ".")+"°");
                         }else {
                             if(DataSaved.lrBucket!=0) {
                                 bucket.setBackgroundColor(Color.GREEN);
                                 bucket.setTextColor(Color.DKGRAY);
+                                bucketA.setText(String.format("%.02f",ExcavatorLib.correctBucket).replace(",", ".")+"°");
+                                bucketO.setText(String.format("%.02f", DataSaved.offsetBucket).replace(",", ".")+"°");
                             }else {
                                 bucket.setBackgroundColor(Color.GRAY);
                                 bucket.setTextColor(Color.WHITE);
@@ -428,10 +461,13 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                         if(b[5]){
                             tilt.setBackgroundColor(Color.RED);
                             tilt.setTextColor(Color.WHITE);
+                            tiltO.setText(String.format("%.02f", DataSaved.offsetTilt).replace(",", ".")+"°");
                         }else {
                             if(DataSaved.lrTilt!=0) {
                                 tilt.setBackgroundColor(Color.GREEN);
                                 tilt.setTextColor(Color.DKGRAY);
+                                tiltA.setText(String.format("%.02f",ExcavatorLib.correctTilt).replace(",", ".")+"°");
+                                tiltO.setText(String.format("%.02f", DataSaved.offsetTilt).replace(",", ".")+"°");
                             }else {
                                 tilt.setBackgroundColor(Color.GRAY);
                                 tilt.setTextColor(Color.WHITE);

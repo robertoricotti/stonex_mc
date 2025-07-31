@@ -116,7 +116,7 @@ public class WebSocketPlugin {
 
             @Override
             public void onMessage(WebSocket ws, String text) {
-                Log.d("TestM", "Server response: " + text);
+
                 try {
                     JSONObject response = new JSONObject(text);
                     String status = response.optString("status");
@@ -137,12 +137,13 @@ public class WebSocketPlugin {
 
                         case "update_available":
                             JSONObject data = response.optJSONObject("data");
+
                             if (data != null) {
-                                Log.d("RRR", "In IF");
+
                                 decryptAndAcknowledge(ws, data);
-                                Log.d("RRR", "Dopo IF");
+
                             } else {
-                                // da sostituire con codice di revoke
+                                cancellaJson();
                                 delayedSend(ws, new JSONObject().put("status", "restore_ack").put("type", "restore_ack").put("activated", true).put("timeStamp", System.currentTimeMillis()), 2000);
                             }
 
@@ -158,7 +159,8 @@ public class WebSocketPlugin {
                             break;
 
                         default:
-                            Log.d("TestM", "Unrecognized response: " + text);
+                            Log.e("TestM", "Unrecognized response: " + text);
+
                             break;
                     }
                 } catch (Exception e) {
@@ -277,7 +279,9 @@ public class WebSocketPlugin {
                             .put("timeStamp", System.currentTimeMillis()), 2000);
 
         } else if ("restore SW license".equals(type)) {
-            Log.d("TestM", "Restoring license...");
+            Log.e("TestM", "Restoring license...");
+            //TODO CANCELLA JSON
+            cancellaJson();
             delayedSend(ws,
                     new JSONObject().put("status", "ack")
                             .put("type", "restore SW")
@@ -330,6 +334,7 @@ public class WebSocketPlugin {
         try {
             // Crea oggetto JSON
             JSONObject jsonObject = new JSONObject(jsonString);
+            Log.d("MyJson",jsonObject.toString());
 
             // Estrae e popola i campi
             activationCode = jsonObject.getString("activationCode");
@@ -345,9 +350,11 @@ public class WebSocketPlugin {
             // Percorso della cartella
             String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines";
 
+            Log.d("MyPath",pathL);
             // Crea la cartella se non esiste
             File directory = new File(pathL);
             if (!directory.exists()) {
+                Log.d("MyPath","IN" +pathL);
                 directory.mkdirs();
             }
 
@@ -361,12 +368,27 @@ public class WebSocketPlugin {
 
 
         } catch (JSONException e) {
+            Log.d("MyPath",e.getMessage());
             activationCode = "none";
             restoreCode = "none";
             licenseType = -1;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d("MyPath","1+ " +e.getMessage());
         }
+    }
+
+    public void cancellaJson(){
+        try {
+            // Percorso della cartella
+            String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines/License.json";
+
+            // File di output JSON
+            File myFile = new File(pathL);
+            myFile.delete();
+        } catch (Exception e) {
+            Log.e("Err",e.getMessage());
+        }
+
     }
 }
 

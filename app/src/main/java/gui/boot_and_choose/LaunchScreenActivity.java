@@ -541,6 +541,11 @@ public class LaunchScreenActivity extends BaseClass {
             // Percorso del file
             String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines/License.json";
             File file = new File(pathL);
+            try {
+                Log.d("Lic: " ,pathL);
+            } catch (Exception e) {
+                Log.e("Lic: " ,e.getMessage());
+            }
 
             if (!file.exists()) {
                 System.out.println("File non trovato: " + pathL);

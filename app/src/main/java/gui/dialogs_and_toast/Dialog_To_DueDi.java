@@ -65,6 +65,9 @@ public class Dialog_To_DueDi {
         to1d = dialog.findViewById(R.id.to1D);
         to2d = dialog.findViewById(R.id.to2D);
         toProfile = dialog.findViewById(R.id.toProfile);
+        if(licenseType<1){
+            to2d.setAlpha(0.3f);
+        }
     }
 
     private void onClick() {

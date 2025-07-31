@@ -298,7 +298,6 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 int position = getAdapterPosition();
                 if (position == RecyclerView.NO_POSITION) return; // Safeguard against invalid positions
 
-
                 notifyDataSetChanged(); // Refresh the view to reflect changes
             });
         }
