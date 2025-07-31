@@ -92,7 +92,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             }else if(fileExtension.equalsIgnoreCase("csv")) {
                 ckTrm.setVisibility(View.INVISIBLE);
                 ckPoly.setVisibility(View.INVISIBLE);
-                ckPoi.setVisibility(View.INVISIBLE);
+                ckPoi.setVisibility(View.VISIBLE);
                 ckJson.setVisibility(View.INVISIBLE);
                 sizeTextView.setVisibility(View.VISIBLE);
             }else {

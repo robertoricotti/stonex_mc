@@ -7,6 +7,7 @@
     <string name="save">ΑΠΟΘΗΚΕΥΣΗ</string>
     <string name="exit">ΕΞΟΔΟΣ</string>
     <string name="rename_file">ΜΕΤΟΝΟΜΑΣΙΑ ΑΡΧΕΙΟΥ</string>
+    <string name="wait_until">Περιμένετε μέχρι να ενημερωθεί το έργο</string>
     <string name="machines">ΜΗΧΑΝΗΜΑΤΑ</string>
     <string name="profiles">ΠΡΟΦΙΛ</string>
     <string name="buckets">ΕΠΙΛΕΞΤΕ ΜΙΑ ΚΑΔΑ</string>

@@ -6,6 +6,7 @@
     <string name="save">SALVA</string>
     <string name="exit">ESCI</string>
     <string name="rename_file">RINOMINA FILE</string>
+    <string name="wait_until">Attendere che il progetto venga aggiornato</string>
     <string name="machines">MACCHINE</string>
     <string name="profiles">PROFILI</string>
     <string name="buckets">SELEZIONA UNA BENNA</string>

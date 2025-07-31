@@ -6,6 +6,7 @@
     <string name="save">SAUVER</string>
     <string name="exit">SORTIE</string>
     <string name="rename_file">RENOMMER LE FICHIER</string>
+    <string name="wait_until">Attendez que le projet soit mis à jour</string>
     <string name="machines">MACHINES</string>
     <string name="profiles">PROFILS</string>
     <string name="buckets">"SÉLECTIONNER GODET "</string>

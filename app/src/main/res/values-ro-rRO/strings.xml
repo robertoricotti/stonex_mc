@@ -7,6 +7,7 @@
     <string name="save">SALVEAZĂ</string>
     <string name="exit">IEȘIRE</string>
     <string name="rename_file">REDENUMIRE FIȘIER</string>
+    <string name="wait_until">Așteptați până când proiectul este actualizat</string>
     <string name="machines">MAȘINI</string>
     <string name="profiles">PROFILE</string>
     <string name="buckets">SELECTAȚI O CUPĂ</string>

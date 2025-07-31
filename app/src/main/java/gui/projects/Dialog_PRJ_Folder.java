@@ -42,6 +42,7 @@ import gui.dialogs_and_toast.CustomMenuLista;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Diaalog_Set_SP;
 import gui.dialogs_and_toast.Dialog_Add_Surfaces;
+import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.MyGeoide;
 import serial.SerialPortManager;
@@ -222,6 +223,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         MyData.push("progettoSelected_POLY", "");
                     }
                 } catch (Exception e) {
+                    Log.e("Orrore",Log.getStackTraceString(e));
                     new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
                 }
                 try {
@@ -232,6 +234,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         MyData.push("progettoSelected_POINT", "");
                     }
                 } catch (Exception e) {
+                    Log.e("Orrore",Log.getStackTraceString(e));
                     new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
                 }
 
@@ -244,13 +247,19 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     DataSaved.progettoSelected = MyData.get_String("progettoSelected");
                     DataSaved.progettoSelected_POLY = MyData.get_String("progettoSelected_POLY");
                     DataSaved.progettoSelected_POINT = MyData.get_String("progettoSelected_POINT");
-                    new CustomToast(activity, "..Saved..").show_long();
+                    new CustomToast(activity, activity.getString(R.string.wait_until)).show_long();
                     stopUpdating();
-                    activity.startActivity(new Intent(activity, Activity_Home_Page.class));
-                    activity.finish();
+
+                    if(activity instanceof My3DActivity) {
+                        activity.startService(new Intent(activity, ReadProjectService.class));
+                    }else {
+                        activity.startActivity(new Intent(activity, Activity_Home_Page.class));
+                        activity.finish();
+                    }
                     dialog.dismiss();
 
                 } catch (Exception e) {
+                    Log.e("Orrore",Log.getStackTraceString(e));
                     new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
                     progressBar.setVisibility(View.INVISIBLE);
                 }

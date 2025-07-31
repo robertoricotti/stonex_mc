@@ -6,6 +6,7 @@
     <string name="save">OPSLAAN</string>
     <string name="exit">AFSLUITEN</string>
     <string name="rename_file">BESTAND HERNOMEN</string>
+    <string name="wait_until">Wacht tot het project is bijgewerkt</string>
     <string name="machines">MACHINES</string>
     <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>

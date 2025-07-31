@@ -18,6 +18,14 @@ public class DxfText implements Serializable {
         this.colore=colore;
         this.layer=layer;
     }
+    public DxfText(String text, double x, double y, double z,int colore) {
+        this.text = text;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.colore=colore;
+
+    }
 
     @Override
     public String toString() {

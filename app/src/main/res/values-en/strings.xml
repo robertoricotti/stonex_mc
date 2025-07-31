@@ -6,6 +6,7 @@
     <string name="save">SAVE</string>
     <string name="exit">EXIT</string>
     <string name="rename_file">RENAME FILE</string>
+    <string name="wait_until">Wait until Project is updated</string>
     <string name="machines">MACHINES</string>
     <string name="profiles">PROFILES</string>
     <string name="buckets">SELECT A BUCKET</string>

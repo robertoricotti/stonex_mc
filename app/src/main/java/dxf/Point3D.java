@@ -43,6 +43,13 @@ public class Point3D implements Serializable {
         this.colore=colore;
         this.layer=layer;
     }
+    public Point3D(double x, double y, double z, int colore,Layer layer) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.colore=colore;
+        this.layer=layer;
+    }
     public Point3D(String id,double x, double y, double z, double bulge,int colore,Layer layer,String description) {
         this.id=id;
         this.x = x;

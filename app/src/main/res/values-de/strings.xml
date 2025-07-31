@@ -6,6 +6,7 @@
     <string name="save">SPEICH</string>
     <string name="exit">EXIT</string>
     <string name="rename_file">DATEI UMBENENNEN</string>
+    <string name="wait_until">Warten, bis das Projekt aktualisiert ist</string>
     <string name="machines">MASCHINEN</string>
     <string name="profiles">PROFILE</string>
     <string name="buckets">BAGGERSCHAUFEL</string>

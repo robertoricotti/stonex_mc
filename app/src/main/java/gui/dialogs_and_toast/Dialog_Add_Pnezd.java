@@ -1,5 +1,8 @@
 package gui.dialogs_and_toast;
 
+import static services.ReadProjectService.fileExtensionPOINT;
+import static services.TriangleService.scanPNEZD;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dxf.PNEZDPoint;
-import gui.tech_menu.CanOpenTSM;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import utils.FullscreenActivity;
@@ -134,6 +136,7 @@ public class Dialog_Add_Pnezd {
         recyclerView.setAdapter(adapter);
         startUpdatingCoordinates();
         Log.d("Dialog_Add_Pnezd", "Start Updating");
+        adapter.scrollToLast(recyclerView);
     }
 
     private void findView() {
@@ -231,22 +234,22 @@ public class Dialog_Add_Pnezd {
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     switch (menuItem.getTitle().toString()) {
                         case "RED":
-                          MyData.push("lastColor","red");
+                            MyData.push("lastColor", "red");
                             return true;
                         case "YELLOW":
-                            MyData.push("lastColor","yellow");
+                            MyData.push("lastColor", "yellow");
                             return true;
                         case "BLUE":
-                            MyData.push("lastColor","blue");
+                            MyData.push("lastColor", "blue");
                             return true;
                         case "GREEN":
-                            MyData.push("lastColor","green");
+                            MyData.push("lastColor", "green");
                             return true;
                         case "CYAN":
-                            MyData.push("lastColor","cyan");
+                            MyData.push("lastColor", "cyan");
                             return true;
                         case "MAGENTA":
-                            MyData.push("lastColor","magenta");
+                            MyData.push("lastColor", "magenta");
                             return true;
 
 
@@ -267,6 +270,7 @@ public class Dialog_Add_Pnezd {
         });
         cancel.setOnClickListener(view -> {
             stopUpdatingCoordinates();
+            scanPNEZD();
             dialog.dismiss();
         });
         removelast.setOnClickListener(view -> {
@@ -324,7 +328,7 @@ public class Dialog_Add_Pnezd {
         lista.setOnClickListener(v -> {
             showingRecycler = !showingRecycler;
             Log.d("RecyS", showingRecycler + "");
-
+            adapter.scrollToLast(recyclerView);
         });
 
 
@@ -354,19 +358,19 @@ public class Dialog_Add_Pnezd {
                     double easting = Double.parseDouble(parts[2].trim());
                     double elevation = Double.parseDouble(parts[3].trim());
                     String description = parts[4].trim();
-                    int color=Color.RED;
+                    int color = Color.RED;
 
-                    punti.add(new PNEZDPoint(pointNumber, northing, easting, elevation, description,color));
-                }else if(parts.length>5){
+                    punti.add(new PNEZDPoint(pointNumber, northing, easting, elevation, description, color));
+                } else if (parts.length > 5) {
 
-                        int pointNumber = Integer.parseInt(parts[0].trim());
-                        double northing = Double.parseDouble(parts[1].trim());
-                        double easting = Double.parseDouble(parts[2].trim());
-                        double elevation = Double.parseDouble(parts[3].trim());
-                        String description = parts[4].trim();
-                        int color=Integer.parseInt(parts[5].trim());
+                    int pointNumber = Integer.parseInt(parts[0].trim());
+                    double northing = Double.parseDouble(parts[1].trim());
+                    double easting = Double.parseDouble(parts[2].trim());
+                    double elevation = Double.parseDouble(parts[3].trim());
+                    String description = parts[4].trim();
+                    int color = Integer.parseInt(parts[5].trim());
 
-                        punti.add(new PNEZDPoint(pointNumber, northing, easting, elevation, description,color));
+                    punti.add(new PNEZDPoint(pointNumber, northing, easting, elevation, description, color));
 
                 }
             }
@@ -502,7 +506,7 @@ public class Dialog_Add_Pnezd {
                 descrizione = "No Data";
             }
 
-            PNEZDPoint nuovoPunto = new PNEZDPoint(numero, nord, est, quota, descrizione,setColor(MyData.get_String("lastColor")));
+            PNEZDPoint nuovoPunto = new PNEZDPoint(numero, nord, est, quota, descrizione, setColor(MyData.get_String("lastColor")));
             aggiungiPuntoAlCSV(nuovoPunto);
             MyData.push("lastDescription", descrizione);
 
@@ -512,6 +516,7 @@ public class Dialog_Add_Pnezd {
             adapter.notifyDataSetChanged();
             new CustomToast(activity, "P" + numero + "\n" + descrizione + "\n").show_alert();
             stopUpdatingCoordinates();
+            scanPNEZD();
             dialog.dismiss();
         }
     }

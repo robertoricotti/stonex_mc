@@ -3,6 +3,7 @@ package services;
 
 import static gui.MyApp.gridFile_GR;
 import static packexcalib.gnss.CRS_Strings._NONE;
+import static services.TriangleService.scanPNEZD;
 import static services.UpdateValuesService.UTM;
 import static services.UpdateValuesService.WGS84;
 import static services.UpdateValuesService.crsFactory;
@@ -63,11 +64,12 @@ public class ReadProjectService extends Service {
 
     DXFData dxfData, dxfDataPoly, dxfDataPoint;
     LandXMLData landXMLData, landXMLPOLY, landXMLPOINT;
-    static String fileExtensionPOLY, fileExtensionPOINT;
+    public static String fileExtensionPOLY, fileExtensionPOINT;
     public static String parserStatus = "Wait Reading Files....";
     public static int numbers;
     public static boolean isFinishedDTM, isFinishedPOLY, isFinishedPOINT;
-    static double conversionFactor=1;
+    static double conversionFactor = 1;
+
     public ReadProjectService() {
     }
 
@@ -84,23 +86,23 @@ public class ReadProjectService extends Service {
         isFinishedDTM = false;
         isFinishedPOLY = false;
         isFinishedPOINT = false;
-        switch (MyData.get_Int("Unit_Of_Measure")){
+        switch (MyData.get_Int("Unit_Of_Measure")) {
             case 0:
             case 1:
-                conversionFactor=1;
+                conversionFactor = 1;
                 break;
 
             case 2:
             case 3:
-                conversionFactor=0.3048006096;
+                conversionFactor = 0.3048006096;
                 break;
             case 4:
             case 5:
-                conversionFactor=0.3048006096;
+                conversionFactor = 0.3048006096;
                 break;
             case 6:
             case 7:
-                conversionFactor=0.3048;
+                conversionFactor = 0.3048;
                 break;
         }
         mExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
@@ -137,7 +139,7 @@ public class ReadProjectService extends Service {
             }
 
 
-            if (MyApp.licenseType >1) {
+            if (MyApp.licenseType > 1) {
                 if (!nomeProgettoTRM.equals("")) {
                     try {
                         if (mettiPoly) {
@@ -183,7 +185,7 @@ public class ReadProjectService extends Service {
                         }
                         parserStatus = "Reading TRM...";
                         if (fileExtensionTRM.equalsIgnoreCase("dxf") || fileExtensionTRM.equalsIgnoreCase("pstx")) {
-                            if (MyApp.licenseType >1) {
+                            if (MyApp.licenseType > 1) {
                                 isFinishedDTM = false;
 
                                 DataSaved.projectTAG = "DXF";
@@ -279,6 +281,13 @@ public class ReadProjectService extends Service {
                                                 DataSaved.dxfTexts = landXMLPOINT.getTexts();
                                                 DataSaved.dxfLayers_POINT = landXMLPOINT.getLayers();
                                                 break;
+
+                                            case "csv":
+                                                //parsare pnezd
+                                                scanPNEZD();
+                                                isFinishedPOINT = true;
+                                                My3DActivity.PNEZD_FUNCTION=true;
+                                                break;
                                         }
                                     }
 
@@ -316,7 +325,7 @@ public class ReadProjectService extends Service {
                             }
 
                         } else if (fileExtensionTRM.equalsIgnoreCase("xml")) {
-                            if (MyApp.licenseType >1) {
+                            if (MyApp.licenseType > 1) {
 
                                 isFinishedDTM = false;
                                 DataSaved.projectTAG = "XML";
@@ -401,7 +410,6 @@ public class ReadProjectService extends Service {
                                             case "pstx":
                                                 parserStatus = "Reading Points...";
                                                 dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
-
                                                 dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                                 DataSaved.points = dxfDataPoint.getPoints();
                                                 DataSaved.dxfTexts = dxfDataPoint.getTexts();
@@ -409,13 +417,16 @@ public class ReadProjectService extends Service {
                                                 break;
                                             case "xml":
                                                 parserStatus = "Reading Points...";
-
-
                                                 landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
-
                                                 DataSaved.points = landXMLPOINT.getPoints();
                                                 DataSaved.dxfTexts = landXMLPOINT.getTexts();
                                                 DataSaved.dxfLayers_POINT = landXMLPOINT.getLayers();
+                                                break;
+                                            case "csv":
+                                                //parsare pnezd
+                                                scanPNEZD();
+                                                isFinishedPOINT = true;
+                                                My3DActivity.PNEZD_FUNCTION=true;
                                                 break;
                                         }
                                     }
@@ -572,18 +583,19 @@ public class ReadProjectService extends Service {
     private void startCorrectActivity() {
         if (MyApp.visibleActivity == null) return;
 
-        Intent intent;
-        if (DataSaved.isWL < 2) {
+        if (!(MyApp.visibleActivity instanceof My3DActivity)) {
+            Intent intent;
+
             intent = new Intent(MyApp.visibleActivity, My3DActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("whats", "whats");
+            startActivity(intent);
+
+            MyApp.visibleActivity.finish();
         } else {
-            intent = new Intent(MyApp.visibleActivity, My3DActivity.class);
+            MyApp.visibleActivity.recreate();
         }
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("whats", "whats");
-        startActivity(intent);
-
-        MyApp.visibleActivity.finish();
     }
 
     public static void clearCache(Context context, String projectName) {

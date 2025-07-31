@@ -8,6 +8,7 @@
     <string name="machines">MACHINES</string>
     <string name="machines_setup">MACHINE SETTINGS</string>
     <string name="rename_file">RENAME FILE</string>
+    <string name="wait_until">Wait until Project is updated</string>
     <string name="com_debug">CAN DEBUG</string>
     <string name="profiles">PROFILES</string>
     <string name="buckets">SELECT A BUCKET</string>

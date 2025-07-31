@@ -6,6 +6,7 @@
     <string name="save">保存参数</string>
     <string name="exit">逃离键</string>
     <string name="rename_file">重命名文件</string>
+    <string name="wait_until">请等待项目更新</string>
     <string name="machines">机器</string>
     <string name="profiles">剖面</string>
     <string name="buckets">选择斗</string>

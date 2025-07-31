@@ -1,13 +1,14 @@
 package services;
 
-import static gui.my_opengl.MyGLRenderer.scale;
 import static packexcalib.exca.DataSaved.polylines;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
+import static services.ReadProjectService.fileExtensionPOINT;
 
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import dxf.DxfText;
 import dxf.Face3D;
 import dxf.IntersectionFinder;
 import dxf.JTSOffsetHelper;
@@ -41,7 +43,6 @@ import gui.my_opengl.exca.My_Stick;
 import gui.my_opengl.exca.PuntiBenna;
 import gui.my_opengl.wheel.My_Wheel;
 import packexcalib.exca.DataSaved;
-import packexcalib.gnss.My_LocationCalc;
 import packexcalib.surfcreator.DistToLine;
 import packexcalib.surfcreator.DistToPoint;
 import packexcalib.surfcreator.TriangleHelper;
@@ -64,11 +65,13 @@ public class TriangleService extends Service {
 
     private static TriangleHelper triangleHelper;
     private static double[] lastPosition;
+    int countPnezd = -1;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
+        countPnezd = -1;
         startSort = false;
         DataSaved.filteredPolylines = new ArrayList<>();
         DataSaved.filteredPoints = new ArrayList<>();
@@ -278,14 +281,14 @@ public class TriangleService extends Service {
 
                         case 1:
                             DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
-                            DataSaved.GL_WHEEL=My_Wheel.puntiBenna();
+                            DataSaved.GL_WHEEL = My_Wheel.puntiBenna();
                             break;
 
                         case 2:
                         case 3:
                         case 4:
                             DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
-                            DataSaved.GL_LAMA= My_Lama.puntiLama();
+                            DataSaved.GL_LAMA = My_Lama.puntiLama();
                             break;
                         //TODO altre macchine
                     }
@@ -295,77 +298,22 @@ public class TriangleService extends Service {
                 }
 
 
-
-
-
                 DataSaved.filteredPolylines = getFilteredPolylines();
 
-                if (My3DActivity.PNEZD_FUNCTION) {
-                    try {
-                        String filePath = DataSaved.PNEZDPath; // <-- Qui metti il path corretto
-                        File file = new File(filePath);
 
-                        List<PNEZDPoint> punti = new ArrayList<>();
-
-                        if (file.exists()) {
-                            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                                String line;
-                                boolean firstLine = true;
-
-                                while ((line = br.readLine()) != null) {
-                                    if (firstLine) {
-                                        firstLine = false; // salta intestazione
-                                        continue;
-                                    }
-
-                                    if (line.trim().isEmpty()) continue; // salta righe vuote
-
-                                    String[] parts = line.split(",");
-
-                                    try {
-                                        int pointNumber = Integer.parseInt(parts[0].trim());
-                                        double northing = Double.parseDouble(parts[1].trim());
-                                        double easting = Double.parseDouble(parts[2].trim());
-                                        double elevation = Double.parseDouble(parts[3].trim());
-                                        String description = parts.length > 4 ? parts[4].trim() : "";
-
-                                        Integer color = null;
-                                        if (parts.length > 5 && !parts[5].trim().isEmpty()) {
-                                            color = Integer.parseInt(parts[5].trim());
-                                        }
-
-                                        PNEZDPoint punto;
-                                        if (color != null) {
-                                            punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description, color);
-                                        } else {
-                                            punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description);
-                                        }
-
-                                        punti.add(punto);
-
-                                    } catch (NumberFormatException ex) {
-                                        // ignora righe malformate
-                                        ex.printStackTrace();
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.e("PNEZD", "File non trovato: " + filePath);
-                        }
-
-                        DataSaved.pnezdPoints = punti;
-                        Log.d("PNEZD", DataSaved.pnezdPoints.size()+"    " + filePath);
-                    } catch (Exception e) {
-                        DataSaved.pnezdPoints = new ArrayList<>();
-                        Log.e("PNEZD", "Errore lettura PNEZD: " + e.getMessage());
-                    }
+                countPnezd++;
+                if(countPnezd%10==0){
+                    scanPNEZD();
                 }
+
+
+
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 long sleepTime = 100 - elapsedTime;
-                Log.d("SleepTime",sleepTime+"");
+
                 if (sleepTime > 0) {
                     try {
-                        Thread.sleep(sleepTime);
+                        Thread.sleep(Math.abs(sleepTime));
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
@@ -597,6 +545,95 @@ public class TriangleService extends Service {
         );
     }
 
+    public static void scanPNEZD() {
+        if (My3DActivity.PNEZD_FUNCTION) {
+            try {
+                    Log.d("PNEZD", DataSaved.pnezdPoints.size() + "    ");
+                    String filePath = DataSaved.PNEZDPath; // <-- Qui metti il path corretto
+                    File file = new File(filePath);
+
+                    List<PNEZDPoint> punti = new ArrayList<>();
+
+                    if (file.exists()) {
+                        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                            String line;
+                            boolean firstLine = true;
+
+                            while ((line = br.readLine()) != null) {
+                                if (firstLine) {
+                                    firstLine = false; // salta intestazione
+                                    continue;
+                                }
+
+                                if (line.trim().isEmpty()) continue; // salta righe vuote
+
+                                String[] parts = line.split(",");
+
+                                try {
+                                    int pointNumber = Integer.parseInt(parts[0].trim());
+                                    double northing = Double.parseDouble(parts[1].trim());
+                                    double easting = Double.parseDouble(parts[2].trim());
+                                    double elevation = Double.parseDouble(parts[3].trim());
+                                    String description = parts.length > 4 ? parts[4].trim() : "";
+
+                                    Integer color = null;
+                                    if (parts.length > 5 && !parts[5].trim().isEmpty()) {
+                                        color = Integer.parseInt(parts[5].trim());
+                                    }
+
+                                    PNEZDPoint punto;
+                                    if (color != null) {
+                                        punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description, color);
+                                    } else {
+                                        punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description);
+                                    }
+
+                                    punti.add(punto);
+
+                                } catch (NumberFormatException ex) {
+                                    // ignora righe malformate
+                                    ex.printStackTrace();
+                                }
+                            }
+                        }
+                    } else {
+                        Log.e("PNEZD", "File non trovato: " + filePath);
+                    }
+
+                    DataSaved.pnezdPoints = punti;
+                    Log.d("PNEZD", DataSaved.pnezdPoints.size() + "    " + filePath);
+                } catch (Exception e) {
+                    DataSaved.pnezdPoints = new ArrayList<>();
+                    Log.e("PNEZD", "Errore lettura PNEZD: " + e.getMessage());
+                }
+
+            if (fileExtensionPOINT!=null) {
+                if (fileExtensionPOINT.toLowerCase().equals("csv")) {
+                    if (!DataSaved.points.isEmpty()) {
+                        if (DataSaved.points.size() > 0) {
+                            Log.d("PNEZD", "Dentro if " + DataSaved.points.get(0).getLayer().getLayerName());
+                        }
+                    }
+                    // ✅ Svuota prima la lista
+                    DataSaved.points.clear();
+
+                    for (PNEZDPoint p : DataSaved.pnezdPoints) {
+                        DataSaved.points.add(new Point3D(
+                                p.getEasting(),
+                                p.getNorthing(),
+                                p.getElevation(),
+                                p.getColor(),
+                                new Layer(DataSaved.progettoSelected_POINT, "Layer", Color.WHITE, true)
+                        ));
+                    }
+                    DataSaved.filteredPoints = DataSaved.points;
+                }
+            }
+            }
+
+
+
+    }
 
     @Override
     public IBinder onBind(Intent intent) {

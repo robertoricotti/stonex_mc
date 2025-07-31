@@ -6,6 +6,7 @@
     <string name="save">SALVAR</string>
     <string name="exit">SALIR</string>
     <string name="rename_file">RENOMBRAR ARCHIVO</string>
+    <string name="wait_until">Espere hasta que el proyecto esté actualizado</string>
     <string name="machines">MÁQUINAS</string>
     <string name="profiles">PERFILES</string>
     <string name="buckets">SELECCIONAR PALA</string>

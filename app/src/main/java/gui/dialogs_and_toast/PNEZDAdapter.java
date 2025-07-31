@@ -59,4 +59,9 @@ public class PNEZDAdapter extends RecyclerView.Adapter<PNEZDAdapter.ViewHolder> 
         this.pointList.clear();
         this.pointList.addAll(newPoints);
     }
+    public void scrollToLast(RecyclerView recyclerView) {
+        if (getItemCount() > 0) {
+            recyclerView.scrollToPosition(getItemCount() - 1);
+        }
+    }
 }
