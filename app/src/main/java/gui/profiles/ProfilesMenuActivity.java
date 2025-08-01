@@ -245,13 +245,13 @@ public class ProfilesMenuActivity extends AppCompatActivity {
         });
 
         toDig.setOnClickListener((View v) -> {
-            disableAll();
+
             startService(new Intent(this, UpdateValuesService.class));
             int profile = MyData.get_Int("ProfileSelected");
             if (profile == 0) {
                 new CustomToast(this,"No Profile Selected").show_error();
             } else {
-
+                disableAll();
                 startActivity(new Intent(this, DiggingProfile.class));
                 finish();
             }

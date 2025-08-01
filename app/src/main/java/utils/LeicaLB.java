@@ -55,7 +55,7 @@ public  class LeicaLB {
         }
 
         double nuovoVale= Double.parseDouble(Utils.readUnitOfMeasureLB(String.valueOf(value)));
-        Log.d("PLC",String.valueOf(nuovoVale));
+
         int mVaule= Math.abs((int)Math.round(nuovoVale*100));
 
 

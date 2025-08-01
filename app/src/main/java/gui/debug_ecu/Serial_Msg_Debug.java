@@ -18,11 +18,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 
 import event_bus.SerialEvent;
+import gui.BaseClass;
 import gui.gps.Nuovo_Gps;
 import packexcalib.exca.DataSaved;
 import utils.MyDeviceManager;
 
-public class Serial_Msg_Debug extends AppCompatActivity {
+public class Serial_Msg_Debug extends BaseClass {
     TextView title;
     ImageView back, playpause, clear;
     private ListView listViewC;

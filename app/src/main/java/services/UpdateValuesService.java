@@ -506,7 +506,7 @@ public class UpdateValuesService extends Service {
                 String screenOr = MyData.get_String("screenOr");
                 String wifiSSID = MyData.get_String("wifiSSID");
                 String boomresult = MyData.get_String("boomresult");
-                String indexView = MyData.get_String("indexView");
+
                 String indexAudioSystem = MyData.get_String("indexAudioSystem");
                 String laserMode = MyData.get_String("LaserMode");
                 String slopeY = MyData.get_String("SLOPE_Y");
@@ -582,9 +582,7 @@ public class UpdateValuesService extends Service {
                     if (lan == null) {
                         MyData.push("language", "en_GB");
                     }
-                    if (indexView == null) {
-                        MyData.push("indexView", "0");
-                    }
+
                     if (indexAudioSystem == null) {
                         MyData.push("indexAudioSystem", "0");
                     }
@@ -1192,11 +1190,7 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di deadbandFlatAngle: " + e.getMessage());
                 }
 
-                try {
-                    DataSaved.portView = MyData.get_Int("indexView");
-                } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di portView: " + e.getMessage());
-                }
+
 
                 try {
                     DataSaved.deltaX = MyData.get_Double("M" + indexMach + "_OffsetGPSX");
@@ -1464,12 +1458,6 @@ public class UpdateValuesService extends Service {
                 }
 
                 DataSaved.S_CRS = MyData.get_String("crs");
-               /* try {
-               /* try {
-                    DataSaved.xyz = MyData.get_Int("xyz");
-                } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di xyz: " + e.getMessage());
-                }*/
 
                 try {
                     DataSaved.Colore_Surf = MyData.get_Int("Colore_Surf");

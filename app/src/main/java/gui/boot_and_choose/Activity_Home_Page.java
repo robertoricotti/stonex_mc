@@ -60,6 +60,7 @@ public class Activity_Home_Page extends AppCompatActivity {
             MyData.push("language", "en_GB");
         }
         setContentView(R.layout.activity_home_page);
+        DataSaved.portView=2;
         findView();
 
         if (!startedService) {

@@ -275,7 +275,7 @@ public class TriangleService extends Service {
                                 DataSaved.GL_BOOM1_2 = My_Boom1_Boom2.puntiBoom();
                             }
                             DataSaved.GL_FRAME_BASE = My_Frame.puntiFrame();
-                            Log.d("myAltezza", DataSaved.L_Tilt + "");
+
 
                             break;
 
@@ -548,7 +548,6 @@ public class TriangleService extends Service {
     public static void scanPNEZD() {
         if (My3DActivity.PNEZD_FUNCTION) {
             try {
-                    Log.d("PNEZD", DataSaved.pnezdPoints.size() + "    ");
                     String filePath = DataSaved.PNEZDPath; // <-- Qui metti il path corretto
                     File file = new File(filePath);
 
@@ -609,11 +608,6 @@ public class TriangleService extends Service {
 
             if (fileExtensionPOINT!=null) {
                 if (fileExtensionPOINT.toLowerCase().equals("csv")) {
-                    if (!DataSaved.points.isEmpty()) {
-                        if (DataSaved.points.size() > 0) {
-                            Log.d("PNEZD", "Dentro if " + DataSaved.points.get(0).getLayer().getLayerName());
-                        }
-                    }
                     // ✅ Svuota prima la lista
                     DataSaved.points.clear();
 

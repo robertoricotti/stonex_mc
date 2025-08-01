@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import cloud.WebSocketPlugin;
 import event_bus.SerialEvent;
 import gui.MyApp;
+import gui.debug_ecu.Serial_Msg_Debug;
 import gui.gps.NmeaGenerator;
 import gui.grading_dozergrader.Grading3D_DXF;
 import gui.my_opengl.My3DActivity;
@@ -146,25 +147,25 @@ public class CanSender extends Service {
         @Override
         public void run() {
             boolean[] bStat = new boolean[8];
-            bStat[0]=DataSaved.gpsOk;//vale 1
-            bStat[1]=DataSaved.isWL==0;//exca  vale 2
-            bStat[2]=DataSaved.isWL==1;//wheel  vale 4
-            bStat[3]=DataSaved.isWL==2;//dozer  vale 8
-            bStat[4]=DataSaved.isWL==4;//grader vale 16
-            bStat[5]=MyApp.visibleActivity instanceof My3DActivity;  //vale 32
-            bStat[6]=CanService.isAuto>0;//macchina in Automatico  vale 64
-            bStat[7]=hAlarm;//allarme attivo  vale 128
+            bStat[0] = DataSaved.gpsOk;//vale 1
+            bStat[1] = DataSaved.isWL == 0;//exca  vale 2
+            bStat[2] = DataSaved.isWL == 1;//wheel  vale 4
+            bStat[3] = DataSaved.isWL == 2;//dozer  vale 8
+            bStat[4] = DataSaved.isWL == 4;//grader vale 16
+            bStat[5] = MyApp.visibleActivity instanceof My3DActivity;  //vale 32
+            bStat[6] = CanService.isAuto > 0;//macchina in Automatico  vale 64
+            bStat[7] = hAlarm;//allarme attivo  vale 128
             Log.d("myPayload", Arrays.toString(bStat));
             byte status = 0;
-            status= PLC_DataTypes_BigEndian.Encode_8_bool_be(bStat);
+            status = PLC_DataTypes_BigEndian.Encode_8_bool_be(bStat);
             if (mLat_1 != 0 && mLon_1 != 0) {
                 payload.put("latitude", mLat_1);
                 payload.put("longitude", mLon_1);
                 payload.put("localX", String.valueOf(Est1));
                 payload.put("localY", String.valueOf(Nord1));
                 payload.put("localZ", String.valueOf(Quota1));
-                payload.put("machineState", status&0xFF);//bitmask 8 booleans
-                payload.put("description", DataSaved.machineName+"\n"+DataSaved.progettoSelected);//testo libero
+                payload.put("machineState", status & 0xFF);//bitmask 8 booleans
+                payload.put("description", DataSaved.machineName + "\n" + DataSaved.progettoSelected);//testo libero
                 Log.d("myPayload", payload.toString());
                 WebSocketPlugin.getWebSocketPluginInstance(MyApp.visibleActivity).sendCommand("data_positioning_ack", payload);
                 payload.clear();
@@ -179,9 +180,14 @@ public class CanSender extends Service {
         public void run() {
 
             if (DataSaved.my_comPort == 4) {
-                EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
-                EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
-                EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
+                new SerialEvent(NmeaGenerator.generateLLQ());
+                new SerialEvent(NmeaGenerator.generateGPHDT());
+                new SerialEvent(NmeaGenerator.generateGPGGA());
+                if (MyApp.visibleActivity instanceof Serial_Msg_Debug) {
+                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
+                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
+                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
+                }
                 NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
                 NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
                 NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());

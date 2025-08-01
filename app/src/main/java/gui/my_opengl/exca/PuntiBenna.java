@@ -36,7 +36,7 @@ public class PuntiBenna {
         double[] altoBackDX;
 
         double flatDist = Math.sin(Math.toRadians(DataSaved.flat)) * DataSaved.L_Bucket;
-        Log.d("Flat", DataSaved.flat + "     " + flatDist);
+
 
         if (DataSaved.lrTilt == 0) {
             tempPivot = Exca_Quaternion.endPoint(coordST, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket * 0.1d, hdt_BOOM);

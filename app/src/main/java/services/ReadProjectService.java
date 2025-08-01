@@ -113,7 +113,7 @@ public class ReadProjectService extends Service {
         @Override
         public void run() {
             startCRS();
-
+            Log.d("ReadService", "step-1");
             if (DataSaved.dxfLayers_DTM == null) {
                 DataSaved.dxfLayers_DTM = new ArrayList<>();
             }
@@ -138,8 +138,9 @@ public class ReadProjectService extends Service {
                 isFinishedPOINT = true;
             }
 
-
+            Log.d("ReadService", "step-2");
             if (MyApp.licenseType > 1) {
+                Log.d("ReadService", DataSaved.dxfFaces.size()+" ");
                 if (!nomeProgettoTRM.equals("")) {
                     try {
                         if (mettiPoly) {

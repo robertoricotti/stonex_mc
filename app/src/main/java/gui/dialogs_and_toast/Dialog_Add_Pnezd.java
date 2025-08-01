@@ -92,7 +92,6 @@ public class Dialog_Add_Pnezd {
     }
 
     public void show() {
-        showingRecycler = false;
         dialog.create();
         dialog.setContentView(R.layout.dialog_add_pnezd);
         dialog.setCancelable(false);
@@ -133,9 +132,9 @@ public class Dialog_Add_Pnezd {
         adapter = new PNEZDAdapter(leggiCSV(filepath));
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setAdapter(adapter);
-        startUpdatingCoordinates();
-        Log.d("Dialog_Add_Pnezd", "Start Updating");
         adapter.scrollToLast(recyclerView);
+        startUpdatingCoordinates();
+
     }
 
     private void findView() {
@@ -318,7 +317,6 @@ public class Dialog_Add_Pnezd {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 
-
                 }
             });
             builder.show();
@@ -326,7 +324,6 @@ public class Dialog_Add_Pnezd {
         });
         lista.setOnClickListener(v -> {
             showingRecycler = !showingRecycler;
-            Log.d("RecyS", showingRecycler + "");
             adapter.scrollToLast(recyclerView);
         });
 
