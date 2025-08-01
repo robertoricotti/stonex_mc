@@ -55,14 +55,13 @@ public class Dialog_Add_Pnezd {
     String filepath;
     LinearLayout customView;
     RecyclerView recyclerView;
-    boolean showingRecycler = false;
+    public static boolean showingRecycler;
     PNEZDAdapter adapter;
     double nord = 0.000;
     double est = 0.000;
     double quota = 100.000;
 
     public Dialog_Add_Pnezd(Activity activity, String path) {
-        Log.w("Dialog_Add_Pnezd", "Cartella: " + path);
         this.activity = activity;
         this.path = path;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);

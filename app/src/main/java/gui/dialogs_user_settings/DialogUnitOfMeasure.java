@@ -3,7 +3,10 @@ package gui.dialogs_user_settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,22 +39,34 @@ public class DialogUnitOfMeasure {
     public DialogUnitOfMeasure(Activity activity) {
         this.activity = activity;
         alertDialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        alertDialog.setContentView(R.layout.dialog_unit_of_measure);
     }
 
     public void show() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater = activity.getLayoutInflater();
 
-        builder.setView(inflater.inflate(R.layout.dialog_unit_of_measure, null));
 
-        builder.setCancelable(false);
-        alertDialog = builder.create();
+        alertDialog.setCancelable(false);
         Window window = alertDialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.CENTER;
-        alertDialog.show();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            wlp.gravity = Gravity.CENTER;
+            wlp.dimAmount = 0.7f; //  Offusca sfondo (0 = nessun dim, 1 = nero pieno)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); // 🔹 Applica dim
+            window.setAttributes(wlp);
+            // Calcola 75% della larghezza dello schermo
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int width = (int) (displayMetrics.widthPixels * 0.95);
+            int height = (int) (displayMetrics.heightPixels * 0.85);
+            alertDialog.getWindow().setLayout(width, height);
+            alertDialog.getWindow().setGravity(Gravity.CENTER);
+            alertDialog.show();
+        }
 
-        alertDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+
+
 
         FullscreenActivity.setFullScreen(alertDialog);
         findView();

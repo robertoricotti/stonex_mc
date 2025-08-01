@@ -16,14 +16,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.88" />
+        app:layout_constraintGuide_percent="0.89" />
     <TextView
         android:id="@+id/title"
         android:text="COM Debug"
         android:gravity="center"
         android:textSize="20sp"
-        android:textColor="@color/_____cancel_text"
-        android:background="@color/nav_gray_color"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_background_test3d_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -35,12 +35,13 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title">
+
         <ListView
-            android:background="@color/transparent"
-            android:scrollbarSize="24dp"
             android:id="@+id/listView_CAN"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:scrollbarSize="24dp" />
 
     </LinearLayout>
 
@@ -64,10 +65,12 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
+            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/back_btn" />
+            app:srcCompat="@drawable/menu_btn"
+            android:rotation="180"
+            app:tint="@color/white"/>
 
         <ImageView
 
@@ -76,9 +79,9 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
+            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
-            app:tint="@color/nav_gray_color"
+            app:tint="@color/_____cancel_text"
             android:src="@drawable/delete_btn"
             />
 
@@ -90,9 +93,10 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
+            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
             android:src="@drawable/delete_btn"
+            app:tint="@color/white"
             />
 
         <ImageView
@@ -102,10 +106,11 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:background="@color/nav_gray_color"
+            android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/btn_play"
+            app:tint="@color/white"
             />
 
     </LinearLayout>

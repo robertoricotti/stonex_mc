@@ -626,7 +626,7 @@ public class UpdateValuesService extends Service {
                         MyData.push("Pivot_Height_Alarm", "10000000.0");
                     }
                     if (unitOfMeasure == null) {
-                        MyData.push("Unit_Of_Measure", "0");
+                        MyData.push("Unit_Of_Measure", "1");
                     }
                     if (laser_height_Zero == null) {
                         MyData.push("Laser_Height_Zero", "0");

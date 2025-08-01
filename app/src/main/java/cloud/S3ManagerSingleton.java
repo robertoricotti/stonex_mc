@@ -63,7 +63,7 @@ public class S3ManagerSingleton {
         this.s3Client = new AmazonS3Client(credentials, Region.getRegion(s3Credentials.getRegion()));
         this.transferUtility = TransferUtility.builder().context(appContext).s3Client(s3Client).build();
         Log.d("S3Manager:Credentials", "AWS credentials updated successfully");
-
+//TODO fare controllo
         scheduleCredentialRefresh();
     }
     private void ensureExecutor() {

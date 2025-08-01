@@ -43,7 +43,6 @@ import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_MapMode;
 import gui.dialogs_and_toast.Dialog_Point_Poly;
 import gui.dialogs_user_settings.DialogAudioSystem;
-import gui.dialogs_user_settings.DialogBrightness;
 import gui.dialogs_user_settings.DialogColors;
 import gui.draw_class.DrawDXF_Layer1;
 import gui.draw_class.DrawDXF_Layer1_Tilt;
@@ -92,7 +91,6 @@ public class My3DActivity extends BaseClass {
     Guideline divisorio_verticale, divisorio_orizzontale, divisorio_inizio, divisorio_fine;
     ConstraintLayout.LayoutParams paramsV1, paramsV2, inizio, fine;
     private final Handler no_touch_menu = new Handler();
-    DialogBrightness dialogBrightness;
     Dialog_MapMode dialogMapMode;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_PRJ_Folder dialogPrjFolder;
@@ -254,7 +252,6 @@ public class My3DActivity extends BaseClass {
         dialogAudioSystem = new DialogAudioSystem(this);
         dialogOffset = new DialogOffset_3D(this);
         dialogPointPoly = new Dialog_Point_Poly(this);
-        dialogBrightness=new DialogBrightness(this);
         dialogAddPnezd=new Dialog_Add_Pnezd(this, pathToPNEZD);
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray">
+    android:background="@drawable/sfondo_bottone_bianco">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/v33"
@@ -41,7 +41,7 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="40dp"
         android:alpha="1.0"
-        android:padding="50dp"
+        android:padding="5dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/h66"
@@ -94,7 +94,7 @@
         android:layout_marginHorizontal="40dp"
         android:alpha="1.0"
         android:gravity="center"
-        android:padding="50dp"
+        android:padding="5dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/h66"
         app:layout_constraintLeft_toLeftOf="parent"

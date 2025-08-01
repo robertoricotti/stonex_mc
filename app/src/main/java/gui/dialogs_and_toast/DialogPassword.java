@@ -151,16 +151,19 @@ public class DialogPassword {
                 isTech = true;
                 if(whoCall==1){
                     activity.startActivity(new Intent(activity, Nuovo_Gps.class));
+                    activity.overridePendingTransition(0,0);
                     activity.finish();
                     tmp = "";
                     dialog.dismiss();
                 }else if (whoCall==2){
                     activity.startActivity(new Intent(activity, Nuova_Machine_Settings.class));
+                    activity.overridePendingTransition(0,0);
                     activity.finish();
                     tmp = "";
                     dialog.dismiss();
                 } else if (whoCall==3) {
                     activity.startActivity(new Intent(activity, Hydro_Lobby.class));
+                    activity.overridePendingTransition(0,0);
                     activity.finish();
                     tmp = "";
                     dialog.dismiss();

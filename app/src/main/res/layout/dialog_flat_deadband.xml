@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray">
+    android:background="@drawable/sfondo_bottone_bianco">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline72"
@@ -337,8 +337,8 @@
 
     <ImageView
         android:id="@+id/save"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
         android:text="@string/save"
@@ -355,8 +355,8 @@
 
     <ImageView
         android:id="@+id/exit"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:backgroundTint="@color/dark_gray"
         android:gravity="center"
         android:text="@string/exit"

@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/light_gray">
+    android:layout_height="match_parent"
+    android:background="@drawable/sfondo_bottone_bianco">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline115"
@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.55" />
+        app:layout_constraintGuide_percent="0.6" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline119"
@@ -110,7 +110,7 @@
         android:gravity="center"
         android:text="@string/units"
         android:textColor="@color/black"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline117"
         app:layout_constraintEnd_toStartOf="@+id/guideline114"
@@ -123,7 +123,7 @@
         android:layout_height="wrap_content"
         android:text="m"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
         app:layout_constraintEnd_toStartOf="@+id/cbxINft"
@@ -134,10 +134,11 @@
         android:id="@+id/cbxINft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Int ft"
+        android:text="International\nfeet"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:textStyle="bold"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
         app:layout_constraintEnd_toStartOf="@+id/cbxft"
         app:layout_constraintHorizontal_bias="0.5"
@@ -147,9 +148,10 @@
         android:id="@+id/cbxft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="US ft"
+        android:text="US Survey\nfeet"
+        android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
         app:layout_constraintEnd_toStartOf="@+id/cbxinch"
@@ -161,9 +163,9 @@
         android:id="@+id/cbxinch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ft in"
+        android:text="feet + in"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
         app:layout_constraintEnd_toStartOf="@+id/guideline114"
@@ -179,11 +181,14 @@
         android:textColor="@color/black"
         android:textSize="30sp"
         android:textStyle="bold"
+
+
+
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
-        app:layout_constraintEnd_toStartOf="@+id/cbxpercent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/guideline114"
-        app:layout_constraintTop_toTopOf="@+id/guideline117" />
+        app:layout_constraintStart_toEndOf="@+id/cbxpercent"
+        app:layout_constraintTop_toTopOf="@+id/guideline117"/>
 
     <CheckBox
         android:id="@+id/cbxpercent"
@@ -194,10 +199,11 @@
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline147"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cbxdegree"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cbxdegree"
-        app:layout_constraintTop_toTopOf="@+id/guideline117" />
+        app:layout_constraintStart_toEndOf="@+id/guideline114"
+        app:layout_constraintTop_toTopOf="@+id/guideline117"
+       />
 
     <TextView
         android:layout_width="wrap_content"
@@ -205,7 +211,7 @@
         android:gravity="center"
         android:text="@string/unitsA"
         android:textColor="@color/black"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline117"
         app:layout_constraintEnd_toEndOf="parent"

@@ -5,7 +5,10 @@ import static gui.MyApp.isApollo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -68,10 +71,24 @@ public class DialogHeightAlarm {
     private void init() {
 
 
+        alertDialog.setCancelable(false);
         Window window = alertDialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.CENTER;
-        alertDialog.show();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            wlp.gravity = Gravity.CENTER;
+            wlp.dimAmount = 0.7f; //  Offusca sfondo (0 = nessun dim, 1 = nero pieno)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); // 🔹 Applica dim
+            window.setAttributes(wlp);
+            // Calcola 75% della larghezza dello schermo
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int width = (int) (displayMetrics.widthPixels * 0.85);
+            int height = (int) (displayMetrics.heightPixels * 0.85);
+            alertDialog.getWindow().setLayout(width, height);
+            alertDialog.getWindow().setGravity(Gravity.CENTER);
+            alertDialog.show();
+        }
         FullscreenActivity.setFullScreen(alertDialog);
         findView();
         onClick();

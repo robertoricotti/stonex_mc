@@ -315,7 +315,7 @@ git push
                         @Override
                         public void run() {
                             try {
-Log.d("tetsCRS",DataSaved.S_CRS);
+
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {
                                     frameCounter += 1;
