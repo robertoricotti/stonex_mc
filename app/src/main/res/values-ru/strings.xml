@@ -3,6 +3,10 @@
     <string name="error_license">Лицензия просрочена или отсутствует\nОбратитесь к местному дилеру, чтобы решить проблему.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>
+    <string name="general_set">ОБЩИЕ НАСТРОЙКИ</string>
+    <string name="mac_setup">НАСТРОЙКА МАШИНЫ</string>
+    <string name="sens_config">НАСТРОЙКА ДАТЧИКА CAN</string>
+
     <string name="save">СОХРАНИТЬ</string>
     <string name="exit">ЭСК</string>
     <string name="rename_file">ПЕРЕИМЕНОВАТЬ ФАЙЛ</string>

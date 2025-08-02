@@ -21,7 +21,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import utils.MyData;
@@ -149,7 +148,7 @@ public class UpdateValuesService extends Service {
                     String swingLen_Lb = MyData.get_String("M" + i + "_Swing_Len_LB");
                     String swingLen_Lc = MyData.get_String("M" + i + "_Swing_Len_LC");
 
-                    String is40 = MyData.get_String("M" + i + "_is40");
+
                     String iswl = MyData.get_String("M" + i + "_isWL");
                     String enOUT = MyData.get_String("M" + i + "_enOUT");
                     String comPort = MyData.get_String("M" + i + "_comPort");
@@ -178,10 +177,13 @@ public class UpdateValuesService extends Service {
                     String lunghezza_Frame = MyData.get_String("M" + i + "lunghezza_Frame");
                     String larghezza_Braccio = MyData.get_String("M" + i + "larghezza_Braccio");
 
+                    String usuraLamaSX = MyData.get_String("M" + i + "usuraLamaSX");
+                    String usuraLamaCX = MyData.get_String("M" + i + "usuraLamaCX");
+                    String usuraLamaDX = MyData.get_String("M" + i + "usuraLamaDX");
+
 
                     if (nameM == null) {
                         MyData.push("M" + i + "_Name", ("DEFULT " + i).toUpperCase());
-
                     }
                     if (reverseRoto == null) {
                         MyData.push("M" + i + "revTiltRot", "0");
@@ -311,9 +313,7 @@ public class UpdateValuesService extends Service {
                     }
 
 
-                    if (is40 == null) {
-                        MyData.push("M" + i + "_is40", "0");
-                    }
+
                     if (iswl == null) {
                         if (i == 1 || i == 2) {
                             MyData.push("M" + i + "_isWL", "0");
@@ -411,6 +411,18 @@ public class UpdateValuesService extends Service {
 
                     if (altLama == null) {
                         MyData.push("M" + i + "_Bucket_" + "0" + "_Lama", "0.5");
+
+                    }
+                    if (usuraLamaSX == null) {
+                        MyData.push("M" + i + "usuraLamaSX", "0.1");
+
+                    }
+                    if (usuraLamaCX == null) {
+                        MyData.push("M" + i + "usuraLamaCX", "0.1");
+
+                    }
+                    if (usuraLamaDX == null) {
+                        MyData.push("M" + i + "usuraLamaDX", "0.1");
 
                     }
 
@@ -1274,11 +1286,7 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di swing_LC: " + e.getMessage());
                 }
 
-                try {
-                    DataSaved.is40 = MyData.get_Int("M" + indexMach + "_is40");
-                } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di is40: " + e.getMessage());
-                }
+
 
                 try {
                     DataSaved.isWL = MyData.get_Int("M" + indexMach + "_isWL");
@@ -1291,7 +1299,21 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di enOUT: " + e.getMessage());
                 }
-
+                try {
+                    DataSaved.usuraLamaSX = MyData.get_Double("M" + indexMach + "usuraLamaSX");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di usuraLamaSX: " + e.getMessage());
+                }
+                try {
+                    DataSaved.usuraLamaCX = MyData.get_Double("M" + indexMach + "usuraLamaCX");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di usuraLamaCX: " + e.getMessage());
+                }
+                try {
+                    DataSaved.usuraLamaDX = MyData.get_Double("M" + indexMach + "usuraLamaDX");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di usuraLamaDX: " + e.getMessage());
+                }
 
                 DataSaved.progettoSelected = MyData.get_String("progettoSelected");
                 DataSaved.progettoSelected_POLY = MyData.get_String("progettoSelected_POLY");

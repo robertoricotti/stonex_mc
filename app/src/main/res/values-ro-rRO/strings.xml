@@ -4,6 +4,10 @@
     <string name="error_license">Licență expirată sau lipsă\nContactați dealerul local pentru a rezolva problema.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>
+    <string name="general_set">SETĂRI GENERALE</string>
+    <string name="mac_setup">CONFIGURARE MAȘINĂ</string>
+    <string name="sens_config">CONFIGURARE SENZOR CAN</string>
+
     <string name="save">SALVEAZĂ</string>
     <string name="exit">IEȘIRE</string>
     <string name="rename_file">REDENUMIRE FIȘIER</string>

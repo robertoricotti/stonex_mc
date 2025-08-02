@@ -3,6 +3,10 @@
     <string name="error_license">Lizenz abgelaufen oder fehlt\nBitte wenden Sie sich an Ihren örtlichen Händler, um das Problem zu beheben.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>
+    <string name="general_set">ALLGEMEINE EINSTELLUNGEN</string>
+    <string name="mac_setup">MASCHINENEINSTELLUNG</string>
+    <string name="sens_config">CAN-SENSOR-KONFIGURATION</string>
+
     <string name="save">SPEICH</string>
     <string name="exit">EXIT</string>
     <string name="rename_file">DATEI UMBENENNEN</string>

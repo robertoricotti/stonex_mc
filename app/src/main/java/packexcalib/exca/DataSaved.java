@@ -130,7 +130,11 @@ public class DataSaved {
     public static double offsetDegWTilt;
 
 
-    public static int is40;//abilita invio messaggio CAN per 4.0
+    public static double usuraLamaSX;
+    public static double usuraLamaCX;
+    public static double usuraLamaDX;
+
+
     public static int enOUT;//abilita USCITA 12 VOUT
 
     public static int projectionFlag;

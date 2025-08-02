@@ -3,6 +3,9 @@
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="error_license">License expired or missing\nPlease contact your local dealer to resolve the issue.</string>
     <string name="website">www.stonex.it</string>
+    <string name="general_set">GENERAL SETTINGS</string>
+    <string name="mac_setup">MACHINE SETUP</string>
+    <string name="sens_config">CAN SENSOR CONFIG</string>
     <string name="save">SAVE</string>
     <string name="exit">EXIT</string>
     <string name="machines">MACHINES</string>

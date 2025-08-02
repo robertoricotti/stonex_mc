@@ -39,12 +39,12 @@ import utils.MyData;
 
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
-    CheckBox ckCloud, ckDO, ckUHF, ckUpper, ckIMU, ckDEMO;
+    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, menu_1, menu_2, saveToFile, readFromFile, status,bt_canopen;
     ConstraintLayout constraintLayout, constraintLayout_2,constraintLayout_3;
     TextView tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ,toCanopen,toDamping,can1bd,can2bd;
-    EditText mchName;
+    EditText mchName,techInfo;
     int mode, machineSel;
     public static boolean menu1_visible, menu2_visible,menu3_visible;
     DialogPassword dialogPassword;
@@ -82,6 +82,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         dozer = findViewById(R.id.sel_dozer);
         menu_1 = findViewById(R.id.bt_menu1);
         menu_2 = findViewById(R.id.bt_sens_set);
+        techInfo = findViewById(R.id.techInfo);
         constraintLayout = findViewById(R.id.constraint_general);
         constraintLayout_2 = findViewById(R.id.constr_2);
         constraintLayout_3 = findViewById(R.id.constr_3);
@@ -93,7 +94,6 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         tvTilt = findViewById(R.id.toTilt);
         tvXYZ = findViewById(R.id.toxyz);
         mchName = findViewById(R.id.mch_name);
-        ckCloud = findViewById(R.id.ck1);
         ckDO = findViewById(R.id.ck2);
         ckUHF = findViewById(R.id.ck3);
         ckUpper = findViewById(R.id.ck4);
@@ -179,18 +179,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             MyData.push("M" + machineSel + "_useCanOpen", "5");
         });
 
-        ckCloud.setOnClickListener(view -> {
-            ckCloud.setChecked(!ckCloud.isChecked());
-            if (ckCloud.isChecked()) {
-                ckCloud.setChecked(false);
-                MyData.push("M" + machineSel + "_is40", "0");
-                DataSaved.is40=0;
-            } else if (!ckCloud.isChecked()) {
-                ckCloud.setChecked(true);
-                MyData.push("M" + machineSel + "_is40", "1");
-                DataSaved.is40=0;
-            }
-        });
+
         ckDO.setOnClickListener(view -> {
             ckDO.setChecked(!ckDO.isChecked());
             if (ckDO.isChecked()) {
@@ -256,6 +245,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             startActivity(new Intent(this, Boom2Calib.class));
             finish();
         });
+        techInfo.setOnClickListener(view -> {
+            if (!customQwertyDialog.dialog.isShowing()) {
+                customQwertyDialog.show(techInfo);
+            }
+        });
         tvStick.setOnClickListener(view -> {
             en_dis(false);
             startActivity(new Intent(this, StickCalib.class));
@@ -293,18 +287,29 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         });
         menu_1.setOnClickListener(view -> {
             menu1_visible = !menu1_visible;
+            menu2_visible=false;
+            menu3_visible=false;
             updateCK();
         });
         menu_2.setOnClickListener(view -> {
             menu2_visible = !menu2_visible;
+            menu1_visible=false;
+            menu3_visible=false;
             updateCK();
         });
         bt_canopen.setOnClickListener(view -> {
             menu3_visible = !menu3_visible;
+            menu2_visible=false;
+            menu1_visible=false;
             updateCK();
         });
         back.setOnClickListener(view -> {
             saveName();
+            try {
+                MyData.push("techInfo", techInfo.getText().toString());
+            }catch(Exception ignored){
+
+            }
             en_dis(false);
             startActivity(new Intent(this, ExcavatorChooserActivity.class));
             finish();
@@ -554,10 +559,10 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
 
         ckUHF.setChecked(MyData.get_Int("M" + machineSel + "useQuickSwitch") == 1);
         ckDO.setChecked(MyData.get_Int("M" + machineSel + "_enOUT") != 0);
-        ckCloud.setChecked(MyData.get_Int("M" + machineSel + "_is40") != 0);
         ckIMU.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 3);//TSM
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag
         ckUpper.setChecked(MyData.get_Int("digStartUp") == 1);
+        techInfo.setText(MyData.get_String("techInfo"));
 
     }
 

@@ -5,6 +5,10 @@
     <string name="copyright">Πνευματικά δικαιώματα © \nΌλα τα δικαιώματα διατηρούνται</string>
     <string name="website">www.stonex.it</string>
     <string name="save">ΑΠΟΘΗΚΕΥΣΗ</string>
+    <string name="general_set">ΓΕΝΙΚΕΣ ΡΥΘΜΙΣΕΙΣ</string>
+    <string name="mac_setup">ΡΥΘΜΙΣΗ ΜΗΧΑΝΗΜΑΤΟΣ</string>
+    <string name="sens_config">ΡΥΘΜΙΣΗ ΑΙΣΘΗΤΗΡΑ CAN</string>
+
     <string name="exit">ΕΞΟΔΟΣ</string>
     <string name="rename_file">ΜΕΤΟΝΟΜΑΣΙΑ ΑΡΧΕΙΟΥ</string>
     <string name="wait_until">Περιμένετε μέχρι να ενημερωθεί το έργο</string>

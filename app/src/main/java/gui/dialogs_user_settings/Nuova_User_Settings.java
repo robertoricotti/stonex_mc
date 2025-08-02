@@ -154,7 +154,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
             }
         });
         imgLocale.setOnClickListener(view -> {
-            if(!dialogLanguages.alertDialog.isShowing()){
+            if(!dialogLanguages.dialog.isShowing()){
                 dialogLanguages.show();
             }
         });

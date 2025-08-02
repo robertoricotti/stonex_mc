@@ -63,7 +63,6 @@ public class MachineInfoCalib extends AppCompatActivity {
     private void init() {
 
         customQwertyDialog = new CustomQwertyDialog(this);
-
         indexMachineSelected = MyData.get_Int("MachineSelected");
         machineName.setText(MyData.get_String("M" + indexMachineSelected + "_Name"));
         techInfo.setText(MyData.get_String("techInfo"));
@@ -214,7 +213,7 @@ public class MachineInfoCalib extends AppCompatActivity {
         f.renameTo(new File(path, machineName.getText().toString().trim().toUpperCase() + ".csv"));
 
         MyData.push("M" + indexMachineSelected + "_Name", machineName.getText().toString().trim().toUpperCase());
-        MyData.push("techInfo", techInfo.getText().toString().toUpperCase());
+        MyData.push("techInfo", techInfo.getText().toString());
         if (ckCan.isChecked()) {
             MyData.push("M" + indexMachineSelected + "_is40", "1");
         } else {

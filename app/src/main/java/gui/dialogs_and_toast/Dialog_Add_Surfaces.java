@@ -57,8 +57,8 @@ public class Dialog_Add_Surfaces {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 0.75);
-        int height = (int) (displayMetrics.heightPixels * 0.65);
+        int width = (int) (displayMetrics.widthPixels * 0.8);
+        int height = (int) (displayMetrics.heightPixels * 0.8);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
@@ -98,7 +98,7 @@ public class Dialog_Add_Surfaces {
             intent.putExtra("proj", "PLAN");
             intent.putExtra("type", "OVER"); // Passa il valore OVER
             intent.putExtra("whoPRJ",chiamata);
-            intent.putExtra("mPath",mPath);
+            intent.putExtra("mPath",mPath);//scegliere path se Projects o dentro folder
             activity.startActivity(intent);
             dialog.dismiss();
             activity.finish();

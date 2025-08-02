@@ -3,6 +3,10 @@
     <string name="error_license">Licence expirée ou manquante\nVeuillez contacter votre revendeur local pour résoudre le problème.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>
+    <string name="general_set">PARAMÈTRES GÉNÉRAUX</string>
+    <string name="mac_setup">CONFIGURATION MACHINE</string>
+    <string name="sens_config">CONFIGURATION CAPTEUR CAN</string>
+
     <string name="save">SAUVER</string>
     <string name="exit">SORTIE</string>
     <string name="rename_file">RENOMMER LE FICHIER</string>

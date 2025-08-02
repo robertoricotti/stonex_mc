@@ -3,6 +3,10 @@
     <string name="error_license">Licencia caducada o inexistente\nPóngase en contacto con su distribuidor local para resolver el problema.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>
+    <string name="general_set">AJUSTES GENERALES</string>
+    <string name="mac_setup">CONFIGURACIÓN DE LA MÁQUINA</string>
+    <string name="sens_config">CONFIGURACIÓN DEL SENSOR CAN</string>
+
     <string name="save">SALVAR</string>
     <string name="exit">SALIR</string>
     <string name="rename_file">RENOMBRAR ARCHIVO</string>

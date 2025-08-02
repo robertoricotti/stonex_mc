@@ -3,6 +3,10 @@
     <string name="error_license">许可证已过期或缺失\n请联系当地经销商以解决问题。</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>
+    <string name="general_set">常规设置</string>
+    <string name="mac_setup">机器设置</string>
+    <string name="sens_config">CAN 传感器配置</string>
+
     <string name="save">保存参数</string>
     <string name="exit">逃离键</string>
     <string name="rename_file">重命名文件</string>
