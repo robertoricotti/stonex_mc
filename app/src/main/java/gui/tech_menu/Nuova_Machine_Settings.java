@@ -279,7 +279,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 finish();
             } else {
                 en_dis(false);
-                startActivity(new Intent(this, XYZ_Calib_Dozer.class));
+                startActivity(new Intent(this, Nuova_Blade_Calib.class));
                 finish();
             }
 

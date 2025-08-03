@@ -78,6 +78,7 @@ import gui.tech_menu.ExcavatorChooserActivity;
 import gui.tech_menu.FrameCalib;
 import gui.tech_menu.GPS_Autocalib;
 import gui.tech_menu.LinkageCalib;
+import gui.tech_menu.Nuova_Blade_Calib;
 import gui.tech_menu.Nuova_Machine_Settings;
 import gui.tech_menu.SlideBoomActivity;
 import gui.tech_menu.StickCalib;
@@ -481,6 +482,9 @@ git push
 
         } else if (activity instanceof Activity_Home_Page) {
             ((Activity_Home_Page) activity).updateUI();
+
+        }else if (activity instanceof Nuova_Blade_Calib) {
+            ((Nuova_Blade_Calib) activity).updateUI();
 
         }else if (activity instanceof Nuova_Machine_Settings) {
             ((Nuova_Machine_Settings) activity).updateUI();
