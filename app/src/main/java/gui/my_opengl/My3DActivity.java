@@ -267,10 +267,11 @@ public class My3DActivity extends BaseClass {
         panel2.addView(layer2Canvas);
         panel1.setBackgroundColor(MyColorClass.colorSfondo);
         panel2.setBackgroundColor(MyColorClass.colorSfondo);
-        if(DataSaved.isWL==0){
-            gl_benne.setVisibility(View.VISIBLE);
+        if(DataSaved.isWL==0||DataSaved.isWL==1){
+            gl_benne.setImageResource((R.drawable.benna_vuota1));
         }else {
-            gl_benne.setVisibility(View.GONE);
+
+            gl_benne.setImageResource((R.drawable.window_blade));
         }
     }
 

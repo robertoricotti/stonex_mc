@@ -258,7 +258,7 @@ public class ExcavatorLib {
                         //dozer e grader
                         hdt_LAMA = hdt0;
                         yawSensor = 0;
-                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, gps1_Z_dev, hdt0);
+                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, gps1_Z_dev+DataSaved.usuraLamaCX, hdt0);
                         if (gps1_X_dev < 0) {
                             coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, gps1_X_dev, hdtL);
                         } else {

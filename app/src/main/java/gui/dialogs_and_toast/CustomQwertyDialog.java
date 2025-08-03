@@ -883,7 +883,7 @@ public class CustomQwertyDialog {
             s[24] = "N";
             s[25] = "M";
             s[26] = "_";
-            s[27] = "\t";
+            s[27] = " ";
 
         } else {
             s[0] = "q";
@@ -913,7 +913,7 @@ public class CustomQwertyDialog {
             s[24] = "n";
             s[25] = "m";
             s[26] = "-";
-            s[27] = "\t";
+            s[27] = " ";
 
 
         }

@@ -156,6 +156,14 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
                     selectedItem = getAdapterPosition();
                     notifyDataSetChanged();
                 }
+                /*
+                   selectedItem = getAdapterPosition();
+                    notifyDataSetChanged();
+                    if (MyApp.visibleActivity instanceof PickProject) {
+                        Log.d("Selezzzione", String.valueOf(MyApp.visibleActivity));
+                        new Dialog_PRJ_Folder(MyApp.visibleActivity).show(Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects/" + getSelectedFilePath());
+                    }
+                 */
             });
         }
     }

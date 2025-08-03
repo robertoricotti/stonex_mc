@@ -29,7 +29,7 @@ public class XYZ_Calib_Dozer extends BaseClass {
     CustomNumberDialog numberDialog;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     TextView tvX, tvY, tvZ,titolo,tvAltPalo,tvAltLama,tvLeftSide,tvRighrSide,tvBetween;
-
+//TODO rifare grafica
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,8 +128,8 @@ public class XYZ_Calib_Dozer extends BaseClass {
         });
         dZ.setOnClickListener(view -> {
 
-            if (!numberDialog.dialog.isShowing())
-                numberDialog.show(dZ);
+           /* if (!numberDialog.dialog.isShowing())
+                numberDialog.show(dZ);*/
 
         });
         dHdt.setOnClickListener(view -> {
@@ -177,6 +177,13 @@ public class XYZ_Calib_Dozer extends BaseClass {
             gpsDebug.setImageResource(R.drawable.gps_no);
         }
 
+        try {
+            DataSaved.deltaZ=DataSaved.altezzaLama+DataSaved.altezzaPali;
+            dZ.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deltaZ)));
+        } catch (Exception e) {
+            dZ.setText("NaN");
+        }
+
     }
 
 
@@ -188,7 +195,6 @@ public class XYZ_Calib_Dozer extends BaseClass {
     private void updateTxt() {
         dx.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deltaX)));
         dY.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deltaY)));
-        dZ.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deltaZ)));
         etBladeR.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.W_Blade_RIGHT)));
         etBladeL.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.W_Blade_LEFT)));
         altPalo.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.altezzaPali)));

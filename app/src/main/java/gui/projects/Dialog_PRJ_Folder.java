@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import gui.BaseClass;
+import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomMenu;
 import gui.dialogs_and_toast.CustomMenuLista;
@@ -56,7 +57,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
     Activity activity;
     public Dialog dialog;
     ImageView exit,setSP,setGeoide;
-    TextView titFiles, titSP, messaggio;
+    TextView titFiles, messaggio,inUso,inUsoGeoid;
+    View titSP;
     ImageView usaSP, usaFile, deleteFile, deleteSP,addSurf;
     RecyclerView recyclerViewFiles, recyclerViewSP;
     ArrayList<ProjectFileAdapter.FileItem> arraySP;
@@ -97,6 +99,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
     public void findView() {
         exit = dialog.findViewById(R.id.dismiss);
         titFiles = dialog.findViewById(R.id.tvPrj);
+        inUso=dialog.findViewById(R.id.titoloSP);
+        inUsoGeoid=dialog.findViewById(R.id.titoloGeo);
         titSP = dialog.findViewById(R.id.tvSP);
         recyclerViewFiles = dialog.findViewById(R.id.recycler_view);
         recyclerViewSP = dialog.findViewById(R.id.recycler_viewSP);
@@ -152,11 +156,11 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     }
                 }
             } else {
-                new CustomToast(activity, "Reading File Error...").show_error();
+                //new CustomToast(activity, "Reading File Error...").show_alert();
                 dialog.dismiss();
             }
         } catch (Exception e) {
-            new CustomToast(activity, "Reading File Error...").show_error();
+            new CustomToast(activity, "Reading File Error...\n"+Log.getStackTraceString(e)).show_error();
             dialog.dismiss();
         }
 
@@ -396,14 +400,13 @@ public class Dialog_PRJ_Folder extends BaseClass {
                                 //UTM autozone
                                 MyData.push("crs", "UTM");
                                 DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
-                                dialog.dismiss();
+
                             }else {
                                 MyData.push("crs", match);
                                 DataSaved.S_CRS = MyData.get_String("crs");
-                                activity.recreate();
+
                                 ReadProjectService.startCRS();
-                                dialog.dismiss();
+
                             }
                         }else {
                             //invia file SP
@@ -414,7 +417,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
                             switch (DataSaved.my_comPort) {
                                 case 0:
                                     // Copia il file da assets a una directory accessibile
-                                    String filePath = copyAssetFileToTemp(mPath, selectedFileName);
+
+                                    String filePath = spAdapter.getSelectedFilePathAbs();
                                     sendFileViaCAN(filePath, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
                                         @Override
                                         public void onProgressUpdate(int percentage) {
@@ -425,7 +429,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                                 case 1:
                                 case 2:
                                     //send via serial
-                                    String filePathS = copyAssetFileToTemp(mPath, selectedFileName);
+                                    String filePathS = spAdapter.getSelectedFilePathAbs();
                                     SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
                                     Thread.sleep(500);
                                     sendFileViaSerial(filePathS, new CanFileTransfer.ProgressCallback() {
@@ -437,7 +441,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                                     break;
                                 default:
                                     Thread.sleep(500);
-                                    dialog.dismiss();
+
                                     break;
 
 
@@ -513,6 +517,22 @@ public class Dialog_PRJ_Folder extends BaseClass {
                 // Update View
 
                 try {
+                    String s1 = "";
+                    s1 = MyData.get_String("LastSP");
+                    if (s1 == null) {
+                        inUso.setText("");
+                    } else {
+                        inUso.setText(s1);
+                    }
+
+                    String s2 = "";
+                    s2 = MyApp.GEOIDE_PATH;
+                    if (s2 == null||s2.equals("null")) {
+                        inUsoGeoid.setText("No Geoid");
+                    } else {
+                        inUsoGeoid.setText(s2);
+                    }
+
                     if (CanFileTransfer.sending) {
                         messaggio.setText("Sending...\n" + perc + " %");
                         progressBar.setVisibility(View.VISIBLE);
@@ -560,7 +580,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         }
                     }
                 } catch (Exception e) {
-                    Log.d("step!", e.toString());
+
+                    Log.e("Diomaiale", e.toString());
                 }
             }
         }, 100);

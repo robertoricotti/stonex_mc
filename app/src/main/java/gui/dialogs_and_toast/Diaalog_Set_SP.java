@@ -94,7 +94,6 @@ public class Diaalog_Set_SP {
 
     public void show() {
 
-        Log.d("myGeoid",MyData.get_String("geoidPath"));
         if (MyData.get_String("usaGeoide") == null) {
             MyData.push("usaGeoide", String.valueOf(false));
         }
@@ -607,6 +606,20 @@ public class Diaalog_Set_SP {
         return tempFile.getAbsolutePath();
     }
     public void copyFromAssetsToFile(Context context, String assetPath, File destinationFile) throws IOException {
+        // 1. Cancella eventuali file .SP già presenti nella cartella di destinazione
+        File destFolder = destinationFile.getParentFile();
+        if (destFolder != null && destFolder.exists()) {
+            File[] existingSP = destFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".sp"));
+            if (existingSP != null) {
+                for (File f : existingSP) {
+                    if (f.delete()) {
+                        Log.d("SP_COPY", "Eliminato vecchio SP: " + f.getName());
+                    } else {
+                        Log.w("SP_COPY", "Impossibile eliminare SP: " + f.getName());
+                    }
+                }
+            }
+        }
         AssetManager assetManager = context.getAssets();
 
         try (InputStream inputStream = assetManager.open(assetPath);
