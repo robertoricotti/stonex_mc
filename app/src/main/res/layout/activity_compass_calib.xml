@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.09" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/h2"
         android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.89" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/h6"
         android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
         android:layout_height="0dp"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/h3"
-        app:layout_constraintRight_toLeftOf="@id/textView48"
+        app:layout_constraintRight_toLeftOf="@id/txtDeltaX"
         app:layout_constraintTop_toTopOf="@+id/h1"
         app:layout_constraintLeft_toRightOf="@id/imgupsx"
         app:srcCompat="@drawable/dy" />
@@ -111,7 +111,7 @@
         app:layout_constraintBottom_toTopOf="@+id/h5"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@id/imgupsx"
-        app:layout_constraintRight_toLeftOf="@id/textView48"
+        app:layout_constraintRight_toLeftOf="@id/txtDeltaX"
         app:layout_constraintTop_toTopOf="@+id/h3"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/delta_hdt_blue" />
@@ -126,85 +126,90 @@
         app:layout_constraintRight_toLeftOf="@id/imgdwdx"
         app:srcCompat="@drawable/delta_z_blue"/>
 
-    <TextView
-        android:id="@+id/titolo"
+
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:gravity="center_vertical"
-        android:text="@string/gps_calib"
-        android:textColor="@color/dark_gray"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textAlignment="textStart"
-        app:layout_constraintBottom_toTopOf="@+id/h1"
-        app:layout_constraintLeft_toRightOf="@id/gpsdebugg"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlCompat" />
-    <ImageView
-        android:id="@+id/gpsdebugg"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:scaleType="centerInside"
-        app:layout_constraintRight_toLeftOf="@id/titolo"
-        app:layout_constraintBottom_toTopOf="@+id/h1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/gps_no"/>
-    <Button
-        android:id="@+id/updateGps"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
-        android:backgroundTint="@color/light_yellow"
         android:gravity="center"
-        android:text="UPDATE"
-        android:textAllCaps="true"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textColor="@color/_____cancel_text"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/h1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/gpsdebugg"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/baseline_live_help_96"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/titolo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/custom_background_test3d_box"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img01"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/wifi_vuoto"
+            app:tint="@color/_____cancel_text" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/updateGps"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:padding="5dp"
+        android:src="@drawable/btn_refresh"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/guideline124"
         app:layout_constraintLeft_toLeftOf="@id/guideline124"
         app:layout_constraintTop_toTopOf="@+id/h5" />
 
-    <Button
+    <ImageView
         android:id="@+id/save"
-        android:layout_width="150dp"
+        android:layout_width="70dp"
         android:layout_height="70dp"
-        android:backgroundTint="@color/blue"
         android:gravity="center"
-        android:text="@string/save"
-        android:textAllCaps="true"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
+        android:padding="5dp"
+        android:src="@drawable/save_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline124"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/h5" />
 
-    <Button
+    <ImageView
         android:id="@+id/exit"
-        android:layout_width="150dp"
+        android:layout_width="70dp"
         android:layout_height="70dp"
         android:backgroundTint="@color/dark_gray"
         android:gravity="center"
-        android:text="@string/exit"
-        android:textAllCaps="true"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
+        android:padding="5dp"
+        android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline124"
         app:layout_constraintTop_toTopOf="@+id/h5" />
 
     <TextView
-        android:id="@+id/textView48"
+        android:id="@+id/txtDeltaX"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="ΔX (m)"
-        android:textSize="30sp"
+        android:textSize="24sp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"
@@ -218,7 +223,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="ΔY (m)"
-        android:textSize="30sp"
+        android:textSize="24sp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"
@@ -232,7 +237,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="ΔZ (m)"
-        android:textSize="30sp"
+        android:textSize="24sp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"
@@ -245,7 +250,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="ΔHDT (°)"
-        android:textSize="30sp"
+        android:textSize="24sp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"
@@ -258,7 +263,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="G1>>G2 (m)"
-        android:textSize="28sp"
+        android:textSize="24sp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"

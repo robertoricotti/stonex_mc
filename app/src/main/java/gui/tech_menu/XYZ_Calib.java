@@ -2,6 +2,8 @@ package gui.tech_menu;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +26,7 @@ import utils.Utils;
 
 public class XYZ_Calib extends AppCompatActivity {
     ImageView gpsDebug;
-    Button save, exit, update;
+    ImageView save, exit, update;
     EditText dx, dY, dZ, dHdt, dist;
     int indexMachineSelected;
     int indexMeasure;
@@ -69,7 +71,7 @@ public class XYZ_Calib extends AppCompatActivity {
         dY = findViewById(R.id.deltaY);
         dZ = findViewById(R.id.deltaZ);
         dHdt = findViewById(R.id.deltaHDT);
-        tvX = findViewById(R.id.textView48);
+        tvX = findViewById(R.id.txtDeltaX);
         tvY = findViewById(R.id.textView49);
         tvZ = findViewById(R.id.textView52);
         gpsDebug = findViewById(R.id.gpsdebugg);
@@ -160,9 +162,9 @@ public class XYZ_Calib extends AppCompatActivity {
         titolo.setText("     E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[0])) + "    N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[2])) + "   HDT: " + String.format("%.2f", hdt) + " °");
 
         if (DataSaved.gpsOk) {
-            gpsDebug.setImageResource(R.drawable.gps_si);
+            gpsDebug.setImageTintList(ColorStateList.valueOf(Color.GREEN));
         } else {
-            gpsDebug.setImageResource(R.drawable.gps_no);
+            gpsDebug.setImageTintList(ColorStateList.valueOf(Color.RED));
         }
 
     }

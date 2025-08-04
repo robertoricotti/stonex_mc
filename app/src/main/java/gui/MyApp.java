@@ -85,7 +85,6 @@ import gui.tech_menu.StickCalib;
 import gui.tech_menu.TiltCalib;
 import gui.tech_menu.Tilt_Blade;
 import gui.tech_menu.XYZ_Calib;
-import gui.tech_menu.XYZ_Calib_Dozer;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
@@ -471,9 +470,7 @@ git push
             ((Tilt_Blade) activity).updateUI();
         } else if (activity instanceof Grading3D_DXF) {
             ((Grading3D_DXF) activity).updateUI();
-        } else if (activity instanceof XYZ_Calib_Dozer) {
-            ((XYZ_Calib_Dozer) activity).updateUI();
-        } else if (activity instanceof Activity_Crea_Superficie) {
+        }  else if (activity instanceof Activity_Crea_Superficie) {
             ((Activity_Crea_Superficie) activity).updateUI();
         } else if (activity instanceof Hydraulic_Setup) {
             ((Hydraulic_Setup) activity).updateUI();
