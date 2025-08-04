@@ -1,6 +1,5 @@
 package gui.dialogs_and_toast;
 
-import static gui.MyApp.isApollo;
 import static utils.Utils.isNumeric;
 import static utils.Utils.isNumericInch;
 
@@ -9,7 +8,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -19,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -92,8 +89,7 @@ public class CustomNumberDialogFtIn {
         onLongClick();
     }
 
-    /////////
-
+    /// //////
 
 
     private void init() {
@@ -101,7 +97,7 @@ public class CustomNumberDialogFtIn {
         c = true;
         value_ft.setBackgroundColor(ContextCompat.getColor(activity, R.color.light_yellow));
         value_in.setBackgroundColor(Color.TRANSPARENT);
-        String depth = realValue.getText().toString().replace("+/-","").replace(Utils.getMetriSimbol(),"");
+        String depth = realValue.getText().toString().replace("+/-", "").replace(Utils.getMetriSimbol(), "");
         if (depth.length() > 0) {
             value_ft.setText(depth.split("'")[0].trim());
             value_in.setText(depth.split("'")[1].trim());
@@ -416,16 +412,16 @@ public class CustomNumberDialogFtIn {
 
                     String mioValore = value_ft.getText().toString().trim() + "'" + value_in.getText().toString().trim() + " " + value_fraction.getText().toString().trim() + "\"".toString();
 
-                    if(flag==0){
-                        Log.d("Puttanai",mioValore+"\n"+(realValue.getText().toString().replace("+/-","")));
+                    if (flag == 0) {
+                        Log.d("Puttanai", mioValore + "\n" + (realValue.getText().toString().replace("+/-", "")));
                         MyData.push("Deadband_H", Utils.writeMetri(mioValore));
                         realValue.setText(mioValore);
-                        }else {
-                            realValue.setText(mioValore);
-                            if (flag == -1) {
-                                DataSaved.line_Offset = Double.parseDouble(Utils.writeMetri(realValue.getText().toString()));
-                            }
+                    } else {
+                        realValue.setText(mioValore);
+                        if (flag == -1) {
+                            DataSaved.line_Offset = Double.parseDouble(Utils.writeMetri(realValue.getText().toString()));
                         }
+                    }
 
 
                     if (activity instanceof SlideBoomActivity) {
@@ -441,15 +437,15 @@ public class CustomNumberDialogFtIn {
                 if (isNumeric(value_ft.getText().toString()) && isNumericInch(value_in.getText().toString())) {
                     String mioValore = value_ft.getText().toString().trim() + "'" + value_in.getText().toString().trim() + " " + value_fraction.getText().toString().trim() + "\"".toString();
 
-                    if(mode==0){
+                    if (mode == 0) {
                         //Est
                         Punti3DAdapter.punti3DList.get(dec).setX(Double.parseDouble(Utils.writeMetri(mioValore)));
                     }
-                    if(mode==1){
+                    if (mode == 1) {
                         //Nord
                         Punti3DAdapter.punti3DList.get(dec).setY(Double.parseDouble(Utils.writeMetri(mioValore)));
                     }
-                    if(mode==2){
+                    if (mode == 2) {
                         //Quota
                         Punti3DAdapter.punti3DList.get(dec).setZ(Double.parseDouble(Utils.writeMetri(mioValore)));
                     }
@@ -458,7 +454,7 @@ public class CustomNumberDialogFtIn {
 
                     c = true;
                     dec = 0;
-                    mode=-1;
+                    mode = -1;
                     dialog.dismiss();
 
                 } else {

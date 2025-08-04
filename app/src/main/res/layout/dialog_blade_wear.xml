@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/sfondo_dialog_chiara">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/sotto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageView
+            android:id="@+id/save"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@drawable/save_btn" />
+
+        <ImageView
+            android:id="@+id/exit"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@drawable/btn_close_web" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="50dp"
+        android:padding="25dp"
+        android:src="@drawable/blade_wear"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/txtCutEdge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Cutting Edge (m)"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/etValor"
+        app:layout_constraintLeft_toLeftOf="@id/etValor"
+        app:layout_constraintRight_toRightOf="@id/etValor"
+        />
+    <EditText
+        android:id="@+id/etValor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:digits="0123456789."
+        android:focusableInTouchMode="false"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:ems="10"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintTop_toBottomOf="@id/img"
+
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

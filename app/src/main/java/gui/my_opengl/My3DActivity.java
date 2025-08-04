@@ -39,6 +39,7 @@ import gui.buckets.BucketChooserActivity;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset_3D;
 import gui.dialogs_and_toast.Dialog_Add_Pnezd;
+import gui.dialogs_and_toast.Dialog_Blade_Wear;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_MapMode;
 import gui.dialogs_and_toast.Dialog_Point_Poly;
@@ -65,6 +66,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
+    Dialog_Blade_Wear dialogBladeWear;
     public static boolean PNEZD_FUNCTION;
     ImageView allarmeAlt;
     String bucketName;
@@ -253,6 +255,7 @@ public class My3DActivity extends BaseClass {
         dialogOffset = new DialogOffset_3D(this);
         dialogPointPoly = new Dialog_Point_Poly(this);
         dialogAddPnezd=new Dialog_Add_Pnezd(this, pathToPNEZD);
+        dialogBladeWear=new Dialog_Blade_Wear(this);
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
@@ -277,13 +280,15 @@ public class My3DActivity extends BaseClass {
 
     private void onClick() {
         gl_benne.setOnClickListener(view -> {
-            if(DataSaved.isWL==0) {
+            if(DataSaved.isWL==0||DataSaved.isWL==1) {
                 Intent i = new Intent(this, BucketChooserActivity.class);
                 i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                 startActivity(i);
                 finish();
             }else {
-                //TODO settaggio lama
+                if(!dialogBladeWear.dialog.isShowing()){
+                    dialogBladeWear.show();
+                }
             }
         });
         gl_bright.setOnClickListener(view -> {

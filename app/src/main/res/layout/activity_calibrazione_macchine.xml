@@ -245,7 +245,7 @@
                     android:gravity="center"
                     android:text="@string/general_set"
                     android:textColor="@color/_____cancel_text"
-                    android:textSize="18sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -377,7 +377,7 @@
                     android:gravity="center"
                     android:text="@string/mac_setup"
                     android:textColor="@color/_____cancel_text"
-                    android:textSize="18sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -521,7 +521,7 @@
                     android:gravity="center"
                     android:text="@string/sens_config"
                     android:textColor="@color/_____cancel_text"
-                    android:textSize="18sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <ImageView

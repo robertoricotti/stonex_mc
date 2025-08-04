@@ -30,8 +30,7 @@ public class CustomNumberDialog {
     boolean c = true;
     int flag;
     int dec = 0;
-    int mode=-1;
-
+    int mode = -1;
 
 
     public CustomNumberDialog(Activity activity, int flag) {
@@ -39,7 +38,6 @@ public class CustomNumberDialog {
         this.activity = activity;
         dialog = new Dialog(activity);
         dialog.setContentView(R.layout.dialog_number);
-
 
 
     }
@@ -87,9 +85,10 @@ public class CustomNumberDialog {
         onClick();
         onLongClick();
     }
-    public void show(EditText realValue, int dec,int mode) {
+
+    public void show(EditText realValue, int dec, int mode) {
         this.dec = dec;
-        this.mode=mode;
+        this.mode = mode;
         this.realValue = realValue;
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
@@ -255,7 +254,7 @@ public class CustomNumberDialog {
         });
 
         bok.setOnClickListener((View v) -> {
-            if(flag!=111) {
+            if (flag != 111) {
                 if (value.getText().toString().equals("") || value.getText().toString().equals("-") || value.getText().toString().equals("")) {
                     new CustomToast(activity, "Error Input!").show_error();
                 } else {
@@ -294,19 +293,19 @@ public class CustomNumberDialog {
 
                 }
 
-            }else {
+            } else {
                 if (value.getText().toString().equals("") || value.getText().toString().equals("-") || value.getText().toString().equals("")) {
                     new CustomToast(activity, "Error Input!").show_error();
                 } else {
-                    if(mode==0){
+                    if (mode == 0) {
                         //Est
                         Punti3DAdapter.punti3DList.get(dec).setX(Double.parseDouble(Utils.writeMetri(value.getText().toString())));
                     }
-                    if(mode==1){
+                    if (mode == 1) {
                         //Nord
                         Punti3DAdapter.punti3DList.get(dec).setY(Double.parseDouble(Utils.writeMetri(value.getText().toString())));
                     }
-                    if(mode==2){
+                    if (mode == 2) {
                         //Quota
                         Punti3DAdapter.punti3DList.get(dec).setZ(Double.parseDouble(Utils.writeMetri(value.getText().toString())));
                     }
@@ -315,7 +314,7 @@ public class CustomNumberDialog {
 
                     c = true;
                     dec = 0;
-                    mode=-1;
+                    mode = -1;
                     dialog.dismiss();
 
                 }
@@ -332,8 +331,6 @@ public class CustomNumberDialog {
             return true;
         });
     }
-
-
 
 
 }

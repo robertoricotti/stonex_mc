@@ -4,9 +4,7 @@ import static gui.MyApp.folderPath;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -26,7 +24,6 @@ import java.io.File;
 
 import gui.projects.Dialog_Edita_Punti3D;
 import gui.projects.Dialog_PRJ_Folder;
-import gui.projects.PickProject;
 import gui.projects.ProjectFileAdapter;
 import gui.projects.Punti3DAdapter;
 import gui.tech_menu.Nuova_Machine_Settings;
@@ -47,7 +44,7 @@ public class CustomQwertyDialog {
     Button barra;
     int txtLen = 40;
     boolean capital = true;
-    int flag,position;
+    int flag, position;
     int index = -1;
     ProjectFileAdapter projectFileAdapter;
     Punti3DAdapter punti3DAdapter;
@@ -83,6 +80,7 @@ public class CustomQwertyDialog {
         onClick();
         onLongClick();
     }
+
     public void show(EditText realValue, int index, int flag) {
         this.index = index;
         this.flag = flag;
@@ -129,11 +127,11 @@ public class CustomQwertyDialog {
         onLongClick();
     }
 
-    public void show(int flag, ProjectFileAdapter projectFileAdapter,String path, String name) {
-        this.path=path;
+    public void show(int flag, ProjectFileAdapter projectFileAdapter, String path, String name) {
+        this.path = path;
         this.flag = flag;
         this.projectFileAdapter = projectFileAdapter;
-        dialogPrjFolder=new Dialog_PRJ_Folder(activity);
+        dialogPrjFolder = new Dialog_PRJ_Folder(activity);
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
         if (window != null) {
@@ -153,9 +151,10 @@ public class CustomQwertyDialog {
         onLongClick();
 
     }
-    public void showP(int flag,Punti3DAdapter punti3DAdapter,int position,String name) {
-        this.punti3DAdapter=punti3DAdapter;
-        this.position=position;
+
+    public void showP(int flag, Punti3DAdapter punti3DAdapter, int position, String name) {
+        this.punti3DAdapter = punti3DAdapter;
+        this.position = position;
         this.flag = flag;
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
@@ -176,7 +175,8 @@ public class CustomQwertyDialog {
         init3(name);
 
     }
-    private void init3(String name){
+
+    private void init3(String name) {
         c = true;
         value.setText(name);
     }
@@ -190,6 +190,7 @@ public class CustomQwertyDialog {
         c = true;
         value.setText(realValue.getText().toString());
     }
+
     private void initTV() {
         c = true;
         value.setText(realValueTV.getText().toString());
@@ -239,7 +240,7 @@ public class CustomQwertyDialog {
         bdel = dialog.findViewById(R.id.bdel);
         bok = dialog.findViewById(R.id.bok);
         space = dialog.findViewById(R.id.space);
-        barra=dialog.findViewById(R.id.bspazio);
+        barra = dialog.findViewById(R.id.bspazio);
         if (capital) {
             maiuscola.setBackgroundTintList(ContextCompat.getColorStateList(activity, R.color.light_yellow));
             space.setText("_");
@@ -289,42 +290,42 @@ public class CustomQwertyDialog {
         });
 
         bok.setOnClickListener((View v) -> {
-            if (activity instanceof Nuova_Machine_Settings){
-                ((Nuova_Machine_Settings)activity).saveName();
+            if (activity instanceof Nuova_Machine_Settings) {
+                ((Nuova_Machine_Settings) activity).saveName();
             }
             if (flag == 999) {
                 if (getName() != null) {
-                    projectFileAdapter.renameSelectedFile(path,getName());
+                    projectFileAdapter.renameSelectedFile(path, getName());
                     index = -1;
                     flag = -1;
                     dialog.dismiss();
                 }
 
-            } else if (flag==997) {
+            } else if (flag == 997) {
 
                 if (getName() != null) {
-                    boolean isOK=false;
-                    String fullPath=Environment.getExternalStorageDirectory().getAbsolutePath() + folderPath + "/Projects/"+getName();
+                    boolean isOK = false;
+                    String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + folderPath + "/Projects/" + getName();
                     File directory = new File(fullPath);
                     if (!directory.exists()) {
                         boolean created = directory.mkdirs();
                         if (created) {
-                            isOK=true;
-                            new CustomToast(activity,fullPath).show_alert();
+                            isOK = true;
+                            new CustomToast(activity, fullPath).show_alert();
                             Log.d("FolderCreation", "Cartella creata: " + fullPath);
                         } else {
-                            isOK=false;
-                            new CustomToast(activity,getName()+" Error").show_error();
+                            isOK = false;
+                            new CustomToast(activity, getName() + " Error").show_error();
                             Log.e("FolderCreation", "Errore nella creazione della cartella");
                         }
                     } else {
-                        isOK=false;
-                        new CustomToast(activity,getName()+" Already Exists").show_error();
+                        isOK = false;
+                        new CustomToast(activity, getName() + " Already Exists").show_error();
                         Log.d("FolderCreation", "Cartella già esistente: " + fullPath);
                     }
                     index = -1;
                     flag = -1;
-                    if(isOK){
+                    if (isOK) {
                         try {
 
                             if (!dialogPrjFolder.dialog.isShowing()) {
@@ -340,7 +341,7 @@ public class CustomQwertyDialog {
 
                 }
 
-            } else if (flag==998) {
+            } else if (flag == 998) {
                 punti3DAdapter.punti3DList.get(position).setName(value.getText().toString());
                 index = -1;
                 flag = -1;
@@ -348,14 +349,14 @@ public class CustomQwertyDialog {
                 dialog.dismiss();
 
 
-            } else if (flag==994) {
-                MyData.push("lastDescription",value.getText().toString().trim());
+            } else if (flag == 994) {
+                MyData.push("lastDescription", value.getText().toString().trim());
                 index = -1;
                 flag = -1;
                 dialog.dismiss();
 
 
-            }else {
+            } else {
                 realValue.setText(value.getText().toString().trim());
                 c = true;
                 if (index > -1 && flag > -1) {

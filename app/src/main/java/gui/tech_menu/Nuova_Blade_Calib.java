@@ -48,7 +48,7 @@ public class Nuova_Blade_Calib extends BaseClass {
     }
 
     private void findView() {
-        numberDialog = new CustomNumberDialog(this, -1);
+        numberDialog = new CustomNumberDialog(this, -2);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         save = findViewById(R.id.salva);
         update = findViewById(R.id.update);
