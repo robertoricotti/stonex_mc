@@ -94,9 +94,7 @@ public class Diaalog_Set_SP {
 
     public void show() {
 
-        if (MyData.get_String("usaGeoide") == null) {
-            MyData.push("usaGeoide", String.valueOf(false));
-        }
+
 
         dialog.create();
         dialog.setContentView(R.layout.dialog_sp_folders);
@@ -120,10 +118,8 @@ public class Diaalog_Set_SP {
     public void show(String mPath,ProjectFileAdapter remoteAdapter) {
         this.mPath=mPath;
         this.remoteAdapter=remoteAdapter;
-        Log.w("myGeoid",mPath+"  "+remoteAdapter);
-        if (MyData.get_String("usaGeoide") == null) {
-            MyData.push("usaGeoide", String.valueOf(false));
-        }
+        Log.d("myGeoid",mPath+"  "+remoteAdapter);
+
 
         dialog.create();
         dialog.setContentView(R.layout.dialog_sp_folders);
@@ -219,11 +215,11 @@ public class Diaalog_Set_SP {
 
                     if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
                         MyGeoide.setGeoid("null");
-                        MyData.push("usaGeoide", String.valueOf(false));
+
                         checkGeo(MyData.get_String("geoidPath"));
                     } else {
                         MyGeoide.setGeoid(selectedItem);
-                        MyData.push("usaGeoide", String.valueOf(true));
+
                         checkGeo(MyData.get_String("geoidPath"));
                     }
                 }
@@ -301,7 +297,7 @@ public class Diaalog_Set_SP {
                             Log.d("testSP","NO match");
                             usaSP.setEnabled(false);
                             MyData.push("crs", ".SP FILE");
-                            MyGeoide.setGeoid(null);
+
                             DataSaved.S_CRS = MyData.get_String("crs");
                             try {
                                 copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
@@ -606,22 +602,27 @@ public class Diaalog_Set_SP {
         return tempFile.getAbsolutePath();
     }
     public void copyFromAssetsToFile(Context context, String assetPath, File destinationFile) throws IOException {
-        // 1. Cancella eventuali file .SP già presenti nella cartella di destinazione
+        AssetManager assetManager = context.getAssets();
+
         File destFolder = destinationFile.getParentFile();
         if (destFolder != null && destFolder.exists()) {
             File[] existingSP = destFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".sp"));
             if (existingSP != null) {
                 for (File f : existingSP) {
-                    if (f.delete()) {
-                        Log.d("SP_COPY", "Eliminato vecchio SP: " + f.getName());
-                    } else {
-                        Log.w("SP_COPY", "Impossibile eliminare SP: " + f.getName());
+                    String crs = getCrsCodeFromFileName(f.getName());
+                    // Cancella solo se appartiene agli asset (CRS riconosciuto)
+                    if (crs != null) {
+                        if (f.delete()) {
+                            Log.d("SP_COPY", "Eliminato SP asset: " + f.getName());
+                        } else {
+                            Log.d("SP_COPY", "Impossibile eliminare SP asset: " + f.getName());
+                        }
                     }
                 }
             }
         }
-        AssetManager assetManager = context.getAssets();
 
+        // Copia il nuovo file dall'asset
         try (InputStream inputStream = assetManager.open(assetPath);
              OutputStream outputStream = new FileOutputStream(destinationFile)) {
 
@@ -632,21 +633,8 @@ public class Diaalog_Set_SP {
             }
         }
     }
-    public void copyFileToFile(File sourceFile, File destinationFile) throws IOException {
-        if (!sourceFile.exists()) {
-            throw new FileNotFoundException("Il file sorgente non esiste: " + sourceFile.getAbsolutePath());
-        }
 
-        try (InputStream inputStream = new FileInputStream(sourceFile);
-             OutputStream outputStream = new FileOutputStream(destinationFile)) {
 
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
-            }
-        }
-    }
 
 
 

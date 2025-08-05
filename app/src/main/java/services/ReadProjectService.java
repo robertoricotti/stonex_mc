@@ -606,7 +606,7 @@ public class ReadProjectService extends Service {
 
     public static void startCRS() {
         String s = MyData.get_String("crs");
-        MyGeoide.setGeoid(MyData.get_String("geoidPath"));
+        MyGeoide.setGeoid(MyApp.GEOIDE_PATH);
         if (s != null) {
             if (!s.equals("UTM") && !s.equals(_NONE)) {
                 if (s.equals("2100")) {

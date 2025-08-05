@@ -66,18 +66,17 @@
         android:configChanges="orientation|screenSize|screenLayout"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/icona_mc_test_2_resized"
+        android:icon="@drawable/icona_nuova"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@drawable/icona_mc_test_2_resized"
+        android:roundIcon="@drawable/icona_nuova"
         android:supportsRtl="true"
         android:theme="@style/Theme.Stx_dig"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
-        <!-- android:networkSecurityConfig="@xml/network_security_config" ! -->
+
         <activity
             android:name="gui.tech_menu.Nuova_Blade_Calib"
             android:autoRemoveFromRecents="true"

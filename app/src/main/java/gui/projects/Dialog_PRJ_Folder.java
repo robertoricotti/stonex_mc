@@ -178,6 +178,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
             if (geoidAll == null || geoidAll.length == 0) {
                 new CustomToast(activity, "No Geoid Found").show_error();
                 MyGeoide.setGeoid(null);
+                MyApp.GEOIDE_PATH=null;
                 return;
             }
 
@@ -194,10 +195,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     new CustomToast(activity, "Geoid: " + selectedItem).show_added();
                     if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
                         MyGeoide.setGeoid("null");
-                        MyData.push("usaGeoide", String.valueOf(false));
                     } else {
                         MyGeoide.setGeoid(selectedItem);
-                        MyData.push("usaGeoide", String.valueOf(true));
                     }
                 }
             });
@@ -412,7 +411,6 @@ public class Dialog_PRJ_Folder extends BaseClass {
                             //invia file SP
                             usaSP.setEnabled(false);
                             MyData.push("crs", ".SP FILE");
-                            MyGeoide.setGeoid(null);
                             DataSaved.S_CRS = MyData.get_String("crs");
                             switch (DataSaved.my_comPort) {
                                 case 0:
@@ -525,12 +523,11 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         inUso.setText(s1);
                     }
 
-                    String s2 = "";
-                    s2 = MyApp.GEOIDE_PATH;
-                    if (s2 == null||s2.equals("null")) {
+
+                    if (MyApp.GEOIDE_PATH == null||MyApp.GEOIDE_PATH.equals("null")) {
                         inUsoGeoid.setText("No Geoid");
                     } else {
-                        inUsoGeoid.setText(s2);
+                        inUsoGeoid.setText(MyApp.GEOIDE_PATH);
                     }
 
                     if (CanFileTransfer.sending) {
@@ -570,10 +567,10 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         updateView();
 
                     }
-                    if (MyData.get_String("usaGeoide") == null) {
+                    if (MyApp.GEOIDE_PATH==null) {
                         setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
                     }else {
-                        if(MyData.get_String("usaGeoide").contains("true")){
+                        if(!MyApp.GEOIDE_PATH.equals("null")){
                             setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_selezionato));
                         }else {
                             setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
