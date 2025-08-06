@@ -4,6 +4,8 @@
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>
     <string name="general_set">GENERAL SETTINGS</string>
+    <string name="downloading">Download in Progress...</string>
+    <string name="uploading">Upload in Progress...</string>
     <string name="mac_setup">MACHINE SETUP</string>
     <string name="sens_config">CAN SENSOR CONFIG</string>
     <string name="save">SAVE</string>

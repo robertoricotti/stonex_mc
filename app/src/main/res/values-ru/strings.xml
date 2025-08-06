@@ -6,6 +6,8 @@
     <string name="general_set">ОБЩИЕ НАСТРОЙКИ</string>
     <string name="mac_setup">НАСТРОЙКА МАШИНЫ</string>
     <string name="sens_config">НАСТРОЙКА ДАТЧИКА CAN</string>
+    <string name="downloading">Загрузка файлов...</string>
+    <string name="uploading">Отправка файлов...</string>
 
     <string name="save">СОХРАНИТЬ</string>
     <string name="exit">ЭСК</string>

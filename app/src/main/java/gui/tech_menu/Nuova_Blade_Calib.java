@@ -140,6 +140,7 @@ public class Nuova_Blade_Calib extends BaseClass {
         });
 
         save.setOnClickListener(view -> {
+            update.callOnClick();
             startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
@@ -147,14 +148,17 @@ public class Nuova_Blade_Calib extends BaseClass {
             DataSaved.altezzaLama = Double.parseDouble(Utils.writeMetri(alteLama.getText().toString()));
             DataSaved.altezzaPali = Double.parseDouble(Utils.writeMetri(altPalo.getText().toString()));
             DataSaved.distBetween = Double.parseDouble(Utils.writeMetri(distBetween.getText().toString()));
+
             DataSaved.deltaZ = DataSaved.altezzaLama + DataSaved.altezzaPali;
             DataSaved.deltaX = Double.parseDouble(Utils.writeMetri(deltaX.getText().toString()));
             DataSaved.deltaY = Double.parseDouble(Utils.writeMetri(deltaY.getText().toString()));
             DataSaved.W_Blade_LEFT = Double.parseDouble(Utils.writeMetri(bladeL.getText().toString()));
             DataSaved.W_Blade_RIGHT = Double.parseDouble(Utils.writeMetri(bladeL.getText().toString()));
             DataSaved.W_Blade_TOT = DataSaved.W_Blade_LEFT + DataSaved.W_Blade_RIGHT;
-            DataSaved.deltaGPS2 = Double.parseDouble(Utils.writeMetri(deltaHDT.getText().toString()));
-            DataSaved.usuraLamaCX = Double.parseDouble(etCutEdge.getText().toString());
+            DataSaved.deltaGPS2 = Double.parseDouble((deltaHDT.getText().toString()));
+            DataSaved.usuraLamaCX = Double.parseDouble(Utils.writeMetri(etCutEdge.getText().toString()));
+            double dzz= DataSaved.altezzaLama + DataSaved.altezzaPali;
+            MyData.push("M" + indexMachineSelected + "_OffsetGPSZ",String.valueOf(dzz));
             MyData.push("M" + indexMachineSelected + "_OffsetGPSX", Utils.writeMetri(deltaX.getText().toString()));
             MyData.push("M" + indexMachineSelected + "_OffsetGPSY", Utils.writeMetri(deltaY.getText().toString()));
             MyData.push("M" + indexMachineSelected + "_OffsetGPSZ", Utils.writeMetri(String.valueOf(DataSaved.deltaZ)));

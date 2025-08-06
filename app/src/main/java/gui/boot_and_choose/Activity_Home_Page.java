@@ -266,7 +266,7 @@ public class Activity_Home_Page extends AppCompatActivity {
             } else {
                 lock.setImageResource(R.drawable.lock);
             }
-            stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " Rows\n");
+            stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " New Faces\n");
             switch (DataSaved.isWL) {
                 case 0:
                     toDig.setImageResource(R.drawable.bottone_scava);

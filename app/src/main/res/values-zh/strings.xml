@@ -6,6 +6,8 @@
     <string name="general_set">常规设置</string>
     <string name="mac_setup">机器设置</string>
     <string name="sens_config">CAN 传感器配置</string>
+    <string name="downloading">下载进行中...</string>
+    <string name="uploading">上传进行中...</string>
 
     <string name="save">保存参数</string>
     <string name="exit">逃离键</string>

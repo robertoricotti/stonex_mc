@@ -30,6 +30,7 @@ import java.util.Map;
 import cloud.S3ManagerSingleton;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
+import utils.MyDeviceManager;
 import utils.NetworkUtils;
 
 public class Remote_Activity extends AppCompatActivity {
@@ -41,7 +42,6 @@ public class Remote_Activity extends AppCompatActivity {
     TextView txt1, txt2;
     private boolean enImport, enExport;
     S3ManagerSingleton s3Manager;
-    ProgressBar progressBar;
     ImageView download, upload, refresh, back, status;
     RecyclerView recyclerProj, recyclerIn;
     ArrayList<ProjectFileAdapter.FileItem> filesProj, filesIN;
@@ -79,7 +79,6 @@ public class Remote_Activity extends AppCompatActivity {
         }
         serials = List.of(s);
 
-        progressBar = findViewById(R.id.progressBar);
         download = findViewById(R.id.download);
         upload = findViewById(R.id.upload);
         refresh = findViewById(R.id.refresh);
@@ -92,12 +91,12 @@ public class Remote_Activity extends AppCompatActivity {
     }
 
     private void init() {
+        txt1.setText("serials/"+ MyDeviceManager.getDeviceSN(this)+"/Projects/");
         download.setEnabled(false);
         download.setAlpha(0.3f);
         upload.setEnabled(false);
         upload.setAlpha(0.3f);
         s3Manager = S3ManagerSingleton.getInstance(this);
-        progressBar.setVisibility(View.INVISIBLE);
         readProjectFolder();
         txt2.setText(APP_PATH);
 
@@ -168,7 +167,6 @@ public class Remote_Activity extends AppCompatActivity {
         refresh.setOnClickListener(view -> {
             if (isAuthenticated){
                 readProjectFolder();
-            progressBar.setVisibility(View.VISIBLE);
             s3Manager.getTreeFromS3V2(serials, new S3ManagerSingleton.S3Callback() {
                 @Override
                 public void onSuccess(Map<String, Object> result) {
@@ -177,7 +175,6 @@ public class Remote_Activity extends AppCompatActivity {
                         Log.d("S3Tree", result.toString());
                         parseProjectsContent(result.toString());
                         // Aggiorna la UI se necessario
-                        progressBar.setVisibility(View.INVISIBLE);
                     });
                 }
 
@@ -185,7 +182,6 @@ public class Remote_Activity extends AppCompatActivity {
                 public void onError(Exception e) {
                     // Gestisci l'errore
                     runOnUiThread(() -> Log.e("S3Tree", "Errore durante la generazione dell'albero", e));
-                    progressBar.setVisibility(View.INVISIBLE);
 
                 }
             });

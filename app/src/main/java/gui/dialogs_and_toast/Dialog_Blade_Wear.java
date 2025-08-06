@@ -88,7 +88,7 @@ public class Dialog_Blade_Wear {
             }
         });
         save.setOnClickListener(view -> {
-            DataSaved.usuraLamaCX = Double.parseDouble(editText.getText().toString());
+            DataSaved.usuraLamaCX = Double.parseDouble(Utils.writeMetri(editText.getText().toString()));
             MyData.push("M" + indexMachineSelected + "usuraLamaCX", Utils.writeMetri(editText.getText().toString()));
             new CustomToast(activity, activity.getString(R.string.save)).show();
             dialog.dismiss();

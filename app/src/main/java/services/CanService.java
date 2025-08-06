@@ -329,6 +329,10 @@ public class CanService extends Service {
 
             }
 
+
+            if(DataSaved.isWL>1){
+                DataSaved.deltaZ = DataSaved.altezzaLama + DataSaved.altezzaPali;
+            }
             double[] arrayData = new double[]{hdt, gps_type, DataSaved.deltaX, DataSaved.deltaY, DataSaved.deltaZ, DataSaved.deltaGPS2, spigoloX, spigoloY, spigoloZ, 0};
             Sensors_Decoder.Moba_G2_Decoder_Update(id, msg, arrayData);
 

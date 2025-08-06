@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import packexcalib.exca.DataSaved;
+import services.ReadProjectService;
+
 public class DXFData implements Serializable {
     private static final long serialVersionUID = 1L;
     private List<Face3D> faces; // Cambiato da double[][] a Face3D
@@ -43,6 +46,11 @@ public class DXFData implements Serializable {
     // Aggiunge una Face3D
     public void addFace(Face3D face) {
         faces.add(face);
+        try {
+            ReadProjectService.numbers++;
+        } catch (Exception e) {
+            ReadProjectService.numbers++;
+        }
     }
 
     public List<Line> getLines() {

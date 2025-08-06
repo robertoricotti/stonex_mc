@@ -6,6 +6,8 @@
     <string name="general_set">PARAMÈTRES GÉNÉRAUX</string>
     <string name="mac_setup">CONFIGURATION MACHINE</string>
     <string name="sens_config">CONFIGURATION CAPTEUR CAN</string>
+    <string name="downloading">Téléchargement en cours...</string>
+    <string name="uploading">Téléversement en cours...</string>
 
     <string name="save">SAUVER</string>
     <string name="exit">SORTIE</string>

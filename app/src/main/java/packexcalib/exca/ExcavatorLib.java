@@ -258,6 +258,7 @@ public class ExcavatorLib {
                         //dozer e grader
                         hdt_LAMA = hdt0;
                         yawSensor = 0;
+
                         coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, gps1_Z_dev+DataSaved.usuraLamaCX, hdt0);
                         if (gps1_X_dev < 0) {
                             coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, gps1_X_dev, hdtL);
@@ -348,6 +349,7 @@ public class ExcavatorLib {
 
                 overturn = Math.abs(correctRoll) > 85.0d || Math.abs(correctPitch) > 85.0d;
                 coordB1 = Exca_Quaternion.endPoint(coordPitch, correctBoom1, Deg_Boom_Roll, DataSaved.L_Boom1, hdt_BOOM);
+
                 if (DataSaved.lrBoom2 != 0) {
                     coordB2 = Exca_Quaternion.endPoint(coordB1, correctBoom2, Deg_Boom_Roll, DataSaved.L_Boom2, hdt_BOOM);
 

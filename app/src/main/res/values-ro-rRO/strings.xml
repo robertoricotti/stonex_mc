@@ -7,6 +7,8 @@
     <string name="general_set">SETĂRI GENERALE</string>
     <string name="mac_setup">CONFIGURARE MAȘINĂ</string>
     <string name="sens_config">CONFIGURARE SENZOR CAN</string>
+    <string name="downloading">Descărcare în curs...</string>
+    <string name="uploading">Încărcare în curs...</string>
 
     <string name="save">SALVEAZĂ</string>
     <string name="exit">IEȘIRE</string>

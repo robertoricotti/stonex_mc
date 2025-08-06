@@ -18,6 +18,7 @@ import com.example.stx_dig.R;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import gui.digging_excavator.DiggingProfile;
+import packexcalib.exca.DataSaved;
 import services.UpdateValuesService;
 import utils.MyData;
 
@@ -73,6 +74,7 @@ public class ProfilesMenuActivity extends AppCompatActivity {
 
 
         indexProfileSelected = MyData.get_Int("ProfileSelected");
+        DataSaved.profileSelected=indexProfileSelected;
 
         profileName1.setText(MyData.get_String("Profile1_name"));
         profileName2.setText(MyData.get_String("Profile2_name"));
@@ -327,6 +329,7 @@ public class ProfilesMenuActivity extends AppCompatActivity {
         profileDisabled.setOnLongClickListener((View v) -> {
             MyData.push("ProfileSelected", "0");
             indexProfileSelected = 0;
+            DataSaved.profileSelected=0;
             return true;
         });
     }

@@ -402,24 +402,31 @@ public class ExcavatorChooserActivity extends BaseClass {
         });
 
         settingsM1.setOnClickListener((View v) -> {
-            if (indexMachineSelected == 1) {
-                if (isTech) {
-                    if (unitOfMeasure == 4 || unitOfMeasure == 5) {
-                        if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
-                            new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
-                            dialogUnitOfMeasure.show();
+            if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                    new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                    dialogUnitOfMeasure.show();
+                }
+            }else {
+                if (indexMachineSelected == 1) {
+                    if (isTech) {
+                        if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                            if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                                new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                                dialogUnitOfMeasure.show();
+                            }
+                        } else {
+                            disableAll();
+                            startActivity(new Intent(this, Nuova_Machine_Settings.class));
+                            finish();
                         }
                     } else {
-                        disableAll();
-                        startActivity(new Intent(this, Nuova_Machine_Settings.class));
-                        finish();
-                    }
-                } else {
 
                         if (!dialogPassword.dialog.isShowing()) {
                             dialogPassword.show(2);
                         }
 
+                    }
                 }
             }
 
@@ -427,21 +434,28 @@ public class ExcavatorChooserActivity extends BaseClass {
         });
 
         settingsM2.setOnClickListener((View v) -> {
-            if (indexMachineSelected == 2) {
-                if (isTech) {
-                    if (unitOfMeasure == 4 || unitOfMeasure == 5) {
-                        if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
-                            new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
-                            dialogUnitOfMeasure.show();
+            if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                    new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                    dialogUnitOfMeasure.show();
+                }
+            }else {
+                if (indexMachineSelected == 2) {
+                    if (isTech) {
+                        if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                            if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                                new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                                dialogUnitOfMeasure.show();
+                            }
+                        } else {
+                            disableAll();
+                            startActivity(new Intent(this, Nuova_Machine_Settings.class));
+                            finish();
                         }
                     } else {
-                        disableAll();
-                        startActivity(new Intent(this, Nuova_Machine_Settings.class));
-                        finish();
-                    }
-                } else {
-                    if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show(2);
+                        if (!dialogPassword.dialog.isShowing()) {
+                            dialogPassword.show(2);
+                        }
                     }
                 }
             }
@@ -450,21 +464,28 @@ public class ExcavatorChooserActivity extends BaseClass {
         });
 
         settingsM3.setOnClickListener((View v) -> {
-            if (indexMachineSelected == 3) {
-                if (isTech) {
-                    if (unitOfMeasure == 4 || unitOfMeasure == 5) {
-                        if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
-                            new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
-                            dialogUnitOfMeasure.show();
+            if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                    new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                    dialogUnitOfMeasure.show();
+                }
+            }else {
+                if (indexMachineSelected == 3) {
+                    if (isTech) {
+                        if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                            if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                                new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                                dialogUnitOfMeasure.show();
+                            }
+                        } else {
+                            disableAll();
+                            startActivity(new Intent(this, Nuova_Machine_Settings.class));
+                            finish();
                         }
                     } else {
-                        disableAll();
-                        startActivity(new Intent(this, Nuova_Machine_Settings.class));
-                        finish();
-                    }
-                } else {
-                    if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show(2);
+                        if (!dialogPassword.dialog.isShowing()) {
+                            dialogPassword.show(2);
+                        }
                     }
                 }
             }
@@ -473,21 +494,28 @@ public class ExcavatorChooserActivity extends BaseClass {
         });
 
         settingsM4.setOnClickListener((View v) -> {
-            if (indexMachineSelected == 4) {
-                if (isTech) {
-                    if (unitOfMeasure == 4 || unitOfMeasure == 5) {
-                        if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
-                            new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
-                            dialogUnitOfMeasure.show();
+            if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                    new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                    dialogUnitOfMeasure.show();
+                }
+            }else {
+                if (indexMachineSelected == 4) {
+                    if (isTech) {
+                        if (unitOfMeasure == 4 || unitOfMeasure == 5) {
+                            if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
+                                new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
+                                dialogUnitOfMeasure.show();
+                            }
+                        } else {
+                            disableAll();
+                            startActivity(new Intent(this, Nuova_Machine_Settings.class));
+                            finish();
                         }
                     } else {
-                        disableAll();
-                        startActivity(new Intent(this, Nuova_Machine_Settings.class));
-                        finish();
-                    }
-                } else {
-                    if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show(2);
+                        if (!dialogPassword.dialog.isShowing()) {
+                            dialogPassword.show(2);
+                        }
                     }
                 }
             }

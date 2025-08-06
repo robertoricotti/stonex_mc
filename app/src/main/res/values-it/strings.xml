@@ -6,6 +6,8 @@
     <string name="general_set">IMPOSTAZIONI GENERALI</string>
     <string name="mac_setup">CONFIGURAZIONE MACCHINA</string>
     <string name="sens_config">CONFIGURAZIONE SENSORE CAN</string>
+    <string name="downloading">Download in corso...</string>
+    <string name="uploading">Upload in corso...</string>
 
     <string name="save">SALVA</string>
     <string name="exit">ESCI</string>

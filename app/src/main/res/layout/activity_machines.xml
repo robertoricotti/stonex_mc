@@ -71,7 +71,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
-            android:src="@drawable/baseline_live_help_96"
+            android:src="@drawable/gnss_setup_btn"
             app:tint="@color/white" />
         <TextView
             android:id="@+id/txtProject"

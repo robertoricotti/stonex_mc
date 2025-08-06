@@ -73,12 +73,14 @@ public class Dialog_To_DueDi {
     private void onClick() {
         toProfile.setOnClickListener(view -> {
             DataSaved.portView=0;
+            DataSaved.profileSelected=0;
             activity.startActivity(new Intent(activity, ProfilesMenuActivity.class));
             activity.finish();
             dialog.dismiss();
         });
         to1d.setOnClickListener(view -> {
             DataSaved.portView=0;
+            DataSaved.profileSelected=0;
             if (licenseType > -1) {
                 activity.startActivity(new Intent(activity, Digging1D.class));
                 activity.finish();
@@ -90,6 +92,7 @@ public class Dialog_To_DueDi {
         });
         to2d.setOnClickListener(view -> {
             DataSaved.portView=1;
+            DataSaved.profileSelected=0;
             if (licenseType > 0) {
                 activity.startActivity(new Intent(activity, Digging2D.class));
                 activity.finish();

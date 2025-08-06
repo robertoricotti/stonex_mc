@@ -1,6 +1,9 @@
 package cloud;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.amazonaws.auth.BasicSessionCredentials;
@@ -12,12 +15,14 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.example.stx_dig.R;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +32,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
+import gui.MyApp;
+import gui.dialogs_and_toast.CustomToast;
 import okhttp3.WebSocket;
 
 public class S3ManagerSingleton {
-
+    ProgressDialog progressDialog;
+    Handler mainHandler;
     private static volatile S3ManagerSingleton instance;
     private static final Object lock = new Object();
     private S3Credentials s3Credentials;
@@ -63,7 +74,7 @@ public class S3ManagerSingleton {
         this.s3Client = new AmazonS3Client(credentials, Region.getRegion(s3Credentials.getRegion()));
         this.transferUtility = TransferUtility.builder().context(appContext).s3Client(s3Client).build();
         Log.d("S3Manager:Credentials", "AWS credentials updated successfully");
-//TODO fare controllo
+        //TODO fare controllo
         scheduleCredentialRefresh();
     }
     private void ensureExecutor() {
@@ -260,7 +271,149 @@ public class S3ManagerSingleton {
             }
         });
     }
+    public void uploadFolderToS3(String localFolderPath, String s3TargetPath, S3Callback callback) {
+        ensureExecutor();
 
+        if (s3Credentials == null) {
+            Log.e("S3Manager:UploadFolder", "AWS credentials not initialized");
+            return;
+        }
+
+        executorService.execute(() -> {
+            try {
+                File localFolder = new File(localFolderPath);
+                if (!localFolder.exists() || !localFolder.isDirectory()) {
+                    Log.e("S3Manager:UploadFolder", "Folder not found or invalid: " + localFolderPath);
+                    callback.onError(new Exception("Folder not found or invalid: " + localFolderPath));
+                    return;
+                }
+
+                // Recupera tutti i file
+                List<File> filesToUpload = getAllFiles(localFolder);
+
+                // Calcola byte totali
+                long totalBytes = filesToUpload.stream().mapToLong(File::length).sum();
+                AtomicLong uploadedBytes = new AtomicLong(0);
+                AtomicInteger completedFiles = new AtomicInteger(0);
+                AtomicInteger failedFiles = new AtomicInteger(0);
+                AtomicBoolean isUploading = new AtomicBoolean(true);
+
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+
+                // Mostra ProgressDialog
+                mainHandler.post(() -> {
+                    progressDialog = new ProgressDialog(MyApp.visibleActivity);
+                    progressDialog.setMessage(MyApp.visibleActivity.getString(R.string.uploading));
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    progressDialog.setIndeterminate(false);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setMax(100); // Percentuale
+                    progressDialog.show();
+                });
+
+                // Timeout handler
+                Handler timeoutHandler = new Handler(Looper.getMainLooper());
+                Runnable timeoutRunnable = () -> {
+                    if (isUploading.get()) {
+                        Log.e("S3Manager", "Timeout: nessun progresso per 60 secondi. Chiusura upload.");
+                        mainHandler.post(progressDialog::dismiss);
+                        callback.onError(new Exception("Timeout: upload bloccato per 60 secondi senza progressi."));
+                    }
+                };
+                timeoutHandler.postDelayed(timeoutRunnable, 60000);
+
+                // Avvia caricamento
+                for (File file : filesToUpload) {
+                    String relativePath = localFolder.toURI().relativize(file.toURI()).getPath();
+                    String s3Key = s3TargetPath.endsWith("/") ? s3TargetPath + relativePath : s3TargetPath + "/" + relativePath;
+
+                    transferUtility.upload(s3Credentials.getBucketName(), s3Key, file)
+                            .setTransferListener(new TransferListener() {
+                                long lastReportedBytes = 0;
+
+                                @Override
+                                public void onStateChanged(int id, TransferState state) {
+                                    if (state == TransferState.COMPLETED) {
+                                        completedFiles.incrementAndGet();
+                                        Log.d("S3Manager:UploadFolder", "File caricato: " + s3Key);
+                                    } else if (state == TransferState.FAILED) {
+                                        failedFiles.incrementAndGet();
+                                        Log.e("S3Manager:UploadFolder", "Errore upload: " + s3Key);
+                                        mainHandler.post(() ->
+                                                new CustomToast(MyApp.visibleActivity, "Error Uploading").show_error()
+                                        );
+                                    }
+
+                                    // Controllo completamento
+                                    if (completedFiles.get() + failedFiles.get() == filesToUpload.size()) {
+                                        isUploading.set(false);
+                                        timeoutHandler.removeCallbacks(timeoutRunnable);
+                                        mainHandler.post(progressDialog::dismiss);
+
+                                        if (failedFiles.get() == 0) {
+                                            callback.onSuccess(Map.of("folderPath", s3TargetPath));
+                                        } else {
+                                            callback.onError(new Exception("Alcuni file non sono stati caricati correttamente."));
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                                    // Delta bytes caricati
+                                    long delta = bytesCurrent - lastReportedBytes;
+                                    if (delta > 0) {
+                                        uploadedBytes.addAndGet(delta);
+                                        lastReportedBytes = bytesCurrent;
+                                    }
+
+                                    int percent = (int) ((uploadedBytes.get() * 100) / totalBytes);
+
+                                    // Aggiorna barra
+                                    mainHandler.post(() -> progressDialog.setProgress(percent));
+
+                                    // Resetta timeout
+                                    timeoutHandler.removeCallbacks(timeoutRunnable);
+                                    timeoutHandler.postDelayed(timeoutRunnable, 60000);
+                                }
+
+                                @Override
+                                public void onError(int id, Exception ex) {
+                                    failedFiles.incrementAndGet();
+                                    Log.e("S3Manager:UploadFolder", "Errore caricamento file: " + s3Key, ex);
+                                    mainHandler.post(() ->
+                                            new CustomToast(MyApp.visibleActivity, "Error Uploading").show_error()
+                                    );
+                                }
+                            });
+                }
+            } catch (Exception e) {
+                Log.e("S3Manager:UploadFolder", "Errore upload cartella", e);
+                callback.onError(e);
+            }
+        });
+    }
+
+    /**
+     * Recupera ricorsivamente tutti i file nella cartella
+     */
+    private List<File> getAllFiles(File folder) {
+        List<File> files = new ArrayList<>();
+        File[] fileList = folder.listFiles();
+        if (fileList != null) {
+            for (File file : fileList) {
+                if (file.isDirectory()) {
+                    files.addAll(getAllFiles(file));
+                } else {
+                    files.add(file);
+                }
+            }
+        }
+        return files;
+    }
+
+
+    /*
     public void uploadFolderToS3(String localFolderPath, String s3TargetPath, S3Callback callback) {
         ensureExecutor();
         if (s3Credentials == null) {
@@ -283,55 +436,144 @@ public class S3ManagerSingleton {
                 callback.onError(e);
             }
         });
-    }
+    }*/
+
 
     public void downloadFolderFromS3(String s3FolderPath, String localFolderPath, S3Callback callback) {
         ensureExecutor();
+
         if (s3Credentials == null) {
             Log.e("S3Manager:DownloadFolder", "AWS credentials not initialized");
             return;
         }
+
         executorService.execute(() -> {
             try {
                 String finalS3FolderPath = s3FolderPath.endsWith("/") ? s3FolderPath : s3FolderPath + "/";
-                ListObjectsRequest listObjectsRequest = new ListObjectsRequest().withBucketName(s3Credentials.getBucketName()).withPrefix(finalS3FolderPath);
+                ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
+                        .withBucketName(s3Credentials.getBucketName())
+                        .withPrefix(finalS3FolderPath);
+
                 ObjectListing objectListing = s3Client.listObjects(listObjectsRequest);
-                for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+                List<S3ObjectSummary> objectSummaries = objectListing.getObjectSummaries();
+
+                // Calcola dimensione totale da scaricare (solo file, niente cartelle)
+                long totalBytes = objectSummaries.stream()
+                        .filter(obj -> !obj.getKey().endsWith("/"))
+                        .mapToLong(S3ObjectSummary::getSize)
+                        .sum();
+
+                AtomicLong downloadedBytes = new AtomicLong(0);
+                AtomicInteger completedFiles = new AtomicInteger(0);
+                AtomicInteger failedFiles = new AtomicInteger(0);
+                AtomicBoolean isDownloading = new AtomicBoolean(true);
+
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+
+                // Mostra ProgressDialog
+                mainHandler.post(() -> {
+                    progressDialog = new ProgressDialog(MyApp.visibleActivity);
+                    progressDialog.setMessage(MyApp.visibleActivity.getString(R.string.downloading));
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    progressDialog.setIndeterminate(false);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setMax(100); // Percentuale
+                    progressDialog.show();
+                });
+
+                // Timeout handler
+                Handler timeoutHandler = new Handler(Looper.getMainLooper());
+                Runnable timeoutRunnable = () -> {
+                    if (isDownloading.get()) {
+                        Log.e("S3Manager", "Timeout: nessun progresso per 60 secondi. Chiusura del download.");
+                        mainHandler.post(progressDialog::dismiss);
+                        callback.onError(new Exception("Timeout: download bloccato per 60 secondi senza progressi."));
+                    }
+                };
+                timeoutHandler.postDelayed(timeoutRunnable, 60000);
+
+                // Avvia download file
+                for (S3ObjectSummary objectSummary : objectSummaries) {
                     String key = objectSummary.getKey();
-                    if (key.endsWith("/")) continue;
+                    if (key.endsWith("/")) continue; // ignora directory vuote
+
                     String relativePath = key.replace(finalS3FolderPath, "");
                     File localFile = new File(localFolderPath, relativePath);
-                    if (!localFile.getParentFile().exists()) localFile.getParentFile().mkdirs();
-                    transferUtility.download(s3Credentials.getBucketName(), key, localFile).setTransferListener(new TransferListener() {
-                        @Override
-                        public void onStateChanged(int id, TransferState state) {
-                            if (state == TransferState.COMPLETED) {
-                                Log.d("S3Manager:DownloadFolder", "File downloaded successfully: " + key);
-                            } else if (state == TransferState.FAILED) {
-                                Log.e("S3Manager:DownloadFolder", "Download failed: " + key);
-                            }
-                        }
+                    if (!localFile.getParentFile().exists()) {
+                        localFile.getParentFile().mkdirs();
+                    }
 
-                        @Override
-                        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                            int percentDone = (int) (((float) bytesCurrent / (float) bytesTotal) * 100);
-                            Log.d("S3Manager:DownloadFolder", "Download progress (" + key + "): " + percentDone + "%");
-                        }
+                    transferUtility.download(s3Credentials.getBucketName(), key, localFile)
+                            .setTransferListener(new TransferListener() {
+                                long lastReportedBytes = 0;
 
-                        @Override
-                        public void onError(int id, Exception ex) {
-                            Log.e("S3Manager:DownloadFolder", "Error downloading file: " + key, ex);
-                        }
-                    });
+                                @Override
+                                public void onStateChanged(int id, TransferState state) {
+                                    if (state == TransferState.COMPLETED) {
+                                        completedFiles.incrementAndGet();
+                                        Log.d("S3Manager:DownloadFolder", "File scaricato: " + key);
+                                    } else if (state == TransferState.FAILED) {
+                                        failedFiles.incrementAndGet();
+                                        Log.e("S3Manager:DownloadFolder", "Errore download: " + key);
+                                        mainHandler.post(() ->
+                                                new CustomToast(MyApp.visibleActivity, "Error Downloading").show_error()
+                                        );
+                                    }
+
+                                    // Controllo completamento
+                                    if (completedFiles.get() + failedFiles.get() ==
+                                            (int) objectSummaries.stream().filter(obj -> !obj.getKey().endsWith("/")).count()) {
+                                        isDownloading.set(false);
+                                        timeoutHandler.removeCallbacks(timeoutRunnable);
+                                        mainHandler.post(progressDialog::dismiss);
+
+                                        if (failedFiles.get() == 0) {
+                                            callback.onSuccess(Map.of("folderPath", localFolderPath));
+                                        } else {
+                                            callback.onError(new Exception("Alcuni file non sono stati scaricati correttamente."));
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                                    // Calcola delta rispetto all'ultimo aggiornamento
+                                    long delta = bytesCurrent - lastReportedBytes;
+                                    if (delta > 0) {
+                                        downloadedBytes.addAndGet(delta);
+                                        lastReportedBytes = bytesCurrent;
+                                    }
+
+                                    int percent = (int) ((downloadedBytes.get() * 100) / totalBytes);
+
+                                    // Aggiorna barra percentuale
+                                    mainHandler.post(() -> progressDialog.setProgress(percent));
+
+                                    // Resetta timeout
+                                    timeoutHandler.removeCallbacks(timeoutRunnable);
+                                    timeoutHandler.postDelayed(timeoutRunnable, 60000);
+                                }
+
+                                @Override
+                                public void onError(int id, Exception ex) {
+                                    failedFiles.incrementAndGet();
+                                    Log.e("S3Manager:DownloadFolder", "Errore download file: " + key, ex);
+                                    mainHandler.post(() ->
+                                            new CustomToast(MyApp.visibleActivity, "Error Downloading").show_error()
+                                    );
+                                }
+                            });
                 }
-                Log.d("S3Manager:DownloadFolder", "Folder download completed: " + s3FolderPath);
-                callback.onSuccess(Map.of("folderPath", localFolderPath));
             } catch (Exception e) {
-                Log.e("S3Manager:DownloadFolder", "Error downloading folder", e);
+                Log.e("S3Manager:DownloadFolder", "Errore download cartella", e);
                 callback.onError(e);
             }
         });
     }
+
+
+
+
 
     public void getFileSize(String s3FilePath, S3Callback callback) {
         ensureExecutor();

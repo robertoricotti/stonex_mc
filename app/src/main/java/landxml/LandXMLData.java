@@ -9,6 +9,7 @@ import dxf.Face3D;
 import dxf.Layer;
 import dxf.Point3D;
 import dxf.Polyline;
+import services.ReadProjectService;
 
 public class LandXMLData implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -34,6 +35,11 @@ public class LandXMLData implements Serializable {
     // Aggiunge una Face3D
     public void addFace(Face3D face) {
         faces.add(face);
+        try {
+            ReadProjectService.numbers++;
+        } catch (Exception e) {
+            ReadProjectService.numbers++;
+        }
     }
 
     // Getter per Polyline

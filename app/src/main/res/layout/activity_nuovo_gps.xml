@@ -1356,7 +1356,7 @@
             app:tint="@color/white"
             android:gravity="center"
             android:padding="5dp"
-            android:src="@drawable/baseline_live_help_96"
+            android:src="@drawable/gnss_setup_btn"
             android:textSize="28sp"
             android:textStyle="bold" />
 

@@ -74,7 +74,7 @@ public class DialogOffset_3D {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 0.85);
+        int width = (int) (displayMetrics.widthPixels * 0.95);
         int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
