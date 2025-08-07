@@ -62,13 +62,11 @@ public class SimpleBucket6Points {
             mouthEdges = computeBoundaryEdges();
 
             // Esempio: prime 10 facce come "interne"
-            Log.d("FaceSS",faces.length()+"");
             Set<Integer> internal = new HashSet<>();
             for (int i = 0; i < 122; i++) internal.add(i);
             splitFaceIndices(internal);
 
         } catch (Exception e) {
-            Log.e("SimpleBucket6", "Error loading JSON: " + e.getMessage());
         }
     }
 
@@ -80,7 +78,6 @@ public class SimpleBucket6Points {
             is.close();
             return new String(buffer, "UTF-8");
         } catch (Exception e) {
-            Log.e("SimpleBucket6", "Error reading JSON file: " + e.getMessage());
             return null;
         }
     }

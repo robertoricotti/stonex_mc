@@ -613,7 +613,6 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                             txCon.append("\n ");
                         }
                     } catch (Exception e) {
-                        Log.d("DIALOG", e.toString());
 
                     }
                     try {
@@ -644,8 +643,6 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                         updateCoordinates();
                     }
                 } catch (Exception e) {
-                    Log.d("GnssExcp", e.toString());
-                    System.out.println(e.toString());
                 }
             }
         }, 100);

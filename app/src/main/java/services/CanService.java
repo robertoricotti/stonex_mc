@@ -154,7 +154,6 @@ public class CanService extends Service {
             }
 
             if (id == 2066) {
-                Log.d("ECU", Arrays.toString(msg));
                 ECU_Connected = true;
                 handler_ECU_Connected.removeCallbacks(timeoutRunnable_CU_Connected);
                 handler_ECU_Connected.postDelayed(timeoutRunnable_CU_Connected, 1000);
@@ -223,9 +222,8 @@ public class CanService extends Service {
 
             }
 
+            NmeaListener.NmeaSTX(id, msg);
             if (id == 0x18FF0510 && MyDeviceManager.serialCom(DataSaved.my_comPort).equals("CAN")) {
-
-                NmeaListener.NmeaSTX(id, msg);
                 nmeaSTX_Disc = false;
                 try {
                     handler_nmeaSTX.removeCallbacks(timeoutRunnable_nmea2k);

@@ -281,7 +281,6 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
 
 
             } catch (Exception e) {
-                //Log.d("ErrorDXFWRITE", e.toString());
                 e.printStackTrace();
             }
 
@@ -581,7 +580,6 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
                 }
             }
         } catch (Exception e) {
-            Log.d("expRT", "excFace");
         }
 
         try {
@@ -669,7 +667,6 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
             }
 
         } catch (Exception e) {
-            Log.d("expRT", "excPoly");
         }
 
         try {
@@ -694,7 +691,6 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
             }
         } catch (Exception e) {
 
-            Log.d("expRT", "excPT");
         }
 
         try {
@@ -706,7 +702,6 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
                 }
             }
         } catch (Exception e) {
-            Log.d("expRT", "excTxT");
         }
         try {
 
@@ -731,7 +726,6 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "excPoly2D");
         }
         try {
 
@@ -754,7 +748,6 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "arcs");
         }
         try {
 
@@ -776,7 +769,6 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "lines");
         }
         try {
 
@@ -798,7 +790,6 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "circles");
         }
 
 

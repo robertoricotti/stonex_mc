@@ -81,7 +81,6 @@ public class WebSocketPlugin {
 
     public void start() {
 
-        Log.d("TestM", "Start..");
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).build();
 
         Request request = new Request.Builder().url(WS_URL).build();
@@ -91,7 +90,6 @@ public class WebSocketPlugin {
             public void onOpen(WebSocket ws, Response response) {
                 webSocket=ws;
                 currentTry = 0;
-                Log.d("TestM", "Connected to WebSocket server.");
                 try {
 
                     JSONObject payload = new JSONObject();
@@ -108,7 +106,6 @@ public class WebSocketPlugin {
                     message.put("encrypted", encryptedMessage.getString("encrypted"));
                     message.put("hmac", encryptedMessage.getString("hmac"));
 
-                    Log.d("Auth", message.toString());
                     ws.send(message.toString());
 
                 } catch (Exception e) {
@@ -125,13 +122,13 @@ public class WebSocketPlugin {
 
                     switch (status) {
                         case "authenticated":
-                            Log.d("TestM", "Authentication successful. Sending update request...");
+                            //Log.d("TestM", "Authentication successful. Sending update request...");
 
                             JSONObject update = new JSONObject();
                             update.put("type", "check_updates");
                             update.put("timeStamp", System.currentTimeMillis());
                             update.put("licenceID", activationCode);
-                            Log.d("TYestSend", update.toString());
+                            //Log.d("TYestSend", update.toString());
                             ws.send(update.toString());
                             s3ManagerSingleton.setWebSocket(ws);
 
@@ -152,12 +149,12 @@ public class WebSocketPlugin {
                             break;
 
                         case "no_updates":
-                            Log.d("TestM", "No update available for the device.");
+                            //Log.d("TestM", "No update available for the device.");
                             break;
 
                         case "command":
                             handleCommand(ws, response);
-                            Log.d("TestM", response.toString());
+                            //Log.d("TestM", response.toString());
                             break;
 
                         default:
@@ -172,14 +169,14 @@ public class WebSocketPlugin {
 
             @Override
             public void onClosed(WebSocket ws, int code, String reason) {
-                Log.d("TestM", "Connection closed.");
+                //Log.d("TestM", "Connection closed.");
             }
 
             @Override
             public void onFailure(WebSocket ws, Throwable t, Response response) {
                 webSocket=null;
                 s3ManagerSingleton.shutdown();
-                Log.d("TestM", "WebSocket error: " + t.getMessage());
+                //Log.d("TestM", "WebSocket error: " + t.getMessage());
 
                 // have to retry max 3 times
                 if (currentTry < MAX_TRY_CONNECTION) {
@@ -261,13 +258,12 @@ public class WebSocketPlugin {
         String stringa = new String(decrypted, StandardCharsets.UTF_8);
         parseCode(stringa);
 
-        Log.w("TestM", "Decrypted data: " + new String(decrypted, StandardCharsets.UTF_8));
+        //Log.w("TestM", "Decrypted data: " + new String(decrypted, StandardCharsets.UTF_8));
 
         delayedSend(ws, new JSONObject().put("status", "activation_ack").put("type", "activation_ack").put("activated", true).put("timeStamp", System.currentTimeMillis()), 2000);
     }
 
     private void handleCommand(WebSocket ws, JSONObject response) throws Exception {
-        Log.d("MyResponse", response.toString());
         Remote_Activity.isAuthenticated = false;
         String type = response.optString("type");
         JSONObject license = response.optJSONObject("license");
@@ -291,12 +287,12 @@ public class WebSocketPlugin {
                             .put("timeStamp", System.currentTimeMillis()), 2000);
         } else if ("temp_credentials".equals(type)) {
             JSONObject credentials = response.optJSONObject("data");
-            Log.d("TestM", "Received temp credentials: " + credentials);
+            //Log.d("TestM", "Received temp credentials: " + credentials);
             Remote_Activity.isAuthenticated = true;
             if (credentials == null) {
                 return;
             }
-            Log.d("TestM", "Setting AWS credentials...");
+            //Log.d("TestM", "Setting AWS credentials...");
             s3ManagerSingleton.setS3Credentials(
                     credentials.getString("region"),
                     credentials.getString("accessKeyId"),
@@ -336,7 +332,6 @@ public class WebSocketPlugin {
         try {
             // Crea oggetto JSON
             JSONObject jsonObject = new JSONObject(jsonString);
-            Log.d("MyJson",jsonObject.toString());
 
             // Estrae e popola i campi
             activationCode = jsonObject.getString("activationCode");
@@ -352,11 +347,9 @@ public class WebSocketPlugin {
             // Percorso della cartella
             String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines";
 
-            Log.d("MyPath",pathL);
             // Crea la cartella se non esiste
             File directory = new File(pathL);
             if (!directory.exists()) {
-                Log.d("MyPath","IN" +pathL);
                 directory.mkdirs();
             }
 
@@ -370,12 +363,11 @@ public class WebSocketPlugin {
 
 
         } catch (JSONException e) {
-            Log.d("MyPath",e.getMessage());
             activationCode = "none";
             restoreCode = "none";
             licenseType = -1;
         } catch (IOException e) {
-            Log.d("MyPath","1+ " +e.getMessage());
+            Log.e("MyPath","1+ " +e.getMessage());
         }
     }
 

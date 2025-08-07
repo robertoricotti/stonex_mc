@@ -163,7 +163,6 @@ public class DrawProfile extends View {
 
             if (dynamicValue >= x1 && dynamicValue <= x2) {
                 if (Math.abs(x2 - x1) < 1e-6f) {
-                    Log.e("DIG_Err","Division by zero (x1 == x2).");
 
                 }
 

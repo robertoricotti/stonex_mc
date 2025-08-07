@@ -201,7 +201,6 @@ public class GL_DrawExca {
             gl.glDisable(GL10.GL_LINE_SMOOTH);
 
         } catch (Exception e) {
-            Log.e("GLDrawer", Log.getStackTraceString(e));
         }
     }
 
@@ -242,7 +241,6 @@ public class GL_DrawExca {
                 gl.glDisable(GL10.GL_LINE_SMOOTH);
 
             } catch (Exception e) {
-                Log.e("GLDrawer", Log.getStackTraceString(e));
             }
         }
     }

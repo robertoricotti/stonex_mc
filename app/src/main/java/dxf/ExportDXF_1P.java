@@ -112,6 +112,6 @@ public class ExportDXF_1P {
             DXFWriteMethods.coda(writer);
         }
 
-        Log.d("DXFGenerator", "DXF file generated successfully at " + path + "/" + filename);
+        //Log.d("DXFGenerator", "DXF file generated successfully at " + path + "/" + filename);
     }
 }

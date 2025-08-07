@@ -68,7 +68,6 @@ public class Dialog_Point_Poly {
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         larg = (int) (displayMetrics.widthPixels * 0.9);
         alt = (int) (displayMetrics.heightPixels * 0.8);
-        Log.d("ParametriVideo",larg+"  "+alt);
         dialog.create();
         dialog.setContentView(R.layout.dialog_point_poly);
         dialog.setCancelable(true);

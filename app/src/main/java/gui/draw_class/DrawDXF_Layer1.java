@@ -328,7 +328,6 @@ public class DrawDXF_Layer1 extends View {
                         }
                     }
                 } catch (Exception e) {
-                    Log.e("Eccex", "1  " + e.toString());
                 }
             }
 
@@ -356,7 +355,6 @@ public class DrawDXF_Layer1 extends View {
                         }
                     }
                 } catch (Exception e) {
-                    Log.e("Eccex", "2  " + e.toString());
                 }
             }
 
@@ -413,7 +411,6 @@ public class DrawDXF_Layer1 extends View {
                     paint.setColor(Color.argb(128, 128, 128, 128)); // Colore grigio semitrasparente
                     canvas.drawPath(patha, paint);
                 } catch (Exception e) {
-                    Log.e("Eccex", "Error drawing and filling front surface: " + e.toString());
                 }
             }
 
@@ -443,7 +440,6 @@ public class DrawDXF_Layer1 extends View {
                     paint.setColor(Color.argb(128, 128, 128, 128)); // Colore grigio semitrasparente
                     canvas.drawPath(pathm, paint);
                 } catch (Exception e) {
-                    Log.e("Eccex", "Error drawing and filling back surface: " + e.toString());
                 }
             }
 

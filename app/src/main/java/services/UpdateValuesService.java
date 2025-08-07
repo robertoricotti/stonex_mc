@@ -74,7 +74,6 @@ public class UpdateValuesService extends Service {
         ((ExecutorService) mExecutor).shutdown();
         stopTime = System.currentTimeMillis();
         long result = Math.abs(stopTime - startTime);
-        Log.d("Durata", result + "");
     }
 
     private class MyAsync_Excecutor implements Runnable {
@@ -1398,7 +1397,6 @@ public class UpdateValuesService extends Service {
                 }
 
                 try {
-                    Log.d("StoatooDio",indexMach+"   "+"   "+indexBucket+"   "+MyData.get_Int("M" + indexMach + "_Tilt_MountPos" + indexBucket)+" ");
                     DataSaved.lrTilt = MyData.get_Int("M" + indexMach + "_Tilt_MountPos" + indexBucket);
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di lrTilt: " + e.getMessage());

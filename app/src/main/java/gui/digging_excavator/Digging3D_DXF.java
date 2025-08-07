@@ -904,7 +904,6 @@ public class Digging3D_DXF extends BaseClass {
                             qs = "Bucket R: " + Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
                             break;
                     }
-                    Log.d("offSet", indexView + " " + showCutFill);
                     offsetTv.setText(qs + "\nOFFSET: " + Utils.readUnitOfMeasureLITE(String.valueOf(-DataSaved.offsetH)));
 
 
@@ -917,7 +916,6 @@ public class Digging3D_DXF extends BaseClass {
 
                 }
             } catch (Exception e) {
-                Log.e("Error_DXF_Activity", e.toString());
                 e.printStackTrace();
                 heightLT.setText("Error");
                 heightRT.setText("Error");

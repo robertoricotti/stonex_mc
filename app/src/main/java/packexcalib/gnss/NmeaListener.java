@@ -83,7 +83,6 @@ public class NmeaListener {
                             mZone = deg2UTM.getZone();
 
                         } catch (Exception e) {
-                            Log.d("err",Log.getStackTraceString(e));
                         }
 
                         break;
@@ -107,7 +106,6 @@ public class NmeaListener {
                             mChar = deg2UTM.getLetter();
                             mZone = deg2UTM.getZone();
                         } catch (Exception e) {
-                            Log.d("err",Log.getStackTraceString(e));
 
                         }
                         break;
@@ -133,7 +131,6 @@ public class NmeaListener {
                 if (mNmea1.contains(mNmea2)) {
 
                     NmeaInput = NMEA0183.split(",");
-                    Log.d("Inizio", DataSaved.S_CRS+"   "+Arrays.toString(NmeaInput));
                     switch (NmeaInput[0]) {
 
                         case "$GNGGA":
@@ -189,7 +186,6 @@ public class NmeaListener {
                                 mZone = deg2UTM.getZone();
 
                             } catch (Exception e) {
-                                Log.d("err",Log.getStackTraceString(e));
                             }
                             break;
                         case "$GPHDT":
@@ -246,14 +242,12 @@ public class NmeaListener {
 
 
         } catch (Exception e) {
-            Log.d("LLQe", e.toString());
 
         }
     }
 
 
     public static void NmeaSTX(int id, byte[] data) {
-
 
         switch (id) {
 
@@ -265,6 +259,7 @@ public class NmeaListener {
 
             case 0x18FF0210:
                 //UTN EST +WGS84 Z
+
                 tmpEstUTM = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]}) * 0.001;
                 tmpQuotaUTM = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[4], data[5], data[6], data[7]}) * 0.001;
                 break;
@@ -301,7 +296,7 @@ public class NmeaListener {
                 //Lon
                 tmpLon = PLC_DataTypes_LittleEndian.byte_to_S64_le(data) * 0.000000001;//corrected
                 mLon_1 = tmpLon;
-                Log.d("mLon", String.valueOf(mLon_1));
+
                 break;
             case 0x18FF0910:
                 //RMS

@@ -199,9 +199,7 @@ public class PickProject extends BaseClass {
                                 }
                             }
 
-                            for (String fileName : dxfPstxFiles) {
-                                Log.d("FolderFiles", fileName);
-                            }
+
                             if (!dialogPrjFolder.dialog.isShowing()) {
                                 dialogPrjFolder.show(m_folderPath);
                             }

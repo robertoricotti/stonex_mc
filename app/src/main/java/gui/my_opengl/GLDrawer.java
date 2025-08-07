@@ -106,7 +106,6 @@ public class GLDrawer {
 
                 gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
             } catch (Exception e) {
-                Log.e("GLDrawer", Log.getStackTraceString(e));
             }
         }
     }
@@ -177,7 +176,6 @@ public class GLDrawer {
             }
 
         } catch (Exception e) {
-            Log.e("GLDrawer", Log.getStackTraceString(e));
         }
     }
 
@@ -246,7 +244,6 @@ public class GLDrawer {
             gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 
         } catch (Exception e) {
-            Log.e("GLDrawer", Log.getStackTraceString(e));
         }
     }
 
@@ -349,7 +346,6 @@ public class GLDrawer {
             gl.glDrawArrays(GL10.GL_POINTS, 0, 1);
             gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         } catch (Exception e) {
-            Log.e("Render", Log.getStackTraceString(e));
         }
 
     }

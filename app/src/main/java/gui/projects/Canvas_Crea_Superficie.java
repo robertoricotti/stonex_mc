@@ -124,7 +124,6 @@ public class Canvas_Crea_Superficie extends View {
         paint.setAntiAlias(true);
         try {
             rotationAngle = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
-            Log.d("DataSaved", DataSaved.isWL + " ");
             switch (DataSaved.isWL) {
                 case 0:
                     //exca
@@ -506,7 +505,6 @@ public class Canvas_Crea_Superficie extends View {
             }
 
         } catch (Exception e) {
-            Log.e("Errore_Crea", Log.getStackTraceString(e));
         }
     }
 
@@ -1113,7 +1111,6 @@ public class Canvas_Crea_Superficie extends View {
             paint.setStrokeWidth(1f);
             canvas.drawText("E:" + Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.puntiProgetto[0].x)) + "  N:" + Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.puntiProgetto[0].y)) + "  Z:" + Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.puntiProgetto[0].z)), (float) (rotatedX + 10f), (float) (rotatedY - 10f), paint);
         } catch (Exception e) {
-            Log.d("Excp", e.toString());
         }
 
 

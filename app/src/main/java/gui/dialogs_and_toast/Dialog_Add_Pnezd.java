@@ -449,7 +449,6 @@ public class Dialog_Add_Pnezd {
         {
             File file = new File(filepath);
             if (!file.exists()) {
-                Log.w("Dialog_Add_Pnezd", "File CSV non esiste.");
                 return;
             }
 
@@ -466,7 +465,6 @@ public class Dialog_Add_Pnezd {
             }
 
             if (lines.size() <= 1) {
-                Log.w("Dialog_Add_Pnezd", "Nessun punto da rimuovere.");
                 return;
             }
 

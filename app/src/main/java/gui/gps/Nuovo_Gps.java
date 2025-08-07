@@ -1421,7 +1421,6 @@ public class Nuovo_Gps extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void canEvents(CanEvents canEvents) {
         if (canEvents.id > 2047) {
-            Log.d("CAN_SMC", canEvents.candata);
             switch (canEvents.id) {
 
                 case 0x18FF0C10:
@@ -1526,7 +1525,6 @@ public class Nuovo_Gps extends AppCompatActivity {
                             isRead3 = true;
                             intero = (PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{canEvents.msg[2], canEvents.msg[3]}));
                             decimale = (PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{canEvents.msg[4], canEvents.msg[5]}));
-                            Log.d("myDecimal", decimale + " " + canEvents.msg[4] + " " + canEvents.msg[5]);
                             etIntero.setText(String.format("%03d", intero));
                             etDecimale.setText(String.format("%04d", decimale));
 

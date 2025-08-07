@@ -104,7 +104,6 @@ public class Deg2UTM {
                         String extension = geoidPath.substring(geoidPath.lastIndexOf(".") + 1);
                         switch (extension.toLowerCase()) {
                             case "bin":
-                                Log.d("Geoid", "BIN   " + geoidPath);
                                 geoidBin = new GeoidBinLite(new File(geoidPath));
                                 if (geoidBin.isInGrid(mLat_, mLon_)) {
                                     geoidError = false;
@@ -117,24 +116,20 @@ public class Deg2UTM {
                                 break;
 
                             case "ggf":
-                                Log.d("Geoid", "GGF   " + mLat_ + " " + mLon_);
                                 try {
                                     ggfGeoide = new GGFGeoide();
                                     ggfGeoide.load(geoidPath);
                                     if (ggfGeoide.isInGrid(mLat_, mLon_)) {
                                         geoidError = false;
                                         quota[0] = Z - ggfGeoide.getUndulation(mLat_, mLon_);
-                                        Log.d("Geoid", "OK   " + mLat_ + " " + mLon_ + "  " + ggfGeoide.getUndulation(mLat_, mLon_));
                                     } else {
                                         geoidError = true;
                                         quota[0] = Z;
-                                        Log.d("Geoid", "KO   " + mLat_ + " " + mLon_ + "  " + quota[0]);
 
                                     }
                                 } catch (Exception e) {
                                     geoidError = true;
                                     quota[0] = Z;
-                                    Log.e("Geoid", Log.getStackTraceString(e));
                                 }
 
                                 break;
@@ -142,7 +137,6 @@ public class Deg2UTM {
                             case "ugf":
                                 ///  UGF
 
-                                Log.d("Geoid", "UGF   " + geoidPath);
                                 geoideInterpolationGGF = new GeoideInterpolation(geoidPath);
                                 geoideInterpolationGGF.readHeader();
                                 if (geoideInterpolationGGF.internalLetturaGeoide(mLat_, mLon_, Z, quota, false)) {
@@ -170,11 +164,10 @@ public class Deg2UTM {
                         Easting = result.x;
                         Northing = result.y;
                         Quota = quota[0];
-                        Log.d("OutCoord", Northing + "  " + Easting + "  " + Quota);
+
 
                     }
                 } catch (IOException e) {
-                    Log.e("myLoggy", geoidPath + "  " + e.toString());
                 }
                 break;
 

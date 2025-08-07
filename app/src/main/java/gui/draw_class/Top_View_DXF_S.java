@@ -364,7 +364,6 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
                 }
             }
         } catch (Exception e) {
-            Log.d("expRT", "excFace");
         }
 
         try {
@@ -453,7 +452,6 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
             }
 
         } catch (Exception e) {
-            Log.d("expRT", "excPoly");
         }
 
         try {
@@ -477,7 +475,6 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
             }
         } catch (Exception e) {
 
-            Log.d("expRT", "excPT");
         }
 
         try {
@@ -489,7 +486,6 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
                 }
             }
         } catch (Exception e) {
-            Log.d("expRT", "excTxT");
         }
         try {
 
@@ -513,7 +509,6 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "excPoly2D");
         }
         try {
 
@@ -535,7 +530,6 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "arcs");
         }
         try {
 
@@ -557,7 +551,6 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "lines");
         }
         try {
 
@@ -579,7 +572,6 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "circles");
         }
 
 

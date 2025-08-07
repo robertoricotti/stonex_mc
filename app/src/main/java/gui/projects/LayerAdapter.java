@@ -200,9 +200,9 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                 }
 
                 if (!updated) {
-                    Log.d("LayerEnable", "Layer " + item.getLayerName() + " non trovato nelle liste.");
+                    //Log.d("LayerEnable", "Layer " + item.getLayerName() + " non trovato nelle liste.");
                 } else {
-                    Log.d("LayerEnable", "Layer " + item.getLayerName() + " aggiornato con successo.");
+                    //Log.d("LayerEnable", "Layer " + item.getLayerName() + " aggiornato con successo.");
                 }
 
                 // Aggiorna l'immagine in base al nuovo stato
@@ -271,7 +271,6 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                             try {
                                 mostra(layerName); // Passa il nome del layer selezionato
                             } catch (Exception e) {
-                                Log.e("LayerStatus", "Errore durante la creazione dell'overview", e);
                             }
                         }
                     } else {
@@ -442,16 +441,16 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     private static void printLayerList(List<Layer> layerList, String listName) {
         try {
             if (layerList == null || layerList.isEmpty()) {
-                Log.d("Layer_", "La lista " + listName + " è vuota o non inizializzata.");
+                //Log.d("Layer_", "La lista " + listName + " è vuota o non inizializzata.");
                 return;
             }
-            Log.d("Layer_", "Contenuto della lista " + listName + ":");
-            for (Layer layer : layerList) {
+            //Log.d("Layer_", "Contenuto della lista " + listName + ":");
+           /* for (Layer layer : layerList) {
                 Log.d("Layer_", "ProjName: " + layer.getProjName()
                         + ", LayerName: " + layer.getLayerName()
                         + ", ColorState: " + layer.getColorState()
                         + ", isEnaled: " + layer.isEnable());
-            }
+            }*/
         } catch (Exception e) {
             Log.e("Layer_", e.toString());
         }

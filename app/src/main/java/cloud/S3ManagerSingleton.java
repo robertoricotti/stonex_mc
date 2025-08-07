@@ -73,7 +73,7 @@ public class S3ManagerSingleton {
         BasicSessionCredentials credentials = new BasicSessionCredentials(s3Credentials.getAccessKey(), s3Credentials.getSecretKey(), s3Credentials.getSessionToken());
         this.s3Client = new AmazonS3Client(credentials, Region.getRegion(s3Credentials.getRegion()));
         this.transferUtility = TransferUtility.builder().context(appContext).s3Client(s3Client).build();
-        Log.d("S3Manager:Credentials", "AWS credentials updated successfully");
+        //Log.d("S3Manager:Credentials", "AWS credentials updated successfully");
         //TODO fare controllo
         scheduleCredentialRefresh();
     }
@@ -145,7 +145,7 @@ public class S3ManagerSingleton {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
                         if (state == TransferState.COMPLETED) {
-                            Log.d("S3Manager:Upload", "Upload completed successfully: " + s3Key);
+                            //Log.d("S3Manager:Upload", "Upload completed successfully: " + s3Key);
                         } else if (state == TransferState.FAILED) {
                             Log.e("S3Manager:Upload", "Upload failed: " + s3Key);
                         }
@@ -154,7 +154,7 @@ public class S3ManagerSingleton {
                     @Override
                     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                         int percentDone = (int) (((float) bytesCurrent / (float) bytesTotal) * 100);
-                        Log.d("S3Manager:Upload", "Upload progress: " + percentDone + "%");
+                        //Log.d("S3Manager:Upload", "Upload progress: " + percentDone + "%");
                     }
 
                     @Override
@@ -180,7 +180,7 @@ public class S3ManagerSingleton {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
                         if (state == TransferState.COMPLETED) {
-                            Log.d("S3Manager:Download", "Download completed successfully: " + s3Key);
+                           // Log.d("S3Manager:Download", "Download completed successfully: " + s3Key);
                         } else if (state == TransferState.FAILED) {
                             Log.e("S3Manager:Download", "Download failed: " + s3Key);
                         }
@@ -189,7 +189,7 @@ public class S3ManagerSingleton {
                     @Override
                     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                         int percentDone = (int) (((float) bytesCurrent / (float) bytesTotal) * 100);
-                        Log.d("S3Manager:Download", "Download progress: " + percentDone + "%");
+                       // Log.d("S3Manager:Download", "Download progress: " + percentDone + "%");
                     }
 
                     @Override
@@ -239,7 +239,7 @@ public class S3ManagerSingleton {
             try {
                 String finalFolderPath = folderPath.endsWith("/") ? folderPath : folderPath + "/";
                 s3Client.putObject(s3Credentials.getBucketName(), finalFolderPath, "");
-                Log.d("S3Manager:CreateFolder", "Folder created successfully: " + finalFolderPath);
+                //Log.d("S3Manager:CreateFolder", "Folder created successfully: " + finalFolderPath);
                 callback.onSuccess(Map.of("folderPath", finalFolderPath));
             } catch (Exception e) {
                 Log.e("S3Manager:CreateFolder", "Error creating folder", e);
@@ -261,9 +261,9 @@ public class S3ManagerSingleton {
                 ObjectListing objectListing = s3Client.listObjects(listObjectsRequest);
                 for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
                     s3Client.deleteObject(s3Credentials.getBucketName(), objectSummary.getKey());
-                    Log.d("S3Manager:DeleteFolder", "Deleted object: " + objectSummary.getKey());
+                    //Log.d("S3Manager:DeleteFolder", "Deleted object: " + objectSummary.getKey());
                 }
-                Log.d("S3Manager:DeleteFolder", "Folder deleted successfully: " + finalFolderPath);
+                //Log.d("S3Manager:DeleteFolder", "Folder deleted successfully: " + finalFolderPath);
                 callback.onSuccess(Map.of("folderPath", finalFolderPath));
             } catch (Exception e) {
                 Log.e("S3Manager:DeleteFolder", "Error deleting folder", e);
@@ -335,7 +335,7 @@ public class S3ManagerSingleton {
                                 public void onStateChanged(int id, TransferState state) {
                                     if (state == TransferState.COMPLETED) {
                                         completedFiles.incrementAndGet();
-                                        Log.d("S3Manager:UploadFolder", "File caricato: " + s3Key);
+                                        //Log.d("S3Manager:UploadFolder", "File caricato: " + s3Key);
                                     } else if (state == TransferState.FAILED) {
                                         failedFiles.incrementAndGet();
                                         Log.e("S3Manager:UploadFolder", "Errore upload: " + s3Key);
@@ -511,7 +511,7 @@ public class S3ManagerSingleton {
                                 public void onStateChanged(int id, TransferState state) {
                                     if (state == TransferState.COMPLETED) {
                                         completedFiles.incrementAndGet();
-                                        Log.d("S3Manager:DownloadFolder", "File scaricato: " + key);
+                                        //Log.d("S3Manager:DownloadFolder", "File scaricato: " + key);
                                     } else if (state == TransferState.FAILED) {
                                         failedFiles.incrementAndGet();
                                         Log.e("S3Manager:DownloadFolder", "Errore download: " + key);
@@ -586,7 +586,7 @@ public class S3ManagerSingleton {
                 ObjectListing objectListing = s3Client.listObjects(s3Credentials.getBucketName(), s3FilePath);
                 if (!objectListing.getObjectSummaries().isEmpty()) {
                     long fileSize = objectListing.getObjectSummaries().get(0).getSize();
-                    Log.d("S3Manager:GetFileSize", "File size of " + s3FilePath + ": " + fileSize + " bytes");
+                    //Log.d("S3Manager:GetFileSize", "File size of " + s3FilePath + ": " + fileSize + " bytes");
                     callback.onSuccess(Map.of("filePath", s3FilePath, "size", fileSize));
                 } else {
                     Log.e("S3Manager:GetFileSize", "File not found: " + s3FilePath);
@@ -650,7 +650,7 @@ public class S3ManagerSingleton {
                     }
                 }
 
-                Log.d("S3Manager:GetFolderSize", "Dimensione totale della cartella " + s3FolderPath + ": " + totalSize + " byte");
+                //Log.d("S3Manager:GetFolderSize", "Dimensione totale della cartella " + s3FolderPath + ": " + totalSize + " byte");
                 callback.onSuccess(Map.of("folderPath", s3FolderPath, "size", totalSize));
             } catch (Exception e) {
                 Log.e("S3Manager:GetFolderSize", "Errore durante il recupero della dimensione della cartella", e);
@@ -663,7 +663,7 @@ public class S3ManagerSingleton {
 
         // Crea un nuovo scheduler se necessario
         if (scheduler.isShutdown() || scheduler.isTerminated()) {
-            Log.d("S3Manager:Refresh", "Recreating scheduler...");
+            //Log.d("S3Manager:Refresh", "Recreating scheduler...");
             scheduler = Executors.newSingleThreadScheduledExecutor();
         }
 
@@ -676,13 +676,13 @@ public class S3ManagerSingleton {
         long delayInSeconds = s3Credentials.getExpirationTime() - currentTime - 60; // 1 minuto prima
 
         if (delayInSeconds <= 0) {
-            Log.w("S3Manager:Refresh", "Expiration time is too close or already passed.");
+            //Log.w("S3Manager:Refresh", "Expiration time is too close or already passed.");
             return;
         }
 
 
         scheduledRefresh = scheduler.schedule(() -> {
-            Log.d("S3Manager:Refresh", "Refreshing credentials...");
+            //Log.d("S3Manager:Refresh", "Refreshing credentials...");
             try {
                 JSONObject command = new JSONObject().put("type", "temp_credentials");
                 webSocket.send(command.toString());
@@ -691,7 +691,7 @@ public class S3ManagerSingleton {
             }
         }, delayInSeconds, TimeUnit.SECONDS);
 
-        Log.d("S3Manager:Refresh", "Scheduled credential refresh in " + delayInSeconds + " seconds");
+        //Log.d("S3Manager:Refresh", "Scheduled credential refresh in " + delayInSeconds + " seconds");
     }
 
 
@@ -717,7 +717,7 @@ public class S3ManagerSingleton {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
                         if (state == TransferState.COMPLETED) {
-                            Log.d("S3Manager:UploadFolder", "File uploaded successfully: " + s3Key);
+                            //Log.d("S3Manager:UploadFolder", "File uploaded successfully: " + s3Key);
                         } else if (state == TransferState.FAILED) {
                             Log.e("S3Manager:UploadFolder", "Upload failed: " + s3Key);
                         }
@@ -726,7 +726,7 @@ public class S3ManagerSingleton {
                     @Override
                     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                         int percentDone = (int) (((float) bytesCurrent / (float) bytesTotal) * 100);
-                        Log.d("S3Manager:UploadFolder", "Upload progress (" + s3Key + "): " + percentDone + "%");
+                        //Log.d("S3Manager:UploadFolder", "Upload progress (" + s3Key + "): " + percentDone + "%");
                     }
 
                     @Override

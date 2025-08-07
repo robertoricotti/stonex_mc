@@ -155,7 +155,6 @@ public class CanSender extends Service {
             bStat[5] = MyApp.visibleActivity instanceof My3DActivity;  //vale 32
             bStat[6] = CanService.isAuto > 0;//macchina in Automatico  vale 64
             bStat[7] = hAlarm;//allarme attivo  vale 128
-            Log.d("myPayload", Arrays.toString(bStat));
             byte status = 0;
             status = PLC_DataTypes_BigEndian.Encode_8_bool_be(bStat);
             if (mLat_1 != 0 && mLon_1 != 0) {
@@ -166,7 +165,6 @@ public class CanSender extends Service {
                 payload.put("localZ", String.valueOf(Quota1));
                 payload.put("machineState", status & 0xFF);//bitmask 8 booleans
                 payload.put("description", DataSaved.machineName + "\n" + DataSaved.progettoSelected);//testo libero
-                Log.d("myPayload", payload.toString());
                 WebSocketPlugin.getWebSocketPluginInstance(MyApp.visibleActivity).sendCommand("data_positioning_ack", payload);
                 payload.clear();
             }

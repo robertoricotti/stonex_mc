@@ -172,7 +172,6 @@ public class Remote_Activity extends AppCompatActivity {
                 public void onSuccess(Map<String, Object> result) {
                     // Eseguito nel thread di rete, puoi aggiornare la UI con runOnUiThread
                     runOnUiThread(() -> {
-                        Log.d("S3Tree", result.toString());
                         parseProjectsContent(result.toString());
                         // Aggiorna la UI se necessario
                     });
@@ -209,7 +208,6 @@ public class Remote_Activity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Map<String, Object> result) {
                                 runOnUiThread(() -> {
-                                    Log.d("S3Manager:UploadFolder", "Cartella caricata con successo: " + result.get("folderPath"));
                                     adapterProj.setSelectedItem(-1);
                                     adapterMC.setSelectedItem(-1);
                                     if (adapterMC != null) {
@@ -296,7 +294,7 @@ public class Remote_Activity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Map<String, Object> result) {
                                     runOnUiThread(() -> {
-                                        Log.d("S3Manager:DownloadFolder", "Cartella scaricata con successo: " + result.get("folderPath"));
+                                        //Log.d("S3Manager:DownloadFolder", "Cartella scaricata con successo: " + result.get("folderPath"));
                                         adapterProj.setSelectedItem(-1);
                                         adapterMC.setSelectedItem(-1);
                                         if (adapterMC != null) {
@@ -503,7 +501,6 @@ public class Remote_Activity extends AppCompatActivity {
                         filesIN.add(new ProjectFileAdapter.FileItem(folderName, true, folderSize, null));
                         adapterMC.notifyItemInserted(filesIN.size() - 1); // Notifica l'adapter
                     });
-                    Log.d("S3Size", folderName + " Size: " + folderSize + " bytes");
                 }
 
                 @Override

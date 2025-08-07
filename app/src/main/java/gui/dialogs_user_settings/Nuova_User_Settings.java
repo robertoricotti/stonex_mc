@@ -289,7 +289,6 @@ public class Nuova_User_Settings extends AppCompatActivity {
             }
         } catch (Exception ex) {
             MyData.push("Deadband_H","0.025");
-            Log.d("Panerai",Log.getStackTraceString(ex));
         }
     }
 

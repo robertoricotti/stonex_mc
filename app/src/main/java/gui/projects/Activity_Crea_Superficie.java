@@ -130,7 +130,6 @@ public class Activity_Crea_Superficie extends BaseClass {
         try {
             tipo = getIntent().getStringExtra("type");
             percorso = getIntent().getStringExtra("mPath");
-            Log.d("mioPercorso", percorso);
             switch (tipo) {
                 case "OVER":
                     addPRJ = true;

@@ -47,11 +47,9 @@ public class CustomMenuLista {
 
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
-        if(Build.BRAND.equals("SRT8PROS")){
-            alertDialog.getWindow().setLayout(1100, 650);}
-        else {
-            alertDialog.getWindow().setLayout(1000, 550);
-        }
+
+        alertDialog.getWindow().setLayout(1000, 550);
+
 
         FullscreenActivity.setFullScreen(alertDialog);
         alertDialog.show();

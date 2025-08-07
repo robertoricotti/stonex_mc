@@ -97,7 +97,6 @@ public class CloseAppDialog {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.d("ExceptClose", e.toString());
             }
 
             MyDeviceManager.showBar(activity);

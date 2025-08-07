@@ -118,7 +118,6 @@ public class Diaalog_Set_SP {
     public void show(String mPath,ProjectFileAdapter remoteAdapter) {
         this.mPath=mPath;
         this.remoteAdapter=remoteAdapter;
-        Log.d("myGeoid",mPath+"  "+remoteAdapter);
 
 
         dialog.create();

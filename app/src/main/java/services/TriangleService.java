@@ -301,7 +301,6 @@ public class TriangleService extends Service {
                     }
 
                 } catch (Exception e) {
-                    Log.e("TriangleService", Log.getStackTraceString(e));
                 }
 
 
@@ -401,7 +400,6 @@ public class TriangleService extends Service {
                 }
             }
         } catch (Exception e) {
-            Log.e("TriangleService", Log.getStackTraceString(e));
 
         }
     };
@@ -677,14 +675,11 @@ public class TriangleService extends Service {
                         }
                     }
                 } else {
-                    Log.e("PNEZD", "File non trovato: " + filePath);
                 }
 
                 DataSaved.pnezdPoints = punti;
-                Log.d("PNEZD", DataSaved.pnezdPoints.size() + "    " + filePath);
             } catch (Exception e) {
                 DataSaved.pnezdPoints = new ArrayList<>();
-                Log.e("PNEZD", "Errore lettura PNEZD: " + e.getMessage());
             }
 
             if (fileExtensionPOINT != null) {

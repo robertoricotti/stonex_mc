@@ -200,7 +200,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         } else {
                             //tutto Z a 0 2D
                             if (My3DActivity.glFace || My3DActivity.glFill) {
-                                Log.d("facce2D", String.valueOf(DataSaved.dxfFacesGL_2D.size()));
                                 GLDrawer.drawFaces(gl11, DataSaved.dxfFacesGL_2D, 0.8f, scale, isXML);//disegna le 3DFaces
                             }
                             if (My3DActivity.glGradient) {
@@ -208,7 +207,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             }
                             gl.glDisable(GL10.GL_DEPTH_TEST);
                             if (My3DActivity.glPoly) {
-                                Log.d("poly2D", String.valueOf(DataSaved.polylinesGL_2D.size()));
                                 GLDrawer.drawPolylines(gl11, DataSaved.polylinesGL_2D, 3f, scale);
                                 //altre entità 2D dxf
                                 GLDrawer.drawLines2D(gl11, DataSaved.lines_2D, 3f, scale);
@@ -259,7 +257,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         } else {
                             //tutto Z a 0
                             if (My3DActivity.glFace || My3DActivity.glFill) {
-                                Log.d("facce2D", String.valueOf(DataSaved.dxfFacesGL_2D.size()));
                                 GLDrawer.drawFaces(gl11, DataSaved.filteredFacesGL_2D, 0.8f, scale, isXML);//disegna le 3DFaces
                             }
                             if (My3DActivity.glGradient) {
@@ -310,7 +307,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
                 } catch (Exception e) {
-                    Log.e("ErrorGLRender", Log.getStackTraceString(e));
                 }
             }
         }

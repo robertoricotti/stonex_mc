@@ -303,7 +303,6 @@ public class Top_View_DXF extends View {
                 }
             }
         } catch (Exception e) {
-            Log.d("expRT", "excFace");
         }
 
         try {
@@ -395,7 +394,6 @@ public class Top_View_DXF extends View {
             }
 
         } catch (Exception e) {
-            Log.d("expRT", "excPoly");
         }
 
         try {
@@ -426,7 +424,6 @@ public class Top_View_DXF extends View {
             }
         } catch (Exception e) {
 
-            Log.d("expRT", "excPT");
         }
 
         try {
@@ -445,7 +442,6 @@ public class Top_View_DXF extends View {
                 }
             }
         } catch (Exception e) {
-            Log.d("expRT", "excTxT");
         }
         try {
 
@@ -469,7 +465,6 @@ public class Top_View_DXF extends View {
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "excPoly2D");
         }
         try {
 
@@ -491,7 +486,6 @@ public class Top_View_DXF extends View {
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "arcs");
         }
         try {
 
@@ -513,7 +507,6 @@ public class Top_View_DXF extends View {
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "lines");
         }
         try {
 
@@ -535,7 +528,6 @@ public class Top_View_DXF extends View {
             }
         } catch (Exception e) {
             //throw new RuntimeException(e);
-            Log.d("expRT", "circles");
         }
 
 
@@ -1172,7 +1164,6 @@ public class Top_View_DXF extends View {
                 segment.y1,
                 segment.x2,
                 segment.y2).getLinedistance();
-       Log.d("Distanza da Tocco","Dist: "+Math.abs(dist)+"  "+tolerance);
         return Math.abs(dist) <= tolerance;
     }
 

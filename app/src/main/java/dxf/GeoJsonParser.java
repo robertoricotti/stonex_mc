@@ -48,7 +48,7 @@ public class GeoJsonParser {
             json = new String(buffer, "UTF-8");
         } catch (IOException ex) {
             ex.printStackTrace();
-            Log.d("GeoJsonParser", "Errore nella lettura del file: " + ex.toString());
+            //Log.d("GeoJsonParser", "Errore nella lettura del file: " + ex.toString());
             return null;
         }
         return json;

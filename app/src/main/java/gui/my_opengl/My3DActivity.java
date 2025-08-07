@@ -134,7 +134,6 @@ public class My3DActivity extends BaseClass {
             pathToPNEZD = pathToPNEZD.substring(0,pathToPNEZD.lastIndexOf("/"));
             String pathCompleto=pathToPNEZD+"/"+pathToPNEZD.substring(pathToPNEZD.lastIndexOf("/",pathToPNEZD.length()+1))+".csv";
             DataSaved.PNEZDPath=pathCompleto;
-            Log.d("Dialog_Add_Pnezd",pathCompleto);
             if (whats == null) {
                 Intent intent = getIntent();
                 whats = intent.getStringExtra("whats");
@@ -471,7 +470,6 @@ public class My3DActivity extends BaseClass {
                 MyData.push("glAngleY", String.valueOf(MyGLRenderer.angleY));
 
             } catch (Exception e) {
-                Log.e("testGL", Log.getStackTraceString(e));
             }
             startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
@@ -828,7 +826,6 @@ public class My3DActivity extends BaseClass {
 
             setLightBar();
         } catch (Exception e) {
-            Log.e("gl_Error", Log.getStackTraceString(e));
         }
 
     }
@@ -1258,7 +1255,6 @@ public class My3DActivity extends BaseClass {
         // Cambio funzione cliccando sull'immagine
         cambia.setOnClickListener(view -> {
             initialFunction = (initialFunction + 1) % 3;
-            Log.d("InitialFunction", String.valueOf(initialFunction));
             updateDialogForFunction(initialFunction, commonListener);
         });
 

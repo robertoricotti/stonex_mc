@@ -204,17 +204,13 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
             if (oldFile.exists()) {
                 if (newFile.exists()) {
-                    Log.e("FileRename", "Errore: Il file con nome " + newName + " esiste già.");
                 } else if (oldFile.renameTo(newFile)) {
                     // Se il file è stato rinominato con successo, aggiorna l'adapter
                     files.set(selectedItem, new FileItem(newName, selectedFileItem.isFolder(), selectedFileItem.getSize(),selectedFileItem.getPath()));
                     notifyItemChanged(selectedItem);
-                    Log.d("FileRename", "File rinominato con successo: " + oldFile.getAbsolutePath() + " -> " + oldFile.getAbsolutePath());
                 } else {
-                    Log.e("FileRename", "Errore: impossibile rinominare il file.");
                 }
             } else {
-                Log.e("FileRename", "Errore: Il file selezionato non esiste.");
             }
         }
     }

@@ -81,7 +81,6 @@ public class Usb_Project_Nova extends AppCompatActivity {
             APP_PATH = s;
             filterType = 2;
         }
-        Log.d("APP_PATH", s);
         usbPath = MyData.get_String("_usbPath");
         findView();
         init();

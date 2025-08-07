@@ -102,6 +102,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
+    private static final int numGeoidiInterni=1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio
     public static boolean isAlto,isBasso,isCentro;
     private MediaPlayer mediaPlayer;
@@ -172,20 +173,20 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
                     }
 
 
-                    Log.d("machinestate", "service stopped");
+                    //Log.d("machinestate", "service stopped");
                 } catch (Exception e) {
-                    Log.d("machinestate", e.toString());
+                    //Log.d("machinestate", e.toString());
                 }
             }
-            Log.d("machinestate", MyData.get_String("machinestate"));
+            //Log.d("machinestate", MyData.get_String("machinestate"));
         } else {
-            Log.d("machinestate", "null");
+            //Log.d("machinestate", "null");
         }
 
-        String nlgeo =copyGeoidFromAssets(this,"nlgeo2018.ugf","nlgeo2018.ugf");
-        String belg=copyGeoidFromAssets(this,"belgium_hbg18.ugf","belgium_hbg18.ugf");
+       // String nlgeo =copyGeoidFromAssets(this,"nlgeo2018.ugf","nlgeo2018.ugf");
+        //String belg=copyGeoidFromAssets(this,"belgium_hbg18.ugf","belgium_hbg18.ugf");
         String deu =copyGeoidFromAssets(this,"DEUTSCH_GEOID.GGF","DEUTSCH_GEOID.GGF");
-        String riga =copyGeoidFromAssets(this,"RIGA20.UGF","RIGA20.UGF");
+       // String riga =copyGeoidFromAssets(this,"RIGA20.UGF","RIGA20.UGF");
 
         String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
 
@@ -193,7 +194,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
         // Crea un nuovo array con spazio per i 3 elementi aggiuntivi
         int originalLength = geoidAll != null ? geoidAll.length : 0;
-        String[] newGeoidAll = new String[originalLength + 4];
+        String[] newGeoidAll = new String[originalLength + numGeoidiInterni];
 
         // Se l'array originale non è nullo, copialo
         if (geoidAll != null) {
@@ -201,15 +202,15 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         }
 
         // Aggiungi le 3 nuove stringhe
-        newGeoidAll[originalLength] = nlgeo;
-        newGeoidAll[originalLength + 1] = belg;
-        newGeoidAll[originalLength + 2] = deu;
-        newGeoidAll[originalLength + 3] = riga;
+        newGeoidAll[originalLength] = deu;
+       // newGeoidAll[originalLength + 1] = belg;
+       // newGeoidAll[originalLength + 2] = deu;
+       // newGeoidAll[originalLength + 3] = riga;
 
         // Sovrascrivi l'array originale
         geoidAll = newGeoidAll;
 
-        Log.d("GEOIDALL", Arrays.toString(geoidAll));
+        //Log.d("GEOIDALL", Arrays.toString(geoidAll));
 
         gridFile_GR = copyGeoidFromAssets(this, "greece_2km_v1_0.gsb", "greece_2km_v1_0.gsb");
 
@@ -373,7 +374,6 @@ git push
         try {
             stopSound();
         } catch (Exception e) {
-            Log.e("MediaPlay",Log.getStackTraceString(e));
         }
     }
 

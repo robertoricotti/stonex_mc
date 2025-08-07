@@ -113,7 +113,7 @@ public class ReadProjectService extends Service {
         @Override
         public void run() {
             startCRS();
-            Log.d("ReadService", "step-1");
+
             if (DataSaved.dxfLayers_DTM == null) {
                 DataSaved.dxfLayers_DTM = new ArrayList<>();
             }
@@ -138,9 +138,7 @@ public class ReadProjectService extends Service {
                 isFinishedPOINT = true;
             }
 
-            Log.d("ReadService", "step-2");
             if (MyApp.licenseType > 1) {
-                Log.d("ReadService", DataSaved.dxfFaces.size()+" ");
                 if (!nomeProgettoTRM.equals("")) {
                     try {
                         if (mettiPoly) {
@@ -385,7 +383,6 @@ public class ReadProjectService extends Service {
                                             case "xml":
                                                 parserStatus = "Reading Polylines...";
 
-                                                Log.d("CACHE", "Cache non trovata, parsifico: " + DataSaved.progettoSelected_POLY);
                                                 landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
 
                                                 DataSaved.polylines = landXMLPOLY.getPolylines();
@@ -475,7 +472,6 @@ public class ReadProjectService extends Service {
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Log.e("LeggoDXF", "Errore: " + e.toString() + "\n" + Log.getStackTraceString(e));
 
                         DataSaved.isAutoSnap = 0;
                         ERRORE_PROGETTO = true;
@@ -619,23 +615,17 @@ public class ReadProjectService extends Service {
                             UTM = crsFactory.createFromParameters("EPSG:2100",
                                     "+proj=tmerc +lat_0=0 +lon_0=24 +k=0.9996 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=-199.87,74.79,246.62,0,0,0,0 +units=m " +
                                             "+nadgrids=" + gridFile_GR + " +no_defs");
-                            Log.d("ExcpCRS", "trasformetion OK");
                         } catch (UnsupportedParameterException e) {
-                            Log.e("ExcpCRS", Log.getStackTraceString(e));
                             UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
                         } catch (InvalidValueException e) {
-                            Log.e("ExcpCRS", Log.getStackTraceString(e));
                             UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
                         } catch (UnknownAuthorityCodeException e) {
-                            Log.e("ExcpCRS", Log.getStackTraceString(e));
                             UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
                         }
 
                         wgsToUtm = ctFactory.createTransform(WGS84, UTM);
                         utmToWgs = ctFactory.createTransform(UTM, WGS84);
-                        Log.d("ExcpCRS", "S: " + MyData.get_String("crs") + "  C: " + DataSaved.S_CRS + "    " + result.toString());
                     } catch (Exception e) {
-                        Log.e("ExcpCRS", Log.getStackTraceString(e));
                     }
                 } else {
                     ////////
@@ -650,15 +640,11 @@ public class ReadProjectService extends Service {
                         } catch (UnsupportedParameterException e) {
                             throw new RuntimeException(e);
                         } catch (InvalidValueException e) {
-                            Log.d("SDF", Log.getStackTraceString(e));
                         } catch (UnknownAuthorityCodeException e) {
-                            Log.d("SDF", Log.getStackTraceString(e));
                         }
                         wgsToUtm = ctFactory.createTransform(WGS84, UTM);
                         utmToWgs = ctFactory.createTransform(UTM, WGS84);
-                        Log.d("ExcpCRS", "S: " + MyData.get_String("crs") + "  C: " + DataSaved.S_CRS + "    " + result.toString());
                     } catch (Exception e) {
-                        Log.e("ExcpCRS", Log.getStackTraceString(e));
                     }
 
                     ///////////

@@ -144,7 +144,6 @@ public class GL_DrawWheel {
             gl.glDisable(GL10.GL_LINE_SMOOTH);
 
         } catch (Exception e) {
-            Log.e("GLDrawer", Log.getStackTraceString(e));
         }
     }
     private static void drawPointDist(GL11 gl,float lineW,int color,float scale){
@@ -184,7 +183,6 @@ public class GL_DrawWheel {
                 gl.glDisable(GL10.GL_LINE_SMOOTH);
 
             } catch (Exception e) {
-                Log.e("GLDrawer", Log.getStackTraceString(e));
             }
         }
     }
