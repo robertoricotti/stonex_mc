@@ -411,7 +411,7 @@ git push
                         @Override
                         public void run() {
                             try {
-                                Log.d("Stoatoo",DataSaved.lrTilt+" ");
+
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {
                                     frameCounter += 1;

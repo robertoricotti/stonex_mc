@@ -73,7 +73,7 @@ public class EasyConfigDialog {
 
     private  void init(){
         numberDialog = new CustomNumberDialog(activity,-1);
-        qwertyDialog = new CustomQwertyDialog(activity);
+        qwertyDialog = new CustomQwertyDialog(activity,null);
 
         indexShortcut = MyData.get_Int( "shortcutIndex");
 

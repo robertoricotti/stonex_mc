@@ -72,7 +72,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         dialogCanBaud=new Dialog_CanBaud(this);
         dialogPassword = new DialogPassword(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
-        customQwertyDialog = new CustomQwertyDialog(this);
+        customQwertyDialog = new CustomQwertyDialog(this,null);
         machineSel = MyData.get_Int("MachineSelected");
         mode = MyData.get_Int("M" + machineSel + "_isWL");
         back = findViewById(R.id.btn_1);

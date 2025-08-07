@@ -59,7 +59,7 @@ public class PickProject extends BaseClass {
         deletaFile = findViewById(R.id.deleteFile);
         rename = findViewById(R.id.imgCopy);
         titolone=findViewById(R.id.titolone);
-        customQwertyDialog = new CustomQwertyDialog(this);
+        customQwertyDialog = new CustomQwertyDialog(this,null);
 
     }
 

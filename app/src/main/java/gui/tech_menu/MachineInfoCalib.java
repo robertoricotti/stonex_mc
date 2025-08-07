@@ -62,7 +62,7 @@ public class MachineInfoCalib extends AppCompatActivity {
 
     private void init() {
 
-        customQwertyDialog = new CustomQwertyDialog(this);
+        customQwertyDialog = new CustomQwertyDialog(this,null);
         indexMachineSelected = MyData.get_Int("MachineSelected");
         machineName.setText(MyData.get_String("M" + indexMachineSelected + "_Name"));
         techInfo.setText(MyData.get_String("techInfo"));

@@ -136,7 +136,7 @@ public class BucketCalibTilt extends AppCompatActivity {
             numberDialog = new CustomNumberDialog(this, -1);
         }
 
-        qwertyDialog = new CustomQwertyDialog(this);
+        qwertyDialog = new CustomQwertyDialog(this,null);
         indexBucket = getIntent().getExtras().getInt("indexBucket");
         indexMachineSelected = MyData.get_Int("MachineSelected");
         name.setText(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Name"));

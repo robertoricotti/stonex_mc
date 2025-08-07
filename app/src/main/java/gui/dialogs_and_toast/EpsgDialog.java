@@ -62,7 +62,7 @@ public class EpsgDialog {
         } else {
             dialog.setContentView(R.layout.dialog_epsg_7);
         }
-        customQwertyDialog = new CustomQwertyDialog(activity);
+        customQwertyDialog = new CustomQwertyDialog(activity,null);
     }
 
     public void show(TextView textView){

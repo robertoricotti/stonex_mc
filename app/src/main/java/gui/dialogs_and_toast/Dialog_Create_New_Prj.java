@@ -55,7 +55,7 @@ public class Dialog_Create_New_Prj {
         onClick();
     }
     private void findView(){
-        customQwertyDialog=new CustomQwertyDialog(activity);
+        customQwertyDialog=new CustomQwertyDialog(activity,"FOLDER NAME");
         cancel=dialog.findViewById(R.id.cancel);
         nuovo=dialog.findViewById(R.id.nuovo);
         daUsb =dialog.findViewById(R.id.usb);

@@ -100,7 +100,7 @@ public class ProfileCalibManual extends AppCompatActivity {
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void init() {
 
-        qwertyDialog = new CustomQwertyDialog(this);
+        qwertyDialog = new CustomQwertyDialog(this,null);
 
         customNumberDialog = new SetWidthAndSlope(this);
 

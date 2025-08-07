@@ -36,7 +36,7 @@ public class Dialog_Edita_Punti3D {
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         customNumberDialogFtIn=new CustomNumberDialogFtIn(activity, 111);
         customNumberDialog=new CustomNumberDialog(activity, 111);
-        customQwertyDialog=new CustomQwertyDialog(activity);
+        customQwertyDialog=new CustomQwertyDialog(activity,null);
 
 
     }

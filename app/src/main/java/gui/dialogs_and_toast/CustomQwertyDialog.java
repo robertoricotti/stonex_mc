@@ -31,6 +31,7 @@ import utils.FullscreenActivity;
 import utils.MyData;
 
 public class CustomQwertyDialog {
+    TextView titolo;
     Activity activity;
     EditText realValue;
     TextView realValueTV;
@@ -52,9 +53,11 @@ public class CustomQwertyDialog {
     Dialog_PRJ_Folder dialogPrjFolder;
 
     boolean c = true;
+    private String tit;
 
-    public CustomQwertyDialog(Activity activity) {
+    public CustomQwertyDialog(Activity activity, String tit) {
         this.activity = activity;
+        this.tit = tit;
         dialog = new Dialog(activity);
         dialog.setContentView(R.layout.dialog_qwerty_apollo7);
 
@@ -72,7 +75,7 @@ public class CustomQwertyDialog {
         dialog.show();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = (int) (displayMetrics.heightPixels * 0.75);
+        int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
         FullscreenActivity.setFullScreen(dialog);
         findView();
@@ -95,7 +98,7 @@ public class CustomQwertyDialog {
         dialog.show();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = (int) (displayMetrics.heightPixels * 0.75);
+        int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
         FullscreenActivity.setFullScreen(dialog);
         findView();
@@ -118,7 +121,7 @@ public class CustomQwertyDialog {
         dialog.show();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = (int) (displayMetrics.heightPixels * 0.75);
+        int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
         FullscreenActivity.setFullScreen(dialog);
         findView();
@@ -142,7 +145,7 @@ public class CustomQwertyDialog {
         dialog.show();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = (int) (displayMetrics.heightPixels * 0.75);
+        int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
         FullscreenActivity.setFullScreen(dialog);
         findView();
@@ -166,7 +169,7 @@ public class CustomQwertyDialog {
         dialog.show();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = (int) (displayMetrics.heightPixels * 0.75);
+        int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
         FullscreenActivity.setFullScreen(dialog);
         findView();
@@ -197,6 +200,7 @@ public class CustomQwertyDialog {
     }
 
     private void findView() {
+        titolo = dialog.findViewById(R.id.titolo);
         value = dialog.findViewById(R.id.value);
         b1 = dialog.findViewById(R.id.b1);
         b2 = dialog.findViewById(R.id.b2);
@@ -249,6 +253,11 @@ public class CustomQwertyDialog {
             space.setText("-");
         }
         setupChar(capital);
+        if (tit == null || tit.equals("null")) {
+            titolo.setText("");
+        } else {
+            titolo.setText(tit);
+        }
     }
 
     private void onClick() {

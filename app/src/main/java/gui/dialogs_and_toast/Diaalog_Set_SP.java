@@ -107,7 +107,7 @@ public class Diaalog_Set_SP {
         wlp.gravity = Gravity.CENTER;
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
-        customQwertyDialog = new CustomQwertyDialog(activity);
+        customQwertyDialog = new CustomQwertyDialog(activity,null);
         findView();
         init();
         onClick();
@@ -132,7 +132,7 @@ public class Diaalog_Set_SP {
         wlp.gravity = Gravity.CENTER;
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
-        customQwertyDialog = new CustomQwertyDialog(activity);
+        customQwertyDialog = new CustomQwertyDialog(activity,null);
         findView();
         init();
         onClick();

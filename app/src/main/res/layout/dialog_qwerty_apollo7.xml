@@ -5,7 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/sfondo_bottone_grigio">
-
+<TextView
+    android:id="@+id/titolo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_background_test3d_box"
+    android:gravity="center"
+    android:textStyle="bold|italic"
+    android:textSize="18sp"
+    android:textColor="@color/yellow"
+    android:text=""
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"/>
     <EditText
         android:id="@+id/value"
         android:layout_width="match_parent"
@@ -16,12 +28,12 @@
         android:text="TEXT"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="40sp"
+        android:textSize="35sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline103"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/titolo" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline103"

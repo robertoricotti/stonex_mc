@@ -74,7 +74,7 @@ public class SaveFileDialog {
         findView();
         onClick();
 
-        qwertyDialog = new CustomQwertyDialog(activity);
+        qwertyDialog = new CustomQwertyDialog(activity,null);
     }
 
     private void findView() {

@@ -86,7 +86,7 @@ public class BucketCalib extends AppCompatActivity {
             numberDialog = new CustomNumberDialog(this, -1);
         }
 
-        qwertyDialog = new CustomQwertyDialog(this);
+        qwertyDialog = new CustomQwertyDialog(this,null);
         angolo = new PopupImageDialog(this, R.layout.popup_bucket_angle_90);
         flat = new PopupImageDialog(this, R.layout.popup_bucket_flat_angle);
 

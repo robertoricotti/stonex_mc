@@ -319,7 +319,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         isRead38 = false;
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         customNumberDialog = new CustomNumberDialog(this, 100);
-        customQwertyDialog = new CustomQwertyDialog(this);
+        customQwertyDialog = new CustomQwertyDialog(this,null);
         ckHSL0.setText(MyDeviceManager.serialCom(1).replaceAll("/dev/", ""));
         ckHSL2.setText(MyDeviceManager.serialCom(2).replaceAll("/dev/", ""));
         ckWK0.setText(MyDeviceManager.serialCom(3).replaceAll("/dev/", ""));

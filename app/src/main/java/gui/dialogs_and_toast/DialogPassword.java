@@ -43,12 +43,8 @@ public class DialogPassword {
     public DialogPassword(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity);
-        if (Build.BRAND.equals("SRT8PROS")) {
-            dialog.setContentView(R.layout.dialog_qwerty_apollo8);
+        dialog.setContentView(R.layout.dialog_qwerty_apollo7);
 
-        } else if(Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("SRT7PROS")||Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("qti")||Build.BRAND.equals("APOLLO2_12_PRO")||Build.BRAND.equals("APOLLO2_12_PLUS")){
-            dialog.setContentView(R.layout.dialog_qwerty_apollo7);
-        }
     }
 
     public void show(int whoCall) {

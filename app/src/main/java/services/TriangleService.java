@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import dxf.DxfText;
 import dxf.Face3D;
 import dxf.IntersectionFinder;
 import dxf.JTSOffsetHelper;
@@ -47,6 +46,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.surfcreator.DistToLine;
 import packexcalib.surfcreator.DistToPoint;
 import packexcalib.surfcreator.TriangleHelper;
+import utils.MyData;
 
 public class TriangleService extends Service {
     public static double orientamentoFreccia;
@@ -63,7 +63,7 @@ public class TriangleService extends Service {
     static Point2D[] Line_Avanti, Line_Dietro, Line_Destra, Line_Sinistra;
     public static Point2D[][] tutteLinee;
     public static Point3DF glLinePoint, glSegmentPoint, glSegmentEnd, glLinePunto, glPuntoTerra, glTerraPunto;
-
+    static int indexAudio;
     private static TriangleHelper triangleHelper;
     private static double[] lastPosition;
     int countPnezd = -1;
@@ -71,6 +71,11 @@ public class TriangleService extends Service {
 
     @Override
     public void onCreate() {
+        try {
+            indexAudio= MyData.get_Int("indexAudioSystem");
+        } catch (Exception e) {
+            indexAudio=0;
+        }
         super.onCreate();
         countPnezd = -1;
         startSort = false;
@@ -304,80 +309,85 @@ public class TriangleService extends Service {
 
 
                 countPnezd++;
-                if(countPnezd%10==0){
+                if (countPnezd % 10 == 0) {
                     scanPNEZD();
                 }
 
 
-
                 //Conditions
-                switch (DataSaved.bucketEdge){
-                    case -1:
-                        if(!ltOffGrid) {
-                            if (Math.abs(quota3D_SX) <= DataSaved.deadbandH) {
-                                MyApp.isCentro = true;
-                                MyApp.isAlto = false;
-                                MyApp.isBasso = false;
-                            } else if (quota3D_SX < DataSaved.deadbandH * -1) {
+                if (indexAudio>0&&DataSaved.isWL==0) {
+                    switch (DataSaved.bucketEdge) {
+                        case -1:
+                            if (!ltOffGrid) {
+                                if (Math.abs(quota3D_SX) <= DataSaved.deadbandH) {
+                                    MyApp.isCentro = true;
+                                    MyApp.isAlto = false;
+                                    MyApp.isBasso = false;
+                                } else if (quota3D_SX < DataSaved.deadbandH * -1) {
+                                    MyApp.isCentro = false;
+                                    MyApp.isAlto = false;
+                                    MyApp.isBasso = true;
+                                } else if (quota3D_SX > DataSaved.deadbandH) {
+                                    MyApp.isCentro = false;
+                                    MyApp.isAlto = true;
+                                    MyApp.isBasso = false;
+                                }
+                            } else {
                                 MyApp.isCentro = false;
                                 MyApp.isAlto = false;
-                                MyApp.isBasso = true;
-                            } else if (quota3D_SX > DataSaved.deadbandH) {
-                                MyApp.isCentro = false;
-                                MyApp.isAlto = true;
-                                MyApp.isBasso = false;
-                            }
-                        }else {
-                            MyApp.isCentro = false;
-                            MyApp.isAlto = false;
-                            MyApp.isBasso = false;
-                        }
-
-                        break;
-
-                    case 0:
-                        if(!ctOffGrid) {
-                            if (Math.abs(quota3D_CT) <= DataSaved.deadbandH) {
-                                MyApp.isCentro = true;
-                                MyApp.isAlto = false;
-                                MyApp.isBasso = false;
-                            } else if (quota3D_CT < DataSaved.deadbandH * -1) {
-                                MyApp.isCentro = false;
-                                MyApp.isAlto = false;
-                                MyApp.isBasso = true;
-                            } else if (quota3D_CT > DataSaved.deadbandH) {
-                                MyApp.isCentro = false;
-                                MyApp.isAlto = true;
                                 MyApp.isBasso = false;
                             }
-                        }else {
-                            MyApp.isCentro = false;
-                            MyApp.isAlto = false;
-                            MyApp.isBasso = false;
-                        }
-                        break;
 
-                    case 1:
-                        if(!rtOffGrid) {
-                            if (Math.abs(quota3D_DX) <= DataSaved.deadbandH) {
-                                MyApp.isCentro = true;
-                                MyApp.isAlto = false;
-                                MyApp.isBasso = false;
-                            } else if (quota3D_DX < DataSaved.deadbandH * -1) {
+                            break;
+
+                        case 0:
+                            if (!ctOffGrid) {
+                                if (Math.abs(quota3D_CT) <= DataSaved.deadbandH) {
+                                    MyApp.isCentro = true;
+                                    MyApp.isAlto = false;
+                                    MyApp.isBasso = false;
+                                } else if (quota3D_CT < DataSaved.deadbandH * -1) {
+                                    MyApp.isCentro = false;
+                                    MyApp.isAlto = false;
+                                    MyApp.isBasso = true;
+                                } else if (quota3D_CT > DataSaved.deadbandH) {
+                                    MyApp.isCentro = false;
+                                    MyApp.isAlto = true;
+                                    MyApp.isBasso = false;
+                                }
+                            } else {
                                 MyApp.isCentro = false;
                                 MyApp.isAlto = false;
-                                MyApp.isBasso = true;
-                            } else if (quota3D_DX > DataSaved.deadbandH) {
-                                MyApp.isCentro = false;
-                                MyApp.isAlto = true;
                                 MyApp.isBasso = false;
                             }
-                        }else {
-                            MyApp.isCentro = false;
-                            MyApp.isAlto = false;
-                            MyApp.isBasso = false;
-                        }
-                        break;
+                            break;
+
+                        case 1:
+                            if (!rtOffGrid) {
+                                if (Math.abs(quota3D_DX) <= DataSaved.deadbandH) {
+                                    MyApp.isCentro = true;
+                                    MyApp.isAlto = false;
+                                    MyApp.isBasso = false;
+                                } else if (quota3D_DX < DataSaved.deadbandH * -1) {
+                                    MyApp.isCentro = false;
+                                    MyApp.isAlto = false;
+                                    MyApp.isBasso = true;
+                                } else if (quota3D_DX > DataSaved.deadbandH) {
+                                    MyApp.isCentro = false;
+                                    MyApp.isAlto = true;
+                                    MyApp.isBasso = false;
+                                }
+                            } else {
+                                MyApp.isCentro = false;
+                                MyApp.isAlto = false;
+                                MyApp.isBasso = false;
+                            }
+                            break;
+                    }
+                }else {
+                    MyApp.isCentro = false;
+                    MyApp.isAlto = false;
+                    MyApp.isBasso = false;
                 }
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 long sleepTime = 100 - elapsedTime;
@@ -619,65 +629,65 @@ public class TriangleService extends Service {
     public static void scanPNEZD() {
         if (My3DActivity.PNEZD_FUNCTION) {
             try {
-                    String filePath = DataSaved.PNEZDPath; // <-- Qui metti il path corretto
-                    File file = new File(filePath);
+                String filePath = DataSaved.PNEZDPath; // <-- Qui metti il path corretto
+                File file = new File(filePath);
 
-                    List<PNEZDPoint> punti = new ArrayList<>();
+                List<PNEZDPoint> punti = new ArrayList<>();
 
-                    if (file.exists()) {
-                        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                            String line;
-                            boolean firstLine = true;
+                if (file.exists()) {
+                    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                        String line;
+                        boolean firstLine = true;
 
-                            while ((line = br.readLine()) != null) {
-                                if (firstLine) {
-                                    firstLine = false; // salta intestazione
-                                    continue;
+                        while ((line = br.readLine()) != null) {
+                            if (firstLine) {
+                                firstLine = false; // salta intestazione
+                                continue;
+                            }
+
+                            if (line.trim().isEmpty()) continue; // salta righe vuote
+
+                            String[] parts = line.split(",");
+
+                            try {
+                                int pointNumber = Integer.parseInt(parts[0].trim());
+                                double northing = Double.parseDouble(parts[1].trim());
+                                double easting = Double.parseDouble(parts[2].trim());
+                                double elevation = Double.parseDouble(parts[3].trim());
+                                String description = parts.length > 4 ? parts[4].trim() : "";
+
+                                Integer color = null;
+                                if (parts.length > 5 && !parts[5].trim().isEmpty()) {
+                                    color = Integer.parseInt(parts[5].trim());
                                 }
 
-                                if (line.trim().isEmpty()) continue; // salta righe vuote
-
-                                String[] parts = line.split(",");
-
-                                try {
-                                    int pointNumber = Integer.parseInt(parts[0].trim());
-                                    double northing = Double.parseDouble(parts[1].trim());
-                                    double easting = Double.parseDouble(parts[2].trim());
-                                    double elevation = Double.parseDouble(parts[3].trim());
-                                    String description = parts.length > 4 ? parts[4].trim() : "";
-
-                                    Integer color = null;
-                                    if (parts.length > 5 && !parts[5].trim().isEmpty()) {
-                                        color = Integer.parseInt(parts[5].trim());
-                                    }
-
-                                    PNEZDPoint punto;
-                                    if (color != null) {
-                                        punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description, color);
-                                    } else {
-                                        punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description);
-                                    }
-
-                                    punti.add(punto);
-
-                                } catch (NumberFormatException ex) {
-                                    // ignora righe malformate
-                                    ex.printStackTrace();
+                                PNEZDPoint punto;
+                                if (color != null) {
+                                    punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description, color);
+                                } else {
+                                    punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description);
                                 }
+
+                                punti.add(punto);
+
+                            } catch (NumberFormatException ex) {
+                                // ignora righe malformate
+                                ex.printStackTrace();
                             }
                         }
-                    } else {
-                        Log.e("PNEZD", "File non trovato: " + filePath);
                     }
-
-                    DataSaved.pnezdPoints = punti;
-                    Log.d("PNEZD", DataSaved.pnezdPoints.size() + "    " + filePath);
-                } catch (Exception e) {
-                    DataSaved.pnezdPoints = new ArrayList<>();
-                    Log.e("PNEZD", "Errore lettura PNEZD: " + e.getMessage());
+                } else {
+                    Log.e("PNEZD", "File non trovato: " + filePath);
                 }
 
-            if (fileExtensionPOINT!=null) {
+                DataSaved.pnezdPoints = punti;
+                Log.d("PNEZD", DataSaved.pnezdPoints.size() + "    " + filePath);
+            } catch (Exception e) {
+                DataSaved.pnezdPoints = new ArrayList<>();
+                Log.e("PNEZD", "Errore lettura PNEZD: " + e.getMessage());
+            }
+
+            if (fileExtensionPOINT != null) {
                 if (fileExtensionPOINT.toLowerCase().equals("csv")) {
                     // ✅ Svuota prima la lista
                     DataSaved.points.clear();
@@ -694,8 +704,7 @@ public class TriangleService extends Service {
                     DataSaved.filteredPoints = DataSaved.points;
                 }
             }
-            }
-
+        }
 
 
     }

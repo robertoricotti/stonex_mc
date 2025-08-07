@@ -55,7 +55,7 @@ public class Dialog_Point_Poly {
     public Dialog_Point_Poly(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
-        customQwertyDialog = new CustomQwertyDialog(activity);
+        customQwertyDialog = new CustomQwertyDialog(activity,null);
         customNumberDialog = new CustomNumberDialog(activity, -1);
         customNumberDialogFtIn = new CustomNumberDialogFtIn(activity, -1);
         displayMetrics = new DisplayMetrics();

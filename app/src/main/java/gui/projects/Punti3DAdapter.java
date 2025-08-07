@@ -99,7 +99,7 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
             super(itemView);
             customNumberDialog = new CustomNumberDialog(MyApp.visibleActivity, 111);
             customNumberDialogFtIn = new CustomNumberDialogFtIn(MyApp.visibleActivity, 111);
-            customQwertyDialog = new CustomQwertyDialog(MyApp.visibleActivity);
+            customQwertyDialog = new CustomQwertyDialog(MyApp.visibleActivity,null);
             remove = itemView.findViewById(R.id.img_del);
             t_Name = itemView.findViewById(R.id.t_Name);
             t_Est = itemView.findViewById(R.id.t_Est);

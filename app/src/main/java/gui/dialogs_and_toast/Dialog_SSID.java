@@ -55,7 +55,7 @@ public class Dialog_SSID {
     private void findView(){
         editText=dialog.findViewById(R.id.etssid);
         button=dialog.findViewById(R.id.save);
-        customQwertyDialog=new CustomQwertyDialog(activity);
+        customQwertyDialog=new CustomQwertyDialog(activity,null);
 
     }
     private void init(){

@@ -127,7 +127,7 @@ public class Dialog_Add_Pnezd {
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
         findView();
-        customQwertyDialog = new CustomQwertyDialog(activity);
+        customQwertyDialog = new CustomQwertyDialog(activity,null);
         onClick();
         adapter = new PNEZDAdapter(leggiCSV(filepath));
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));

@@ -104,7 +104,7 @@ public class ProfileCalibAuto extends AppCompatActivity {
     private void init() {
 
 
-        qwertyDialog = new CustomQwertyDialog(this);
+        qwertyDialog = new CustomQwertyDialog(this,null);
 
         indexProfile = getIntent().getExtras().getInt("indexProfile");
 
