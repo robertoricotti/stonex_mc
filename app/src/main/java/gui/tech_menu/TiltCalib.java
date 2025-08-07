@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -434,7 +435,7 @@ titolo.setText(getString(R.string.tilt_calibration)+" n:"+currentBucket);
             mounPos = -1;
         }
         DataSaved.lrTilt = mounPos;
-
+        Log.d("TiltMount",DataSaved.lrTilt+" "+DataSaved.lrTilt);
         MyData.push("M" + indexMachineSelected + "_Tilt_MountPos" + currentBucket, String.valueOf(mounPos));
 
         MyData.push("M" + indexMachineSelected + "_Tilt_Length" + currentBucket, Utils.writeMetri(tiltLength.getText().toString()));

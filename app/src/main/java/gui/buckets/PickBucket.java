@@ -94,7 +94,7 @@ public class PickBucket extends AppCompatActivity {
     private void onClick() {
         back.setOnClickListener((View v) -> {
             disableAll();
-            if ((MyData.get_String("M" + indexBucket + "_Tilt_MountPos1").equals("0"))) {
+            if ((MyData.get_String("M" + indexMachineSelected + "_Tilt_MountPos"+indexBucket).equals("0"))) {
                 Intent intent = new Intent(this, BucketCalib.class);
                 intent.putExtra("indexBucket", indexBucket);
                 startActivity(intent);

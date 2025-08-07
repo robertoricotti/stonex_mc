@@ -106,7 +106,7 @@ public class DialogSlope {
         bcanc = dialog.findViewById(R.id.bc);
         bdel = dialog.findViewById(R.id.bdel);
         measure.setText("(" + Utils.getGradiSimbol() + " )");
-        index = MyData.get_Int("indexView");
+        index = DataSaved.portView;
         switch (index) {
             case 0:
                 changeSlope.setVisibility(View.INVISIBLE);

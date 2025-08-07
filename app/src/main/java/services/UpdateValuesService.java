@@ -105,10 +105,11 @@ public class UpdateValuesService extends Service {
                     }
 
                     try {
-                        indexBucket = Integer.parseInt(b);
-
+                        indexBucket = Integer.parseInt(MyData.get_String("M" + indexMach +"BucketSelected"));
+                        Log.e("DataSaved.L_Bucket", MyData.get_String("M" + indexMach +"BucketSelected")+"  "+indexBucket);
                     } catch (NumberFormatException e) {
                         indexBucket = 1;
+
                     }
                     String nameM = MyData.get_String("M" + i + "_Name");
                     String reverseRoto = MyData.get_String("M" + i + "revTiltRot");
@@ -995,6 +996,7 @@ public class UpdateValuesService extends Service {
                 }
 
                 try {
+
                     DataSaved.L_Bucket = MyData.get_Double("M" + indexMach + "_Bucket_" + indexBucket + "_Length");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di L_Bucket: " + e.getMessage());
@@ -1396,6 +1398,7 @@ public class UpdateValuesService extends Service {
                 }
 
                 try {
+                    Log.d("StoatooDio",indexMach+"   "+"   "+indexBucket+"   "+MyData.get_Int("M" + indexMach + "_Tilt_MountPos" + indexBucket)+" ");
                     DataSaved.lrTilt = MyData.get_Int("M" + indexMach + "_Tilt_MountPos" + indexBucket);
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di lrTilt: " + e.getMessage());

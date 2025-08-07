@@ -1,6 +1,7 @@
 package gui.boot_and_choose;
 
 import static gui.MyApp.activationCode;
+import static gui.MyApp.deviceBuild;
 import static gui.MyApp.folderPath;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.visibleActivity;
@@ -93,6 +94,7 @@ public class LaunchScreenActivity extends BaseClass {
         Dialog_Trench.leftW_d = 0.5f;
         Dialog_Trench.rightW_d = 0.5f;
         LayerAdapter.selectA = true;
+        deviceBuild=MyDeviceManager.getBuildVersion(this);
 
         if (licenseType == -1) {
             if (NetworkUtils.isInternetAvailable(this)) {

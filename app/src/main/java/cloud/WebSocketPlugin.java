@@ -51,7 +51,9 @@ public class WebSocketPlugin {
 
     private static final String DEVICE_SN = MyDeviceManager.getDeviceSN(MyApp.visibleActivity);//passare
 
-    private static final String MAC_ADDRESS = MyDeviceManager.getMacAddress(MyApp.visibleActivity).trim();//passare
+    private static final String MAC_ADDRESS = MyDeviceManager.getMacAddress(MyApp.visibleActivity).trim().toLowerCase();//passare
+
+    private static final String FIRMWARE_VERSION=MyDeviceManager.getBuildVersion(MyApp.visibleActivity).trim().toUpperCase();
 
     private static S3ManagerSingleton s3ManagerSingleton;
 
@@ -71,7 +73,6 @@ public class WebSocketPlugin {
         if (instance == null) {
             synchronized (WebSocketPlugin.class) {
                 instance = new WebSocketPlugin();
-
             }
         }
         s3ManagerSingleton = S3ManagerSingleton.getInstance(context);
@@ -96,6 +97,7 @@ public class WebSocketPlugin {
                     JSONObject payload = new JSONObject();
                     payload.put("serial_number", DEVICE_SN);
                     payload.put("mac_address", MAC_ADDRESS);
+                    payload.put("firmware",FIRMWARE_VERSION);
                     payload.put("timeStamp", System.currentTimeMillis());
 
                     JSONObject encryptedMessage = encryptAndSign(payload);

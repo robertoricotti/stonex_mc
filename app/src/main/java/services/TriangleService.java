@@ -30,6 +30,7 @@ import dxf.Point2D;
 import dxf.Point3D;
 import dxf.Polyline;
 import dxf.Segment;
+import gui.MyApp;
 import gui.my_opengl.GLDrawer;
 import gui.my_opengl.My3DActivity;
 import gui.my_opengl.Point3DF;
@@ -115,6 +116,7 @@ public class TriangleService extends Service {
     private final Runnable triangleRunnable = () -> {
         try {
             while (isRunning) {
+
                 long startTime = System.currentTimeMillis();
                 switch (DataSaved.projectTAG) {
                     case "DXF":
@@ -308,6 +310,75 @@ public class TriangleService extends Service {
 
 
 
+                //Conditions
+                switch (DataSaved.bucketEdge){
+                    case -1:
+                        if(!ltOffGrid) {
+                            if (Math.abs(quota3D_SX) <= DataSaved.deadbandH) {
+                                MyApp.isCentro = true;
+                                MyApp.isAlto = false;
+                                MyApp.isBasso = false;
+                            } else if (quota3D_SX < DataSaved.deadbandH * -1) {
+                                MyApp.isCentro = false;
+                                MyApp.isAlto = false;
+                                MyApp.isBasso = true;
+                            } else if (quota3D_SX > DataSaved.deadbandH) {
+                                MyApp.isCentro = false;
+                                MyApp.isAlto = true;
+                                MyApp.isBasso = false;
+                            }
+                        }else {
+                            MyApp.isCentro = false;
+                            MyApp.isAlto = false;
+                            MyApp.isBasso = false;
+                        }
+
+                        break;
+
+                    case 0:
+                        if(!ctOffGrid) {
+                            if (Math.abs(quota3D_CT) <= DataSaved.deadbandH) {
+                                MyApp.isCentro = true;
+                                MyApp.isAlto = false;
+                                MyApp.isBasso = false;
+                            } else if (quota3D_CT < DataSaved.deadbandH * -1) {
+                                MyApp.isCentro = false;
+                                MyApp.isAlto = false;
+                                MyApp.isBasso = true;
+                            } else if (quota3D_CT > DataSaved.deadbandH) {
+                                MyApp.isCentro = false;
+                                MyApp.isAlto = true;
+                                MyApp.isBasso = false;
+                            }
+                        }else {
+                            MyApp.isCentro = false;
+                            MyApp.isAlto = false;
+                            MyApp.isBasso = false;
+                        }
+                        break;
+
+                    case 1:
+                        if(!rtOffGrid) {
+                            if (Math.abs(quota3D_DX) <= DataSaved.deadbandH) {
+                                MyApp.isCentro = true;
+                                MyApp.isAlto = false;
+                                MyApp.isBasso = false;
+                            } else if (quota3D_DX < DataSaved.deadbandH * -1) {
+                                MyApp.isCentro = false;
+                                MyApp.isAlto = false;
+                                MyApp.isBasso = true;
+                            } else if (quota3D_DX > DataSaved.deadbandH) {
+                                MyApp.isCentro = false;
+                                MyApp.isAlto = true;
+                                MyApp.isBasso = false;
+                            }
+                        }else {
+                            MyApp.isCentro = false;
+                            MyApp.isAlto = false;
+                            MyApp.isBasso = false;
+                        }
+                        break;
+                }
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 long sleepTime = 100 - elapsedTime;
 

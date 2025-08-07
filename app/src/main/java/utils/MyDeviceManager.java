@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 
 import com.cp.cputils.Apollo2;
@@ -264,13 +265,26 @@ public class MyDeviceManager {
             activity.sendBroadcast(intent2);
         }
     }
+    public static String getBuildVersion(Activity activity){
+        if (GEN1) {
+
+            return ApolloPro.getInstance(activity).getDeviceSystemVersion();
+        } else if (GEN2) {
+
+            return Apollo2.getInstance(activity).getSystemVersion();
+
+        }
+        return "";
+    }
 
     public static String getMacAddress(Activity activity){
         if (GEN1) {
+
             return ApolloPro.getInstance(activity).getDeviceMacAddress();
         } else if (GEN2) {
-            return Apollo2.getInstance(activity).getDeviceMacAddress()
-                    ;
+
+            return Apollo2.getInstance(activity).getDeviceMacAddress();
+
         }
         return "";
     }

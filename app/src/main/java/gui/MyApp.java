@@ -19,9 +19,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import androidx.annotation.NonNull;
 
 import com.cp.cputils.Apollo2;
 import com.cp.cputils.ApolloPro;
+import com.example.stx_dig.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -98,7 +102,15 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
+    //audio
+    public static boolean isAlto,isBasso,isCentro;
+    private MediaPlayer mediaPlayer;
+    private Handler handler;
+    private Runnable soundChecker;
+    private String currentState = "";
+    private boolean isCheckerRunning = false;
     //license
+    public static String deviceBuild="";
     public static int errorCode;
     public static String activationCode="none";
     public static String restoreCode;
@@ -131,6 +143,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
         UpdateValuesService.isUpodating = true;
         registerActivityLifecycleCallbacks(this);
+
         if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             isApollo = true;
             folderPath = "/StonexMachineControl";
@@ -239,6 +252,12 @@ git push
     @Override
     public void onActivityStarted(Activity activity) {
         if (activity != null) {
+            if (activity instanceof My3DActivity) {
+                startConditionChecker(activity);
+            } else {
+                stopConditionChecker();
+                stopSound();
+            }
             sensorAlertDialog1 = new SensorAlertDialog(activity, "#1\n\nSENSOR ERROR \n\n FRAME or CAN disconnected!");
             sensorAlertDialog2 = new SensorAlertDialog(activity, "#2\n\nSENSOR ERROR \n\n BOOM 1 sensor disconnected!");
             sensorAlertDialog3 = new SensorAlertDialog(activity, "#3\n\nSENSOR ERROR \n\n BOOM 2 sensor disconnected!");
@@ -275,6 +294,74 @@ git push
         }
 
     }
+    private void startConditionChecker(Context context) {
+        if (isCheckerRunning) return;
+
+        handler = new Handler(Looper.getMainLooper());
+        soundChecker = new Runnable() {
+            @Override
+            public void run() {
+                checkAndPlaySound(context);
+                handler.postDelayed(this, 1000); // ogni 1 secondo
+            }
+        };
+        handler.post(soundChecker);
+        isCheckerRunning = true;
+    }
+
+    private void stopConditionChecker() {
+        if (handler != null && soundChecker != null) {
+            handler.removeCallbacks(soundChecker);
+        }
+        isCheckerRunning = false;
+    }
+
+    private void checkAndPlaySound(Context context) {
+        String newState;
+
+        if (isAlto) {
+            newState = "alto";
+        } else if (isCentro) {
+            newState = "centro";
+        } else if (isBasso) {
+            newState = "basso";
+        } else {
+            newState = "";
+        }
+
+        if (!newState.equals(currentState) || mediaPlayer == null || !mediaPlayer.isPlaying()) {
+            stopSound();
+            currentState = newState;
+
+            if ("alto".equals(newState)) {
+                playSound(context, R.raw.audio_blu);
+            } else if ("centro".equals(newState)) {
+                playSound(context, R.raw.audio_verde);
+            } else if ("basso".equals(newState)) {
+                playSound(context, R.raw.audio_rosso);
+            }
+        }
+    }
+
+    private void playSound(Context context, int resId) {
+        mediaPlayer = MediaPlayer.create(context, resId);
+        if (mediaPlayer != null) {
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
+    }
+
+    private void stopSound() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
+
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
@@ -283,10 +370,19 @@ git push
 
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
+        try {
+            stopSound();
+        } catch (Exception e) {
+            Log.e("MediaPlay",Log.getStackTraceString(e));
+        }
     }
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
+        if (activity instanceof My3DActivity) {
+            stopConditionChecker();
+            stopSound();
+        }
     }
 
     @Override
@@ -315,7 +411,7 @@ git push
                         @Override
                         public void run() {
                             try {
-
+                                Log.d("Stoatoo",DataSaved.lrTilt+" ");
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {
                                     frameCounter += 1;
