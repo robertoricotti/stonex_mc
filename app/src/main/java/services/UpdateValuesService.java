@@ -21,6 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import utils.MyData;
@@ -576,6 +577,8 @@ public class UpdateValuesService extends Service {
                 String gradientDB = MyData.get_String("gradientDB");
                 String showAlign = MyData.get_String("showAlign");
                 String line_Offset = MyData.get_String("line_Offset");
+                String geoidPath=MyData.get_String("geoidPath");
+                String lock3dRotation=MyData.get_String("lock3dRotation");
 
                 if (!startedService) {
                     if (licenza == null) {
@@ -764,6 +767,15 @@ public class UpdateValuesService extends Service {
                     }
                     if (line_Offset == null) {
                         MyData.push("line_Offset", "0.0");
+                    }
+                    if(geoidPath==null|geoidPath.equals("null")){
+                        MyData.push("geoidPath",null);
+                        MyApp.GEOIDE_PATH=null;
+                    }else {
+                        MyApp.GEOIDE_PATH=MyData.get_String("geoidPath");
+                    }
+                    if (lock3dRotation == null) {
+                        MyData.push("lock3dRotation", "0");
                     }
                 }
 
@@ -1537,7 +1549,11 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inuzializzazione di line_Offset: " + e.getMessage());
                 }
-
+                try {
+                    DataSaved.lock3dRotation = MyData.get_Int("lock3dRotation");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di lock3dRotation: " + e.getMessage());
+                }
                 try {
                     DataSaved.temaSoftware = MyData.get_Int("Tema_SW");
 

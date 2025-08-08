@@ -8,6 +8,8 @@
     <string name="sens_config">CONFIGURAZIONE SENSORE CAN</string>
     <string name="downloading">Download in corso...</string>
     <string name="uploading">Upload in corso...</string>
+    <string name="change_machine">Cambia modello della macchina</string>
+    <string name="procedi">Vuoi procedere?</string>
 
     <string name="save">SALVA</string>
     <string name="exit">ESCI</string>

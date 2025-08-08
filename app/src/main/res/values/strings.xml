@@ -4,6 +4,8 @@
     <string name="error_license">License expired or missing\nPlease contact your local dealer to resolve the issue.</string>
     <string name="website">www.stonex.it</string>
     <string name="general_set">GENERAL SETTINGS</string>
+    <string name="change_machine">CHANGE MACHINE MODEL</string>
+    <string name="procedi">Do You Want To Proceed ?</string>
     <string name="downloading">Download in Progress. . . .</string>
     <string name="uploading">Upload in Progress. . . .</string>
     <string name="mac_setup">MACHINE SETUP</string>

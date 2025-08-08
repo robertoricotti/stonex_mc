@@ -34,8 +34,11 @@ import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_CanBaud;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
+import gui.gps.Nuovo_Gps;
 import packexcalib.exca.DataSaved;
+import serial.SerialPortManager;
 import utils.MyData;
+import utils.MyDeviceManager;
 
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
@@ -272,33 +275,95 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             }catch(Exception ignored){
 
             }
+            if(DataSaved.isWL==1){
+                for (int i=1;i<=20;i++){
+                    MyData.push("M"+machineSel+"_Tilt_MountPos"+i,"0");
+                }
+                DataSaved.lrTilt=0;
+            }
             en_dis(false);
             startActivity(new Intent(this, ExcavatorChooserActivity.class));
             finish();
         });
         exca.setOnClickListener(view -> {
-            MyData.push("M" + machineSel + "_isWL", "0");
-            DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
-            mode = DataSaved.isWL;
-            updateCK();
+            // Crea un nuovo AlertDialog.Builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
+            builder.setTitle(getString(R.string.change_machine));
+            builder.setMessage(getString(R.string.procedi));
+            // Aggiungi il pulsante "Sì"
+            builder.setPositiveButton("YES", (dialog, which) -> {
+                MyData.push("M" + machineSel + "_isWL", "0");
+                DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
+                mode = DataSaved.isWL;
+                updateCK();
+            });
+            // Aggiungi il pulsante "No"
+            builder.setNegativeButton("NO", (dialog, which) -> {
+                //do nothing
+            });
+            // Mostra il dialog
+            builder.show();
+
         });
         wheel.setOnClickListener(view -> {
-            MyData.push("M" + machineSel + "_isWL", "1");
-            DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
-            mode = DataSaved.isWL;
-            updateCK();
+            // Crea un nuovo AlertDialog.Builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
+            builder.setTitle(getString(R.string.change_machine));
+            builder.setMessage(getString(R.string.procedi));
+            // Aggiungi il pulsante "Sì"
+            builder.setPositiveButton("YES", (dialog, which) -> {
+                MyData.push("M" + machineSel + "_isWL", "1");
+                DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
+                mode = DataSaved.isWL;
+                updateCK();
+            });
+            // Aggiungi il pulsante "No"
+            builder.setNegativeButton("NO", (dialog, which) -> {
+                //do nothing
+            });
+            // Mostra il dialog
+            builder.show();
+
         });
         dozer.setOnClickListener(view -> {
-            MyData.push("M" + machineSel + "_isWL", "2");
-            DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
-            mode = DataSaved.isWL;
-            updateCK();
+            // Crea un nuovo AlertDialog.Builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
+            builder.setTitle(getString(R.string.change_machine));
+            builder.setMessage(getString(R.string.procedi));
+            // Aggiungi il pulsante "Sì"
+            builder.setPositiveButton("YES", (dialog, which) -> {
+                MyData.push("M" + machineSel + "_isWL", "2");
+                DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
+                mode = DataSaved.isWL;
+                updateCK();
+            });
+            // Aggiungi il pulsante "No"
+            builder.setNegativeButton("NO", (dialog, which) -> {
+                //do nothing
+            });
+            // Mostra il dialog
+            builder.show();
+
         });
         grader.setOnClickListener(view -> {
-            MyData.push("M" + machineSel + "_isWL", "4");
-            DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
-            mode = DataSaved.isWL;
-            updateCK();
+            // Crea un nuovo AlertDialog.Builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
+            builder.setTitle(getString(R.string.change_machine));
+            builder.setMessage(getString(R.string.procedi));
+            // Aggiungi il pulsante "Sì"
+            builder.setPositiveButton("YES", (dialog, which) -> {
+                MyData.push("M" + machineSel + "_isWL", "4");
+                DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
+                mode = DataSaved.isWL;
+                updateCK();
+            });
+            // Aggiungi il pulsante "No"
+            builder.setNegativeButton("NO", (dialog, which) -> {
+                //do nothing
+            });
+            // Mostra il dialog
+            builder.show();
+
         });
         toCanopen.setOnClickListener(view -> {
             if (!dialogPassword.dialog.isShowing()) {
@@ -471,6 +536,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+
                 break;
             case 2:
             case 3:

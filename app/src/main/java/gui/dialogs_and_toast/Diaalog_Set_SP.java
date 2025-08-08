@@ -14,30 +14,23 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.stx_dig.R;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +43,6 @@ import gui.MyApp;
 import gui.projects.Dialog_PRJ_Folder;
 import gui.projects.ProjectFileAdapter;
 import packexcalib.exca.DataSaved;
-import packexcalib.gnss.MyGeoide;
 import serial.SerialPortManager;
 import services.ReadProjectService;
 import utils.CanFileTransfer;
@@ -156,7 +148,7 @@ public class Diaalog_Set_SP {
     }
 
     public void init() {
-        checkGeo(MyData.get_String("geoidPath"));
+
 
         arrayFiles = new ArrayList<>();
         arraySP = new ArrayList<>();
@@ -195,8 +187,9 @@ public class Diaalog_Set_SP {
 
             if (geoidAll == null || geoidAll.length == 0) {
                 new CustomToast(activity, "No Geoid Found").show_error();
-                MyGeoide.setGeoid(null);
-                checkGeo(null);
+                MyData.push("geoidPath",null);
+                MyApp.GEOIDE_PATH=null;
+
                 return;
             }
 
@@ -213,13 +206,11 @@ public class Diaalog_Set_SP {
                     new CustomToast(activity, "Geoid: " + selectedItem).show_added();
 
                     if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
-                        MyGeoide.setGeoid("null");
-
-                        checkGeo(MyData.get_String("geoidPath"));
+                        MyData.push("geoidPath",null);
+                        MyApp.GEOIDE_PATH=null;
                     } else {
-                        MyGeoide.setGeoid(selectedItem);
-
-                        checkGeo(MyData.get_String("geoidPath"));
+                        MyData.push("geoidPath",selectedItem);
+                        MyApp.GEOIDE_PATH=selectedItem;
                     }
                 }
             });
@@ -502,17 +493,7 @@ public class Diaalog_Set_SP {
         }
     }
 
-    public void checkGeo(String s) {
 
-        if(MyData.get_String("geoidPath").equals("null")||MyData.get_String("geoidPath")==null||MyData.get_String("geoidPath").isEmpty()){
-            geoidStatus.setText("GEOID DISABLED");
-            geoidStatus.setTextColor(Color.GRAY);
-        }else {
-            geoidStatus.setText(MyData.get_String("geoidPath"));
-            geoidStatus.setTextColor(Color.CYAN);
-        }
-
-    }
 
     private void updateView() {
         handler.postDelayed(new Runnable() {

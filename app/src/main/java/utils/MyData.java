@@ -231,7 +231,7 @@ public class MyData {
                 // Scrive ogni coppia come file separato nella memoria interna
                 push(key, value);
             }
-            new CustomToast(MyApp.visibleActivity, "RESTORED").show_alert();
+            new CustomToast(MyApp.visibleActivity, "RESTART THE APPLICATION").show_alert();
         } catch (IOException | JSONException ignored) {
 
             // Se il file non è leggibile o è malformato, lo ignora

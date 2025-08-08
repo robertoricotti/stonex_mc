@@ -19,7 +19,7 @@ import packexcalib.exca.PLC_DataTypes_LittleEndian;
 
 
 public class NmeaListener {
-
+static  Deg2UTM deg2UTM1;
     static double tmpQuotaUTM = 0;
     static double tmpQuotaLOC = 0;
     static double tmpNordUTM = 0;
@@ -314,22 +314,22 @@ public class NmeaListener {
         }
         switch (DataSaved.S_CRS) {
             case _NONE:
-                Deg2UTM deg2UTM1 = new Deg2UTM(tmpNordLOC, tmpEstLOC, tmpQuotaLOC, _NONE,MyApp.GEOIDE_PATH);
+                deg2UTM1= new Deg2UTM(tmpNordLOC, tmpEstLOC, tmpQuotaLOC, _NONE,MyApp.GEOIDE_PATH);
                 Nord1 = deg2UTM1.getNorthing();
                 Est1 = deg2UTM1.getEasting();
                 Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;
                 break;
             case _UTM:
-                Deg2UTM deg2UTM_a = new Deg2UTM(tmpNordUTM, tmpEstUTM, tmpQuotaUTM, _NONE,MyApp.GEOIDE_PATH);
-                Nord1 = deg2UTM_a.getNorthing();
-                Est1 = deg2UTM_a.getEasting();
-                Quota1 = DataSaved.offset_Z_antenna + deg2UTM_a.getQuota() + tmpGeoidSeparator;
+                deg2UTM1 = new Deg2UTM(tmpNordUTM, tmpEstUTM, tmpQuotaUTM, _NONE,MyApp.GEOIDE_PATH);
+                Nord1 = deg2UTM1.getNorthing();
+                Est1 = deg2UTM1.getEasting();
+                Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;
                 break;
             default:
-                Deg2UTM deg2UTM2 = new Deg2UTM(tmpLat, tmpLon, tmpQuotaUTM, DataSaved.S_CRS, MyApp.GEOIDE_PATH);
-                Nord1 = deg2UTM2.getNorthing();
-                Est1 = deg2UTM2.getEasting();
-                Quota1 = DataSaved.offset_Z_antenna + deg2UTM2.getQuota() + tmpGeoidSeparator;
+                deg2UTM1 = new Deg2UTM(tmpLat, tmpLon, tmpQuotaUTM, DataSaved.S_CRS, MyApp.GEOIDE_PATH);
+                Nord1 = deg2UTM1.getNorthing();
+                Est1 = deg2UTM1.getEasting();
+                Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;
                 break;
 
         }

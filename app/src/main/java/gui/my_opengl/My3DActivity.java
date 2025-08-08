@@ -105,7 +105,7 @@ public class My3DActivity extends BaseClass {
     LinearLayout sideBar, frameCent;
     ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto,gl_benne;
     ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce,btn_pnezd;
-    ImageView gl_pnezd,gl_bright,gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
+    ImageView gl_lock3d,gl_sound,gl_pnezd,gl_bright,gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
     public static boolean isPan, glFace, glPoint, glText, glVista3d, glPoly, glFilter, glGradient, glFill;
     DialogOffset_3D dialogOffset;
     Dialog_Point_Poly dialogPointPoly;
@@ -211,6 +211,7 @@ public class My3DActivity extends BaseClass {
         gl_folder = findViewById(R.id.gl_folder);
         gl_gradient = findViewById(R.id.gl_gradient);
         gl_pnezd=findViewById(R.id.gl_pnezd);
+        gl_lock3d=findViewById(R.id.gl_lock3d);
         btn_hide = findViewById(R.id.btn_hide);
         btn_show = findViewById(R.id.btn_show);
         sideBar = findViewById(R.id.sideLayout);
@@ -245,6 +246,7 @@ public class My3DActivity extends BaseClass {
         gl_bright=findViewById(R.id.gl_bright);
         gl_benne=findViewById(R.id.gl_benne);
         allarmeAlt = findViewById(R.id.allarmeAlt);
+        gl_sound=findViewById(R.id.gl_sound);
         allarmeAlt.setVisibility(View.GONE);
         dialogMapMode = new Dialog_MapMode(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
@@ -278,6 +280,17 @@ public class My3DActivity extends BaseClass {
     }
 
     private void onClick() {
+        gl_lock3d.setOnClickListener(view -> {
+            DataSaved.lock3dRotation++;
+            DataSaved.lock3dRotation=DataSaved.lock3dRotation%2;
+            updateMemories();
+
+        });
+        gl_sound.setOnClickListener(view -> {
+            if(!dialogAudioSystem.alertDialog.isShowing()){
+                dialogAudioSystem.show();
+            }
+        });
         gl_benne.setOnClickListener(view -> {
             if(DataSaved.isWL==0||DataSaved.isWL==1) {
                 Intent i = new Intent(this, BucketChooserActivity.class);
@@ -684,6 +697,11 @@ public class My3DActivity extends BaseClass {
     public void updateUI() {
 
         try {
+            if(DataSaved.lock3dRotation>0){
+                gl_lock3d.setImageTintList(ColorStateList.valueOf(Color.GRAY));
+            }else {
+                gl_lock3d.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            }
             if(PNEZD_FUNCTION){
                 btn_pnezd.setVisibility(View.VISIBLE);
                 gl_pnezd.setImageTintList(ColorStateList.valueOf(Color.GREEN));
@@ -1385,6 +1403,8 @@ public class My3DActivity extends BaseClass {
         MyData.push("glPoly", String.valueOf(glPoly));
         MyData.push("glPoint", String.valueOf(glPoint));
         MyData.push("glFilter", String.valueOf(glFilter));
+        MyData.push("lock3dRotation",String.valueOf(DataSaved.lock3dRotation));
+
 
     }
 }

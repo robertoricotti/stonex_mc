@@ -9,6 +9,8 @@
     <string name="sens_config">CONFIGURARE SENZOR CAN</string>
     <string name="downloading">Descărcare în curs...</string>
     <string name="uploading">Încărcare în curs...</string>
+    <string name="change_machine">Schimbă modelul aparatului</string>
+    <string name="procedi">Doriți să continuați?</string>
 
     <string name="save">SALVEAZĂ</string>
     <string name="exit">IEȘIRE</string>

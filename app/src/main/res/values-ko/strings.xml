@@ -9,6 +9,8 @@
     <string name="sens_config">CAN 센서 구성</string>
     <string name="downloading">다운로드 진행 중...</string>
     <string name="uploading">업로드 진행 중...</string>
+    <string name="change_machine">기기 모델 변경</string>
+    <string name="procedi">계속하시겠습니까?</string>
 
     <string name="save">저장</string>
     <string name="exit">종료</string>

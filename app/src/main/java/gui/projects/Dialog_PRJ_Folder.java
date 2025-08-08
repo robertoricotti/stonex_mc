@@ -45,7 +45,6 @@ import gui.dialogs_and_toast.Diaalog_Set_SP;
 import gui.dialogs_and_toast.Dialog_Add_Surfaces;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
-import packexcalib.gnss.MyGeoide;
 import serial.SerialPortManager;
 import services.ReadProjectService;
 import utils.CanFileTransfer;
@@ -177,7 +176,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
             if (geoidAll == null || geoidAll.length == 0) {
                 new CustomToast(activity, "No Geoid Found").show_error();
-                MyGeoide.setGeoid(null);
+                MyData.push("geoidPath",null);
                 MyApp.GEOIDE_PATH=null;
                 return;
             }
@@ -194,9 +193,11 @@ public class Dialog_PRJ_Folder extends BaseClass {
                 public void onItemSelected(String selectedItem) {
                     new CustomToast(activity, "Geoid: " + selectedItem).show_added();
                     if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
-                        MyGeoide.setGeoid("null");
+                        MyData.push("geoidPath","null");
+                        MyApp.GEOIDE_PATH=null;
                     } else {
-                        MyGeoide.setGeoid(selectedItem);
+                        MyData.push("geoidPath",selectedItem);
+                        MyApp.GEOIDE_PATH=selectedItem;
                     }
                 }
             });
@@ -524,7 +525,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     }
 
 
-                    if (MyApp.GEOIDE_PATH == null||MyApp.GEOIDE_PATH.equals("null")) {
+                    if (MyApp.GEOIDE_PATH == null||MyApp.GEOIDE_PATH.equals("null")||MyApp.GEOIDE_PATH.isEmpty()) {
                         inUsoGeoid.setText("No Geoid");
                     } else {
                         inUsoGeoid.setText(MyApp.GEOIDE_PATH);
@@ -563,22 +564,21 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         usaSP.setVisibility(View.VISIBLE);
                     }
 
+                    if (MyApp.GEOIDE_PATH==null||MyApp.GEOIDE_PATH.equals("null")||MyApp.GEOIDE_PATH.isEmpty()) {
+                        setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
+                       // Log.d("GoidStatus", "null");
+                    }else {
+                        setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_selezionato));
+                       // Log.d("GoidStatus", MyApp.GEOIDE_PATH.toString());
+                    }
                     if (isUpdating) {
                         updateView();
 
                     }
-                    if (MyApp.GEOIDE_PATH==null) {
-                        setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
-                    }else {
-                        if(!MyApp.GEOIDE_PATH.equals("null")){
-                            setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_selezionato));
-                        }else {
-                            setGeoide.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
-                        }
-                    }
+
                 } catch (Exception e) {
 
-                    Log.e("Diomaiale", e.toString());
+                    Log.e("GoidStatus", Log.getStackTraceString(e));
                 }
             }
         }, 100);

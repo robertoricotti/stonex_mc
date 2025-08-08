@@ -314,7 +314,7 @@ public class TriangleService extends Service {
 
 
                 //Conditions
-                if (indexAudio>0&&DataSaved.isWL==0) {
+                if (indexAudio>0) {
                     switch (DataSaved.bucketEdge) {
                         case -1:
                             if (!ltOffGrid) {

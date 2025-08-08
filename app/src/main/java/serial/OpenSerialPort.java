@@ -41,16 +41,8 @@ public class OpenSerialPort {
                         try {
                             if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
                                 SerialPortManager.instance().sendCommand("CONFIG UNDULATION AUTO\r\n");
-                                SerialPortManager.instance().sendCommand("GNGGA COM1 100\r\n");
-                                SerialPortManager.instance().sendCommand("GPGGA COM1 100\r\n");
-                                SerialPortManager.instance().sendCommand("GNGSA COM1 100\r\n");
-                                SerialPortManager.instance().sendCommand("GPGSV COM1 100\r\n");
-                                SerialPortManager.instance().sendCommand("GBGSV COM1 100\r\n");
-                                SerialPortManager.instance().sendCommand("GAGSV COM1 100\r\n");
-                                SerialPortManager.instance().sendCommand("GLGSV COM1 100\r\n");
-                                SerialPortManager.instance().sendCommand("GNRMC COM1 100\r\n");
-                                SerialPortManager.instance().sendCommand("GPHDT COM1 0.1\r\n");
-                                SerialPortManager.instance().sendCommand("GNHDT COM1 0.1\r\n");
+                                SerialPortManager.instance().sendCommand("GNHDT 0.05\r\n");
+                                SerialPortManager.instance().sendCommand("GPHDT 0.05\r\n");
                                 SerialPortManager.instance().sendCommand("SAVECONFIG\r\n");
 
                             } else {

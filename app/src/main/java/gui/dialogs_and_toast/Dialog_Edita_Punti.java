@@ -22,23 +22,25 @@ public class Dialog_Edita_Punti {
     int uom;
     Activity activity;
     public Dialog dialog;
-    TextView nome,txEst,txNord,txZ,txSide;
-    EditText est, nord, quota,side;
-    Button save,exit;
+    TextView nome, txEst, txNord, txZ, txSide;
+    EditText est, nord, quota, side;
+    Button save, exit;
     CustomNumberDialog customNumberDialog;
     CustomNumberDialogFtIn customNumberDialogFtIn;
     int counter;
-    double[]coord;
-    public static  double d_side;
+    double[] coord;
+    public static double d_side;
+
     public Dialog_Edita_Punti(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
-        uom= MyData.get_Int("Unit_Of_Measure");
+        uom = MyData.get_Int("Unit_Of_Measure");
         customNumberDialog = new CustomNumberDialog(activity, 100);
-        customNumberDialogFtIn=new CustomNumberDialogFtIn(activity,100);
+        customNumberDialogFtIn = new CustomNumberDialogFtIn(activity, 100);
     }
-    public void show(int counter,double[]coord) {
-        this.coord=coord;
+
+    public void show(int counter, double[] coord) {
+        this.coord = coord;
         dialog.create();
         dialog.setContentView(R.layout.dialog_edit_punto);
         dialog.setCancelable(false);
@@ -58,26 +60,28 @@ public class Dialog_Edita_Punti {
 
 
     }
+
     public void findView() {
         nome = dialog.findViewById(R.id.txtName);
         est = dialog.findViewById(R.id.valueEst);
         nord = dialog.findViewById(R.id.valueNord);
         quota = dialog.findViewById(R.id.valueZ);
         save = dialog.findViewById(R.id.save);
-        txEst=dialog.findViewById(R.id.txtEst);
-        txNord=dialog.findViewById(R.id.txtNord);
-        txZ=dialog.findViewById(R.id.txtZ);
-        txSide=dialog.findViewById(R.id.txtWidth);
-        side=dialog.findViewById(R.id.valueW);
-        exit=dialog.findViewById(R.id.exit);
+        txEst = dialog.findViewById(R.id.txtEst);
+        txNord = dialog.findViewById(R.id.txtNord);
+        txZ = dialog.findViewById(R.id.txtZ);
+        txSide = dialog.findViewById(R.id.txtWidth);
+        side = dialog.findViewById(R.id.valueW);
+        exit = dialog.findViewById(R.id.exit);
     }
+
     public void init() {
-        txEst.setText("EAST "+Utils.getMetriSimbol());
-        txNord.setText("NORTH "+Utils.getMetriSimbol());
-        txZ.setText("ELEVATION "+Utils.getMetriSimbol());
-        txSide.setText("SURFACE SIDE LEN "+Utils.getMetriSimbol());
-        if(d_side==0){
-            d_side=20;
+        txEst.setText("EAST " + Utils.getMetriSimbol());
+        txNord.setText("NORTH " + Utils.getMetriSimbol());
+        txZ.setText("ELEVATION " + Utils.getMetriSimbol());
+        txSide.setText("SURFACE SIDE LEN " + Utils.getMetriSimbol());
+        if (d_side == 0) {
+            d_side = 20;
         }
         switch (counter) {
             case 0:
@@ -123,6 +127,7 @@ public class Dialog_Edita_Punti {
         }
 
     }
+
     public void update() {
 
     }
@@ -133,48 +138,48 @@ public class Dialog_Edita_Punti {
         });
         est.setOnClickListener(view -> {
 
-            if(uom==4 || uom==5) {
+          /*  if (uom == 4 || uom == 5) {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(side);
                 }
 
-            }else {
+            } else {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(side);
                 }
-            }
+            }*/
         });
         nord.setOnClickListener(view -> {
-            if(uom==4 || uom==5) {
+          /*  if (uom == 4 || uom == 5) {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(side);
                 }
 
-            }else {
+            } else {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(side);
                 }
-            }
+            }*/
         });
         quota.setOnClickListener(view -> {
-            if(uom==4 || uom==5) {
+           /* if (uom == 4 || uom == 5) {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(side);
                 }
 
-            }else {
+            } else {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(side);
                 }
-            }
+            }*/
         });
         side.setOnClickListener(view -> {
-            if(uom==4 || uom==5) {
+            if (uom == 4 || uom == 5) {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(side);
                 }
 
-            }else {
+            } else {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(side);
                 }
@@ -186,7 +191,7 @@ public class Dialog_Edita_Punti {
                     DataSaved.puntiProgetto[0].x = Double.parseDouble(Utils.writeMetri(est.getText().toString()));
                     DataSaved.puntiProgetto[0].y = Double.parseDouble(Utils.writeMetri(nord.getText().toString()));
                     DataSaved.puntiProgetto[0].z = Double.parseDouble(Utils.writeMetri(quota.getText().toString()));
-                    d_side=Double.parseDouble(Utils.writeMetri(side.getText().toString()));
+                    d_side = Double.parseDouble(Utils.writeMetri(side.getText().toString()));
                     dialog.dismiss();
                     break;
                 case 1:

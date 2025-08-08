@@ -21,7 +21,7 @@ import gui.my_opengl.Point3DF;
 
 public class DataSaved {
     public static String machineName;
-    public static boolean alwaysOnTop;
+    public static int lock3dRotation;
     public static int screenOr;
     public static int boudrateCAN1;
     public static int boudrateCAN2;

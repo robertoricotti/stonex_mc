@@ -299,7 +299,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialsymbolsoutlined/restart_alt/outline_restart_alt_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialiconsoutlined/3d_rotation/outline_3d_rotation_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -309,7 +309,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="restart_app" />
+                            <entry key="outputName" value="lock_rotation_on" />
                             <entry key="sourceFile" value="D:\Development\MC_V4" />
                           </map>
                         </option>

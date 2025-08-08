@@ -158,7 +158,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         gl11.glScalef(scale, scale, scale);   // Scala in tutte le direzioni
                         //in 3D ruota la scena benna ancorata a 0,0
                         gl11.glRotatef(angleX, 1f, 0f, 0f);
-                        gl11.glRotatef(angleY, 0f, 0f, 1f);
+                        if(DataSaved.lock3dRotation>0) {
+                            gl11.glRotatef(angleTest, 0f, 0f, 1f);
+                        }else {
+                            gl11.glRotatef(angleY, 0f, 0f, 1f);
+                        }
 
                     } else {
 

@@ -19,7 +19,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.util.Log;
 
 import org.locationtech.proj4j.CRSFactory;
 import org.locationtech.proj4j.CoordinateTransformFactory;
@@ -47,7 +46,6 @@ import gui.projects.PickProject;
 import landxml.LandXMLData;
 import landxml.LandXMLParser;
 import packexcalib.exca.DataSaved;
-import packexcalib.gnss.MyGeoide;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -603,7 +601,7 @@ public class ReadProjectService extends Service {
 
     public static void startCRS() {
         String s = MyData.get_String("crs");
-        MyGeoide.setGeoid(MyApp.GEOIDE_PATH);
+
         if (s != null) {
             if (!s.equals("UTM") && !s.equals(_NONE)) {
                 if (s.equals("2100")) {
