@@ -291,6 +291,10 @@ public class LaunchScreenActivity extends BaseClass {
         if (!directory.exists()) {
             directory.mkdir();
         }
+        directory = new File(path + "/Exported");
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
 
 
         try {

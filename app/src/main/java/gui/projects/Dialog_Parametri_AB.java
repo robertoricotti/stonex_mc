@@ -35,8 +35,8 @@ import utils.MyData;
 import utils.Utils;
 
 public class Dialog_Parametri_AB {
-    ImageView imgAB,imgL,imgR;
-    TextView txt_1,txt_2,txt_3,txt_4,txt_5,txt_6,txt_7,txt_8,txt_9;
+    ImageView imgAB, imgL, imgR;
+    TextView txt_1, txt_2, txt_3, txt_4, txt_5, txt_6, txt_7, txt_8, txt_9;
     double[] nuovoB = new double[]{0, 0, 0};
     double hdtAB;
     Activity activity;
@@ -51,17 +51,17 @@ public class Dialog_Parametri_AB {
     EditText estE, nordE, zetaE;
     EditText estF, nordF, zetaF;
     EditText et_distAB, et_slopeAB, et_leftW, et_leftS, et_rightW, et_rightS;
-    ImageView collectCL, collectCC, collectCR, collectDL, collectDC, collectDR, collectEL, collectEC, collectER, collectFL, collectFC, collectFR,reload_1,reload_2,reload_3,reload_4,reload_5;
+    ImageView collectCL, collectCC, collectCR, collectDL, collectDC, collectDR, collectEL, collectEC, collectER, collectFL, collectFC, collectFR, reload_1, reload_2, reload_3, reload_4, reload_5;
     static int functionIndex;
-    int v=-256;
+    int v = -256;
     int uom;
 
     public Dialog_Parametri_AB(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
-        uom= MyData.get_Int("Unit_Of_Measure");
+        uom = MyData.get_Int("Unit_Of_Measure");
         customNumberDialog = new CustomNumberDialog(activity, -256);
-        customNumberDialogFtIn=new CustomNumberDialogFtIn(activity,-256);
+        customNumberDialogFtIn = new CustomNumberDialogFtIn(activity, -256);
     }
 
     public void show() {
@@ -81,15 +81,15 @@ public class Dialog_Parametri_AB {
     }
 
     private void findView() {
-        txt_1=dialog.findViewById(R.id.txt_1);
-        txt_2=dialog.findViewById(R.id.txt_2);
-        txt_3=dialog.findViewById(R.id.txt_3);
-        txt_4=dialog.findViewById(R.id.txt_4);
-        txt_5=dialog.findViewById(R.id.txt_5);
-        txt_6=dialog.findViewById(R.id.txt_6);
-        txt_7=dialog.findViewById(R.id.txt_7);
-        txt_8=dialog.findViewById(R.id.txt_8);
-        txt_9=dialog.findViewById(R.id.txt_9);
+        txt_1 = dialog.findViewById(R.id.txt_1);
+        txt_2 = dialog.findViewById(R.id.txt_2);
+        txt_3 = dialog.findViewById(R.id.txt_3);
+        txt_4 = dialog.findViewById(R.id.txt_4);
+        txt_5 = dialog.findViewById(R.id.txt_5);
+        txt_6 = dialog.findViewById(R.id.txt_6);
+        txt_7 = dialog.findViewById(R.id.txt_7);
+        txt_8 = dialog.findViewById(R.id.txt_8);
+        txt_9 = dialog.findViewById(R.id.txt_9);
         reload = dialog.findViewById(R.id.reload);
         exit = dialog.findViewById(R.id.ok);
         estA = dialog.findViewById(R.id.et_estA);
@@ -129,22 +129,22 @@ public class Dialog_Parametri_AB {
         collectFL = dialog.findViewById(R.id.collectFL);
         collectFC = dialog.findViewById(R.id.collectFC);
         collectFR = dialog.findViewById(R.id.collectFR);
-        reload_1=dialog.findViewById(R.id.reload_1);
-        reload_2=dialog.findViewById(R.id.reload_2);
-        reload_3=dialog.findViewById(R.id.reload_3);
-        reload_4=dialog.findViewById(R.id.reload_4);
-        reload_5=dialog.findViewById(R.id.reload_5);
+        reload_1 = dialog.findViewById(R.id.reload_1);
+        reload_2 = dialog.findViewById(R.id.reload_2);
+        reload_3 = dialog.findViewById(R.id.reload_3);
+        reload_4 = dialog.findViewById(R.id.reload_4);
+        reload_5 = dialog.findViewById(R.id.reload_5);
         hdtAB = My_LocationCalc.calcBearingXY(puntiAB[0].getX(), puntiAB[0].getY(), puntiAB[1].getX(), puntiAB[1].getY());
-        txt_1.setText("AB PARAM "+Utils.getMetriSimbol()+"  ("+Utils.getGradiSimbol()+")");
-        txt_2.setText("LEFT PARAM "+Utils.getMetriSimbol()+"  ("+Utils.getGradiSimbol()+")");
-        txt_3.setText("RIGHT PARAM "+Utils.getMetriSimbol()+"  ("+Utils.getGradiSimbol()+")");
-        txt_4.setText("POINT A "+Utils.getMetriSimbol());
-        txt_5.setText("POINT B "+Utils.getMetriSimbol());
-        txt_6.setText("POINT C "+Utils.getMetriSimbol());
-        txt_7.setText("POINT D "+Utils.getMetriSimbol());
-        txt_8.setText("POINT E "+Utils.getMetriSimbol());
-        txt_9.setText("POINT F "+Utils.getMetriSimbol());
-        if(DataSaved.isWL<2){
+        txt_1.setText("AB PARAM " + Utils.getMetriSimbol() + "  (" + Utils.getGradiSimbol() + ")");
+        txt_2.setText("LEFT PARAM " + Utils.getMetriSimbol() + "  (" + Utils.getGradiSimbol() + ")");
+        txt_3.setText("RIGHT PARAM " + Utils.getMetriSimbol() + "  (" + Utils.getGradiSimbol() + ")");
+        txt_4.setText("POINT A " + Utils.getMetriSimbol());
+        txt_5.setText("POINT B " + Utils.getMetriSimbol());
+        txt_6.setText("POINT C " + Utils.getMetriSimbol());
+        txt_7.setText("POINT D " + Utils.getMetriSimbol());
+        txt_8.setText("POINT E " + Utils.getMetriSimbol());
+        txt_9.setText("POINT F " + Utils.getMetriSimbol());
+        if (DataSaved.isWL < 2) {
             collectCL.setImageResource(R.drawable.benna_misura_sinistra);
             collectDL.setImageResource(R.drawable.benna_misura_sinistra);
             collectEL.setImageResource(R.drawable.benna_misura_sinistra);
@@ -160,7 +160,7 @@ public class Dialog_Parametri_AB {
             collectER.setImageResource(R.drawable.benna_misura_destra);
             collectFR.setImageResource(R.drawable.benna_misura_destra);
 
-        }else {
+        } else {
             collectCL.setImageResource(R.drawable.lama_misura_sinistra);
             collectDL.setImageResource(R.drawable.lama_misura_sinistra);
             collectEL.setImageResource(R.drawable.lama_misura_sinistra);
@@ -176,9 +176,9 @@ public class Dialog_Parametri_AB {
             collectER.setImageResource(R.drawable.lama_misura_destra);
             collectFR.setImageResource(R.drawable.lama_misura_destra);
         }
-        imgAB=dialog.findViewById(R.id.imgAB);
-        imgL=dialog.findViewById(R.id.imgLeft);
-        imgR=dialog.findViewById(R.id.imgRight);
+        imgAB = dialog.findViewById(R.id.imgAB);
+        imgL = dialog.findViewById(R.id.imgLeft);
+        imgR = dialog.findViewById(R.id.imgRight);
 
     }
 
@@ -208,9 +208,9 @@ public class Dialog_Parametri_AB {
         et_leftS.setText(Utils.readAngolo(String.valueOf(Activity_Crea_Superficie.leftSLOPE)));
         et_rightW.setText(Utils.readUnitOfMeasureLITE(String.valueOf(Activity_Crea_Superficie.rightDIST)));
         et_rightS.setText(Utils.readAngolo(String.valueOf(rightSLOPE)));
-        imgAB.setRotation(45+((float)-slopeAB));
-        imgL.setRotation((float) (45+leftSLOPE));
-        imgR.setRotation(45+ ((float)-rightSLOPE));
+        imgAB.setRotation(45 + ((float) -slopeAB));
+        imgL.setRotation((float) (45 + leftSLOPE));
+        imgR.setRotation(45 + ((float) -rightSLOPE));
 
     }
 
@@ -250,12 +250,12 @@ public class Dialog_Parametri_AB {
 
         });
         zetaA.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(zetaA);
                     functionIndex = 1;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(zetaA);
                     functionIndex = 1;
@@ -264,12 +264,12 @@ public class Dialog_Parametri_AB {
         });
 
         estB.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(estB);
                     functionIndex = 2;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(estB);
                     functionIndex = 2;
@@ -277,12 +277,12 @@ public class Dialog_Parametri_AB {
             }
         });
         nordB.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(nordB);
                     functionIndex = 2;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(nordB);
                     functionIndex = 2;
@@ -290,12 +290,12 @@ public class Dialog_Parametri_AB {
             }
         });
         zetaB.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(zetaB);
                     functionIndex = 2;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(zetaB);
                     functionIndex = 2;
@@ -304,12 +304,12 @@ public class Dialog_Parametri_AB {
         });
 
         estC.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(estC);
                     functionIndex = 3;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(estC);
                     functionIndex = 3;
@@ -317,12 +317,12 @@ public class Dialog_Parametri_AB {
             }
         });
         nordC.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(nordC);
                     functionIndex = 3;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(nordC);
                     functionIndex = 3;
@@ -330,12 +330,12 @@ public class Dialog_Parametri_AB {
             }
         });
         zetaC.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(zetaC);
                     functionIndex = 3;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(zetaC);
                     functionIndex = 3;
@@ -344,12 +344,12 @@ public class Dialog_Parametri_AB {
         });
 
         estD.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(estB);
                     functionIndex = 4;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(estD);
                     functionIndex = 4;
@@ -357,12 +357,12 @@ public class Dialog_Parametri_AB {
             }
         });
         nordD.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(nordD);
                     functionIndex = 4;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(nordD);
                     functionIndex = 4;
@@ -370,12 +370,12 @@ public class Dialog_Parametri_AB {
             }
         });
         zetaD.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(zetaD);
                     functionIndex = 4;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(zetaD);
                     functionIndex = 4;
@@ -383,12 +383,12 @@ public class Dialog_Parametri_AB {
             }
         });
         estE.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(estE);
                     functionIndex = 5;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(estE);
                     functionIndex = 5;
@@ -396,12 +396,12 @@ public class Dialog_Parametri_AB {
             }
         });
         nordE.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(nordE);
                     functionIndex = 5;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(nordE);
                     functionIndex = 5;
@@ -409,12 +409,12 @@ public class Dialog_Parametri_AB {
             }
         });
         zetaE.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(zetaE);
                     functionIndex = 5;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(zetaE);
                     functionIndex = 5;
@@ -422,12 +422,12 @@ public class Dialog_Parametri_AB {
             }
         });
         estF.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(estF);
                     functionIndex = 6;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(estF);
                     functionIndex = 6;
@@ -435,12 +435,12 @@ public class Dialog_Parametri_AB {
             }
         });
         nordF.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(nordF);
                     functionIndex = 6;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(nordF);
                     functionIndex = 6;
@@ -448,12 +448,12 @@ public class Dialog_Parametri_AB {
             }
         });
         zetaF.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(zetaF);
                     functionIndex = 6;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(zetaF);
                     functionIndex = 6;
@@ -462,12 +462,12 @@ public class Dialog_Parametri_AB {
         });
 
         et_distAB.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(et_distAB);
                     functionIndex = 7;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(et_distAB);
                     functionIndex = 7;
@@ -475,12 +475,12 @@ public class Dialog_Parametri_AB {
             }
         });
         et_slopeAB.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(et_slopeAB);
                     functionIndex = 8;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(et_slopeAB);
                     functionIndex = 8;
@@ -488,12 +488,12 @@ public class Dialog_Parametri_AB {
             }
         });
         et_leftW.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(et_leftW);
                     functionIndex = 9;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(et_leftW);
                     functionIndex = 9;
@@ -501,12 +501,12 @@ public class Dialog_Parametri_AB {
             }
         });
         et_leftS.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(et_leftS);
                     functionIndex = 10;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(et_leftS);
                     functionIndex = 10;
@@ -514,12 +514,12 @@ public class Dialog_Parametri_AB {
             }
         });
         et_rightW.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(et_rightW);
                     functionIndex = 11;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(et_rightW);
                     functionIndex = 11;
@@ -527,12 +527,12 @@ public class Dialog_Parametri_AB {
             }
         });
         et_rightS.setOnClickListener(view -> {
-            if(uom<4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(et_rightS);
                     functionIndex = 12;
                 }
-            }else {
+            } else {
                 if (!customNumberDialogFtIn.dialog.isShowing()) {
                     customNumberDialogFtIn.show(et_rightS);
                     functionIndex = 12;
@@ -710,8 +710,8 @@ public class Dialog_Parametri_AB {
 
     }
 
-    public void updateTasto(){
-        Log.d("Flaggg","Chiamato...");
+    public void updateTasto() {
+        Log.d("Flaggg", "Chiamato...");
         switch (functionIndex) {
             case 0:
                 //do nothing
@@ -750,23 +750,23 @@ public class Dialog_Parametri_AB {
                 init();
                 break;
             case 9:
-                leftDIST=Double.parseDouble(Utils.writeMetri(et_leftW.getText().toString()));
+                leftDIST = Double.parseDouble(Utils.writeMetri(et_leftW.getText().toString()));
                 reloadAB();
                 init();
                 break;
             case 10:
-                leftSLOPE=Double.parseDouble(Utils.writeGradi(et_leftS.getText().toString()));
+                leftSLOPE = Double.parseDouble(Utils.writeGradi(et_leftS.getText().toString()));
                 reloadAB();
                 init();
                 break;
             case 11:
-                rightDIST=Double.parseDouble(Utils.writeMetri(et_rightW.getText().toString()));
+                rightDIST = Double.parseDouble(Utils.writeMetri(et_rightW.getText().toString()));
                 reloadAB();
                 init();
                 break;
             case 12:
 
-                rightSLOPE=Double.parseDouble(Utils.writeGradi(et_rightS.getText().toString()));
+                rightSLOPE = Double.parseDouble(Utils.writeGradi(et_rightS.getText().toString()));
                 reloadAB();
                 init();
                 break;

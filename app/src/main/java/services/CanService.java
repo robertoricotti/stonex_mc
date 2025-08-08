@@ -222,15 +222,17 @@ public class CanService extends Service {
 
             }
 
-            NmeaListener.NmeaSTX(id, msg);
-            if (id == 0x18FF0510 && MyDeviceManager.serialCom(DataSaved.my_comPort).equals("CAN")) {
-                nmeaSTX_Disc = false;
-                try {
-                    handler_nmeaSTX.removeCallbacks(timeoutRunnable_nmea2k);
+            if(MyDeviceManager.serialCom(DataSaved.my_comPort).equals("CAN")) {
+                NmeaListener.NmeaSTX(id, msg);
+                if (id == 0x18FF0510) {
+                    nmeaSTX_Disc = false;
+                    try {
+                        handler_nmeaSTX.removeCallbacks(timeoutRunnable_nmea2k);
 
-                } catch (Exception e) {
+                    } catch (Exception e) {
+                    }
+                    handler_nmeaSTX.postDelayed(timeoutRunnable_nmea2k, 5000);
                 }
-                handler_nmeaSTX.postDelayed(timeoutRunnable_nmea2k, 5000);
             }
             if (id == 0x18FFA110) {
                 if (msg[1] == 0x11) {

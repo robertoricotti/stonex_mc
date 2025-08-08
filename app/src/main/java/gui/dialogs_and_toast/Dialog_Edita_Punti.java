@@ -132,46 +132,51 @@ public class Dialog_Edita_Punti {
             dialog.dismiss();
         });
         est.setOnClickListener(view -> {
-            if(uom<4) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(est);
+
+            if(uom==4 || uom==5) {
+                if (!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(side);
                 }
+
             }else {
                 if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(est);
+                    customNumberDialog.show(side);
                 }
             }
         });
         nord.setOnClickListener(view -> {
-            if(uom<4) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(nord);
+            if(uom==4 || uom==5) {
+                if (!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(side);
                 }
+
             }else {
                 if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(nord);
+                    customNumberDialog.show(side);
                 }
             }
         });
         quota.setOnClickListener(view -> {
-            if(uom<4) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(quota);
+            if(uom==4 || uom==5) {
+                if (!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(side);
                 }
+
             }else {
                 if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(quota);
+                    customNumberDialog.show(side);
                 }
             }
         });
         side.setOnClickListener(view -> {
-            if(uom<4) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(side);
+            if(uom==4 || uom==5) {
+                if (!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(side);
                 }
+
             }else {
                 if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(side);
+                    customNumberDialog.show(side);
                 }
             }
         });

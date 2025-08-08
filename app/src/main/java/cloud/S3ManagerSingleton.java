@@ -1,5 +1,6 @@
 package cloud;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
@@ -14,6 +15,8 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.example.stx_dig.R;
 
@@ -21,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import gui.MyApp;
 import gui.dialogs_and_toast.CustomToast;
@@ -288,15 +293,22 @@ public class S3ManagerSingleton {
                     return;
                 }
 
-                // Recupera tutti i file
-                List<File> filesToUpload = getAllFiles(localFolder);
+                List<File> allFiles = getAllFiles(localFolder); // include anche le cartelle
+                List<File> filesToUpload = allFiles.stream().filter(File::isFile).collect(Collectors.toList());
 
-                // Calcola byte totali
+                List<File> emptyFolders = allFiles.stream()
+                        .filter(f -> f.isDirectory() && f.listFiles() != null && f.listFiles().length == 0)
+                        .collect(Collectors.toList());
+
+
                 long totalBytes = filesToUpload.stream().mapToLong(File::length).sum();
+
                 AtomicLong uploadedBytes = new AtomicLong(0);
-                AtomicInteger completedFiles = new AtomicInteger(0);
-                AtomicInteger failedFiles = new AtomicInteger(0);
+                AtomicInteger completedItems = new AtomicInteger(0);
+                AtomicInteger failedItems = new AtomicInteger(0);
                 AtomicBoolean isUploading = new AtomicBoolean(true);
+
+                int totalItems = filesToUpload.size() + emptyFolders.size();
 
                 Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -307,11 +319,10 @@ public class S3ManagerSingleton {
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                     progressDialog.setIndeterminate(false);
                     progressDialog.setCancelable(false);
-                    progressDialog.setMax(100); // Percentuale
+                    progressDialog.setMax(100);
                     progressDialog.show();
                 });
 
-                // Timeout handler
                 Handler timeoutHandler = new Handler(Looper.getMainLooper());
                 Runnable timeoutRunnable = () -> {
                     if (isUploading.get()) {
@@ -322,7 +333,35 @@ public class S3ManagerSingleton {
                 };
                 timeoutHandler.postDelayed(timeoutRunnable, 60000);
 
-                // Avvia caricamento
+                // Carica cartelle vuote come "file" placeholder
+                for (File folder : emptyFolders) {
+                    String relativePath = localFolder.toURI().relativize(folder.toURI()).getPath();
+                    String s3Key = s3TargetPath.endsWith("/") ? s3TargetPath + relativePath : s3TargetPath + "/" + relativePath;
+
+                    // Upload "vuoto": AWS S3 considera le chiavi che terminano con "/" come cartelle
+                    ObjectMetadata metadata = new ObjectMetadata();
+                    metadata.setContentLength(0);
+                    ByteArrayInputStream emptyContent = new ByteArrayInputStream(new byte[0]);
+
+                    PutObjectRequest putRequest = new PutObjectRequest(s3Credentials.getBucketName(), s3Key, emptyContent, metadata);
+                    s3Client.putObject(putRequest);
+
+                    completedItems.incrementAndGet();
+
+                    if (completedItems.get() == totalItems) {
+                        isUploading.set(false);
+                        timeoutHandler.removeCallbacks(timeoutRunnable);
+                        mainHandler.post(progressDialog::dismiss);
+
+                        if (failedItems.get() == 0) {
+                            callback.onSuccess(Map.of("folderPath", s3TargetPath));
+                        } else {
+                            callback.onError(new Exception("Alcuni file non sono stati caricati correttamente."));
+                        }
+                    }
+                }
+
+                // Upload file veri
                 for (File file : filesToUpload) {
                     String relativePath = localFolder.toURI().relativize(file.toURI()).getPath();
                     String s3Key = s3TargetPath.endsWith("/") ? s3TargetPath + relativePath : s3TargetPath + "/" + relativePath;
@@ -334,23 +373,21 @@ public class S3ManagerSingleton {
                                 @Override
                                 public void onStateChanged(int id, TransferState state) {
                                     if (state == TransferState.COMPLETED) {
-                                        completedFiles.incrementAndGet();
-                                        //Log.d("S3Manager:UploadFolder", "File caricato: " + s3Key);
+                                        completedItems.incrementAndGet();
                                     } else if (state == TransferState.FAILED) {
-                                        failedFiles.incrementAndGet();
+                                        failedItems.incrementAndGet();
                                         Log.e("S3Manager:UploadFolder", "Errore upload: " + s3Key);
                                         mainHandler.post(() ->
                                                 new CustomToast(MyApp.visibleActivity, "Error Uploading").show_error()
                                         );
                                     }
 
-                                    // Controllo completamento
-                                    if (completedFiles.get() + failedFiles.get() == filesToUpload.size()) {
+                                    if (completedItems.get() == totalItems) {
                                         isUploading.set(false);
                                         timeoutHandler.removeCallbacks(timeoutRunnable);
                                         mainHandler.post(progressDialog::dismiss);
 
-                                        if (failedFiles.get() == 0) {
+                                        if (failedItems.get() == 0) {
                                             callback.onSuccess(Map.of("folderPath", s3TargetPath));
                                         } else {
                                             callback.onError(new Exception("Alcuni file non sono stati caricati correttamente."));
@@ -360,26 +397,27 @@ public class S3ManagerSingleton {
 
                                 @Override
                                 public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                                    // Delta bytes caricati
                                     long delta = bytesCurrent - lastReportedBytes;
                                     if (delta > 0) {
                                         uploadedBytes.addAndGet(delta);
                                         lastReportedBytes = bytesCurrent;
                                     }
 
-                                    int percent = (int) ((uploadedBytes.get() * 100) / totalBytes);
+                                    int percent;
+                                    if (totalBytes > 0) {
+                                        percent = (int) ((uploadedBytes.get() * 100) / totalBytes);
+                                        mainHandler.post(() -> progressDialog.setProgress(percent));
+                                    } else {
+                                        mainHandler.post(() -> progressDialog.setProgress(100));
+                                    }
 
-                                    // Aggiorna barra
-                                    mainHandler.post(() -> progressDialog.setProgress(percent));
-
-                                    // Resetta timeout
                                     timeoutHandler.removeCallbacks(timeoutRunnable);
                                     timeoutHandler.postDelayed(timeoutRunnable, 60000);
                                 }
 
                                 @Override
                                 public void onError(int id, Exception ex) {
-                                    failedFiles.incrementAndGet();
+                                    failedItems.incrementAndGet();
                                     Log.e("S3Manager:UploadFolder", "Errore caricamento file: " + s3Key, ex);
                                     mainHandler.post(() ->
                                             new CustomToast(MyApp.visibleActivity, "Error Uploading").show_error()
@@ -413,30 +451,7 @@ public class S3ManagerSingleton {
     }
 
 
-    /*
-    public void uploadFolderToS3(String localFolderPath, String s3TargetPath, S3Callback callback) {
-        ensureExecutor();
-        if (s3Credentials == null) {
-            Log.e("S3Manager:UploadFolder", "AWS credentials not initialized");
-            return;
-        }
-        executorService.execute(() -> {
-            try {
-                File localFolder = new File(localFolderPath);
-                if (!localFolder.exists() || !localFolder.isDirectory()) {
-                    Log.e("S3Manager:UploadFolder", "Folder not found or invalid: " + localFolderPath);
-                    callback.onError(new Exception("Folder not found or invalid: " + localFolderPath));
-                    return;
-                }
-                uploadFolderRecursive(localFolder, s3TargetPath);
-                Log.d("S3Manager:UploadFolder", "Folder upload completed: " + s3TargetPath);
-                callback.onSuccess(Map.of("folderPath", s3TargetPath));
-            } catch (Exception e) {
-                Log.e("S3Manager:UploadFolder", "Error uploading folder", e);
-                callback.onError(e);
-            }
-        });
-    }*/
+
 
 
     public void downloadFolderFromS3(String s3FolderPath, String localFolderPath, S3Callback callback) {
@@ -457,7 +472,7 @@ public class S3ManagerSingleton {
                 ObjectListing objectListing = s3Client.listObjects(listObjectsRequest);
                 List<S3ObjectSummary> objectSummaries = objectListing.getObjectSummaries();
 
-                // Calcola dimensione totale da scaricare (solo file, niente cartelle)
+                // Calcola byte totali da scaricare (solo file, non cartelle)
                 long totalBytes = objectSummaries.stream()
                         .filter(obj -> !obj.getKey().endsWith("/"))
                         .mapToLong(S3ObjectSummary::getSize)
@@ -492,13 +507,36 @@ public class S3ManagerSingleton {
                 };
                 timeoutHandler.postDelayed(timeoutRunnable, 60000);
 
-                // Avvia download file
+                int totalObjects = objectSummaries.size();
+
                 for (S3ObjectSummary objectSummary : objectSummaries) {
                     String key = objectSummary.getKey();
-                    if (key.endsWith("/")) continue; // ignora directory vuote
-
                     String relativePath = key.replace(finalS3FolderPath, "");
                     File localFile = new File(localFolderPath, relativePath);
+
+                    if (key.endsWith("/")) {
+                        // Cartella vuota – crea directory
+                        if (!localFile.exists()) {
+                            localFile.mkdirs();
+                        }
+
+                        completedFiles.incrementAndGet();
+
+                        if (completedFiles.get() + failedFiles.get() == totalObjects) {
+                            isDownloading.set(false);
+                            timeoutHandler.removeCallbacks(timeoutRunnable);
+                            mainHandler.post(progressDialog::dismiss);
+
+                            if (failedFiles.get() == 0) {
+                                callback.onSuccess(Map.of("folderPath", localFolderPath));
+                            } else {
+                                callback.onError(new Exception("Alcuni file non sono stati scaricati correttamente."));
+                            }
+                        }
+                        continue;
+                    }
+
+                    // È un file – procedi con il download
                     if (!localFile.getParentFile().exists()) {
                         localFile.getParentFile().mkdirs();
                     }
@@ -511,7 +549,6 @@ public class S3ManagerSingleton {
                                 public void onStateChanged(int id, TransferState state) {
                                     if (state == TransferState.COMPLETED) {
                                         completedFiles.incrementAndGet();
-                                        //Log.d("S3Manager:DownloadFolder", "File scaricato: " + key);
                                     } else if (state == TransferState.FAILED) {
                                         failedFiles.incrementAndGet();
                                         Log.e("S3Manager:DownloadFolder", "Errore download: " + key);
@@ -520,9 +557,7 @@ public class S3ManagerSingleton {
                                         );
                                     }
 
-                                    // Controllo completamento
-                                    if (completedFiles.get() + failedFiles.get() ==
-                                            (int) objectSummaries.stream().filter(obj -> !obj.getKey().endsWith("/")).count()) {
+                                    if (completedFiles.get() + failedFiles.get() == totalObjects) {
                                         isDownloading.set(false);
                                         timeoutHandler.removeCallbacks(timeoutRunnable);
                                         mainHandler.post(progressDialog::dismiss);
@@ -537,19 +572,20 @@ public class S3ManagerSingleton {
 
                                 @Override
                                 public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                                    // Calcola delta rispetto all'ultimo aggiornamento
                                     long delta = bytesCurrent - lastReportedBytes;
                                     if (delta > 0) {
                                         downloadedBytes.addAndGet(delta);
                                         lastReportedBytes = bytesCurrent;
                                     }
 
-                                    int percent = (int) ((downloadedBytes.get() * 100) / totalBytes);
+                                    int percent;
+                                    if (totalBytes > 0) {
+                                        percent = (int) ((downloadedBytes.get() * 100) / totalBytes);
+                                        mainHandler.post(() -> progressDialog.setProgress(percent));
+                                    } else {
+                                        mainHandler.post(() -> progressDialog.setProgress(100));
+                                    }
 
-                                    // Aggiorna barra percentuale
-                                    mainHandler.post(() -> progressDialog.setProgress(percent));
-
-                                    // Resetta timeout
                                     timeoutHandler.removeCallbacks(timeoutRunnable);
                                     timeoutHandler.postDelayed(timeoutRunnable, 60000);
                                 }
@@ -568,7 +604,8 @@ public class S3ManagerSingleton {
                 Log.e("S3Manager:DownloadFolder", "Errore download cartella", e);
                 callback.onError(e);
             }
-        });
+                }
+        );
     }
 
 

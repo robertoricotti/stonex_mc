@@ -130,7 +130,7 @@ public class Dialog_Trench {
             update();
         });
         etStart.setOnClickListener(view -> {
-            if (uom < 4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(etStart);
                 }
@@ -141,7 +141,7 @@ public class Dialog_Trench {
             }
         });
         etEnd.setOnClickListener(view -> {
-            if (uom < 4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(etEnd);
                 }
@@ -152,7 +152,7 @@ public class Dialog_Trench {
             }
         });
         leftW.setOnClickListener(view -> {
-            if (uom < 4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(leftW);
                 }
@@ -164,7 +164,7 @@ public class Dialog_Trench {
 
         });
         leftS.setOnClickListener(view -> {
-            if (uom < 4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(leftS);
                 }
@@ -175,7 +175,7 @@ public class Dialog_Trench {
             }
         });
         rightW.setOnClickListener(view -> {
-            if (uom < 4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(rightW);
                 }
@@ -186,7 +186,7 @@ public class Dialog_Trench {
             }
         });
         rightS.setOnClickListener(view -> {
-            if (uom < 4) {
+            if(uom==0||uom==1||uom==2||uom==3||uom==6||uom==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(rightS);
                 }

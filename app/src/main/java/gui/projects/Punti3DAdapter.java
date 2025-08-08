@@ -148,7 +148,12 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
                 selectedNord = -1;
                 selectedQuota = -1;
                 notifyDataSetChanged();
-                if(MyData.get_Int("Unit_Of_Measure")<4) {
+                if(MyData.get_Int("Unit_Of_Measure")==0|
+                        MyData.get_Int("Unit_Of_Measure")==1|
+                        MyData.get_Int("Unit_Of_Measure")==2|
+                        MyData.get_Int("Unit_Of_Measure")==3|
+                        MyData.get_Int("Unit_Of_Measure")==6|
+                        MyData.get_Int("Unit_Of_Measure")==7) {
                     if (!customNumberDialog.dialog.isShowing()) {
                         customNumberDialog.show(t_Est, selectedItem, 0);
                     }
@@ -169,7 +174,12 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
                 selectedDes = -1;
                 selectedQuota = -1;
                 notifyDataSetChanged();
-                if(MyData.get_Int("Unit_Of_Measure")<4) {
+                if(MyData.get_Int("Unit_Of_Measure")==0|
+                        MyData.get_Int("Unit_Of_Measure")==1|
+                        MyData.get_Int("Unit_Of_Measure")==2|
+                        MyData.get_Int("Unit_Of_Measure")==3|
+                        MyData.get_Int("Unit_Of_Measure")==6|
+                        MyData.get_Int("Unit_Of_Measure")==7) {
                     if (!customNumberDialog.dialog.isShowing()) {
                         customNumberDialog.show(t_Nord, selectedItem, 1);
                     }
@@ -189,7 +199,12 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
                 selectedNord = -1;
                 selectedDes = -1;
                 notifyDataSetChanged();
-                if(MyData.get_Int("Unit_Of_Measure")<4) {
+                if(MyData.get_Int("Unit_Of_Measure")==0|
+                        MyData.get_Int("Unit_Of_Measure")==1|
+                        MyData.get_Int("Unit_Of_Measure")==2|
+                        MyData.get_Int("Unit_Of_Measure")==3|
+                        MyData.get_Int("Unit_Of_Measure")==6|
+                        MyData.get_Int("Unit_Of_Measure")==7){
                     if (!customNumberDialog.dialog.isShowing()) {
                         customNumberDialog.show(t_Quota, selectedItem, 2);
                     }

@@ -201,7 +201,12 @@ public class Dialog_Point_Poly {
 
     private void onClick() {
         valore.setOnClickListener(view -> {
-            if(MyData.get_Int("Unit_Of_Measure")<4) {
+            if(MyData.get_Int("Unit_Of_Measure")==0|
+                    MyData.get_Int("Unit_Of_Measure")==1|
+                    MyData.get_Int("Unit_Of_Measure")==2|
+                    MyData.get_Int("Unit_Of_Measure")==3|
+                    MyData.get_Int("Unit_Of_Measure")==6|
+                    MyData.get_Int("Unit_Of_Measure")==7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(valore);
                 }
