@@ -16,7 +16,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import gui.MyApp;
 import gui.dialogs_and_toast.CustomToast;
@@ -152,10 +155,16 @@ public class MyData {
 
         String[] allFiles = MyApp.visibleActivity.getApplicationContext().fileList();
         JSONObject jsonObject = new JSONObject();
-
+        //  CHIAVI DA ESCLUDERE (i nomi file equivalgono alle chiavi nel JSON)
+        Set<String> excludeKeys = new HashSet<>(Arrays.asList(
+                "licenza",
+                "tempConfig",
+                "debugMode"
+                // aggiungi qui le chiavi da NON  esportare nel JSON
+        ));
         for (String fileName : allFiles) {
             if (fileName.equals("mcconfig.json")) continue; // evita il loop infinito
-
+            if (excludeKeys.contains(fileName)) continue;   // esclude chiavi specifiche
             try {
                 FileInputStream fIn = MyApp.visibleActivity.getApplicationContext().openFileInput(fileName);
                 InputStreamReader isr = new InputStreamReader(fIn);
@@ -192,7 +201,13 @@ public class MyData {
             new CustomToast(MyApp.visibleActivity,"File Not Found").show_error();
             return; // Se il file non esiste, esci
         }
-
+// Chiavi da non ripristinare
+        Set<String> excludeKeys = new HashSet<>(Arrays.asList(
+                "licenza",
+                "tempConfig",
+                "debugMode"
+                // aggiungi altre chiavi da ignorare
+        ));
         try {
             FileInputStream fis = new FileInputStream(jsonFile); // Legge dal percorso esterno
             InputStreamReader isr = new InputStreamReader(fis);
@@ -210,6 +225,7 @@ public class MyData {
             Iterator<String> keys = jsonObject.keys();
             while (keys.hasNext()) {
                 String key = keys.next();
+                if (excludeKeys.contains(key)) continue; //  Salta le chiavi escluse
                 String value = jsonObject.getString(key);
 
                 // Scrive ogni coppia come file separato nella memoria interna
