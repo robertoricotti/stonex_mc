@@ -126,7 +126,7 @@ public class Activity_Home_Page extends AppCompatActivity {
         appInfo = findViewById(R.id.btn_3);
         try {
             String s = MyData.get_String("progettoSelected");
-            s = s.replace("/storage/emulated/0/StonexMachineControl", "");
+            s = s.replace("/storage/emulated/0/StonexMC_V4", "");
             s = s.substring(0, s.lastIndexOf("/"));
             titolo.setText(s);
         } catch (Exception e) {

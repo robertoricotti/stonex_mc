@@ -147,7 +147,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
         if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             isApollo = true;
-            folderPath = "/StonexMachineControl";
+            folderPath = "/StonexMC_V4";
             if (Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS") || Build.BRAND.equals("APOLLO2_10")) {
                 apollo2 = Apollo2.getInstance(this);
                 MyApp.DEVICE_SN = apollo2.getDeviceSN();

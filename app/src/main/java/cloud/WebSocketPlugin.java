@@ -345,7 +345,7 @@ public class WebSocketPlugin {
             MyApp.expiry = jsonObject.getString("expiry");
 
             // Percorso della cartella
-            String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines";
+            String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Config";
 
             // Crea la cartella se non esiste
             File directory = new File(pathL);
@@ -374,7 +374,7 @@ public class WebSocketPlugin {
     public void cancellaJson(){
         try {
             // Percorso della cartella
-            String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines/License.json";
+            String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Config/License.json";
 
             // File di output JSON
             File myFile = new File(pathL);

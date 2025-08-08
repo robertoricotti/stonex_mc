@@ -120,6 +120,8 @@ public class Remote_Activity extends AppCompatActivity {
 
 
             if (adapterProj != null && adapterMC != null) {
+                    adapterProj.setCloudFolder(false);
+                    adapterMC.setCloudFolder(true);
                 if (adapterProj.getSelectedItem() > -1 && adapterMC.getSelectedItem() > -1) {
                     adapterProj.setSelectedItem(-1);
                     adapterMC.setSelectedItem(-1);

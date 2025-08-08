@@ -89,6 +89,7 @@ public class BucketCalibTilt extends AppCompatActivity {
         save = findViewById(R.id.save);
         exit = findViewById(R.id.exit);
         load = findViewById(R.id.load);
+        load.setVisibility(View.INVISIBLE);
         offsetBucketAngle = findViewById(R.id.bucketAngleOffset);
         offsetFlatAngle = findViewById(R.id.bucketAngleFlatOffset);
         offsetTiltLevelAngle = findViewById(R.id.tiltLevelAngleOffset);
@@ -249,13 +250,7 @@ public class BucketCalibTilt extends AppCompatActivity {
             if (!qwertyDialog.dialog.isShowing())
                 qwertyDialog.show(name);
         });
-        load.setOnClickListener((View v) -> {
-            disableAll();
-            Intent intent = new Intent(this, PickBucket.class);
-            intent.putExtra("indexBucket", indexBucket);
-            startActivity(intent);
-            finish();
-        });
+
         plusBuck.setOnClickListener((View v) -> {
             DataSaved.offsetDegWTilt += 0.05;
 
@@ -289,7 +284,6 @@ public class BucketCalibTilt extends AppCompatActivity {
                     } else {
                         disableAll();
                         save();
-                        store();
                         startService(new Intent(this, UpdateValuesService.class));
                         startActivity(new Intent(this, BucketChooserActivity.class));
                         finish();
@@ -304,7 +298,6 @@ public class BucketCalibTilt extends AppCompatActivity {
                     } else {
                         disableAll();
                         save();
-                        store();
                         startService(new Intent(this, UpdateValuesService.class));
                         startActivity(new Intent(this, BucketChooserActivity.class));
                         finish();
@@ -381,33 +374,7 @@ public class BucketCalibTilt extends AppCompatActivity {
         MyData.push("M" + indexMachineSelected + "_Tilt_piccolaBucket" + indexBucket, String.valueOf(DataSaved.piccolaBucket));
     }
 
-    private void store() {
-        String nameM = name.getText().toString().trim();
-        String length = Utils.writeMetri(bucketLength.getText().toString().trim());
-        String width = Utils.writeMetri(bucketWidth.getText().toString().trim());
-        String L4Length = Utils.writeMetri(L4.getText().toString().trim());
-        String offset = String.valueOf(DataSaved.offsetBucket);
-        String flatOffset = String.valueOf(DataSaved.offsetFlat);
-        String flat = String.valueOf(DataSaved.flat);
-        String offsetTilt = String.valueOf(DataSaved.offsetTilt);
-        String offsetWtilt = String.valueOf(DataSaved.offsetDegWTilt);
-        String offsetpiccola = String.valueOf(DataSaved.piccolaBucket);
-        String path = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines/Machine " + indexMachineSelected + "/Buckets Tilt";
-        String fileName = nameM + ".csv";
-        File f = new File(path, fileName);
-        CSVWriter writer;
 
-        try {
-            writer = new CSVWriter(new FileWriter(f));
-
-            String[] bucket = {nameM, length, width, L4Length, offset, flatOffset, flat, offsetTilt, offsetWtilt, offsetpiccola};
-
-            writer.writeNext(bucket);
-
-            writer.close();
-        } catch (Exception ignored) {
-        }
-    }
 
     @Override
     protected void onDestroy() {

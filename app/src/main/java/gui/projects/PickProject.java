@@ -87,7 +87,7 @@ public class PickProject extends BaseClass {
     public void updateUI() {
         try {
             String s = MyData.get_String("progettoSelected");
-            s = s.replace("/storage/emulated/0/StonexMachineControl", "");
+            s = s.replace("/storage/emulated/0/StonexMC_V4", "");
             s = s.substring(0, s.lastIndexOf("/"));
             titolone.setText(s);
         } catch (Exception e) {

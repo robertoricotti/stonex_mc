@@ -325,12 +325,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.buckets.PickBucket"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="gui.tech_menu.TiltCalib"
             android:autoRemoveFromRecents="true"
@@ -367,12 +362,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.tech_menu.MachineInfoCalib"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
 
         <activity
             android:name="gui.digging_excavator.Digging_CutAndFill1D"
@@ -404,12 +394,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.tech_menu.PickMachine"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="gui.debug_ecu.DebugExcavatorActivity"
             android:autoRemoveFromRecents="true"

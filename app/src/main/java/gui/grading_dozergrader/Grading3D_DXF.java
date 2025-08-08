@@ -233,7 +233,7 @@ public class Grading3D_DXF extends BaseClass {
         distTv.setTextColor(MyColorClass.colorConstraint);
         try {
             String s = MyData.get_String("progettoSelected");
-            s = s.replace("/storage/emulated/0/StonexMachineControl", "");
+            s = s.replace("/storage/emulated/0/StonexMC_V4", "");
             s = s.substring(0, s.lastIndexOf("/"));
             distTv.setText(s);
         } catch (Exception e) {
@@ -432,7 +432,7 @@ public class Grading3D_DXF extends BaseClass {
                     String s = MyData.get_String("progettoSelected");
                     s = s.substring(0, s.lastIndexOf("/"));
 
-                    boolean isDir = s.equals("/storage/emulated/0/StonexMachineControl/Projects");
+                    boolean isDir = s.equals("/storage/emulated/0/StonexMC_V4/Projects");
                     if (!isDir) {
                         if (!dialogPrjFolder.dialog.isShowing()) {
                             dialogPrjFolder.show(s);

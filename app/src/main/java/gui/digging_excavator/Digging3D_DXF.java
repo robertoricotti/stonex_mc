@@ -253,7 +253,7 @@ public class Digging3D_DXF extends BaseClass {
         try {
             bucketName = MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucketSelected + "_Name").toUpperCase();
             String s = MyData.get_String("progettoSelected");
-            s = s.replace("/storage/emulated/0/StonexMachineControl", "");
+            s = s.replace("/storage/emulated/0/StonexMC_V4", "");
             s = s.substring(0, s.lastIndexOf("/"));
             distTv.setText(s + "\n" + bucketName);
         } catch (Exception e) {
@@ -460,7 +460,7 @@ public class Digging3D_DXF extends BaseClass {
                     s = s.substring(0, s.lastIndexOf("/"));
 
                     String s2 = s.substring(s.lastIndexOf("/"));
-                    boolean isDir = s.equals("/storage/emulated/0/StonexMachineControl/Projects");
+                    boolean isDir = s.equals("/storage/emulated/0/StonexMC_V4/Projects");
                     //Log.d("mioProgetto",s+"  "+s2);
                     if (!isDir) {
                         if (!dialogPrjFolder.dialog.isShowing()) {

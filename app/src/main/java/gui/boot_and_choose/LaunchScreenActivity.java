@@ -257,7 +257,7 @@ public class LaunchScreenActivity extends BaseClass {
             boolean success = stxDigDir.renameTo(newDir);
             if (success) {
                 // Se la rinomina è avvenuta con successo, aggiorna folderPath
-                new CustomToast(this, "'Stx_MC' folder Renamed in 'StonexMachineControl").show_alert();
+                new CustomToast(this, "'Stx_MC' folder Renamed in 'StonexMC_V4").show_alert();
             } else {
                 new CustomToast(this, "Unable to rename 'Stx_MC' folder please check").show_alert();
             }
@@ -273,10 +273,7 @@ public class LaunchScreenActivity extends BaseClass {
             directory.mkdir();
         }
 
-        directory = new File(path + "/Machines");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
+
         directory = new File(path + "/Geoids");
         if (!directory.exists()) {
             directory.mkdir();
@@ -290,82 +287,20 @@ public class LaunchScreenActivity extends BaseClass {
         if (!directory.exists()) {
             directory.mkdir();
         }
-
-
-        directory = new File(path + "/Machines/Machine 1");
+        directory = new File(path + "/Config");
         if (!directory.exists()) {
             directory.mkdir();
         }
 
-        directory = new File(path + "/Machines/Machine 2");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
 
-        directory = new File(path + "/Machines/Machine 3");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        directory = new File(path + "/Machines/Machine 4");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        directory = new File(path + "/Machines/Machine 1/Config");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        directory = new File(path + "/Machines/Machine 2/Config");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        directory = new File(path + "/Machines/Machine 3/Config");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        directory = new File(path + "/Machines/Machine 4/Config");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        directory = new File(path + "/Machines/Machine 1/Buckets");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        directory = new File(path + "/Machines/Machine 1/Buckets Tilt");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        directory = new File(path + "/Machines/Machine 2/Buckets");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        directory = new File(path + "/Machines/Machine 2/Buckets Tilt");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        directory = new File(path + "/Machines/Machine 3/Buckets");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        directory = new File(path + "/Machines/Machine 3/Buckets Tilt");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        directory = new File(path + "/Machines/Machine 4/Buckets");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        directory = new File(path + "/Machines/Machine 4/Buckets Tilt");
-        if (!directory.exists()) {
-            directory.mkdir();
+        try {
+            File f = new File(path + "/Machines");
+            if (f.exists()) {
+                boolean deleted = deleteRecursive(f);
+                Log.d("DeleteM", path + " Deleted: " + deleted);
+            }
+        } catch (Exception e) {
+            Log.e("DeleteM",Log.getStackTraceString(e));
         }
         try {
             File f = new File(path + "/As-Built");
@@ -541,7 +476,7 @@ public class LaunchScreenActivity extends BaseClass {
     public void readCode() {
         try {
             // Percorso del file
-            String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines/License.json";
+            String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Config/License.json";
             File file = new File(pathL);
 
 
@@ -577,6 +512,16 @@ public class LaunchScreenActivity extends BaseClass {
             e.printStackTrace();
         }
     }
-
+    public static boolean deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            File[] children = fileOrDirectory.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    deleteRecursive(child);
+                }
+            }
+        }
+        return fileOrDirectory.delete();
+    }
 
 }

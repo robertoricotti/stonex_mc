@@ -3,16 +3,27 @@ package utils;
 import static android.content.Context.MODE_PRIVATE;
 
 
+import static gui.MyApp.folderPath;
+
+import android.os.Environment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Iterator;
 
 import gui.MyApp;
+import gui.dialogs_and_toast.CustomToast;
+import gui.tech_menu.ExcavatorChooserActivity;
 
 public class MyData {
     static final int READ_BLOCK_SIZE = 150;
-
     public static void push(String DataName, String Data2Save){
         try {
             OutputStreamWriter osw=new OutputStreamWriter(MyApp.visibleActivity.getApplicationContext().openFileOutput(DataName, MODE_PRIVATE));
@@ -129,6 +140,89 @@ public class MyData {
         }
         return res;
     }
+
+    public static void exportAllToJson() {
+
+        File dirOut = new File(Environment.getExternalStorageDirectory(), folderPath+"/Config/");
+        if (!dirOut.exists()) {
+            dirOut.mkdirs();
+        }
+
+        File jsonFile = new File(dirOut, "mcconfig.json");
+
+        String[] allFiles = MyApp.visibleActivity.getApplicationContext().fileList();
+        JSONObject jsonObject = new JSONObject();
+
+        for (String fileName : allFiles) {
+            if (fileName.equals("mcconfig.json")) continue; // evita il loop infinito
+
+            try {
+                FileInputStream fIn = MyApp.visibleActivity.getApplicationContext().openFileInput(fileName);
+                InputStreamReader isr = new InputStreamReader(fIn);
+                char[] inputBuffer = new char[READ_BLOCK_SIZE];
+                StringBuilder s = new StringBuilder();
+                int charRead;
+                while ((charRead = isr.read(inputBuffer)) > 0) {
+                    s.append(String.copyValueOf(inputBuffer, 0, charRead));
+                }
+                isr.close();
+
+                jsonObject.put(fileName, s.toString());
+
+            } catch (IOException | JSONException ignored) {
+            }
+        }
+
+        try {
+            FileOutputStream fos = new FileOutputStream(jsonFile);
+            OutputStreamWriter osw = new OutputStreamWriter(fos);
+            osw.write(jsonObject.toString(4));
+            osw.flush();
+            osw.close();
+        } catch (IOException ignored) {} catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void restoreFromJson() {
+
+        File jsonFile = new File(Environment.getExternalStorageDirectory(), folderPath + "/Config/mcconfig.json");
+
+        if (!jsonFile.exists()){
+            new CustomToast(MyApp.visibleActivity,"File Not Found").show_error();
+            return; // Se il file non esiste, esci
+        }
+
+        try {
+            FileInputStream fis = new FileInputStream(jsonFile); // Legge dal percorso esterno
+            InputStreamReader isr = new InputStreamReader(fis);
+            char[] inputBuffer = new char[READ_BLOCK_SIZE];
+            StringBuilder s = new StringBuilder();
+            int charRead;
+            while ((charRead = isr.read(inputBuffer)) > 0) {
+                s.append(String.copyValueOf(inputBuffer, 0, charRead));
+            }
+            isr.close();
+
+            JSONObject jsonObject = new JSONObject(s.toString());
+
+            // Itera su tutte le chiavi
+            Iterator<String> keys = jsonObject.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                String value = jsonObject.getString(key);
+
+                // Scrive ogni coppia come file separato nella memoria interna
+                push(key, value);
+            }
+            new CustomToast(MyApp.visibleActivity, "RESTORED").show_alert();
+        } catch (IOException | JSONException ignored) {
+
+            // Se il file non è leggibile o è malformato, lo ignora
+        }
+    }
+
+
 
 
 }

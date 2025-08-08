@@ -68,7 +68,7 @@ public class Dialog_InfoApp {
         String s = "";
         try {
             s = MyData.get_String("progettoSelected");
-            s = s.replace("/storage/emulated/0/StonexMachineControl", "");
+            s = s.replace("/storage/emulated/0/StonexMC_V4", "");
             s = s.substring(0, s.lastIndexOf("/"));
         } catch (Exception e) {
             s = "";

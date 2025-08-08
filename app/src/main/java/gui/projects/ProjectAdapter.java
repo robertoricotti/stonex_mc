@@ -77,7 +77,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             ckPoi.setVisibility(View.GONE);
             ckJson.setVisibility(View.GONE);
             sizeTextView.setVisibility(View.VISIBLE);
-            icon.setImageResource(R.drawable.folder_traffic_cone);
+            icon.setImageResource(R.drawable.filled_f);
             sizeTextView.setText(formatSize(fileSize));
 
         } else {

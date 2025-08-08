@@ -108,6 +108,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         can1bd=findViewById(R.id.toCan1);
         can2bd=findViewById(R.id.toCan2);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
+
     }
 
     private void onClick() {
@@ -126,47 +127,8 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 dialogGnssCoordinates.show();
             }
         });
-        saveToFile.setOnClickListener((View v) -> {
-            saveName();
-            if (MyData.get_String("M" + machineSel + "_Name").equals("")) {
-                new CustomToast(Nuova_Machine_Settings.this, "MISSING NAME").show();
-            } else {
-                if (MyData.get_String("M" + machineSel + "_Name").equals("DEFAULT 1") ||
-                        MyData.get_String("M" + machineSel + "_Name").equals("DEFAULT 2") ||
-                        MyData.get_String("M" + machineSel + "_Name").equals("DEFAULT 3") ||
-                        MyData.get_String("M" + machineSel + "_Name").equals("DEFAULT 4")
-                ) {
-                    new CustomToast(Nuova_Machine_Settings.this, "CHANGE MACHINE NAME BEFORE SAVE").show_alert();
-                } else {
-                    // Crea un nuovo AlertDialog.Builder
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
-                    builder.setTitle("SAVE ALL PARAMETERS TO EXTERNAL MEMORY");
-                    builder.setMessage("Do You Want to Proceed ?");
-
-                    // Aggiungi il pulsante "Sì"
-                    builder.setPositiveButton("YES", (dialog, which) -> {
-
-                        save_nuova();
-                        new CustomToast(Nuova_Machine_Settings.this, "SAVED").show();
-                    });
-
-                    // Aggiungi il pulsante "No"
-                    builder.setNegativeButton("NO", (dialog, which) -> {
-
-                    });
-                    builder.setCancelable(true);
-                    builder.show();
-
-                }
-            }
 
 
-        });
-        readFromFile.setOnClickListener((View v) -> {
-            en_dis(false);
-            startActivity(new Intent(this, PickMachine.class));
-            finish();
-        });
         ckIMU.setOnClickListener(view -> {
             ckDEMO.setChecked(false);
             ckIMU.setChecked(true);
@@ -588,134 +550,5 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         }
     }
 
-    private void save_nuova() {
-        String typeCan = MyData.get_String("M" + machineSel + "_useCanOpen");
-        String nameM = MyData.get_String("M" + machineSel + "_Name");
-        String lrBoom1 = MyData.get_String("M" + machineSel + "_Boom1_MountPos");
-        String lengthBoom1 = MyData.get_String("M" + machineSel + "_LengthBoom1");
-        String offsetBoom1 = MyData.get_String("M" + machineSel + "_OffsetBoom1");
-        String lrBoom2 = MyData.get_String("M" + machineSel + "_Boom2_MountPos");
-        String lengthBoom2 = MyData.get_String("M" + machineSel + "_LengthBoom2");
-        String offsetBoom2 = MyData.get_String("M" + machineSel + "_OffsetBoom2");
-        String lrStick = MyData.get_String("M" + machineSel + "_Stick_MountPos");
-        String lengthStick = MyData.get_String("M" + machineSel + "_LengthStick");
-        String offsetStick = MyData.get_String("M" + machineSel + "_OffsetStick");
-        String lsv = MyData.get_String("M" + machineSel + "_LaserVStick");
-        String lsh = MyData.get_String("M" + machineSel + "_LaserHStick");
-        String lrBucket = MyData.get_String("M" + machineSel + "_Bucket_MountPos");
-        String L1 = MyData.get_String("M" + machineSel + "_LengthL1");
-        String L2 = MyData.get_String("M" + machineSel + "_LengthL2");
-        String L3 = MyData.get_String("M" + machineSel + "_LengthL3");
-        String offsetDogBone = MyData.get_String("M" + machineSel + "_OffsetDB");
-        String lrFrame = MyData.get_String("M" + machineSel + "_Frame_MountPos");
-        String lengthPitch = MyData.get_String("M" + machineSel + "_LengthPitch");
-        String lengthRoll = MyData.get_String("M" + machineSel + "_LengthRoll");
-        String offsetPitch = MyData.get_String("M" + machineSel + "_OffsetFrameY");
-        String offsetRoll = MyData.get_String("M" + machineSel + "_OffsetFrameX");
-        String gpsdeltaX = MyData.get_String("M" + machineSel + "_OffsetGPSX");
-        String gpsdeltaY = MyData.get_String("M" + machineSel + "_OffsetGPSY");
-        String gpsdeltaZ = MyData.get_String("M" + machineSel + "_OffsetGPSZ");
-        String gps2Dev = MyData.get_String("M" + machineSel + "_OffsetGPS2");
-        String gpsType = MyData.get_String("M" + machineSel + "_sc600");
-        String comPort = MyData.get_String("M" + machineSel + "_comPort");
-        String isWL = MyData.get_String("M" + machineSel + "_isWL");
-        String reqSpeed = MyData.get_String("M" + machineSel + "reqSpeed");
-        String radioMode = MyData.get_String("M" + machineSel + "radioMode");
-        String quick = MyData.get_String("M" + machineSel + "_hasQuick");
-        String lang = MyData.get_String("language");
-        String widR = MyData.get_String("M" + machineSel + "_Bucket_" + "0" + "_Width_R");
-        String widL = MyData.get_String("M" + machineSel + "_Bucket_" + "0" + "_Width_L");
-        String palo = MyData.get_String("M" + machineSel + "_Bucket_" + "0" + "_Palo");
-        String lama = MyData.get_String("M" + machineSel + "_Bucket_" + "0" + "_Lama");
-        String between = MyData.get_String("M" + machineSel + "_Bucket_" + "0" + "_Between");
-        String g1g2 = MyData.get_String("M" + machineSel + "_distG1_G2");
 
-        String[] tiltMountPos = new String[10];
-        String[] benneTilt_Leng = new String[10];
-        String[] benneTilt_Offset = new String[10];
-
-
-        for (int i = 0; i < tiltMountPos.length; i++) {
-            tiltMountPos[i] = MyData.get_String("M" + machineSel + "_Tilt_MountPos" + i);
-            benneTilt_Leng[i] = MyData.get_String("M" + machineSel + "_Tilt_Length" + i);
-            benneTilt_Offset[i] = MyData.get_String("M" + machineSel + "_Tilt_Offset" + i);
-        }
-
-        String path = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines/Machine " + machineSel + "/Config";
-        String fileName = nameM + ".csv";
-        File f = new File(path, fileName);
-        CSVWriter writer;
-
-        try {
-            writer = new CSVWriter(new FileWriter(f));
-
-            String[] can = {"CAN TYPE", typeCan};
-            String[] boom1 = {"BOOM   1", lrBoom1, lengthBoom1, offsetBoom1};
-            String[] boom2 = {"BOOM   2", lrBoom2, lengthBoom2, offsetBoom2};
-            String[] stick = {"STICK   ", lrStick, lengthStick, offsetStick, lsv, lsh};
-            String[] linkage = {"LINKAGE ", lrBucket, L1, L2, L3, offsetDogBone};
-            String[] frame = {"FRAME   ", lrFrame, lengthPitch, lengthRoll, offsetPitch, offsetRoll};
-            String[] gps1x = {"GPS1 ∆X ", gpsdeltaX};
-            String[] gps1y = {"GPS1 ∆Y ", gpsdeltaY};
-            String[] gps1z = {"GPS1 ∆Z ", gpsdeltaZ};
-            String[] gps2 = {"GPS2∆HDT", gps2Dev};
-            String[] gpsT = {"GPS TYPE", gpsType};
-            String[] com = {"GPS COM ", comPort};
-            String[] wl = {"MCH TYPE", isWL};
-            String[] speed = {"NMEARATE", reqSpeed};
-            String[] radio = {"DATALINK", radioMode};
-            String[] coupler = {"QUICK CO", quick};
-            String[] langua = {"LANGUAGE", lang};
-            String[] wir = {"BLADE_WR", widR};
-            String[] wil = {"BLADE_WL", widL};
-            String[] paloL = {"MAST___H", palo};
-            String[] lamaL = {"BLADE__H", lama};
-            String[] betweenl = {"P1>>P2", between};
-            String[] g1g2L = {"G1>>G2", g1g2};
-
-
-            writer.writeNext(can);
-            writer.writeNext(boom1);
-            writer.writeNext(boom2);
-            writer.writeNext(stick);
-            writer.writeNext(linkage);
-            writer.writeNext(frame);
-            writer.writeNext(tiltMountPos);
-            writer.writeNext(benneTilt_Leng);
-            writer.writeNext(benneTilt_Offset);
-            writer.writeNext(gps1x);
-            writer.writeNext(gps1y);
-            writer.writeNext(gps1z);
-            writer.writeNext(gps2);
-            writer.writeNext(gpsT);
-            writer.writeNext(com);
-            writer.writeNext(wl);
-            writer.writeNext(speed);
-            writer.writeNext(radio);
-            writer.writeNext(coupler);
-            writer.writeNext(langua);
-            writer.writeNext(wir);
-            writer.writeNext(wil);
-            writer.writeNext(paloL);
-            writer.writeNext(lamaL);
-            writer.writeNext(betweenl);
-            writer.writeNext(g1g2L);
-
-            writer.close();
-        } catch (Exception ignored) {
-        }
-        try {
-            String s = "";
-            if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
-                Apollo2 apollo2 = Apollo2.getInstance(Nuova_Machine_Settings.this);
-                s = apollo2.getDeviceSN();
-            } else {
-                ApolloPro apolloPro = ApolloPro.getInstance(Nuova_Machine_Settings.this);
-                s = apolloPro.getDeviceSN();
-            }
-
-        } catch (Exception ignored) {
-
-        }
-    }
 }

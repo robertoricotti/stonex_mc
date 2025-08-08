@@ -67,7 +67,7 @@
             android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
             android:src="@drawable/bottone_save_mch"
-            app:tint="@color/white" />
+            app:tint="@color/_____cancel_text" />
 
         <ImageView
             android:id="@+id/img11"
@@ -76,7 +76,7 @@
             android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
             android:src="@drawable/bottone_call_mch"
-            app:tint="@color/white" />
+            app:tint="@color/_____cancel_text" />
     </LinearLayout>
 
     <LinearLayout

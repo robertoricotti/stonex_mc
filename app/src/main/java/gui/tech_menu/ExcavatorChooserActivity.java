@@ -5,6 +5,7 @@ import static gui.boot_and_choose.LaunchScreenActivity.hasAuto;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
+import drill_pile.gui.Drill_MainPage;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
@@ -37,7 +39,7 @@ import utils.WifiHelper;
 public class ExcavatorChooserActivity extends BaseClass {
     DialogUnitOfMeasure dialogUnitOfMeasure;
     LinearLayout m1, m2, m3, m4;
-    ImageView machine1, machine2, machine3, machine4, lockUnlock;
+    ImageView machine1, machine2, machine3, machine4, lockUnlock, savetofile, readfromfile;
     TextView nameMachine1, nameMachine2, nameMachine3, nameMachine4;
     ImageView canM1, canM2, canM3, canM4;
     ImageView bucketM1, bucketM2, bucketM3, bucketM4;
@@ -104,6 +106,8 @@ public class ExcavatorChooserActivity extends BaseClass {
         settingsM3 = findViewById(R.id.modify_mac_3);
         settingsM4 = findViewById(R.id.modify_mac_4);
         lockUnlock = findViewById(R.id.lockunlock);
+        savetofile = findViewById(R.id.savetofile);
+        readfromfile = findViewById(R.id.readfromfile);
 
         back = findViewById(R.id.back);
 
@@ -244,6 +248,8 @@ public class ExcavatorChooserActivity extends BaseClass {
         settingsM2.setEnabled(false);
         settingsM3.setEnabled(false);
         settingsM4.setEnabled(false);
+        savetofile.setEnabled(false);
+        readfromfile.setEnabled(false);
 
     }
 
@@ -269,6 +275,62 @@ public class ExcavatorChooserActivity extends BaseClass {
     }
 
     private void onClick() {
+        savetofile.setOnClickListener(view -> {
+            if (isTech) {
+                // Crea un nuovo AlertDialog.Builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(ExcavatorChooserActivity.this);
+                builder.setTitle("SAVE ALL PARAMETERS TO EXTERNAL MEMORY");
+                builder.setMessage("Do You Want to Proceed ?");
+
+                // Aggiungi il pulsante "Sì"
+                builder.setPositiveButton("YES", (dialog, which) -> {
+
+                    MyData.exportAllToJson();
+                    new CustomToast(ExcavatorChooserActivity.this, "SAVED").show_long();
+                });
+
+                // Aggiungi il pulsante "No"
+                builder.setNegativeButton("NO", (dialog, which) -> {
+
+                });
+                builder.setCancelable(true);
+                builder.show();
+
+
+
+            } else {
+                String lucchettoChiuso = "\uD83D\uDD12";
+                new CustomToast(ExcavatorChooserActivity.this, lucchettoChiuso).show();
+            }
+        });
+        readfromfile.setOnClickListener(view -> {
+            if (isTech) {
+                // Crea un nuovo AlertDialog.Builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(ExcavatorChooserActivity.this);
+                builder.setTitle("OVERWRITE ALL APPLICATION PARAMETERS");
+                builder.setMessage("Do You Want to Proceed ?");
+
+                // Aggiungi il pulsante "Sì"
+                builder.setPositiveButton("YES", (dialog, which) -> {
+
+                    MyData.restoreFromJson();
+
+                });
+
+                // Aggiungi il pulsante "No"
+                builder.setNegativeButton("NO", (dialog, which) -> {
+
+                });
+                builder.setCancelable(true);
+                builder.show();
+
+
+
+            } else {
+                String lucchettoChiuso = "\uD83D\uDD12";
+                new CustomToast(ExcavatorChooserActivity.this, lucchettoChiuso).show();
+            }
+        });
         img00.setOnClickListener(view -> {
             if (!dialogGnssCoordinates.alertDialog.isShowing()) {
                 dialogGnssCoordinates.show();
@@ -277,7 +339,7 @@ public class ExcavatorChooserActivity extends BaseClass {
         btn_3.setOnClickListener(view -> {
             disableAll();
             Intent intent = new Intent(this, Can_Msg_Debug.class);
-            intent.putExtra("chi","menu");
+            intent.putExtra("chi", "menu");
             startActivity(intent);
             finish();
         });
@@ -299,13 +361,13 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         bucketM1.setOnClickListener((View v) -> {
             if (indexMachineSelected == 1) {
-                if(isWL1==0||isWL1==1) {
+                if (isWL1 == 0 || isWL1 == 1) {
                     bucketM1.setEnabled(false);
                     Intent i = new Intent(this, BucketChooserActivity.class);
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                     startActivity(i);
                     finish();
-                }else {
+                } else {
                     if (hasAuto) {
                         if (isTech) {
                             disableAll();
@@ -325,13 +387,13 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         bucketM2.setOnClickListener((View v) -> {
             if (indexMachineSelected == 2) {
-                if(isWL2==0||isWL2==1) {
+                if (isWL2 == 0 || isWL2 == 1) {
                     bucketM2.setEnabled(false);
                     Intent i = new Intent(this, BucketChooserActivity.class);
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                     startActivity(i);
                     finish();
-                }else {
+                } else {
                     if (hasAuto) {
                         if (isTech) {
                             disableAll();
@@ -351,13 +413,13 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         bucketM3.setOnClickListener((View v) -> {
             if (indexMachineSelected == 3) {
-                if(isWL3==0||isWL3==1) {
+                if (isWL3 == 0 || isWL3 == 1) {
                     bucketM3.setEnabled(false);
                     Intent i = new Intent(this, BucketChooserActivity.class);
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                     startActivity(i);
                     finish();
-                }else {
+                } else {
                     if (hasAuto) {
                         if (isTech) {
                             disableAll();
@@ -377,13 +439,13 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         bucketM4.setOnClickListener((View v) -> {
             if (indexMachineSelected == 4) {
-                if(isWL4==0||isWL4==1) {
+                if (isWL4 == 0 || isWL4 == 1) {
                     bucketM4.setEnabled(false);
                     Intent i = new Intent(this, BucketChooserActivity.class);
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                     startActivity(i);
                     finish();
-                }else {
+                } else {
                     if (hasAuto) {
                         if (isTech) {
                             disableAll();
@@ -407,7 +469,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
                     dialogUnitOfMeasure.show();
                 }
-            }else {
+            } else {
                 if (indexMachineSelected == 1) {
                     if (isTech) {
                         if (unitOfMeasure == 4 || unitOfMeasure == 5) {
@@ -439,7 +501,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
                     dialogUnitOfMeasure.show();
                 }
-            }else {
+            } else {
                 if (indexMachineSelected == 2) {
                     if (isTech) {
                         if (unitOfMeasure == 4 || unitOfMeasure == 5) {
@@ -469,7 +531,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
                     dialogUnitOfMeasure.show();
                 }
-            }else {
+            } else {
                 if (indexMachineSelected == 3) {
                     if (isTech) {
                         if (unitOfMeasure == 4 || unitOfMeasure == 5) {
@@ -499,7 +561,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     new CustomToast(this, "Select Feet or Meter to access calibration").show_long();
                     dialogUnitOfMeasure.show();
                 }
-            }else {
+            } else {
                 if (indexMachineSelected == 4) {
                     if (isTech) {
                         if (unitOfMeasure == 4 || unitOfMeasure == 5) {

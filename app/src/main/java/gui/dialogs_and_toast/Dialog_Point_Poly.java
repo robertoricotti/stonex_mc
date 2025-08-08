@@ -147,19 +147,19 @@ public class Dialog_Point_Poly {
 
         String pt = "";
         try {
-            pt = DataSaved.progettoSelected.replace("/storage/emulated/0/StonexMachineControl/Projects/", "");
+            pt = DataSaved.progettoSelected.replace("/storage/emulated/0/StonexMC_V4/Projects/", "");
         } catch (Exception e) {
             pt = "null";
         }
         String pl = "";
         try {
-            pl = DataSaved.progettoSelected_POLY.replace("/storage/emulated/0/StonexMachineControl/Projects/", "");
+            pl = DataSaved.progettoSelected_POLY.replace("/storage/emulated/0/StonexMC_V4/Projects/", "");
         } catch (Exception e) {
             pl = "null";
         }
         String pp = "";
         try {
-            pp = DataSaved.progettoSelected_POINT.replace("/storage/emulated/0/StonexMachineControl/Projects/", "");
+            pp = DataSaved.progettoSelected_POINT.replace("/storage/emulated/0/StonexMC_V4/Projects/", "");
         } catch (Exception e) {
             pp = "null";
         }

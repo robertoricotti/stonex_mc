@@ -145,7 +145,7 @@ public class BucketCalib extends AppCompatActivity {
         bucketAngleOffset = findViewById(R.id.bucketAngleOffset);
         bucketFlatAngleOffset = findViewById(R.id.bucketAngleFlatOffset);
         load = findViewById(R.id.load);
-
+        load.setVisibility(View.INVISIBLE);
         top = findViewById(R.id.cbTop);
         topRev = findViewById(R.id.cbTopRev);
 
@@ -198,13 +198,7 @@ public class BucketCalib extends AppCompatActivity {
             if (!qwertyDialog.dialog.isShowing())
                 qwertyDialog.show(nameBucket);
         });
-        load.setOnClickListener((View v) -> {
-            disableAll();
-            Intent intent = new Intent(this, PickBucket.class);
-            intent.putExtra("indexBucket", indexBucket);
-            startActivity(intent);
-            finish();
-        });
+
 
 
         save.setOnClickListener((View v) -> {
@@ -218,7 +212,7 @@ public class BucketCalib extends AppCompatActivity {
                     } else {
                         disableAll();
                         save();
-                        store();
+
                         startService(new Intent(this, UpdateValuesService.class));
                         startActivity(new Intent(this, BucketChooserActivity.class));
                         finish();
@@ -233,7 +227,7 @@ public class BucketCalib extends AppCompatActivity {
                     } else {
                         disableAll();
                         save();
-                        store();
+
                         startService(new Intent(this, UpdateValuesService.class));
                         startActivity(new Intent(this, BucketChooserActivity.class));
 
@@ -339,31 +333,6 @@ public class BucketCalib extends AppCompatActivity {
     }
 
 
-    private void store() {
-        String nameM = nameBucket.getText().toString().trim();
-        String length = Utils.writeMetri(lengthBucket.getText().toString().trim());
-        String width = Utils.writeMetri(widthBucket.getText().toString().trim());
-        String L4 = Utils.writeMetri(L4Bucket.getText().toString().trim());
-        String offset = String.valueOf(DataSaved.offsetBucket);
-        String flatOffset = String.valueOf(DataSaved.offsetFlat);
-        String flat = String.valueOf(DataSaved.flat);
-
-        String path = Environment.getExternalStorageDirectory().toString() + folderPath + "/Machines/Machine " + indexMachineSelected + "/Buckets";
-        String fileName = nameM + ".csv";
-        File f = new File(path, fileName);
-        CSVWriter writer;
-
-        try {
-            writer = new CSVWriter(new FileWriter(f));
-
-            String[] bucket = {nameM, length, width, L4, offset, flatOffset, flat};
-
-            writer.writeNext(bucket);
-
-            writer.close();
-        } catch (Exception ignored) {
-        }
-    }
 
 
     @Override

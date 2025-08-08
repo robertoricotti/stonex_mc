@@ -298,7 +298,7 @@ public class DataSaved {
      * PNEZD
      */
     public static List<PNEZDPoint> pnezdPoints = new ArrayList<>();
-    public static String PNEZDPath="/storage/emulated/0/StonexMachineControl/Projects/Ex/Ex.csv";
+    public static String PNEZDPath="/storage/emulated/0/StonexMC_V4/Projects/Ex/Ex.csv";
 
 
 }

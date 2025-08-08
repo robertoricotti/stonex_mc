@@ -24,6 +24,9 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
     private ArrayList<FileItem> files;
     private int selectedItem = -1;
     private boolean isFold = false;
+    private boolean isCloudFolder=false;
+
+
 
     private int filterType = 0; // 0 = tutti, 1 = solo cartelle, 2 = solo file
     private ArrayList<FileItem> originalFiles; // per conservare l'elenco completo
@@ -70,7 +73,13 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
         if (isFolder) {
             isFold = true;
-            icon.setImageResource(R.drawable.folder_traffic_cone); // Your folder icon resource
+            //come definire con un booleano se è una cartella cloud o no per cambiare immagine
+            if(isCloudFolder()) {
+                icon.setImageResource(R.drawable.cloud_filled_f); // Your folder icon resource
+            }else {
+                icon.setImageResource(R.drawable.filled_f); // Your folder icon resource
+            }
+
             sizeTextView.setText(formatSize(fileSize));
         } else {
             isFold = false;
@@ -87,7 +96,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
             } else if (fileExtension.equalsIgnoreCase("sp")) {
                 icon.setImageResource(R.drawable.accuracy);
             } else if (fileExtension.equalsIgnoreCase("csv")) {
-                icon.setImageResource(R.drawable.mycsv);
+                icon.setImageResource(R.drawable.pnezd_menu);
             } else if (fileExtension.equalsIgnoreCase("txt")) {
                 icon.setImageResource(R.drawable.mytxt);
             } else if (nameFile.startsWith("#1P_#")) {
@@ -191,6 +200,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
         return isFold;
     }
 
+
     public void renameSelectedFile( String pat,String newName) {
         if(pat==null&&newName==null){
             notifyDataSetChanged();
@@ -239,6 +249,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
             return isFolder;
         }
 
+
         public long getSize() {
             return size;
         }
@@ -273,6 +284,11 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
         selectedItem = -1; // reset selezione
         notifyDataSetChanged();
     }
-
+    public boolean isCloudFolder() {
+        return isCloudFolder;
+    }
+    public void setCloudFolder(boolean cloudFolder) {
+        this.isCloudFolder = cloudFolder;
+    }
 
 }
