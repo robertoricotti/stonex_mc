@@ -42,7 +42,7 @@ import utils.MyDeviceManager;
 
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
-    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO;
+    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO,ckSchermo;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, menu_1, menu_2, saveToFile, readFromFile, status,bt_canopen;
     ConstraintLayout constraintLayout, constraintLayout_2,constraintLayout_3;
@@ -97,6 +97,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         tvTilt = findViewById(R.id.toTilt);
         tvXYZ = findViewById(R.id.toxyz);
         mchName = findViewById(R.id.mch_name);
+        ckSchermo=findViewById(R.id.ckSchermo);
         ckDO = findViewById(R.id.ck2);
         ckUHF = findViewById(R.id.ck3);
         ckUpper = findViewById(R.id.ck4);
@@ -164,6 +165,18 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             } else if (!ckUpper.isChecked()) {
                 ckUpper.setChecked(true);
                 MyData.push("digStartUp", "1");
+
+            }
+        });
+        ckSchermo.setOnClickListener(view -> {
+            ckSchermo.setChecked(!ckSchermo.isChecked());
+            if (ckSchermo.isChecked()) {
+                ckSchermo.setChecked(false);
+                MyData.push("ckSchermo", "0");
+
+            } else if (!ckSchermo.isChecked()) {
+                ckSchermo.setChecked(true);
+                MyData.push("ckSchermo", "1");
 
             }
         });
@@ -272,6 +285,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             saveName();
             try {
                 MyData.push("techInfo", techInfo.getText().toString());
+                if(MyData.get_Int("ckSchermo") == 1){
+                    MyDeviceManager.showBar(Nuova_Machine_Settings.this);
+                }else {
+                    MyDeviceManager.hideBar(Nuova_Machine_Settings.this);
+                }
             }catch(Exception ignored){
 
             }
@@ -590,6 +608,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ckIMU.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 3);//TSM
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag
         ckUpper.setChecked(MyData.get_Int("digStartUp") == 1);
+        ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);
         techInfo.setText(MyData.get_String("techInfo"));
 
     }

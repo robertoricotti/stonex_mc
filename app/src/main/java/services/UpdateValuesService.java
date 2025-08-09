@@ -577,6 +577,7 @@ public class UpdateValuesService extends Service {
                 String gradientDB = MyData.get_String("gradientDB");
                 String showAlign = MyData.get_String("showAlign");
                 String line_Offset = MyData.get_String("line_Offset");
+                String ckSchermo=MyData.get_String("ckSchermo");
                 String geoidPath=MyData.get_String("geoidPath");
                 String lock3dRotation=MyData.get_String("lock3dRotation");
 
@@ -768,11 +769,13 @@ public class UpdateValuesService extends Service {
                     if (line_Offset == null) {
                         MyData.push("line_Offset", "0.0");
                     }
-                    if(geoidPath==null|geoidPath.equals("null")){
-                        MyData.push("geoidPath",null);
-                        MyApp.GEOIDE_PATH=null;
-                    }else {
-                        MyApp.GEOIDE_PATH=MyData.get_String("geoidPath");
+                    if(ckSchermo==null){
+                        MyData.push("ckSchermo","0");
+
+                    }
+                    if(geoidPath==null){
+                        MyData.push("geoidPath","");
+
                     }
                     if (lock3dRotation == null) {
                         MyData.push("lock3dRotation", "0");
@@ -1167,7 +1170,16 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di canBaud2: " + e.getMessage());
                 }
-
+                try {
+                    MyApp.GEOIDE_PATH = MyData.get_String("geoidPath");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di geoidPath: " + e.getMessage());
+                }
+                try {
+                    DataSaved.ckSchermo = MyData.get_Int("ckSchermo");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di ckSchermo: " + e.getMessage());
+                }
                 try {
                     DataSaved.myBrightness = Float.parseFloat(MyData.get_String("brightness"));
                 } catch (Exception e) {

@@ -262,6 +262,18 @@
                 android:layout_height="wrap_content"
                 android:padding="15dp"
                 android:visibility="gone">
+                <CheckBox
+                    android:id="@+id/ckSchermo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/_____cancel_text"
+                    android:text="ENABLE ANDROID NAVIGATION BUTTONS"
+                    android:textColor="@color/_____cancel_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
 
                 <CheckBox
                     android:id="@+id/ck2"
@@ -273,7 +285,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold|italic"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/ckSchermo"  />
 
                 <CheckBox
                     android:id="@+id/ck3"

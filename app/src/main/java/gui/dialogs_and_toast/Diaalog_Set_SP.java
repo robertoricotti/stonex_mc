@@ -75,13 +75,13 @@ public class Diaalog_Set_SP {
     Spinner spinner;
     String selectedFolder;
     TextView inUso;
-    Dialog_PRJ_Folder dialogPrjFolder;
+
 
 
     public Diaalog_Set_SP(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
-        dialogPrjFolder=new Dialog_PRJ_Folder(activity);
+
     }
 
     public void show() {
@@ -246,10 +246,10 @@ public class Diaalog_Set_SP {
                         String match=getCrsCodeFromFileName(selectedFileName);
                         Log.e("testSP",selectedFolder+"/"+selectedFileName+"\n"+mPath);
                         if(match!=null){
-                            Log.d("testSP","match");
+
                             if(match.equals("UTM")){
                                 //UTM autozone
-                                Log.d("testSP","match AUTOZONE");
+
                                 MyData.push("crs", "UTM");
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 try {
@@ -258,13 +258,9 @@ public class Diaalog_Set_SP {
                                     Log.e("testSP",Log.getStackTraceString(e));
                                 }
 
-
-                                if(!dialogPrjFolder.dialog.isShowing()){
-                                    dialogPrjFolder.show(mPath);
-                                }
                                 dialog.dismiss();
                             }else {
-                                Log.d("testSP","match LISTA");
+
                                 MyData.push("crs", match);
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 try {
@@ -274,17 +270,12 @@ public class Diaalog_Set_SP {
                                 }
 
                                 ReadProjectService.startCRS();
-                                //activity.recreate();
 
-
-                                if(!dialogPrjFolder.dialog.isShowing()){
-                                    dialogPrjFolder.show(mPath);
-                                }
                                 dialog.dismiss();
                             }
                         }else {
                             //invia file SP
-                            Log.d("testSP","NO match");
+
                             usaSP.setEnabled(false);
                             MyData.push("crs", ".SP FILE");
 
@@ -321,10 +312,6 @@ public class Diaalog_Set_SP {
                                 default:
                                     Thread.sleep(500);
 
-
-                                    if(!dialogPrjFolder.dialog.isShowing()){
-                                        dialogPrjFolder.show(mPath);
-                                    }
                                     dialog.dismiss();
                                     break;
 
@@ -364,9 +351,6 @@ public class Diaalog_Set_SP {
         dismiss.setOnClickListener(view -> {
             setupGNSS(DataSaved.S_CRS);
 
-            if(!dialogPrjFolder.dialog.isShowing()){
-                dialogPrjFolder.show(mPath);
-            }
             dialog.dismiss();
         });
         // Aggiungi un listener per gestire la selezione degli elementi dello Spinner
@@ -376,7 +360,6 @@ public class Diaalog_Set_SP {
                 // Ottieni il nome della cartella selezionata
 
                 selectedFolder = (String) parent.getItemAtPosition(position);
-                Log.d("SpinnerTEST", position + " " + selectedFolder);
                 MyData.push("LastNation", selectedFolder);
                 // Chiama il metodo sortFiles con il nome della cartella selezionata
                 sortFiles(selectedFolder);
@@ -414,9 +397,9 @@ public class Diaalog_Set_SP {
                     }
                 }
 
-                Log.d("SpinnerTEST", "File trovati: " + arraySP.size());
+
             } else {
-                Log.d("SpinnerTEST", "Nessun file trovato nella cartella: " + folderPath);
+
             }
         } catch (IOException e) {
             Log.e("SpinnerTEST", "Errore durante la lettura dei file da assets", e);
@@ -529,7 +512,7 @@ public class Diaalog_Set_SP {
 
                     }
                 } catch (Exception e) {
-                    Log.d("step!", e.toString());
+
                 }
             }
         }, 100);
@@ -537,13 +520,13 @@ public class Diaalog_Set_SP {
 
     public void cerca(String testo) {
         List<ProjectFileAdapter.FileItem> risultatiFiltrati = new ArrayList<>();
-        Log.d("SpinnerTEST", "Testo cercato: " + testo);
+
 
         for (ProjectFileAdapter.FileItem item : arraySPOriginale) {
-            Log.d("SpinnerTEST", "Nome del file: " + item.getName());
+
 
             if (item.getName().toLowerCase().contains(testo.toLowerCase())) {
-                Log.d("SpinnerTEST", "Elemento trovato: dentro IF " + item.getName());
+
                 risultatiFiltrati.add(item);
             } else {
                 Log.d("SpinnerTEST", "Elemento non trovato: fuori IF " + item.getName());
@@ -555,7 +538,7 @@ public class Diaalog_Set_SP {
         arraySP.addAll(risultatiFiltrati);
         spAdapter.notifyDataSetChanged();
 
-        Log.d("SpinnerTEST", "Numero di elementi trovati: " + arraySP.size());
+
     }
 
 
@@ -639,7 +622,7 @@ public class Diaalog_Set_SP {
         byte msg = 0x03;
 
 
-        Log.d("SCRS", "start " + crs + "  " + _NONE + "  " + msg);
+
         MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
         if (crs.equals(_NONE)) {
             //setup LLQ

@@ -129,7 +129,15 @@ public class LaunchScreenActivity extends BaseClass {
             private void startMe() {
 
                 try {
-                    MyDeviceManager.hideBar(visibleActivity);
+                    if(MyData.get_String("ckSchermo")!=null) {
+                        if (MyData.get_String("ckSchermo").equals("1")) {
+                            MyDeviceManager.showBar(visibleActivity);
+                        } else {
+                            MyDeviceManager.hideBar(visibleActivity);
+                        }
+                    }else {
+                        MyDeviceManager.hideBar(visibleActivity);
+                    }
 
                     if(!activationCode.equals(MyData.get_String("licenza"))){
                         licenseType=-1;

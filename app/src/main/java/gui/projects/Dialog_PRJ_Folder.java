@@ -205,7 +205,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
         setSP.setOnClickListener(view -> {
             if(!diaalogSetSp.dialog.isShowing()){
                 diaalogSetSp.show(mPath,spAdapter);
-                dialog.dismiss();
+                //dialog.dismiss();
             }
         });
         usaFile.setOnClickListener(view -> {
