@@ -42,7 +42,7 @@ import utils.MyDeviceManager;
 
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
-    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO,ckSchermo;
+    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO,ckSchermo,ckMach;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, menu_1, menu_2, saveToFile, readFromFile, status,bt_canopen;
     ConstraintLayout constraintLayout, constraintLayout_2,constraintLayout_3;
@@ -98,6 +98,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         tvXYZ = findViewById(R.id.toxyz);
         mchName = findViewById(R.id.mch_name);
         ckSchermo=findViewById(R.id.ckSchermo);
+        ckMach=findViewById(R.id.ckMach);
         ckDO = findViewById(R.id.ck2);
         ckUHF = findViewById(R.id.ck3);
         ckUpper = findViewById(R.id.ck4);
@@ -177,6 +178,20 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             } else if (!ckSchermo.isChecked()) {
                 ckSchermo.setChecked(true);
                 MyData.push("ckSchermo", "1");
+
+            }
+        });
+        ckMach.setOnClickListener(view -> {
+            ckMach.setChecked(!ckMach.isChecked());
+            if (ckMach.isChecked()) {
+                ckMach.setChecked(false);
+                MyData.push("drwaMachieSchema", "0");
+                DataSaved.drwaMachieSchema=0;
+
+            } else if (!ckMach.isChecked()) {
+                ckMach.setChecked(true);
+                MyData.push("drwaMachieSchema", "1");
+                DataSaved.drwaMachieSchema=1;
 
             }
         });
@@ -609,6 +624,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag
         ckUpper.setChecked(MyData.get_Int("digStartUp") == 1);
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);
+        ckMach.setChecked(MyData.get_Int("drwaMachieSchema")==1);
         techInfo.setText(MyData.get_String("techInfo"));
 
     }

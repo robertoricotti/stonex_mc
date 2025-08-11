@@ -578,6 +578,7 @@ public class UpdateValuesService extends Service {
                 String showAlign = MyData.get_String("showAlign");
                 String line_Offset = MyData.get_String("line_Offset");
                 String ckSchermo=MyData.get_String("ckSchermo");
+                String drwaMachieSchema=MyData.get_String("drwaMachieSchema");
                 String geoidPath=MyData.get_String("geoidPath");
                 String lock3dRotation=MyData.get_String("lock3dRotation");
 
@@ -771,6 +772,10 @@ public class UpdateValuesService extends Service {
                     }
                     if(ckSchermo==null){
                         MyData.push("ckSchermo","0");
+
+                    }
+                    if(drwaMachieSchema==null){
+                        MyData.push("drwaMachieSchema","0");
 
                     }
                     if(geoidPath==null){
@@ -1179,6 +1184,11 @@ public class UpdateValuesService extends Service {
                     DataSaved.ckSchermo = MyData.get_Int("ckSchermo");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di ckSchermo: " + e.getMessage());
+                }
+                try {
+                    DataSaved.drwaMachieSchema = MyData.get_Int("drwaMachieSchema");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di drwaMachieSchema: " + e.getMessage());
                 }
                 try {
                     DataSaved.myBrightness = Float.parseFloat(MyData.get_String("brightness"));

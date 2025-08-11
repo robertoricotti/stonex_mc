@@ -10,6 +10,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import packexcalib.exca.DataSaved;
+
 public class MyGLSurfaceView extends GLSurfaceView {
 
     private final MyGLRenderer renderer;
@@ -55,9 +57,16 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     float dy = y - previousY;
 
                     if (!My3DActivity.isPan) {
-                        renderer.angleY += dx * ROTATION_SENSITIVITY;
-                        renderer.angleX += dy * ROTATION_SENSITIVITY;
-                        renderer.angleX = Math.max(-110f, Math.min(0f, renderer.angleX));
+
+                        if(DataSaved.lock3dRotation>0){
+                            renderer.angleY_extra += dx * ROTATION_SENSITIVITY;
+                            renderer.angleX += dy * ROTATION_SENSITIVITY;
+                            renderer.angleX = Math.max(-110f, Math.min(0f, renderer.angleX));
+                        }else {
+                            renderer.angleY += dx * ROTATION_SENSITIVITY;
+                            renderer.angleX += dy * ROTATION_SENSITIVITY;
+                            renderer.angleX = Math.max(-110f, Math.min(0f, renderer.angleX));
+                        }
                     } else {
                         float panFactor = 0.005f;
                         panX += dx * panFactor;

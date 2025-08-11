@@ -481,6 +481,9 @@ public class My3DActivity extends BaseClass {
                 MyData.push("glScale", String.valueOf(MyGLRenderer.scale));
                 MyData.push("glAngleX", String.valueOf(MyGLRenderer.angleX));
                 MyData.push("glAngleY", String.valueOf(MyGLRenderer.angleY));
+                MyData.push("glAngleY_Extra", String.valueOf(MyGLRenderer.angleY_extra));
+
+
 
             } catch (Exception e) {
             }

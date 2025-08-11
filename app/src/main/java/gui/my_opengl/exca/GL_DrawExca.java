@@ -39,121 +39,220 @@ import packexcalib.exca.ExcavatorLib;
 
 public class GL_DrawExca {
 
+
     public static void draw(GL11 gl) {
-        BennaRenderer bennaRenderer = new BennaRenderer(DataSaved.GL_BENNA, leftSideIndices, rightSideIndices, cullaIndices, coloreInterno, coloreEsterno, 0.02f);
-        bennaRenderer.draw(gl);
-        //
-        Cylinder ralla = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[35]), p3tof(DataSaved.GL_FRAME_BASE[36]), 0.25f * scale, 0.25f * scale, coloreAttaccoScuro, 16, false);
-
-        ralla.draw(gl);
-
-        Cylinder c2 = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[37]), p3tof(DataSaved.GL_FRAME_BASE[49]), (float) (R_Cingolo * 0.5 * scale), (float) (R_Cingolo * 0.5 * scale), coloreAttacco, 16, true);
-        Cylinder c3 = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[38]), p3tof(DataSaved.GL_FRAME_BASE[50]), (float) (R_Cingolo * 0.5 * scale), (float) (R_Cingolo * 0.5 * scale), coloreAttacco, 16, true);
-        Cylinder c4 = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[39]), p3tof(DataSaved.GL_FRAME_BASE[51]), (float) (R_Cingolo * 0.5 * scale), (float) (R_Cingolo * 0.5 * scale), coloreAttacco, 16, true);
-        Cylinder c5 = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[40]), p3tof(DataSaved.GL_FRAME_BASE[52]), (float) (R_Cingolo * 0.5 * scale), (float) (R_Cingolo * 0.5 * scale), coloreAttacco, 16, true);
-        c2.draw(gl);
-        c3.draw(gl);
-        c4.draw(gl);
-        c5.draw(gl);
-
-        BoomsDrawer cingoli = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.cingoliChiari(), coloreAttacco, My_Frame.cingoliScuri(), coloreAttaccoScuro, My_Frame.bordiCingoli());
-        cingoli.draw(gl);
-        //
-        Cylinder cylinder = new Cylinder(new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
-                new float[]{DataSaved.GL_ATTACCO[3], DataSaved.GL_ATTACCO[4], DataSaved.GL_ATTACCO[5]}, larghezza_attacco * 0.5f, (larghezza_attacco * 0.5f) * 0.5f,
-                coloreAttacco, 12, true);
-        cylinder.draw(gl);
-
-        if (DataSaved.lrTilt != 0) {
-            Cylinder cylinder1 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
-                    new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]}, raggioPivot, raggioPivot,
-                    coloreAttacco, 12, true);
-            cylinder1.draw(gl);
-
-            Cylinder cylinder2 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
-                    new float[]{DataSaved.GL_ATTACCO[12], DataSaved.GL_ATTACCO[13], DataSaved.GL_ATTACCO[14]}, raggioPivot, raggioPivot,
-                    coloreAttacco, 12, true);
-            cylinder2.draw(gl);
-
-            Cylinder cylinder3 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[15], DataSaved.GL_ATTACCO[16], DataSaved.GL_ATTACCO[17]},
-                    new float[]{DataSaved.GL_ATTACCO[18], DataSaved.GL_ATTACCO[19], DataSaved.GL_ATTACCO[20]}, larghezza_attacco * 0.75f, ((larghezza_attacco * 0.5f) * 1.15f) * 0.5f,
-                    coloreAttacco, 8, true);
-            cylinder3.draw(gl);
-        }
-
-        Cylinder boccolaStick = new Cylinder(p3tof(DataSaved.GL_STICK[0]),
-                p3tof(DataSaved.GL_STICK[6]),
-                (float) (DataSaved.L_Stick * 0.025f * scale), (float) (DataSaved.L_Stick * 0.025f * scale), coloreBoom, 12, true);
-        boccolaStick.draw(gl);
-        BoomsDrawer stick = new BoomsDrawer(DataSaved.GL_STICK, My_Stick.facceChiare(), coloreBoom,
-                My_Stick.facceScure(), coloreBoomScuro, My_Stick.contorno());
-        stick.draw(gl);
 
 
-        if (DataSaved.lrBoom2 == 0) {
-            BoomsDrawer boom1 = new BoomsDrawer(DataSaved.GL_BOOM1, My_Boom1.indici1(), coloreBoom,
-                    My_Boom1.indici2(), coloreBoomScuro, My_Boom1.contorno());
-            boom1.draw(gl);
-        } else {
-            //disegna boom1+boom2
-            BoomsDrawer boom1_2 = new BoomsDrawer(DataSaved.GL_BOOM1_2, My_Boom1_Boom2.facceChiare(), coloreBoom,
-                    My_Boom1_Boom2.facceScure(), coloreBoomScuro, My_Boom1_Boom2.contorni());
-            boom1_2.draw(gl);
-        }
-        BoomsDrawer frameBase = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.triangoliFrameChiari(), coloreBoom,
-                My_Frame.triangoliFrameScuri(), coloreBoomScuro, My_Frame.bordi());
-        frameBase.draw(gl);
+        if(DataSaved.drwaMachieSchema>0){
+            BennaRenderer bennaRenderer = new BennaRenderer(DataSaved.GL_BENNA, leftSideIndices, rightSideIndices, cullaIndices, coloreInterno, coloreEsterno, 0.02f);
+            bennaRenderer.draw(gl);
+            //
 
 
-        BoomsDrawer cabina = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.cabinaChiara(), coloreAttacco,
-                My_Frame.cabinaScura(), coloreAttaccoScuro, My_Frame.bordiCab());
-        cabina.draw(gl);
+                Cylinder ralla = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[35]), p3tof(DataSaved.GL_FRAME_BASE[36]), 0.25f * scale, 0.25f * scale, coloreAttaccoScuro, 16, false);
+                ralla.draw(gl);
 
-        BoomsDrawer minipitch = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.triangoliMiniChiari(), coloreBoom, My_Frame.triangoliMiniScuri(), coloreBoomScuro,
-                My_Frame.bordiMiniP());
-        minipitch.draw(gl);
+                Cylinder c2 = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[37]), p3tof(DataSaved.GL_FRAME_BASE[49]), (float) (R_Cingolo * 0.5 * scale), (float) (R_Cingolo * 0.5 * scale), coloreAttacco, 16, true);
+                Cylinder c3 = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[38]), p3tof(DataSaved.GL_FRAME_BASE[50]), (float) (R_Cingolo * 0.5 * scale), (float) (R_Cingolo * 0.5 * scale), coloreAttacco, 16, true);
+                Cylinder c4 = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[39]), p3tof(DataSaved.GL_FRAME_BASE[51]), (float) (R_Cingolo * 0.5 * scale), (float) (R_Cingolo * 0.5 * scale), coloreAttacco, 16, true);
+                Cylinder c5 = new Cylinder(p3tof(DataSaved.GL_FRAME_BASE[40]), p3tof(DataSaved.GL_FRAME_BASE[52]), (float) (R_Cingolo * 0.5 * scale), (float) (R_Cingolo * 0.5 * scale), coloreAttacco, 16, true);
+                c2.draw(gl);
+                c3.draw(gl);
+                c4.draw(gl);
+                c5.draw(gl);
 
-        BoomsDrawer cappello = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.zavorraMedia(), coloreBoom, My_Frame.cappello(), coloreBoomScuro,
-                My_Frame.bordiCappello());
-        cappello.draw(gl);
+                BoomsDrawer cingoli = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.cingoliChiari(), coloreAttacco, My_Frame.cingoliScuri(), coloreAttaccoScuro, My_Frame.bordiCingoli());
+                cingoli.draw(gl);
+                //
+                Cylinder cylinder = new Cylinder(new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
+                        new float[]{DataSaved.GL_ATTACCO[3], DataSaved.GL_ATTACCO[4], DataSaved.GL_ATTACCO[5]}, larghezza_attacco * 0.5f, (larghezza_attacco * 0.5f) * 0.5f,
+                        coloreAttacco, 12, true);
+                cylinder.draw(gl);
 
-        Cylinder spigolo;
-        int colore=Color.BLUE;
-        if(DataSaved.isLowerEdge){
-            colore=Color.RED;
-        }
-        switch (DataSaved.bucketEdge) {
-            case -1:
-                spigolo = new Cylinder(p3tof(DataSaved.GL_BENNA[24]), p3tof(DataSaved.GL_BENNA[27]), 0.05f * scale, 0.02f * scale,
-                        GL_Methods.parseColorToGL(colore), 8, false);
-                spigolo.draw(gl);
-                break;
+            if (DataSaved.lrTilt != 0) {
+                Cylinder cylinder1 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                        new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]}, raggioPivot, raggioPivot,
+                        coloreAttacco, 12, true);
+                cylinder1.draw(gl);
 
-            case 0:
-                spigolo = new Cylinder(p3tof(DataSaved.GL_BENNA[22]), p3tof(DataSaved.GL_BENNA[25]), 0.05f * scale, 0.01f * scale,
-                        GL_Methods.parseColorToGL(colore), 8, false);
-                spigolo.draw(gl);
-                break;
+                Cylinder cylinder2 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                        new float[]{DataSaved.GL_ATTACCO[12], DataSaved.GL_ATTACCO[13], DataSaved.GL_ATTACCO[14]}, raggioPivot, raggioPivot,
+                        coloreAttacco, 12, true);
+                cylinder2.draw(gl);
 
-            case 1:
-                spigolo = new Cylinder(p3tof(DataSaved.GL_BENNA[23]), p3tof(DataSaved.GL_BENNA[26]), 0.05f * scale, 0.01f * scale,
-                        GL_Methods.parseColorToGL(colore), 8, false);
-                spigolo.draw(gl);
-                break;
-        }
-        switch (DataSaved.isAutoSnap) {
-            case 1:
-            case 3:
-                if (DataSaved.nearestPoint != null) {
-                    drawPointDist(gl, 5f, Color.GREEN, scale);
+                Cylinder cylinder3 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[15], DataSaved.GL_ATTACCO[16], DataSaved.GL_ATTACCO[17]},
+                        new float[]{DataSaved.GL_ATTACCO[18], DataSaved.GL_ATTACCO[19], DataSaved.GL_ATTACCO[20]}, larghezza_attacco * 0.75f, ((larghezza_attacco * 0.5f) * 1.15f) * 0.5f,
+                        coloreAttacco, 8, true);
+                cylinder3.draw(gl);
+            }
+
+            Cylinder boccolaStick = new Cylinder(p3tof(DataSaved.GL_STICK[0]),
+                    p3tof(DataSaved.GL_STICK[6]),
+                    (float) (DataSaved.L_Stick * 0.025f * scale), (float) (DataSaved.L_Stick * 0.025f * scale), coloreBoom, 12, true);
+            boccolaStick.draw(gl);
+            BoomsDrawer stick = new BoomsDrawer(DataSaved.GL_STICK, My_Stick.facceChiare(), coloreBoom,
+                    My_Stick.facceScure(), coloreBoomScuro, My_Stick.contorno());
+            stick.draw(gl);
+
+
+            if (DataSaved.lrBoom2 == 0) {
+                BoomsDrawer boom1 = new BoomsDrawer(DataSaved.GL_BOOM1, My_Boom1.indici1(), coloreBoom,
+                        My_Boom1.indici2(), coloreBoomScuro, My_Boom1.contorno());
+                boom1.draw(gl);
+            } else {
+                //disegna boom1+boom2
+                BoomsDrawer boom1_2 = new BoomsDrawer(DataSaved.GL_BOOM1_2, My_Boom1_Boom2.facceChiare(), coloreBoom,
+                        My_Boom1_Boom2.facceScure(), coloreBoomScuro, My_Boom1_Boom2.contorni());
+                boom1_2.draw(gl);
+            }
+
+                BoomsDrawer frameBase = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.triangoliFrameChiari(), coloreBoom,
+                        My_Frame.triangoliFrameScuri(), coloreBoomScuro, My_Frame.bordi());
+                frameBase.draw(gl);
+
+
+                BoomsDrawer cabina = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.cabinaChiara(), coloreAttacco,
+                        My_Frame.cabinaScura(), coloreAttaccoScuro, My_Frame.bordiCab());
+                cabina.draw(gl);
+                BoomsDrawer cappello = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.zavorraMedia(), coloreBoom, My_Frame.cappello(), coloreBoomScuro,
+                        My_Frame.bordiCappello());
+                cappello.draw(gl);
+
+            BoomsDrawer minipitch = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.triangoliMiniChiari(), coloreBoom, My_Frame.triangoliMiniScuri(), coloreBoomScuro,
+                    My_Frame.bordiMiniP());
+            minipitch.draw(gl);
+
+
+
+            Cylinder spigolo;
+            int colore=Color.BLUE;
+            if(DataSaved.isLowerEdge){
+                colore=Color.RED;
+            }
+            switch (DataSaved.bucketEdge) {
+                case -1:
+                    spigolo = new Cylinder(p3tof(DataSaved.GL_BENNA[24]), p3tof(DataSaved.GL_BENNA[27]), 0.05f * scale, 0.02f * scale,
+                            GL_Methods.parseColorToGL(colore), 8, false);
+                    spigolo.draw(gl);
+                    break;
+
+                case 0:
+                    spigolo = new Cylinder(p3tof(DataSaved.GL_BENNA[22]), p3tof(DataSaved.GL_BENNA[25]), 0.05f * scale, 0.01f * scale,
+                            GL_Methods.parseColorToGL(colore), 8, false);
+                    spigolo.draw(gl);
+                    break;
+
+                case 1:
+                    spigolo = new Cylinder(p3tof(DataSaved.GL_BENNA[23]), p3tof(DataSaved.GL_BENNA[26]), 0.05f * scale, 0.01f * scale,
+                            GL_Methods.parseColorToGL(colore), 8, false);
+                    spigolo.draw(gl);
+                    break;
+            }
+            switch (DataSaved.isAutoSnap) {
+                case 1:
+                case 3:
+                    if (DataSaved.nearestPoint != null) {
+                        drawPointDist(gl, 5f, Color.GREEN, scale);
+                    }
+                    break;
+
+                case 2:
+                case 4:
+                    GLDrawer.drawSelectedPoly(gl, DataSaved.selectedPoly.getVertices(), 5f, Color.GREEN, scale);
+                    drawLineDist(gl, 5f, Color.GREEN, scale);
+                    break;
+            }
+
+        }else {
+            {
+                BennaRenderer bennaRenderer = new BennaRenderer(DataSaved.GL_BENNA, leftSideIndices, rightSideIndices, cullaIndices, coloreInterno, coloreEsterno, 0.02f);
+                bennaRenderer.draw(gl);
+                //
+
+
+                if (DataSaved.lrTilt != 0) {
+                    Cylinder cylinder1 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                            new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]}, raggioPivot, raggioPivot,
+                            coloreAttacco, 12, true);
+                    cylinder1.draw(gl);
+
+                    Cylinder cylinder2 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                            new float[]{DataSaved.GL_ATTACCO[12], DataSaved.GL_ATTACCO[13], DataSaved.GL_ATTACCO[14]}, raggioPivot, raggioPivot,
+                            coloreAttacco, 12, true);
+                    cylinder2.draw(gl);
+
+                    Cylinder cylinder3 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[15], DataSaved.GL_ATTACCO[16], DataSaved.GL_ATTACCO[17]},
+                            new float[]{DataSaved.GL_ATTACCO[18], DataSaved.GL_ATTACCO[19], DataSaved.GL_ATTACCO[20]}, larghezza_attacco * 0.75f, ((larghezza_attacco * 0.5f) * 1.15f) * 0.5f,
+                            coloreAttacco, 8, true);
+                    cylinder3.draw(gl);
                 }
-                break;
 
-            case 2:
-            case 4:
-                GLDrawer.drawSelectedPoly(gl, DataSaved.selectedPoly.getVertices(), 5f, Color.GREEN, scale);
-                drawLineDist(gl, 5f, Color.GREEN, scale);
-                break;
+                Cylinder boccolaStick = new Cylinder(p3tof(DataSaved.GL_STICK[0]),
+                        p3tof(DataSaved.GL_STICK[6]),
+                        (float) (DataSaved.L_Stick * 0.025f * scale), (float) (DataSaved.L_Stick * 0.025f * scale), coloreBoom, 12, true);
+                boccolaStick.draw(gl);
+                BoomsDrawer stick = new BoomsDrawer(DataSaved.GL_STICK, My_Stick.facceChiare(), coloreBoom,
+                        My_Stick.facceScure(), coloreBoomScuro, My_Stick.contorno());
+                stick.draw(gl);
+
+
+                if (DataSaved.lrBoom2 == 0) {
+                    BoomsDrawer boom1 = new BoomsDrawer(DataSaved.GL_BOOM1, My_Boom1.indici1(), coloreBoom,
+                            My_Boom1.indici2(), coloreBoomScuro, My_Boom1.contorno());
+                    boom1.draw(gl);
+                } else {
+                    //disegna boom1+boom2
+                    BoomsDrawer boom1_2 = new BoomsDrawer(DataSaved.GL_BOOM1_2, My_Boom1_Boom2.facceChiare(), coloreBoom,
+                            My_Boom1_Boom2.facceScure(), coloreBoomScuro, My_Boom1_Boom2.contorni());
+                    boom1_2.draw(gl);
+                }
+
+                BoomsDrawer minipitch = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.triangoliMiniChiari(), coloreBoom, My_Frame.triangoliMiniScuri(), coloreBoomScuro,
+                        My_Frame.bordiMiniP());
+                minipitch.draw(gl);
+
+
+
+                Cylinder spigolo;
+                int colore=Color.BLUE;
+                if(DataSaved.isLowerEdge){
+                    colore=Color.RED;
+                }
+                switch (DataSaved.bucketEdge) {
+                    case -1:
+                        spigolo = new Cylinder(p3tof(DataSaved.GL_BENNA[24]), p3tof(DataSaved.GL_BENNA[27]), 0.05f * scale, 0.02f * scale,
+                                GL_Methods.parseColorToGL(colore), 8, false);
+                        spigolo.draw(gl);
+                        break;
+
+                    case 0:
+                        spigolo = new Cylinder(p3tof(DataSaved.GL_BENNA[22]), p3tof(DataSaved.GL_BENNA[25]), 0.05f * scale, 0.01f * scale,
+                                GL_Methods.parseColorToGL(colore), 8, false);
+                        spigolo.draw(gl);
+                        break;
+
+                    case 1:
+                        spigolo = new Cylinder(p3tof(DataSaved.GL_BENNA[23]), p3tof(DataSaved.GL_BENNA[26]), 0.05f * scale, 0.01f * scale,
+                                GL_Methods.parseColorToGL(colore), 8, false);
+                        spigolo.draw(gl);
+                        break;
+                }
+                switch (DataSaved.isAutoSnap) {
+                    case 1:
+                    case 3:
+                        if (DataSaved.nearestPoint != null) {
+                            drawPointDist(gl, 5f, Color.GREEN, scale);
+                        }
+                        break;
+
+                    case 2:
+                    case 4:
+                        GLDrawer.drawSelectedPoly(gl, DataSaved.selectedPoly.getVertices(), 5f, Color.GREEN, scale);
+                        drawLineDist(gl, 5f, Color.GREEN, scale);
+                        break;
+                }
+
+            }
         }
 
 

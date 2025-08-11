@@ -158,9 +158,10 @@ public class MyData {
         //  CHIAVI DA ESCLUDERE (i nomi file equivalgono alle chiavi nel JSON)
         Set<String> excludeKeys = new HashSet<>(Arrays.asList(
                 "licenza",
-                "tempConfig",
-                "debugMode"
-                // aggiungi qui le chiavi da NON  esportare nel JSON
+                "progettoSelected",
+                "progettoSelected_POINT",
+                "progettoSelected_POLY"
+                // aggiungi altre chiavi da ignorare
         ));
         for (String fileName : allFiles) {
             if (fileName.equals("mcconfig.json")) continue; // evita il loop infinito
@@ -204,8 +205,9 @@ public class MyData {
 // Chiavi da non ripristinare
         Set<String> excludeKeys = new HashSet<>(Arrays.asList(
                 "licenza",
-                "tempConfig",
-                "debugMode"
+                "progettoSelected",
+                "progettoSelected_POINT",
+                "progettoSelected_POLY"
                 // aggiungi altre chiavi da ignorare
         ));
         try {

@@ -263,6 +263,17 @@
                 android:padding="15dp"
                 android:visibility="gone">
                 <CheckBox
+                    android:id="@+id/ckMach"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/_____cancel_text"
+                    android:text="DRAW 3D MACHINE SCHEMA"
+                    android:textColor="@color/_____cancel_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <CheckBox
                     android:id="@+id/ckSchermo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -272,7 +283,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold|italic"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/ckMach" />
 
 
                 <CheckBox

@@ -25,7 +25,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public static float scale;
     public static float angleX;
-    public static float angleY;
+    public static float angleY,angleY_extra;
     public static float panX;
     public static float panY;
     private boolean isXML, isXMLPoint;
@@ -65,12 +65,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 angleY = MyData.get_Float("glAngleY");
                 panX = 0;
                 panY = -0.3f;
+                angleY_extra=MyData.get_Float("glAngleY_Extra");
             } catch (Exception e) {
                 scale = 0.5f;
                 angleX = -90f;
                 angleY = 0f;
                 panX = 0f;
                 panY = -0.3f;
+                angleY_extra=0.0f;
 
             }
             try {
@@ -152,15 +154,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
                     gl11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                     gl11.glLoadIdentity();
-
                     if (My3DActivity.glVista3d) {
                         gl11.glTranslatef(panX, panY, -5.0f);  // Pan in 3D
                         gl11.glScalef(scale, scale, scale);   // Scala in tutte le direzioni
                         //in 3D ruota la scena benna ancorata a 0,0
                         gl11.glRotatef(angleX, 1f, 0f, 0f);
-                        if(DataSaved.lock3dRotation>0) {
-                            gl11.glRotatef(angleTest, 0f, 0f, 1f);
-                        }else {
+                        if (DataSaved.lock3dRotation > 0) {
+                            gl11.glRotatef(angleTest+angleY_extra, 0f, 0f, 1f);
+                        } else {
                             gl11.glRotatef(angleY, 0f, 0f, 1f);
                         }
 
@@ -194,9 +195,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
-                            if(PNEZD_FUNCTION){
-                                GLDrawer.drawPNEZD(gl11,DataSaved.pnezdPoints,15f,scale);
-                                GLDrawer.drawTextsBilBoardPNEZD(gl11,DataSaved.pnezdPoints,DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                            if (PNEZD_FUNCTION) {
+                                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
+                                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
                             }
                             gl.glEnable(GL11.GL_DEPTH_TEST);
 
@@ -224,9 +225,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
-                            if(PNEZD_FUNCTION){
-                                GLDrawer.drawPNEZD(gl11,DataSaved.pnezdPoints,15f,scale);
-                                GLDrawer.drawTextsBilBoardPNEZD(gl11,DataSaved.pnezdPoints,DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                            if (PNEZD_FUNCTION) {
+                                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
+                                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
                             }
                             gl.glEnable(GL11.GL_DEPTH_TEST);
 
@@ -251,9 +252,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
-                            if(PNEZD_FUNCTION){
-                                GLDrawer.drawPNEZD(gl11,DataSaved.pnezdPoints,15f,scale);
-                                GLDrawer.drawTextsBilBoardPNEZD(gl11,DataSaved.pnezdPoints,DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                            if (PNEZD_FUNCTION) {
+                                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
+                                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
                             }
                             gl11.glEnable(GL10.GL_DEPTH_TEST);
 
@@ -282,9 +283,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
-                            if(PNEZD_FUNCTION){
-                                GLDrawer.drawPNEZD(gl11,DataSaved.pnezdPoints,15f,scale);
-                                GLDrawer.drawTextsBilBoardPNEZD(gl11,DataSaved.pnezdPoints,DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                            if (PNEZD_FUNCTION) {
+                                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
+                                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
                             }
                             gl11.glEnable(GL10.GL_DEPTH_TEST);
 
