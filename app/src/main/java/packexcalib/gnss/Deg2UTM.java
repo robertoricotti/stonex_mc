@@ -12,6 +12,9 @@ import org.locationtech.proj4j.ProjCoordinate;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
+
+import gui.MyApp;
 
 
 /*********************************************
@@ -23,29 +26,35 @@ import java.io.IOException;
 
 public class Deg2UTM {
 
-    static GeoideInterpolation geoideInterpolationGGF;
+     static GeoideInterpolation ugf ;
+
     static GeoidBinLite geoidBin;
     static GGFGeoide ggfGeoide;
-    static double[] quota;
-    static double mLat_;
-    static double mLon_;
-    static double Easting;
-    static double Northing;
-    static double Quota;
-    static int Zone;
-    static char Letter;
+    static  double[] quota;
+    static   double mLat_;
+    static  double mLon_;
+    static   double Easting;
+    static   double Northing;
+    static   double Quota;
+    static  int Zone;
+    static  char Letter;
     public static boolean geoidError;
-
+    private boolean ugfReady = false;
+    private boolean ggfReady = false;
+    private boolean binReady = false;
 
     public Deg2UTM(double Lat, double Lon, double Z, String crs, String geoidPath) {
+
         switch (crs) {
             case _NONE:
+                //Log.e("Deg2Utm","utm");
                 Northing = Lat;
                 Easting = Lon;
                 Quota = Z;
                 geoidError = false;
                 break;
             case _UTM:
+                //Log.e("Deg2Utm","utm");
                 geoidError = false;
                 Quota = Z;
                 Zone = (int) Math.floor(Lon / 6 + 31);
@@ -96,6 +105,7 @@ public class Deg2UTM {
 
                 break;
             default:
+                //Log.e("Deg2Utm","default");
                 quota = new double[1];
                 mLat_ = Lat;
                 mLon_ = Lon;
@@ -104,30 +114,58 @@ public class Deg2UTM {
                         String extension = geoidPath.substring(geoidPath.lastIndexOf(".") + 1);
                         switch (extension.toLowerCase()) {
                             case "bin":
-                                geoidBin = new GeoidBinLite(new File(geoidPath));
-                                if (geoidBin.isInGrid(mLat_, mLon_)) {
-                                    geoidError = false;
-                                    quota[0] = geoidBin.getOrthometricHeight(mLat_, mLon_, Z);
+                                //Log.e("Deg2Utm","bin");
+                                try {
+                                    if(geoidBin==null||!binReady) {
+                                        geoidBin = new GeoidBinLite(new File(geoidPath));
+                                        binReady=true;
+                                    }
+                                    if(binReady) {
+                                        if (geoidBin.isInGrid(mLat_, mLon_)) {
+                                            geoidError = false;
+                                            quota[0] = geoidBin.getOrthometricHeight(mLat_, mLon_, Z);
 
-                                } else {
+                                        } else {
+                                            geoidError = true;
+                                            quota[0] = Z;
+                                        }
+                                    }else {
+                                        geoidError = true;
+                                        quota[0] = Z;
+                                    }
+                                } catch (IOException e) {
+                                    Log.e("Deg2Utm",e.toString());
+                                    binReady=false;
                                     geoidError = true;
                                     quota[0] = Z;
                                 }
+
                                 break;
 
                             case "ggf":
+                                //Log.e("Deg2Utm","ggf");
                                 try {
-                                    ggfGeoide = new GGFGeoide();
-                                    ggfGeoide.load(geoidPath);
-                                    if (ggfGeoide.isInGrid(mLat_, mLon_)) {
-                                        geoidError = false;
-                                        quota[0] = Z - ggfGeoide.getUndulation(mLat_, mLon_);
-                                    } else {
+                                    if(ggfGeoide==null||!ggfReady){
+                                        ggfGeoide = new GGFGeoide();
+                                        ggfGeoide.load(geoidPath);
+                                        ggfReady=true;
+                                    }
+                                    if(ggfReady) {
+                                        if (ggfGeoide.isInGrid(mLat_, mLon_)) {
+                                            geoidError = false;
+                                            quota[0] = Z - ggfGeoide.getUndulation(mLat_, mLon_);
+                                        } else {
+                                            geoidError = true;
+                                            quota[0] = Z;
+
+                                        }
+                                    }else {
                                         geoidError = true;
                                         quota[0] = Z;
-
                                     }
                                 } catch (Exception e) {
+                                    Log.e("Deg2Utm",e.toString());
+                                    ggfReady=false;
                                     geoidError = true;
                                     quota[0] = Z;
                                 }
@@ -136,20 +174,39 @@ public class Deg2UTM {
 
                             case "ugf":
                                 ///  UGF
+                                //Log.e("Deg2Utm","ugf");
+                                try {
+                                    if (ugf == null|| !ugfReady) {
 
-                                geoideInterpolationGGF = new GeoideInterpolation(geoidPath);
-                                geoideInterpolationGGF.readHeader();
-                                if (geoideInterpolationGGF.internalLetturaGeoide(mLat_, mLon_, Z, quota, false)) {
-                                    geoidError = false;
 
-                                } else {
+                                        ugf = new GeoideInterpolation(geoidPath);
+                                        ugf.readHeader();           // <-- UNA sola volta
+
+                                        ugfReady = true;
+                                    }
+
+                                    if (ugfReady) {
+                                        if (ugf.internalLetturaGeoide(mLat_, mLon_, Z, quota, false)) {
+                                            geoidError = false;
+                                        } else {
+                                            quota[0] = Z;
+                                            geoidError = true;
+                                        }
+                                    } else {
+                                        quota[0] = Z;
+                                        geoidError = true;
+                                    }
+                                } catch (Exception e) {
+                                    // logga;
+                                    Log.e("Deg2Utm",e.toString());
+                                    ugfReady = false;
                                     quota[0] = Z;
                                     geoidError = true;
-
                                 }
                                 break;
 
                             default:
+                                //Log.e("Deg2Utm","default");
                                 quota[0] = Z;
                                 break;
                         }
@@ -167,7 +224,8 @@ public class Deg2UTM {
 
 
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
+                    Log.e("Deg2Utm",e.toString());
                 }
                 break;
 

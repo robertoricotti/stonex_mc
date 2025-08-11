@@ -43,32 +43,32 @@ public class GeoideInterpolation {
 
             latMin = byteBuffer.getDouble();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "latMin: " + latMin);
+           // Log.d("GeoideInterpolation", "latMin: " + latMin);
 
             fis.read(buffer);
             latMax = byteBuffer.getDouble();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "latMax: " + latMax);
+           // Log.d("GeoideInterpolation", "latMax: " + latMax);
 
             fis.read(buffer);
             lonMin = byteBuffer.getDouble();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "lonMin: " + lonMin);
+            //Log.d("GeoideInterpolation", "lonMin: " + lonMin);
 
             fis.read(buffer);
             lonMax = byteBuffer.getDouble();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "lonMax: " + lonMax);
+            //Log.d("GeoideInterpolation", "lonMax: " + lonMax);
 
             fis.read(buffer);
             dLat = byteBuffer.getDouble();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "dLat: " + dLat);
+            //Log.d("GeoideInterpolation", "dLat: " + dLat);
 
             fis.read(buffer);
             dLon = byteBuffer.getDouble();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "dLon: " + dLon);
+            //Log.d("GeoideInterpolation", "dLon: " + dLon);
 
             buffer = new byte[4];
             byteBuffer = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN);
@@ -76,18 +76,18 @@ public class GeoideInterpolation {
             fis.read(buffer);
             quadroY = byteBuffer.getInt();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "quadroY: " + quadroY);
+            //Log.d("GeoideInterpolation", "quadroY: " + quadroY);
 
             fis.read(buffer);
             quadroX = byteBuffer.getInt();
-            Log.d("GeoideInterpolation", "quadroX: " + quadroX);
+           // Log.d("GeoideInterpolation", "quadroX: " + quadroX);
         }
     }
 
     public boolean internalLetturaGeoide(double latitudine, double longitudine, double altitudine, double[] quota,boolean rovescio) {
         this.rovescio=rovescio;
         try {
-            Log.d("GeoideInterpolation", "Latitudine: " + latitudine + ", Longitudine: " + longitudine + ", Altitudine: " + altitudine);
+            //Log.d("GeoideInterpolation", "Latitudine: " + latitudine + ", Longitudine: " + longitudine + ", Altitudine: " + altitudine);
 
             double lo = longitudine;
             if (lo < 0) {
@@ -103,7 +103,7 @@ public class GeoideInterpolation {
                 }
             }
 
-            Log.d("GeoideInterpolation", "lonMin: " + lonMin + ", lonMax: " + lonMax);
+            //Log.d("GeoideInterpolation", "lonMin: " + lonMin + ", lonMax: " + lonMax);
 
             double dy = rovescio ? latMax - latitudine : latitudine - latMin;
             int numeroV = (int) Math.floor(dy / dLat);
@@ -113,10 +113,10 @@ public class GeoideInterpolation {
             }
             int numeroH = (int) Math.floor(dx / dLon) + 1;
 
-            Log.d("GeoideInterpolation", "dx: " + dx + ", dy: " + dy + ", numeroH: " + numeroH + ", numeroV: " + numeroV);
+            //Log.d("GeoideInterpolation", "dx: " + dx + ", dy: " + dy + ", numeroH: " + numeroH + ", numeroV: " + numeroV);
 
             if (numeroH < 0 || numeroV < 0 || numeroH >= quadroX || numeroV >= quadroY - 1) {
-                Log.d("GeoideInterpolation", "Coordinate fuori dal range del quadro.");
+                //Log.d("GeoideInterpolation", "Coordinate fuori dal range del quadro.");
                 return false;
             }
 
@@ -169,7 +169,7 @@ public class GeoideInterpolation {
                 sommaGG += gg3;
             }
 
-            Log.d("GeoideInterpolation", "gg0: " + gg0 + ", gg1: " + gg1 + ", gg2: " + gg2 + ", gg3: " + gg3);
+            //Log.d("GeoideInterpolation", "gg0: " + gg0 + ", gg1: " + gg1 + ", gg2: " + gg2 + ", gg3: " + gg3);
 
             if (conctg == 4) {
                 double dq;
@@ -178,15 +178,15 @@ public class GeoideInterpolation {
                 double gamma = (gg3 - gg2 - gg1 + gg0) / (dLat * dLon);
                 dq = alfa * dlonMis + beta * dlatMis + gamma * dlonMis * dlatMis + gg0;
                 quota[0] = altitudine - dq;
-                Log.d("GeoideInterpolation", "Interpolazione riuscita, dq: " + dq + ", Quota: " + quota[0]);
+               // Log.d("GeoideInterpolation", "Interpolazione riuscita, dq: " + dq + ", Quota: " + quota[0]);
             } else {
                 if (conctg > 0) {
                     double dq = sommaGG / conctg;
                     quota[0] = altitudine - dq;
-                    Log.d("GeoideInterpolation", "Interpolazione parziale, dq: " + dq + ", Quota: " + quota[0]);
+                    //Log.d("GeoideInterpolation", "Interpolazione parziale, dq: " + dq + ", Quota: " + quota[0]);
                 } else {
                     quota[0] = 0;
-                    Log.d("GeoideInterpolation", "Nessuna quota valida trovata.");
+                    //Log.d("GeoideInterpolation", "Nessuna quota valida trovata.");
                     return false;
                 }
             }
@@ -233,21 +233,21 @@ public class GeoideInterpolation {
             fis.read(buffer);
             valoriCasella[0] = byteBuffer.getFloat();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "valoriCasella[0]: " + valoriCasella[0]);
+            //Log.d("GeoideInterpolation", "valoriCasella[0]: " + valoriCasella[0]);
 
             fis.read(buffer);
             valoriCasella[1] = byteBuffer.getFloat();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "valoriCasella[1]: " + valoriCasella[1]);
+            //Log.d("GeoideInterpolation", "valoriCasella[1]: " + valoriCasella[1]);
 
             fis.read(buffer);
             valoriCasella[2] = byteBuffer.getFloat();
             byteBuffer.rewind();
-            Log.d("GeoideInterpolation", "valoriCasella[2]: " + valoriCasella[2]);
+            //Log.d("GeoideInterpolation", "valoriCasella[2]: " + valoriCasella[2]);
 
             fis.read(buffer);
             valoriCasella[3] = byteBuffer.getFloat();
-            Log.d("GeoideInterpolation", "valoriCasella[3]: " + valoriCasella[3]);
+            //Log.d("GeoideInterpolation", "valoriCasella[3]: " + valoriCasella[3]);
         }
     }
 }
