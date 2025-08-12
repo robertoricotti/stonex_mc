@@ -71,10 +71,11 @@ public class Dialog_PRJ_Folder extends BaseClass {
     Diaalog_Set_SP diaalogSetSp;
     Dialog_Add_Surfaces dialogAddSurfaces;
 
-
+    private Dialog_PRJ_Folder folderDialog;
     public Dialog_PRJ_Folder(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        folderDialog=this;
 
     }
 
@@ -203,11 +204,16 @@ public class Dialog_PRJ_Folder extends BaseClass {
             });
         });
         setSP.setOnClickListener(view -> {
-            if(!diaalogSetSp.dialog.isShowing()){
-                diaalogSetSp.show(mPath,spAdapter);
-                //dialog.dismiss();
+            if (!diaalogSetSp.dialog.isShowing()) {
+                diaalogSetSp.show(mPath, spAdapter);
+
+                // Qui aggiungi il listener di chiusura
+                diaalogSetSp.dialog.setOnDismissListener(d -> {
+                    refreshSPAdapter();
+                });
             }
         });
+
         usaFile.setOnClickListener(view -> {
             if (projectAdapter.getSelectedCkTrmPosition() == -1) {
                 new CustomToast(activity, "SELECT A TERRAIN MODEL TO USE").show();
@@ -586,27 +592,43 @@ public class Dialog_PRJ_Folder extends BaseClass {
         }, 100);
     }
 
-    private String copyAssetFileToTemp(String folderPath, String fileName) throws IOException {
-        AssetManager assetManager = activity.getApplicationContext().getAssets();
 
-        // Percorso completo nel pacchetto degli assets
-        String assetPath = folderPath + "/" + fileName;
-
-        // Directory temporanea in cui copiare il file
-        File tempFile = new File(activity.getCacheDir(), fileName);
-
-        try (InputStream inputStream = assetManager.open(assetPath);
-             FileOutputStream outputStream = new FileOutputStream(tempFile)) {
-
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
-            }
+    public void refreshSPAdapter() {
+        if (mPath == null || mPath.isEmpty()) {
+            Log.e("refreshSPAdapter", "mPath non inizializzato");
+            return;
         }
 
-        // Restituisce il percorso del file copiato
-        return tempFile.getAbsolutePath();
+        ArrayList<ProjectFileAdapter.FileItem> nuovaLista = new ArrayList<>();
+
+        try {
+            File directory = new File(mPath);
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().toLowerCase().endsWith(".sp")) {
+                        boolean isFolder = file.isDirectory();
+                        long size = isFolder ? getFolderSize(file) : file.length();
+                        nuovaLista.add(new ProjectFileAdapter.FileItem(
+                                file.getName(), isFolder, size, file.getAbsolutePath()
+                        ));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("refreshSPAdapter", Log.getStackTraceString(e));
+        }
+
+        // Aggiorna la RecyclerView sul main thread
+        activity.runOnUiThread(() -> {
+            if (spAdapter != null) {
+                spAdapter.updateItems(nuovaLista);
+            } else {
+                spAdapter = new ProjectFileAdapter(nuovaLista);
+                recyclerViewSP.setAdapter(spAdapter);
+                recyclerViewSP.setLayoutManager(new LinearLayoutManager(activity));
+            }
+        });
     }
 
 

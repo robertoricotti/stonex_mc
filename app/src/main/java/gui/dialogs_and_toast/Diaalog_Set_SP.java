@@ -75,11 +75,22 @@ public class Diaalog_Set_SP {
     Spinner spinner;
     String selectedFolder;
     TextView inUso;
+    private OnDialogDismissListener dismissListener;
 
+
+
+    public interface OnDialogDismissListener {
+        void onDismiss();
+    }
+
+    public void setOnDialogDismissListener(OnDialogDismissListener listener) {
+        this.dismissListener = listener;
+    }
 
 
     public Diaalog_Set_SP(Activity activity) {
         this.activity = activity;
+
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
 
     }
@@ -97,6 +108,11 @@ public class Diaalog_Set_SP {
         }
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
+        dialog.setOnDismissListener(d -> {
+            if (dismissListener != null) {
+                dismissListener.onDismiss();
+            }
+        });
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
         customQwertyDialog = new CustomQwertyDialog(activity,null);
@@ -329,6 +345,8 @@ public class Diaalog_Set_SP {
                     }
                 }, 100); // 100 milliseconds delay
             }
+
+
         });
 
 

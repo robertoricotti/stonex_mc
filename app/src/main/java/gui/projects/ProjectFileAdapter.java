@@ -19,6 +19,7 @@ import com.example.stx_dig.R;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.ViewHolder> {
     private ArrayList<FileItem> files;
@@ -290,5 +291,16 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
     public void setCloudFolder(boolean cloudFolder) {
         this.isCloudFolder = cloudFolder;
     }
+    public void updateItems(List<FileItem> newFiles) {
+        if (newFiles == null) return;
+        files.clear();
+        files.addAll(newFiles);
+        if (originalFiles != null) {
+            originalFiles.clear();
+            originalFiles.addAll(newFiles);
+        }
+        notifyDataSetChanged();
+    }
+
 
 }
