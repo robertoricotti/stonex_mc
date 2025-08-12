@@ -220,10 +220,12 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="rotazione macchina/mondo e draw mach scheme introdotte">
+    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="tentativo fix geoid lag">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/GeoideInterpolation.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/GeoideInterpolation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -647,7 +649,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754926778980</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="tentativo fix geoid lag">
+      <option name="closed" value="true" />
+      <created>1754933752376</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1754933752376</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -662,7 +672,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="before new license" />
     <MESSAGE value="before gestire revoke" />
     <MESSAGE value="cloud ok" />
     <MESSAGE value="remot position send ok" />
@@ -687,7 +696,8 @@
     <MESSAGE value="v4 beta test con blocco rotazione 3D Jon TEST" />
     <MESSAGE value="beta con opzione pulsanti navigazione abilitati" />
     <MESSAGE value="rotazione macchina/mondo e draw mach scheme introdotte" />
-    <option name="LAST_COMMIT_MESSAGE" value="rotazione macchina/mondo e draw mach scheme introdotte" />
+    <MESSAGE value="tentativo fix geoid lag" />
+    <option name="LAST_COMMIT_MESSAGE" value="tentativo fix geoid lag" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

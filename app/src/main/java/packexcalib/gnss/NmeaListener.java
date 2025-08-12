@@ -76,11 +76,11 @@ static  Deg2UTM deg2UTM1;
                             qualityTrimble();
                             VRMS_ = "0.000";
                             Quota1 = DataSaved.offset_Z_antenna + Double.parseDouble(NmeaInput[11].replace("GHT+", "").replace("EHT+", "").replace(",", "."));
-                            Deg2UTM deg2UTM = new Deg2UTM(mLat_1, mLon_1, Quota1, DataSaved.S_CRS,MyApp.GEOIDE_PATH);
-                            Nord1 = deg2UTM.getNorthing();
-                            Est1 = deg2UTM.getEasting();
-                            mChar = deg2UTM.getLetter();
-                            mZone = deg2UTM.getZone();
+                            deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, Quota1, DataSaved.S_CRS);
+                            Nord1 = deg2UTM1.getNorthing();
+                            Est1 = deg2UTM1.getEasting();
+                            mChar = deg2UTM1.getLetter();
+                            mZone = deg2UTM1.getZone();
 
                         } catch (Exception e) {
                         }
@@ -100,11 +100,11 @@ static  Deg2UTM deg2UTM1;
                             qualityLeica();
                             VRMS_ = NmeaInput[9];
                             Quota1 = DataSaved.offset_Z_antenna + Double.parseDouble(NmeaInput[10].replace(",", "."));
-                            Deg2UTM deg2UTM = new Deg2UTM(mLat_1, mLon_1, Quota1, DataSaved.S_CRS,MyApp.GEOIDE_PATH);
-                            Nord1 = deg2UTM.getNorthing();
-                            Est1 = deg2UTM.getEasting();
-                            mChar = deg2UTM.getLetter();
-                            mZone = deg2UTM.getZone();
+                            deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, Quota1, DataSaved.S_CRS);
+                            Nord1 = deg2UTM1.getNorthing();
+                            Est1 = deg2UTM1.getEasting();
+                            mChar = deg2UTM1.getLetter();
+                            mZone = deg2UTM1.getZone();
                         } catch (Exception e) {
 
                         }
@@ -178,12 +178,12 @@ static  Deg2UTM deg2UTM1;
                                 }
 
                                 double qtemp = DataSaved.offset_Z_antenna + Double.parseDouble(ggaZ1.replace(",", ".")) + Double.parseDouble(ggaZ2.replace(",", "."));
-                                Deg2UTM deg2UTM = new Deg2UTM(mLat_1, mLon_1, qtemp, DataSaved.S_CRS,MyApp.GEOIDE_PATH);
-                                Nord1 = deg2UTM.getNorthing();
-                                Est1 = deg2UTM.getEasting();
-                                Quota1=deg2UTM.getQuota();
-                                mChar = deg2UTM.getLetter();
-                                mZone = deg2UTM.getZone();
+                                deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, qtemp, DataSaved.S_CRS);
+                                Nord1 = deg2UTM1.getNorthing();
+                                Est1 = deg2UTM1.getEasting();
+                                Quota1=deg2UTM1.getQuota();
+                                mChar = deg2UTM1.getLetter();
+                                mZone = deg2UTM1.getZone();
 
                             } catch (Exception e) {
                             }
@@ -314,19 +314,19 @@ static  Deg2UTM deg2UTM1;
         }
         switch (DataSaved.S_CRS) {
             case _NONE:
-                deg2UTM1= new Deg2UTM(tmpNordLOC, tmpEstLOC, tmpQuotaLOC, _NONE,MyApp.GEOIDE_PATH);
+                deg2UTM1= new Deg2UTM(tmpNordLOC, tmpEstLOC, tmpQuotaLOC, _NONE);
                 Nord1 = deg2UTM1.getNorthing();
                 Est1 = deg2UTM1.getEasting();
                 Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;
                 break;
             case _UTM:
-                deg2UTM1 = new Deg2UTM(tmpNordUTM, tmpEstUTM, tmpQuotaUTM, _NONE,MyApp.GEOIDE_PATH);
+                deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, tmpQuotaUTM, _UTM);
                 Nord1 = deg2UTM1.getNorthing();
                 Est1 = deg2UTM1.getEasting();
                 Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;
                 break;
             default:
-                deg2UTM1 = new Deg2UTM(tmpLat, tmpLon, tmpQuotaUTM, DataSaved.S_CRS, MyApp.GEOIDE_PATH);
+                deg2UTM1 = new Deg2UTM(tmpLat, tmpLon, tmpQuotaUTM, DataSaved.S_CRS);
                 Nord1 = deg2UTM1.getNorthing();
                 Est1 = deg2UTM1.getEasting();
                 Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;

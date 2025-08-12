@@ -40,7 +40,6 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
-import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.NmeaListener;
 import utils.MyDeviceManager;
 import utils.UnitsConversion;
@@ -232,8 +231,8 @@ public class CanSender extends Service {
                     case 1:
                     case 2:
                     case 3:
-                        Deg2UTM deg2UTM = new Deg2UTM(mLat_1, mLon_1, Quota1, DataSaved.S_CRS, MyApp.GEOIDE_PATH);
-                        DataSaved.gpsOk = gpsStat(NmeaListener.ggaQuality, deg2UTM.getQuota(), serialEmpty);
+
+                        DataSaved.gpsOk = gpsStat(NmeaListener.ggaQuality, Quota1, serialEmpty);
                         break;
                     case 4:
                         DataSaved.gpsOk = true;

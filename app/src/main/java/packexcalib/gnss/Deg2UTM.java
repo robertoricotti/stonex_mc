@@ -12,6 +12,7 @@ import org.locationtech.proj4j.ProjCoordinate;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 
 import gui.MyApp;
@@ -26,37 +27,43 @@ import gui.MyApp;
 
 public class Deg2UTM {
 
-     static GeoideInterpolation ugf ;
+    // ====== lettori geoide (cache condivisa per tutte le istanze) ======
+    private static GeoideInterpolation UGF_READER;
+    private static String UGF_PATH_LOADED;
+    public  static boolean ugfReady;
 
-    static GeoidBinLite geoidBin;
-    static GGFGeoide ggfGeoide;
-    static  double[] quota;
-    static   double mLat_;
-    static  double mLon_;
-    static   double Easting;
-    static   double Northing;
-    static   double Quota;
-    static  int Zone;
-    static  char Letter;
+    private static GeoidBinLite BIN_READER;
+    private static String BIN_PATH_LOADED;
+    public  static boolean binReady;
+
+    private static GGFGeoide GGF_READER;
+    private static String GGF_PATH_LOADED;
+    public  static boolean ggfReady;
+
+    // ====== risultati (di istanza) ======
+    private static double Easting;
+    private static double Northing;
+    private static double Quota;
+    private static int    Zone;
+    private static char   Letter;
+
+    // NB: lo lascio static come nel tuo codice per minimo impatto,
+    // ma sarebbe consigliato farlo di istanza.
     public static boolean geoidError;
-    private boolean ugfReady = false;
-    private boolean ggfReady = false;
-    private boolean binReady = false;
 
-    public Deg2UTM(double Lat, double Lon, double Z, String crs, String geoidPath) {
+    // buffer riusabile per UGF
+    private final double[] quotaBuf = new double[1];
+
+    public Deg2UTM(double Lat, double Lon, double Z, String crs) {
 
         switch (crs) {
             case _NONE:
-                //Log.e("Deg2Utm","utm");
                 Northing = Lat;
                 Easting = Lon;
-                Quota = Z;
-                geoidError = false;
+               Quota=Z;
                 break;
             case _UTM:
-                //Log.e("Deg2Utm","utm");
-                geoidError = false;
-                Quota = Z;
+
                 Zone = (int) Math.floor(Lon / 6 + 31);
                 if (Lat < -72)
                     Letter = 'C';
@@ -103,129 +110,198 @@ public class Deg2UTM {
                 if (Letter <= 'M')
                     Northing = Northing + 10000000;
 
-                break;
-            default:
-                //Log.e("Deg2Utm","default");
-                quota = new double[1];
-                mLat_ = Lat;
-                mLon_ = Lon;
                 try {
-                    if (geoidPath != null && !geoidPath.equals("null") && !geoidPath.isEmpty()) {
-                        String extension = geoidPath.substring(geoidPath.lastIndexOf(".") + 1);
-                        switch (extension.toLowerCase()) {
-                            case "bin":
-                                //Log.e("Deg2Utm","bin");
-                                try {
-                                    if(geoidBin==null||!binReady) {
-                                        geoidBin = new GeoidBinLite(new File(geoidPath));
-                                        binReady=true;
-                                    }
-                                    if(binReady) {
-                                        if (geoidBin.isInGrid(mLat_, mLon_)) {
-                                            geoidError = false;
-                                            quota[0] = geoidBin.getOrthometricHeight(mLat_, mLon_, Z);
+                    double q = Z;
 
-                                        } else {
-                                            geoidError = true;
-                                            quota[0] = Z;
-                                        }
-                                    }else {
-                                        geoidError = true;
-                                        quota[0] = Z;
+                    final String path = MyApp.GEOIDE_PATH;
+                    if (path != null && !path.isEmpty() && !"null".equals(path)) {
+                        int dot = path.lastIndexOf('.');
+                        String ext = (dot > 0) ? path.substring(dot + 1).toLowerCase(Locale.ROOT) : "";
+
+                        switch (ext) {
+                            case "bin":
+                                try {
+                                    if (BIN_READER == null || !Objects.equals(BIN_PATH_LOADED, path)) {
+                                        BIN_READER = new GeoidBinLite(new File(path));
+                                        BIN_PATH_LOADED = path;
+                                        //Log.d("Deg2UTM", "BIN letto");
+                                        binReady = true;
+                                    }
+                                    if (binReady && BIN_READER.isInGrid(Lat, Lon)) {
+                                        q = BIN_READER.getOrthometricHeight(Lat, Lon, Z);
+                                        geoidError = false;
+                                    } else {
+                                        geoidError = true; q = Z;
                                     }
                                 } catch (IOException e) {
-                                    Log.e("Deg2Utm",e.toString());
-                                    binReady=false;
-                                    geoidError = true;
-                                    quota[0] = Z;
+                                    //Log.e("Deg2UTM", "BIN load/use error", e);
+                                    binReady = false; geoidError = true; q = Z;
                                 }
-
                                 break;
 
                             case "ggf":
-                                //Log.e("Deg2Utm","ggf");
                                 try {
-                                    if(ggfGeoide==null||!ggfReady){
-                                        ggfGeoide = new GGFGeoide();
-                                        ggfGeoide.load(geoidPath);
-                                        ggfReady=true;
+                                    if (GGF_READER == null || !Objects.equals(GGF_PATH_LOADED, path)) {
+                                        GGF_READER = new GGFGeoide();
+                                        GGF_READER.load(path);
+                                        //Log.d("Deg2UTM", "GGF letto");
+                                        GGF_PATH_LOADED = path;
+                                        ggfReady = true;
                                     }
-                                    if(ggfReady) {
-                                        if (ggfGeoide.isInGrid(mLat_, mLon_)) {
-                                            geoidError = false;
-                                            quota[0] = Z - ggfGeoide.getUndulation(mLat_, mLon_);
-                                        } else {
-                                            geoidError = true;
-                                            quota[0] = Z;
-
-                                        }
-                                    }else {
-                                        geoidError = true;
-                                        quota[0] = Z;
+                                    if (ggfReady && GGF_READER.isInGrid(Lat, Lon)) {
+                                        double und = GGF_READER.getUndulation(Lat, Lon);
+                                        q = Double.isNaN(und) ? Z : (Z - und);
+                                        geoidError = false;
+                                    } else {
+                                        geoidError = true; q = Z;
                                     }
                                 } catch (Exception e) {
-                                    Log.e("Deg2Utm",e.toString());
-                                    ggfReady=false;
-                                    geoidError = true;
-                                    quota[0] = Z;
+                                    //Log.e("Deg2UTM", "GGF load/use error", e);
+                                    ggfReady = false; geoidError = true; q = Z;
                                 }
-
                                 break;
 
                             case "ugf":
-                                ///  UGF
-                                //Log.e("Deg2Utm","ugf");
                                 try {
-                                    if (ugf == null|| !ugfReady) {
-
-
-                                        ugf = new GeoideInterpolation(geoidPath);
-                                        ugf.readHeader();           // <-- UNA sola volta
-
+                                    if (UGF_READER == null || !Objects.equals(UGF_PATH_LOADED, path)) {
+                                        UGF_READER = new GeoideInterpolation(path);
+                                        UGF_READER.readHeader();            // una sola volta per path
+                                        // Log.d("Deg2UTM", "UGF letto");
+                                        UGF_PATH_LOADED = path;
                                         ugfReady = true;
                                     }
-
-                                    if (ugfReady) {
-                                        if (ugf.internalLetturaGeoide(mLat_, mLon_, Z, quota, false)) {
+                                    if (ugfReady && UGF_READER != null) {
+                                        if (UGF_READER.internalLetturaGeoide(Lat, Lon, Z, quotaBuf, false)) {
+                                            q = quotaBuf[0];
                                             geoidError = false;
                                         } else {
-                                            quota[0] = Z;
-                                            geoidError = true;
+                                            geoidError = true; q = Z;
                                         }
                                     } else {
-                                        quota[0] = Z;
-                                        geoidError = true;
+                                        geoidError = true; q = Z;
                                     }
                                 } catch (Exception e) {
-                                    // logga;
-                                    Log.e("Deg2Utm",e.toString());
-                                    ugfReady = false;
-                                    quota[0] = Z;
-                                    geoidError = true;
+                                    //Log.e("Deg2UTM", "UGF load/use error", e);
+                                    ugfReady = false; geoidError = true; q = Z;
                                 }
                                 break;
 
                             default:
-                                //Log.e("Deg2Utm","default");
-                                quota[0] = Z;
-                                break;
+                                q = Z; geoidError = false;
                         }
-
                     } else {
-                        quota[0] = Z;
-                        geoidError = false;
+                        q = Z; geoidError = false;
+                    }
+
+                    Quota    = q;
+
+                } catch (Exception e) {
+                    //Log.e("Deg2UTM", "Transform error", e);
+                    geoidError = true;
+
+                }
+                break;
+            default:
+
+                // ====== ramo con geoide + trasformazione ======
+                try {
+                    double q = Z;
+
+                    final String path = MyApp.GEOIDE_PATH;
+                    if (path != null && !path.isEmpty() && !"null".equals(path)) {
+                        int dot = path.lastIndexOf('.');
+                        String ext = (dot > 0) ? path.substring(dot + 1).toLowerCase(Locale.ROOT) : "";
+
+                        switch (ext) {
+                            case "bin":
+                                try {
+                                    if (BIN_READER == null || !Objects.equals(BIN_PATH_LOADED, path)) {
+                                        BIN_READER = new GeoidBinLite(new File(path));
+                                        BIN_PATH_LOADED = path;
+                                        //Log.d("Deg2UTM", "BIN letto");
+                                        binReady = true;
+                                    }
+                                    if (binReady && BIN_READER.isInGrid(Lat, Lon)) {
+                                        q = BIN_READER.getOrthometricHeight(Lat, Lon, Z);
+                                        geoidError = false;
+                                    } else {
+                                        geoidError = true; q = Z;
+                                    }
+                                } catch (IOException e) {
+                                    //Log.e("Deg2UTM", "BIN load/use error", e);
+                                    binReady = false; geoidError = true; q = Z;
+                                }
+                                break;
+
+                            case "ggf":
+                                try {
+                                    if (GGF_READER == null || !Objects.equals(GGF_PATH_LOADED, path)) {
+                                        GGF_READER = new GGFGeoide();
+                                        GGF_READER.load(path);
+                                        //Log.d("Deg2UTM", "GGF letto");
+                                        GGF_PATH_LOADED = path;
+                                        ggfReady = true;
+                                    }
+                                    if (ggfReady && GGF_READER.isInGrid(Lat, Lon)) {
+                                        double und = GGF_READER.getUndulation(Lat, Lon);
+                                        q = Double.isNaN(und) ? Z : (Z - und);
+                                        geoidError = false;
+                                    } else {
+                                        geoidError = true; q = Z;
+                                    }
+                                } catch (Exception e) {
+                                    //Log.e("Deg2UTM", "GGF load/use error", e);
+                                    ggfReady = false; geoidError = true; q = Z;
+                                }
+                                break;
+
+                            case "ugf":
+                                try {
+                                    if (UGF_READER == null || !Objects.equals(UGF_PATH_LOADED, path)) {
+                                        UGF_READER = new GeoideInterpolation(path);
+                                        UGF_READER.readHeader();            // una sola volta per path
+                                       // Log.d("Deg2UTM", "UGF letto");
+                                        UGF_PATH_LOADED = path;
+                                        ugfReady = true;
+                                    }
+                                    if (ugfReady && UGF_READER != null) {
+                                        if (UGF_READER.internalLetturaGeoide(Lat, Lon, Z, quotaBuf, false)) {
+                                            q = quotaBuf[0];
+                                            geoidError = false;
+                                        } else {
+                                            geoidError = true; q = Z;
+                                        }
+                                    } else {
+                                        geoidError = true; q = Z;
+                                    }
+                                } catch (Exception e) {
+                                    //Log.e("Deg2UTM", "UGF load/use error", e);
+                                    ugfReady = false; geoidError = true; q = Z;
+                                }
+                                break;
+
+                            default:
+                                q = Z; geoidError = false;
+                        }
+                    } else {
+                        q = Z; geoidError = false;
                     }
 
                     if (wgsToUtm != null && result != null) {
-                        wgsToUtm.transform(new ProjCoordinate(mLon_, mLat_, quota[0]), result);
-                        Easting = result.x;
+                        wgsToUtm.transform(new ProjCoordinate(Lon, Lat, q), result);
+                        Easting  = result.x;
                         Northing = result.y;
-                        Quota = quota[0];
-
-
+                        Quota    = q;
+                        Zone     = (int) Math.floor(Lon / 6.0 + 31.0);
+                        Letter   = computeUtmLetter(Lat);
                     }
                 } catch (Exception e) {
-                    Log.e("Deg2Utm",e.toString());
+                    //Log.e("Deg2UTM", "Transform error", e);
+                    geoidError = true;
+                    if (wgsToUtm != null && result != null) {
+                        wgsToUtm.transform(new ProjCoordinate(Lon, Lat, Z), result);
+                        Easting = result.x; Northing = result.y; Quota = Z;
+                    }
                 }
                 break;
 
@@ -233,7 +309,13 @@ public class Deg2UTM {
 
 
     }
-
+    private static char computeUtmLetter(double Lat) {
+        char[] bands = {'C','D','E','F','G','H','J','K','L','M','N','P','Q','R','S','T','U','V','W','X'};
+        int idx = (int)Math.floor((Lat + 80.0)/8.0);
+        if (idx < 0) idx = 0;
+        if (idx >= bands.length) idx = bands.length - 1;
+        return bands[idx];
+    }
 
     public double getEasting() {
         return Easting;

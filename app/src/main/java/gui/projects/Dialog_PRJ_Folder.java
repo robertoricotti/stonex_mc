@@ -446,6 +446,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
                             }
                             usaSP.setEnabled(true);
+
                         }
 
 
@@ -460,6 +461,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                 }, 100); // 100 milliseconds = 2 seconds
 
                 usaSP.setEnabled(true);
+                new CustomToast(activity, "SP SELECTED").show_alert();
             }
         });
 
