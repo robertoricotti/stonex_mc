@@ -1,6 +1,9 @@
 package utils;
 
 
+import static gui.MyApp.GEN1;
+import static gui.MyApp.GEN2;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -22,8 +25,6 @@ public class MyDeviceManager {
     public static final String ACTION_SHOW_NAVIGATION = "action.ACTION_SHOW_NAVIGATION";
     public static final String GO_LANSCAPE = "com.cpdevice.hvscreen.landscape";
     public static final String GO_PORTRAIT = "com.cpdevice.hvscreen.portrait";
-    public static final boolean GEN1 = Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("qti");
-    public static final boolean GEN2 = Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS");
 
     public MyDeviceManager() {
 

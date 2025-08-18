@@ -546,7 +546,7 @@ public class Digging2D extends BaseClass {
         }
         double hdt=0;
         if(DataSaved.useYawFrame==0) {
-            hdt = (NmeaListener.mch_Hdt - DataSaved.offsetHDT);
+            hdt = (NmeaListener.roof_Orientation - DataSaved.offsetHDT);
         }else {
             hdt = (Sensors_Decoder.Deg_Yaw_Frame - DataSaved.offsetHDT);
         }
@@ -559,7 +559,7 @@ public class Digging2D extends BaseClass {
             hdt = hdt + 360;
         }
         if(DataSaved.useYawFrame==0){
-        if (NmeaListener.mch_Hdt == 999.999) {
+        if (NmeaListener.roof_Orientation == 999.999) {
             heading_tv.setText("ERROR");
             navigator.setRotation((float) hdt * 0);
         } else {

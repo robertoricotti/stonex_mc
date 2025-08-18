@@ -3,7 +3,6 @@ package serial;
 
 import android.os.Build;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -19,6 +18,7 @@ import event_bus.SerialEvent;
 import gui.MyApp;
 import gui.debug_ecu.Serial_Msg_Debug;
 import gui.gps.Nuovo_Gps;
+import packexcalib.exca.DataSaved;
 import packexcalib.gnss.NmeaListener;
 
 
@@ -26,6 +26,8 @@ import packexcalib.gnss.NmeaListener;
  * 读串口线程
  */
 public class SerialReadThread extends Thread {
+    private String devicePath;
+    static String[] nmeaInput;
     public static boolean serialEmpty;
     Thread workerThread_Gnss;
     byte[] readBuffer_Gnss;
@@ -35,7 +37,8 @@ public class SerialReadThread extends Thread {
 
     private BufferedInputStream mmInputStream_Gnss;
 
-    public SerialReadThread(InputStream is) {
+    public SerialReadThread(InputStream is, String devicePath) {
+        this.devicePath = devicePath;
         mmInputStream_Gnss = new BufferedInputStream(is);
     }
 
@@ -95,12 +98,31 @@ public class SerialReadThread extends Thread {
 
         //String hexStr = ByteUtil.bytes2HexStr(received, 0, size);
 
-        //Log.d("SerialPortManager", received);
+
         handler_tl.removeCallbacks(timeoutRunnable_tl);
         handler_tl.postDelayed(timeoutRunnable_tl, 3000);
         serialEmpty = false;
         NmeaListener.NmeaStandard(received);
+        if (DataSaved.portView >= 2) {
+            if (DataSaved.my_comPort == 0 || DataSaved.my_comPort == 3) {
+                if (devicePath.contains("/dev/ttyS0") || devicePath.contains("/dev/ttyWK0")) {
 
+                    if (received.contains("$GPHDT") || received.contains("$GNHDT")) {
+                        nmeaInput = received.split(",");
+                        try {
+                            NmeaListener.roof_Orientation = Double.parseDouble(nmeaInput[1]);
+                            if (nmeaInput[1].equals("0.0000") || nmeaInput[1].equals("")) {
+                                NmeaListener.roof_Orientation = 999.999;
+                            }
+                        } catch (Exception e) {
+                            NmeaListener.roof_Orientation = 999.999;
+
+                        }
+                    }
+
+                }
+            }
+        }
         if (MyApp.visibleActivity instanceof Nuovo_Gps || MyApp.visibleActivity instanceof Serial_Msg_Debug) {
             EventBus.getDefault().post(new CMD_Event(received));
             EventBus.getDefault().post(new SerialEvent(received));

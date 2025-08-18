@@ -375,7 +375,7 @@ public class Nuovo_Gps extends AppCompatActivity {
             DataSaved.my_comPort = 0;
             MyData.push("M" + indexOfMachine + "_comPort", String.valueOf(DataSaved.my_comPort));
             init();
-            SerialPortManager.instance().close();
+            new OpenSerialPort(Nuovo_Gps.this);
         });
         ckHSL0.setOnClickListener(view -> {
             DataSaved.my_comPort = 1;

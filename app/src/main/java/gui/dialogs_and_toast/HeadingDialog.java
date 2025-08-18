@@ -258,7 +258,7 @@ public class HeadingDialog {
 
             } else {
                 if (DataSaved.useYawFrame == 0) {
-                    DataSaved.offsetHDT = NmeaListener.mch_Hdt;
+                    DataSaved.offsetHDT = NmeaListener.roof_Orientation;
                 } else {
                     DataSaved.offsetHDT = Sensors_Decoder.Deg_Yaw_Frame;
 

@@ -1,5 +1,8 @@
 package serial;
 
+import static gui.MyApp.GEN1;
+import static gui.MyApp.GEN2;
+
 import android.content.Context;
 import android.os.Build;
 import android.serialport.SerialPortFinder;
@@ -18,26 +21,34 @@ public class OpenSerialPort {
     public OpenSerialPort(Context ctx) {
         String[] mDevices;
         int aPosition = -1;
-        if (DataSaved.my_comPort != 0) {
 
-            try {
+        try {
                 SerialPortFinder serialPortFinder = new SerialPortFinder();
                 mBaudrate = "115200";
                 mDevices = serialPortFinder.getAllDevicesPath();
-                //Log.d("Seriali", Arrays.toString(mDevices));
+               String stringa="";
+               if(DataSaved.my_comPort==0){
+                   if (GEN1) {
+                       stringa = "/dev/ttyWK0";
+                   } else if (GEN2) {
+                       stringa = "/dev/ttyS0";
+                   }
+               }else {
+                   stringa=MyDeviceManager.serialCom(DataSaved.my_comPort);
+               }
 
                 String[] item = mDevices;
                 for (int i = 0; i < item.length; i++)
-                    if (item[i].contains(MyDeviceManager.serialCom(DataSaved.my_comPort)))
+                    if (item[i].contains(stringa))
                         aPosition = i;
                 mDevice = new Device(mDevices[aPosition], mBaudrate);
                 mOpened = SerialPortManager.instance().open(mDevice) != null;
                 if (mOpened) {
-                    Toast toast = Toast.makeText(ctx.getApplicationContext(), MyDeviceManager.serialCom(DataSaved.my_comPort), Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(ctx.getApplicationContext(), stringa, Toast.LENGTH_LONG);
                     toast.setGravity(0, 0, 0);
                     toast.show();
 
-                    if (DataSaved.my_comPort == 3) {
+                    if (DataSaved.my_comPort == 3||DataSaved.my_comPort==0) {
                         try {
                             if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
                                 SerialPortManager.instance().sendCommand("CONFIG UNDULATION AUTO\r\n");
@@ -88,10 +99,7 @@ public class OpenSerialPort {
 
                 }
             }
-        } else {
 
-            mOpened = false;
-        }
     }
 
 }

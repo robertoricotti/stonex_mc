@@ -39,7 +39,7 @@ static  Deg2UTM deg2UTM1;
     public static int mZone;
     public static String VRMS_, HRMS_, _3DRMS;
     public static double mLat_1, mLon_1;
-    public static double Nord1, Est1, Quota1, mch_Orientation, mch_Hdt;
+    public static double Nord1, Est1, Quota1, mch_Orientation, mch_Hdt,roof_Orientation;
     public static String ggaNord, ggaEast, ggaNoS, ggaWoE, ggaZ1, ggaZ2, ggaSat, ggaDop, ggaQuality, ggaRtk, fix1;//String data from  GPS1
 
     /*
@@ -204,6 +204,11 @@ static  Deg2UTM deg2UTM1;
                                 mch_Hdt = 999.999;
 
                             }
+                            if(DataSaved.portView<2) {
+                                if (DataSaved.my_comPort == 1 || DataSaved.my_comPort == 2|| DataSaved.my_comPort == 3) {
+                                    roof_Orientation = mch_Hdt;
+                                }
+                            }
                             break;
 
                         case "$GPGST":
@@ -271,6 +276,11 @@ static  Deg2UTM deg2UTM1;
                     mch_Hdt = 999.999;
                 } else {
                     mch_Hdt = mch_Orientation;
+                }
+                if(DataSaved.portView<2) {
+                    if (DataSaved.my_comPort == 0 ) {
+                        roof_Orientation = mch_Hdt;
+                    }
                 }
                 ggaQuality = String.valueOf(data[4]).replace(",",".");
                 quality();

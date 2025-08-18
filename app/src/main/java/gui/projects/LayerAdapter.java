@@ -176,35 +176,25 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                 item.setEnable(newState); // Aggiorna l'oggetto DisplayItem
 
                 // Trova il layer corrispondente nella lista originale
-                boolean updated = false;
                 for (Layer layer : DataSaved.dxfLayers_DTM) {
                     if (layer.getLayerName().equals(item.getLayerName())) {
                         layer.setEnable(newState);
-                        updated = true;
                         break;
                     }
                 }
                 for (Layer layer : DataSaved.dxfLayers_POLY) {
                     if (layer.getLayerName().equals(item.getLayerName())) {
                         layer.setEnable(newState);
-                        updated = true;
                         break;
                     }
                 }
+
                 for (Layer layer : DataSaved.dxfLayers_POINT) {
                     if (layer.getLayerName().equals(item.getLayerName())) {
                         layer.setEnable(newState);
-                        updated = true;
                         break;
                     }
                 }
-
-                if (!updated) {
-                    //Log.d("LayerEnable", "Layer " + item.getLayerName() + " non trovato nelle liste.");
-                } else {
-                    //Log.d("LayerEnable", "Layer " + item.getLayerName() + " aggiornato con successo.");
-                }
-
                 // Aggiorna l'immagine in base al nuovo stato
                 updateLayerEnableState(holder.layerEnable, newState);
 

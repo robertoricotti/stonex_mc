@@ -60,7 +60,7 @@ public class SerialPortManager {
             int baudrate = Integer.parseInt(baudrateString);
             mSerialPort = new SerialPort(device, baudrate);
 
-            mReadThread = new SerialReadThread(mSerialPort.getInputStream());
+            mReadThread = new SerialReadThread(mSerialPort.getInputStream(),devicePath);
             mReadThread.start();
 
             mOutputStream = mSerialPort.getOutputStream();

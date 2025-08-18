@@ -50,6 +50,7 @@ import java.util.concurrent.TimeUnit;
 
 import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Ecu_Sensors_Activity;
+import dxf.Layer;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.boot_and_choose.LaunchScreenActivity;
 import gui.buckets.BucketCalib;
@@ -137,6 +138,8 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     Apollo2 apollo2;
     private volatile boolean mRunning = false;
     private ScheduledExecutorService executorService;
+    public static final boolean GEN1 = Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("qti");
+    public static final boolean GEN2 = Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS");
 
     @Override
     public void onCreate() {
@@ -478,7 +481,7 @@ git push
                                 }
 
                             } catch (Exception e) {
-                                System.out.println(e);
+
                                 hAlarm = false;
                             }
                             if (hAlarm) {

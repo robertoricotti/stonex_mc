@@ -1,14 +1,11 @@
 package services;
 
 import static packexcalib.exca.Sensors_Decoder.isMobaTilt;
-import static packexcalib.gnss.CRS_Strings._NONE;
-import static serial.OpenSerialPort.mOpened;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -26,10 +23,8 @@ import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
 import serial.OpenSerialPort;
-import serial.SerialPortManager;
 import utils.CPCanHelper;
 import utils.CanFileReceiver;
-import utils.FileCreator;
 import utils.MyDeviceManager;
 
 public class CanService extends Service {
@@ -222,7 +217,7 @@ public class CanService extends Service {
 
             }
 
-            if(MyDeviceManager.serialCom(DataSaved.my_comPort).equals("CAN")) {
+            if (MyDeviceManager.serialCom(DataSaved.my_comPort).equals("CAN")) {
                 NmeaListener.NmeaSTX(id, msg);
                 if (id == 0x18FF0510) {
                     nmeaSTX_Disc = false;
@@ -265,7 +260,7 @@ public class CanService extends Service {
             } else if (DataSaved.portView == 1) {
                 //
                 if (DataSaved.useYawFrame == 0) {
-                    hdt = NmeaListener.mch_Hdt - DataSaved.offsetHDT;
+                    hdt = NmeaListener.roof_Orientation - DataSaved.offsetHDT;
                 } else {
                     hdt = Sensors_Decoder.Deg_Yaw_Frame - DataSaved.offsetHDT;
                 }
@@ -330,7 +325,7 @@ public class CanService extends Service {
             }
 
 
-            if(DataSaved.isWL>1){
+            if (DataSaved.isWL > 1) {
                 DataSaved.deltaZ = DataSaved.altezzaLama + DataSaved.altezzaPali;
             }
             double[] arrayData = new double[]{hdt, gps_type, DataSaved.deltaX, DataSaved.deltaY, DataSaved.deltaZ, DataSaved.deltaGPS2, spigoloX, spigoloY, spigoloZ, 0};
@@ -506,205 +501,194 @@ public class CanService extends Service {
 
 
         CanServiceState = true;
-        switch (DataSaved.my_comPort) {
-            case 0:
-                try {
-                    if (mOpened) {
-                        mOpened = false;
-                        SerialPortManager.instance().close();
-                    }
-                    byte speed = 0;
-                    switch (DataSaved.reqSpeed) {
+        try {
 
-                        case 0:
-                            speed = 5;
-                            break;
-                        case 1:
-                            speed = 4;
-                            break;
-                        case 2:
-                            speed = 3;
-                            break;
-                        case 3:
-                            speed = 1;
-                            break;
+            byte speed = 0;
+            switch (DataSaved.reqSpeed) {
 
-                    }
-                    if (mOpened) {
-                        mOpened = false;
-                        SerialPortManager.instance().close();
-                    }
-                    byte msg=0x03;
+                case 0:
+                    speed = 5;
+                    break;
+                case 1:
+                    speed = 4;
+                    break;
+                case 2:
+                    speed = 3;
+                    break;
+                case 3:
+                    speed = 1;
+                    break;
+
+            }
+
+            byte msg = 0x03;
 
 
-
-                    MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-                break;
-            case 1:
-            case 2:
-            case 3:
-                new OpenSerialPort(this);
-                break;
+            MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+            new OpenSerialPort(this);
+        } catch (Exception e) {
+            System.out.println(e);
         }
 
 
-        cpCanHelper.start(new CPCanHelper.Action() {
-            @Override
-            public void execute(int channel, int id, byte[] data) {
-                if (data != null) {
-                    dlc = data.length;
-                    OnCan(channel, data, dlc, id);
-                }
 
-            }
-        });
+
+        cpCanHelper.start(new CPCanHelper.Action()
+
+    {
+        @Override
+        public void execute ( int channel, int id, byte[] data){
+        if (data != null) {
+            dlc = data.length;
+            OnCan(channel, data, dlc, id);
+        }
+
+    }
+    });
 
 
         return START_NOT_STICKY;
-    }
+}
 
-    @Nullable
+@Nullable
+@Override
+public IBinder onBind(Intent intent) {
+    return null;
+}
+
+private final Handler handler_nmeaSTX = new Handler();
+private final Runnable timeoutRunnable_nmea2k = new Runnable() {
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public void run() {
+        nmeaSTX_Disc = true;
     }
-
-    private final Handler handler_nmeaSTX = new Handler();
-    private final Runnable timeoutRunnable_nmea2k = new Runnable() {
-        @Override
-        public void run() {
-            nmeaSTX_Disc = true;
-        }
-    };
-    private final Handler handler_frame = new Handler();
-    private final Runnable timeoutRunnable_frame = new Runnable() {
-        @Override
-        public void run() {
-            frameDisc = true;
-        }
-    };
-    private final Handler handler_b1 = new Handler();
-    private final Runnable timeoutRunnable_b1 = new Runnable() {
-        @Override
-        public void run() {
-            boom1Disc = true;
-
-        }
-    };
-    private final Handler handler_b2 = new Handler();
-    private final Runnable timeoutRunnable_b2 = new Runnable() {
-        @Override
-        public void run() {
-            boom2Disc = true;
-
-        }
-    };
-    private final Handler handler_st = new Handler();
-    private final Runnable timeoutRunnable_st = new Runnable() {
-        @Override
-        public void run() {
-            stickDisc = true;
-
-        }
-    };
-    private final Handler handler_bk = new Handler();
-    private final Runnable timeoutRunnable_bk = new Runnable() {
-        @Override
-        public void run() {
-            bucketDisc = true;
-
-        }
-    };
-    private final Handler handler_tl = new Handler();
-    private final Runnable timeoutRunnable_tl = new Runnable() {
-        @Override
-        public void run() {
-            tiltDisc = true;
-            isMobaTilt = false;
-            tiltOK=false;
-
-        }
-    };
-
-    private final Handler handler_frameOK = new Handler();
-    private final Runnable timeoutRunnable_frameOK = new Runnable() {
-        @Override
-        public void run() {
-            frameOK = false;
-
-        }
-    };
-    private final Handler handler_boom1OK = new Handler();
-    private final Runnable timeoutRunnable_boom1OK = new Runnable() {
-        @Override
-        public void run() {
-            boom1OK = false;
-
-        }
-    };
-    private final Handler handler_boom2OK = new Handler();
-    private final Runnable timeoutRunnable_boom2OK = new Runnable() {
-        @Override
-        public void run() {
-            boom2OK = false;
-
-        }
-    };
-    private final Handler handler_stickOK = new Handler();
-    private final Runnable timeoutRunnable_stickOK = new Runnable() {
-        @Override
-        public void run() {
-            stickOK = false;
-
-        }
-    };
-    private final Handler handler_bucketOK = new Handler();
-    private final Runnable timeoutRunnable_bucketOK = new Runnable() {
-        @Override
-        public void run() {
-            bucketOK = false;
-
-        }
-    };
-    private final Handler handler_tiltOK = new Handler();
-    private final Runnable timeoutRunnable_tiltOK = new Runnable() {
-        @Override
-        public void run() {
-            tiltOK = false;
-
-        }
-    };
-
-    private final Handler handler_ECU_Connected = new Handler();
-    private final Runnable timeoutRunnable_CU_Connected = new Runnable() {
-        @Override
-        public void run() {
-            ECU_Connected = false;
-            isAutoL = false;
-            isAutoR = false;
-            outW_L = false;
-            outW_R = false;
-
-        }
-    };
-
-
-    private String byte2String(byte[] array) {
-        String txt = "";
-        for (byte i : array) {
-            txt += String.format(" x%02X", i);
-        }
-        return txt;
-    }
-
-
+};
+private final Handler handler_frame = new Handler();
+private final Runnable timeoutRunnable_frame = new Runnable() {
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
+    public void run() {
+        frameDisc = true;
+    }
+};
+private final Handler handler_b1 = new Handler();
+private final Runnable timeoutRunnable_b1 = new Runnable() {
+    @Override
+    public void run() {
+        boom1Disc = true;
 
     }
+};
+private final Handler handler_b2 = new Handler();
+private final Runnable timeoutRunnable_b2 = new Runnable() {
+    @Override
+    public void run() {
+        boom2Disc = true;
+
+    }
+};
+private final Handler handler_st = new Handler();
+private final Runnable timeoutRunnable_st = new Runnable() {
+    @Override
+    public void run() {
+        stickDisc = true;
+
+    }
+};
+private final Handler handler_bk = new Handler();
+private final Runnable timeoutRunnable_bk = new Runnable() {
+    @Override
+    public void run() {
+        bucketDisc = true;
+
+    }
+};
+private final Handler handler_tl = new Handler();
+private final Runnable timeoutRunnable_tl = new Runnable() {
+    @Override
+    public void run() {
+        tiltDisc = true;
+        isMobaTilt = false;
+        tiltOK = false;
+
+    }
+};
+
+private final Handler handler_frameOK = new Handler();
+private final Runnable timeoutRunnable_frameOK = new Runnable() {
+    @Override
+    public void run() {
+        frameOK = false;
+
+    }
+};
+private final Handler handler_boom1OK = new Handler();
+private final Runnable timeoutRunnable_boom1OK = new Runnable() {
+    @Override
+    public void run() {
+        boom1OK = false;
+
+    }
+};
+private final Handler handler_boom2OK = new Handler();
+private final Runnable timeoutRunnable_boom2OK = new Runnable() {
+    @Override
+    public void run() {
+        boom2OK = false;
+
+    }
+};
+private final Handler handler_stickOK = new Handler();
+private final Runnable timeoutRunnable_stickOK = new Runnable() {
+    @Override
+    public void run() {
+        stickOK = false;
+
+    }
+};
+private final Handler handler_bucketOK = new Handler();
+private final Runnable timeoutRunnable_bucketOK = new Runnable() {
+    @Override
+    public void run() {
+        bucketOK = false;
+
+    }
+};
+private final Handler handler_tiltOK = new Handler();
+private final Runnable timeoutRunnable_tiltOK = new Runnable() {
+    @Override
+    public void run() {
+        tiltOK = false;
+
+    }
+};
+
+private final Handler handler_ECU_Connected = new Handler();
+private final Runnable timeoutRunnable_CU_Connected = new Runnable() {
+    @Override
+    public void run() {
+        ECU_Connected = false;
+        isAutoL = false;
+        isAutoR = false;
+        outW_L = false;
+        outW_R = false;
+
+    }
+};
+
+
+private String byte2String(byte[] array) {
+    String txt = "";
+    for (byte i : array) {
+        txt += String.format(" x%02X", i);
+    }
+    return txt;
+}
+
+
+@Override
+public void onDestroy() {
+    super.onDestroy();
+
+
+}
 }

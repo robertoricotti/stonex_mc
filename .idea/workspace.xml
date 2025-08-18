@@ -222,9 +222,19 @@
   <component name="ChangeListManager">
     <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="tentato BUGFIX per lag geoide. 12 agosto 2025">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Diaalog_Set_SP.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Diaalog_Set_SP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectFileAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectFileAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/HeadingDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/HeadingDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/LayerAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/LayerAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/serial/OpenSerialPort.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/serial/OpenSerialPort.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/serial/SerialPortManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/serial/SerialPortManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/serial/SerialReadThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/serial/SerialReadThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyData.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -664,7 +674,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754959192990</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="tentato BUGFIX per lag geoide. 12 agosto 2025">
+      <option name="closed" value="true" />
+      <created>1754964876409</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1754964876409</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

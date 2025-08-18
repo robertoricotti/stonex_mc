@@ -7,6 +7,9 @@ import static gui.MyApp.folderPath;
 
 import android.os.Environment;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,9 +19,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import gui.MyApp;
@@ -27,6 +32,19 @@ import gui.tech_menu.ExcavatorChooserActivity;
 
 public class MyData {
     static final int READ_BLOCK_SIZE = 150;
+    private static final Gson gson = new Gson();
+    public static <T> void pushList(String DataName, List<T> list) {
+        String json = gson.toJson(list);
+        push(DataName, json);
+    }
+
+    public static <T> List<T> getList(String DataName, Class<T> clazz) {
+        String jsonSaved = get_String(DataName);
+        if (jsonSaved == null || jsonSaved.isEmpty()) return null;
+
+        Type type = TypeToken.getParameterized(List.class, clazz).getType();
+        return gson.fromJson(jsonSaved, type);
+    }
     public static void push(String DataName, String Data2Save){
         try {
             OutputStreamWriter osw=new OutputStreamWriter(MyApp.visibleActivity.getApplicationContext().openFileOutput(DataName, MODE_PRIVATE));
