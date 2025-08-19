@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/sfondo_dialog_chiara">
+    android:background="@drawable/sfondo_bottone_bianco">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/hc"
@@ -14,10 +14,11 @@
 
     <ImageView
         android:id="@+id/immagine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/save_btn"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+       android:layout_margin="2dp"
+        android:src="@drawable/swingboom"
+        app:layout_constraintBottom_toTopOf="@id/val"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"

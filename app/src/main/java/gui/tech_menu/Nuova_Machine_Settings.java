@@ -52,6 +52,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     public static boolean menu1_visible, menu2_visible,menu3_visible;
     DialogPassword dialogPassword;
     Dialog_CanBaud dialogCanBaud;
+    Dialog_Swing_Boom dialogSwingBoom;
     int small,bigg;
 
     @Override
@@ -76,6 +77,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         dialogPassword = new DialogPassword(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         customQwertyDialog = new CustomQwertyDialog(this,null);
+        dialogSwingBoom=new Dialog_Swing_Boom(this);
         machineSel = MyData.get_Int("MachineSelected");
         mode = MyData.get_Int("M" + machineSel + "_isWL");
         back = findViewById(R.id.btn_1);
@@ -225,7 +227,9 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             }
         });
         tvSwing.setOnClickListener(view -> {
-            //TODO swing dialog
+            if(!dialogSwingBoom.dialog.isShowing()){
+                dialogSwingBoom.show();
+            }
         });
         tvFrame.setOnClickListener(view -> {
             en_dis(false);
@@ -454,7 +458,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 //Wheel
                 tvFrame.setVisibility(View.VISIBLE);
                 tvBoom1.setVisibility(View.VISIBLE);
-                tvSwing.setVisibility(View.GONE);
+                tvSwing.setVisibility(View.VISIBLE);
                 tvBoom2.setVisibility(View.GONE);
                 tvStick.setVisibility(View.VISIBLE);
                 tvStick.setText("MAIN BOOM");
