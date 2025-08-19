@@ -42,11 +42,11 @@ import utils.MyDeviceManager;
 
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
-    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO,ckSchermo,ckMach;
+    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO,ckSchermo,ckMach,ck22;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, menu_1, menu_2, saveToFile, readFromFile, status,bt_canopen;
     ConstraintLayout constraintLayout, constraintLayout_2,constraintLayout_3;
-    TextView tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ,toCanopen,toDamping,can1bd,can2bd;
+    TextView tvSwing,tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ,toCanopen,toDamping,can1bd,can2bd;
     EditText mchName,techInfo;
     int mode, machineSel;
     public static boolean menu1_visible, menu2_visible,menu3_visible;
@@ -89,6 +89,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         constraintLayout = findViewById(R.id.constraint_general);
         constraintLayout_2 = findViewById(R.id.constr_2);
         constraintLayout_3 = findViewById(R.id.constr_3);
+        tvSwing=findViewById(R.id.tvSwing);
         tvFrame = findViewById(R.id.toFrame);
         tvBoom1 = findViewById(R.id.toBoom1);
         tvBoom2 = findViewById(R.id.toBoom2);
@@ -100,6 +101,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ckSchermo=findViewById(R.id.ckSchermo);
         ckMach=findViewById(R.id.ckMach);
         ckDO = findViewById(R.id.ck2);
+        ck22=findViewById(R.id.ck22);
         ckUHF = findViewById(R.id.ck3);
         ckUpper = findViewById(R.id.ck4);
         ckIMU = findViewById(R.id.ck5);
@@ -146,7 +148,18 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             MyData.push("M" + machineSel + "_useCanOpen", "5");
         });
 
-
+        ck22.setOnClickListener(view -> {
+            ck22.setChecked(!ck22.isChecked());
+            if (ck22.isChecked()) {
+                ck22.setChecked(false);
+                MyData.push("M" + machineSel + "Extra_Heading", "0");
+                DataSaved.Extra_Heading=0;
+            } else if (!ck22.isChecked()) {
+                ck22.setChecked(true);
+                MyData.push("M" + machineSel + "Extra_Heading", "1");
+                DataSaved.Extra_Heading=1;
+            }
+        });
         ckDO.setOnClickListener(view -> {
             ckDO.setChecked(!ckDO.isChecked());
             if (ckDO.isChecked()) {
@@ -210,6 +223,9 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             if (!customQwertyDialog.dialog.isShowing()) {
                 customQwertyDialog.show(mchName);
             }
+        });
+        tvSwing.setOnClickListener(view -> {
+            //TODO swing dialog
         });
         tvFrame.setOnClickListener(view -> {
             en_dis(false);
@@ -421,6 +437,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             case 0:
                 //Excavatore
                 tvFrame.setVisibility(View.VISIBLE);
+                tvSwing.setVisibility(View.VISIBLE);
                 tvBoom1.setVisibility(View.VISIBLE);
                 tvBoom1.setText("BOOM 1");
                 tvBoom2.setVisibility(View.VISIBLE);
@@ -437,6 +454,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 //Wheel
                 tvFrame.setVisibility(View.VISIBLE);
                 tvBoom1.setVisibility(View.VISIBLE);
+                tvSwing.setVisibility(View.GONE);
                 tvBoom2.setVisibility(View.GONE);
                 tvStick.setVisibility(View.VISIBLE);
                 tvStick.setText("MAIN BOOM");
@@ -457,6 +475,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             case 3:
                 //Dozer
                 tvFrame.setVisibility(View.GONE);
+                tvSwing.setVisibility(View.GONE);
                 tvBoom1.setVisibility(View.VISIBLE);
                 tvBoom2.setVisibility(View.GONE);
                 tvStick.setVisibility(View.GONE);
@@ -477,6 +496,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             case 4:
                 //Grader
                 tvFrame.setVisibility(View.GONE);
+                tvSwing.setVisibility(View.GONE);
                 tvBoom1.setVisibility(View.VISIBLE);
                 tvBoom2.setVisibility(View.GONE);
                 tvStick.setVisibility(View.GONE);
@@ -619,6 +639,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         }
 
         ckUHF.setChecked(MyData.get_Int("M" + machineSel + "useQuickSwitch") == 1);
+        ck22.setChecked(MyData.get_Int("M"+machineSel+"Extra_Heading")!=0);
         ckDO.setChecked(MyData.get_Int("M" + machineSel + "_enOUT") != 0);
         ckIMU.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 3);//TSM
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag

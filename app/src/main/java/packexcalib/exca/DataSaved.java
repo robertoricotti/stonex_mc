@@ -38,7 +38,7 @@ public class DataSaved {
     public static int lrFrame;
 
     public static int lrTilt;
-    public static int fwbwSwing;
+
 
     public static double offsetRoll;
 
@@ -92,9 +92,7 @@ public class DataSaved {
     public static double piccolaBucket;
 
     public static double miniPitch_L;
-    public static double swing_LA;
-    public static double swing_LB;
-    public static double swing_LC;
+
     public static double W_Blade_TOT;
     public static double W_Blade_LEFT;
     public static double W_Blade_RIGHT;
@@ -202,6 +200,7 @@ public class DataSaved {
     public static String progettoSelected_POINT;
     public static double offset_Z_antenna;
     public static int isWL;
+    public static int Extra_Heading;
     public static float myBrightness=1.0f;
     public static double larghezzaBoom = 0.4;
     public static double larghezzaFrame = 2.2;

@@ -301,26 +301,13 @@ public class CanSender extends Service {
                     if (isApollo) {
                         MyDeviceManager.CanWrite(0, 0, 2, new byte[]{1, 0});
                     }
-                    if (DataSaved.fwbwSwing != 0) {
-                        if (isApollo) {
-                            MyDeviceManager.CanWrite(0, 1568, 8, new byte[]{43, 0, 98, 0, 50, 0, 0, 0});
-                        }
-                    }
+
                 }
                 if (startCanopen == 30) {
                     startCanopen = 0;
                 }
-            } else {
-                if (DataSaved.fwbwSwing != 0) {
-                    if (isApollo) {
-                        MyDeviceManager.CanWrite(0, 0, 2, new byte[]{1, 0x20});
-                        MyDeviceManager.CanWrite(0, 1568, 8, new byte[]{43, 0, 98, 0, 50, 0, 0, 0});
-
-                    }
-
-
-                }
             }
+
 
         }
 

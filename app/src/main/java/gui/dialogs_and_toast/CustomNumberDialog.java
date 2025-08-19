@@ -16,7 +16,6 @@ import com.example.stx_dig.R;
 
 import gui.projects.Dialog_Edita_Punti3D;
 import gui.projects.Punti3DAdapter;
-import gui.tech_menu.SlideBoomActivity;
 import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;
 import utils.Utils;
@@ -281,10 +280,7 @@ public class CustomNumberDialog {
                         }
                     }
 
-                    if (activity instanceof SlideBoomActivity) {
 
-                        ((SlideBoomActivity) activity).save();
-                    }
 
                     c = true;
                     dec = 0;

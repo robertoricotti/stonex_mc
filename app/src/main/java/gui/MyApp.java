@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,7 +49,6 @@ import java.util.concurrent.TimeUnit;
 
 import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Ecu_Sensors_Activity;
-import dxf.Layer;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.boot_and_choose.LaunchScreenActivity;
 import gui.buckets.BucketCalib;
@@ -85,7 +83,6 @@ import gui.tech_menu.GPS_Autocalib;
 import gui.tech_menu.LinkageCalib;
 import gui.tech_menu.Nuova_Blade_Calib;
 import gui.tech_menu.Nuova_Machine_Settings;
-import gui.tech_menu.SlideBoomActivity;
 import gui.tech_menu.StickCalib;
 import gui.tech_menu.TiltCalib;
 import gui.tech_menu.Tilt_Blade;
@@ -553,9 +550,7 @@ git push
             ((GPS_Autocalib) activity).updateUI();
         } else if (activity instanceof LinkageCalib) {
             ((LinkageCalib) activity).updateUI();
-        }  else if (activity instanceof SlideBoomActivity) {
-            ((SlideBoomActivity) activity).updateUI();
-        } else if (activity instanceof StickCalib) {
+        }   else if (activity instanceof StickCalib) {
             ((StickCalib) activity).updateUI();
         } else if (activity instanceof TiltCalib) {
             ((TiltCalib) activity).updateUI();

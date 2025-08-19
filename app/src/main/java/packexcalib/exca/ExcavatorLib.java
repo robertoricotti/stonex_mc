@@ -27,7 +27,7 @@ public class ExcavatorLib {
     public static double hdt_BOOM, hdt_LAMA;
     static int lowerEdge;
     static double myRollLen, myPitchLen;
-    public static double altezzaProiettata, altezzaVerticale, distanzaOrizzontale, slopeProfile, swing_cylinder_Len, swing_boom_angle;
+    public static double altezzaProiettata, altezzaVerticale, distanzaOrizzontale, slopeProfile;
     public static double yawSensor;
     public static int indexSezione;
     public static boolean overturn;
@@ -45,6 +45,7 @@ public class ExcavatorLib {
     static double hdt_DESTRA, hdt_DRITTO, hdt_SINISTRA;
     public static double[] coordinateLASER = new double[]{0, 0, 0};
     public static double[] startXYZ;
+    static double swing_boom_angle;//TODO
 
     public static void Excavator(double[] measures) {
         try {
@@ -78,17 +79,13 @@ public class ExcavatorLib {
             Len_Roll = DataSaved.L_Roll;
             larghezzabenna = DataSaved.W_Bucket;
 
-            if (DataSaved.fwbwSwing != 0) {
-                swing_cylinder_Len = DataSaved.swing_LA + Sensors_Decoder.Swing_Encoder;
-                swing_boom_angle = swingCalc(swing_cylinder_Len, DataSaved.swing_LB, DataSaved.swing_LC) - swingCalc(DataSaved.swing_LA, DataSaved.swing_LB, DataSaved.swing_LC);
-                if (Double.isNaN(swing_boom_angle)) {
-                    swing_boom_angle = 0;
-                }
-            } else {
-                swing_cylinder_Len = 0;
-                swing_boom_angle = 0;
-            }
 
+
+            if(DataSaved.Extra_Heading!=0){
+                swing_boom_angle=NmeaListener.roof_Orientation;
+            }else {
+                swing_boom_angle=0;
+            }
 
             if (GPS_Enabled == 1) {
 
@@ -152,7 +149,7 @@ public class ExcavatorLib {
                         coordRoll = Exca_Quaternion.endPoint(coordinateDY, -correctRoll, correctPitch, myRollLen, hdtR);//Centro Braccio all'altezza centro macchina
 
 
-                        if (DataSaved.fwbwSwing != 0) {
+                        if (DataSaved.Extra_Heading != 0) {
                             coordMiniPitch = Exca_Quaternion.endPoint(coordRoll, correctPitch, correctRoll, DataSaved.L_Pitch - DataSaved.miniPitch_L, hdt0);
                             coordPitch = Exca_Quaternion.endPoint(coordMiniPitch, correctPitch, Deg_Boom_Roll, DataSaved.miniPitch_L, hdt_BOOM);
                         } else {
@@ -340,7 +337,7 @@ public class ExcavatorLib {
 
                 coordRoll = Exca_Quaternion.endPoint(startXYZ, -correctRoll, correctPitch, DataSaved.L_Roll, hdt_DESTRA);
 
-                if (DataSaved.fwbwSwing != 0) {
+                if (DataSaved.Extra_Heading != 0) {
                     coordMiniPitch = Exca_Quaternion.endPoint(coordRoll, correctPitch, correctRoll, DataSaved.L_Pitch - DataSaved.miniPitch_L, hdt_DRITTO);
                     coordPitch = Exca_Quaternion.endPoint(coordMiniPitch, correctPitch, Deg_Boom_Roll, DataSaved.miniPitch_L, hdt_BOOM);
                 } else {

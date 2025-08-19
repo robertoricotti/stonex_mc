@@ -235,12 +235,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="gui.tech_menu.SlideBoomActivity"
-            android:autoRemoveFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="gui.debug_ecu.Can_Msg_Debug"
             android:autoRemoveFromRecents="true"

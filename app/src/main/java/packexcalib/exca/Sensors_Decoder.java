@@ -12,7 +12,7 @@ public class Sensors_Decoder {
     public static boolean isMobaTilt;
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
     public static double Deg_roll, Deg_pitch, Deg_boom1, Deg_boom2, Deg_stick, Deg_bucket, Deg_tilt, Deg_Benna_W_Tilt, Deg_bucket_DEMO,
-            Swing_Encoder, Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom;
+             Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom;
     public static int V_Laser = 255, flagLaserConnected, flagDefault, flagLaser;
 
     static double norm, ax_norm, ay_norm, az_norm;
@@ -931,26 +931,7 @@ public class Sensors_Decoder {
                             ExcavatorLib.Excavator(values);
                             break;
                     }
-                    if (DataSaved.fwbwSwing != 0) {
-                        if (id == 0x1A0) {
-                            int swing = 0;
-                            byte dt1, dt2;
-                            if ((data[2] & 0xff) == 255) {
-                                dt1 = data[2];
-                                dt2 = (byte) 255;
-                            } else {
-                                dt1 = data[2];
-                                dt2 = 0;
-                            }
-                            swing = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[0], data[1], dt1, dt2});
-                            swing = swing * -1;
-                            swing = swing * DataSaved.fwbwSwing;
-                            //52919=1900mm scalatura conteggi su filo da 1900mm
-                            int res = UnitsConversion.myscalIntD(swing, 0, 52919, 0, 1900);
-                            Swing_Encoder = res * 0.001;
-                        }
 
-                    }
 
                     flagDefault--;
                     flagLaser -= 1;

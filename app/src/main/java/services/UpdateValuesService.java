@@ -143,11 +143,9 @@ public class UpdateValuesService extends Service {
                     String useYawFrame = MyData.get_String("M" + i + "useYawFrame");
                     String useQuickSwitch = MyData.get_String("M" + i + "useQuickSwitch");
 
-                    String swingSide = MyData.get_String("M" + i + "_Swing_MountPos");
+
                     String swingLen = MyData.get_String("M" + i + "_Swing_Len");
-                    String swingLen_La = MyData.get_String("M" + i + "_Swing_Len_LA");
-                    String swingLen_Lb = MyData.get_String("M" + i + "_Swing_Len_LB");
-                    String swingLen_Lc = MyData.get_String("M" + i + "_Swing_Len_LC");
+
 
 
                     String iswl = MyData.get_String("M" + i + "_isWL");
@@ -181,6 +179,8 @@ public class UpdateValuesService extends Service {
                     String usuraLamaSX = MyData.get_String("M" + i + "usuraLamaSX");
                     String usuraLamaCX = MyData.get_String("M" + i + "usuraLamaCX");
                     String usuraLamaDX = MyData.get_String("M" + i + "usuraLamaDX");
+
+                    String Extra_Heading = MyData.get_String("M" + i + "Extra_Heading");
 
 
                     if (nameM == null) {
@@ -279,23 +279,11 @@ public class UpdateValuesService extends Service {
                     if (useQuickSwitch == null) {
                         MyData.push("M" + i + "useQuickSwitch", "0");
                     }
-                    if (swingSide == null) {
-                        MyData.push("M" + i + "_Swing_MountPos", "0");
-                    }
+
                     if (swingLen == null) {
                         MyData.push("M" + i + "_Swing_Len", "0.0");
                     }
-                    ////////
-                    if (swingLen_La == null) {
-                        MyData.push("M" + i + "_Swing_Len_LA", "0.0");
-                    }
-                    if (swingLen_Lb == null) {
-                        MyData.push("M" + i + "_Swing_Len_LB", "0.0");
-                    }
-                    if (swingLen_Lc == null) {
-                        MyData.push("M" + i + "_Swing_Len_LC", "0.0");
-                    }
-                    ///////
+
                     //draw
                     if (larghezza_Carro == null) {
                         MyData.push("M" + i + "larghezza_Carro", "2.0");
@@ -425,6 +413,9 @@ public class UpdateValuesService extends Service {
                     if (usuraLamaDX == null) {
                         MyData.push("M" + i + "usuraLamaDX", "0.1");
 
+                    }
+                    if(Extra_Heading==null){
+                        MyData.push("M"+i+"Extra_Heading","0");
                     }
 
                 }
@@ -1139,6 +1130,11 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di larghezza_Braccio: " + e.getMessage());
                 }
+                try {
+                    DataSaved.Extra_Heading = MyData.get_Int("M" + indexMach + "Extra_Heading");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Extra_Heading: " + e.getMessage());
+                }
 
                 ////end draw
 
@@ -1291,36 +1287,13 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di useQuickSwitch: " + e.getMessage());
                 }
 
-                try {
-                    DataSaved.fwbwSwing = MyData.get_Int("M" + indexMach + "_Swing_MountPos");
-                } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di fwbwSwing: " + e.getMessage());
-                }
+
 
                 try {
                     DataSaved.miniPitch_L = MyData.get_Double("M" + indexMach + "_Swing_Len");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di miniPitch_L: " + e.getMessage());
                 }
-
-                try {
-                    DataSaved.swing_LA = MyData.get_Double("M" + indexMach + "_Swing_Len_LA");
-                } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di swing_LA: " + e.getMessage());
-                }
-
-                try {
-                    DataSaved.swing_LB = MyData.get_Double("M" + indexMach + "_Swing_Len_LB");
-                } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di swing_LB: " + e.getMessage());
-                }
-
-                try {
-                    DataSaved.swing_LC = MyData.get_Double("M" + indexMach + "_Swing_Len_LC");
-                } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di swing_LC: " + e.getMessage());
-                }
-
 
 
                 try {
