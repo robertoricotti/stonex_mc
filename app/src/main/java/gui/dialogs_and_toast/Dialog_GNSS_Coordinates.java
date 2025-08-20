@@ -559,11 +559,11 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     if (DataSaved.my_comPort == 0) {
                         if (nmeaSTX_Disc) {
 
-                            txCon.setText("CAN\nDISCONNECTED");
+                            txCon.setText("GPS\nDISCONNECTED");
                             txCon.setTextColor(Color.BLACK);
                             serialCon.setBackgroundResource(R.drawable.custom_background_transp);
                         } else {
-                            txCon.setText("CAN\nCONNECTED");
+                            txCon.setText("GPS\nCONNECTED");
                             txCon.setTextColor(Color.BLACK);
                             serialCon.setBackgroundResource(R.drawable.custom_background_ok);
 

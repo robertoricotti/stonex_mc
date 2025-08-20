@@ -192,17 +192,32 @@ static  Deg2UTM deg2UTM1;
                         case "$GNHDT":
                         case "$HCHDT":
 
-                            try {
-                                mch_Hdt = Double.parseDouble(NmeaInput[1]);
+                            if(DataSaved.my_comPort!=0) {
+                                try {
+                                    mch_Hdt = Double.parseDouble(NmeaInput[1]);
 
-                                if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
+                                    if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
+                                        mch_Hdt = 999.999;
+                                    }
+
+
+                                } catch (Exception e) {
                                     mch_Hdt = 999.999;
+
                                 }
+                            }else {
+                                try {
+                                    roof_Orientation = Double.parseDouble(NmeaInput[1]);
+
+                                    if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
+                                        roof_Orientation = 999.999;
+                                    }
 
 
-                            } catch (Exception e) {
-                                mch_Hdt = 999.999;
+                                } catch (Exception e) {
+                                    roof_Orientation = 999.999;
 
+                                }
                             }
                             if(DataSaved.portView<2) {
                                 if (DataSaved.my_comPort == 1 || DataSaved.my_comPort == 2|| DataSaved.my_comPort == 3) {
