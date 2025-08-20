@@ -11,6 +11,13 @@
     <string name="uploading">Încărcare în curs...</string>
     <string name="change_machine">Schimbă modelul aparatului</string>
     <string name="procedi">Doriți să continuați?</string>
+    <string name="mch_schema">DESEN SCHEMĂ MAȘINĂ 3D</string>
+    <string name="enable_but">ACTIVARE BUTOANE NAVIGAȚIE ANDROID</string>
+    <string name="extra_hdt">ACTIVARE SENZOR SUPLIMENTAR DE ORIENTARE</string>
+    <string name="en_out">ACTIVARE IEȘIRE DIGITALĂ 12V</string>
+    <string name="en_uhf_ntrip">COMMUTARE UHF/NTRIP</string>
+    <string name="uppaer_bar">BARE SUPERIOARĂ ÎNTOTDEAUNA VIZIBILĂ ÎN PAGINA DE LUCRU</string>
+
 
     <string name="save">SALVEAZĂ</string>
     <string name="exit">IEȘIRE</string>

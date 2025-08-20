@@ -3,6 +3,7 @@ package packexcalib.exca;
 import android.util.Log;
 
 import gui.gps.NmeaGenerator;
+import packexcalib.gnss.NmeaListener;
 import utils.UnitsConversion;
 
 
@@ -738,7 +739,7 @@ public class Sensors_Decoder {
                                     // Visualizza il valore dello yaw
                                     Deg_Yaw_Tilt = yawDegrees;
 
-                                    Log.d("DEG_YAW", String.format("Yaw: %.02f°", Deg_Yaw_Tilt));
+
 
                                     break;
 
@@ -839,6 +840,7 @@ public class Sensors_Decoder {
                                     }
                                     break;
                                 case 0x2F0:
+
                                     if (DataSaved.lrTilt != 0) {
                                         DataSaved.isTiltRotator = true;
                                         int mRoto = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
@@ -849,6 +851,8 @@ public class Sensors_Decoder {
                                             Deg_Roto = Deg_Roto * -1;
                                         }
                                     }
+
+
                                     break;
                                 case 0x3F0:
 

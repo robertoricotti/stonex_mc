@@ -9,7 +9,14 @@
     <string name="downloading">Descarga en curso...</string>
     <string name="uploading">Subida en curso...</string>
     <string name="change_machine">Cambiar modelo de máquina</string>
-    <string name="procedi">¿Desea continuar?</string>
+    <string name="procedi">Desea continuar?</string>
+    <string name="mch_schema">DIBUJAR ESQUEMA DE MÁQUINA 3D</string>
+    <string name="enable_but">HABILITAR BOTONES DE NAVEGACIÓN ANDROID</string>
+    <string name="extra_hdt">HABILITAR SENSOR DE RUMBO EXTRA</string>
+    <string name="en_out">HABILITAR SALIDA DIGITAL 12V</string>
+    <string name="en_uhf_ntrip">CAMBIAR UHF/NTRIP</string>
+    <string name="uppaer_bar">BARRA SUPERIOR SIEMPRE VISIBLE EN PÁGINA DE TRABAJO</string>
+
 
     <string name="save">SALVAR</string>
     <string name="exit">SALIR</string>

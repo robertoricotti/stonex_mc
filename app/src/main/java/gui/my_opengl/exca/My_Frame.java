@@ -5,13 +5,17 @@ import static gui.my_opengl.Point3DF.pTransform;
 import static packexcalib.exca.ExcavatorLib.coordinateDY;
 import static packexcalib.exca.ExcavatorLib.correctPitch;
 import static packexcalib.exca.ExcavatorLib.correctRoll;
-import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
+
+import android.util.Log;
 
 import dxf.Point3D;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
+import packexcalib.exca.ExcavatorLib;
+import packexcalib.gnss.NmeaListener;
 import packexcalib.surfcreator.DistToPoint;
 
 
@@ -22,7 +26,7 @@ public class My_Frame {
     static Point3DF CAB_0_B, CAB_1_B, CAB_2_B, CAB_3_B;
     static Point3DF CAB_0_A, CAB_1_A, CAB_2_A, CAB_3_A;
     static Point3DF AI_2,BI_2,AI_3,BI_3,AI_4,BI_4,AI_5,BI_5;
-
+    static double mHdt_Boom;
 
     static Point3DF MINP0, MINP1, MINP2, MINP3;
     static Point3DF MINPB0, MINPB1, MINPB2, MINPB3;
@@ -38,6 +42,8 @@ public class My_Frame {
     public static double R_Cingolo, H_Ralla, W_Cingolo;
 
     public static Point3DF[] puntiFrame() {
+        mHdt_Boom= hdt_BOOM-swing_boom_angle;
+
         double[] rallabassa, rallaalta;
         double[] p2_c, p2_alto, p2_basso, p2_i_c,ai_2, bi_2;
         double[] p3_c, p3_alto, p3_basso, p3_i_c, ai_3, bi_3;
@@ -65,46 +71,49 @@ public class My_Frame {
         H_Ralla = L2 * 0.065;
         R_Cingolo = (L2 - H_Ralla) * 0.2;
         W_Cingolo = L1 * 0.25;
-
-        p0 = coordinateDY;
-        p1a = Exca_Quaternion.endPoint(p0, correctPitch, correctRoll, 0.3 + (-DataSaved.L_Pitch), hdt_BOOM);
-        p2a = Exca_Quaternion.endPoint(p1a, -correctRoll, correctPitch, (L1 * 0.5) - DataSaved.L_Roll, hdt_BOOM + 90);
-        p3a = Exca_Quaternion.endPoint(p2a, -correctPitch, -correctRoll, L2, hdt_BOOM + 180);
-        p4a = Exca_Quaternion.endPoint(p3a, correctRoll, -correctPitch, L1 + DataSaved.L_Roll, hdt_BOOM - 90);
-        p5a = Exca_Quaternion.endPoint(p4a, correctPitch, correctRoll, L2, hdt_BOOM);
+        if(DataSaved.Extra_Heading!=0){
+            p0 = coordMiniPitch;
+        }else {
+            p0 = coordinateDY;
+        }
+        p1a = Exca_Quaternion.endPoint(p0, correctPitch, correctRoll, 0.3 + (-DataSaved.L_Pitch), mHdt_Boom);
+        p2a = Exca_Quaternion.endPoint(p1a, -correctRoll, correctPitch, (L1 * 0.5) - DataSaved.L_Roll, mHdt_Boom + 90);
+        p3a = Exca_Quaternion.endPoint(p2a, -correctPitch, -correctRoll, L2, mHdt_Boom + 180);
+        p4a = Exca_Quaternion.endPoint(p3a, correctRoll, -correctPitch, L1 + DataSaved.L_Roll, mHdt_Boom - 90);
+        p5a = Exca_Quaternion.endPoint(p4a, correctPitch, correctRoll, L2, mHdt_Boom);
         L_Cab = DistToPoint.dist3D(p5a, p1a) - 0.1 - (larghezzaBraccio_STRETTA * 0.5);
         L_Cab = Math.max(0.8, Math.min(L_Cab, 1.5));
-        p1b = Exca_Quaternion.endPoint(p1a, correctPitch - 90, correctRoll, 0.2, hdt_BOOM);
-        p2b = Exca_Quaternion.endPoint(p2a, correctPitch - 90, correctRoll, 0.2, hdt_BOOM);
-        p3b = Exca_Quaternion.endPoint(p3a, correctPitch - 90, correctRoll, 0.2, hdt_BOOM);
-        p4b = Exca_Quaternion.endPoint(p4a, correctPitch - 90, correctRoll, 0.2, hdt_BOOM);
-        p5b = Exca_Quaternion.endPoint(p5a, correctPitch - 90, correctRoll, 0.2, hdt_BOOM);
+        p1b = Exca_Quaternion.endPoint(p1a, correctPitch - 90, correctRoll, 0.2, mHdt_Boom);
+        p2b = Exca_Quaternion.endPoint(p2a, correctPitch - 90, correctRoll, 0.2, mHdt_Boom);
+        p3b = Exca_Quaternion.endPoint(p3a, correctPitch - 90, correctRoll, 0.2, mHdt_Boom);
+        p4b = Exca_Quaternion.endPoint(p4a, correctPitch - 90, correctRoll, 0.2, mHdt_Boom);
+        p5b = Exca_Quaternion.endPoint(p5a, correctPitch - 90, correctRoll, 0.2, mHdt_Boom);
 
         cab0_b = p5a;
-        cab1_b = Exca_Quaternion.endPoint(cab0_b, -correctRoll, correctPitch, L_Cab, hdt_BOOM + 90);
-        cab2_b = Exca_Quaternion.endPoint(cab1_b, -correctPitch, -correctRoll, L_Cab * 1.2, hdt_BOOM + 180);
-        cab3_b = Exca_Quaternion.endPoint(cab2_b, correctRoll, -correctPitch, L_Cab, hdt_BOOM - 90);
+        cab1_b = Exca_Quaternion.endPoint(cab0_b, -correctRoll, correctPitch, L_Cab, mHdt_Boom + 90);
+        cab2_b = Exca_Quaternion.endPoint(cab1_b, -correctPitch, -correctRoll, L_Cab * 1.2, mHdt_Boom + 180);
+        cab3_b = Exca_Quaternion.endPoint(cab2_b, correctRoll, -correctPitch, L_Cab, mHdt_Boom - 90);
 
-        cab0_a = Exca_Quaternion.endPoint(cab0_b, correctPitch + 95, correctRoll, H_Cab, hdt_BOOM);
-        cab1_a = Exca_Quaternion.endPoint(cab1_b, correctPitch + 95, correctRoll, H_Cab, hdt_BOOM);
-        cab2_a = Exca_Quaternion.endPoint(cab2_b, correctPitch + 90, correctRoll, H_Cab, hdt_BOOM);
-        cab3_a = Exca_Quaternion.endPoint(cab3_b, correctPitch + 90, correctRoll, H_Cab, hdt_BOOM);
+        cab0_a = Exca_Quaternion.endPoint(cab0_b, correctPitch + 95, correctRoll, H_Cab, mHdt_Boom);
+        cab1_a = Exca_Quaternion.endPoint(cab1_b, correctPitch + 95, correctRoll, H_Cab, mHdt_Boom);
+        cab2_a = Exca_Quaternion.endPoint(cab2_b, correctPitch + 90, correctRoll, H_Cab, mHdt_Boom);
+        cab3_a = Exca_Quaternion.endPoint(cab3_b, correctPitch + 90, correctRoll, H_Cab, mHdt_Boom);
 
-        minip0 = Exca_Quaternion.endPoint(p0, Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, hdt_BOOM - 90);
-        minip1 = Exca_Quaternion.endPoint(p0, -Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, hdt_BOOM + 90);
-        minip2 = Exca_Quaternion.endPoint(minip1, correctPitch, correctRoll, DataSaved.L_Pitch, hdt_BOOM + 180);
-        minip3 = Exca_Quaternion.endPoint(minip0, correctPitch, correctRoll, DataSaved.L_Pitch, hdt_BOOM + 180);
+        minip0 = Exca_Quaternion.endPoint(p0, Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, mHdt_Boom - 90);
+        minip1 = Exca_Quaternion.endPoint(p0, -Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, mHdt_Boom + 90);
+        minip2 = Exca_Quaternion.endPoint(minip1, correctPitch, correctRoll, DataSaved.L_Pitch, mHdt_Boom + 180);
+        minip3 = Exca_Quaternion.endPoint(minip0, correctPitch, correctRoll, DataSaved.L_Pitch, mHdt_Boom + 180);
 
-        minipB0 = Exca_Quaternion.endPoint(minip0, correctPitch - 90, correctRoll, 0.05, hdt_BOOM);
-        minipB1 = Exca_Quaternion.endPoint(minip1, correctPitch - 90, correctRoll, 0.05, hdt_BOOM);
-        minipB2 = Exca_Quaternion.endPoint(minip2, correctPitch - 90, correctRoll, 0.1, hdt_BOOM);
-        minipB3 = Exca_Quaternion.endPoint(minip3, correctPitch - 90, correctRoll, 0.1, hdt_BOOM);
+        minipB0 = Exca_Quaternion.endPoint(minip0, correctPitch - 90, correctRoll, 0.05, mHdt_Boom);
+        minipB1 = Exca_Quaternion.endPoint(minip1, correctPitch - 90, correctRoll, 0.05, mHdt_Boom);
+        minipB2 = Exca_Quaternion.endPoint(minip2, correctPitch - 90, correctRoll, 0.1, mHdt_Boom);
+        minipB3 = Exca_Quaternion.endPoint(minip3, correctPitch - 90, correctRoll, 0.1, mHdt_Boom);
 
-        zavm0 = Exca_Quaternion.endPoint(p4a, correctPitch + 90, correctRoll, 0.5, hdt_BOOM);
-        zavm1 = Exca_Quaternion.endPoint(cab3_b, correctPitch + 90, correctRoll, 0.5, hdt_BOOM);
-        zavm2 = Exca_Quaternion.endPoint(zavm1, -correctRoll, correctPitch, DistToPoint.dist3D(p3a, p4a), hdt_BOOM + 90);
-        finezav = Exca_Quaternion.endPoint(zavm2, correctPitch - 90, correctRoll, 0.5, hdt_BOOM);
-        zavm3 = Exca_Quaternion.endPoint(p3a, correctPitch + 90, correctRoll, 0.5, hdt_BOOM);
+        zavm0 = Exca_Quaternion.endPoint(p4a, correctPitch + 90, correctRoll, 0.5, mHdt_Boom);
+        zavm1 = Exca_Quaternion.endPoint(cab3_b, correctPitch + 90, correctRoll, 0.5, mHdt_Boom);
+        zavm2 = Exca_Quaternion.endPoint(zavm1, -correctRoll, correctPitch, DistToPoint.dist3D(p3a, p4a), mHdt_Boom + 90);
+        finezav = Exca_Quaternion.endPoint(zavm2, correctPitch - 90, correctRoll, 0.5, mHdt_Boom);
+        zavm3 = Exca_Quaternion.endPoint(p3a, correctPitch + 90, correctRoll, 0.5, mHdt_Boom);
         Point3D punto_0 = new Point3D(zavm0[0], zavm0[1], zavm0[2]);
         Point3D punto_1 = new Point3D(zavm2[0], zavm2[1], zavm2[2]);
 
@@ -117,46 +126,46 @@ public class My_Frame {
         Point3D puntomedio2 = punto_2.interpolate(punto_3, 1.0 / 10.0);
         Point3D puntmeodio3 = punto_3.interpolate(punto_2, 1.0 / 10.0);
 
-        zavh0 = Exca_Quaternion.endPoint(new double[]{puntomedio0.getX(), puntomedio0.getY(), puntomedio0.getZ()}, correctPitch + 90, correctRoll, 0.15, hdt_BOOM);
-        zavh1 = Exca_Quaternion.endPoint(new double[]{puntomedio2.getX(), puntomedio2.getY(), puntomedio2.getZ()}, correctPitch + 90, correctRoll, 0.15, hdt_BOOM);
-        zavh2 = Exca_Quaternion.endPoint(new double[]{puntmedio1.getX(), puntmedio1.getY(), puntmedio1.getZ()}, correctPitch + 90, correctRoll, 0.15, hdt_BOOM);
-        zavh3 = Exca_Quaternion.endPoint(new double[]{puntmeodio3.getX(), puntmeodio3.getY(), puntmeodio3.getZ()}, correctPitch + 90, correctRoll, 0.15, hdt_BOOM);
+        zavh0 = Exca_Quaternion.endPoint(new double[]{puntomedio0.getX(), puntomedio0.getY(), puntomedio0.getZ()}, correctPitch + 90, correctRoll, 0.15, mHdt_Boom);
+        zavh1 = Exca_Quaternion.endPoint(new double[]{puntomedio2.getX(), puntomedio2.getY(), puntomedio2.getZ()}, correctPitch + 90, correctRoll, 0.15, mHdt_Boom);
+        zavh2 = Exca_Quaternion.endPoint(new double[]{puntmedio1.getX(), puntmedio1.getY(), puntmedio1.getZ()}, correctPitch + 90, correctRoll, 0.15, mHdt_Boom);
+        zavh3 = Exca_Quaternion.endPoint(new double[]{puntmeodio3.getX(), puntmeodio3.getY(), puntmeodio3.getZ()}, correctPitch + 90, correctRoll, 0.15, mHdt_Boom);
 
         Point3D pmRalla1 = new Point3D(p2b[0], p2b[1], p2b[2]);
         Point3D pmRalla2 = new Point3D(p4b[0], p4b[1], p4b[2]);
         Point3D pmRalla = pmRalla1.interpolate(pmRalla2, 1.0 / 2.0);
         rallaalta = new double[]{pmRalla.getX(), pmRalla.getY(), pmRalla.getZ()};
-        rallabassa = Exca_Quaternion.endPoint(rallaalta, correctPitch - 90, correctRoll, H_Ralla, hdt_BOOM);
+        rallabassa = Exca_Quaternion.endPoint(rallaalta, correctPitch - 90, correctRoll, H_Ralla, mHdt_Boom);
 
-        p2_c = Exca_Quaternion.endPoint(p2b, correctPitch - 90, correctRoll, R_Cingolo * 0.95, hdt_BOOM);
-        p3_c = Exca_Quaternion.endPoint(p3b, correctPitch - 90, correctRoll, R_Cingolo * 0.95, hdt_BOOM);
-        p4_c = Exca_Quaternion.endPoint(p4b, correctPitch - 90, correctRoll, R_Cingolo * 0.95, hdt_BOOM);
-        p5_c = Exca_Quaternion.endPoint(p5b, correctPitch - 90, correctRoll, R_Cingolo * 0.95, hdt_BOOM);
+        p2_c = Exca_Quaternion.endPoint(p2b, correctPitch - 90, correctRoll, R_Cingolo * 0.95, mHdt_Boom);
+        p3_c = Exca_Quaternion.endPoint(p3b, correctPitch - 90, correctRoll, R_Cingolo * 0.95, mHdt_Boom);
+        p4_c = Exca_Quaternion.endPoint(p4b, correctPitch - 90, correctRoll, R_Cingolo * 0.95, mHdt_Boom);
+        p5_c = Exca_Quaternion.endPoint(p5b, correctPitch - 90, correctRoll, R_Cingolo * 0.95, mHdt_Boom);
 
-        p2_alto = Exca_Quaternion.endPoint(p2_c, correctPitch + 90, correctRoll, R_Cingolo * 0.5, hdt_BOOM);
-        p2_basso = Exca_Quaternion.endPoint(p2_c, correctPitch - 90, correctRoll, R_Cingolo * 0.5, hdt_BOOM);
-        p3_alto = Exca_Quaternion.endPoint(p3_c, correctPitch + 90, correctRoll, R_Cingolo * 0.5, hdt_BOOM);
-        p3_basso = Exca_Quaternion.endPoint(p3_c, correctPitch - 90, correctRoll, R_Cingolo * 0.5, hdt_BOOM);
-        p4_alto = Exca_Quaternion.endPoint(p4_c, correctPitch + 90, correctRoll, R_Cingolo * 0.5, hdt_BOOM);
-        p4_basso = Exca_Quaternion.endPoint(p4_c, correctPitch - 90, correctRoll, R_Cingolo * 0.5, hdt_BOOM);
-        p5_alto = Exca_Quaternion.endPoint(p5_c, correctPitch + 90, correctRoll, R_Cingolo * 0.5, hdt_BOOM);
-        p5_basso = Exca_Quaternion.endPoint(p5_c, correctPitch - 90, correctRoll, R_Cingolo * 0.5, hdt_BOOM);
+        p2_alto = Exca_Quaternion.endPoint(p2_c, correctPitch + 90, correctRoll, R_Cingolo * 0.5, mHdt_Boom);
+        p2_basso = Exca_Quaternion.endPoint(p2_c, correctPitch - 90, correctRoll, R_Cingolo * 0.5, mHdt_Boom);
+        p3_alto = Exca_Quaternion.endPoint(p3_c, correctPitch + 90, correctRoll, R_Cingolo * 0.5, mHdt_Boom);
+        p3_basso = Exca_Quaternion.endPoint(p3_c, correctPitch - 90, correctRoll, R_Cingolo * 0.5, mHdt_Boom);
+        p4_alto = Exca_Quaternion.endPoint(p4_c, correctPitch + 90, correctRoll, R_Cingolo * 0.5, mHdt_Boom);
+        p4_basso = Exca_Quaternion.endPoint(p4_c, correctPitch - 90, correctRoll, R_Cingolo * 0.5, mHdt_Boom);
+        p5_alto = Exca_Quaternion.endPoint(p5_c, correctPitch + 90, correctRoll, R_Cingolo * 0.5, mHdt_Boom);
+        p5_basso = Exca_Quaternion.endPoint(p5_c, correctPitch - 90, correctRoll, R_Cingolo * 0.5, mHdt_Boom);
 
-        p2_i_c = Exca_Quaternion.endPoint(p2_c, correctRoll, -correctPitch, W_Cingolo, hdt_BOOM - 90);
-        p3_i_c = Exca_Quaternion.endPoint(p3_c, correctRoll, -correctPitch, W_Cingolo, hdt_BOOM - 90);
+        p2_i_c = Exca_Quaternion.endPoint(p2_c, correctRoll, -correctPitch, W_Cingolo, mHdt_Boom - 90);
+        p3_i_c = Exca_Quaternion.endPoint(p3_c, correctRoll, -correctPitch, W_Cingolo, mHdt_Boom - 90);
 
-        p4_i_c = Exca_Quaternion.endPoint(p4_c, -correctRoll, correctPitch, W_Cingolo, hdt_BOOM + 90);
-        p5_i_c = Exca_Quaternion.endPoint(p5_c, -correctRoll, correctPitch, W_Cingolo, hdt_BOOM + 90);
+        p4_i_c = Exca_Quaternion.endPoint(p4_c, -correctRoll, correctPitch, W_Cingolo, mHdt_Boom + 90);
+        p5_i_c = Exca_Quaternion.endPoint(p5_c, -correctRoll, correctPitch, W_Cingolo, mHdt_Boom + 90);
 
-        ai_2=Exca_Quaternion.endPoint(p2_i_c,correctPitch+90,correctRoll,R_Cingolo*0.5,hdt_BOOM);
-        bi_2=Exca_Quaternion.endPoint(p2_i_c,correctPitch-90,correctRoll,R_Cingolo*0.5,hdt_BOOM);
-        ai_3=Exca_Quaternion.endPoint(p3_i_c,correctPitch+90,correctRoll,R_Cingolo*0.5,hdt_BOOM);
-        bi_3=Exca_Quaternion.endPoint(p3_i_c,correctPitch-90,correctRoll,R_Cingolo*0.5,hdt_BOOM);
+        ai_2=Exca_Quaternion.endPoint(p2_i_c,correctPitch+90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
+        bi_2=Exca_Quaternion.endPoint(p2_i_c,correctPitch-90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
+        ai_3=Exca_Quaternion.endPoint(p3_i_c,correctPitch+90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
+        bi_3=Exca_Quaternion.endPoint(p3_i_c,correctPitch-90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
 
-        ai_4=Exca_Quaternion.endPoint(p4_i_c,correctPitch+90,correctRoll,R_Cingolo*0.5,hdt_BOOM);
-        bi_4=Exca_Quaternion.endPoint(p4_i_c,correctPitch-90,correctRoll,R_Cingolo*0.5,hdt_BOOM);
-        ai_5=Exca_Quaternion.endPoint(p5_i_c,correctPitch+90,correctRoll,R_Cingolo*0.5,hdt_BOOM);
-        bi_5=Exca_Quaternion.endPoint(p5_i_c,correctPitch-90,correctRoll,R_Cingolo*0.5,hdt_BOOM);
+        ai_4=Exca_Quaternion.endPoint(p4_i_c,correctPitch+90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
+        bi_4=Exca_Quaternion.endPoint(p4_i_c,correctPitch-90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
+        ai_5=Exca_Quaternion.endPoint(p5_i_c,correctPitch+90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
+        bi_5=Exca_Quaternion.endPoint(p5_i_c,correctPitch-90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
         {
             P1_A = pTransform(p1a, DataSaved.glL_AnchorView, scale);
             P2_A = pTransform(p2a, DataSaved.glL_AnchorView, scale);

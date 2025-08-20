@@ -5,20 +5,24 @@ import static gui.my_opengl.Point3DF.pTransform;
 import static packexcalib.exca.ExcavatorLib.coordB2;
 import static packexcalib.exca.ExcavatorLib.coordinateDY;
 import static packexcalib.exca.ExcavatorLib.correctBoom1;
-import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
+
+import android.util.Log;
 
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 
 public class My_Boom1 {
+    static double mhdt;
     static Point3DF P0s, P1s, P2s, P3s, P4s, P5s, P6s, P7s, P8s, P9s, P10s;
     static Point3DF P0d, P1d, P2d, P3d, P4d, P5d, P6d, P7d, P8d, P9d, P10d;
     static double Spessore_P, L1, L2, L3, L4, L5;
 
     public static Point3DF[] puntiBoom() {
-        double[] p0s, p1s, p2s, p3s, p4s, p5s, p6s, p7s, p8s, p9s, p10s;
+        mhdt=hdt_BOOM;
+        double[] p0s, p1s, p2s, p3s, p4s, p5s, p6s, p7s, p8s, p9s, p10s,mystart;
         double[] p0d, p1d, p2d, p3d, p4d, p5d, p6d, p7d, p8d, p9d, p10d;
         double larghezzaBraccio_LARGA = (float) (Math.max(0.30, Math.min((DataSaved.L_Stick * 0.15f) * 2, 0.8)));
         double larghezzaBraccio_STRETTA = (float) (Math.max(0.22, Math.min((DataSaved.L_Stick * 0.22f), 0.6)));
@@ -28,33 +32,38 @@ public class My_Boom1 {
         L3 = DataSaved.L_Boom1 * 0.3;
         L4 = DataSaved.L_Boom1 * 0.28;
         L5 = DataSaved.L_Boom1 * 0.58;
+        if(DataSaved.Extra_Heading!=0){
+            mystart=coordMiniPitch;
+        }else {
+            mystart=coordinateDY;
+        }
 
-        p0s = Exca_Quaternion.endPoint(coordB2, Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, hdt_BOOM - 90);
-        p6s = Exca_Quaternion.endPoint(coordinateDY, Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, hdt_BOOM - 90);
-        p0d = Exca_Quaternion.endPoint(coordB2, -Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, hdt_BOOM + 90);
-        p6d = Exca_Quaternion.endPoint(coordinateDY, -Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, hdt_BOOM + 90);
+        p0s = Exca_Quaternion.endPoint(coordB2, Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, mhdt - 90);
+        p6s = Exca_Quaternion.endPoint(mystart, Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, mhdt - 90);
+        p0d = Exca_Quaternion.endPoint(coordB2, -Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, mhdt + 90);
+        p6d = Exca_Quaternion.endPoint(mystart, -Deg_Boom_Roll, 0, larghezzaBraccio_STRETTA * 0.5, mhdt + 90);
 
         //latpo sx
-        p1s = Exca_Quaternion.endPoint(p0s, correctBoom1 + 100, Deg_Boom_Roll, Spessore_P, hdt_BOOM);
-        p2s = Exca_Quaternion.endPoint(p0s, correctBoom1 + 150, Deg_Boom_Roll, L1, hdt_BOOM);
-        p3s = Exca_Quaternion.endPoint(p2s, correctBoom1 + 165, Deg_Boom_Roll, L2, hdt_BOOM);
-        p4s = Exca_Quaternion.endPoint(p6s, correctBoom1 + 55, Deg_Boom_Roll, L3, hdt_BOOM);
-        p5s = Exca_Quaternion.endPoint(p6s, correctBoom1 + 90, Deg_Boom_Roll, Spessore_P, hdt_BOOM);
-        p7s = Exca_Quaternion.endPoint(p6s, correctBoom1 - 35, Deg_Boom_Roll, Spessore_P, hdt_BOOM);
-        p8s = Exca_Quaternion.endPoint(p6s, correctBoom1 + 27, Deg_Boom_Roll, L4, hdt_BOOM);
-        p10s = Exca_Quaternion.endPoint(p0s, correctBoom1 - 120, Deg_Boom_Roll, Spessore_P, hdt_BOOM);
-        p9s = Exca_Quaternion.endPoint(p10s, correctBoom1 + 164, Deg_Boom_Roll, L5, hdt_BOOM);
+        p1s = Exca_Quaternion.endPoint(p0s, correctBoom1 + 100, Deg_Boom_Roll, Spessore_P, mhdt);
+        p2s = Exca_Quaternion.endPoint(p0s, correctBoom1 + 150, Deg_Boom_Roll, L1, mhdt);
+        p3s = Exca_Quaternion.endPoint(p2s, correctBoom1 + 165, Deg_Boom_Roll, L2, mhdt);
+        p4s = Exca_Quaternion.endPoint(p6s, correctBoom1 + 55, Deg_Boom_Roll, L3, mhdt);
+        p5s = Exca_Quaternion.endPoint(p6s, correctBoom1 + 90, Deg_Boom_Roll, Spessore_P, mhdt);
+        p7s = Exca_Quaternion.endPoint(p6s, correctBoom1 - 35, Deg_Boom_Roll, Spessore_P, mhdt);
+        p8s = Exca_Quaternion.endPoint(p6s, correctBoom1 + 27, Deg_Boom_Roll, L4, mhdt);
+        p10s = Exca_Quaternion.endPoint(p0s, correctBoom1 - 120, Deg_Boom_Roll, Spessore_P, mhdt);
+        p9s = Exca_Quaternion.endPoint(p10s, correctBoom1 + 164, Deg_Boom_Roll, L5, mhdt);
 
         //lato dx
-        p1d = Exca_Quaternion.endPoint(p0d, correctBoom1 + 100, Deg_Boom_Roll, Spessore_P, hdt_BOOM);
-        p2d = Exca_Quaternion.endPoint(p0d, correctBoom1 + 150, Deg_Boom_Roll, L1, hdt_BOOM);
-        p3d = Exca_Quaternion.endPoint(p2d, correctBoom1 + 165, Deg_Boom_Roll, L2, hdt_BOOM);
-        p4d = Exca_Quaternion.endPoint(p6d, correctBoom1 + 55, Deg_Boom_Roll, L3, hdt_BOOM);
-        p5d = Exca_Quaternion.endPoint(p6d, correctBoom1 + 90, Deg_Boom_Roll, Spessore_P, hdt_BOOM);
-        p7d = Exca_Quaternion.endPoint(p6d, correctBoom1 - 35, Deg_Boom_Roll, Spessore_P, hdt_BOOM);
-        p8d = Exca_Quaternion.endPoint(p6d, correctBoom1 + 27, Deg_Boom_Roll, L4, hdt_BOOM);
-        p10d = Exca_Quaternion.endPoint(p0d, correctBoom1 - 120, Deg_Boom_Roll, Spessore_P, hdt_BOOM);
-        p9d = Exca_Quaternion.endPoint(p10d, correctBoom1 + 164, Deg_Boom_Roll, L5, hdt_BOOM);
+        p1d = Exca_Quaternion.endPoint(p0d, correctBoom1 + 100, Deg_Boom_Roll, Spessore_P, mhdt);
+        p2d = Exca_Quaternion.endPoint(p0d, correctBoom1 + 150, Deg_Boom_Roll, L1, mhdt);
+        p3d = Exca_Quaternion.endPoint(p2d, correctBoom1 + 165, Deg_Boom_Roll, L2, mhdt);
+        p4d = Exca_Quaternion.endPoint(p6d, correctBoom1 + 55, Deg_Boom_Roll, L3, mhdt);
+        p5d = Exca_Quaternion.endPoint(p6d, correctBoom1 + 90, Deg_Boom_Roll, Spessore_P, mhdt);
+        p7d = Exca_Quaternion.endPoint(p6d, correctBoom1 - 35, Deg_Boom_Roll, Spessore_P, mhdt);
+        p8d = Exca_Quaternion.endPoint(p6d, correctBoom1 + 27, Deg_Boom_Roll, L4, mhdt);
+        p10d = Exca_Quaternion.endPoint(p0d, correctBoom1 - 120, Deg_Boom_Roll, Spessore_P, mhdt);
+        p9d = Exca_Quaternion.endPoint(p10d, correctBoom1 + 164, Deg_Boom_Roll, L5, mhdt);
 
         P0s = pTransform(p0s, DataSaved.glL_AnchorView, scale);
         P1s = pTransform(p1s, DataSaved.glL_AnchorView, scale);

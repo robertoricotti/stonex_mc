@@ -10,6 +10,13 @@
     <string name="uploading">Téléversement en cours...</string>
     <string name="change_machine">Changer le modèle de la machine</string>
     <string name="procedi">Voulez-vous continuer ?</string>
+    <string name="mch_schema">DESSINER SCHÉMA DE MACHINE 3D</string>
+    <string name="enable_but">ACTIVER LES BOUTONS DE NAVIGATION ANDROID</string>
+    <string name="extra_hdt">ACTIVER CAPTEUR D’ORIENTATION SUPPLÉMENTAIRE</string>
+    <string name="en_out">ACTIVER SORTIE NUMÉRIQUE 12V</string>
+    <string name="en_uhf_ntrip">BASCULER UHF/NTRIP</string>
+    <string name="uppaer_bar">BARRE SUPÉRIEURE TOUJOURS VISIBLE DANS LA PAGE DE TRAVAIL</string>
+
 
     <string name="save">SAUVER</string>
     <string name="exit">SORTIE</string>

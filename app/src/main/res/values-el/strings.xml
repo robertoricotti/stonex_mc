@@ -12,6 +12,13 @@
     <string name="uploading">Μεταφόρτωση σε εξέλιξη...</string>
     <string name="change_machine">Αλλαγή μοντέλου μηχανής</string>
     <string name="procedi">Θέλετε να προχωρήσετε;</string>
+    <string name="mch_schema">ΣΧΕΔΙΑΣΗ ΣΧΗΜΑΤΟΣ ΜΗΧΑΝΗΣ 3D</string>
+    <string name="enable_but">ΕΝΕΡΓΟΠΟΙΗΣΗ ΚΟΥΜΠΙΩΝ ΠΛΟΗΓΗΣΗΣ ANDROID</string>
+    <string name="extra_hdt">ΕΝΕΡΓΟΠΟΙΗΣΗ ΕΠΙΠΛΕΟΝ ΑΙΣΘΗΤΗΡΑ ΚΑΤΕΥΘΥΝΣΗΣ</string>
+    <string name="en_out">ΕΝΕΡΓΟΠΟΙΗΣΗ ΨΗΦΙΑΚΗΣ ΕΞΟΔΟΥ 12V</string>
+    <string name="en_uhf_ntrip">ΕΝΑΛΛΑΓΗ UHF/NTRIP</string>
+    <string name="uppaer_bar">ΠΑΝΩ ΜΠΑΡΑ ΠΑΝΤΑ ΟΡΑΤΗ ΣΤΗ ΣΕΛΙΔΑ ΕΡΓΑΣΙΑΣ</string>
+
 
     <string name="exit">ΕΞΟΔΟΣ</string>
     <string name="rename_file">ΜΕΤΟΝΟΜΑΣΙΑ ΑΡΧΕΙΟΥ</string>

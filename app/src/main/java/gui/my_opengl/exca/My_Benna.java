@@ -11,7 +11,7 @@ import static packexcalib.exca.ExcavatorLib.correctBucket;
 import static packexcalib.exca.ExcavatorLib.correctDeltaAngle;
 import static packexcalib.exca.ExcavatorLib.correctTilt;
 import static packexcalib.exca.ExcavatorLib.correctWTilt;
-import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static services.TriangleService.getProjectedPointOnSegment3D;
@@ -44,8 +44,9 @@ public class My_Benna {
     static Point3DF fwF, bwF, ltF, rtF, start;
     public static float larghezza_attacco, raggioPivot;
     public static float altezzaAttacco;//altezza dell'attacco
-
+    static double mhdt;
     private static Point3DF[] fiancataSX() {
+        mhdt=hdt_BOOM;
         double[] splA;
         double[] spcA;
         double[] sprA;
@@ -71,26 +72,27 @@ public class My_Benna {
         double flatTop;
 
 
+
         if (DataSaved.lrTilt == 0) {
             //NO TILT
             flatLen = Math.sin(Math.toRadians(DataSaved.flat)) * DataSaved.L_Bucket;
             flatTop = flatLen * 0.8;
             flatTop = Math.max(0.18, Math.min(flatTop, flatLen * 0.8));
             p1 = bucketLeftCoord;
-            p2 = Exca_Quaternion.endPoint(bucketLeftCoord, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll, flatLen, hdt_BOOM);
+            p2 = Exca_Quaternion.endPoint(bucketLeftCoord, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll, flatLen, mhdt);
 
-            p3 = Exca_Quaternion.endPoint(p1, correctBucket + 180, Deg_Boom_Roll, (DataSaved.L_Bucket * 0.9), hdt_BOOM);
+            p3 = Exca_Quaternion.endPoint(p1, correctBucket + 180, Deg_Boom_Roll, (DataSaved.L_Bucket * 0.9), mhdt);
 
 
-            p4 = Exca_Quaternion.endPoint(p3, correctBucket + 90 - (DataSaved.flat * 0.5), 0, flatTop, hdt_BOOM);
+            p4 = Exca_Quaternion.endPoint(p3, correctBucket + 90 - (DataSaved.flat * 0.5), 0, flatTop, mhdt);
             base = DistToPoint.dist3D(p4, p2);
             //
 
             hMax = base * 0.4;
             segPM1 = DistToPoint.dist3D(p1, p3) * 0.15;
             segPM2 = DistToPoint.dist3D(p1, p3) * 0.25;
-            pm1 = Exca_Quaternion.endPoint(p3, correctBucket + 30, Deg_Boom_Roll, segPM1, hdt_BOOM);
-            pm2 = Exca_Quaternion.endPoint(pm1, correctBucket + 12, Deg_Boom_Roll, segPM2, hdt_BOOM);
+            pm1 = Exca_Quaternion.endPoint(p3, correctBucket + 30, Deg_Boom_Roll, segPM1, mhdt);
+            pm2 = Exca_Quaternion.endPoint(pm1, correctBucket + 12, Deg_Boom_Roll, segPM2, mhdt);
 
 
             Polyline2DArc.SegmentData[] segments = Polyline2DArc.calculateArcSegments(base, hMax);
@@ -106,17 +108,17 @@ public class My_Benna {
             d3 = segments[2].angleDegrees;
             d4 = segments[3].angleDegrees;
 
-            p8 = Exca_Quaternion.endPoint(p2, correctBucket + 90 + (90 - d1), Deg_Boom_Roll, L1, hdt_BOOM);
-            p6 = Exca_Quaternion.endPoint(p8, correctBucket + 90 + (90 - d2), Deg_Boom_Roll, L2, hdt_BOOM);
-            p5 = Exca_Quaternion.endPoint(p6, correctBucket + 90 + (90 - d3), Deg_Boom_Roll, L3, hdt_BOOM);
-            p7 = Exca_Quaternion.endPoint(p5, correctBucket + 90 + (90 - d4), Deg_Boom_Roll, L4, hdt_BOOM);
+            p8 = Exca_Quaternion.endPoint(p2, correctBucket + 90 + (90 - d1), Deg_Boom_Roll, L1, mhdt);
+            p6 = Exca_Quaternion.endPoint(p8, correctBucket + 90 + (90 - d2), Deg_Boom_Roll, L2, mhdt);
+            p5 = Exca_Quaternion.endPoint(p6, correctBucket + 90 + (90 - d3), Deg_Boom_Roll, L3, mhdt);
+            p7 = Exca_Quaternion.endPoint(p5, correctBucket + 90 + (90 - d4), Deg_Boom_Roll, L4, mhdt);
 
-            splA = Exca_Quaternion.endPoint(bucketLeftCoord, 90, 0, 0.05, hdt_BOOM + 0);
-            spcA = Exca_Quaternion.endPoint(bucketCoord, 90, 0, 0.05, hdt_BOOM + 0);
-            sprA = Exca_Quaternion.endPoint(bucketRightCoord, 90, 0, 0.05, hdt_BOOM + 0);
-            splB = Exca_Quaternion.endPoint(bucketLeftCoord, -90, 0, 0.05, hdt_BOOM + 0);
-            spcB = Exca_Quaternion.endPoint(bucketCoord, -90, 0, 0.05, hdt_BOOM + 0);
-            sprB = Exca_Quaternion.endPoint(bucketRightCoord, -90, 0, 0.05, hdt_BOOM + 0);
+            splA = Exca_Quaternion.endPoint(bucketLeftCoord, 90, 0, 0.05, mhdt + 0);
+            spcA = Exca_Quaternion.endPoint(bucketCoord, 90, 0, 0.05, mhdt + 0);
+            sprA = Exca_Quaternion.endPoint(bucketRightCoord, 90, 0, 0.05, mhdt + 0);
+            splB = Exca_Quaternion.endPoint(bucketLeftCoord, -90, 0, 0.05, mhdt + 0);
+            spcB = Exca_Quaternion.endPoint(bucketCoord, -90, 0, 0.05, mhdt + 0);
+            sprB = Exca_Quaternion.endPoint(bucketRightCoord, -90, 0, 0.05, mhdt + 0);
 
         } else {
             //TILT
@@ -124,12 +126,12 @@ public class My_Benna {
             flatTop = flatLen * 0.8;
             flatTop = Math.max(0.18, Math.min(flatTop, flatLen * 0.8));
             p1 = bucketLeftCoord;
-            p2 = Exca_Quaternion.endPoint(bucketLeftCoord, correctWTilt + 90 + DataSaved.flat, correctTilt, flatLen, hdt_BOOM + yawSensor);
+            p2 = Exca_Quaternion.endPoint(bucketLeftCoord, correctWTilt + 90 + DataSaved.flat, correctTilt, flatLen, mhdt + yawSensor);
 
-            p3 = Exca_Quaternion.endPoint(p1, correctWTilt + 180, correctTilt, DataSaved.piccolaBucket * 0.9, hdt_BOOM + yawSensor);
-            //p3=Exca_Quaternion.endPoint(p0, correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270 + yawSensor);
+            p3 = Exca_Quaternion.endPoint(p1, correctWTilt + 180, correctTilt, DataSaved.piccolaBucket * 0.9, mhdt + yawSensor);
+            //p3=Exca_Quaternion.endPoint(p0, correctTilt, 0, DataSaved.W_Bucket * 0.5d, mhdt + 270 + yawSensor);
 
-            p4 = Exca_Quaternion.endPoint(p3, correctWTilt + 90 - (DataSaved.flat * 0.5), correctTilt, flatTop, hdt_BOOM + yawSensor);
+            p4 = Exca_Quaternion.endPoint(p3, correctWTilt + 90 - (DataSaved.flat * 0.5), correctTilt, flatTop, mhdt + yawSensor);
             base = DistToPoint.dist3D(p4, p2);
 
 
@@ -137,8 +139,8 @@ public class My_Benna {
 
             segPM1 = DistToPoint.dist3D(p1, p3) * 0.15;
             segPM2 = DistToPoint.dist3D(p1, p3) * 0.25;
-            pm1 = Exca_Quaternion.endPoint(p3, correctWTilt + 30, correctTilt, segPM1, hdt_BOOM + yawSensor);
-            pm2 = Exca_Quaternion.endPoint(pm1, correctWTilt + 12, correctTilt, segPM2, hdt_BOOM + yawSensor);
+            pm1 = Exca_Quaternion.endPoint(p3, correctWTilt + 30, correctTilt, segPM1, mhdt + yawSensor);
+            pm2 = Exca_Quaternion.endPoint(pm1, correctWTilt + 12, correctTilt, segPM2, mhdt + yawSensor);
 
             Polyline2DArc.SegmentData[] segmentsT = Polyline2DArc.calculateArcSegments(base, hMax);
             double L1, L2, L3, L4;
@@ -153,18 +155,18 @@ public class My_Benna {
             d3 = segmentsT[2].angleDegrees;
             d4 = segmentsT[3].angleDegrees;
 
-            p8 = Exca_Quaternion.endPoint(p2, correctWTilt + 90 + (90 - d1), correctTilt, L1, hdt_BOOM + yawSensor);
-            p6 = Exca_Quaternion.endPoint(p8, correctWTilt + 90 + (90 - d2), correctTilt, L2, hdt_BOOM + yawSensor);
-            p5 = Exca_Quaternion.endPoint(p6, correctWTilt + 90 + (90 - d3), correctTilt, L3, hdt_BOOM + yawSensor);
-            p7 = Exca_Quaternion.endPoint(p5, correctWTilt + 90 + (90 - d4), correctTilt, L4, hdt_BOOM + yawSensor);
+            p8 = Exca_Quaternion.endPoint(p2, correctWTilt + 90 + (90 - d1), correctTilt, L1, mhdt + yawSensor);
+            p6 = Exca_Quaternion.endPoint(p8, correctWTilt + 90 + (90 - d2), correctTilt, L2, mhdt + yawSensor);
+            p5 = Exca_Quaternion.endPoint(p6, correctWTilt + 90 + (90 - d3), correctTilt, L3, mhdt + yawSensor);
+            p7 = Exca_Quaternion.endPoint(p5, correctWTilt + 90 + (90 - d4), correctTilt, L4, mhdt + yawSensor);
 
 
-            splA = Exca_Quaternion.endPoint(bucketLeftCoord, 90, 0, 0.05, hdt_BOOM + yawSensor);
-            spcA = Exca_Quaternion.endPoint(bucketCoord, 90, 0, 0.05, hdt_BOOM + yawSensor);
-            sprA = Exca_Quaternion.endPoint(bucketRightCoord, 90, 0, 0.05, hdt_BOOM + yawSensor);
-            splB = Exca_Quaternion.endPoint(bucketLeftCoord, -90, 0, 0.05, hdt_BOOM + yawSensor);
-            spcB = Exca_Quaternion.endPoint(bucketCoord, -90, 0, 0.05, hdt_BOOM + yawSensor);
-            sprB = Exca_Quaternion.endPoint(bucketRightCoord, -90, 0, 0.05, hdt_BOOM + yawSensor);
+            splA = Exca_Quaternion.endPoint(bucketLeftCoord, 90, 0, 0.05, mhdt + yawSensor);
+            spcA = Exca_Quaternion.endPoint(bucketCoord, 90, 0, 0.05, mhdt + yawSensor);
+            sprA = Exca_Quaternion.endPoint(bucketRightCoord, 90, 0, 0.05, mhdt + yawSensor);
+            splB = Exca_Quaternion.endPoint(bucketLeftCoord, -90, 0, 0.05, mhdt + yawSensor);
+            spcB = Exca_Quaternion.endPoint(bucketCoord, -90, 0, 0.05, mhdt + yawSensor);
+            sprB = Exca_Quaternion.endPoint(bucketRightCoord, -90, 0, 0.05, mhdt + yawSensor);
 
 
         }
@@ -186,15 +188,15 @@ public class My_Benna {
                 break;
         }
         if (DataSaved.lrTilt == 0) {
-            fw = Exca_Quaternion.endPoint(pos, 0, 0, 50, hdt_BOOM);
-            bw = Exca_Quaternion.endPoint(pos, 0, 0, 15, hdt_BOOM + 180);
-            lt = Exca_Quaternion.endPoint(pos, Deg_Boom_Roll, 0, 10, hdt_BOOM + 270);
-            rt = Exca_Quaternion.endPoint(pos, -Deg_Boom_Roll, 0, 10, hdt_BOOM + 90);
+            fw = Exca_Quaternion.endPoint(pos, 0, 0, 50, mhdt);
+            bw = Exca_Quaternion.endPoint(pos, 0, 0, 15, mhdt + 180);
+            lt = Exca_Quaternion.endPoint(pos, Deg_Boom_Roll, 0, 10, mhdt + 270);
+            rt = Exca_Quaternion.endPoint(pos, -Deg_Boom_Roll, 0, 10, mhdt + 90);
         } else {
-            fw = Exca_Quaternion.endPoint(pos, 0, 0, 50, hdt_BOOM + yawSensor);
-            bw = Exca_Quaternion.endPoint(pos, 0, 0, 15, hdt_BOOM + yawSensor + 180);
-            lt = Exca_Quaternion.endPoint(pos, correctTilt, 0, 10, hdt_BOOM + yawSensor + 270);
-            rt = Exca_Quaternion.endPoint(pos, -correctTilt, 0, 10, hdt_BOOM + yawSensor + 90);
+            fw = Exca_Quaternion.endPoint(pos, 0, 0, 50, mhdt + yawSensor);
+            bw = Exca_Quaternion.endPoint(pos, 0, 0, 15, mhdt + yawSensor + 180);
+            lt = Exca_Quaternion.endPoint(pos, correctTilt, 0, 10, mhdt + yawSensor + 270);
+            rt = Exca_Quaternion.endPoint(pos, -correctTilt, 0, 10, mhdt + yawSensor + 90);
         }
         switch (DataSaved.isAutoSnap) {
             case 0:
@@ -366,19 +368,19 @@ public class My_Benna {
             flatTop = flatLen * 0.8;
             flatTop = Math.max(0.18, Math.min(flatTop, flatLen * 0.8));
             p1 = ExcavatorLib.bucketRightCoord;
-            p2 = Exca_Quaternion.endPoint(p1, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll, flatLen, hdt_BOOM);
+            p2 = Exca_Quaternion.endPoint(p1, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll, flatLen, mhdt);
 
-            p3 = Exca_Quaternion.endPoint(p1, correctBucket + 180, Deg_Boom_Roll, (DataSaved.L_Bucket * 0.9), hdt_BOOM);
+            p3 = Exca_Quaternion.endPoint(p1, correctBucket + 180, Deg_Boom_Roll, (DataSaved.L_Bucket * 0.9), mhdt);
 
 
-            p4 = Exca_Quaternion.endPoint(p3, correctBucket + 90 - (DataSaved.flat * 0.5), 0, flatTop, hdt_BOOM);
+            p4 = Exca_Quaternion.endPoint(p3, correctBucket + 90 - (DataSaved.flat * 0.5), 0, flatTop, mhdt);
             base = DistToPoint.dist3D(p4, p2);
 
             hMax = base * 0.4;
             segPM1 = DistToPoint.dist3D(p1, p3) * 0.15;
             segPM2 = DistToPoint.dist3D(p1, p3) * 0.25;
-            pm1 = Exca_Quaternion.endPoint(p3, correctBucket + 30, Deg_Boom_Roll, segPM1, hdt_BOOM);
-            pm2 = Exca_Quaternion.endPoint(pm1, correctBucket + 12, Deg_Boom_Roll, segPM2, hdt_BOOM);
+            pm1 = Exca_Quaternion.endPoint(p3, correctBucket + 30, Deg_Boom_Roll, segPM1, mhdt);
+            pm2 = Exca_Quaternion.endPoint(pm1, correctBucket + 12, Deg_Boom_Roll, segPM2, mhdt);
 
 
             Polyline2DArc.SegmentData[] segments = Polyline2DArc.calculateArcSegments(base, hMax);
@@ -394,10 +396,10 @@ public class My_Benna {
             d3 = segments[2].angleDegrees;
             d4 = segments[3].angleDegrees;
 
-            p8 = Exca_Quaternion.endPoint(p2, correctBucket + 90 + (90 - d1), Deg_Boom_Roll, L1, hdt_BOOM);
-            p6 = Exca_Quaternion.endPoint(p8, correctBucket + 90 + (90 - d2), Deg_Boom_Roll, L2, hdt_BOOM);
-            p5 = Exca_Quaternion.endPoint(p6, correctBucket + 90 + (90 - d3), Deg_Boom_Roll, L3, hdt_BOOM);
-            p7 = Exca_Quaternion.endPoint(p5, correctBucket + 90 + (90 - d4), Deg_Boom_Roll, L4, hdt_BOOM);
+            p8 = Exca_Quaternion.endPoint(p2, correctBucket + 90 + (90 - d1), Deg_Boom_Roll, L1, mhdt);
+            p6 = Exca_Quaternion.endPoint(p8, correctBucket + 90 + (90 - d2), Deg_Boom_Roll, L2, mhdt);
+            p5 = Exca_Quaternion.endPoint(p6, correctBucket + 90 + (90 - d3), Deg_Boom_Roll, L3, mhdt);
+            p7 = Exca_Quaternion.endPoint(p5, correctBucket + 90 + (90 - d4), Deg_Boom_Roll, L4, mhdt);
 
 
         } else {
@@ -406,19 +408,19 @@ public class My_Benna {
             flatTop = flatLen * 0.8;
             flatTop = Math.max(0.18, Math.min(flatTop, flatLen * 0.8));
             p1 = ExcavatorLib.bucketRightCoord;
-            p2 = Exca_Quaternion.endPoint(p1, correctWTilt + 90 + DataSaved.flat, correctTilt, flatLen, hdt_BOOM + yawSensor);
+            p2 = Exca_Quaternion.endPoint(p1, correctWTilt + 90 + DataSaved.flat, correctTilt, flatLen, mhdt + yawSensor);
 
-            p3 = Exca_Quaternion.endPoint(p1, correctWTilt + 180, correctTilt, DataSaved.piccolaBucket * 0.9, hdt_BOOM + yawSensor);
+            p3 = Exca_Quaternion.endPoint(p1, correctWTilt + 180, correctTilt, DataSaved.piccolaBucket * 0.9, mhdt + yawSensor);
 
 
-            p4 = Exca_Quaternion.endPoint(p3, correctWTilt + 90 - (DataSaved.flat * 0.5), correctTilt, flatTop, hdt_BOOM + yawSensor);
+            p4 = Exca_Quaternion.endPoint(p3, correctWTilt + 90 - (DataSaved.flat * 0.5), correctTilt, flatTop, mhdt + yawSensor);
             base = DistToPoint.dist3D(p4, p2);
 
             hMax = base * 0.4;
             segPM1 = DistToPoint.dist3D(p1, p3) * 0.15;
             segPM2 = DistToPoint.dist3D(p1, p3) * 0.25;
-            pm1 = Exca_Quaternion.endPoint(p3, correctWTilt + 30, correctTilt, segPM1, hdt_BOOM + yawSensor);
-            pm2 = Exca_Quaternion.endPoint(pm1, correctWTilt + 12, correctTilt, segPM2, hdt_BOOM + yawSensor);
+            pm1 = Exca_Quaternion.endPoint(p3, correctWTilt + 30, correctTilt, segPM1, mhdt + yawSensor);
+            pm2 = Exca_Quaternion.endPoint(pm1, correctWTilt + 12, correctTilt, segPM2, mhdt + yawSensor);
 
             Polyline2DArc.SegmentData[] segmentsT = Polyline2DArc.calculateArcSegments(base, hMax);
             double L1, L2, L3, L4;
@@ -433,10 +435,10 @@ public class My_Benna {
             d3 = segmentsT[2].angleDegrees;
             d4 = segmentsT[3].angleDegrees;
 
-            p8 = Exca_Quaternion.endPoint(p2, correctWTilt + 90 + (90 - d1), correctTilt, L1, hdt_BOOM + yawSensor);
-            p6 = Exca_Quaternion.endPoint(p8, correctWTilt + 90 + (90 - d2), correctTilt, L2, hdt_BOOM + yawSensor);
-            p5 = Exca_Quaternion.endPoint(p6, correctWTilt + 90 + (90 - d3), correctTilt, L3, hdt_BOOM + yawSensor);
-            p7 = Exca_Quaternion.endPoint(p5, correctWTilt + 90 + (90 - d4), correctTilt, L4, hdt_BOOM + yawSensor);
+            p8 = Exca_Quaternion.endPoint(p2, correctWTilt + 90 + (90 - d1), correctTilt, L1, mhdt + yawSensor);
+            p6 = Exca_Quaternion.endPoint(p8, correctWTilt + 90 + (90 - d2), correctTilt, L2, mhdt + yawSensor);
+            p5 = Exca_Quaternion.endPoint(p6, correctWTilt + 90 + (90 - d3), correctTilt, L3, mhdt + yawSensor);
+            p7 = Exca_Quaternion.endPoint(p5, correctWTilt + 90 + (90 - d4), correctTilt, L4, mhdt + yawSensor);
 
         }
         P1_dx = pTransform(p1, DataSaved.glL_AnchorView, scale);
@@ -472,10 +474,10 @@ public class My_Benna {
             altezza = DataSaved.L_Bucket - (DataSaved.L_Bucket * 0.9);
             altezzaAttacco = (float) (altezza * scale);
             raggioPivot = (float) (Math.max(0.05, Math.min(DataSaved.L_Bucket - (DataSaved.L_Bucket * 0.92), 0.10)));
-            pmB = Exca_Quaternion.endPoint(ExcavatorLib.bucketCoord, correctBucket + 180, Deg_Boom_Roll, (DataSaved.L_Bucket * 0.9), hdt_BOOM);
-            pmA = Exca_Quaternion.endPoint(pmB, correctBucket + 180 - (DataSaved.flat * 0.5), Deg_Boom_Roll, altezza, hdt_BOOM);
+            pmB = Exca_Quaternion.endPoint(ExcavatorLib.bucketCoord, correctBucket + 180, Deg_Boom_Roll, (DataSaved.L_Bucket * 0.9), mhdt);
+            pmA = Exca_Quaternion.endPoint(pmB, correctBucket + 180 - (DataSaved.flat * 0.5), Deg_Boom_Roll, altezza, mhdt);
             pmAH = coordST;
-            pmBH = Exca_Quaternion.endPoint(pmAH, correctBucket - (DataSaved.flat * 0.5), Deg_Boom_Roll, altezza, hdt_BOOM);
+            pmBH = Exca_Quaternion.endPoint(pmAH, correctBucket - (DataSaved.flat * 0.5), Deg_Boom_Roll, altezza, mhdt);
 
             PBASE = pTransform(pmB, DataSaved.glL_AnchorView, scale);
             PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, scale);
@@ -490,13 +492,13 @@ public class My_Benna {
             altezza = DataSaved.L_Bucket - (DataSaved.piccolaBucket * 0.95) - DataSaved.L_Tilt;
             altezzaAttacco = (float) (altezza * scale);
             //raggioPivot= (float) (DataSaved.L_Tilt*0.15f*scale);
-            pmB = Exca_Quaternion.endPoint(ExcavatorLib.bucketCoord, correctWTilt + 180, correctTilt, DataSaved.piccolaBucket * 0.9, hdt_BOOM + yawSensor);
-            pmA = Exca_Quaternion.endPoint(pmB, correctWTilt + 180 - (DataSaved.flat * 0.5), correctTilt, altezza, hdt_BOOM + yawSensor);
+            pmB = Exca_Quaternion.endPoint(ExcavatorLib.bucketCoord, correctWTilt + 180, correctTilt, DataSaved.piccolaBucket * 0.9, mhdt + yawSensor);
+            pmA = Exca_Quaternion.endPoint(pmB, correctWTilt + 180 - (DataSaved.flat * 0.5), correctTilt, altezza, mhdt + yawSensor);
             paFront = (coordPivoTilt);
-            paBack = Exca_Quaternion.endPoint(coordPivoTilt, ExcavatorLib.correctDeltaAngle + 90, Deg_Boom_Roll, larghezza_attacco * 0.5, hdt_BOOM);
-            paFrontFront = Exca_Quaternion.endPoint(coordPivoTilt, ExcavatorLib.correctDeltaAngle + 90 + 180, Deg_Boom_Roll, larghezza_attacco * 0.5, hdt_BOOM);
+            paBack = Exca_Quaternion.endPoint(coordPivoTilt, ExcavatorLib.correctDeltaAngle + 90, Deg_Boom_Roll, larghezza_attacco * 0.5, mhdt);
+            paFrontFront = Exca_Quaternion.endPoint(coordPivoTilt, ExcavatorLib.correctDeltaAngle + 90 + 180, Deg_Boom_Roll, larghezza_attacco * 0.5, mhdt);
             pmAH = coordST;
-            pmBH = Exca_Quaternion.endPoint(coordST, ExcavatorLib.correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, hdt_BOOM);//Exca_Quaternion.endPoint(pmAH,ExcavatorLib.correctDeltaAngle,Deg_Boom_Roll,altezza,hdt_BOOM);
+            pmBH = Exca_Quaternion.endPoint(coordST, ExcavatorLib.correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, mhdt);//Exca_Quaternion.endPoint(pmAH,ExcavatorLib.correctDeltaAngle,Deg_Boom_Roll,altezza,mhdt);
             raggioPivot = (float) (DistToPoint.dist3D(pmA, pmBH) * scale);
             PBASE = pTransform(pmB, DataSaved.glL_AnchorView, scale);
             PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, scale);

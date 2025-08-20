@@ -10,6 +10,13 @@
     <string name="uploading">Upload em andamento...</string>
     <string name="change_machine">Alterar modelo da máquina</string>
     <string name="procedi">Deseja prosseguir?</string>
+    <string name="mch_schema">DESENHAR ESQUEMA DE MÁQUINA 3D</string>
+    <string name="enable_but">ATIVAR BOTÕES DE NAVEGAÇÃO ANDROID</string>
+    <string name="extra_hdt">ATIVAR SENSOR DE DIREÇÃO EXTRA</string>
+    <string name="en_out">ATIVAR SAÍDA DIGITAL 12V</string>
+    <string name="en_uhf_ntrip">ALTERAR UHF/NTRIP</string>
+    <string name="uppaer_bar">BARRA SUPERIOR SEMPRE VISÍVEL NA PÁGINA DE TRABALHO</string>
+
 
     <string name="save">SALVAR</string>
     <string name="exit">ESC</string>

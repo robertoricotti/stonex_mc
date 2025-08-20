@@ -10,6 +10,13 @@
     <string name="uploading">Upload läuft...</string>
     <string name="change_machine">Maschinenmodell ändern</string>
     <string name="procedi">Möchten Sie fortfahren?</string>
+    <string name="mch_schema">3D-MASCHINENSCHEMA ZEICHNEN</string>
+    <string name="enable_but">ANDROID-NAVIGATIONSTASTEN AKTIVIEREN</string>
+    <string name="extra_hdt">EXTRA HEADING-SENSOR AKTIVIEREN</string>
+    <string name="en_out">DIGITALE AUSGABE 12V AKTIVIEREN</string>
+    <string name="en_uhf_ntrip">UHF/NTRIP UMSCHALTEN</string>
+    <string name="uppaer_bar">OBERE LEISTE IMMER SICHTBAR AUF ARBEITSSEITE</string>
+
 
     <string name="save">SPEICH</string>
     <string name="exit">EXIT</string>

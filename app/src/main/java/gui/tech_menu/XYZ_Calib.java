@@ -159,7 +159,7 @@ public class XYZ_Calib extends AppCompatActivity {
         hdt = NmeaListener.mch_Orientation + DataSaved.deltaGPS2;
         hdt = hdt % 360;
 
-        titolo.setText("     E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[0])) + "    N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[2])) + "   HDT: " + String.format("%.2f", hdt) + " °");
+        titolo.setText("     E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[0])) + "    N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[2])) + "   HDT: " + String.format("%.2f", hdt).replace(",",".") + " °");
 
         if (DataSaved.gpsOk) {
             gpsDebug.setImageTintList(ColorStateList.valueOf(Color.GREEN));

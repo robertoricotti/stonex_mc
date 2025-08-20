@@ -6,6 +6,13 @@
     <string name="general_set">GENERAL SETTINGS</string>
     <string name="downloading">Download in Progress...</string>
     <string name="uploading">Upload in Progress...</string>
+    <string name="mch_schema">DRAW 3D MACHINE SCHEMA</string>
+    <string name="enable_but">ENABLE ANDROID NAVIGATION BUTTONS</string>
+    <string name="extra_hdt">ENABLE EXTRA HEADING SENSOR</string>
+    <string name="en_out">ENABLE DIGITAL OUTPUT 12V</string>
+    <string name="en_uhf_ntrip">SWITCH UHF/NTRIP</string>
+    <string name="uppaer_bar">UPPER BAR ALWAYS VISIBLE IN WORKING PAGE</string>
+
     <string name="change_machine">CHANGE MACHINE MODEL</string>
     <string name="procedi">Do You Want To Proceed ?</string>
     <string name="mac_setup">MACHINE SETUP</string>

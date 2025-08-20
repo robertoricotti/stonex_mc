@@ -10,6 +10,13 @@
     <string name="uploading">Отправка файлов...</string>
     <string name="change_machine">Изменить модель аппарата</string>
     <string name="procedi">Вы хотите продолжить?</string>
+    <string name="mch_schema">НАРИСОВАТЬ 3D-СХЕМУ МАШИНЫ</string>
+    <string name="enable_but">ВКЛЮЧИТЬ КНОПКИ НАВИГАЦИИ ANDROID</string>
+    <string name="extra_hdt">ВКЛЮЧИТЬ ДОПОЛНИТЕЛЬНЫЙ ДАТЧИК КУРСА</string>
+    <string name="en_out">ВКЛЮЧИТЬ ЦИФРОВОЙ ВЫХОД 12V</string>
+    <string name="en_uhf_ntrip">ПЕРЕКЛЮЧИТЬ UHF/NTRIP</string>
+    <string name="uppaer_bar">ВЕРХНЯЯ ПАНЕЛЬ ВСЕГДА ВИДИМА НА РАБОЧЕЙ СТРАНИЦЕ</string>
+
 
     <string name="save">СОХРАНИТЬ</string>
     <string name="exit">ЭСК</string>

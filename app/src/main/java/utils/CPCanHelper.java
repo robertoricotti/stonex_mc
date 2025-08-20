@@ -150,8 +150,10 @@ public class CPCanHelper {
                         ((CPV3Protocol) mCPVxProtocol).config(DataSaved.boudrateCAN1, DataSaved.boudrateCAN2);
                         ((CPV3Protocol) mCPVxProtocol).clearFilters(ICPCanFrame.Channel.CHN_1);
                         ((CPV3Protocol) mCPVxProtocol).clearFilters(ICPCanFrame.Channel.CHN_2);
+
                         ((ICPCanFrame) mCPVxProtocol).setCanFrameRxListener((channel, id, idType, remote, dlc, canpack) -> {
                             action.execute(channel, id, canpack);
+
 
                         });
                         mCPVxProtocol.connect(mCPVxDataLink, mSpi);

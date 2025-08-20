@@ -31,11 +31,12 @@ public class ExcavatorLib {
     public static double yawSensor;
     public static int indexSezione;
     public static boolean overturn;
+    public static  double[]coordRoll,coordPitch;
     static double[] arrLower = new double[3];
     static double[] arr = new double[6];
     public static double quota2D, quotaLASER_2D, actualX2D, actualY2D, distToSurf, distToSurfX, quotaSx, quotaDx, distanza_inclinata;
     public static double msideC, msideCX, correctStick, correctPitch, correctDBStickAngle, quotaCentro, correctRoll, correctBucket, correctFlat, correctTilt, correctDeltaAngle, bennaSimulata, correctBoom1, correctBoom2, highestPoint, deg_Roll, Len_Roll, larghezzabenna, correctWTilt, correctEbubbleX, correctEbubbleY, startRX, startRY, startRZ;
-    public static double[] coordinateDZ, coordinateDX, coordinateDY, coordRoll, coordPitch, coordMiniPitch, coordB1, coordB2, coordST, coordiLSV, coordLSH, coordPivoTilt;
+    public static double[] coordinateDZ, coordinateDX, coordinateDY, coordMiniPitch, coordB1, coordB2, coordST, coordiLSV, coordLSH, coordPivoTilt;
     public static double[] bucketCoord = new double[]{0, 0, 0};//centro benna
     public static double[] bucketLeftCoord = new double[]{0, 0, 0};
     //sinistra benna
@@ -45,7 +46,7 @@ public class ExcavatorLib {
     static double hdt_DESTRA, hdt_DRITTO, hdt_SINISTRA;
     public static double[] coordinateLASER = new double[]{0, 0, 0};
     public static double[] startXYZ;
-    static double swing_boom_angle;//TODO
+    public static double swing_boom_angle;//TODO
 
     public static void Excavator(double[] measures) {
         try {
@@ -82,7 +83,7 @@ public class ExcavatorLib {
 
 
             if(DataSaved.Extra_Heading!=0){
-                swing_boom_angle=NmeaListener.roof_Orientation;
+                swing_boom_angle=NmeaListener.roof_Orientation-(NmeaListener.mch_Orientation+DataSaved.deltaGPS2);
             }else {
                 swing_boom_angle=0;
             }
@@ -142,23 +143,20 @@ public class ExcavatorLib {
                             coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, gps1_X_dev, hdtR);
                         }
                         if (gps1_Y_dev < 0) {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(gps1_Y_dev), hdtReverse);
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(gps1_Y_dev)+DataSaved.miniPitch_L, hdtReverse);
                         } else {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, gps1_Y_dev, hdt0);
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, gps1_Y_dev-DataSaved.miniPitch_L, hdt0);
                         }//DY = Centro perno boom1
-                        coordRoll = Exca_Quaternion.endPoint(coordinateDY, -correctRoll, correctPitch, myRollLen, hdtR);//Centro Braccio all'altezza centro macchina
 
 
                         if (DataSaved.Extra_Heading != 0) {
-                            coordMiniPitch = Exca_Quaternion.endPoint(coordRoll, correctPitch, correctRoll, DataSaved.L_Pitch - DataSaved.miniPitch_L, hdt0);
-                            coordPitch = Exca_Quaternion.endPoint(coordMiniPitch, correctPitch, Deg_Boom_Roll, DataSaved.miniPitch_L, hdt_BOOM);
+                            coordMiniPitch = Exca_Quaternion.endPoint(coordinateDY, correctPitch, Deg_Boom_Roll, DataSaved.miniPitch_L, hdt_BOOM);
                         } else {
 
-                            coordPitch = Exca_Quaternion.endPoint(coordRoll, correctPitch, Deg_Boom_Roll, myPitchLen, hdt_BOOM);
-                            coordMiniPitch = coordPitch;
+                            coordMiniPitch = coordinateDY;
                         }
                         overturn = Math.abs(correctRoll) > 85.0d || Math.abs(correctPitch) > 85.0d;
-                        coordB1 = Exca_Quaternion.endPoint(coordPitch, correctBoom1, Deg_Boom_Roll, DataSaved.L_Boom1, hdt_BOOM);
+                        coordB1 = Exca_Quaternion.endPoint(coordMiniPitch, correctBoom1, Deg_Boom_Roll, DataSaved.L_Boom1, hdt_BOOM);
                         if (DataSaved.lrBoom2 != 0) {
                             coordB2 = Exca_Quaternion.endPoint(coordB1, correctBoom2, Deg_Boom_Roll, DataSaved.L_Boom2, hdt_BOOM);
 
@@ -591,20 +589,5 @@ public class ExcavatorLib {
 
     }
 
-    public static double swingCalc(double a, double b, double c) {
-        // Calcola gli angoli usando il teorema del coseno
-        double tmp0 = (a * a) + (b * b) - (c * c);
-        return Math.toDegrees(Math.acos(tmp0 / (2 * a * b)));
-    }
 
-
-    public static double realSensYaw(double offset) {
-        double a;
-        double d = Deg_Yaw_Tilt;
-        a = d - offset;
-        a = (a < -179.99) ? a + 360.00 :
-                (a > 179.99) ? a - 360.00 :
-                        a;
-        return a;
-    }
 }

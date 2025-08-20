@@ -5,7 +5,7 @@ import static gui.my_opengl.Point3DF.pTransform;
 import static packexcalib.exca.ExcavatorLib.coordB2;
 import static packexcalib.exca.ExcavatorLib.coordST;
 import static packexcalib.exca.ExcavatorLib.correctStick;
-import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 
 import gui.my_opengl.Point3DF;
@@ -16,31 +16,33 @@ public class My_Stick {
     static Point3DF P0_S, P1_S, PA_S, PE_S, PM_S, PM1_S, PM2_S;
     static Point3DF P0_D, P1_D, PA_D, PE_D, PM_D, PM1_D, PM2_D;
     static double LA, LE, LM;
+    static double mHdt;
 
     public static Point3DF[] puntiStick() {
+        mHdt=hdt_BOOM;
         double larghezzaBraccio = (float) (Math.max(0.15, Math.min((DataSaved.L_Stick * 0.15f), 0.5)));
         double[] p0_s, p0_d, p1_s, p1_d, pa_s, pa_d, pe_s, pe_d, pm_s, pm_d, pm1_s, pm2_s, pm1_d, pm2_d;
         LA = DataSaved.L_Stick * 0.25;
         LE = DataSaved.L_Stick * 0.28;
         LM = DataSaved.L_Stick * 0.07;
-        p0_s = Exca_Quaternion.endPoint(coordST, Deg_Boom_Roll, 0, larghezzaBraccio * 0.5, hdt_BOOM - 90);
-        p0_d = Exca_Quaternion.endPoint(coordST, -Deg_Boom_Roll, 0, larghezzaBraccio * 0.5, hdt_BOOM + 90);
-        pm_s = Exca_Quaternion.endPoint(p0_s, correctStick + 135, Deg_Boom_Roll, LM, hdt_BOOM);
-        pm_d = Exca_Quaternion.endPoint(p0_d, correctStick + 135, Deg_Boom_Roll, LM, hdt_BOOM);
+        p0_s = Exca_Quaternion.endPoint(coordST, Deg_Boom_Roll, 0, larghezzaBraccio * 0.5, mHdt - 90);
+        p0_d = Exca_Quaternion.endPoint(coordST, -Deg_Boom_Roll, 0, larghezzaBraccio * 0.5, mHdt + 90);
+        pm_s = Exca_Quaternion.endPoint(p0_s, correctStick + 135, Deg_Boom_Roll, LM, mHdt);
+        pm_d = Exca_Quaternion.endPoint(p0_d, correctStick + 135, Deg_Boom_Roll, LM, mHdt);
 
-        pm1_s = Exca_Quaternion.endPoint(p0_s, correctStick - 135, Deg_Boom_Roll, LM, hdt_BOOM);
-        pm1_d = Exca_Quaternion.endPoint(p0_d, correctStick - 135, Deg_Boom_Roll, LM, hdt_BOOM);
+        pm1_s = Exca_Quaternion.endPoint(p0_s, correctStick - 135, Deg_Boom_Roll, LM, mHdt);
+        pm1_d = Exca_Quaternion.endPoint(p0_d, correctStick - 135, Deg_Boom_Roll, LM, mHdt);
 
 
-        p1_s = Exca_Quaternion.endPoint(coordB2, Deg_Boom_Roll, 0, larghezzaBraccio * 0.5, hdt_BOOM - 90);
-        pm2_s = Exca_Quaternion.endPoint(p1_s, correctStick - 90, Deg_Boom_Roll, LM, hdt_BOOM);
-        p1_d = Exca_Quaternion.endPoint(coordB2, -Deg_Boom_Roll, 0, larghezzaBraccio * 0.5, hdt_BOOM + 90);
-        pm2_d = Exca_Quaternion.endPoint(p1_d, correctStick - 90, Deg_Boom_Roll, LM, hdt_BOOM);
-        pe_s = Exca_Quaternion.endPoint(p1_s, correctStick + 105, Deg_Boom_Roll, LE, hdt_BOOM);
-        pe_d = Exca_Quaternion.endPoint(p1_d, correctStick + 105, Deg_Boom_Roll, LE, hdt_BOOM);
+        p1_s = Exca_Quaternion.endPoint(coordB2, Deg_Boom_Roll, 0, larghezzaBraccio * 0.5, mHdt - 90);
+        pm2_s = Exca_Quaternion.endPoint(p1_s, correctStick - 90, Deg_Boom_Roll, LM, mHdt);
+        p1_d = Exca_Quaternion.endPoint(coordB2, -Deg_Boom_Roll, 0, larghezzaBraccio * 0.5, mHdt + 90);
+        pm2_d = Exca_Quaternion.endPoint(p1_d, correctStick - 90, Deg_Boom_Roll, LM, mHdt);
+        pe_s = Exca_Quaternion.endPoint(p1_s, correctStick + 105, Deg_Boom_Roll, LE, mHdt);
+        pe_d = Exca_Quaternion.endPoint(p1_d, correctStick + 105, Deg_Boom_Roll, LE, mHdt);
 
-        pa_s = Exca_Quaternion.endPoint(pm2_s, correctStick + 55 + 90, Deg_Boom_Roll, LA, hdt_BOOM);
-        pa_d = Exca_Quaternion.endPoint(pm2_d, correctStick + 55 + 90, Deg_Boom_Roll, LA, hdt_BOOM);
+        pa_s = Exca_Quaternion.endPoint(pm2_s, correctStick + 55 + 90, Deg_Boom_Roll, LA, mHdt);
+        pa_d = Exca_Quaternion.endPoint(pm2_d, correctStick + 55 + 90, Deg_Boom_Roll, LA, mHdt);
 
         P0_S = pTransform(p0_s, DataSaved.glL_AnchorView, scale);
         PM_S = pTransform(pm_s, DataSaved.glL_AnchorView, scale);

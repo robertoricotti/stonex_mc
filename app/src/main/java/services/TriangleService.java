@@ -4,6 +4,7 @@ import static packexcalib.exca.DataSaved.polylines;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
+import static packexcalib.exca.ExcavatorLib.coordMiniPitch;
 import static services.ReadProjectService.fileExtensionPOINT;
 
 import android.app.Service;

@@ -118,6 +118,8 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         can2bd=findViewById(R.id.toCan2);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
 
+
+
     }
 
     private void onClick() {
@@ -442,6 +444,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 //Excavatore
                 tvFrame.setVisibility(View.VISIBLE);
                 tvSwing.setVisibility(View.VISIBLE);
+                tvSwing.setText("SWING BOOM");
                 tvBoom1.setVisibility(View.VISIBLE);
                 tvBoom1.setText("BOOM 1");
                 tvBoom2.setVisibility(View.VISIBLE);
@@ -459,6 +462,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 tvFrame.setVisibility(View.VISIBLE);
                 tvBoom1.setVisibility(View.VISIBLE);
                 tvSwing.setVisibility(View.VISIBLE);
+                tvSwing.setText("STEERING PIVOT");
                 tvBoom2.setVisibility(View.GONE);
                 tvStick.setVisibility(View.VISIBLE);
                 tvStick.setText("MAIN BOOM");

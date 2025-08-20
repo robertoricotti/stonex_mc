@@ -12,7 +12,7 @@ import static packexcalib.exca.ExcavatorLib.coordinateDY;
 import static packexcalib.exca.ExcavatorLib.correctBucket;
 import static packexcalib.exca.ExcavatorLib.correctTilt;
 import static packexcalib.exca.ExcavatorLib.correctWTilt;
-import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 
@@ -23,9 +23,10 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 
 public class PuntiBenna {
+    static double mhdt;
 
     public static float[][] GLBucketCoord() {
-
+        mhdt=hdt_BOOM;
         double[] altoSX;
         double[] altoDX;
         double[] centerBack;
@@ -39,29 +40,29 @@ public class PuntiBenna {
 
 
         if (DataSaved.lrTilt == 0) {
-            tempPivot = Exca_Quaternion.endPoint(coordST, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket * 0.1d, hdt_BOOM);
-            altoSX = Exca_Quaternion.endPoint(tempPivot, Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270);
+            tempPivot = Exca_Quaternion.endPoint(coordST, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket * 0.1d, mhdt);
+            altoSX = Exca_Quaternion.endPoint(tempPivot, Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, mhdt + 270);
 
-            altoDX = Exca_Quaternion.endPoint(tempPivot, -Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90);
+            altoDX = Exca_Quaternion.endPoint(tempPivot, -Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, mhdt + 90);
 
-            centerBack = Exca_Quaternion.endPoint(bucketCoord, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll,DataSaved.L_Bucket, hdt_BOOM);
-            centerBackSX = Exca_Quaternion.endPoint(bucketLeftCoord, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll, flatDist, hdt_BOOM);
-            centerBackDX = Exca_Quaternion.endPoint(bucketRightCoord, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll, flatDist, hdt_BOOM);
+            centerBack = Exca_Quaternion.endPoint(bucketCoord, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll,DataSaved.L_Bucket, mhdt);
+            centerBackSX = Exca_Quaternion.endPoint(bucketLeftCoord, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll, flatDist, mhdt);
+            centerBackDX = Exca_Quaternion.endPoint(bucketRightCoord, correctBucket + 90 + DataSaved.flat, Deg_Boom_Roll, flatDist, mhdt);
 
-            altoBackSX=Exca_Quaternion.endPoint(altoSX, correctBucket + 90 -DataSaved.flat, 0, flatDist*0.85, hdt_BOOM );
-            altoBackDX=Exca_Quaternion.endPoint(altoDX, correctBucket + 90 -DataSaved.flat, 0, flatDist*0.85, hdt_BOOM );
+            altoBackSX=Exca_Quaternion.endPoint(altoSX, correctBucket + 90 -DataSaved.flat, 0, flatDist*0.85, mhdt );
+            altoBackDX=Exca_Quaternion.endPoint(altoDX, correctBucket + 90 -DataSaved.flat, 0, flatDist*0.85, mhdt );
 
         } else {
-            tempPivot = Exca_Quaternion.endPoint(coordPivoTilt, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket * 0.1d, hdt_BOOM);
-            altoSX = Exca_Quaternion.endPoint(tempPivot, correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270 + yawSensor);
+            tempPivot = Exca_Quaternion.endPoint(coordPivoTilt, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket * 0.1d, mhdt);
+            altoSX = Exca_Quaternion.endPoint(tempPivot, correctTilt, 0, DataSaved.W_Bucket * 0.5d, mhdt + 270 + yawSensor);
 
-            altoDX = Exca_Quaternion.endPoint(tempPivot, -correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90 + yawSensor);
+            altoDX = Exca_Quaternion.endPoint(tempPivot, -correctTilt, 0, DataSaved.W_Bucket * 0.5d, mhdt + 90 + yawSensor);
 
-            centerBack = Exca_Quaternion.endPoint(bucketCoord, correctWTilt + 90 + DataSaved.flat, correctTilt, DataSaved.L_Bucket, hdt_BOOM + yawSensor);
-            centerBackSX = Exca_Quaternion.endPoint(bucketLeftCoord, correctWTilt + 90 + DataSaved.flat, correctTilt, flatDist, hdt_BOOM + yawSensor);
-            centerBackDX = Exca_Quaternion.endPoint(bucketRightCoord, correctWTilt + 90 + DataSaved.flat, correctTilt, flatDist, hdt_BOOM + yawSensor);
-            altoBackSX=Exca_Quaternion.endPoint(altoSX, correctWTilt + 90 -DataSaved.flat, 0, flatDist*0.85, hdt_BOOM+yawSensor );
-            altoBackDX=Exca_Quaternion.endPoint(altoDX, correctWTilt + 90 -DataSaved.flat, 0, flatDist*0.85, hdt_BOOM+yawSensor );
+            centerBack = Exca_Quaternion.endPoint(bucketCoord, correctWTilt + 90 + DataSaved.flat, correctTilt, DataSaved.L_Bucket, mhdt + yawSensor);
+            centerBackSX = Exca_Quaternion.endPoint(bucketLeftCoord, correctWTilt + 90 + DataSaved.flat, correctTilt, flatDist, mhdt + yawSensor);
+            centerBackDX = Exca_Quaternion.endPoint(bucketRightCoord, correctWTilt + 90 + DataSaved.flat, correctTilt, flatDist, mhdt + yawSensor);
+            altoBackSX=Exca_Quaternion.endPoint(altoSX, correctWTilt + 90 -DataSaved.flat, 0, flatDist*0.85, mhdt+yawSensor );
+            altoBackDX=Exca_Quaternion.endPoint(altoDX, correctWTilt + 90 -DataSaved.flat, 0, flatDist*0.85, mhdt+yawSensor );
         }
 
         Point3DF left = new Point3DF((float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
