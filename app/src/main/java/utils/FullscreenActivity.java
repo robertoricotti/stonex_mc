@@ -3,6 +3,7 @@ package utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -20,6 +21,7 @@ public class FullscreenActivity {
         WindowManager.LayoutParams layoutParams = myActivity.getWindow().getAttributes();
         myActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         layoutParams.screenBrightness = DataSaved.myBrightness;
+        Log.d("Bright",DataSaved.myBrightness+"");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             myActivity.getWindow().setDecorFitsSystemWindows(false);
