@@ -228,7 +228,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="komatsu_can_xls" />
+    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="komatsu_can JD CAT D6N E GRADER M_xls">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -739,7 +743,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756143661744</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="komatsu_can JD CAT D6N E GRADER M_xls">
+      <option name="closed" value="true" />
+      <created>1756147993729</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1756147993729</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -754,7 +766,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="pnezd aggiunti a snap" />
     <MESSAGE value="license ok on ed offline" />
     <MESSAGE value="menu utente dialogs ok" />
     <MESSAGE value="01/08/2025 18.16 license ok pnezd ok" />
@@ -779,7 +790,8 @@
     <MESSAGE value="apk di test per swing boom" />
     <MESSAGE value="apk di test per swing boom ok" />
     <MESSAGE value="komatsu_can_xls" />
-    <option name="LAST_COMMIT_MESSAGE" value="komatsu_can_xls" />
+    <MESSAGE value="komatsu_can JD CAT D6N E GRADER M_xls" />
+    <option name="LAST_COMMIT_MESSAGE" value="komatsu_can JD CAT D6N E GRADER M_xls" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

@@ -26,7 +26,7 @@ public class Sensors_Decoder {
     static short Gy;
     static short Gz;
 
-    final static int PGN_Tiltrotator = 61460;
+    final static int PGN_Tiltrotator = 61460;//TODO VALIDO PER GRADER JOHN DEERE
     final static int PGN_TiltrotatorEPS = 65488;
     final static int PGN_TiltRotator_EngCon = 131024;
     static int countTiltRot;

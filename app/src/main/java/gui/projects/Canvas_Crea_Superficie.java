@@ -146,7 +146,7 @@ public class Canvas_Crea_Superficie extends View {
 
 
                     bucketWidth = DataSaved.W_Bucket * scala;
-                    distStick = (new DistToPoint(ExcavatorLib.coordPitch[0], ExcavatorLib.coordPitch[1], 0, ExcavatorLib.coordPivoTilt[0], ExcavatorLib.coordPivoTilt[1], 0).getDist_to_point() * scala) + 40f;
+                    distStick = (new DistToPoint(ExcavatorLib.coordMiniPitch[0], ExcavatorLib.coordMiniPitch [1], 0, ExcavatorLib.coordPivoTilt[0], ExcavatorLib.coordPivoTilt[1], 0).getDist_to_point() * scala) + 40f;
                     originPointBucket = new PointF(originPointStick.x, originPointStick.y - (float) distStick);
                     stickWidth = scala * 0.30f;
                     left_top_bucket = new PointF(originPointBucket.x - (float) bucketWidth / 2f, originPointBucket.y - (float) bucketHeight);
