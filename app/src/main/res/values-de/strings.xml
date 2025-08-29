@@ -16,6 +16,7 @@
     <string name="en_out">DIGITALE AUSGABE 12V AKTIVIEREN</string>
     <string name="en_uhf_ntrip">UHF/NTRIP UMSCHALTEN</string>
     <string name="uppaer_bar">OBERE LEISTE IMMER SICHTBAR AUF ARBEITSSEITE</string>
+    <string name="interface_type">HYDRAULIK-SCHNITTSTELLENTYP</string>
 
 
     <string name="save">SPEICH</string>

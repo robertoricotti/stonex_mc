@@ -14,6 +14,7 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomToast;
+import hydro.Hydro_Activity_Entering;
 import services.CanService;
 import utils.MyDeviceManager;
 import utils.Utils;
@@ -73,7 +74,7 @@ public class Hydraulic_Setup extends BaseClass {
             return false;
         });
         back.setOnClickListener(view -> {
-            startActivity(new Intent(this, Hydro_Lobby.class));
+            startActivity(new Intent(this, Hydro_Activity_Entering.class));
             finish();
         });
 

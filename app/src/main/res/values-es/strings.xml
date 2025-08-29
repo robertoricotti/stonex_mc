@@ -16,6 +16,7 @@
     <string name="en_out">HABILITAR SALIDA DIGITAL 12V</string>
     <string name="en_uhf_ntrip">CAMBIAR UHF/NTRIP</string>
     <string name="uppaer_bar">BARRA SUPERIOR SIEMPRE VISIBLE EN PÁGINA DE TRABAJO</string>
+    <string name="interface_type">TIPO DE INTERFAZ HIDRÁULICA</string>
 
 
     <string name="save">SALVAR</string>

@@ -16,6 +16,7 @@
     <string name="en_out">ACTIVER SORTIE NUMÉRIQUE 12V</string>
     <string name="en_uhf_ntrip">BASCULER UHF/NTRIP</string>
     <string name="uppaer_bar">BARRE SUPÉRIEURE TOUJOURS VISIBLE DANS LA PAGE DE TRAVAIL</string>
+    <string name="interface_type">TYPE D’INTERFACE HYDRAULIQUE</string>
 
 
     <string name="save">SAUVER</string>

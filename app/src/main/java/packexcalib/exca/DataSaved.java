@@ -20,6 +20,11 @@ import dxf.Segment;
 import gui.my_opengl.Point3DF;
 
 public class DataSaved {
+    //settaggi idraulici
+    public static int Interface_Type;
+
+
+    ///
     public static String machineName;
     public static int lock3dRotation;
     public static int ckSchermo;
@@ -263,7 +268,6 @@ public class DataSaved {
     public static int leftSensorType;
 
     public static int rightSensorType;
-    public static int interfaceType;
     public static int useQuickSwitch;
     public static int priorityNet;
     public static String wifiSSID;

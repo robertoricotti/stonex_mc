@@ -108,7 +108,7 @@ public class Grade2D extends AppCompatActivity {
 
         });
         auto.setOnClickListener(view -> {
-            if(DataSaved.interfaceType==0){
+            if(DataSaved.Interface_Type==0){
                if(CanService.isAuto!=3){
                    CanService.isAuto=3;
                }else {
@@ -121,11 +121,11 @@ public class Grade2D extends AppCompatActivity {
             }
         });
         autoL.setOnClickListener(view -> {
-            if(DataSaved.interfaceType==0){}else {
+            if(DataSaved.Interface_Type==0){}else {
             MyDeviceManager.CanWrite(0, 0x65, 8, new byte[]{16, 0, 0, 0, 0, 0, 0, 0});}
         });
         autoR.setOnClickListener(view -> {
-            if(DataSaved.interfaceType==0){}else {
+            if(DataSaved.Interface_Type==0){}else {
             MyDeviceManager.CanWrite(0, 0x65, 8, new byte[]{32, 0, 0, 0, 0, 0, 0, 0});}
         });
         sensL.setOnClickListener(view -> {
@@ -185,7 +185,7 @@ public class Grade2D extends AppCompatActivity {
                 autoR.setBackgroundColor(Color.RED);
                 break;
         }
-        if (CanService.errorEcu == 0&&DataSaved.interfaceType==1) {
+        if (CanService.errorEcu == 0&&DataSaved.Interface_Type==1) {
 
             scendiSX.setImageTintList(ContextCompat.getColorStateList(this, R.color.gray));
             saliSX.setImageTintList(ContextCompat.getColorStateList(this, R.color.gray));

@@ -24,7 +24,7 @@ import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
 import gui.debug_ecu.Can_Msg_Debug;
-import gui.debug_ecu.Hydro_Lobby;
+import hydro.Hydro_Activity_Entering;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
@@ -371,7 +371,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     if (hasAuto) {
                         if (isTech) {
                             disableAll();
-                            startActivity(new Intent(this, Hydro_Lobby.class));
+                            startActivity(new Intent(this, Hydro_Activity_Entering.class));
                             finish();
                         } else {
                             if (!dialogPassword.dialog.isShowing()) {
@@ -397,7 +397,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     if (hasAuto) {
                         if (isTech) {
                             disableAll();
-                            startActivity(new Intent(this, Hydro_Lobby.class));
+                            startActivity(new Intent(this, Hydro_Activity_Entering.class));
                             finish();
                         } else {
                             if (!dialogPassword.dialog.isShowing()) {
@@ -423,7 +423,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     if (hasAuto) {
                         if (isTech) {
                             disableAll();
-                            startActivity(new Intent(this, Hydro_Lobby.class));
+                            startActivity(new Intent(this, Hydro_Activity_Entering.class));
                             finish();
                         } else {
                             if (!dialogPassword.dialog.isShowing()) {
@@ -449,7 +449,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                     if (hasAuto) {
                         if (isTech) {
                             disableAll();
-                            startActivity(new Intent(this, Hydro_Lobby.class));
+                            startActivity(new Intent(this, Hydro_Activity_Entering.class));
                             finish();
                         } else {
                             if (!dialogPassword.dialog.isShowing()) {

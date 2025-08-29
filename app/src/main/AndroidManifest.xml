@@ -76,7 +76,42 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
-
+        <activity
+            android:name="hydro.DOOSAN_Activity"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name="hydro.CASE_Activity"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name="hydro.KOMATSU_Activity"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name="hydro.DEERE_LIEBHERR_Activity"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name="hydro.CAT_SEA_Activity"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name="hydro.Hydro_Activity_Entering"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="gui.tech_menu.Nuova_Blade_Calib"
             android:autoRemoveFromRecents="true"
@@ -89,7 +124,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.dialogs_user_settings.Nuova_User_Settings"
             android:autoRemoveFromRecents="true"
@@ -235,7 +269,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.debug_ecu.Can_Msg_Debug"
             android:autoRemoveFromRecents="true"
@@ -295,7 +328,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.projects.PickProject"
             android:autoRemoveFromRecents="true"
@@ -320,7 +352,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.tech_menu.TiltCalib"
             android:autoRemoveFromRecents="true"
@@ -357,8 +388,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
-
         <activity
             android:name="gui.digging_excavator.Digging_CutAndFill1D"
             android:autoRemoveFromRecents="true"
@@ -389,7 +418,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.debug_ecu.DebugExcavatorActivity"
             android:autoRemoveFromRecents="true"

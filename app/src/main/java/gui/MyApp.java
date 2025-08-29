@@ -87,6 +87,7 @@ import gui.tech_menu.StickCalib;
 import gui.tech_menu.TiltCalib;
 import gui.tech_menu.Tilt_Blade;
 import gui.tech_menu.XYZ_Calib;
+import hydro.Hydro_Activity_Entering;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
@@ -579,6 +580,9 @@ git push
 
         }else if (activity instanceof Nuova_Machine_Settings) {
             ((Nuova_Machine_Settings) activity).updateUI();
+
+        }else if (activity instanceof Hydro_Activity_Entering) {
+            ((Hydro_Activity_Entering) activity).updateUI();
 
         }
 

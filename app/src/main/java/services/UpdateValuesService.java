@@ -182,6 +182,9 @@ public class UpdateValuesService extends Service {
 
                     String Extra_Heading = MyData.get_String("M" + i + "Extra_Heading");
 
+                    //TODO SETTAGGI IDRAULICI
+                    String Interface_Type = MyData.get_String("M" + i + "Interface_Type");
+
 
                     if (nameM == null) {
                         MyData.push("M" + i + "_Name", ("DEFULT " + i).toUpperCase());
@@ -417,7 +420,9 @@ public class UpdateValuesService extends Service {
                     if(Extra_Heading==null){
                         MyData.push("M"+i+"Extra_Heading","0");
                     }
-
+                    if (Interface_Type == null) {
+                        MyData.push("M" + i + "Interface_Type", "0");
+                    }
                 }
 
                 for (int i = 1; i <= 4; i++) {
@@ -1134,6 +1139,12 @@ public class UpdateValuesService extends Service {
                     DataSaved.Extra_Heading = MyData.get_Int("M" + indexMach + "Extra_Heading");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Extra_Heading: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.Interface_Type = MyData.get_Int("M" + indexMach + "Interface_Type");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Interface_Type: " + e.getMessage());
                 }
 
                 ////end draw

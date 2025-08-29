@@ -39,6 +39,7 @@ public class Hydro_Lobby extends BaseClass {
             }
 
         });
+
         joy_interface.setOnClickListener(view -> {
             if(!press) {
                 press = true;

@@ -16,6 +16,7 @@
     <string name="en_out">12V DIGITALE UITGANG INSCHAKELEN</string>
     <string name="en_uhf_ntrip">UHF/NTRIP SCHAKELEN</string>
     <string name="uppaer_bar">BOVENBALK ALTIJD ZICHTBAAR OP WERKPAGINA</string>
+    <string name="interface_type">TYPE HYDRAULISCHE INTERFACE</string>
 
     <string name="save">OPSLAAN</string>
     <string name="exit">AFSLUITEN</string>

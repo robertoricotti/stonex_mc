@@ -16,7 +16,7 @@
     <string name="en_out">ENABLE DIGITAL OUTPUT 12V</string>
     <string name="en_uhf_ntrip">SWITCH UHF/NTRIP</string>
     <string name="uppaer_bar">UPPER BAR ALWAYS VISIBLE IN WORKING PAGE</string>
-
+    <string name="interface_type">HYDRAULIC INTERFACE TYPE</string>
     <string name="save">SAVE</string>
     <string name="exit">EXIT</string>
     <string name="machines">MACHINES</string>

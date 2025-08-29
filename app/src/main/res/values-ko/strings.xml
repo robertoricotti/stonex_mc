@@ -17,6 +17,7 @@
     <string name="en_out">디지털 출력 12V 활성화</string>
     <string name="en_uhf_ntrip">UHF/NTRIP 전환</string>
     <string name="uppaer_bar">작업 페이지에서 상단 바 항상 표시</string>
+    <string name="interface_type">유압 인터페이스 유형</string>
 
     <string name="save">저장</string>
     <string name="exit">종료</string>

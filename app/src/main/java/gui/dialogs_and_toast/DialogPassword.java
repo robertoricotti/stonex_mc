@@ -18,6 +18,7 @@ import gui.debug_ecu.Hydro_Lobby;
 import gui.gps.Nuovo_Gps;
 import gui.tech_menu.CanOpenTSM;
 import gui.tech_menu.Nuova_Machine_Settings;
+import hydro.Hydro_Activity_Entering;
 import utils.FullscreenActivity;
 import utils.MyData;
 
@@ -158,7 +159,7 @@ public class DialogPassword {
                     tmp = "";
                     dialog.dismiss();
                 } else if (whoCall==3) {
-                    activity.startActivity(new Intent(activity, Hydro_Lobby.class));
+                    activity.startActivity(new Intent(activity, Hydro_Activity_Entering.class));
                     activity.overridePendingTransition(0,0);
                     activity.finish();
                     tmp = "";
