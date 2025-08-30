@@ -24,13 +24,13 @@ public class StartActivityOnBootReceiver extends BroadcastReceiver {
                 throw new RuntimeException(e);
             }
 
-          /*  if (Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("APOLLO2_12_PRO")
+            if (Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("APOLLO2_12_PRO")
             ||Build.BRAND.equals("APOLLO2_12_PLUS")) {
 
                 Intent star = new Intent(context, LaunchScreenActivity.class);
                 star.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(star);
-            }*/
+            }
 
 
         }

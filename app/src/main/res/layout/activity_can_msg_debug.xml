@@ -19,9 +19,10 @@
         app:layout_constraintGuide_percent="0.88" />
     <TextView
         android:id="@+id/title"
-        android:text="HEX ID / MSG DECIMAL VALUES"
+        android:text="CAN 1"
+        android:textStyle="bold"
         android:gravity="center"
-        android:textSize="20sp"
+        android:textSize="28sp"
         android:textColor="@color/white"
         android:background="@drawable/custom_background_test3d_box"
         android:layout_width="match_parent"
@@ -76,7 +77,22 @@
         <CheckBox
             android:textSize="24sp"
             android:textStyle="bold"
-            android:text="EXTENDED FRAME"
+            android:text="EXT."
+            android:textColor="@color/white"
+            android:id="@+id/extendedFrame"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:buttonTint="@color/white"
+             />
+        <CheckBox
+            android:visibility="invisible"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="FIXED POS."
             android:textColor="@color/white"
             android:id="@+id/fixedPos"
             android:layout_width="wrap_content"
@@ -86,7 +102,7 @@
             android:layout_weight="1"
             android:padding="5dp"
             android:buttonTint="@color/white"
-             />
+            />
 
         <ImageView
             android:id="@+id/clearCan"

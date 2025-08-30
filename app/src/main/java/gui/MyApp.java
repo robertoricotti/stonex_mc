@@ -54,6 +54,7 @@ import gui.boot_and_choose.LaunchScreenActivity;
 import gui.buckets.BucketCalib;
 import gui.buckets.BucketCalibTilt;
 import gui.buckets.BucketChooserActivity;
+import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.DebugExcavatorActivity;
 import gui.debug_ecu.Hydraulic_Setup;
 import gui.dialogs_and_toast.SensorAlertDialog;
@@ -583,6 +584,9 @@ git push
 
         }else if (activity instanceof Hydro_Activity_Entering) {
             ((Hydro_Activity_Entering) activity).updateUI();
+
+        }else if (activity instanceof Can_Msg_Debug) {
+            ((Can_Msg_Debug) activity).updateUI();
 
         }
 
