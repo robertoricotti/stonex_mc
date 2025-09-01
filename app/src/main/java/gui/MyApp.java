@@ -88,6 +88,7 @@ import gui.tech_menu.StickCalib;
 import gui.tech_menu.TiltCalib;
 import gui.tech_menu.Tilt_Blade;
 import gui.tech_menu.XYZ_Calib;
+import hydro.CAT_SEA_Activity;
 import hydro.Hydro_Activity_Entering;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
@@ -587,6 +588,10 @@ git push
 
         }else if (activity instanceof Can_Msg_Debug) {
             ((Can_Msg_Debug) activity).updateUI();
+
+        }
+        else if (activity instanceof CAT_SEA_Activity) {
+            ((CAT_SEA_Activity) activity).updateUI();
 
         }
 

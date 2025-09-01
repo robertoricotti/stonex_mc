@@ -18,10 +18,29 @@ import dxf.Polyline;
 import dxf.Polyline_2D;
 import dxf.Segment;
 import gui.my_opengl.Point3DF;
+import utils.MyData;
 
 public class DataSaved {
     //settaggi idraulici
     public static int Interface_Type;
+
+
+    public static int minSpeedLeftUP;
+    public static int maxSpeedLeftUP;
+    public static int minSpeedLeftDW;
+    public static int maxSpeedLeftDW;
+
+    public static int minSpeedRightUP;
+    public static int maxSpeedRightUP;
+    public static int minSpeedRightDW;
+    public static int maxSpeedRightDW;
+
+    public static int minSpeedSS_A;
+    public static int maxSpeedSS_A;
+    public static int minSpeedSS_B;
+    public static int maxSpeedSS_B;
+
+    public static int CAT_Type;
 
 
     ///

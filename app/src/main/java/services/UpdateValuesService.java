@@ -95,18 +95,16 @@ public class UpdateValuesService extends Service {
                 }
 
 
-
-
                 for (int i = 1; i <= 4; i++) {
-                    String b = MyData.get_String("M" + i +"BucketSelected");
+                    String b = MyData.get_String("M" + i + "BucketSelected");
                     if (b == null) {
-                        MyData.push("M" + i +"BucketSelected", "1");
+                        MyData.push("M" + i + "BucketSelected", "1");
                         b = "1";
                     }
 
                     try {
-                        indexBucket = Integer.parseInt(MyData.get_String("M" + indexMach +"BucketSelected"));
-                        Log.e("DataSaved.L_Bucket", MyData.get_String("M" + indexMach +"BucketSelected")+"  "+indexBucket);
+                        indexBucket = Integer.parseInt(MyData.get_String("M" + indexMach + "BucketSelected"));
+                        Log.e("DataSaved.L_Bucket", MyData.get_String("M" + indexMach + "BucketSelected") + "  " + indexBucket);
                     } catch (NumberFormatException e) {
                         indexBucket = 1;
 
@@ -147,7 +145,6 @@ public class UpdateValuesService extends Service {
                     String swingLen = MyData.get_String("M" + i + "_Swing_Len");
 
 
-
                     String iswl = MyData.get_String("M" + i + "_isWL");
                     String enOUT = MyData.get_String("M" + i + "_enOUT");
                     String comPort = MyData.get_String("M" + i + "_comPort");
@@ -184,6 +181,20 @@ public class UpdateValuesService extends Service {
 
                     //TODO SETTAGGI IDRAULICI
                     String Interface_Type = MyData.get_String("M" + i + "Interface_Type");
+                    String minSpeedLeftUP = MyData.get_String("M" + i + "minSpeedLeftUP");
+                    String maxSpeedLeftUP = MyData.get_String("M" + i + "maxSpeedLeftUP");
+                    String minSpeedLeftDW = MyData.get_String("M" + i + "minSpeedLeftDW");
+                    String maxSpeedLeftDW = MyData.get_String("M" + i + "maxSpeedLeftDW");
+
+                    String minSpeedRightUP = MyData.get_String("M" + i + "minSpeedRightUP");
+                    String maxSpeedRightUP = MyData.get_String("M" + i + "maxSpeedRightUP");
+                    String minSpeedRightDW = MyData.get_String("M" + i + "minSpeedRightDW");
+                    String maxSpeedRightDW = MyData.get_String("M" + i + "maxSpeedRightDW");
+                    String minSpeedSS_A = MyData.get_String("M" + i + "minSpeedSS_A");
+                    String maxSpeedSS_A = MyData.get_String("M" + i + "maxSpeedSS_A");
+                    String minSpeedSS_B = MyData.get_String("M" + i + "minSpeedSS_B");
+                    String maxSpeedSS_B = MyData.get_String("M" + i + "maxSpeedSS_B");
+                    String CAT_Type = MyData.get_String("M" + i + "CAT_Type");
 
 
                     if (nameM == null) {
@@ -305,7 +316,6 @@ public class UpdateValuesService extends Service {
                     }
 
 
-
                     if (iswl == null) {
                         if (i == 1 || i == 2) {
                             MyData.push("M" + i + "_isWL", "0");
@@ -417,12 +427,62 @@ public class UpdateValuesService extends Service {
                         MyData.push("M" + i + "usuraLamaDX", "0.1");
 
                     }
-                    if(Extra_Heading==null){
-                        MyData.push("M"+i+"Extra_Heading","0");
+                    if (Extra_Heading == null) {
+                        MyData.push("M" + i + "Extra_Heading", "0");
                     }
                     if (Interface_Type == null) {
                         MyData.push("M" + i + "Interface_Type", "0");
                     }
+                    ///
+
+
+                    if (minSpeedLeftUP == null) {
+                        MyData.push("M" + i + "minSpeedLeftUP", "0");
+                    }
+                    if (maxSpeedLeftUP == null) {
+                        MyData.push("M" + i + "maxSpeedLeftUP", "0");
+                    }
+                    if (minSpeedLeftDW == null) {
+                        MyData.push("M" + i + "minSpeedLeftDW", "0");
+                    }
+                    if (maxSpeedLeftDW == null) {
+                        MyData.push("M" + i + "maxSpeedLeftDW", "0");
+                    }
+
+
+                    if (minSpeedRightUP == null) {
+                        MyData.push("M" + i + "minSpeedRightUP", "0");
+                    }
+                    if (maxSpeedRightUP == null) {
+                        MyData.push("M" + i + "maxSpeedRightUP", "0");
+                    }
+                    if (minSpeedRightDW == null) {
+                        MyData.push("M" + i + "minSpeedRightDW", "0");
+                    }
+                    if (maxSpeedRightDW == null) {
+                        MyData.push("M" + i + "maxSpeedRightDW", "0");
+                    }
+
+
+                    if (minSpeedSS_A == null) {
+                        MyData.push("M" + i + "minSpeedSS_A", "0");
+                    }
+                    if (maxSpeedSS_A == null) {
+                        MyData.push("M" + i + "maxSpeedSS_A", "0");
+                    }
+                    if (minSpeedSS_B == null) {
+                        MyData.push("M" + i + "minSpeedSS_B", "0");
+                    }
+                    if (maxSpeedSS_B == null) {
+                        MyData.push("M" + i + "maxSpeedSS_B", "0");
+                    }
+
+                    if (CAT_Type == null) {
+                        MyData.push("M" + i + "CAT_Type", "0");
+                    }
+
+
+                    ///
                 }
 
                 for (int i = 1; i <= 4; i++) {
@@ -573,10 +633,10 @@ public class UpdateValuesService extends Service {
                 String gradientDB = MyData.get_String("gradientDB");
                 String showAlign = MyData.get_String("showAlign");
                 String line_Offset = MyData.get_String("line_Offset");
-                String ckSchermo=MyData.get_String("ckSchermo");
-                String drwaMachieSchema=MyData.get_String("drwaMachieSchema");
-                String geoidPath=MyData.get_String("geoidPath");
-                String lock3dRotation=MyData.get_String("lock3dRotation");
+                String ckSchermo = MyData.get_String("ckSchermo");
+                String drwaMachieSchema = MyData.get_String("drwaMachieSchema");
+                String geoidPath = MyData.get_String("geoidPath");
+                String lock3dRotation = MyData.get_String("lock3dRotation");
 
                 if (!startedService) {
                     if (licenza == null) {
@@ -766,16 +826,16 @@ public class UpdateValuesService extends Service {
                     if (line_Offset == null) {
                         MyData.push("line_Offset", "0.0");
                     }
-                    if(ckSchermo==null){
-                        MyData.push("ckSchermo","0");
+                    if (ckSchermo == null) {
+                        MyData.push("ckSchermo", "0");
 
                     }
-                    if(drwaMachieSchema==null){
-                        MyData.push("drwaMachieSchema","0");
+                    if (drwaMachieSchema == null) {
+                        MyData.push("drwaMachieSchema", "0");
 
                     }
-                    if(geoidPath==null){
-                        MyData.push("geoidPath","");
+                    if (geoidPath == null) {
+                        MyData.push("geoidPath", "");
 
                     }
                     if (lock3dRotation == null) {
@@ -840,7 +900,6 @@ public class UpdateValuesService extends Service {
                 if (progettoselectedPOINT == null) {
                     MyData.push("progettoSelected_POINT", "");
                 }
-
 
 
                 try {
@@ -1147,6 +1206,77 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di Interface_Type: " + e.getMessage());
                 }
 
+                try {
+                    DataSaved.minSpeedLeftUP = MyData.get_Int("M" + indexMach + "minSpeedLeftUP");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di minSpeedLeftUP: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.maxSpeedLeftUP = MyData.get_Int("M" + indexMach + "maxSpeedLeftUP");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di maxSpeedLeftUP: " + e.getMessage());
+                }
+                try {
+                    DataSaved.minSpeedLeftDW = MyData.get_Int("M" + indexMach + "minSpeedLeftDW");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di minSpeedLeftDW: " + e.getMessage());
+                }
+                try {
+                    DataSaved.maxSpeedLeftDW = MyData.get_Int("M" + indexMach + "maxSpeedLeftDW");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di maxSpeedLeftDW: " + e.getMessage());
+                }
+
+
+                try {
+                    DataSaved.minSpeedRightUP = MyData.get_Int("M" + indexMach + "minSpeedRightUP");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di minSpeedRightUP: " + e.getMessage());
+                }
+                try {
+                    DataSaved.maxSpeedRightUP = MyData.get_Int("M" + indexMach + "maxSpeedRightUP");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di maxSpeedRightUP: " + e.getMessage());
+                }
+                try {
+                    DataSaved.minSpeedRightDW = MyData.get_Int("M" + indexMach + "minSpeedRightDW");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di minSpeedRightDW: " + e.getMessage());
+                }
+                try {
+                    DataSaved.maxSpeedRightDW = MyData.get_Int("M" + indexMach + "maxSpeedRightDW");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di maxSpeedRightDW: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.minSpeedSS_A = MyData.get_Int("M" + indexMach + "minSpeedSS_A");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di minSpeedSS_A: " + e.getMessage());
+                }
+                try {
+                    DataSaved.maxSpeedSS_A = MyData.get_Int("M" + indexMach + "maxSpeedSS_A");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di maxSpeedSS_A: " + e.getMessage());
+                }
+                try {
+                    DataSaved.minSpeedSS_B = MyData.get_Int("M" + indexMach + "minSpeedSS_B");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di minSpeedSS_B: " + e.getMessage());
+                }
+                try {
+                    DataSaved.maxSpeedSS_B = MyData.get_Int("M" + indexMach + "maxSpeedSS_B");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di maxSpeedSS_B: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.CAT_Type = MyData.get_Int("M" + indexMach + "CAT_Type");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di CAT_Type: " + e.getMessage());
+                }
+
                 ////end draw
 
                 try {
@@ -1245,7 +1375,6 @@ public class UpdateValuesService extends Service {
                 }
 
 
-
                 try {
                     DataSaved.deltaX = MyData.get_Double("M" + indexMach + "_OffsetGPSX");
                 } catch (Exception e) {
@@ -1297,7 +1426,6 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di useQuickSwitch: " + e.getMessage());
                 }
-
 
 
                 try {
