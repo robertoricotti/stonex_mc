@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     tools:context="gui.debug_ecu.Can_Msg_Debug">
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topla"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_percent="0.08" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/lowerGuide"
@@ -26,7 +27,8 @@
         android:textColor="@color/white"
         android:background="@drawable/custom_background_test3d_box"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/topla"
         app:layout_constraintTop_toTopOf="parent"/>
     <LinearLayout
         android:layout_width="0dp"
@@ -89,7 +91,6 @@
             android:buttonTint="@color/white"
              />
         <CheckBox
-            android:visibility="invisible"
             android:textSize="24sp"
             android:textStyle="bold"
             android:text="FIXED POS."

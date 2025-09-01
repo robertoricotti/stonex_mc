@@ -23,7 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import drill_pile.gui.Drill_MainPage;
 import event_bus.CanEvents;
@@ -40,7 +42,8 @@ public class Can_Msg_Debug extends AppCompatActivity {
     private boolean b_playC = false;
     CheckBox extended, fixedP;
     String chi = "";
-
+    private boolean lastFixedMode = false;
+    private Map<Integer, Integer> idPositionMap = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +78,7 @@ public class Can_Msg_Debug extends AppCompatActivity {
         } else {
             title.setBackgroundColor(getResources().getColor(R.color.blue));
         }
+
     }
 
 
@@ -105,14 +109,26 @@ public class Can_Msg_Debug extends AppCompatActivity {
             updateC();
         });
         clear.setOnClickListener(view -> {
-            clearListC();
-            updateC();
+            if(fixedP.isChecked()){
+                clearFixedList();
+            }else {
+                clearListC();
+            }
+
         });
         extended.setOnClickListener(view -> {
-            clearListC();
+            if(fixedP.isChecked()){
+                clearFixedList();
+            }else {
+                clearListC();
+            }
         });
         fixedP.setOnClickListener(view -> {
-            clearListC();
+            if(fixedP.isChecked()){
+                clearFixedList();
+            }else {
+                clearListC();
+            }
         });
         title.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(Can_Msg_Debug.this);
@@ -138,73 +154,152 @@ public class Can_Msg_Debug extends AppCompatActivity {
 
 
     }
-
-
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     public void CanEvents(CanEvents canEvents) {
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss.SS", Locale.getDefault());
         String currentTimeString = timeFormat.format(new Date());
+        boolean fixed = fixedP.isChecked();
 
-        if (Can_Nr == 1) {
-            if (b_playC && canEvents.channel == 1) {
-
-                if (extended.isChecked()) {
-                    if (canEvents.id > 2047 || canEvents.id < 0) {
-
-                        itemListC.add(currentTimeString + "  CAN_" + canEvents.channel + "    " + canEvents.candata);
-                        adapterC.notifyDataSetChanged();
-                        listViewC.smoothScrollToPosition(itemListC.size() - 1);
-                        listViewC.setSelection(itemListC.size() - 1);
-                        if (adapterC.getCount() > 500) {
-                            clearListC();
-                        }
-                    }
-                } else {
-                    if (canEvents.id <= 2047) {
-                        itemListC.add(currentTimeString + "  CAN_" + canEvents.channel + "    " + canEvents.candata);
-                        adapterC.notifyDataSetChanged();
-                        listViewC.smoothScrollToPosition(itemListC.size() - 1);
-                        listViewC.setSelection(itemListC.size() - 1);
-                        if (adapterC.getCount() > 500) {
-                            clearListC();
-                        }
-                    }
-                }
-            }
-        } else if (Can_Nr == 2) {
-            if (b_playC && canEvents.channel == 2) {
-
-                if (extended.isChecked()) {
-                    if (canEvents.id > 2047 || canEvents.id < 0) {
-
-                        itemListC.add(currentTimeString + "  CAN_" + canEvents.channel + "    " + canEvents.candata);
-                        adapterC.notifyDataSetChanged();
-                        listViewC.smoothScrollToPosition(itemListC.size() - 1);
-                        listViewC.setSelection(itemListC.size() - 1);
-                        if (adapterC.getCount() > 500) {
-                            clearListC();
-                        }
-                    }
-                } else {
-                    if (canEvents.id <= 2047) {
-                        itemListC.add(currentTimeString + "  CAN_" + canEvents.channel + "    " + canEvents.candata);
-                        adapterC.notifyDataSetChanged();
-                        listViewC.smoothScrollToPosition(itemListC.size() - 1);
-                        listViewC.setSelection(itemListC.size() - 1);
-                        if (adapterC.getCount() > 500) {
-                            clearListC();
-                        }
-                    }
-                }
-            }
+        // se cambia modalità → reset lista e mappa
+        if (fixed != lastFixedMode) {
+            itemListC.clear();
+            idPositionMap.clear();
+            adapterC.notifyDataSetChanged();
+            lastFixedMode = fixed;
         }
 
+        if ((Can_Nr == 1 && b_playC && canEvents.channel == 1) ||
+                (Can_Nr == 2 && b_playC && canEvents.channel == 2)) {
+
+            boolean isExtended = extended.isChecked();
+            boolean validId = (isExtended && (canEvents.id > 2047 || canEvents.id < 0)) ||
+                    (!isExtended && canEvents.id <= 2047);
+
+            if (validId) {
+                String newEntry = currentTimeString + "  CAN_" + canEvents.channel +
+                        "  ID:0x" + String.format("%X", canEvents.id) +"  ["+canEvents.dlc+"]"+
+                        "  " + bytesToHex(canEvents.msg);
+
+                if (fixed) {
+                    if (idPositionMap.containsKey(canEvents.id)) {
+                        // ID già esistente → aggiorna riga
+                        int pos = idPositionMap.get(canEvents.id);
+                        itemListC.set(pos, newEntry);
+                    } else {
+                        // nuovo ID → inserimento ordinato
+                        int insertPos = 0;
+                        for (Integer existingId : idPositionMap.keySet()) {
+                            if (canEvents.id > existingId) {
+                                insertPos = idPositionMap.get(existingId) + 1;
+                            }
+                        }
+                        itemListC.add(insertPos, newEntry);
+
+                        // aggiorna la mappa con tutti gli indici
+                        Map<Integer, Integer> newMap = new HashMap<>();
+                        int index = 0;
+                        for (String item : itemListC) {
+                            String[] parts = item.split("ID:0x");
+                            if (parts.length > 1) {
+                                String hexId = parts[1].split(" ")[0];
+                                int parsedId = Integer.parseInt(hexId, 16);
+                                newMap.put(parsedId, index);
+                            }
+                            index++;
+                        }
+                        idPositionMap = newMap;
+                    }
+                } else {
+                    // modalità normale → append
+                    itemListC.add(newEntry);
+
+                    if (adapterC.getCount() > 500) {
+                        clearListC();
+                        idPositionMap.clear();
+                    }
+
+                    listViewC.smoothScrollToPosition(itemListC.size() - 1);
+                    listViewC.setSelection(itemListC.size() - 1);
+                }
+
+                adapterC.notifyDataSetChanged();
+            }
+        }
+    }
+/*
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    public void CanEvents(CanEvents canEvents) {
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss.SS", Locale.getDefault());
+        String currentTimeString = timeFormat.format(new Date());
+        boolean fixed = fixedP.isChecked(); // se true → posizione fissa per ogni ID
+
+        // se cambia modalità → reset lista e mappa
+        if (fixed != lastFixedMode) {
+            itemListC.clear();
+            idPositionMap.clear();
+            adapterC.notifyDataSetChanged();
+            lastFixedMode = fixed;
+        }
+
+        if ((Can_Nr == 1 && b_playC && canEvents.channel == 1) ||
+                (Can_Nr == 2 && b_playC && canEvents.channel == 2)) {
+
+            boolean isExtended = extended.isChecked();
+            boolean validId = (isExtended && (canEvents.id > 2047 || canEvents.id < 0)) ||
+                    (!isExtended && canEvents.id <= 2047);
+
+            if (validId) {
+                String newEntry = currentTimeString + "  CAN_" + canEvents.channel +
+                        "  ID:0x" + String.format("%X", canEvents.id) +"  ["+canEvents.msg.length+"]"+
+                        "  " + bytesToHex(canEvents.msg);
+
+                if (fixed) {
+                    // aggiornamento in posizione fissa
+                    if (idPositionMap.containsKey(canEvents.id)) {
+                        int pos = idPositionMap.get(canEvents.id);
+                        itemListC.set(pos, newEntry);
+                    } else {
+                        // nuovo ID → aggiunta riga dedicata
+                        itemListC.add(newEntry);
+                        int pos = itemListC.size() - 1;
+                        idPositionMap.put(canEvents.id, pos);
+                    }
+                } else {
+                    // modalità normale → append
+                    itemListC.add(newEntry);
+
+                    if (adapterC.getCount() > 500) {
+                        clearListC();
+                        idPositionMap.clear(); // reset anche la mappa
+                    }
+
+                    listViewC.smoothScrollToPosition(itemListC.size() - 1);
+                    listViewC.setSelection(itemListC.size() - 1);
+                }
+
+                adapterC.notifyDataSetChanged();
+            }
+        }
+    }
+*/
+    private String bytesToHex(byte[] data) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : data) {
+            sb.append(String.format("%02X ", b));  // %02X = due cifre esadecimali maiuscole
+        }
+        return sb.toString().trim();
     }
 
 
 
     public void clearListC() {
         adapterC.clear();
+
+    }
+    private void clearFixedList() {
+        itemListC.clear();
+        idPositionMap.clear();
+        adapterC.notifyDataSetChanged();
     }
 
     private void updateC() {

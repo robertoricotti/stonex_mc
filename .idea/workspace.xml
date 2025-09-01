@@ -270,11 +270,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="inizio nuovo menu idraulico">
-      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/utils/AutoManToggle.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/danfoss/Dozer_Simul.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/danfoss/Dozer_Simul.p1m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/danfoss/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/danfoss/MC024_130_nl_T.scs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/danfoss/ProjectParameters.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/danfoss/ProjectParameters.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/event_bus/CanEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/event_bus/CanEvents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Can_Msg_Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Can_Msg_Debug.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_can_msg_debug.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_can_msg_debug.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -284,7 +286,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -825,7 +827,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756572769951</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="inizio nuovo menu idraulico">
+      <option name="closed" value="true" />
+      <created>1756724043206</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1756724043206</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -882,12 +892,12 @@
         </entry>
         <entry key="com.example.stx_mc">
           <value>
-            <CheckInfo lastCheckTimestamp="1756560681964" />
+            <CheckInfo lastCheckTimestamp="1756732916456" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1756560681964" />
+            <CheckInfo lastCheckTimestamp="1756732916456" />
           </value>
         </entry>
       </map>
