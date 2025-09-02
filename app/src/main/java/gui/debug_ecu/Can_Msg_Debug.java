@@ -209,20 +209,23 @@ public class Can_Msg_Debug extends AppCompatActivity {
                         }
                         idPositionMap = newMap;
                     }
+                    adapterC.notifyDataSetChanged();
                 } else {
                     // modalità normale → append
                     itemListC.add(newEntry);
+                    adapterC.notifyDataSetChanged();
+                    listViewC.setSelection(itemListC.size() - 1);
+                    listViewC.smoothScrollToPosition(itemListC.size() - 1);
 
                     if (adapterC.getCount() > 500) {
                         clearListC();
                         idPositionMap.clear();
                     }
 
-                    listViewC.smoothScrollToPosition(itemListC.size() - 1);
-                    listViewC.setSelection(itemListC.size() - 1);
+
                 }
 
-                adapterC.notifyDataSetChanged();
+
             }
         }
     }
