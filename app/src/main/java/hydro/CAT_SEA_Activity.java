@@ -1,7 +1,20 @@
 package hydro;
 
-import static packexcalib.exca.DataSaved.*;
+import static packexcalib.exca.DataSaved.CAT_Type;
+import static packexcalib.exca.DataSaved.maxSpeedLeftDW;
+import static packexcalib.exca.DataSaved.maxSpeedLeftUP;
+import static packexcalib.exca.DataSaved.maxSpeedRightDW;
+import static packexcalib.exca.DataSaved.maxSpeedRightUP;
+import static packexcalib.exca.DataSaved.maxSpeedSS_A;
+import static packexcalib.exca.DataSaved.maxSpeedSS_B;
+import static packexcalib.exca.DataSaved.minSpeedLeftDW;
+import static packexcalib.exca.DataSaved.minSpeedLeftUP;
+import static packexcalib.exca.DataSaved.minSpeedRightDW;
+import static packexcalib.exca.DataSaved.minSpeedRightUP;
+import static packexcalib.exca.DataSaved.minSpeedSS_A;
+import static packexcalib.exca.DataSaved.minSpeedSS_B;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,23 +28,37 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
+
+import services.CanService;
 import utils.MyData;
+import utils.MyDeviceManager;
+import utils.UnitsConversion;
+import utils.Utils;
 
 public class CAT_SEA_Activity extends AppCompatActivity {
+    Handler sendHandler = new Handler();
+    Runnable sendRunnable;
     Handler handler = new Handler();
     Runnable repeater;
     int voceMenu, indexMachine;
-    ImageView back, menuP, menuM,valM,valP;
-    TextView testValve, testo, funzione,tipo;
+    ImageView back, menuP, menuM, valM, valP;
+    TextView testValve, testo, funzione, tipo,pagina;
     int maxMenu;
     EditText valore;
+    byte leftDir = (byte) 0xF2;
+    byte rightDir = (byte) 0xF2;
+    byte ssDir = (byte) 0xF2;
+    byte valueLEFT = 0;
+    byte valueRIGHT = 0;
+    byte valueSS = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cat_sea);
-        maxMenu = 12;
+        CanService.CAT_Joystick="NOT CONNECTED";
+        maxMenu = 13;
         findView();
         onClick();
         updateUI();
@@ -41,6 +68,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
         } catch (Exception e) {
             indexMachine = 0;
         }
+        sendMsg();
 
     }
 
@@ -51,22 +79,109 @@ public class CAT_SEA_Activity extends AppCompatActivity {
         testValve = findViewById(R.id.test);
         funzione = findViewById(R.id.funzione);
         testo = findViewById(R.id.testo);
-        tipo=findViewById(R.id.txtTipo);
-        valore=findViewById(R.id.valore);
-        valM=findViewById(R.id.val_M);
-        valP=findViewById(R.id.val_P);
+        tipo = findViewById(R.id.txtTipo);
+        valore = findViewById(R.id.valore);
+        valM = findViewById(R.id.val_M);
+        valP = findViewById(R.id.val_P);
+        pagina=findViewById(R.id.pagina);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void onClick() {
         testValve.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    v.setBackgroundColor(Color.TRANSPARENT); // trasparente quando premuto
-                    break;
+                    testValve.setAlpha(0.1f);
+                    switch (voceMenu){
+                        case 0:
+                            valueLEFT= (byte) UnitsConversion.limitInt(minSpeedLeftUP,0,255);
+                            valueRIGHT=0;
+                            valueSS=0;
+                            leftDir= (byte) 0xF2;
+                            break;
+                        case 1:
+                            valueLEFT= (byte) UnitsConversion.limitInt(maxSpeedLeftUP,0,255);
+                            valueRIGHT=0;
+                            valueSS=0;
+                            leftDir= (byte) 0xF2;
+                            break;
+                        case 2:
+                            valueLEFT= (byte) UnitsConversion.limitInt(minSpeedLeftDW,0,255);
+                            valueRIGHT=0;
+                            valueSS=0;
+                            leftDir= (byte) 0xF1;
+                            break;
+                        case 3:
+                            valueLEFT= (byte) UnitsConversion.limitInt(maxSpeedLeftDW,0,255);
+                            valueRIGHT=0;
+                            valueSS=0;
+                            leftDir= (byte) 0xF1;
+                            break;
+
+                        case 4:
+                            valueRIGHT= (byte) UnitsConversion.limitInt(minSpeedRightUP,0,255);
+                            valueLEFT=0;
+                            valueSS=0;
+                            rightDir= (byte) 0xF2;
+                            break;
+                        case 5:
+                            valueRIGHT= (byte) UnitsConversion.limitInt(maxSpeedRightUP,0,255);
+                            valueLEFT=0;
+                            valueSS=0;
+                            rightDir= (byte) 0xF2;
+                            break;
+                        case 6:
+                            valueRIGHT= (byte) UnitsConversion.limitInt(minSpeedRightDW,0,255);
+                            valueLEFT=0;
+                            valueSS=0;
+                            rightDir= (byte) 0xF1;
+                            break;
+                        case 7:
+                            valueRIGHT= (byte) UnitsConversion.limitInt(maxSpeedRightDW,0,255);
+                            valueLEFT=0;
+                            valueSS=0;
+                            rightDir= (byte) 0xF1;
+                            break;
+
+                        case 8:
+                            valueSS= (byte) UnitsConversion.limitInt(minSpeedSS_A,0,255);
+                            valueLEFT=0;
+                            valueRIGHT=0;
+                            ssDir= (byte) 0xF1;
+                            break;
+                        case 9:
+                            valueSS= (byte) UnitsConversion.limitInt(maxSpeedSS_A,0,255);
+                            valueLEFT=0;
+                            valueRIGHT=0;
+                            ssDir= (byte) 0xF1;
+                            break;
+                        case 10:
+                            valueSS= (byte) UnitsConversion.limitInt(minSpeedSS_B,0,255);
+                            valueLEFT=0;
+                            valueRIGHT=0;
+                            ssDir= (byte) 0xF2;
+                            break;
+                        case 11:
+                            valueSS= (byte) UnitsConversion.limitInt(maxSpeedSS_B,0,255);
+                            valueLEFT=0;
+                            valueRIGHT=0;
+                            ssDir= (byte) 0xF2;
+                            break;
+
+
+
+
+                    }
+                    return true;
                 case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    v.setBackgroundResource(R.drawable.sfondo_bottone_selezionato); // ripristina
-                    break;
+                    testValve.setAlpha(1.0f);
+                    leftDir= (byte) 0xF2;
+                    rightDir= (byte) 0xF2;
+                    ssDir= (byte) 0xF2;
+                    valueLEFT=0;
+                    valueRIGHT=0;
+                    valueSS=0;
+                    return true;
             }
             return false; // permette comunque al click di propagare
         });
@@ -85,72 +200,72 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                         }
                     };
                     handler.postDelayed(repeater, 1000); // primo repeat dopo 1000ms
-                    break;
+                    return false;
 
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     // interrompi il loop
                     handler.removeCallbacks(repeater);
-                    break;
+                    return false;
             }
-            return true; // consumiamo l'evento
+            return false; // consumiamo l'evento
         });
 
 
         valM.setOnClickListener(view -> {
             switch (voceMenu) {
                 case 0:
-                    if(minSpeedLeftUP>0)
+                    if (minSpeedLeftUP > 0)
                         minSpeedLeftUP--;
                     break;
                 case 1:
-                    if(maxSpeedLeftUP>0)
+                    if (maxSpeedLeftUP > 0)
                         maxSpeedLeftUP--;
                     break;
                 case 2:
-                    if(minSpeedLeftDW>0)
+                    if (minSpeedLeftDW > 0)
                         minSpeedLeftDW--;
                     break;
                 case 3:
-                    if(maxSpeedLeftDW>0)
+                    if (maxSpeedLeftDW > 0)
                         maxSpeedLeftDW--;
                     break;
                 case 4:
-                    if(minSpeedRightUP>0)
+                    if (minSpeedRightUP > 0)
                         minSpeedRightUP--;
                     break;
                 case 5:
-                    if(maxSpeedRightUP>0)
+                    if (maxSpeedRightUP > 0)
                         maxSpeedRightUP--;
                     break;
                 case 6:
-                    if(minSpeedRightDW>0)
+                    if (minSpeedRightDW > 0)
                         minSpeedRightDW--;
                     break;
                 case 7:
-                    if(maxSpeedRightDW>0)
+                    if (maxSpeedRightDW > 0)
                         maxSpeedRightDW--;
                     break;
                 case 8:
-                    if(minSpeedSS_A>0)
+                    if (minSpeedSS_A > 0)
                         minSpeedSS_A--;
                     break;
                 case 9:
-                    if(maxSpeedSS_A>0)
+                    if (maxSpeedSS_A > 0)
                         maxSpeedSS_A--;
                     break;
                 case 10:
-                    if(minSpeedSS_B>0)
+                    if (minSpeedSS_B > 0)
                         minSpeedSS_B--;
                     break;
                 case 11:
-                    if(maxSpeedSS_B>0)
+                    if (maxSpeedSS_B > 0)
                         maxSpeedSS_B--;
                     break;
                 case 12:
                     CAT_Type--;
-                    CAT_Type=Math.abs(CAT_Type)%3;
-                    MyData.push("CAT_Type",String.valueOf(CAT_Type));
+                    CAT_Type = Math.abs(CAT_Type) % 3;
+                    MyData.push("CAT_Type", String.valueOf(CAT_Type));
                     break;
                 default:
                     break;
@@ -173,70 +288,70 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                         }
                     };
                     handler.postDelayed(repeater, 1000); // primo repeat dopo 1000ms
-                    break;
+                    return false;
 
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     // interrompi il loop
                     handler.removeCallbacks(repeater);
-                    break;
+                    return false;
             }
-            return true; // consumiamo l'evento
+            return false; // consumiamo l'evento
         });
         valP.setOnClickListener(view -> {
             switch (voceMenu) {
                 case 0:
-                    if(minSpeedLeftUP<255)
+                    if (minSpeedLeftUP < 255)
                         minSpeedLeftUP++;
                     break;
                 case 1:
-                    if(maxSpeedLeftUP<255)
+                    if (maxSpeedLeftUP < 255)
                         maxSpeedLeftUP++;
                     break;
                 case 2:
-                    if(minSpeedLeftDW<255)
+                    if (minSpeedLeftDW < 255)
                         minSpeedLeftDW++;
                     break;
                 case 3:
-                    if(maxSpeedLeftDW<255)
+                    if (maxSpeedLeftDW < 255)
                         maxSpeedLeftDW++;
                     break;
                 case 4:
-                    if(minSpeedRightUP<255)
+                    if (minSpeedRightUP < 255)
                         minSpeedRightUP++;
                     break;
                 case 5:
-                    if(maxSpeedRightUP<255)
+                    if (maxSpeedRightUP < 255)
                         maxSpeedRightUP++;
                     break;
                 case 6:
-                    if(minSpeedRightDW<255)
+                    if (minSpeedRightDW < 255)
                         minSpeedRightDW++;
                     break;
                 case 7:
-                    if(maxSpeedRightDW<255)
+                    if (maxSpeedRightDW < 255)
                         maxSpeedRightDW++;
                     break;
                 case 8:
-                    if(minSpeedSS_A<255)
+                    if (minSpeedSS_A < 255)
                         minSpeedSS_A++;
                     break;
                 case 9:
-                    if(maxSpeedSS_A<255)
+                    if (maxSpeedSS_A < 255)
                         maxSpeedSS_A++;
                     break;
                 case 10:
-                    if(minSpeedSS_B<255)
+                    if (minSpeedSS_B < 255)
                         minSpeedSS_B++;
                     break;
                 case 11:
-                    if(maxSpeedSS_B<255)
+                    if (maxSpeedSS_B < 255)
                         maxSpeedSS_B++;
                     break;
                 case 12:
                     CAT_Type++;
-                    CAT_Type=Math.abs(CAT_Type)%3;
-                    MyData.push("CAT_Type",String.valueOf(CAT_Type));
+                    CAT_Type = Math.abs(CAT_Type) % 3;
+                    MyData.push("CAT_Type", String.valueOf(CAT_Type));
                     break;
                 default:
                     break;
@@ -247,9 +362,10 @@ public class CAT_SEA_Activity extends AppCompatActivity {
         menuM.setOnClickListener(view -> {
             if (voceMenu > 0) {
                 voceMenu--;
-                voceMenu = Math.abs(voceMenu) % maxMenu;
+            } else {
+                voceMenu = maxMenu - 1;
             }
-
+            voceMenu = Math.abs(voceMenu) % maxMenu;
 
         });
         menuP.setOnClickListener(view -> {
@@ -259,8 +375,8 @@ public class CAT_SEA_Activity extends AppCompatActivity {
         });
         tipo.setOnClickListener(view -> {
             CAT_Type++;
-            CAT_Type=Math.abs(CAT_Type)%3;
-            MyData.push("CAT_Type",String.valueOf(CAT_Type));
+            CAT_Type = Math.abs(CAT_Type) % 3;
+            MyData.push("CAT_Type", String.valueOf(CAT_Type));
         });
         back.setOnClickListener(view -> {
             android.app.AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -268,6 +384,19 @@ public class CAT_SEA_Activity extends AppCompatActivity {
             // Aggiungi il pulsante "Sì"
             builder.setPositiveButton("YES", (dialog, which) -> {
                 back.setEnabled(false);
+                sendHandler.removeCallbacks(sendRunnable);
+                MyData.push("M" + indexMachine + "minSpeedLeftUP", String.valueOf(minSpeedLeftUP));
+                MyData.push("M" + indexMachine + "maxSpeedLeftUP", String.valueOf(maxSpeedLeftUP));
+                MyData.push("M" + indexMachine + "minSpeedLeftDW", String.valueOf(minSpeedLeftDW));
+                MyData.push("M" + indexMachine + "maxSpeedLeftDW", String.valueOf(maxSpeedLeftDW));
+                MyData.push("M" + indexMachine + "minSpeedRightUP", String.valueOf(minSpeedRightUP));
+                MyData.push("M" + indexMachine+ "maxSpeedRightUP", String.valueOf(maxSpeedRightUP));
+                MyData.push("M" + indexMachine + "minSpeedRightDW", String.valueOf(minSpeedRightDW));
+                MyData.push("M" + indexMachine + "maxSpeedRightDW", String.valueOf(maxSpeedRightDW));
+                MyData.push("M" + indexMachine + "minSpeedSS_A", String.valueOf(minSpeedSS_A));
+                MyData.push("M" + indexMachine + "maxSpeedSS_A", String.valueOf(maxSpeedSS_A));
+                MyData.push("M" + indexMachine + "minSpeedSS_B", String.valueOf(minSpeedSS_B));
+                MyData.push("M" + indexMachine + "maxSpeedSS_B", String.valueOf(maxSpeedSS_B));
                 startActivity(new Intent(CAT_SEA_Activity.this, Hydro_Activity_Entering.class));
                 finish();
             });
@@ -283,7 +412,8 @@ public class CAT_SEA_Activity extends AppCompatActivity {
     }
 
     public void updateUI() {
-        switch (CAT_Type){
+        pagina.setText((voceMenu+1)+" / "+(maxMenu));
+        switch (CAT_Type) {
             case 0:
                 tipo.setText("CAT K - N Series");
                 break;
@@ -299,6 +429,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
         switch (voceMenu) {
             case 0:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedLeftUP));
                 funzione.setTextColor(Color.BLUE);
                 funzione.setText("LEFT MIN SPEED UP");
                 testo.setText("LEFT RISE Minimum Hydraulic Speed\n" +
@@ -310,6 +441,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 1:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedLeftUP));
                 funzione.setTextColor(Color.RED);
                 funzione.setText("LEFT MAX SPEED UP");
                 testo.setText("LEFT RISE MAX Hydraulic Speed\n" +
@@ -322,6 +454,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 2:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedLeftDW));
                 funzione.setTextColor(Color.BLUE);
                 funzione.setText("LEFT MIN SPEED DOWN");
                 testo.setText("LEFT LOWER Minimum Hydraulic Speed\n" +
@@ -332,6 +465,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 break;
             case 3:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedLeftDW));
                 funzione.setTextColor(Color.RED);
                 funzione.setText("LEFT MAX SPEED DOWN");
                 testo.setText("LEFT LOWER MAX Hydraulic Speed\n" +
@@ -343,6 +477,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 4:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedRightUP));
                 funzione.setTextColor(Color.BLUE);
                 funzione.setText("RIGHT MIN SPEED UP");
                 testo.setText("RIGHT RISE Minimum Hydraulic Speed\n" +
@@ -354,6 +489,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 5:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedRightUP));
                 funzione.setTextColor(Color.RED);
                 funzione.setText("RIGHT MAX SPEED UP");
                 testo.setText("RIGHT RISE MAX Hydraulic Speed\n" +
@@ -364,6 +500,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 6:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedRightDW));
                 funzione.setTextColor(Color.BLUE);
                 funzione.setText("RIGHT MIN SPEED DOWN");
                 testo.setText("RIGHT LOWER Minimum Hydraulic Speed\n" +
@@ -374,6 +511,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 7:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedRightDW));
                 funzione.setTextColor(Color.RED);
                 funzione.setText("RIGHT MAX SPEED DOWN");
                 testo.setText("RIGHT LOWER MAX Hydraulic Speed\n" +
@@ -384,6 +522,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 8:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedSS_A));
                 funzione.setTextColor(Color.BLUE);
                 funzione.setText("BLADE SIDESHIFT MIN SPEED LEFT");
                 testo.setText("SIDESHIFT LEFT Minimum Hydraulic Speed\n" +
@@ -395,6 +534,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 9:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedSS_A));
                 funzione.setTextColor(Color.RED);
                 funzione.setText("BLADE SIDESHIFT MAX SPEED LEFT");
                 testo.setText("SIDESHIFT LEFT MAX Hydraulic Speed\n" +
@@ -405,6 +545,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 10:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedSS_B));
                 funzione.setTextColor(Color.BLUE);
                 funzione.setText("BLADE SIDESHIFT MIN SPEED RIGHT");
                 testo.setText("SIDESHIFT RIGHT Minimum Hydraulic Speed\n" +
@@ -415,6 +556,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
             case 11:
                 valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedSS_B));
                 funzione.setTextColor(Color.RED);
                 funzione.setText("BLADE SIDESHIFT MAX SPEED RIGHT");
                 testo.setText("SIDESHIFT RIGHT MAX Hydraulic Speed\n" +
@@ -426,22 +568,23 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.INVISIBLE);
                 funzione.setTextColor(Color.BLACK);
                 funzione.setText("MACHINE MODEL");
-                switch (CAT_Type){
+                switch (CAT_Type) {
                     case 0:
-                        testo.setText("CAT K - N Series");
+                        testo.setText("CAT K - N Series\n\n"+ CanService.CAT_Joystick);
                         break;
                     case 1:
-                        testo.setText("CAT NextGen");
+                        testo.setText("CAT NextGen\n\n"+ CanService.CAT_Joystick);
                         break;
 
                     case 2:
-                        testo.setText("CAT M Series");
+                        testo.setText("CAT M Series\n\n"+ CanService.CAT_Joystick);
                         break;
                 }
                 break;
         }
 
     }
+
     private void executeMenuAction_M() {
         switch (voceMenu) {
             case 0:
@@ -493,40 +636,40 @@ public class CAT_SEA_Activity extends AppCompatActivity {
     private void executeMenuAction_P() {
         switch (voceMenu) {
             case 0:
-                if (minSpeedLeftUP <255) minSpeedLeftUP++;
+                if (minSpeedLeftUP < 255) minSpeedLeftUP++;
                 break;
             case 1:
-                if (maxSpeedLeftUP <255) maxSpeedLeftUP++;
+                if (maxSpeedLeftUP < 255) maxSpeedLeftUP++;
                 break;
             case 2:
-                if (minSpeedLeftDW <255) minSpeedLeftDW++;
+                if (minSpeedLeftDW < 255) minSpeedLeftDW++;
                 break;
             case 3:
-                if (maxSpeedLeftDW <255) maxSpeedLeftDW++;
+                if (maxSpeedLeftDW < 255) maxSpeedLeftDW++;
                 break;
             case 4:
-                if (minSpeedRightUP <255) minSpeedRightUP++;
+                if (minSpeedRightUP < 255) minSpeedRightUP++;
                 break;
             case 5:
-                if (maxSpeedRightUP <255) maxSpeedRightUP++;
+                if (maxSpeedRightUP < 255) maxSpeedRightUP++;
                 break;
             case 6:
-                if (minSpeedRightDW <255) minSpeedRightDW++;
+                if (minSpeedRightDW < 255) minSpeedRightDW++;
                 break;
             case 7:
-                if (maxSpeedRightDW <255) maxSpeedRightDW++;
+                if (maxSpeedRightDW < 255) maxSpeedRightDW++;
                 break;
             case 8:
-                if (minSpeedSS_A <255) minSpeedSS_A++;
+                if (minSpeedSS_A < 255) minSpeedSS_A++;
                 break;
             case 9:
-                if (maxSpeedSS_A <255) maxSpeedSS_A++;
+                if (maxSpeedSS_A < 255) maxSpeedSS_A++;
                 break;
             case 10:
-                if (minSpeedSS_B <255) minSpeedSS_B++;
+                if (minSpeedSS_B < 255) minSpeedSS_B++;
                 break;
             case 11:
-                if (maxSpeedSS_B <255) maxSpeedSS_B++;
+                if (maxSpeedSS_B < 255) maxSpeedSS_B++;
                 break;
             case 12:
                 CAT_Type++;
@@ -536,6 +679,47 @@ public class CAT_SEA_Activity extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    private void sendMsg() {
+        sendRunnable = new Runnable() {
+            @Override
+            public void run() {
+                MyDeviceManager.CanWrite(1, 0x18FE3185, 8,
+                        new byte[]{valueLEFT,
+                                (byte) 0xFF,
+                                leftDir,//F2=Up F1=Down
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF});
+
+                MyDeviceManager.CanWrite(1, 0x18FE3285, 8,
+                        new byte[]{valueRIGHT,
+                                (byte) 0xFF,
+                                rightDir,//F2=Up F1=Down
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF});
+
+                MyDeviceManager.CanWrite(1, 0x18FE3385, 8,
+                        new byte[]{valueSS,
+                                (byte) 0xFF,
+                                ssDir,//F2=Right F1=Left
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF});
+
+                sendHandler.postDelayed(this, 50);
+            }
+
+        };
+        sendHandler.postDelayed(sendRunnable, 500); // primo repeat dopo 500ms
     }
 
 

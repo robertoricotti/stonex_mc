@@ -10,6 +10,16 @@
       </config>
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_meno.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_piu.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_launcher_background.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -270,9 +280,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="progressi su CAT idraulica step2">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/bottone_meno.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/bottone_piu.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/minus_icon.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/plus_icon.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/CAT_SEA_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/hydro/CAT_SEA_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_cat_sea.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_cat_sea.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -283,7 +299,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -321,34 +337,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;AnalyzeApkAction.lastApkPath&quot;: &quot;D:/Development/MC_V4/app/build/intermediates/apk/debug/app-debug.apk&quot;,
-    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
-    &quot;ApkExportedModule&quot;: &quot;STX_MC.app&quot;,
-    &quot;ExportApk.ApkPathForSTX_MC.app&quot;: &quot;D:\\Development\\MC_V4\\app&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Development/MC_V4/app/src/main/res/layout&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "AnalyzeApkAction.lastApkPath": "D:/Development/MC_V4/app/build/intermediates/apk/debug/app-debug.apk",
+    "Android App.app.executor": "Run",
+    "ApkExportedModule": "STX_MC.app",
+    "ExportApk.ApkPathForSTX_MC.app": "D:\\Development\\MC_V4\\app",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Development/MC_V4/app/src/main/res/drawable",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;ExportApk.BuildVariants&quot;: [
-      &quot;release&quot;
+  "keyToStringList": {
+    "ExportApk.BuildVariants": [
+      "release"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Development\MC_V4\app\src\main\res\drawable" />
       <recent name="D:\Development\MC_V4\app\src\main\res\layout" />
     </key>
     <key name="android.template.761527444">
@@ -439,14 +455,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00003" summary="nuovo gradle e appid rename">
-      <option name="closed" value="true" />
-      <created>1753517120312</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1753517120312</updated>
     </task>
     <task id="LOCAL-00004" summary="started pnezd">
       <option name="closed" value="true" />
@@ -832,7 +840,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756769751512</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="progressi su CAT idraulica step2">
+      <option name="closed" value="true" />
+      <created>1756809464770</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1756809464771</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -889,12 +905,12 @@
         </entry>
         <entry key="com.example.stx_mc">
           <value>
-            <CheckInfo lastCheckTimestamp="1756732916456" />
+            <CheckInfo lastCheckTimestamp="1756843784697" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1756732916456" />
+            <CheckInfo lastCheckTimestamp="1756843784697" />
           </value>
         </entry>
       </map>

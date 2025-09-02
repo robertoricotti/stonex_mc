@@ -51,7 +51,7 @@ public class CanSender extends Service {
     int connections = 0;
     int isTechCount, startCanopen;
     public static byte onGrade, d0;
-    private ScheduledExecutorService senderExecutorGrade_50;
+    //private ScheduledExecutorService senderExecutorGrade_50;
     private ScheduledExecutorService senderExecutor500;
     private ScheduledExecutorService senderExecutor2000;
     private ScheduledExecutorService scheduledExecutorService1min;
@@ -90,20 +90,21 @@ public class CanSender extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         senderExecutor500 = Executors.newSingleThreadScheduledExecutor();
         senderExecutor2000 = Executors.newSingleThreadScheduledExecutor();
-        senderExecutorGrade_50 = Executors.newSingleThreadScheduledExecutor();
+        //senderExecutorGrade_50 = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService1min = Executors.newSingleThreadScheduledExecutor();
 
         senderExecutor500.scheduleAtFixedRate(new AsyncSender500(), 1000, 500, TimeUnit.MILLISECONDS);
         senderExecutor2000.scheduleAtFixedRate(new AsyncSender2000(), 1000, 2000, TimeUnit.MILLISECONDS);
-        senderExecutorGrade_50.scheduleAtFixedRate(new gradeSender(), 2000, 50, TimeUnit.MILLISECONDS);
+        //senderExecutorGrade_50.scheduleAtFixedRate(new gradeSender(), 2000, 50, TimeUnit.MILLISECONDS);
         scheduledExecutorService1min.scheduleAtFixedRate(new AsyncSender1min(), 1000, 60000, TimeUnit.MILLISECONDS);
         return START_STICKY;
     }
 
-    private class gradeSender implements Runnable {
+  /*  private class gradeSender implements Runnable {
 
         @Override
         public void run() {
+
             if (MyApp.licenseType == 5) {
                 try {
 
@@ -139,7 +140,7 @@ public class CanSender extends Service {
             }
         }
 
-    }
+    }*/
 
     private class AsyncSender1min implements Runnable {
         @SuppressLint("NewApi")
@@ -325,9 +326,9 @@ public class CanSender extends Service {
         if (senderExecutor2000 != null) {
             senderExecutor2000.shutdown();
         }
-        if (senderExecutorGrade_50 != null) {
-            senderExecutorGrade_50.shutdown();
-        }
+       // if (senderExecutorGrade_50 != null) {
+        //    senderExecutorGrade_50.shutdown();
+        //}
         if (scheduledExecutorService1min != null) {
             scheduledExecutorService1min.shutdown();
         }

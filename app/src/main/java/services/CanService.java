@@ -31,7 +31,7 @@ import utils.MyDeviceManager;
 public class CanService extends Service {
     public CanService() {
     }
-
+public static String CAT_Joystick,KOMATSU_Joystick,JD_Joystick,JD_GP_Joystyck;
     public static int isAuto, errorEcu, hydraMachineType, valveType, left_Rise_min, left_Rise_Max, left_Lower_min, left_Lower_Max,
             right_Rise_min, right_Rise_Max, right_Lower_min, right_Lower_Max, hydr_Window, left_Gain, right_Gain, elevationDB, slopeDB, reverseLeft, reverseRight;
     public static int altosx, centrosx, bassosx, altodx, centrodx, m, bassodx;
@@ -412,6 +412,18 @@ public class CanService extends Service {
 
             if (channel == 2) {
                 //CAN2
+                if(id==0x1CF00D22){
+                    CAT_Joystick="0x"+Integer.toHexString(id).toUpperCase()+" "+dlc+" "+bytesToHex(msg);
+                }
+                if(id==0x0CFF3302){
+                    KOMATSU_Joystick="0x"+Integer.toHexString(id).toUpperCase()+" "+dlc+" "+bytesToHex(msg);
+                }
+                if(id==0x0CF00D80){
+                    JD_Joystick="0x"+Integer.toHexString(id).toUpperCase()+" "+dlc+" "+bytesToHex(msg);
+                }
+                if(id==0x0CF00DD5){
+                    JD_GP_Joystyck="0x"+Integer.toHexString(id).toUpperCase()+" "+dlc+" "+bytesToHex(msg);
+                }
                 if (id == 2066) {
                     ECU_Connected = true;
                     handler_ECU_Connected.removeCallbacks(timeoutRunnable_CU_Connected);
@@ -670,7 +682,13 @@ public class CanService extends Service {
         }
         return txt;
     }
-
+    private String bytesToHex(byte[] data) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : data) {
+            sb.append(String.format("%02X ", b));  // %02X = due cifre esadecimali maiuscole
+        }
+        return sb.toString().trim();
+    }
 
     @Override
     public void onDestroy() {
