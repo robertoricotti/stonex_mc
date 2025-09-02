@@ -440,13 +440,13 @@ public class UpdateValuesService extends Service {
                         MyData.push("M" + i + "minSpeedLeftUP", "0");
                     }
                     if (maxSpeedLeftUP == null) {
-                        MyData.push("M" + i + "maxSpeedLeftUP", "0");
+                        MyData.push("M" + i + "maxSpeedLeftUP", "255");
                     }
                     if (minSpeedLeftDW == null) {
                         MyData.push("M" + i + "minSpeedLeftDW", "0");
                     }
                     if (maxSpeedLeftDW == null) {
-                        MyData.push("M" + i + "maxSpeedLeftDW", "0");
+                        MyData.push("M" + i + "maxSpeedLeftDW", "255");
                     }
 
 
@@ -454,13 +454,13 @@ public class UpdateValuesService extends Service {
                         MyData.push("M" + i + "minSpeedRightUP", "0");
                     }
                     if (maxSpeedRightUP == null) {
-                        MyData.push("M" + i + "maxSpeedRightUP", "0");
+                        MyData.push("M" + i + "maxSpeedRightUP", "255");
                     }
                     if (minSpeedRightDW == null) {
                         MyData.push("M" + i + "minSpeedRightDW", "0");
                     }
                     if (maxSpeedRightDW == null) {
-                        MyData.push("M" + i + "maxSpeedRightDW", "0");
+                        MyData.push("M" + i + "maxSpeedRightDW", "255");
                     }
 
 
@@ -468,13 +468,13 @@ public class UpdateValuesService extends Service {
                         MyData.push("M" + i + "minSpeedSS_A", "0");
                     }
                     if (maxSpeedSS_A == null) {
-                        MyData.push("M" + i + "maxSpeedSS_A", "0");
+                        MyData.push("M" + i + "maxSpeedSS_A", "255");
                     }
                     if (minSpeedSS_B == null) {
                         MyData.push("M" + i + "minSpeedSS_B", "0");
                     }
                     if (maxSpeedSS_B == null) {
-                        MyData.push("M" + i + "maxSpeedSS_B", "0");
+                        MyData.push("M" + i + "maxSpeedSS_B", "255");
                     }
 
                     if (CAT_Type == null) {

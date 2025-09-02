@@ -269,13 +269,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="settato toggle per auto">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
+    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="progressi su CAT idraulica step2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/CAT_SEA_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/hydro/CAT_SEA_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/Hydro_Activity_Entering.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/hydro/Hydro_Activity_Entering.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_cat_sea.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_cat_sea.xml" afterDir="false" />
     </list>
@@ -287,7 +283,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -443,14 +439,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00002" summary="nuovo gradle e appid rename">
-      <option name="closed" value="true" />
-      <created>1753516969853</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1753516969853</updated>
     </task>
     <task id="LOCAL-00003" summary="nuovo gradle e appid rename">
       <option name="closed" value="true" />
@@ -836,7 +824,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756738105819</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="progressi su CAT idraulica">
+      <option name="closed" value="true" />
+      <created>1756769751512</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1756769751512</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -851,8 +847,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="predisposta usura lama" />
-    <MESSAGE value="da rifare activity xyz" />
     <MESSAGE value="da testare activity xyz" />
     <MESSAGE value="da testare activity xyz ok" />
     <MESSAGE value="pre-versione beta_1" />
@@ -876,7 +870,9 @@
     <MESSAGE value="finito acquisizioni CAN" />
     <MESSAGE value="inizio nuovo menu idraulico" />
     <MESSAGE value="settato toggle per auto" />
-    <option name="LAST_COMMIT_MESSAGE" value="settato toggle per auto" />
+    <MESSAGE value="progressi su CAT idraulica" />
+    <MESSAGE value="progressi su CAT idraulica step2" />
+    <option name="LAST_COMMIT_MESSAGE" value="progressi su CAT idraulica step2" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
