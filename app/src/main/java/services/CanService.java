@@ -12,30 +12,34 @@ import androidx.annotation.Nullable;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Arrays;
-
 import event_bus.CanEvents;
 import gui.MyApp;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.gps.Nuovo_Gps;
+import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
 import serial.OpenSerialPort;
+import utils.AutoManToggle;
 import utils.CPCanHelper;
 import utils.CanFileReceiver;
 import utils.MyDeviceManager;
+import utils.ParameterAdjuster;
 
 public class CanService extends Service {
     public CanService() {
     }
-public static String CAT_Joystick,KOMATSU_Joystick,JD_Joystick,JD_GP_Joystyck;
+
+    boolean Off_Inc, Off_Dec;
+
+    public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck;
     public static int isAuto, errorEcu, hydraMachineType, valveType, left_Rise_min, left_Rise_Max, left_Lower_min, left_Lower_Max,
             right_Rise_min, right_Rise_Max, right_Lower_min, right_Lower_Max, hydr_Window, left_Gain, right_Gain, elevationDB, slopeDB, reverseLeft, reverseRight;
     public static int altosx, centrosx, bassosx, altodx, centrodx, m, bassodx;
-    public static boolean nolaserbeam_L, nolaserbeam_R, ECU_Connected, isAutoL, isAutoR, outW_L, outW_R;
+    public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, nolaserbeam_L, nolaserbeam_R, ECU_Connected, isAutoL, isAutoR, outW_L, outW_R;
     public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK;
     CanFileReceiver receiver = new CanFileReceiver();
     public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc;
@@ -91,7 +95,7 @@ public static String CAT_Joystick,KOMATSU_Joystick,JD_Joystick,JD_GP_Joystyck;
         try {
             if (MyApp.visibleActivity instanceof Nuovo_Gps || MyApp.visibleActivity instanceof Can_Msg_Debug) {
 
-                EventBus.getDefault().post(new CanEvents(channel, null, id,dlc, msg));
+                EventBus.getDefault().post(new CanEvents(channel, null, id, dlc, msg));
             }
             if (channel == 1) {
                 if (DataSaved.isCanOpen == 1) {
@@ -412,18 +416,103 @@ public static String CAT_Joystick,KOMATSU_Joystick,JD_Joystick,JD_GP_Joystyck;
 
             if (channel == 2) {
                 //CAN2
-                if(id==0x1CF00D22){
-                    CAT_Joystick="0x"+Integer.toHexString(id).toUpperCase()+" "+dlc+" "+bytesToHex(msg);
+                if (id == 0x1CF00D22 && DataSaved.Interface_Type == 1) {
+                    CAT_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
+                    boolean[] booleans = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
+                    boolean[] bGrad_Left = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[1]);
+                    boolean[] bGrad_Right = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[2]);
+                    boolean[] bGrad_SS = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[3]);
+
+                    if (MyApp.visibleActivity instanceof My3DActivity) {
+                        //+4 -5 auto1
+                        if (DataSaved.CAT_Type == 0) {
+                            AutoManToggle.update(booleans[6]);
+                            Dozer_Auto_Main = AutoManToggle.Can_Toggled_Auto;
+                            ParameterAdjuster.update(booleans[2], booleans[3]);
+                        } else if (DataSaved.CAT_Type == 1) {
+                            Dozer_Auto_Main = booleans[6];
+                            ParameterAdjuster.update(booleans[2], booleans[3]);
+                        } else if (DataSaved.CAT_Type == 2) {
+                            AutoManToggle.updateLEFT(bGrad_Left[3]);
+                            AutoManToggle.updateRIGHT(bGrad_Right[7]);
+                            AutoManToggle.updateSS(bGrad_SS[3]);
+                            ParameterAdjuster.update(bGrad_SS[6], bGrad_SS[7]);
+                            ParameterAdjuster.update(bGrad_Right[2], bGrad_Right[3]);
+                            Dozer_Auto_Main = false;
+                            Grader_Auto_Left = AutoManToggle.Can_Toggled_Auto_L;
+                            Grader_AutoRight = AutoManToggle.Can_Toggled_Auto_R;
+                            Grader_Auto_SS = AutoManToggle.Can_Toggled_Auto_SS;
+
+                        }
+                    } else {
+                        Dozer_Auto_Main = false;
+                        Grader_Auto_Left = false;
+                        Grader_AutoRight = false;
+                        Grader_Auto_SS = false;
+                        AutoManToggle.Can_Toggled_Auto = false;
+                        AutoManToggle.Can_Toggled_Auto_L = false;
+                        AutoManToggle.Can_Toggled_Auto_R = false;
+                        AutoManToggle.Can_Toggled_Auto_SS = false;
+                    }
+
                 }
-                if(id==0x0CFF3302){
-                    KOMATSU_Joystick="0x"+Integer.toHexString(id).toUpperCase()+" "+dlc+" "+bytesToHex(msg);
+
+                if (id == 0x0CFF3302&& DataSaved.Interface_Type == 3) {
+                    KOMATSU_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
+                    if (MyApp.visibleActivity instanceof My3DActivity) {
+                        Dozer_Auto_Main=msg[6]==1;
+                    }else {
+                        Dozer_Auto_Main = false;
+                        Grader_Auto_Left = false;
+                        Grader_AutoRight = false;
+                        Grader_Auto_SS = false;
+                        AutoManToggle.Can_Toggled_Auto = false;
+                        AutoManToggle.Can_Toggled_Auto_L = false;
+                        AutoManToggle.Can_Toggled_Auto_R = false;
+                        AutoManToggle.Can_Toggled_Auto_SS = false;
+                    }
                 }
-                if(id==0x0CF00D80){
-                    JD_Joystick="0x"+Integer.toHexString(id).toUpperCase()+" "+dlc+" "+bytesToHex(msg);
+
+                if (id == 0x0CF00D80&& DataSaved.Interface_Type == 2) {
+                    JD_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
+                    boolean[] booleans = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
+                    if (MyApp.visibleActivity instanceof My3DActivity) {
+                        Dozer_Auto_Main = booleans[7];
+                        ParameterAdjuster.update(booleans[2], booleans[3]);
+                    }else {
+                        Dozer_Auto_Main = false;
+                        Grader_Auto_Left = false;
+                        Grader_AutoRight = false;
+                        Grader_Auto_SS = false;
+                        AutoManToggle.Can_Toggled_Auto = false;
+                        AutoManToggle.Can_Toggled_Auto_L = false;
+                        AutoManToggle.Can_Toggled_Auto_R = false;
+                        AutoManToggle.Can_Toggled_Auto_SS = false;
+                    }
+                    Log.d("JDD",Dozer_Auto_Main+"");
                 }
-                if(id==0x0CF00DD5){
-                    JD_GP_Joystyck="0x"+Integer.toHexString(id).toUpperCase()+" "+dlc+" "+bytesToHex(msg);
+                if (id == 0x0CF00DD5&& DataSaved.Interface_Type == 2) {
+                    JD_GP_Joystyck = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
+                    boolean[] booleans = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[3]);
+                    boolean[] bGrad_Left = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[1]);
+                    boolean[] bGrad_Right = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[2]);
+                    if (MyApp.visibleActivity instanceof My3DActivity) {
+                        Grader_Auto_Left = bGrad_Left[3];
+                        Grader_AutoRight=bGrad_Right[7];
+                        ParameterAdjuster.update(booleans[6], booleans[7]);
+                    }else {
+                        Dozer_Auto_Main = false;
+                        Grader_Auto_Left = false;
+                        Grader_AutoRight = false;
+                        Grader_Auto_SS = false;
+                        AutoManToggle.Can_Toggled_Auto = false;
+                        AutoManToggle.Can_Toggled_Auto_L = false;
+                        AutoManToggle.Can_Toggled_Auto_R = false;
+                        AutoManToggle.Can_Toggled_Auto_SS = false;
+                    }
+                    Log.d("JDD",Grader_Auto_Left+" "+Grader_AutoRight+" "+Grader_Auto_SS);
                 }
+
                 if (id == 2066) {
                     ECU_Connected = true;
                     handler_ECU_Connected.removeCallbacks(timeoutRunnable_CU_Connected);
@@ -495,7 +584,7 @@ public static String CAT_Joystick,KOMATSU_Joystick,JD_Joystick,JD_GP_Joystyck;
             }
 
         } catch (Exception e) {
-            Log.e("Can_Error",Log.getStackTraceString(e));
+            Log.e("Can_Error", Log.getStackTraceString(e));
         }
     }
 
@@ -682,6 +771,7 @@ public static String CAT_Joystick,KOMATSU_Joystick,JD_Joystick,JD_GP_Joystyck;
         }
         return txt;
     }
+
     private String bytesToHex(byte[] data) {
         StringBuilder sb = new StringBuilder();
         for (byte b : data) {

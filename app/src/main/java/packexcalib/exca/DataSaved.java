@@ -42,6 +42,8 @@ public class DataSaved {
 
     public static int CAT_Type;
 
+    public static double Off_Incr_Step;
+
 
     ///
     public static String machineName;

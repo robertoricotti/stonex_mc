@@ -637,6 +637,7 @@ public class UpdateValuesService extends Service {
                 String drwaMachieSchema = MyData.get_String("drwaMachieSchema");
                 String geoidPath = MyData.get_String("geoidPath");
                 String lock3dRotation = MyData.get_String("lock3dRotation");
+                String Off_Incr_Step = MyData.get_String("Off_Incr_Step");
 
                 if (!startedService) {
                     if (licenza == null) {
@@ -840,6 +841,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (lock3dRotation == null) {
                         MyData.push("lock3dRotation", "0");
+                    }
+                    if (Off_Incr_Step == null) {
+                        MyData.push("Off_Incr_Step", "0.01");
                     }
                 }
 
@@ -1687,6 +1691,12 @@ public class UpdateValuesService extends Service {
                     DataSaved.lock3dRotation = MyData.get_Int("lock3dRotation");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di lock3dRotation: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.Off_Incr_Step = MyData.get_Double("Off_Incr_Step");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Off_Incr_Step: " + e.getMessage());
                 }
                 try {
                     DataSaved.temaSoftware = MyData.get_Int("Tema_SW");

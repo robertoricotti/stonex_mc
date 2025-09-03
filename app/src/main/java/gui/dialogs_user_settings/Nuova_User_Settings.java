@@ -44,9 +44,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_InfoApp dialogInfoApp;
     DialogColors dialogColors;
-    TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue,tvVert,tvAng;
-    EditText tvVertValue;
-    ImageView imgLocale, imgLse, imgCutFill;
+    TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue,tvVert,tvAng,stepValue,tvoffstep;
+    TextView tvVertValue;
+    ImageView imgLocale, imgLse, imgCutFill,but_piu,but_meno;
     String intLang="";
     int indexAudioSelected;
 
@@ -71,7 +71,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
         dialogPassword=new DialogPassword(this);
         dialogHeightAlarm=new DialogHeightAlarm(this);
         dialogInvertColors=new DialogInvertColors(this);
-        customNumberDialogFtIn=new CustomNumberDialogFtIn(this,0);
+        customNumberDialogFtIn=new CustomNumberDialogFtIn(this,666);
         dialogDeadbandFlatAngle=new DialogDeadbandFlatAngle(this);
         dialogDeadbandH =new DialogDeadbandH(this);
         dialogLanguages=new DialogLanguages(this);
@@ -95,15 +95,32 @@ public class Nuova_User_Settings extends AppCompatActivity {
         imgCutFill = findViewById(R.id.imgCutFill);
         tvVert=findViewById(R.id.tvVert);
         tvAng=findViewById(R.id.tvAng);
+        stepValue=findViewById(R.id.tvOffStepValue);
+        tvoffstep=findViewById(R.id.tvoffstep);
+        but_piu=findViewById(R.id.but_piu);
+        but_meno=findViewById(R.id.but_meno);
 
     }
 
     private void init() {
         intLang = MyData.get_String("language");
         indexAudioSelected = MyData.get_Int("indexAudioSystem");
+
     }
 
     private void onClick() {
+        but_piu.setOnClickListener(view -> {
+            DataSaved.Off_Incr_Step+=0.005;
+            MyData.push("Off_Incr_Step",String.valueOf(DataSaved.Off_Incr_Step));
+
+        });
+        but_meno.setOnClickListener(view -> {
+
+            if(DataSaved.Off_Incr_Step>0.005){
+                DataSaved.Off_Incr_Step-=0.005;
+            }
+            MyData.push("Off_Incr_Step",String.valueOf(DataSaved.Off_Incr_Step));
+        });
         tvAudioValue.setOnClickListener(view -> {
             if (!dialogAudioSystem.alertDialog.isShowing()) {
                 dialogAudioSystem.show();
@@ -145,7 +162,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
         tvVertValue.setOnClickListener(view -> {
             if(MyData.get_String("Unit_Of_Measure").equals("4")||MyData.get_String("Unit_Of_Measure").equals("5")){
                 if(!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(tvVertValue);
+                    customNumberDialogFtIn.showTV(tvVertValue);
                 }
             }else {
                 if (!dialogDeadbandH.dialog.isShowing()) {
@@ -287,6 +304,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     imgCutFill.setImageResource(R.drawable.cutfillblu);
                     break;
             }
+
+            stepValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Off_Incr_Step)));
+            tvoffstep.setText("EXTERNAL OFFSET STEP "+Utils.getMetriSimbol());
         } catch (Exception ex) {
             MyData.push("Deadband_H","0.025");
         }

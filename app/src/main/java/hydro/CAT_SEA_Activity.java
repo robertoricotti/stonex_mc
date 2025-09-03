@@ -33,7 +33,7 @@ import services.CanService;
 import utils.MyData;
 import utils.MyDeviceManager;
 import utils.UnitsConversion;
-import utils.Utils;
+
 
 public class CAT_SEA_Activity extends AppCompatActivity {
     Handler sendHandler = new Handler();
@@ -51,6 +51,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
     byte valueLEFT = 0;
     byte valueRIGHT = 0;
     byte valueSS = 0;
+
 
 
     @Override
@@ -265,7 +266,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 case 12:
                     CAT_Type--;
                     CAT_Type = Math.abs(CAT_Type) % 3;
-                    MyData.push("CAT_Type", String.valueOf(CAT_Type));
+                    MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
                     break;
                 default:
                     break;
@@ -351,7 +352,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 case 12:
                     CAT_Type++;
                     CAT_Type = Math.abs(CAT_Type) % 3;
-                    MyData.push("CAT_Type", String.valueOf(CAT_Type));
+                    MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
                     break;
                 default:
                     break;
@@ -376,7 +377,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
         tipo.setOnClickListener(view -> {
             CAT_Type++;
             CAT_Type = Math.abs(CAT_Type) % 3;
-            MyData.push("CAT_Type", String.valueOf(CAT_Type));
+            MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
         });
         back.setOnClickListener(view -> {
             android.app.AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -626,7 +627,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
             case 12:
                 CAT_Type--;
                 CAT_Type = Math.abs(CAT_Type) % 3;
-                MyData.push("CAT_Type", String.valueOf(CAT_Type));
+                MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
                 break;
             default:
                 break;
@@ -674,7 +675,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
             case 12:
                 CAT_Type++;
                 CAT_Type = Math.abs(CAT_Type) % 3;
-                MyData.push("CAT_Type", String.valueOf(CAT_Type));
+                MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
                 break;
             default:
                 break;

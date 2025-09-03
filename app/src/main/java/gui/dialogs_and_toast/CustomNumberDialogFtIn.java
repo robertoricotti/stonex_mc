@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -33,6 +34,7 @@ public class CustomNumberDialogFtIn {
     String fraction = "7/8";
     Activity activity;
     EditText realValue, value_ft, value_in, value_fraction;
+    TextView realValueTV;
 
     public Dialog dialog;
     Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bdot, bminus, bdel, bok;
@@ -70,6 +72,24 @@ public class CustomNumberDialogFtIn {
         onClick();
         onLongClick();
     }
+    public void showTV(TextView realValueTV) {
+
+        this.realValueTV = realValueTV;
+        dialog.setCancelable(true);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
+        }
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.CENTER;
+        dialog.show();
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        FullscreenActivity.setFullScreen(dialog);
+        findView();
+        initTV();
+        onClick();
+        onLongClick();
+    }
 
     public void show(EditText realValue, int dec, int mode) {
         this.dec = dec;
@@ -97,6 +117,28 @@ public class CustomNumberDialogFtIn {
         value_ft.setBackgroundColor(ContextCompat.getColor(activity, R.color.light_yellow));
         value_in.setBackgroundColor(Color.TRANSPARENT);
         String depth = realValue.getText().toString().replace("+/-", "").replace(Utils.getMetriSimbol(), "");
+        if (depth.length() > 0) {
+            value_ft.setText(depth.split("'")[0].trim());
+            value_in.setText(depth.split("'")[1].trim());
+            value_ft.setText(depth.split("'")[0].trim());
+            value_in.setText(depth.split("'")[1].trim().substring(0, 2));
+            int begin = depth.trim().length() - 4;
+            int end = begin + 3;
+            fraction = depth.substring(begin, end);
+            value_fraction.setText(fraction);
+        } else {
+            value_ft.setText("");
+            value_in.setText("");
+        }
+
+
+    }
+    private void initTV() {
+        indexFtIn = 0;
+        c = true;
+        value_ft.setBackgroundColor(ContextCompat.getColor(activity, R.color.light_yellow));
+        value_in.setBackgroundColor(Color.TRANSPARENT);
+        String depth = realValueTV.getText().toString().replace("+/-", "").replace(Utils.getMetriSimbol(), "");
         if (depth.length() > 0) {
             value_ft.setText(depth.split("'")[0].trim());
             value_in.setText(depth.split("'")[1].trim());
@@ -412,10 +454,12 @@ public class CustomNumberDialogFtIn {
                     String mioValore = value_ft.getText().toString().trim() + "'" + value_in.getText().toString().trim() + " " + value_fraction.getText().toString().trim() + "\"".toString();
 
                     if (flag == 0) {
-                        Log.d("Puttanai", mioValore + "\n" + (realValue.getText().toString().replace("+/-", "")));
                         MyData.push("Deadband_H", Utils.writeMetri(mioValore));
                         realValue.setText(mioValore);
-                    } else {
+                    } else if(flag==666){
+                        MyData.push("Deadband_H", Utils.writeMetri(mioValore));
+                        realValueTV.setText(mioValore);
+                    }else {
                         realValue.setText(mioValore);
                         if (flag == -1) {
                             DataSaved.line_Offset = Double.parseDouble(Utils.writeMetri(realValue.getText().toString()));
