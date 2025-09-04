@@ -36,6 +36,7 @@ public class Dialog_QR {
         dialog.create();
         dialog.setContentView(R.layout.dialog_qr_code);
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;

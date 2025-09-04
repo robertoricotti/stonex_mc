@@ -45,6 +45,7 @@ public class CustomNumberDialog {
         dec = 0;
         this.realValue = realValue;
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
@@ -69,6 +70,7 @@ public class CustomNumberDialog {
         this.dec = dec;
         this.realValue = realValue;
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
@@ -90,6 +92,7 @@ public class CustomNumberDialog {
         this.mode = mode;
         this.realValue = realValue;
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;

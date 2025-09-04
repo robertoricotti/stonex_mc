@@ -109,7 +109,7 @@
                     android:ems="15"
                     android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="LOCALE"
+                    android:text="@string/language"
                     android:paddingHorizontal="20dp"
                     android:textStyle="bold|italic"
                     android:gravity="center|left"
@@ -219,6 +219,12 @@
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
                     android:background="@color/_____cancel_text"/>
+                <ImageView
+                    android:id="@+id/but_meno_db"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:src="@drawable/bottone_meno"/>
                 <TextView
                     android:focusableInTouchMode="false"
                     android:id="@+id/tvVertValue"
@@ -233,6 +239,12 @@
                     android:textStyle="bold|italic"
                     android:gravity="center"
                     />
+                <ImageView
+                    android:id="@+id/but_piu_db"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:src="@drawable/bottone_piu"/>
 
             </LinearLayout>
             <View
@@ -273,6 +285,12 @@
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
                     android:background="@color/_____cancel_text"/>
+                <ImageView
+                    android:id="@+id/but_meno_ang"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:src="@drawable/bottone_meno"/>
                 <TextView
                     android:id="@+id/tvAngValue"
                     android:layout_width="0dp"
@@ -286,6 +304,12 @@
                     android:textStyle="bold|italic"
                     android:gravity="center"
                     />
+                <ImageView
+                    android:id="@+id/but_piu_ang"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:src="@drawable/bottone_piu"/>
 
             </LinearLayout>
             <View
@@ -293,7 +317,70 @@
                 android:layout_height="1dp"
                 android:background="@color/_____cancel_text"
                 />
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:src="@drawable/offset"
+                    android:padding="5dp"
+                    />
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+                <TextView
+                    android:id="@+id/tvoffstep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:ems="15"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:background="@color/bg_gray"
+                    android:text="EXTERNAL OFFSET STEP"
+                    android:paddingHorizontal="20dp"
+                    android:textStyle="bold|italic"
+                    android:gravity="center|left"
+                    />
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text"/>
+                <ImageView
+                    android:id="@+id/but_meno"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:src="@drawable/bottone_meno"/>
+                <TextView
+                    android:id="@+id/tvOffStepValue"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:background="@color/bg_gray"
+                    android:text="0.01"
+                    android:paddingHorizontal="20dp"
+                    android:textStyle="bold|italic"
+                    android:gravity="center"
+                    />
+                <ImageView
+                    android:id="@+id/but_piu"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:src="@drawable/bottone_piu"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text"
+                />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -371,7 +458,7 @@
                     android:textSize="22sp"
                     android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="Excavator 2D LASER MODE"
+                    android:text="@string/lasermode"
                     android:paddingHorizontal="20dp"
                     android:textStyle="bold|italic"
                     android:gravity="center|left"
@@ -496,70 +583,7 @@
                 android:layout_height="1dp"
                 android:background="@color/_____cancel_text"
                 />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="60dp"
-                    android:background="@color/bg_gray"
-                    android:src="@drawable/offset"
-                    android:padding="5dp"
-                    />
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
-                <TextView
-                    android:id="@+id/tvoffstep"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
-                    android:ems="15"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
-                    android:background="@color/bg_gray"
-                    android:text="EXTERNAL OFFSET STEP"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
-                    android:gravity="center|left"
-                    />
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
-                <ImageView
-                    android:id="@+id/but_meno"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
-                    android:src="@drawable/bottone_meno"/>
-                <TextView
-                    android:id="@+id/tvOffStepValue"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
-                    android:background="@color/bg_gray"
-                    android:text="0.01"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
-                    android:gravity="center"
-                    />
-                <ImageView
-                    android:id="@+id/but_piu"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
-                    android:src="@drawable/bottone_piu"/>
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+
         </LinearLayout>
 
     </ScrollView>

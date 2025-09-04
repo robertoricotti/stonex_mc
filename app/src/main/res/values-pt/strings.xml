@@ -17,6 +17,9 @@
     <string name="en_uhf_ntrip">ALTERAR UHF/NTRIP</string>
     <string name="uppaer_bar">BARRA SUPERIOR SEMPRE VISÍVEL NA PÁGINA DE TRABALHO</string>
     <string name="interface_type">TIPO DE INTERFACE HIDRÁULICA</string>
+    <string name="language">IDIOMA</string>
+    <string name="lasermode">MODO LASER 2D ESCAVADORA</string>
+    <string name="copy_adding">COPIAR ADIÇÃO\nNÚMERO PROGRESSIVO</string>
 
 
     <string name="save">SALVAR</string>

@@ -3,6 +3,7 @@
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="error_license">License expired or missing\nPlease contact your local dealer to resolve the issue.</string>
     <string name="website">www.stonex.it</string>
+    <string name="copy_adding">"Copy Adding\nProgressive Number"</string>
     <string name="general_set">GENERAL SETTINGS</string>
     <string name="change_machine">CHANGE MACHINE MODEL</string>
     <string name="procedi">Do You Want To Proceed ?</string>
@@ -83,6 +84,9 @@
     <string name="flat_angle_deadband">ANGLE DB</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>
+    <string name="language">LANGUAGE</string>
+
+    <string name="lasermode">Excavator 2D LASER MODE</string>
     <string name="close_app">ARE YOU SURE YOU WANT CLOSE THIS APP?</string>
     <string name="ok">OK</string>
     <string name="set">SET</string>

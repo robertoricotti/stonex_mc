@@ -66,6 +66,7 @@ public class CustomQwertyDialog {
     public void show(EditText realValue) {
         this.realValue = realValue;
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
@@ -89,6 +90,7 @@ public class CustomQwertyDialog {
         this.flag = flag;
         this.realValue = realValue;
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
@@ -112,6 +114,7 @@ public class CustomQwertyDialog {
         this.flag = flag;
         this.realValueTV = realValueTV;
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
@@ -136,6 +139,7 @@ public class CustomQwertyDialog {
         this.projectFileAdapter = projectFileAdapter;
         dialogPrjFolder = new Dialog_PRJ_Folder(activity);
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
@@ -160,6 +164,7 @@ public class CustomQwertyDialog {
         this.position = position;
         this.flag = flag;
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo

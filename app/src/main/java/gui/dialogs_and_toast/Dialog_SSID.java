@@ -42,6 +42,7 @@ public class Dialog_SSID {
 
         dialog = builder.create();
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;

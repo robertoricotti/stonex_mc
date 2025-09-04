@@ -17,7 +17,10 @@
     <string name="en_uhf_ntrip">CAMBIAR UHF/NTRIP</string>
     <string name="uppaer_bar">BARRA SUPERIOR SIEMPRE VISIBLE EN PÁGINA DE TRABAJO</string>
     <string name="interface_type">TIPO DE INTERFAZ HIDRÁULICA</string>
+    <string name="language">IDIOMA</string>
+    <string name="copy_adding">COPIAR AÑADIDO\nNÚMERO PROGRESIVO</string>
 
+    <string name="lasermode">MODO LÁSER 2D EXCAVADORA</string>
 
     <string name="save">SALVAR</string>
     <string name="exit">SALIR</string>

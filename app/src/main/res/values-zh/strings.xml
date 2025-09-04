@@ -17,6 +17,9 @@
     <string name="en_uhf_ntrip">切换UHF/NTRIP</string>
     <string name="uppaer_bar">工作页面始终显示顶部栏</string>
     <string name="interface_type">液压接口类型</string>
+    <string name="language">语言</string>
+    <string name="lasermode">挖掘机2D激光模式</string>
+    <string name="copy_adding">复制添加\n序号</string>
 
 
     <string name="save">保存参数</string>

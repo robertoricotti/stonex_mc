@@ -1,5 +1,6 @@
 package services;
 
+import static packexcalib.exca.DataSaved.offsetH;
 import static packexcalib.exca.Sensors_Decoder.isMobaTilt;
 
 import android.app.Service;
@@ -27,7 +28,8 @@ import utils.AutoManToggle;
 import utils.CPCanHelper;
 import utils.CanFileReceiver;
 import utils.MyDeviceManager;
-import utils.ParameterAdjuster;
+import utils.OffsetAdjuster;
+import utils.Utils;
 
 public class CanService extends Service {
     public CanService() {
@@ -415,6 +417,7 @@ public class CanService extends Service {
             }
 
             if (channel == 2) {
+
                 //CAN2
                 if (id == 0x1CF00D22 && DataSaved.Interface_Type == 1) {
                     CAT_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
@@ -428,16 +431,17 @@ public class CanService extends Service {
                         if (DataSaved.CAT_Type == 0) {
                             AutoManToggle.update(booleans[6]);
                             Dozer_Auto_Main = AutoManToggle.Can_Toggled_Auto;
-                            ParameterAdjuster.update(booleans[2], booleans[3]);
+                            Log.d("JDD", (String.valueOf(-offsetH)));
+                            OffsetAdjuster.update(booleans[2], booleans[3]);
                         } else if (DataSaved.CAT_Type == 1) {
                             Dozer_Auto_Main = booleans[6];
-                            ParameterAdjuster.update(booleans[2], booleans[3]);
+                            OffsetAdjuster.update(booleans[2], booleans[3]);
                         } else if (DataSaved.CAT_Type == 2) {
                             AutoManToggle.updateLEFT(bGrad_Left[3]);
                             AutoManToggle.updateRIGHT(bGrad_Right[7]);
                             AutoManToggle.updateSS(bGrad_SS[3]);
-                            ParameterAdjuster.update(bGrad_SS[6], bGrad_SS[7]);
-                            ParameterAdjuster.update(bGrad_Right[2], bGrad_Right[3]);
+                            OffsetAdjuster.update(bGrad_SS[6], bGrad_SS[7]);
+                            OffsetAdjuster.update(bGrad_Right[2], bGrad_Right[3]);
                             Dozer_Auto_Main = false;
                             Grader_Auto_Left = AutoManToggle.Can_Toggled_Auto_L;
                             Grader_AutoRight = AutoManToggle.Can_Toggled_Auto_R;
@@ -478,7 +482,7 @@ public class CanService extends Service {
                     boolean[] booleans = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
                     if (MyApp.visibleActivity instanceof My3DActivity) {
                         Dozer_Auto_Main = booleans[7];
-                        ParameterAdjuster.update(booleans[2], booleans[3]);
+                        OffsetAdjuster.update(booleans[2], booleans[3]);
                     }else {
                         Dozer_Auto_Main = false;
                         Grader_Auto_Left = false;
@@ -489,7 +493,7 @@ public class CanService extends Service {
                         AutoManToggle.Can_Toggled_Auto_R = false;
                         AutoManToggle.Can_Toggled_Auto_SS = false;
                     }
-                    Log.d("JDD",Dozer_Auto_Main+"");
+
                 }
                 if (id == 0x0CF00DD5&& DataSaved.Interface_Type == 2) {
                     JD_GP_Joystyck = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
@@ -499,7 +503,7 @@ public class CanService extends Service {
                     if (MyApp.visibleActivity instanceof My3DActivity) {
                         Grader_Auto_Left = bGrad_Left[3];
                         Grader_AutoRight=bGrad_Right[7];
-                        ParameterAdjuster.update(booleans[6], booleans[7]);
+                        OffsetAdjuster.update(booleans[6], booleans[7]);
                     }else {
                         Dozer_Auto_Main = false;
                         Grader_Auto_Left = false;

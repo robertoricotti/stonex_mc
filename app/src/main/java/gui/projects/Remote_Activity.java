@@ -8,9 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -23,9 +21,15 @@ import com.cp.cputils.ApolloPro;
 import com.example.stx_dig.R;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import cloud.S3ManagerSingleton;
 import gui.boot_and_choose.Activity_Home_Page;
@@ -91,7 +95,7 @@ public class Remote_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        txt1.setText("serials/"+ MyDeviceManager.getDeviceSN(this)+"/Projects/");
+        txt1.setText("serials/" + MyDeviceManager.getDeviceSN(this) + "/Projects/");
         download.setEnabled(false);
         download.setAlpha(0.3f);
         upload.setEnabled(false);
@@ -100,17 +104,6 @@ public class Remote_Activity extends AppCompatActivity {
         readProjectFolder();
         txt2.setText(APP_PATH);
 
-    /*    s3Manager.getFoldersFiles("downloads/apk_release/", new S3Manager.S3Callback() {
-            @Override
-            public void onSuccess(Map<String, Object> result) {
-                Log.d("File Presenti","File: "+result.toString());
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("File Presenti","File: "+e.getStackTrace());
-            }
-        });*/
 
     }
 
@@ -120,8 +113,8 @@ public class Remote_Activity extends AppCompatActivity {
 
 
             if (adapterProj != null && adapterMC != null) {
-                    adapterProj.setCloudFolder(false);
-                    adapterMC.setCloudFolder(true);
+                adapterProj.setCloudFolder(false);
+                adapterMC.setCloudFolder(true);
                 if (adapterProj.getSelectedItem() > -1 && adapterMC.getSelectedItem() > -1) {
                     adapterProj.setSelectedItem(-1);
                     adapterMC.setSelectedItem(-1);
@@ -167,136 +160,175 @@ public class Remote_Activity extends AppCompatActivity {
 
     private void onClick() {
         refresh.setOnClickListener(view -> {
-            if (isAuthenticated){
+            if (isAuthenticated) {
                 readProjectFolder();
-            s3Manager.getTreeFromS3V2(serials, new S3ManagerSingleton.S3Callback() {
-                @Override
-                public void onSuccess(Map<String, Object> result) {
-                    // Eseguito nel thread di rete, puoi aggiornare la UI con runOnUiThread
-                    runOnUiThread(() -> {
-                        parseProjectsContent(result.toString());
-                        // Aggiorna la UI se necessario
-                    });
-                }
+                s3Manager.getTreeFromS3V2(serials, new S3ManagerSingleton.S3Callback() {
+                    @Override
+                    public void onSuccess(Map<String, Object> result) {
+                        // Eseguito nel thread di rete, puoi aggiornare la UI con runOnUiThread
+                        runOnUiThread(() -> {
+                            parseProjectsContent(result.toString());
+                            // Aggiorna la UI se necessario
+                        });
+                    }
 
-                @Override
-                public void onError(Exception e) {
-                    // Gestisci l'errore
-                    runOnUiThread(() -> Log.e("S3Tree", "Errore durante la generazione dell'albero", e));
+                    @Override
+                    public void onError(Exception e) {
+                        // Gestisci l'errore
+                        runOnUiThread(() -> Log.e("S3Tree", "Errore durante la generazione dell'albero", e));
 
-                }
-            });
-        }else{
-                new CustomToast(Remote_Activity.this,"Not Logged In").show_error();
+                    }
+                });
+            } else {
+                new CustomToast(Remote_Activity.this, "Not Logged In").show_error();
             }
         });
         upload.setOnClickListener(view -> {
-            if (isAuthenticated){
+            if (isAuthenticated) {
+                DateFormat timeFormat = new SimpleDateFormat("HHmmssSS", Locale.getDefault());
+                String currentTimeString = timeFormat.format(new Date());
+                boolean isTheSame = false;
+                boolean isZero = false;
 
-            boolean isTheSame = false;
+                if (enExport && LocalFilePath != null) {
 
-            if (enExport && LocalFilePath != null) {
-
-                for (int i = 0; i < filesIN.size(); i++) {
-
-
-                    if (filesIN.get(i).getName().equals(adapterProj.getSelectedFilePath())) {
-                        isTheSame = true;
+                    for (int i = 0; i < filesIN.size(); i++) {
+                        if (adapterProj.size() == 0) {
+                            isZero = true;
+                        }
+                        if (filesIN.get(i).getName().equals(adapterProj.getSelectedFilePath())) {
+                            isTheSame = true;
+                        }
                     }
-                }
-                if (!isTheSame) {
+
                     if (isF) {
-                        s3Manager.uploadFolderToS3(APP_PATH + "/" + LocalFilePath, "serials/" + s + "/Projects/" + LocalFilePath, new S3ManagerSingleton.S3Callback() {
-                            @Override
-                            public void onSuccess(Map<String, Object> result) {
-                                runOnUiThread(() -> {
-                                    adapterProj.setSelectedItem(-1);
-                                    adapterMC.setSelectedItem(-1);
-                                    if (adapterMC != null) {
-                                        adapterMC.notifyDataSetChanged();
+                        if (!isZero) {
+                            if (!isTheSame) {
+                                s3Manager.uploadFolderToS3(APP_PATH + "/" + LocalFilePath, "serials/" + s + "/Projects/" + LocalFilePath, new S3ManagerSingleton.S3Callback() {
+                                    @Override
+                                    public void onSuccess(Map<String, Object> result) {
+                                        runOnUiThread(() -> {
+                                            adapterProj.setSelectedItem(-1);
+                                            adapterMC.setSelectedItem(-1);
+                                            if (adapterMC != null) {
+                                                adapterMC.notifyDataSetChanged();
+                                            }
+                                            if (adapterProj != null) {
+                                                adapterProj.notifyDataSetChanged();
+                                            }
+                                        });
                                     }
-                                    if (adapterProj != null) {
-                                        adapterProj.notifyDataSetChanged();
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        runOnUiThread(() -> Log.e("S3Manager:UploadFolder", "Errore durante il caricamento della cartella: " + e.getMessage(), e));
                                     }
                                 });
-                            }
+                            } else {
+                                String uniqueName = generateUniqueFolderName(LocalFilePath, filesIN);
 
-                            @Override
-                            public void onError(Exception e) {
-                                runOnUiThread(() -> Log.e("S3Manager:UploadFolder", "Errore durante il caricamento della cartella: " + e.getMessage(), e));
+                                s3Manager.uploadFolderToS3(
+                                        APP_PATH + "/" + LocalFilePath,
+                                        "serials/" + s + "/Projects/" + uniqueName,
+                                        new S3ManagerSingleton.S3Callback() {
+                                            @Override
+                                            public void onSuccess(Map<String, Object> result) {
+                                                runOnUiThread(() -> {
+                                                    adapterProj.setSelectedItem(-1);
+                                                    adapterMC.setSelectedItem(-1);
+                                                    if (adapterMC != null) adapterMC.notifyDataSetChanged();
+                                                    if (adapterProj != null) adapterProj.notifyDataSetChanged();
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onError(Exception e) {
+                                                runOnUiThread(() -> Log.e("S3Manager:UploadFolder", "Errore durante il caricamento della cartella: " + e.getMessage(), e));
+                                            }
+                                        }
+                                );
                             }
-                        });
+                        } else {
+                            new CustomToast(Remote_Activity.this, "Empty Folder").show_alert();
+                            adapterProj.setSelectedItem(-1);
+                        }
                     } else {
                         s3Manager.uploadFile(APP_PATH + "/" + LocalFilePath, "serials/" + s + "/Projects/" + LocalFilePath);
                     }
                     (new Handler()).postDelayed(this::refresha, 1000);
-                } else {
-                    new CustomToast(Remote_Activity.this, getResources().getString(R.string.file_exists)).show_alert();
-                    adapterProj.setSelectedItem(-1);
+
                 }
-            }
-            }else{
-                new CustomToast(Remote_Activity.this,"Not Logged In").show_error();
+            } else {
+                new CustomToast(Remote_Activity.this, "Not Logged In").show_error();
             }
         });
+/*
+        download.setOnClickListener(view -> {
+            if (isAuthenticated) {
+                if (enImport && RemoteFilePath != null) {
+
+                    String localBaseName = adapterMC.getSelectedFilePath();
+                    String localParentPath = APP_PATH; // percorso base locale
+                    String uniqueName = generateUniqueLocalName(localBaseName, localParentPath);
+
+                    if (isF) {
+                        // cartella
+                        s3Manager.downloadFolderFromS3(
+                                RemoteFilePath,
+                                localParentPath + "/" + uniqueName,
+                                new S3ManagerSingleton.S3Callback() {
+                                    @Override
+                                    public void onSuccess(Map<String, Object> result) {
+                                        runOnUiThread(() -> {
+                                            adapterProj.setSelectedItem(-1);
+                                            adapterMC.setSelectedItem(-1);
+                                            if (adapterMC != null) adapterMC.notifyDataSetChanged();
+                                            if (adapterProj != null) adapterProj.notifyDataSetChanged();
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        runOnUiThread(() -> Log.e("S3Manager:DownloadFolder",
+                                                "Errore durante il download della cartella: " + e.getMessage(), e));
+                                    }
+                                });
+                    } else {
+                        // file
+                        s3Manager.downloadFile(
+                                "serials/" + s + "/Projects/" + RemoteFilePath,
+                                localParentPath + "/" + uniqueName
+                        );
+                    }
+
+                    (new Handler()).postDelayed(this::refresha, 1000);
+
+                }
+            } else {
+                new CustomToast(Remote_Activity.this, "Not Logged In").show_error();
+            }
+        });
+*/
+
 
         download.setOnClickListener(view -> {
-            if (isAuthenticated){
-            boolean theSame = false;
-            if (enImport && RemoteFilePath != null) {
-                for (int i = 0; i < filesProj.size(); i++) {
+            if (isAuthenticated) {
+                boolean theSame = false;
+                if (enImport && RemoteFilePath != null) {
+                    for (int i = 0; i < filesProj.size(); i++) {
 
 
-                    if (filesProj.get(i).getName().equals(adapterMC.getSelectedFilePath())) {
-                        theSame = true;
+                        if (filesProj.get(i).getName().equals(adapterMC.getSelectedFilePath())) {
+                            theSame = true;
+                        }
                     }
-                }
-                if (!theSame) {
-                    if (isF) {
-                        s3Manager.downloadFolderFromS3(RemoteFilePath, APP_PATH + "/" + adapterMC.getSelectedFilePath(), new S3ManagerSingleton.S3Callback() {
-                            @Override
-                            public void onSuccess(Map<String, Object> result) {
-                                runOnUiThread(() -> {
-                                    // Log.d("S3Manager:DownloadFolder", "Cartella scaricata con successo: " + result.get("folderPath"));
-                                    adapterProj.setSelectedItem(-1);
-                                    adapterMC.setSelectedItem(-1);
-                                    if (adapterMC != null) {
-                                        adapterMC.notifyDataSetChanged();
-                                    }
-                                    if (adapterProj != null) {
-                                        adapterProj.notifyDataSetChanged();
-                                    }
-
-                                });
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                runOnUiThread(() -> Log.e("S3Manager:DownloadFolder", "Errore durante il download della cartella: " + e.getMessage(), e));
-                            }
-
-
-                        });
-                        //logica qui per capire quando ha finito
-
-
-                    } else {
-                        s3Manager.downloadFile("serials/" + s + "/Projects/" + RemoteFilePath, APP_PATH + "/" + RemoteFilePath);
-                    }
-                    (new Handler()).postDelayed(this::refresha, 1000);
-                } else {
-                    // Crea un nuovo AlertDialog.Builder
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Remote_Activity.this);
-                    builder.setTitle(R.string.file_exists);
-                    builder.setMessage(R.string.overwrite);
-                    builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-
+                    if (!theSame) {
                         if (isF) {
                             s3Manager.downloadFolderFromS3(RemoteFilePath, APP_PATH + "/" + adapterMC.getSelectedFilePath(), new S3ManagerSingleton.S3Callback() {
                                 @Override
                                 public void onSuccess(Map<String, Object> result) {
                                     runOnUiThread(() -> {
-                                        //Log.d("S3Manager:DownloadFolder", "Cartella scaricata con successo: " + result.get("folderPath"));
+                                        // Log.d("S3Manager:DownloadFolder", "Cartella scaricata con successo: " + result.get("folderPath"));
                                         adapterProj.setSelectedItem(-1);
                                         adapterMC.setSelectedItem(-1);
                                         if (adapterMC != null) {
@@ -316,24 +348,109 @@ public class Remote_Activity extends AppCompatActivity {
 
 
                             });
+                            //logica qui per capire quando ha finito
+
+
                         } else {
                             s3Manager.downloadFile("serials/" + s + "/Projects/" + RemoteFilePath, APP_PATH + "/" + RemoteFilePath);
                         }
                         (new Handler()).postDelayed(this::refresha, 1000);
-                    });
+                    } else {
+                        // Crea un nuovo AlertDialog.Builder
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Remote_Activity.this);
+                        builder.setTitle(R.string.file_exists+"  "+R.string.overwrite);
+                        builder.setMessage(R.string.overwrite);
+                        builder.setNeutralButton(R.string.copy_adding,(dialog, which) -> {
+                            if (isAuthenticated) {
+                                if (enImport && RemoteFilePath != null) {
 
-                    builder.setNegativeButton(R.string.no, (dialog, which) -> {
+                                    String localBaseName = adapterMC.getSelectedFilePath();
+                                    String localParentPath = APP_PATH; // percorso base locale
+                                    String uniqueName = generateUniqueLocalName(localBaseName, localParentPath);
 
-                        (new Handler()).postDelayed(this::refresha, 200);
-                    });
-                    builder.show();
+                                    if (isF) {
+                                        // cartella
+                                        s3Manager.downloadFolderFromS3(
+                                                RemoteFilePath,
+                                                localParentPath + "/" + uniqueName,
+                                                new S3ManagerSingleton.S3Callback() {
+                                                    @Override
+                                                    public void onSuccess(Map<String, Object> result) {
+                                                        runOnUiThread(() -> {
+                                                            adapterProj.setSelectedItem(-1);
+                                                            adapterMC.setSelectedItem(-1);
+                                                            if (adapterMC != null) adapterMC.notifyDataSetChanged();
+                                                            if (adapterProj != null) adapterProj.notifyDataSetChanged();
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Exception e) {
+                                                        runOnUiThread(() -> Log.e("S3Manager:DownloadFolder",
+                                                                "Errore durante il download della cartella: " + e.getMessage(), e));
+                                                    }
+                                                });
+                                    } else {
+                                        // file
+                                        s3Manager.downloadFile(
+                                                "serials/" + s + "/Projects/" + RemoteFilePath,
+                                                localParentPath + "/" + uniqueName
+                                        );
+                                    }
+
+                                    (new Handler()).postDelayed(this::refresha, 1000);
+
+                                }
+                            } else {
+                                new CustomToast(Remote_Activity.this, "Not Logged In").show_error();
+                            }
+                        });
+                        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
+
+                            if (isF) {
+                                s3Manager.downloadFolderFromS3(RemoteFilePath, APP_PATH + "/" + adapterMC.getSelectedFilePath(), new S3ManagerSingleton.S3Callback() {
+                                    @Override
+                                    public void onSuccess(Map<String, Object> result) {
+                                        runOnUiThread(() -> {
+                                            //Log.d("S3Manager:DownloadFolder", "Cartella scaricata con successo: " + result.get("folderPath"));
+                                            adapterProj.setSelectedItem(-1);
+                                            adapterMC.setSelectedItem(-1);
+                                            if (adapterMC != null) {
+                                                adapterMC.notifyDataSetChanged();
+                                            }
+                                            if (adapterProj != null) {
+                                                adapterProj.notifyDataSetChanged();
+                                            }
+
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        runOnUiThread(() -> Log.e("S3Manager:DownloadFolder", "Errore durante il download della cartella: " + e.getMessage(), e));
+                                    }
+
+
+                                });
+                            } else {
+                                s3Manager.downloadFile("serials/" + s + "/Projects/" + RemoteFilePath, APP_PATH + "/" + RemoteFilePath);
+                            }
+                            (new Handler()).postDelayed(this::refresha, 1000);
+                        });
+
+                        builder.setNegativeButton(R.string.no, (dialog, which) -> {
+
+                            (new Handler()).postDelayed(this::refresha, 200);
+                        });
+                        builder.show();
+                    }
+
                 }
-
-            }
-            }else{
-                new CustomToast(Remote_Activity.this,"Not Logged In").show_error();
+            } else {
+                new CustomToast(Remote_Activity.this, "Not Logged In").show_error();
             }
         });
+
         back.setOnClickListener(view -> {
             back.setEnabled(false);
             startActivity(new Intent(this, Activity_Home_Page.class));
@@ -534,6 +651,41 @@ public class Remote_Activity extends AppCompatActivity {
             });
 
         }
+    }
+    private String generateUniqueFolderName(String baseName, List<ProjectFileAdapter.FileItem> existingFiles) {
+        Set<String> existingNames = new HashSet<>();
+        for (ProjectFileAdapter.FileItem f : existingFiles) {
+            existingNames.add(f.getName());
+        }
+
+        if (!existingNames.contains(baseName)) {
+            return baseName;
+        }
+
+        int counter = 1;
+        String newName;
+        do {
+            newName = baseName + " (" + counter + ")";
+            counter++;
+        } while (existingNames.contains(newName));
+
+        return newName;
+    }
+    private String generateUniqueLocalName(String baseName, String parentPath) {
+        File baseFile = new File(parentPath, baseName);
+
+        if (!baseFile.exists()) {
+            return baseName;
+        }
+
+        int counter = 1;
+        String newName;
+        do {
+            newName = baseName + " (" + counter + ")";
+            counter++;
+        } while (new File(parentPath, newName).exists());
+
+        return newName;
     }
 
 

@@ -17,6 +17,9 @@
     <string name="en_uhf_ntrip">COMMUTA UHF/NTRIP</string>
     <string name="uppaer_bar">BARRA SUPERIORE SEMPRE VISIBILE NELLA PAGINA DI LAVORO</string>
     <string name="interface_type">TIPO DI INTERFACCIA IDRAULICA</string>
+    <string name="language">LINGUA</string>
+    <string name="lasermode">ESCAVATORE MODALITÀ LASER 2D</string>
+    <string name="copy_adding">COPIA AGGIUNGENDO\nNUMERO PROGRESSIVO</string>
 
 
     <string name="save">SALVA</string>

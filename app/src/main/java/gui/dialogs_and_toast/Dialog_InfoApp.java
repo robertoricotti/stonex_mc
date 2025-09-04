@@ -44,7 +44,7 @@ public class Dialog_InfoApp {
             WindowManager.LayoutParams wlp = window.getAttributes();
             wlp.gravity = Gravity.CENTER;
             wlp.dimAmount = 0.7f; //  Offusca sfondo (0 = nessun dim, 1 = nero pieno)
-            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); // 🔹 Applica dim
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); //  Applica dim
             window.setAttributes(wlp);
         }
         WindowManager.LayoutParams wlp = window.getAttributes();

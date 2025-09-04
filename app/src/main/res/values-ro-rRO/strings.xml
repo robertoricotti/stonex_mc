@@ -18,6 +18,9 @@
     <string name="en_uhf_ntrip">COMMUTARE UHF/NTRIP</string>
     <string name="uppaer_bar">BARE SUPERIOARĂ ÎNTOTDEAUNA VIZIBILĂ ÎN PAGINA DE LUCRU</string>
     <string name="interface_type">TIP INTERFAȚĂ HIDRAULICĂ</string>
+    <string name="language">LIMBĂ</string>
+    <string name="lasermode">MODUL LASER 2D EXCAVATOR</string>
+    <string name="copy_adding">COPIERE ADĂUGARE\nNUMĂR PROGRESIV</string>
 
 
     <string name="save">SALVEAZĂ</string>

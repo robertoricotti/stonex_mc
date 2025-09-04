@@ -50,6 +50,7 @@ public class Dialog_Edit_Zeta_DXF {
 
         alertDialog = builder.create();
         alertDialog.setCancelable(true);
+        alertDialog.setCanceledOnTouchOutside(true);
         Window window = alertDialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo

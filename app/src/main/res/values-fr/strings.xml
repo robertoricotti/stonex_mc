@@ -17,6 +17,9 @@
     <string name="en_uhf_ntrip">BASCULER UHF/NTRIP</string>
     <string name="uppaer_bar">BARRE SUPÉRIEURE TOUJOURS VISIBLE DANS LA PAGE DE TRAVAIL</string>
     <string name="interface_type">TYPE D’INTERFACE HYDRAULIQUE</string>
+    <string name="language">LANGUE</string>
+    <string name="lasermode">MODE LASER 2D PELLE</string>
+    <string name="copy_adding">COPIE AJOUTÉE\nNUMÉRO PROGRESSIF</string>
 
 
     <string name="save">SAUVER</string>

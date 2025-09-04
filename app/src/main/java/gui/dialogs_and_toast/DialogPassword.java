@@ -52,6 +52,7 @@ public class DialogPassword {
         this.whoCall=whoCall;
         FullscreenActivity.setFullScreen(dialog);
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo

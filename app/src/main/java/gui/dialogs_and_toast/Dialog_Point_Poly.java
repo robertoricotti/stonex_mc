@@ -71,6 +71,7 @@ public class Dialog_Point_Poly {
         dialog.create();
         dialog.setContentView(R.layout.dialog_point_poly);
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente

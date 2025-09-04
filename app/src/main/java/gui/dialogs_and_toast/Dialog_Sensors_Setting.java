@@ -36,6 +36,7 @@ public class Dialog_Sensors_Setting {
         dialog.setContentView(R.layout.dialog_sensors_config);
 
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo

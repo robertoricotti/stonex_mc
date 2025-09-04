@@ -67,7 +67,10 @@
     <string name="boom2_calibration">BOOM 2 CALIBRATION</string>
     <string name="boom1_calibration">BOOM 1 CALIBRATION</string>
     <string name="tilt_calibration">TILT CALIBRATION</string>
-    <string name="height_deadband">HEIGHT DB</string>
+    <string name="height_deadband">ELEVATION DB</string>
+    <string name="language">LANGUAGE</string>
+    <string name="lasermode">EXCAVATOR 2D LASER MODE</string>
+    <string name="copy_adding">COPY ADDING\nPROGRESSIVE NUMBER</string>
     <string name="flat_angle_deadband">ANGLE DB</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>

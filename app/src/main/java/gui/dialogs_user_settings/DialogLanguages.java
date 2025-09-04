@@ -61,7 +61,6 @@ public class DialogLanguages {
     private void init() {
         dialog.create();
         dialog.setContentView(R.layout.dialog_languages);
-        dialog.setCancelable(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente
@@ -80,6 +79,9 @@ public class DialogLanguages {
         int width = (int) (displayMetrics.widthPixels * 0.75);
         int height = (int) (displayMetrics.heightPixels * 0.75);
         dialog.getWindow().setLayout(width, height);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCanceledOnTouchOutside(true);
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
         findView();

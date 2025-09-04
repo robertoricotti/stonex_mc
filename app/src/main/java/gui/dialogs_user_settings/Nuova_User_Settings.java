@@ -8,7 +8,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,20 +34,18 @@ public class Nuova_User_Settings extends AppCompatActivity {
     DialogAudioSystem dialogAudioSystem;
     DialogHeightAlarm dialogHeightAlarm;
     DialogPassword dialogPassword;
-    CustomNumberDialogFtIn customNumberDialogFtIn;
     DialogInvertColors dialogInvertColors;
-    DialogDeadbandFlatAngle dialogDeadbandFlatAngle;
-    DialogDeadbandH dialogDeadbandH;
     DialogLanguages dialogLanguages;
     DialogUnitOfMeasure dialogUnitOfMeasure;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_InfoApp dialogInfoApp;
     DialogColors dialogColors;
-    TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue,tvVert,tvAng,stepValue,tvoffstep;
+    TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue, tvVert, tvAng, stepValue, tvoffstep;
     TextView tvVertValue;
-    ImageView imgLocale, imgLse, imgCutFill,but_piu,but_meno;
-    String intLang="";
+    ImageView imgLocale, imgLse, imgCutFill, but_piu, but_meno, but_piu_db, but_meno_db, but_piu_an, but_meno_an;
+    String intLang = "";
     int indexAudioSelected;
+    double myStep,myStepAngle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,18 +61,16 @@ public class Nuova_User_Settings extends AppCompatActivity {
         onClick();
         updateUI();
 
+
     }
 
     private void findView() {
-        dialogAudioSystem=new DialogAudioSystem(this);
-        dialogPassword=new DialogPassword(this);
-        dialogHeightAlarm=new DialogHeightAlarm(this);
-        dialogInvertColors=new DialogInvertColors(this);
-        customNumberDialogFtIn=new CustomNumberDialogFtIn(this,666);
-        dialogDeadbandFlatAngle=new DialogDeadbandFlatAngle(this);
-        dialogDeadbandH =new DialogDeadbandH(this);
-        dialogLanguages=new DialogLanguages(this);
-        dialogUnitOfMeasure=new DialogUnitOfMeasure(this);
+        dialogAudioSystem = new DialogAudioSystem(this);
+        dialogPassword = new DialogPassword(this);
+        dialogHeightAlarm = new DialogHeightAlarm(this);
+        dialogInvertColors = new DialogInvertColors(this);
+        dialogLanguages = new DialogLanguages(this);
+        dialogUnitOfMeasure = new DialogUnitOfMeasure(this);
         dialogColors = new DialogColors(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogInfoApp = new Dialog_InfoApp(this);
@@ -93,12 +88,16 @@ public class Nuova_User_Settings extends AppCompatActivity {
         imgLocale = findViewById(R.id.imgLocale);
         imgLse = findViewById(R.id.imgLse);
         imgCutFill = findViewById(R.id.imgCutFill);
-        tvVert=findViewById(R.id.tvVert);
-        tvAng=findViewById(R.id.tvAng);
-        stepValue=findViewById(R.id.tvOffStepValue);
-        tvoffstep=findViewById(R.id.tvoffstep);
-        but_piu=findViewById(R.id.but_piu);
-        but_meno=findViewById(R.id.but_meno);
+        tvVert = findViewById(R.id.tvVert);
+        tvAng = findViewById(R.id.tvAng);
+        stepValue = findViewById(R.id.tvOffStepValue);
+        tvoffstep = findViewById(R.id.tvoffstep);
+        but_piu = findViewById(R.id.but_piu);
+        but_meno = findViewById(R.id.but_meno);
+        but_piu_db=findViewById(R.id.but_piu_db);
+        but_meno_db=findViewById(R.id.but_meno_db);
+        but_piu_an=findViewById(R.id.but_piu_ang);
+        but_meno_an=findViewById(R.id.but_meno_ang);
 
     }
 
@@ -110,17 +109,48 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
     private void onClick() {
         but_piu.setOnClickListener(view -> {
-            DataSaved.Off_Incr_Step+=0.005;
-            MyData.push("Off_Incr_Step",String.valueOf(DataSaved.Off_Incr_Step));
+            DataSaved.Off_Incr_Step += myStep;
+            MyData.push("Off_Incr_Step", String.valueOf(DataSaved.Off_Incr_Step));
 
         });
         but_meno.setOnClickListener(view -> {
-
-            if(DataSaved.Off_Incr_Step>0.005){
-                DataSaved.Off_Incr_Step-=0.005;
+            if (DataSaved.Off_Incr_Step > 0) {
+                DataSaved.Off_Incr_Step -= myStep;
             }
-            MyData.push("Off_Incr_Step",String.valueOf(DataSaved.Off_Incr_Step));
+            if(DataSaved.Off_Incr_Step<=myStep)DataSaved.Off_Incr_Step=myStep;
+            MyData.push("Off_Incr_Step", String.valueOf(DataSaved.Off_Incr_Step));
         });
+        /// //////////////////////////////////
+        but_piu_db.setOnClickListener(view -> {
+            DataSaved.deadbandH += myStep;
+            MyData.push("Deadband_H", String.valueOf(DataSaved.deadbandH));
+
+        });
+        but_meno_db.setOnClickListener(view -> {
+
+            if (DataSaved.deadbandH > 0) {
+                DataSaved.deadbandH -= myStep;
+            }
+            if(DataSaved.deadbandH<=myStep)DataSaved.deadbandH=myStep;
+            MyData.push("Deadband_H", String.valueOf(DataSaved.deadbandH));
+        });
+        /// //////////////////////////////////
+
+        but_piu_an.setOnClickListener(view -> {
+            DataSaved.deadbandFlatAngle += myStepAngle;
+            MyData.push("Deadband_FlatAngle", String.valueOf(DataSaved.deadbandFlatAngle));
+
+        });
+
+        but_meno_an.setOnClickListener(view -> {
+
+            if (DataSaved.deadbandFlatAngle > 0) {
+                DataSaved.deadbandFlatAngle -= myStepAngle;
+            }
+            if(DataSaved.deadbandFlatAngle<=myStepAngle)DataSaved.deadbandFlatAngle=myStepAngle;
+            MyData.push("Deadband_FlatAngle", String.valueOf(DataSaved.deadbandFlatAngle));
+        });
+
         tvAudioValue.setOnClickListener(view -> {
             if (!dialogAudioSystem.alertDialog.isShowing()) {
                 dialogAudioSystem.show();
@@ -150,33 +180,20 @@ public class Nuova_User_Settings extends AppCompatActivity {
             }
         });
         imgCutFill.setOnClickListener(view -> {
-            if(!dialogInvertColors.dialog.isShowing()){
+            if (!dialogInvertColors.dialog.isShowing()) {
                 dialogInvertColors.show();
             }
         });
-        tvAngValue.setOnClickListener(view -> {
-            if(!dialogDeadbandFlatAngle.dialog.isShowing()){
-                dialogDeadbandFlatAngle.show();
-            }
-        });
-        tvVertValue.setOnClickListener(view -> {
-            if(MyData.get_String("Unit_Of_Measure").equals("4")||MyData.get_String("Unit_Of_Measure").equals("5")){
-                if(!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.showTV(tvVertValue);
-                }
-            }else {
-                if (!dialogDeadbandH.dialog.isShowing()) {
-                    dialogDeadbandH.show();
-                }
-            }
-        });
+
+
+
         imgLocale.setOnClickListener(view -> {
-            if(!dialogLanguages.dialog.isShowing()){
+            if (!dialogLanguages.dialog.isShowing()) {
                 dialogLanguages.show();
             }
         });
         tvUomValue.setOnClickListener(view -> {
-            if(!dialogUnitOfMeasure.alertDialog.isShowing()){
+            if (!dialogUnitOfMeasure.alertDialog.isShowing()) {
                 dialogUnitOfMeasure.show();
             }
         });
@@ -245,10 +262,8 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     break;
 
             }
-            tvVert.setText(getString(R.string.height_deadband)+"  (+/-) ");
-            tvAng.setText(getString(R.string.flat_angle_deadband)+"  (+/-) ");
-            tvAngValue.setText(Utils.readAngolo(MyData.get_String("Deadband_FlatAngle") ) +  Utils.getGradiSimbol());
-            tvVertValue.setText(Utils.readSensorCalibration(MyData.get_String("Deadband_H"))+Utils.getMetriSimbol());
+            tvVert.setText(getString(R.string.height_deadband) + "  (+/-) ");
+            tvAng.setText(getString(R.string.flat_angle_deadband) + "  (+/-) ");
             tvBrightValue.setText(String.format("%.0f", DataSaved.myBrightness * 100) + "%");
             tvUomValue.setText(Utils.getMetriSimbol().replace("[", "").replace("]", "") + " / " + Utils.getGradiSimbol());
             switch (intLang) {
@@ -295,7 +310,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     imgLocale.setImageResource(R.drawable.baseline_help_96);
                     break;
             }
-            switch (DataSaved.colorMode){
+            switch (DataSaved.colorMode) {
                 case 0:
                     imgCutFill.setImageResource(R.drawable.cutfillred);
                     break;
@@ -305,10 +320,72 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     break;
             }
 
-            stepValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Off_Incr_Step)));
-            tvoffstep.setText("EXTERNAL OFFSET STEP "+Utils.getMetriSimbol());
+            int myInt = MyData.get_Int("Unit_Of_Measure");
+
+            switch (myInt) {
+                case 0:
+                    myStepAngle=0.1;
+                    tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
+                    tvVertValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    stepValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    myStep=0.005;
+                    break;
+                case 1:
+                    myStepAngle=0.055;
+                    tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
+                    tvVertValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    stepValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    myStep=0.005;
+                    break;
+
+                case 2:
+                    myStepAngle=0.1;
+                    tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    myStep=0.0033;
+                    break;
+                case 3:
+                    myStepAngle=0.055;
+                    tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    myStep=0.0033;
+                    break;
+
+                case 4:
+                    myStepAngle=0.1;
+                    tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    myStep=0.0033;
+                    break;
+                case 5:
+                    myStepAngle=0.055;
+                    tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    myStep=0.0033;
+                    break;
+                case 6:
+                    myStepAngle=0.1;
+                    tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    myStep=0.0033;
+                    break;
+                case 7:
+                    myStepAngle=0.055;
+                    tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
+                    myStep=0.0033;
+                    break;
+            }
+
+            tvoffstep.setText("EXTERNAL OFFSET STEP Inc/Dec");
         } catch (Exception ex) {
-            MyData.push("Deadband_H","0.025");
+            Log.e("UserMenu",Log.getStackTraceString(ex));
         }
     }
 

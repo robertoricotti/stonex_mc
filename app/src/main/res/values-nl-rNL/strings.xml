@@ -17,6 +17,9 @@
     <string name="en_uhf_ntrip">UHF/NTRIP SCHAKELEN</string>
     <string name="uppaer_bar">BOVENBALK ALTIJD ZICHTBAAR OP WERKPAGINA</string>
     <string name="interface_type">TYPE HYDRAULISCHE INTERFACE</string>
+    <string name="language">TAAL</string>
+    <string name="lasermode">GRAAFMACHINE 2D-LASERMODUS</string>
+    <string name="copy_adding">KOPIE TOEVOEGEN\nOPLOPEND NUMMER</string>
 
     <string name="save">OPSLAAN</string>
     <string name="exit">AFSLUITEN</string>

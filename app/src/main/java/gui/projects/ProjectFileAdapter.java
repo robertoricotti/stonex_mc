@@ -200,6 +200,9 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
         return isFold;
     }
+    public long size(){
+        return files.get(selectedItem).getSize();
+    }
 
 
     public void renameSelectedFile( String pat,String newName) {
