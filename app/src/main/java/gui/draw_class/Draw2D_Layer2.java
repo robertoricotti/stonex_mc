@@ -252,7 +252,7 @@ public class Draw2D_Layer2 extends View {
             for (int i = 0; i < pointsStick.size(); i++) {
                 pointsStick.set(i, new PointF(pointsStick.get(i).x + offsXStick, pointsStick.get(i).y + offsYStick));
             }
-            paint.setColor(Color.TRANSPARENT);
+            paint.setColor(MyColorClass.colorStick);
 
 
             canvas.drawCircle(pointsStick.get(2).x, pointsStick.get(2).y, stickWidth, paint);

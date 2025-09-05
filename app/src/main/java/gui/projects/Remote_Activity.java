@@ -51,7 +51,7 @@ public class Remote_Activity extends AppCompatActivity {
     ArrayList<ProjectFileAdapter.FileItem> filesProj, filesIN;
     ProjectFileAdapter adapterProj, adapterMC;
     List<String> serials = List.of("");
-    String s;
+    String serialNumber;
     private Handler handler;
     private boolean mRunning = true;
     final String APP_PATH = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
@@ -73,15 +73,15 @@ public class Remote_Activity extends AppCompatActivity {
         recyclerProj = findViewById(R.id.recycler_view_proj);
         recyclerIn = findViewById(R.id.recycler_view_in);
 
-        s = "";
+        serialNumber = "";
         if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             Apollo2 apollo2 = Apollo2.getInstance(this);
-            s = apollo2.getDeviceSN();
+            serialNumber = apollo2.getDeviceSN();
         } else {
             ApolloPro apolloPro = ApolloPro.getInstance(this);
-            s = apolloPro.getDeviceSN();
+            serialNumber = apolloPro.getDeviceSN();
         }
-        serials = List.of(s);
+        serials = List.of(serialNumber);
 
         download = findViewById(R.id.download);
         upload = findViewById(R.id.upload);
@@ -132,7 +132,7 @@ public class Remote_Activity extends AppCompatActivity {
                 download.setEnabled(true);
                 download.setAlpha(1.0f);
                 isF = adapterMC.isFold();
-                RemoteFilePath = "serials/" + s + "/Projects/" + adapterMC.getSelectedFilePath();
+                RemoteFilePath = "serials/" + serialNumber + "/Projects/" + adapterMC.getSelectedFilePath();
             } else {
                 RemoteFilePath = null;
                 download.setEnabled(false);
@@ -204,7 +204,7 @@ public class Remote_Activity extends AppCompatActivity {
                     if (isF) {
                         if (!isZero) {
                             if (!isTheSame) {
-                                s3Manager.uploadFolderToS3(APP_PATH + "/" + LocalFilePath, "serials/" + s + "/Projects/" + LocalFilePath, new S3ManagerSingleton.S3Callback() {
+                                s3Manager.uploadFolderToS3(APP_PATH + "/" + LocalFilePath, "serials/" + serialNumber + "/Projects/" + LocalFilePath, new S3ManagerSingleton.S3Callback() {
                                     @Override
                                     public void onSuccess(Map<String, Object> result) {
                                         runOnUiThread(() -> {
@@ -229,7 +229,7 @@ public class Remote_Activity extends AppCompatActivity {
 
                                 s3Manager.uploadFolderToS3(
                                         APP_PATH + "/" + LocalFilePath,
-                                        "serials/" + s + "/Projects/" + uniqueName,
+                                        "serials/" + serialNumber + "/Projects/" + uniqueName,
                                         new S3ManagerSingleton.S3Callback() {
                                             @Override
                                             public void onSuccess(Map<String, Object> result) {
@@ -253,7 +253,7 @@ public class Remote_Activity extends AppCompatActivity {
                             adapterProj.setSelectedItem(-1);
                         }
                     } else {
-                        s3Manager.uploadFile(APP_PATH + "/" + LocalFilePath, "serials/" + s + "/Projects/" + LocalFilePath);
+                        s3Manager.uploadFile(APP_PATH + "/" + LocalFilePath, "serials/" + serialNumber + "/Projects/" + LocalFilePath);
                     }
                     (new Handler()).postDelayed(this::refresha, 1000);
 
@@ -296,7 +296,7 @@ public class Remote_Activity extends AppCompatActivity {
                     } else {
                         // file
                         s3Manager.downloadFile(
-                                "serials/" + s + "/Projects/" + RemoteFilePath,
+                                "serials/" + serialNumber + "/Projects/" + RemoteFilePath,
                                 localParentPath + "/" + uniqueName
                         );
                     }
@@ -352,7 +352,7 @@ public class Remote_Activity extends AppCompatActivity {
 
 
                         } else {
-                            s3Manager.downloadFile("serials/" + s + "/Projects/" + RemoteFilePath, APP_PATH + "/" + RemoteFilePath);
+                            s3Manager.downloadFile("serials/" + serialNumber + "/Projects/" + RemoteFilePath, APP_PATH + "/" + RemoteFilePath);
                         }
                         (new Handler()).postDelayed(this::refresha, 1000);
                     } else {
@@ -393,7 +393,7 @@ public class Remote_Activity extends AppCompatActivity {
                                     } else {
                                         // file
                                         s3Manager.downloadFile(
-                                                "serials/" + s + "/Projects/" + RemoteFilePath,
+                                                "serials/" + serialNumber + "/Projects/" + RemoteFilePath,
                                                 localParentPath + "/" + uniqueName
                                         );
                                     }
@@ -433,7 +433,7 @@ public class Remote_Activity extends AppCompatActivity {
 
                                 });
                             } else {
-                                s3Manager.downloadFile("serials/" + s + "/Projects/" + RemoteFilePath, APP_PATH + "/" + RemoteFilePath);
+                                s3Manager.downloadFile("serials/" + serialNumber + "/Projects/" + RemoteFilePath, APP_PATH + "/" + RemoteFilePath);
                             }
                             (new Handler()).postDelayed(this::refresha, 1000);
                         });
@@ -612,7 +612,7 @@ public class Remote_Activity extends AppCompatActivity {
         if (braceIndex != -1) {
             String folderName = entry.substring(0, braceIndex).trim();
 
-            s3Manager.getFolderSize("serials/" + s + "/Projects/" + folderName, new S3ManagerSingleton.S3Callback() {
+            s3Manager.getFolderSize("serials/" + serialNumber + "/Projects/" + folderName, new S3ManagerSingleton.S3Callback() {
                 @Override
                 public void onSuccess(Map<String, Object> result) {
                     folderSize = (long) result.get("size");
@@ -633,7 +633,7 @@ public class Remote_Activity extends AppCompatActivity {
             // Riconosce un file
             String fileName = entry.substring(0, entry.indexOf("=null")).trim();
 
-            s3Manager.getFileSize("serials/" + s + "/Projects/" + fileName, new S3ManagerSingleton.S3Callback() {
+            s3Manager.getFileSize("serials/" + serialNumber + "/Projects/" + fileName, new S3ManagerSingleton.S3Callback() {
                 @Override
                 public void onSuccess(Map<String, Object> result) {
 
