@@ -700,6 +700,14 @@ public class My3DActivity extends BaseClass {
     public void updateUI() {
 
         try {
+            if (sideBar.getVisibility() == View.GONE) {
+                btn_hide.setVisibility(View.GONE);
+                btn_show.setVisibility(View.VISIBLE);
+
+            } else {
+                btn_hide.setVisibility(View.VISIBLE);
+                btn_show.setVisibility(View.GONE);
+            }
             if(DataSaved.lock3dRotation>0){
                 gl_lock3d.setImageTintList(ColorStateList.valueOf(Color.GRAY));
             }else {
@@ -772,15 +780,7 @@ public class My3DActivity extends BaseClass {
                 bucketEdge.setBackground(getDrawable(R.drawable.custom_background_test3d));
             }
 
-            if (sideBar.getVisibility() == View.GONE) {
 
-                btn_hide.setVisibility(View.GONE);
-                btn_show.setVisibility(View.VISIBLE);
-
-            } else {
-                btn_hide.setVisibility(View.VISIBLE);
-                btn_show.setVisibility(View.GONE);
-            }
             gl_vista.setImageTintList(ColorStateList.valueOf(Color.WHITE));
 
             if (DataSaved.gpsOk && errorCode == 0) {
@@ -794,14 +794,7 @@ public class My3DActivity extends BaseClass {
             } else {
                 gl_pan_pinch.setImageResource(R.drawable.baseline_swipe_96);
             }
-            if (glVista3d) {
 
-                gl_vista.setImageResource(R.drawable.tredi_vista);
-            } else {
-                isPan = true;
-                gl_vista.setImageResource(R.drawable.duedi_vista);
-
-            }
             if (DataSaved.showAlign > 0) {
                 btn_croce.setImageTintList(ColorStateList.valueOf(Color.GREEN));
             } else {
@@ -856,8 +849,11 @@ public class My3DActivity extends BaseClass {
         view2.setBackgroundColor(MyColorClass.colorConstraint);
         if (glVista3d) {
             freccia.setVisibility(View.INVISIBLE);
+            gl_vista.setImageResource(R.drawable.tredi_vista);
         } else {
             freccia.setVisibility(View.VISIBLE);
+            isPan = true;
+            gl_vista.setImageResource(R.drawable.duedi_vista);
         }
         int colorUp = 0, colorDown=0, colorGreen=0;
         int colorUpCF, colorDownCF, colorGreenCF;
@@ -894,7 +890,7 @@ public class My3DActivity extends BaseClass {
             }
         } else {
             txtCutFill.setVisibility(View.VISIBLE);
-            if((MyData.get_Int("digStartUp") == 1)) {
+            if((MyData.get_Int("UpperBar_Visible") == 1)) {
                 boxLeft.setVisibility(View.VISIBLE);
                 boxRight.setVisibility(View.VISIBLE);
                 if(DataSaved.isAutoSnap>0) {

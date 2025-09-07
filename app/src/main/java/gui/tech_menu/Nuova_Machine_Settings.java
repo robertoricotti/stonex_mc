@@ -178,11 +178,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             ckUpper.setChecked(!ckUpper.isChecked());
             if (ckUpper.isChecked()) {
                 ckUpper.setChecked(false);
-                MyData.push("digStartUp", "0");
+                MyData.push("UpperBar_Visible", "0");
 
             } else if (!ckUpper.isChecked()) {
                 ckUpper.setChecked(true);
-                MyData.push("digStartUp", "1");
+                MyData.push("UpperBar_Visible", "1");
 
             }
         });
@@ -651,7 +651,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ckDO.setChecked(MyData.get_Int("M" + machineSel + "_enOUT") != 0);
         ckIMU.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 3);//TSM
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag
-        ckUpper.setChecked(MyData.get_Int("digStartUp") == 1);
+        ckUpper.setChecked(MyData.get_Int("UpperBar_Visible") == 1);
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);
         ckMach.setChecked(MyData.get_Int("drwaMachieSchema")==1);
         techInfo.setText(MyData.get_String("techInfo"));

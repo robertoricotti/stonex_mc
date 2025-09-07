@@ -51,7 +51,7 @@ public class CanSender extends Service {
     int connections = 0;
     int isTechCount, startCanopen;
     public static byte onGrade, d0;
-    //private ScheduledExecutorService senderExecutorGrade_50;
+    private ScheduledExecutorService senderExecutorGrade_50;
     private ScheduledExecutorService senderExecutor500;
     private ScheduledExecutorService senderExecutor2000;
     private ScheduledExecutorService scheduledExecutorService1min;
@@ -90,22 +90,22 @@ public class CanSender extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         senderExecutor500 = Executors.newSingleThreadScheduledExecutor();
         senderExecutor2000 = Executors.newSingleThreadScheduledExecutor();
-        //senderExecutorGrade_50 = Executors.newSingleThreadScheduledExecutor();
+        senderExecutorGrade_50 = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService1min = Executors.newSingleThreadScheduledExecutor();
 
         senderExecutor500.scheduleAtFixedRate(new AsyncSender500(), 1000, 500, TimeUnit.MILLISECONDS);
         senderExecutor2000.scheduleAtFixedRate(new AsyncSender2000(), 1000, 2000, TimeUnit.MILLISECONDS);
-        //senderExecutorGrade_50.scheduleAtFixedRate(new gradeSender(), 2000, 50, TimeUnit.MILLISECONDS);
+        senderExecutorGrade_50.scheduleAtFixedRate(new gradeSender(), 2000, 50, TimeUnit.MILLISECONDS);
         scheduledExecutorService1min.scheduleAtFixedRate(new AsyncSender1min(), 1000, 60000, TimeUnit.MILLISECONDS);
         return START_STICKY;
     }
 
-  /*  private class gradeSender implements Runnable {
+    private class gradeSender implements Runnable {
 
         @Override
         public void run() {
 
-            if (MyApp.licenseType == 5) {
+           /* if (MyApp.licenseType == 5) {
                 try {
 
                     slope = UnitsConversion.limitInt((int) (ExcavatorLib.correctRoll * 100), Short.MIN_VALUE, Short.MAX_VALUE);
@@ -137,10 +137,23 @@ public class CanSender extends Service {
                 } catch (Exception e) {
                     MyDeviceManager.CanWrite(1, 2049, 8, new byte[]{-1, -1, -1, -1, -1, -1, -1, -1});
                 }
+            }*/
+            if (DataSaved.my_comPort == 4) {
+                new SerialEvent(NmeaGenerator.generateLLQ());
+                new SerialEvent(NmeaGenerator.generateGPHDT());
+                new SerialEvent(NmeaGenerator.generateGPGGA());
+                if (MyApp.visibleActivity instanceof Serial_Msg_Debug) {
+                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
+                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
+                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
+                }
+                NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
+                NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
+                NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
             }
         }
 
-    }*/
+    }
 
     private class AsyncSender1min implements Runnable {
         @SuppressLint("NewApi")
@@ -177,19 +190,7 @@ public class CanSender extends Service {
         @Override
         public void run() {
 
-            if (DataSaved.my_comPort == 4) {
-                new SerialEvent(NmeaGenerator.generateLLQ());
-                new SerialEvent(NmeaGenerator.generateGPHDT());
-                new SerialEvent(NmeaGenerator.generateGPGGA());
-                if (MyApp.visibleActivity instanceof Serial_Msg_Debug) {
-                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
-                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
-                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
-                }
-                NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
-                NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
-                NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
-            }
+
             try {
                 switch (DataSaved.my_comPort) {
                     case 0:
@@ -325,10 +326,9 @@ public class CanSender extends Service {
 
         if (senderExecutor2000 != null) {
             senderExecutor2000.shutdown();
+        }if (senderExecutorGrade_50 != null) {
+            senderExecutorGrade_50.shutdown();
         }
-       // if (senderExecutorGrade_50 != null) {
-        //    senderExecutorGrade_50.shutdown();
-        //}
         if (scheduledExecutorService1min != null) {
             scheduledExecutorService1min.shutdown();
         }

@@ -82,8 +82,13 @@ public class ExcavatorLib {
 
 
 
+
             if(DataSaved.Extra_Heading!=0){
-                swing_boom_angle=NmeaListener.roof_Orientation-(NmeaListener.mch_Orientation+DataSaved.deltaGPS2);
+                if(NmeaListener.roof_Orientation!=999.999) {
+                    swing_boom_angle = NmeaListener.roof_Orientation - (NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+                }else {
+                    swing_boom_angle=0;
+                }
             }else {
                 swing_boom_angle=0;
             }

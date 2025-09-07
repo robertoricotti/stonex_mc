@@ -232,18 +232,18 @@ public class Sensors_Decoder {
                                     switch (DataSaved.lrStick) {
                                         case 1:
                                             Deg_stick = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            Deg_Boom_Roll = -Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI;
+                                            Deg_Boom_Roll =movingAverage( -Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
                                             break;
                                         case -1:
                                             Deg_stick = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            Deg_Boom_Roll = Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI;
+                                            Deg_Boom_Roll =movingAverage( Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
                                             break;
                                         default:
                                             Deg_stick = 0d;
                                             Deg_Boom_Roll = 0;
                                             break;
                                     }
-                                    Deg_Boom_Roll = movingAverage(Deg_Boom_Roll);
+
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
@@ -374,7 +374,8 @@ public class Sensors_Decoder {
 
 
                                     // Visualizza il valore dello yaw
-                                    Deg_Yaw_Tilt = yawDegrees;
+                                    Deg_Yaw_Tilt = movingAverage(yawDegrees);
+
 
 
                                     break;

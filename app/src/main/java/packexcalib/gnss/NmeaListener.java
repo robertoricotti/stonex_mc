@@ -207,6 +207,7 @@ static  Deg2UTM deg2UTM1;
                                 }
                             }else {
                                 try {
+
                                     roof_Orientation = Double.parseDouble(NmeaInput[1]);
 
                                     if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
@@ -218,6 +219,7 @@ static  Deg2UTM deg2UTM1;
                                     roof_Orientation = 999.999;
 
                                 }
+
                             }
                             if(DataSaved.portView<2) {
                                 if (DataSaved.my_comPort == 1 || DataSaved.my_comPort == 2|| DataSaved.my_comPort == 3) {

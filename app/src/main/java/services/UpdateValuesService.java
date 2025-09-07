@@ -613,7 +613,7 @@ public class UpdateValuesService extends Service {
                 String projFlag = MyData.get_String("projectionFlag");
                 String lan = MyData.get_String("language");
                 String techInfo = MyData.get_String("techInfo");
-                String digStartup = MyData.get_String("digStartUp");
+                String UpperBar_Visible = MyData.get_String("UpperBar_Visible");
                 String mybrightness = MyData.get_String("brightness");
                 String colorMode = MyData.get_String("colorMode");
                 String laserOn = MyData.get_String("laserOn");
@@ -768,8 +768,8 @@ public class UpdateValuesService extends Service {
                     if (techInfo == null) {
                         MyData.push("techInfo", getResources().getString(R.string.infoMessage));
                     }
-                    if (digStartup == null) {
-                        MyData.push("digStartUp", "1");
+                    if (UpperBar_Visible == null) {
+                        MyData.push("UpperBar_Visible", "1");
                     }
                     if (colorMode == null) {
                         MyData.push("colorMode", "1");
