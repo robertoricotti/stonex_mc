@@ -20,6 +20,12 @@
     <string name="language">ЯЗЫК</string>
     <string name="lasermode">ЭКСКАВАТОР 2D ЛАЗЕРНЫЙ РЕЖИМ</string>
     <string name="copy_adding">КОПИРОВАНИЕ ДОБАВЛЕНИЯ\nПОРЯДКОВЫЙ НОМЕР</string>
+    <string name="rotate_m">ПОВЕРНУТЬ МАШИНУ</string>
+    <string name="rotate_w">ПОВЕРНУТЬ МИР</string>
+    <string name="tred_scene">3D-СЦЕНА</string>
+    <string name="savepara">СОХРАНИТЬ ВСЕ ПАРАМЕТРЫ ВО ВНЕШНЮЮ ПАМЯТЬ</string>
+    <string name="savepara_pro">ВЫ ХОТИТЕ ПРОДОЛЖИТЬ?</string>
+    <string name="write_para">ПЕРЕЗАПИСАТЬ ВСЕ ПАРАМЕТРЫ ПРИЛОЖЕНИЯ</string>
 
 
     <string name="save">СОХРАНИТЬ</string>

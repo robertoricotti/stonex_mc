@@ -206,10 +206,10 @@ public class GL_DrawExca {
                             My_Boom1_Boom2.facceScure(), coloreBoomScuro, My_Boom1_Boom2.contorni());
                     boom1_2.draw(gl);
                 }
-
+/*
                 BoomsDrawer minipitch = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.triangoliMiniChiari(), coloreBoom, My_Frame.triangoliMiniScuri(), coloreBoomScuro,
                         My_Frame.bordiMiniP());
-                minipitch.draw(gl);
+                minipitch.draw(gl);*/
 
 
 

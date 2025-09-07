@@ -20,9 +20,14 @@
     <string name="language">LANGUE</string>
     <string name="lasermode">MODE LASER 2D PELLE</string>
     <string name="copy_adding">COPIE AJOUTÉE\nNUMÉRO PROGRESSIF</string>
-
-
+    <string name="rotate_m">TOURNER LA MACHINE</string>
+    <string name="rotate_w">TOURNER LE MONDE</string>
+    <string name="tred_scene">SCÈNE 3D</string>
     <string name="save">SAUVER</string>
+    <string name="savepara">ENREGISTRER TOUS LES PARAMÈTRES DANS LA MÉMOIRE EXTERNE</string>
+    <string name="savepara_pro">VOULEZ-VOUS CONTINUER ?</string>
+    <string name="write_para">ÉCRASER TOUS LES PARAMÈTRES DE L APPLICATION</string>
+
     <string name="exit">SORTIE</string>
     <string name="rename_file">RENOMMER LE FICHIER</string>
     <string name="wait_until">Attendez que le projet soit mis à jour</string>

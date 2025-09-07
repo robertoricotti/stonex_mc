@@ -20,6 +20,12 @@
     <string name="language">TAAL</string>
     <string name="lasermode">GRAAFMACHINE 2D-LASERMODUS</string>
     <string name="copy_adding">KOPIE TOEVOEGEN\nOPLOPEND NUMMER</string>
+    <string name="rotate_m">MACHINE ROTEREN</string>
+    <string name="rotate_w">WERELD ROTEREN</string>
+    <string name="tred_scene">3D-SCÈNE</string>
+    <string name="savepara">ALLE PARAMETERS OPSLAAN IN EXTERN GEHEUGEN</string>
+    <string name="savepara_pro">WILT U DOORGAAN?</string>
+    <string name="write_para">ALLE APPLICATIEPARAMETERS OVERSCHRIJVEN</string>
 
     <string name="save">OPSLAAN</string>
     <string name="exit">AFSLUITEN</string>

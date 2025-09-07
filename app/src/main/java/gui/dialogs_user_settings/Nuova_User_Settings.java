@@ -46,6 +46,8 @@ public class Nuova_User_Settings extends AppCompatActivity {
     String intLang = "";
     int indexAudioSelected;
     double myStep,myStepAngle;
+    TextView tvRotateMode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
         but_meno_db=findViewById(R.id.but_meno_db);
         but_piu_an=findViewById(R.id.but_piu_ang);
         but_meno_an=findViewById(R.id.but_meno_ang);
+        tvRotateMode=findViewById(R.id.tvRotateMode);
 
     }
 
@@ -218,12 +221,23 @@ public class Nuova_User_Settings extends AppCompatActivity {
                 dialogInfoApp.show();
             }
         });
+        tvRotateMode.setOnClickListener(view -> {
+            DataSaved.lock3dRotation++;
+            DataSaved.lock3dRotation=DataSaved.lock3dRotation%2;
+            MyData.push("lock3dRotation",String.valueOf(DataSaved.lock3dRotation));
+        });
     }
 
     public void updateUI() {
         try {
             indexAudioSelected = MyData.get_Int("indexAudioSystem");
             tvAudioValue.setText(indexAudioSelected == 0 ? "OFF" : ("ON / " + MyData.get_Int("volumeAudioSystem") * 10) + " %");
+            if(DataSaved.lock3dRotation>0){
+                tvRotateMode.setText(R.string.rotate_w);
+            }else {
+                tvRotateMode.setText(R.string.rotate_m);
+            }
+
             if (isTech) {
                 lock.setImageResource(R.drawable.unlock);
 

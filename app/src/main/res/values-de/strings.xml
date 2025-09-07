@@ -73,6 +73,12 @@
     <string name="language">SPRACHE</string>
     <string name="lasermode">BAGGER 2D-LASERMODUS</string>
     <string name="copy_adding">KOPIE HINZUFÜGEN\nFORTLAUFENDE NUMMER</string>
+    <string name="rotate_m">MASCHINE DREHEN</string>
+    <string name="rotate_w">WELT DREHEN</string>
+    <string name="tred_scene">3D-SZENE</string>
+    <string name="savepara">ALLE PARAMETER IM EXTERNEN SPEICHER SPEICHERN</string>
+    <string name="savepara_pro">MÖCHTEN SIE FORTFAHREN?</string>
+    <string name="write_para">ALLE ANWENDUNGSPARAMETER ÜBERSCHREIBEN</string>
 
     <string name="flat_angle_deadband">WINKEL-DEADBAND</string>
     <string name="yes">JA</string>

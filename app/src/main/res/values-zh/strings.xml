@@ -20,6 +20,12 @@
     <string name="language">语言</string>
     <string name="lasermode">挖掘机2D激光模式</string>
     <string name="copy_adding">复制添加\n序号</string>
+    <string name="rotate_m">旋转机器</string>
+    <string name="rotate_w">旋转世界</string>
+    <string name="tred_scene">3D场景</string>
+    <string name="savepara">将所有参数保存到外部存储器</string>
+    <string name="savepara_pro">是否要继续？</string>
+    <string name="write_para">覆盖所有应用程序参数</string>
 
 
     <string name="save">保存参数</string>

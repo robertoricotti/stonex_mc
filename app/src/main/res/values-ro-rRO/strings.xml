@@ -21,6 +21,12 @@
     <string name="language">LIMBĂ</string>
     <string name="lasermode">MODUL LASER 2D EXCAVATOR</string>
     <string name="copy_adding">COPIERE ADĂUGARE\nNUMĂR PROGRESIV</string>
+    <string name="rotate_m">ROTEȘTE MAȘINA</string>
+    <string name="rotate_w">ROTEȘTE LUMEA</string>
+    <string name="tred_scene">SCENĂ 3D</string>
+    <string name="savepara">SALVEAZĂ TOȚI PARAMETRII ÎN MEMORIA EXTERNĂ</string>
+    <string name="savepara_pro">DORIȚI SĂ CONTINUAȚI?</string>
+    <string name="write_para">SUPRASCRIE TOȚI PARAMETRII APLICAȚIEI</string>
 
 
     <string name="save">SALVEAZĂ</string>

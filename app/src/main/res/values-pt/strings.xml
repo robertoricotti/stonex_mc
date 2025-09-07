@@ -20,6 +20,12 @@
     <string name="language">IDIOMA</string>
     <string name="lasermode">MODO LASER 2D ESCAVADORA</string>
     <string name="copy_adding">COPIAR ADIÇÃO\nNÚMERO PROGRESSIVO</string>
+    <string name="rotate_m">RODAR MÁQUINA</string>
+    <string name="rotate_w">RODAR MUNDO</string>
+    <string name="tred_scene">CENA 3D</string>
+    <string name="savepara">SALVAR TODOS OS PARÂMETROS NA MEMÓRIA EXTERNA</string>
+    <string name="savepara_pro">DESEJA CONTINUAR?</string>
+    <string name="write_para">SOBRESCREVER TODOS OS PARÂMETROS DA APLICAÇÃO</string>
 
 
     <string name="save">SALVAR</string>

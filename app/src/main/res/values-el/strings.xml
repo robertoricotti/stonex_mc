@@ -85,6 +85,12 @@
     <string name="language">ΓΛΩΣΣΑ</string>
     <string name="lasermode">ΛΕΙΤΟΥΡΓΙΑ LASER 2D ΕΚΣΚΑΦΕΑ</string>
     <string name="copy_adding">ΑΝΤΙΓΡΑΦΗ ΠΡΟΣΘΗΚΗΣ\nΑΥΞΟΥΜΕΝΟΣ ΑΡΙΘΜΟΣ</string>
+    <string name="rotate_m">ΠΕΡΙΣΤΡΟΦΗ ΜΗΧΑΝΗΣ</string>
+    <string name="rotate_w">ΠΕΡΙΣΤΡΟΦΗ ΚΟΣΜΟΥ</string>
+    <string name="tred_scene">ΣΚΗΝΗ 3D</string>
+    <string name="savepara">ΑΠΟΘΗΚΕΥΣΗ ΟΛΩΝ ΤΩΝ ΠΑΡΑΜΕΤΡΩΝ ΣΤΗΝ ΕΞΩΤΕΡΙΚΗ ΜΝΗΜΗ</string>
+    <string name="savepara_pro">ΘΕΛΕΤΕ ΝΑ ΣΥΝΕΧΙΣΕΤΕ;</string>
+    <string name="write_para">ΕΠΙΓΡΑΦΗ ΟΛΩΝ ΤΩΝ ΠΑΡΑΜΕΤΡΩΝ ΕΦΑΡΜΟΓΗΣ</string>
 
     <string name="yes">ΝΑΙ</string>
     <string name="no">ΟΧΙ</string>

@@ -279,18 +279,18 @@ public class ExcavatorChooserActivity extends BaseClass {
             if (isTech) {
                 // Crea un nuovo AlertDialog.Builder
                 AlertDialog.Builder builder = new AlertDialog.Builder(ExcavatorChooserActivity.this);
-                builder.setTitle("SAVE ALL PARAMETERS TO EXTERNAL MEMORY");
-                builder.setMessage("Do You Want to Proceed ?");
+                builder.setTitle(getResources().getString(R.string.savepara));
+                builder.setMessage(getResources().getString(R.string.savepara_pro));
 
                 // Aggiungi il pulsante "Sì"
-                builder.setPositiveButton("YES", (dialog, which) -> {
+                builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
 
                     MyData.exportAllToJson();
                     new CustomToast(ExcavatorChooserActivity.this, "SAVED").show_long();
                 });
 
                 // Aggiungi il pulsante "No"
-                builder.setNegativeButton("NO", (dialog, which) -> {
+                builder.setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
 
                 });
                 builder.setCancelable(true);
@@ -307,18 +307,18 @@ public class ExcavatorChooserActivity extends BaseClass {
             if (isTech) {
                 // Crea un nuovo AlertDialog.Builder
                 AlertDialog.Builder builder = new AlertDialog.Builder(ExcavatorChooserActivity.this);
-                builder.setTitle("OVERWRITE ALL APPLICATION PARAMETERS");
-                builder.setMessage("Do You Want to Proceed ?");
+                builder.setTitle(getResources().getString(R.string.write_para));
+                builder.setMessage(getResources().getString(R.string.savepara_pro));
 
                 // Aggiungi il pulsante "Sì"
-                builder.setPositiveButton("YES", (dialog, which) -> {
+                builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
 
                     MyData.restoreFromJson();
 
                 });
 
                 // Aggiungi il pulsante "No"
-                builder.setNegativeButton("NO", (dialog, which) -> {
+                builder.setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
 
                 });
                 builder.setCancelable(true);

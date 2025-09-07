@@ -21,6 +21,12 @@
     <string name="language">언어</string>
     <string name="lasermode">굴착기 2D 레이저 모드</string>
     <string name="copy_adding">복사 추가\n연속 번호</string>
+    <string name="rotate_m">기계 회전</string>
+    <string name="rotate_w">세계 회전</string>
+    <string name="tred_scene">3D 장면</string>
+    <string name="savepara">모든 매개변수를 외부 메모리에 저장</string>
+    <string name="savepara_pro">계속하시겠습니까?</string>
+    <string name="write_para">모든 애플리케이션 매개변수 덮어쓰기</string>
 
     <string name="save">저장</string>
     <string name="exit">종료</string>

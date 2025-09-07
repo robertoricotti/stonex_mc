@@ -13,576 +13,671 @@
         app:layout_constraintGuide_percent="0.09" />
 
 
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/botla"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.89" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/topla"
         app:layout_constraintBottom_toBottomOf="@id/botla"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        >
+        app:layout_constraintTop_toBottomOf="@id/topla">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/ligth_96"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/ligth_96" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvBright"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:textSize="22sp"
-                    android:ems="15"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="BRIGHTNESS / BACKGROUND"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="BRIGHTNESS / BACKGROUND"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvBrightValue"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="100 %"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
                     android:gravity="center"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="100 %"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/baseline_flag_24"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/baseline_flag_24" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvLocale"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:textSize="22sp"
-                    android:ems="15"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="@string/language"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/language"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <ImageView
                     android:id="@+id/imgLocale"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:src="@drawable/btn_ita"
-                    android:background="@color/bg_gray"
                     android:layout_weight="1"
-                    android:padding="10dp"/>
+                    android:background="@color/bg_gray"
+                    android:padding="10dp"
+                    android:src="@drawable/btn_ita" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/measuring"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/measuring" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvUom"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:ems="15"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="@string/user_units"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/user_units"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvUomValue"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="ft/%"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
                     android:gravity="center"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="ft/%"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/tolleranza_metri_"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/tolleranza_metri_" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvVert"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:ems="15"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="@string/height_deadband"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/height_deadband"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <ImageView
                     android:id="@+id/but_meno_db"
-                    android:layout_marginHorizontal="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:src="@drawable/bottone_meno"/>
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_meno" />
+
                 <TextView
-                    android:focusableInTouchMode="false"
                     android:id="@+id/tvVertValue"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="+/- 0.02 [m]"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:focusableInTouchMode="false"
                     android:gravity="center"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="+/- 0.02 [m]"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <ImageView
                     android:id="@+id/but_piu_db"
-                    android:layout_marginHorizontal="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:src="@drawable/bottone_piu"/>
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_piu" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/tolleranza_angolo"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/tolleranza_angolo" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvAng"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:ems="15"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="@string/flat_angle_deadband"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/flat_angle_deadband"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <ImageView
                     android:id="@+id/but_meno_ang"
-                    android:layout_marginHorizontal="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:src="@drawable/bottone_meno"/>
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_meno" />
+
                 <TextView
                     android:id="@+id/tvAngValue"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="+/- 5.00°"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
                     android:gravity="center"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="+/- 5.00°"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <ImageView
                     android:id="@+id/but_piu_ang"
-                    android:layout_marginHorizontal="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:src="@drawable/bottone_piu"/>
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_piu" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/offset"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/offset" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvoffstep"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:ems="15"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="EXTERNAL OFFSET STEP"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="EXTERNAL OFFSET STEP"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <ImageView
                     android:id="@+id/but_meno"
-                    android:layout_marginHorizontal="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:src="@drawable/bottone_meno"/>
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_meno" />
+
                 <TextView
                     android:id="@+id/tvOffStepValue"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="0.01"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
                     android:gravity="center"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="0.01"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <ImageView
                     android:id="@+id/but_piu"
-                    android:layout_marginHorizontal="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:src="@drawable/bottone_piu"/>
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_piu" />
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/audio"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/audio" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvSound"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:ems="15"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="@string/audio"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/audio"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvAudioValue"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="OFF"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
                     android:gravity="center"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="OFF"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/laser_btn"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/laser_btn" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvLs"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:ems="15"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="@string/lasermode"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/lasermode"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <ImageView
                     android:id="@+id/imgLse"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:src="@drawable/laser_off"
-                    android:background="@color/bg_gray"
                     android:layout_weight="1"
-                    android:padding="10dp"/>
+                    android:background="@color/bg_gray"
+                    android:padding="10dp"
+                    android:src="@drawable/laser_off" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/invert_colors"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/invert_colors" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvInvCol"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:ems="15"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="CUT / FILL "
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="CUT / FILL "
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <ImageView
                     android:id="@+id/imgCutFill"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:src="@drawable/cutfillred"
-                    android:background="@color/bg_gray"
                     android:layout_weight="1"
+                    android:background="@color/bg_gray"
                     android:paddingHorizontal="5dp"
-                    android:paddingVertical="2dp"/>
+                    android:paddingVertical="2dp"
+                    android:src="@drawable/cutfillred" />
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
-                    android:src="@drawable/allarme_altezza"
                     android:padding="5dp"
-                    />
+                    android:src="@drawable/allarme_altezza" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvHAlarm"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:ems="15"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="@string/height_alarm"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
+                    android:ems="15"
                     android:gravity="center|left"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/height_alarm"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text"/>
+                    android:background="@color/_____cancel_text" />
+
                 <TextView
                     android:id="@+id/tvHAlarmValue"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"
                     android:background="@color/bg_gray"
-                    android:text="OFF"
-                    android:paddingHorizontal="20dp"
-                    android:textStyle="bold|italic"
                     android:gravity="center"
-                    />
+                    android:paddingHorizontal="20dp"
+                    android:text="OFF"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/_____cancel_text"
-                />
+                android:background="@color/_____cancel_text" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                    android:src="@drawable/gl_rotate_3d" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvRotation3d"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/tred_scene"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvRotateMode"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg_gray"
+                    android:gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/rotate_m"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
 
         </LinearLayout>
 
@@ -597,6 +692,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:id="@+id/img00"
             android:layout_width="wrap_content"
@@ -605,17 +701,19 @@
             android:padding="5dp"
             android:src="@drawable/gnss_setup_btn"
             app:tint="@color/white" />
+
         <TextView
             android:id="@+id/txtProject"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="@drawable/custom_background_test3d_box"
             android:gravity="center"
-            android:layout_weight="1"
             android:text=""
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="italic" />
+
         <ImageView
             android:id="@+id/img01"
             android:layout_width="wrap_content"
@@ -630,8 +728,8 @@
         android:id="@+id/lowerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="horizontal"
         android:background="@drawable/custom_background_test3d_box"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -645,10 +743,10 @@
             android:layout_marginTop="2dp"
             android:layout_weight="1"
             android:padding="5dp"
-            android:scaleType="centerInside"
-            app:tint="@color/white"
             android:rotation="180"
-            app:srcCompat="@drawable/menu_btn" />
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/menu_btn"
+            app:tint="@color/white" />
 
         <ImageView
             android:id="@+id/imgMove"
@@ -659,18 +757,19 @@
             android:layout_weight="4"
             android:padding="15dp"
             android:scaleType="centerInside" />
+
         <ImageView
             android:id="@+id/deleteFile"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
-            android:src="@drawable/delete_raw"
             android:layout_weight="1"
             android:padding="10dp"
-            app:tint="@color/white"
             android:scaleType="centerInside"
+            android:src="@drawable/delete_raw"
             android:visibility="invisible"
+            app:tint="@color/white"
 
             />
 
@@ -682,18 +781,19 @@
             android:layout_weight="4"
             android:padding="15dp"
             android:scaleType="centerInside" />
+
         <ImageView
             android:id="@+id/btn_3"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
-            android:src="@drawable/info_96"
             android:layout_weight="1"
             android:padding="10dp"
-            app:tint="@color/white"
             android:scaleType="centerInside"
-            />
+            android:src="@drawable/info_96"
+            app:tint="@color/white" />
+
         <ImageView
             android:id="@+id/btn_2"
             android:layout_width="wrap_content"
@@ -704,11 +804,9 @@
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/teck_lock"
-            app:tint="@color/white"
-            />
+            app:tint="@color/white" />
 
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
