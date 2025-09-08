@@ -89,10 +89,10 @@ android {
 
         //cp libs
         //implementation files('libs/cpsdk.cpbase.v2.0.2.aar')
-        implementation files('libs/cpsdk.cpbase.v2.0.4.6.aar') //NON GIRA SU APOLLO 8
+        implementation files('libs/cpsdk.cpbase.v2.0.4.6.aar') //NON GIRA SU APOLLO 8 e TANK2
 
         //implementation files('libs/cpsdk.cpcomm.v2.0.2.1.aar')
-        implementation files('libs/cpsdk.cpcomm.v2.0.4.6.aar') //NON GIRA SU APOLLO 8
+        implementation files('libs/cpsdk.cpcomm.v2.0.4.6.aar') //NON GIRA SU APOLLO 8 e TANK2
 
         //implementation files('libs/cpsdk.cputils.v2.0.4.6.aar')//nuova aggiunta crash
         implementation files('libs/cputils.v1.0.1.aar')

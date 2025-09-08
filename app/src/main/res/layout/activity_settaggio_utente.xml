@@ -40,7 +40,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
@@ -96,7 +96,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
@@ -148,7 +148,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
@@ -204,7 +204,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
@@ -235,7 +235,7 @@
 
                 <ImageView
                     android:id="@+id/but_meno_db"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="60dp"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_meno" />
@@ -256,7 +256,7 @@
 
                 <ImageView
                     android:id="@+id/but_piu_db"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="60dp"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_piu" />
@@ -275,8 +275,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="60dp"
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/tolleranza_angolo" />
@@ -306,7 +306,7 @@
 
                 <ImageView
                     android:id="@+id/but_meno_ang"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="60dp"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_meno" />
@@ -326,7 +326,7 @@
 
                 <ImageView
                     android:id="@+id/but_piu_ang"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="60dp"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_piu" />
@@ -345,7 +345,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
@@ -376,7 +376,7 @@
 
                 <ImageView
                     android:id="@+id/but_meno"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="60dp"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_meno" />
@@ -396,7 +396,7 @@
 
                 <ImageView
                     android:id="@+id/but_piu"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="60dp"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_piu" />
@@ -414,7 +414,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
@@ -470,7 +470,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
@@ -522,7 +522,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
@@ -574,7 +574,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
@@ -630,7 +630,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"

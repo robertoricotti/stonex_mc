@@ -118,6 +118,7 @@ public class CPCanHelper {
                 case "SRT8PROS":
                 case "SRT7PROS":
                 case "APOLLO2_10":
+
                     try {
 
                         mProxy = new CPVxProtocolProxy();
@@ -142,8 +143,10 @@ public class CPCanHelper {
 
                     break;
                 case "APOLLO2_7":
+                case "TANK2_7_10":
 
                     try {
+
                         mSpi = new SpiPort(CPDEVICE.APOLLO2.SPI2_0, CPDEVICE.APOLLO2.SPI_DATA_IND, true);
                         mCPVxDataLink = new CPV3DataLink();
                         mCPVxProtocol = new CPV3Protocol();
@@ -164,6 +167,7 @@ public class CPCanHelper {
                     break;
                 case "APOLLO2_12_PRO":
                 case "APOLLO2_12_PLUS":
+
                     try {
                         if (DataSaved.boudrateCAN1 == 0) {
                             DataSaved.boudrateCAN1 = 250000;
@@ -234,6 +238,7 @@ public class CPCanHelper {
                 case "SRT8PROS":
                 case "SRT7PROS":
                 case "APOLLO2_10":
+
                     if (mProxy.isConnected()) {
                         mProxy.disconnect();
                         mProxy.release();
@@ -243,7 +248,7 @@ public class CPCanHelper {
                     break;
 
                 case "APOLLO2_7":
-
+                case "TANK2_7_10":
 
                     //CPV3 release
                     if (mCPVxProtocol != null) mCPVxProtocol.disconnect();
@@ -302,6 +307,7 @@ public class CPCanHelper {
                 case "SRT8PROS":
                 case "SRT7PROS":
                 case "APOLLO2_10":
+
                     if (mProxy != null) {
                         if (mProxy.isConnected()) {
                             boolean t = id > 2047;
@@ -310,6 +316,7 @@ public class CPCanHelper {
                     }
                     break;
                 case "APOLLO2_7":
+                case "TANK2_7_10":
                     try {
                         if (mCPVxProtocol != null) {
                             if (mCPVxProtocol.isConnected()) {

@@ -37,6 +37,7 @@ public class MyDeviceManager {
             case "APOLLO2_10":
             case "APOLLO2_12_PRO":
             case "APOLLO2_12_PLUS":
+            case "TANK2_7_10":
                 Intent intent = new Intent(ACTION_HIDE_NAVIGATION);
                 context.sendBroadcast(intent);
 
@@ -56,6 +57,7 @@ public class MyDeviceManager {
             case "APOLLO2_10":
             case "APOLLO2_12_PRO":
             case "APOLLO2_12_PLUS":
+            case "TANK2_7_10":
                 Intent intent = new Intent(ACTION_SHOW_NAVIGATION);
                 context.sendBroadcast(intent);
                 break;
@@ -213,6 +215,7 @@ public class MyDeviceManager {
             case "APOLLO2_12_PRO":
             case "APOLLO2_12_PLUS":
             case "APOLLO2_10":
+            case "TANK2_7_10":
                 result = Float.parseFloat(CPCanHelper.voltApollo2);
 
                 break;

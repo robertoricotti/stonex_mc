@@ -140,7 +140,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     private volatile boolean mRunning = false;
     private ScheduledExecutorService executorService;
     public static final boolean GEN1 = Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("qti");
-    public static final boolean GEN2 = Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS");
+    public static final boolean GEN2 = Build.BRAND.equals("TANK2_7_10") ||Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS");
 
     @Override
     public void onCreate() {
@@ -149,10 +149,10 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         UpdateValuesService.isUpodating = true;
         registerActivityLifecycleCallbacks(this);
 
-        if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
+        if (Build.BRAND.equals("TANK2_7_10") ||Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             isApollo = true;
             folderPath = "/StonexMC_V4";
-            if (Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS") || Build.BRAND.equals("APOLLO2_10")) {
+            if (Build.BRAND.equals("TANK2_7_10") ||Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS") || Build.BRAND.equals("APOLLO2_10")) {
                 apollo2 = Apollo2.getInstance(this);
                 MyApp.DEVICE_SN = apollo2.getDeviceSN();
             } else {
@@ -225,7 +225,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
     public void myCrash() {
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-            Log.e("Crash", "App crashed:", throwable);
+
             if (isApollo) {
                 MyDeviceManager.showBar(visibleActivity);
                 MyDeviceManager.OUT1(visibleActivity, 0);
