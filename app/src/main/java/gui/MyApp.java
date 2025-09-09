@@ -90,7 +90,9 @@ import gui.tech_menu.TiltCalib;
 import gui.tech_menu.Tilt_Blade;
 import gui.tech_menu.XYZ_Calib;
 import hydro.CAT_SEA_Activity;
+import hydro.DEERE_LIEBHERR_Activity;
 import hydro.Hydro_Activity_Entering;
+import hydro.KOMATSU_Activity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
@@ -162,7 +164,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
         } else {
             isApollo = false;
-            folderPath = "/Stx Field";
+            folderPath = "/StonexMC_V4";
             showConnCounter = 0;
         }
         if (MyData.get_String("machinestate") != null) {
@@ -594,6 +596,12 @@ git push
         else if (activity instanceof CAT_SEA_Activity) {
             ((CAT_SEA_Activity) activity).updateUI();
 
+        }
+        else if (activity instanceof DEERE_LIEBHERR_Activity) {
+            ((DEERE_LIEBHERR_Activity) activity).updateUI();
+
+        } else if (activity instanceof KOMATSU_Activity) {
+            ((KOMATSU_Activity) activity).updateUI();
         }
 
     }

@@ -1,48 +1,372 @@
 package hydro;
 
+
+import static packexcalib.exca.DataSaved.maxSpeedLeftDW;
+import static packexcalib.exca.DataSaved.maxSpeedLeftUP;
+import static packexcalib.exca.DataSaved.maxSpeedRightDW;
+import static packexcalib.exca.DataSaved.maxSpeedRightUP;
+import static packexcalib.exca.DataSaved.maxSpeedSS_A;
+import static packexcalib.exca.DataSaved.maxSpeedSS_B;
+import static packexcalib.exca.DataSaved.minSpeedLeftDW;
+import static packexcalib.exca.DataSaved.minSpeedLeftUP;
+import static packexcalib.exca.DataSaved.minSpeedRightDW;
+import static packexcalib.exca.DataSaved.minSpeedRightUP;
+import static packexcalib.exca.DataSaved.minSpeedSS_A;
+import static packexcalib.exca.DataSaved.minSpeedSS_B;
+
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.MotionEvent;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.stx_dig.R;
 
-import gui.tech_menu.Nuova_Machine_Settings;
-import packexcalib.exca.DataSaved;
+import packexcalib.exca.PLC_DataTypes_LittleEndian;
+import services.CanService;
 import utils.MyData;
+import utils.MyDeviceManager;
+import utils.UnitsConversion;
 
 public class KOMATSU_Activity extends AppCompatActivity {
-    ImageView back;
+    Handler sendHandler = new Handler();
+    Runnable sendRunnable;
+    Handler handler = new Handler();
+    Runnable repeater;
+    int voceMenu, indexMachine;
+    ImageView back, menuP, menuM, valM, valP;
+    TextView testValve, testo, funzione, tipo, pagina;
+    int maxMenu;
+    EditText valore;
+
+    int valueLEFT = 0;
+    int valueRIGHT = 0;
+    int valueSS = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_komatsu);
+        maxMenu = 13;
         findView();
         onClick();
         updateUI();
+        voceMenu = 0;
+        try {
+            indexMachine = MyData.get_Int("MachineSelected");
+        } catch (Exception e) {
+            indexMachine = 0;
+        }
+        sendMsg();
     }
-    private void findView(){
-        back=findViewById(R.id.btn_1);
 
+    private void findView() {
+        back = findViewById(R.id.btn_1);
+        menuP = findViewById(R.id.toright);
+        menuM = findViewById(R.id.toleft);
+        testValve = findViewById(R.id.test);
+        funzione = findViewById(R.id.funzione);
+        testo = findViewById(R.id.testo);
+        tipo = findViewById(R.id.txtTipo);
+        valore = findViewById(R.id.valore);
+        valM = findViewById(R.id.val_M);
+        valP = findViewById(R.id.val_P);
+        pagina = findViewById(R.id.pagina);
     }
-    private void onClick(){
+
+    private void onClick() {
+        testValve.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    testValve.setAlpha(0.1f);
+                    switch (voceMenu) {
+                        case 0:
+                            valueLEFT = UnitsConversion.myscalIntD(minSpeedLeftUP, 0, 255, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            break;
+                        case 1:
+                            valueLEFT = UnitsConversion.myscalIntD(maxSpeedLeftUP, 0, 255, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            break;
+                        case 2:
+                            valueLEFT = UnitsConversion.myscalIntD(minSpeedLeftDW, 0, 255, 0, -255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            break;
+                        case 3:
+                            valueLEFT = UnitsConversion.myscalIntD(maxSpeedLeftDW, 0, 255, 0, -255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            break;
+
+                        case 4:
+                            valueRIGHT = UnitsConversion.myscalIntD(minSpeedRightUP, 0, 255, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            break;
+                        case 5:
+                            valueRIGHT = UnitsConversion.myscalIntD(maxSpeedRightUP, 0, 255, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            break;
+                        case 6:
+                            valueRIGHT = UnitsConversion.myscalIntD(minSpeedRightDW, 0, 255, 0, -255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            break;
+                        case 7:
+                            valueRIGHT = UnitsConversion.myscalIntD(maxSpeedRightDW, 0, 255, 0, -255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            break;
+
+                        case 8:
+                            valueSS = UnitsConversion.myscalIntD(minSpeedSS_A, 0, 255, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            break;
+                        case 9:
+                            valueSS = UnitsConversion.myscalIntD(maxSpeedSS_A, 0, 255, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            break;
+                        case 10:
+                            valueSS = UnitsConversion.myscalIntD(minSpeedSS_B, 0, 255, 0, -255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            break;
+                        case 11:
+                            valueSS = UnitsConversion.myscalIntD(maxSpeedSS_B, 0, 255, 0, -255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            break;
+
+
+                    }
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    testValve.setAlpha(1.0f);
+
+                    valueLEFT = 0;
+                    valueRIGHT = 0;
+                    valueSS = 0;
+                    return true;
+            }
+            return false; // permette comunque al click di propagare
+        });
+        valM.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    // esegui subito una volta
+                    //executeMenuAction_M();
+
+                    // definisci il runnable che ripete ogni 100ms
+                    repeater = new Runnable() {
+                        @Override
+                        public void run() {
+                            executeMenuAction_M();
+                            handler.postDelayed(this, 100); // richiama dopo 100ms
+                        }
+                    };
+                    handler.postDelayed(repeater, 1000); // primo repeat dopo 1000ms
+                    return false;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    // interrompi il loop
+                    handler.removeCallbacks(repeater);
+                    return false;
+            }
+            return false; // consumiamo l'evento
+        });
+
+
+        valM.setOnClickListener(view -> {
+            switch (voceMenu) {
+                case 0:
+                    if (minSpeedLeftUP > 0)
+                        minSpeedLeftUP--;
+                    break;
+                case 1:
+                    if (maxSpeedLeftUP > 0)
+                        maxSpeedLeftUP--;
+                    break;
+                case 2:
+                    if (minSpeedLeftDW > 0)
+                        minSpeedLeftDW--;
+                    break;
+                case 3:
+                    if (maxSpeedLeftDW > 0)
+                        maxSpeedLeftDW--;
+                    break;
+                case 4:
+                    if (minSpeedRightUP > 0)
+                        minSpeedRightUP--;
+                    break;
+                case 5:
+                    if (maxSpeedRightUP > 0)
+                        maxSpeedRightUP--;
+                    break;
+                case 6:
+                    if (minSpeedRightDW > 0)
+                        minSpeedRightDW--;
+                    break;
+                case 7:
+                    if (maxSpeedRightDW > 0)
+                        maxSpeedRightDW--;
+                    break;
+                case 8:
+                    if (minSpeedSS_A > 0)
+                        minSpeedSS_A--;
+                    break;
+                case 9:
+                    if (maxSpeedSS_A > 0)
+                        maxSpeedSS_A--;
+                    break;
+                case 10:
+                    if (minSpeedSS_B > 0)
+                        minSpeedSS_B--;
+                    break;
+                case 11:
+                    if (maxSpeedSS_B > 0)
+                        maxSpeedSS_B--;
+                    break;
+
+                default:
+                    break;
+            }
+
+        });
+
+        valP.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    // esegui subito una volta
+                    //executeMenuAction_P();
+
+                    // definisci il runnable che ripete ogni 100ms
+                    repeater = new Runnable() {
+                        @Override
+                        public void run() {
+                            executeMenuAction_P();
+                            handler.postDelayed(this, 100); // richiama dopo 100ms
+                        }
+                    };
+                    handler.postDelayed(repeater, 1000); // primo repeat dopo 1000ms
+                    return false;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    // interrompi il loop
+                    handler.removeCallbacks(repeater);
+                    return false;
+            }
+            return false; // consumiamo l'evento
+        });
+        valP.setOnClickListener(view -> {
+            switch (voceMenu) {
+                case 0:
+                    if (minSpeedLeftUP < 255)
+                        minSpeedLeftUP++;
+                    break;
+                case 1:
+                    if (maxSpeedLeftUP < 255)
+                        maxSpeedLeftUP++;
+                    break;
+                case 2:
+                    if (minSpeedLeftDW < 255)
+                        minSpeedLeftDW++;
+                    break;
+                case 3:
+                    if (maxSpeedLeftDW < 255)
+                        maxSpeedLeftDW++;
+                    break;
+                case 4:
+                    if (minSpeedRightUP < 255)
+                        minSpeedRightUP++;
+                    break;
+                case 5:
+                    if (maxSpeedRightUP < 255)
+                        maxSpeedRightUP++;
+                    break;
+                case 6:
+                    if (minSpeedRightDW < 255)
+                        minSpeedRightDW++;
+                    break;
+                case 7:
+                    if (maxSpeedRightDW < 255)
+                        maxSpeedRightDW++;
+                    break;
+                case 8:
+                    if (minSpeedSS_A < 255)
+                        minSpeedSS_A++;
+                    break;
+                case 9:
+                    if (maxSpeedSS_A < 255)
+                        maxSpeedSS_A++;
+                    break;
+                case 10:
+                    if (minSpeedSS_B < 255)
+                        minSpeedSS_B++;
+                    break;
+                case 11:
+                    if (maxSpeedSS_B < 255)
+                        maxSpeedSS_B++;
+                    break;
+
+                default:
+                    break;
+            }
+
+        });
+
+        menuM.setOnClickListener(view -> {
+            if (voceMenu > 0) {
+                voceMenu--;
+            } else {
+                voceMenu = maxMenu - 1;
+            }
+            voceMenu = Math.abs(voceMenu) % maxMenu;
+
+        });
+        menuP.setOnClickListener(view -> {
+            voceMenu++;
+            voceMenu = Math.abs(voceMenu) % maxMenu;
+
+        });
+
         back.setOnClickListener(view -> {
             android.app.AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.exit));
             // Aggiungi il pulsante "Sì"
-            builder.setPositiveButton("YES", (dialog, which) -> {
+            builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
                 back.setEnabled(false);
-                startActivity(new Intent(KOMATSU_Activity.this,Hydro_Activity_Entering.class));
+                sendHandler.removeCallbacks(sendRunnable);
+                MyData.push("M" + indexMachine + "minSpeedLeftUP", String.valueOf(minSpeedLeftUP));
+                MyData.push("M" + indexMachine + "maxSpeedLeftUP", String.valueOf(maxSpeedLeftUP));
+                MyData.push("M" + indexMachine + "minSpeedLeftDW", String.valueOf(minSpeedLeftDW));
+                MyData.push("M" + indexMachine + "maxSpeedLeftDW", String.valueOf(maxSpeedLeftDW));
+                MyData.push("M" + indexMachine + "minSpeedRightUP", String.valueOf(minSpeedRightUP));
+                MyData.push("M" + indexMachine + "maxSpeedRightUP", String.valueOf(maxSpeedRightUP));
+                MyData.push("M" + indexMachine + "minSpeedRightDW", String.valueOf(minSpeedRightDW));
+                MyData.push("M" + indexMachine + "maxSpeedRightDW", String.valueOf(maxSpeedRightDW));
+                MyData.push("M" + indexMachine + "minSpeedSS_A", String.valueOf(minSpeedSS_A));
+                MyData.push("M" + indexMachine + "maxSpeedSS_A", String.valueOf(maxSpeedSS_A));
+                MyData.push("M" + indexMachine + "minSpeedSS_B", String.valueOf(minSpeedSS_B));
+                MyData.push("M" + indexMachine + "maxSpeedSS_B", String.valueOf(maxSpeedSS_B));
+                startActivity(new Intent(KOMATSU_Activity.this, Hydro_Activity_Entering.class));
                 finish();
             });
             // Aggiungi il pulsante "No"
-            builder.setNegativeButton("NO", (dialog, which) -> {
+            builder.setNegativeButton(getString(R.string.no), (dialog, which) -> {
                 //do nothing
             });
             // Mostra il dialog
@@ -51,7 +375,272 @@ public class KOMATSU_Activity extends AppCompatActivity {
 
         });
     }
-    public void updateUI(){
 
+    public void updateUI() {
+        switch (voceMenu) {
+            case 0:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedLeftUP));
+                funzione.setTextColor(Color.BLUE);
+                funzione.setText("LEFT MIN SPEED UP");
+                testo.setText("LEFT RISE Minimum Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
+                        "0= NO MOVE");
+
+                break;
+
+            case 1:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedLeftUP));
+                funzione.setTextColor(Color.RED);
+                funzione.setText("LEFT MAX SPEED UP");
+                testo.setText("LEFT RISE MAX Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Set the Value and press TEST\n " +
+                        "MAX Speed must be higer than MIN Speed");
+
+
+                break;
+
+            case 2:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedLeftDW));
+                funzione.setTextColor(Color.BLUE);
+                funzione.setText("LEFT MIN SPEED DOWN");
+                testo.setText("LEFT LOWER Minimum Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
+                        "0= NO MOVE");
+
+                break;
+            case 3:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedLeftDW));
+                funzione.setTextColor(Color.RED);
+                funzione.setText("LEFT MAX SPEED DOWN");
+                testo.setText("LEFT LOWER MAX Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Set the Value and press TEST\n " +
+                        "MAX Speed must be higer than MIN Speed");
+
+                break;
+
+            case 4:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedRightUP));
+                funzione.setTextColor(Color.BLUE);
+                funzione.setText("RIGHT MIN SPEED UP");
+                testo.setText("RIGHT RISE Minimum Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
+                        "0= NO MOVE");
+
+                break;
+
+            case 5:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedRightUP));
+                funzione.setTextColor(Color.RED);
+                funzione.setText("RIGHT MAX SPEED UP");
+                testo.setText("RIGHT RISE MAX Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Set the Value and press TEST\n " +
+                        "MAX Speed must be higer than MIN Speed");
+                break;
+
+            case 6:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedRightDW));
+                funzione.setTextColor(Color.BLUE);
+                funzione.setText("RIGHT MIN SPEED DOWN");
+                testo.setText("RIGHT LOWER Minimum Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
+                        "0= NO MOVE");
+                break;
+
+            case 7:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedRightDW));
+                funzione.setTextColor(Color.RED);
+                funzione.setText("RIGHT MAX SPEED DOWN");
+                testo.setText("RIGHT LOWER MAX Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Set the Value and press TEST\n " +
+                        "MAX Speed must be higer than MIN Speed");
+                break;
+
+            case 8:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedSS_A));
+                funzione.setTextColor(Color.BLUE);
+                funzione.setText("BLADE SIDESHIFT MIN SPEED LEFT");
+                testo.setText("SIDESHIFT LEFT Minimum Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
+                        "0= NO MOVE");
+
+                break;
+
+            case 9:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedSS_A));
+                funzione.setTextColor(Color.RED);
+                funzione.setText("BLADE SIDESHIFT MAX SPEED LEFT");
+                testo.setText("SIDESHIFT LEFT MAX Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Set the Value and press TEST\n " +
+                        "MAX Speed must be higer than MIN Speed");
+                break;
+
+            case 10:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(minSpeedSS_B));
+                funzione.setTextColor(Color.BLUE);
+                funzione.setText("BLADE SIDESHIFT MIN SPEED RIGHT");
+                testo.setText("SIDESHIFT RIGHT Minimum Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
+                        "0= NO MOVE");
+                break;
+
+            case 11:
+                valore.setVisibility(TextView.VISIBLE);
+                valore.setText(String.valueOf(maxSpeedSS_B));
+                funzione.setTextColor(Color.RED);
+                funzione.setText("BLADE SIDESHIFT MAX SPEED RIGHT");
+                testo.setText("SIDESHIFT RIGHT MAX Hydraulic Speed\n" +
+                        "Set the Machine to the operating rpm\n" +
+                        "Set the Value and press TEST\n " +
+                        "MAX Speed must be higer than MIN Speed");
+                break;
+            case 12:
+                valore.setVisibility(TextView.INVISIBLE);
+                funzione.setTextColor(Color.BLACK);
+                funzione.setText("CAN DATA MAP");
+                testo.setText(CanService.KOMATSU_Joystick);
+
+                break;
+        }
     }
+
+    private void executeMenuAction_M() {
+        switch (voceMenu) {
+            case 0:
+                if (minSpeedLeftUP > 0) minSpeedLeftUP--;
+                break;
+            case 1:
+                if (maxSpeedLeftUP > 0) maxSpeedLeftUP--;
+                break;
+            case 2:
+                if (minSpeedLeftDW > 0) minSpeedLeftDW--;
+                break;
+            case 3:
+                if (maxSpeedLeftDW > 0) maxSpeedLeftDW--;
+                break;
+            case 4:
+                if (minSpeedRightUP > 0) minSpeedRightUP--;
+                break;
+            case 5:
+                if (maxSpeedRightUP > 0) maxSpeedRightUP--;
+                break;
+            case 6:
+                if (minSpeedRightDW > 0) minSpeedRightDW--;
+                break;
+            case 7:
+                if (maxSpeedRightDW > 0) maxSpeedRightDW--;
+                break;
+            case 8:
+                if (minSpeedSS_A > 0) minSpeedSS_A--;
+                break;
+            case 9:
+                if (maxSpeedSS_A > 0) maxSpeedSS_A--;
+                break;
+            case 10:
+                if (minSpeedSS_B > 0) minSpeedSS_B--;
+                break;
+            case 11:
+                if (maxSpeedSS_B > 0) maxSpeedSS_B--;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void executeMenuAction_P() {
+        switch (voceMenu) {
+            case 0:
+                if (minSpeedLeftUP < 255) minSpeedLeftUP++;
+                break;
+            case 1:
+                if (maxSpeedLeftUP < 255) maxSpeedLeftUP++;
+                break;
+            case 2:
+                if (minSpeedLeftDW < 255) minSpeedLeftDW++;
+                break;
+            case 3:
+                if (maxSpeedLeftDW < 255) maxSpeedLeftDW++;
+                break;
+            case 4:
+                if (minSpeedRightUP < 255) minSpeedRightUP++;
+                break;
+            case 5:
+                if (maxSpeedRightUP < 255) maxSpeedRightUP++;
+                break;
+            case 6:
+                if (minSpeedRightDW < 255) minSpeedRightDW++;
+                break;
+            case 7:
+                if (maxSpeedRightDW < 255) maxSpeedRightDW++;
+                break;
+            case 8:
+                if (minSpeedSS_A < 255) minSpeedSS_A++;
+                break;
+            case 9:
+                if (maxSpeedSS_A < 255) maxSpeedSS_A++;
+                break;
+            case 10:
+                if (minSpeedSS_B < 255) minSpeedSS_B++;
+                break;
+            case 11:
+                if (maxSpeedSS_B < 255) maxSpeedSS_B++;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void sendMsg() {
+        sendRunnable = new Runnable() {
+            @Override
+            public void run() {
+                byte[] valoreSX = new byte[]{0x4E, 0x20};
+                byte[] valoreDX = new byte[]{0x4E, 0x20};
+                byte[] valoreSS = new byte[]{0x4E, 0x20};
+
+                valoreSX = PLC_DataTypes_LittleEndian.U16_to_bytes(valueLEFT);
+                valoreDX = PLC_DataTypes_LittleEndian.U16_to_bytes(valueRIGHT);
+                valoreSS = PLC_DataTypes_LittleEndian.U16_to_bytes(valueSS);
+                MyDeviceManager.CanWrite(1, 0x0CFF3202, 8,
+                        new byte[]{
+
+                                (byte) valoreSX[0],
+                                (byte) valoreSX[1],
+                                (byte) valoreDX[0],
+                                (byte) valoreDX[1],
+                                0,
+                                0,
+                                0,
+                                0});
+
+                sendHandler.postDelayed(this, 50);
+            }
+
+        };
+        sendHandler.postDelayed(sendRunnable, 500); // primo repeat dopo 500ms
+    }
+
 }

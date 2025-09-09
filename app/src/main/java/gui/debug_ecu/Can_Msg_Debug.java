@@ -44,6 +44,13 @@ public class Can_Msg_Debug extends AppCompatActivity {
     String chi = "";
     private boolean lastFixedMode = false;
     private Map<Integer, Integer> idPositionMap = new HashMap<>();
+
+    private final Map<Integer, Long> lastNanoTimestamps = new HashMap<>();
+
+    // opzionale: media esponenziale sul rate per renderlo meno "saltellante"
+    private final Map<Integer, Double> avgRateMs = new HashMap<>();
+    private static final double RATE_ALPHA = 0.35; // 0..1, più piccolo = più smoothing
+    String newEntry="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,7 +167,29 @@ public class Can_Msg_Debug extends AppCompatActivity {
         String currentTimeString = timeFormat.format(new Date());
         boolean fixed = fixedP.isChecked();
 
-        // se cambia modalità → reset lista e mappa
+        // calcola intervallo usando System.nanoTime per precisione
+        long nowNano = System.nanoTime();
+        long rateMs = 0L;
+        double displayedRateMs = 0.0;
+
+        if (lastNanoTimestamps.containsKey(canEvents.id)) {
+            long lastNano = lastNanoTimestamps.get(canEvents.id);
+            long diffNano = nowNano - lastNano;
+            rateMs = diffNano / 1_000_000L; // converti in ms
+
+            // opzionale: smoothing esponenziale per evitare salti grandi
+            Double prevAvg = avgRateMs.get(canEvents.id);
+            double smoothed = (prevAvg == null) ? rateMs : (RATE_ALPHA * rateMs + (1.0 - RATE_ALPHA) * prevAvg);
+            avgRateMs.put(canEvents.id, smoothed);
+            displayedRateMs = smoothed;
+        } else {
+            // primo messaggio per questo ID
+            avgRateMs.put(canEvents.id, 0.0);
+            displayedRateMs = 0.0;
+        }
+        lastNanoTimestamps.put(canEvents.id, nowNano);
+
+        // gestione modalità fixed/reset come prima
         if (fixed != lastFixedMode) {
             itemListC.clear();
             idPositionMap.clear();
@@ -176,17 +205,32 @@ public class Can_Msg_Debug extends AppCompatActivity {
                     (!isExtended && canEvents.id <= 2047);
 
             if (validId) {
-                String newEntry = currentTimeString + "  CAN_" + canEvents.channel +
-                        "  ID:0x" + String.format("%X", canEvents.id) +"  ["+canEvents.dlc+"]"+
-                        "  " + bytesToHex(canEvents.msg);
+                // prepara payload esadecimale e fissa la larghezza (24 char, adatta come preferisci)
+                String payload = bytesToHex(canEvents.msg);
+                payload = padOrTrim(payload, 24);
+
+                // usa la rate arrotondata per la stampa
+                long rateToShow = Math.round(displayedRateMs);
+                rateToShow = (rateToShow / 10) * 10;
+                if(fixed) {
+                    newEntry = String.format(
+                            "%-12s CAN_%d  ID:0x%-6X  [%-1d]  %-24s  %5d ms",
+                            currentTimeString,          // campo fisso 12 caratteri
+                            canEvents.channel,          // numero canale
+                            canEvents.id,               // ID esadecimale (X) allineato a sinistra
+                            canEvents.dlc,              // DLC
+                            payload,                    // payload già pad/troncato
+                            rateToShow                  // rate in ms
+                    );
+                }else {
+                    newEntry = currentTimeString + " CAN_" + canEvents.channel + " ID:0x" + String.format("%X", canEvents.id) +" ["+canEvents.dlc+"]"+ " " + bytesToHex(canEvents.msg);
+                }
 
                 if (fixed) {
                     if (idPositionMap.containsKey(canEvents.id)) {
-                        // ID già esistente → aggiorna riga
                         int pos = idPositionMap.get(canEvents.id);
                         itemListC.set(pos, newEntry);
                     } else {
-                        // nuovo ID → inserimento ordinato
                         int insertPos = 0;
                         for (Integer existingId : idPositionMap.keySet()) {
                             if (canEvents.id > existingId) {
@@ -195,7 +239,7 @@ public class Can_Msg_Debug extends AppCompatActivity {
                         }
                         itemListC.add(insertPos, newEntry);
 
-                        // aggiorna la mappa con tutti gli indici
+                        // aggiorna la mappa con tutti gli indici (puoi ottimizzare evitando parse delle stringhe)
                         Map<Integer, Integer> newMap = new HashMap<>();
                         int index = 0;
                         for (String item : itemListC) {
@@ -211,7 +255,7 @@ public class Can_Msg_Debug extends AppCompatActivity {
                     }
                     adapterC.notifyDataSetChanged();
                 } else {
-                    // modalità normale → append
+                    // modalità normale → append e scroll
                     itemListC.add(newEntry);
                     adapterC.notifyDataSetChanged();
                     listViewC.setSelection(itemListC.size() - 1);
@@ -221,70 +265,12 @@ public class Can_Msg_Debug extends AppCompatActivity {
                         clearListC();
                         idPositionMap.clear();
                     }
-
-
                 }
-
-
             }
         }
     }
-/*
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    public void CanEvents(CanEvents canEvents) {
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss.SS", Locale.getDefault());
-        String currentTimeString = timeFormat.format(new Date());
-        boolean fixed = fixedP.isChecked(); // se true → posizione fissa per ogni ID
 
-        // se cambia modalità → reset lista e mappa
-        if (fixed != lastFixedMode) {
-            itemListC.clear();
-            idPositionMap.clear();
-            adapterC.notifyDataSetChanged();
-            lastFixedMode = fixed;
-        }
 
-        if ((Can_Nr == 1 && b_playC && canEvents.channel == 1) ||
-                (Can_Nr == 2 && b_playC && canEvents.channel == 2)) {
-
-            boolean isExtended = extended.isChecked();
-            boolean validId = (isExtended && (canEvents.id > 2047 || canEvents.id < 0)) ||
-                    (!isExtended && canEvents.id <= 2047);
-
-            if (validId) {
-                String newEntry = currentTimeString + "  CAN_" + canEvents.channel +
-                        "  ID:0x" + String.format("%X", canEvents.id) +"  ["+canEvents.msg.length+"]"+
-                        "  " + bytesToHex(canEvents.msg);
-
-                if (fixed) {
-                    // aggiornamento in posizione fissa
-                    if (idPositionMap.containsKey(canEvents.id)) {
-                        int pos = idPositionMap.get(canEvents.id);
-                        itemListC.set(pos, newEntry);
-                    } else {
-                        // nuovo ID → aggiunta riga dedicata
-                        itemListC.add(newEntry);
-                        int pos = itemListC.size() - 1;
-                        idPositionMap.put(canEvents.id, pos);
-                    }
-                } else {
-                    // modalità normale → append
-                    itemListC.add(newEntry);
-
-                    if (adapterC.getCount() > 500) {
-                        clearListC();
-                        idPositionMap.clear(); // reset anche la mappa
-                    }
-
-                    listViewC.smoothScrollToPosition(itemListC.size() - 1);
-                    listViewC.setSelection(itemListC.size() - 1);
-                }
-
-                adapterC.notifyDataSetChanged();
-            }
-        }
-    }
-*/
     private String bytesToHex(byte[] data) {
         StringBuilder sb = new StringBuilder();
         for (byte b : data) {
@@ -293,7 +279,11 @@ public class Can_Msg_Debug extends AppCompatActivity {
         return sb.toString().trim();
     }
 
-
+    private String padOrTrim(String s, int width) {
+        if (s == null) s = "";
+        if (s.length() > width) return s.substring(0, width);
+        return String.format("%-" + width + "s", s);
+    }
 
     public void clearListC() {
         adapterC.clear();

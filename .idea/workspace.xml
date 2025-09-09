@@ -285,14 +285,24 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="TANK 2 Implementation">
+    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="JD E KOMATSU TECH MENU DONE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/StartActivityOnBootReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/StartActivityOnBootReceiver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/CPCanHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/CPCanHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Can_Msg_Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Can_Msg_Debug.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_GNSS_Coordinates.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_GNSS_Coordinates.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer2.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer2_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer2_Tilt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/CAT_SEA_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/hydro/CAT_SEA_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/DEERE_LIEBHERR_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/hydro/DEERE_LIEBHERR_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/KOMATSU_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/hydro/KOMATSU_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_deere_liebherr.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_deere_liebherr.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_komatsu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_komatsu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_gnss_coordinates_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_gnss_coordinates_2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/layout_custom_spinner_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/layout_custom_spinner_2.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -302,7 +312,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -458,14 +468,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00011" summary="pnezd manca da disegnare">
-      <option name="closed" value="true" />
-      <created>1753877700904</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1753877700904</updated>
     </task>
     <task id="LOCAL-00012" summary="pnezd manca da disegnarenok">
       <option name="closed" value="true" />
@@ -851,7 +853,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757259660448</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="TANK 2 Implementation">
+      <option name="closed" value="true" />
+      <created>1757343581524</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1757343581525</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -866,7 +876,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="v4 beta test con blocco rotazione 3D Jon TEST" />
     <MESSAGE value="beta con opzione pulsanti navigazione abilitati" />
     <MESSAGE value="rotazione macchina/mondo e draw mach scheme introdotte" />
     <MESSAGE value="tentativo fix geoid lag" />
@@ -891,22 +900,8 @@
     <MESSAGE value="media mobile deg boom roll% tilt" />
     <MESSAGE value="RELEASE TEST 07092025" />
     <MESSAGE value="TANK 2 Implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="TANK 2 Implementation" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/app/src/main/java/hydro/CAT_SEA_Activity.java</url>
-          <line>588</line>
-          <properties class="hydro.CAT_SEA_Activity" method="executeMenuAction_M">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="JD E KOMATSU TECH MENU DONE" />
+    <option name="LAST_COMMIT_MESSAGE" value="JD E KOMATSU TECH MENU DONE" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
@@ -923,12 +918,12 @@
         </entry>
         <entry key="com.example.stx_mc">
           <value>
-            <CheckInfo lastCheckTimestamp="1757343355586" />
+            <CheckInfo lastCheckTimestamp="1757431156328" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1757343355586" />
+            <CheckInfo lastCheckTimestamp="1757431156336" />
           </value>
         </entry>
       </map>

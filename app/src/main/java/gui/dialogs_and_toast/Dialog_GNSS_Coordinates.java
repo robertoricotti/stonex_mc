@@ -56,7 +56,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     Activity activity;
     public Dialog alertDialog;
     ImageView save,  title, BTConnect, serialCon, editZ, rtkMode;
-    TextView txmchdt, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon;
+    TextView txmchdt, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon,extraAng;
     TextView framA,boomA,boom2A,stickA,bucketA,tiltA;
     TextView framO,boomO,boom2O,stickO,bucketO,tiltO;
     Button cqpiu, cqmeno;
@@ -143,6 +143,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         stick=alertDialog.findViewById(R.id.idStick);
         bucket=alertDialog.findViewById(R.id.idbucket);
         tilt=alertDialog.findViewById(R.id.idTilt);
+        extraAng=alertDialog.findViewById(R.id.idExtraAng);
 
 
     }
@@ -374,6 +375,16 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
             public void run() {
                 // Update coord TextView with new coordinates
                 try {
+                    if(DataSaved.Extra_Heading!=0){
+                        try {
+                            extraAng.setText(String.format("%.2f",NmeaListener.roof_Orientation)+" °");
+                        } catch (Exception e) {
+                            extraAng.setText("Error");
+                        }
+
+                    }else {
+                        extraAng.setText("NOT USED");
+                    }
                     if(DataSaved.isWL<2){
                         boolean[] b= PLC_DataTypes_BigEndian.U8_to_bitmask_be((byte) errorCode);
 

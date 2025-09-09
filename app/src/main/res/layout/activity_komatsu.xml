@@ -31,24 +31,143 @@
         android:id="@+id/titolo"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/_____cancel_text"
         android:gravity="center"
-        android:text="KOMATSU CAN-J1939"
+        android:text="KOMATSU - J1939"
+        android:textColor="@color/white"
         android:textSize="36sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toTopOf="@id/topla"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/_____cancel_text"
-        android:textColor="@color/white" />
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/pagina"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="1/12"
+        android:textColor="@color/_____cancel_text"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/funzione"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topla" />
+    <TextView
+        android:id="@+id/funzione"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="LEFT MINIMUM DOWN"
+        android:textColor="@color/blue"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/testo"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pagina" />
+
+    <TextView
+        android:id="@+id/testo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="a\nb\nc\nd\ne"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/valore"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/funzione" />
+
+    <ImageView
+        android:id="@+id/val_P"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="20dp"
+        android:background="@drawable/sfondo_dialog_chiara"
+        android:src="@drawable/bottone_piu"
+        app:layout_constraintBottom_toBottomOf="@id/valore"
+        app:layout_constraintLeft_toRightOf="@id/valore"
+        app:layout_constraintTop_toTopOf="@id/valore" />
+
+    <EditText
+        android:id="@+id/valore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:digits="0123456789"
+        android:ems="6"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:padding="2dp"
+        android:text="255"
+        android:textColor="@color/blue"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/centa"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/testo" />
+
+    <ImageView
+        android:id="@+id/val_M"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="20dp"
+        android:background="@drawable/sfondo_dialog_chiara"
+        android:src="@drawable/bottone_meno"
+        app:layout_constraintBottom_toBottomOf="@id/valore"
+        app:layout_constraintRight_toLeftOf="@id/valore"
+        app:layout_constraintTop_toTopOf="@id/valore" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/botla"
+        app:layout_constraintTop_toBottomOf="@id/centa">
+
+        <ImageView
+            android:id="@+id/toleft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/back_btn" />
+
+        <TextView
+            android:id="@+id/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sfondo_bottone_selezionato"
+            android:gravity="center"
+            android:text="  TEST  "
+            android:textColor="@color/red"
+            android:textSize="48sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/toright"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
+            android:rotation="180"
+            android:src="@drawable/back_btn" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/lowerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="horizontal"
         android:background="@drawable/custom_background_test3d_box"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,69 +179,42 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
-            android:layout_weight="1"
             android:padding="5dp"
-            android:scaleType="centerInside"
-            app:tint="@color/white"
             android:rotation="180"
-            app:srcCompat="@drawable/menu_btn" />
-
-        <ImageView
-            android:id="@+id/imgMove"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="1.5dp"
-            android:layout_marginTop="2dp"
-            android:layout_weight="4"
-            android:padding="15dp"
-            android:scaleType="centerInside" />
-        <ImageView
-            android:id="@+id/deleteFile"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="1.5dp"
-            android:layout_marginTop="2dp"
-            android:src="@drawable/delete_raw"
-            android:layout_weight="1"
-            android:padding="10dp"
-            app:tint="@color/white"
             android:scaleType="centerInside"
-            android:visibility="invisible"
+            app:srcCompat="@drawable/menu_btn"
+            app:tint="@color/white" />
 
-            />
 
-        <ImageView
+        <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
-            android:layout_weight="4"
-            android:padding="15dp"
-            android:scaleType="centerInside" />
-        <ImageView
-            android:id="@+id/btn_3"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="1.5dp"
-            android:layout_marginTop="2dp"
-            android:src="@drawable/info_96"
+            android:layout_marginBottom="2dp"
             android:layout_weight="1"
-            android:padding="10dp"
-            app:tint="@color/_____cancel_text"
-            android:scaleType="centerInside"
-            />
-        <ImageView
-            android:id="@+id/btn_2"
+            android:background="@color/_____cancel_text"
+            android:gravity="center|right"
+            android:text="Machine Model:  "
+            android:textColor="@color/_____cancel_text"
+            android:textSize="36sp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:id="@+id/txtTipo"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:layout_weight="1"
-            android:padding="5dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/btn_selection_ok"
-            app:tint="@color/_____cancel_text"
-            />
+            android:background="@color/_____cancel_text"
+            android:ems="10"
+            android:gravity="center|left"
+            android:text="CAT K-N"
+            android:textColor="@color/_____cancel_text"
+            android:textSize="36sp"
+            android:textStyle="bold|italic" />
+
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

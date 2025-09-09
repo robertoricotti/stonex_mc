@@ -181,11 +181,8 @@ public class CanService extends Service {
                     spigoloZ = ExcavatorLib.bucketCoord[2];
                 } else if (DataSaved.portView == 1) {
                     //
-                    if (DataSaved.useYawFrame == 0) {
-                        hdt = NmeaListener.roof_Orientation - DataSaved.offsetHDT;
-                    } else {
-                        hdt = Sensors_Decoder.Deg_Yaw_Frame - DataSaved.offsetHDT;
-                    }
+                    hdt = NmeaListener.roof_Orientation - DataSaved.offsetHDT;
+
                     if (hdt < 0) {
                         hdt = hdt + 360;
                     }

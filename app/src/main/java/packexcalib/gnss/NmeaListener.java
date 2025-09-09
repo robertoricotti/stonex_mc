@@ -135,57 +135,59 @@ static  Deg2UTM deg2UTM1;
 
                         case "$GNGGA":
                         case "$GPGGA":
-                            try {
+                            if(DataSaved.my_comPort!=0) {
+                                try {
 
-                                ggaNord = NmeaInput[2];//Latitudine
-                                ggaNoS = NmeaInput[3];
-                                ggaEast = NmeaInput[4];//Longitudine
-                                ggaWoE = NmeaInput[5];
-                                ggaQuality = NmeaInput[6];
-                                ggaSat = NmeaInput[7];
-                                ggaDop = NmeaInput[8];
-                                ggaZ1 = NmeaInput[9];
-                                ggaZ2 = NmeaInput[11];
-                                ggaRtk = NmeaInput[13];
+                                    ggaNord = NmeaInput[2];//Latitudine
+                                    ggaNoS = NmeaInput[3];
+                                    ggaEast = NmeaInput[4];//Longitudine
+                                    ggaWoE = NmeaInput[5];
+                                    ggaQuality = NmeaInput[6];
+                                    ggaSat = NmeaInput[7];
+                                    ggaDop = NmeaInput[8];
+                                    ggaZ1 = NmeaInput[9];
+                                    ggaZ2 = NmeaInput[11];
+                                    ggaRtk = NmeaInput[13];
 
-                                quality();
+                                    quality();
 
-                                //LATITUDINE
-                                //4431.1234567
-                                int LatInt = Integer.parseInt(ggaNord.substring(0, 2));//estrae il 44 come int
-                                double LatDec = Double.parseDouble(ggaNord.substring(2, NmeaInput[2].length()));//estrae 31.1234567 come double
-                                if (ggaNoS.equals("N")) {
-                                    mLat_1 = LatDec / 60 + LatInt;//divide la parte double /60 e la somma alla componente intera precedentemente estratta
-                                    //se è N conclude
-                                } else if (ggaNoS.equals("S")) {
-                                    mLat_1 = LatDec / 60 + LatInt;
-                                    mLat_1 = mLat_1 * -1;
-                                    //se è S moltiplica il risultato *-1
+                                    //LATITUDINE
+                                    //4431.1234567
+                                    int LatInt = Integer.parseInt(ggaNord.substring(0, 2));//estrae il 44 come int
+                                    double LatDec = Double.parseDouble(ggaNord.substring(2, NmeaInput[2].length()));//estrae 31.1234567 come double
+                                    if (ggaNoS.equals("N")) {
+                                        mLat_1 = LatDec / 60 + LatInt;//divide la parte double /60 e la somma alla componente intera precedentemente estratta
+                                        //se è N conclude
+                                    } else if (ggaNoS.equals("S")) {
+                                        mLat_1 = LatDec / 60 + LatInt;
+                                        mLat_1 = mLat_1 * -1;
+                                        //se è S moltiplica il risultato *-1
+                                    }
+
+
+                                    //LONGITUDINE
+                                    //09912.1234567
+                                    int LonInt = Integer.parseInt(ggaEast.substring(0, 3));//estrae 099 come int
+                                    double LonDec = Double.parseDouble(ggaEast.substring(3, NmeaInput[2].length()));//estrae 12.1234567 come double
+                                    if (ggaWoE.equals("E")) {
+                                        mLon_1 = LonDec / 60 + LonInt;//divide la parte double /60 e la somma alla componente intera
+                                        //se è E conclude
+                                    } else if (ggaWoE.equals("W")) {
+                                        mLon_1 = LonDec / 60 + LonInt;
+                                        mLon_1 = mLon_1 * -1;
+                                        //se è W moltiplica il risultato *-1
+                                    }
+
+                                    double qtemp = DataSaved.offset_Z_antenna + Double.parseDouble(ggaZ1.replace(",", ".")) + Double.parseDouble(ggaZ2.replace(",", "."));
+                                    deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, qtemp, DataSaved.S_CRS);
+                                    Nord1 = deg2UTM1.getNorthing();
+                                    Est1 = deg2UTM1.getEasting();
+                                    Quota1 = deg2UTM1.getQuota();
+                                    mChar = deg2UTM1.getLetter();
+                                    mZone = deg2UTM1.getZone();
+
+                                } catch (Exception e) {
                                 }
-
-
-                                //LONGITUDINE
-                                //09912.1234567
-                                int LonInt = Integer.parseInt(ggaEast.substring(0, 3));//estrae 099 come int
-                                double LonDec = Double.parseDouble(ggaEast.substring(3, NmeaInput[2].length()));//estrae 12.1234567 come double
-                                if (ggaWoE.equals("E")) {
-                                    mLon_1 = LonDec / 60 + LonInt;//divide la parte double /60 e la somma alla componente intera
-                                    //se è E conclude
-                                } else if (ggaWoE.equals("W")) {
-                                    mLon_1 = LonDec / 60 + LonInt;
-                                    mLon_1 = mLon_1 * -1;
-                                    //se è W moltiplica il risultato *-1
-                                }
-
-                                double qtemp = DataSaved.offset_Z_antenna + Double.parseDouble(ggaZ1.replace(",", ".")) + Double.parseDouble(ggaZ2.replace(",", "."));
-                                deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, qtemp, DataSaved.S_CRS);
-                                Nord1 = deg2UTM1.getNorthing();
-                                Est1 = deg2UTM1.getEasting();
-                                Quota1=deg2UTM1.getQuota();
-                                mChar = deg2UTM1.getLetter();
-                                mZone = deg2UTM1.getZone();
-
-                            } catch (Exception e) {
                             }
                             break;
                         case "$GPHDT":
@@ -205,27 +207,14 @@ static  Deg2UTM deg2UTM1;
                                     mch_Hdt = 999.999;
 
                                 }
-                            }else {
-                                try {
-
-                                    roof_Orientation = Double.parseDouble(NmeaInput[1]);
-
-                                    if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
-                                        roof_Orientation = 999.999;
+                                if(DataSaved.portView<2) {
+                                    if (DataSaved.my_comPort == 1 || DataSaved.my_comPort == 2|| DataSaved.my_comPort == 3) {
+                                        roof_Orientation = mch_Hdt;
                                     }
-
-
-                                } catch (Exception e) {
-                                    roof_Orientation = 999.999;
-
                                 }
 
                             }
-                            if(DataSaved.portView<2) {
-                                if (DataSaved.my_comPort == 1 || DataSaved.my_comPort == 2|| DataSaved.my_comPort == 3) {
-                                    roof_Orientation = mch_Hdt;
-                                }
-                            }
+
                             break;
 
                         case "$GPGST":

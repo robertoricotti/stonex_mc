@@ -9,5 +9,6 @@
     android:textStyle="normal"
     android:textColor="@color/_____cancel_text"
     android:padding="3dip"
+    android:fontFamily="monospace"
     android:background="@color/transparent"
     />

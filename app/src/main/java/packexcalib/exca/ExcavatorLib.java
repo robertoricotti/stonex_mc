@@ -306,6 +306,7 @@ public class ExcavatorLib {
                 coordinateDX = new double[]{0, 0, 0};
                 coordinateDY = new double[]{0, 0, 0};
                 //qui gestire yaw del sensore frame
+
                 if (hdt == 999.999) {
                     hdt = 0;
                 }

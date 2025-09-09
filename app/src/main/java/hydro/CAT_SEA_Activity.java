@@ -42,7 +42,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
     Runnable repeater;
     int voceMenu, indexMachine;
     ImageView back, menuP, menuM, valM, valP;
-    TextView testValve, testo, funzione, tipo,pagina;
+    TextView testValve, testo, funzione, tipo, pagina;
     int maxMenu;
     EditText valore;
     byte leftDir = (byte) 0xF2;
@@ -53,12 +53,11 @@ public class CAT_SEA_Activity extends AppCompatActivity {
     byte valueSS = 0;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cat_sea);
-        CanService.CAT_Joystick="NOT CONNECTED";
+        CanService.CAT_Joystick = "NOT CONNECTED";
         maxMenu = 13;
         findView();
         onClick();
@@ -84,7 +83,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
         valore = findViewById(R.id.valore);
         valM = findViewById(R.id.val_M);
         valP = findViewById(R.id.val_P);
-        pagina=findViewById(R.id.pagina);
+        pagina = findViewById(R.id.pagina);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -93,95 +92,93 @@ public class CAT_SEA_Activity extends AppCompatActivity {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     testValve.setAlpha(0.1f);
-                    switch (voceMenu){
+                    switch (voceMenu) {
                         case 0:
-                            valueLEFT= (byte) UnitsConversion.limitInt(minSpeedLeftUP,0,255);
-                            valueRIGHT=0;
-                            valueSS=0;
-                            leftDir= (byte) 0xF2;
+                            valueLEFT = (byte) UnitsConversion.limitInt(minSpeedLeftUP, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            leftDir = (byte) 0xF2;
                             break;
                         case 1:
-                            valueLEFT= (byte) UnitsConversion.limitInt(maxSpeedLeftUP,0,255);
-                            valueRIGHT=0;
-                            valueSS=0;
-                            leftDir= (byte) 0xF2;
+                            valueLEFT = (byte) UnitsConversion.limitInt(maxSpeedLeftUP, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            leftDir = (byte) 0xF2;
                             break;
                         case 2:
-                            valueLEFT= (byte) UnitsConversion.limitInt(minSpeedLeftDW,0,255);
-                            valueRIGHT=0;
-                            valueSS=0;
-                            leftDir= (byte) 0xF1;
+                            valueLEFT = (byte) UnitsConversion.limitInt(minSpeedLeftDW, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            leftDir = (byte) 0xF1;
                             break;
                         case 3:
-                            valueLEFT= (byte) UnitsConversion.limitInt(maxSpeedLeftDW,0,255);
-                            valueRIGHT=0;
-                            valueSS=0;
-                            leftDir= (byte) 0xF1;
+                            valueLEFT = (byte) UnitsConversion.limitInt(maxSpeedLeftDW, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            leftDir = (byte) 0xF1;
                             break;
 
                         case 4:
-                            valueRIGHT= (byte) UnitsConversion.limitInt(minSpeedRightUP,0,255);
-                            valueLEFT=0;
-                            valueSS=0;
-                            rightDir= (byte) 0xF2;
+                            valueRIGHT = (byte) UnitsConversion.limitInt(minSpeedRightUP, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            rightDir = (byte) 0xF2;
                             break;
                         case 5:
-                            valueRIGHT= (byte) UnitsConversion.limitInt(maxSpeedRightUP,0,255);
-                            valueLEFT=0;
-                            valueSS=0;
-                            rightDir= (byte) 0xF2;
+                            valueRIGHT = (byte) UnitsConversion.limitInt(maxSpeedRightUP, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            rightDir = (byte) 0xF2;
                             break;
                         case 6:
-                            valueRIGHT= (byte) UnitsConversion.limitInt(minSpeedRightDW,0,255);
-                            valueLEFT=0;
-                            valueSS=0;
-                            rightDir= (byte) 0xF1;
+                            valueRIGHT = (byte) UnitsConversion.limitInt(minSpeedRightDW, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            rightDir = (byte) 0xF1;
                             break;
                         case 7:
-                            valueRIGHT= (byte) UnitsConversion.limitInt(maxSpeedRightDW,0,255);
-                            valueLEFT=0;
-                            valueSS=0;
-                            rightDir= (byte) 0xF1;
+                            valueRIGHT = (byte) UnitsConversion.limitInt(maxSpeedRightDW, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            rightDir = (byte) 0xF1;
                             break;
 
                         case 8:
-                            valueSS= (byte) UnitsConversion.limitInt(minSpeedSS_A,0,255);
-                            valueLEFT=0;
-                            valueRIGHT=0;
-                            ssDir= (byte) 0xF1;
+                            valueSS = (byte) UnitsConversion.limitInt(minSpeedSS_A, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            ssDir = (byte) 0xF1;
                             break;
                         case 9:
-                            valueSS= (byte) UnitsConversion.limitInt(maxSpeedSS_A,0,255);
-                            valueLEFT=0;
-                            valueRIGHT=0;
-                            ssDir= (byte) 0xF1;
+                            valueSS = (byte) UnitsConversion.limitInt(maxSpeedSS_A, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            ssDir = (byte) 0xF1;
                             break;
                         case 10:
-                            valueSS= (byte) UnitsConversion.limitInt(minSpeedSS_B,0,255);
-                            valueLEFT=0;
-                            valueRIGHT=0;
-                            ssDir= (byte) 0xF2;
+                            valueSS = (byte) UnitsConversion.limitInt(minSpeedSS_B, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            ssDir = (byte) 0xF2;
                             break;
                         case 11:
-                            valueSS= (byte) UnitsConversion.limitInt(maxSpeedSS_B,0,255);
-                            valueLEFT=0;
-                            valueRIGHT=0;
-                            ssDir= (byte) 0xF2;
+                            valueSS = (byte) UnitsConversion.limitInt(maxSpeedSS_B, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            ssDir = (byte) 0xF2;
                             break;
-
-
 
 
                     }
                     return true;
                 case MotionEvent.ACTION_UP:
                     testValve.setAlpha(1.0f);
-                    leftDir= (byte) 0xF2;
-                    rightDir= (byte) 0xF2;
-                    ssDir= (byte) 0xF2;
-                    valueLEFT=0;
-                    valueRIGHT=0;
-                    valueSS=0;
+                    leftDir = (byte) 0xF2;
+                    rightDir = (byte) 0xF2;
+                    ssDir = (byte) 0xF2;
+                    valueLEFT = 0;
+                    valueRIGHT = 0;
+                    valueSS = 0;
                     return true;
             }
             return false; // permette comunque al click di propagare
@@ -266,7 +263,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 case 12:
                     CAT_Type--;
                     CAT_Type = Math.abs(CAT_Type) % 3;
-                    MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
+                    MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
                     break;
                 default:
                     break;
@@ -352,7 +349,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 case 12:
                     CAT_Type++;
                     CAT_Type = Math.abs(CAT_Type) % 3;
-                    MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
+                    MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
                     break;
                 default:
                     break;
@@ -377,13 +374,13 @@ public class CAT_SEA_Activity extends AppCompatActivity {
         tipo.setOnClickListener(view -> {
             CAT_Type++;
             CAT_Type = Math.abs(CAT_Type) % 3;
-            MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
+            MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
         });
         back.setOnClickListener(view -> {
             android.app.AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.exit));
             // Aggiungi il pulsante "Sì"
-            builder.setPositiveButton("YES", (dialog, which) -> {
+            builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
                 back.setEnabled(false);
                 sendHandler.removeCallbacks(sendRunnable);
                 MyData.push("M" + indexMachine + "minSpeedLeftUP", String.valueOf(minSpeedLeftUP));
@@ -391,7 +388,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 MyData.push("M" + indexMachine + "minSpeedLeftDW", String.valueOf(minSpeedLeftDW));
                 MyData.push("M" + indexMachine + "maxSpeedLeftDW", String.valueOf(maxSpeedLeftDW));
                 MyData.push("M" + indexMachine + "minSpeedRightUP", String.valueOf(minSpeedRightUP));
-                MyData.push("M" + indexMachine+ "maxSpeedRightUP", String.valueOf(maxSpeedRightUP));
+                MyData.push("M" + indexMachine + "maxSpeedRightUP", String.valueOf(maxSpeedRightUP));
                 MyData.push("M" + indexMachine + "minSpeedRightDW", String.valueOf(minSpeedRightDW));
                 MyData.push("M" + indexMachine + "maxSpeedRightDW", String.valueOf(maxSpeedRightDW));
                 MyData.push("M" + indexMachine + "minSpeedSS_A", String.valueOf(minSpeedSS_A));
@@ -402,7 +399,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 finish();
             });
             // Aggiungi il pulsante "No"
-            builder.setNegativeButton("NO", (dialog, which) -> {
+            builder.setNegativeButton(getString(R.string.no), (dialog, which) -> {
                 //do nothing
             });
             // Mostra il dialog
@@ -413,7 +410,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
     }
 
     public void updateUI() {
-        pagina.setText((voceMenu+1)+" / "+(maxMenu));
+        pagina.setText((voceMenu + 1) + " / " + (maxMenu));
         switch (CAT_Type) {
             case 0:
                 tipo.setText("CAT K - N Series");
@@ -571,14 +568,14 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 funzione.setText("MACHINE MODEL");
                 switch (CAT_Type) {
                     case 0:
-                        testo.setText("CAT K - N Series\n\n"+ CanService.CAT_Joystick);
+                        testo.setText("CAT K - N Series\n\n" + CanService.CAT_Joystick);
                         break;
                     case 1:
-                        testo.setText("CAT NextGen\n\n"+ CanService.CAT_Joystick);
+                        testo.setText("CAT NextGen\n\n" + CanService.CAT_Joystick);
                         break;
 
                     case 2:
-                        testo.setText("CAT M Series\n\n"+ CanService.CAT_Joystick);
+                        testo.setText("CAT M Series\n\n" + CanService.CAT_Joystick);
                         break;
                 }
                 break;
@@ -627,7 +624,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
             case 12:
                 CAT_Type--;
                 CAT_Type = Math.abs(CAT_Type) % 3;
-                MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
+                MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
                 break;
             default:
                 break;
@@ -675,7 +672,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
             case 12:
                 CAT_Type++;
                 CAT_Type = Math.abs(CAT_Type) % 3;
-                MyData.push("M"+indexMachine+"CAT_Type", String.valueOf(CAT_Type));
+                MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
                 break;
             default:
                 break;
