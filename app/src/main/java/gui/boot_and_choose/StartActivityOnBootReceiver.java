@@ -27,7 +27,7 @@ public class StartActivityOnBootReceiver extends BroadcastReceiver {
             if (Build.BRAND.equals("TANK2_7_10")||Build.BRAND.equals("APOLLO2_10")||Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("APOLLO2_12_PRO")
             ||Build.BRAND.equals("APOLLO2_12_PLUS")) {
 
-                Intent star = new Intent(context, LaunchScreenActivity.class);
+                Intent star = new Intent(context, LaunchScreenActivity.class);//sostituire con L'activity da lanciare
                 star.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(star);
             }

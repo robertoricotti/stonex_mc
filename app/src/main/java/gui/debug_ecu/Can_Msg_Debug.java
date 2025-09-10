@@ -210,7 +210,7 @@ public class Can_Msg_Debug extends AppCompatActivity {
                 payload = padOrTrim(payload, 24);
 
                 // usa la rate arrotondata per la stampa
-                long rateToShow = Math.round(displayedRateMs);
+                long rateToShow = (long) (Math.ceil(displayedRateMs/10)*10);
                 rateToShow = (rateToShow / 10) * 10;
                 if(fixed) {
                     newEntry = String.format(

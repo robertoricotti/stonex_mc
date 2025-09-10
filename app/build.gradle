@@ -66,7 +66,22 @@ android {
             debug {
 
             }
+            //  Flavor = GEN1 (Apollo8, Tank2) e GEN2 (il resto)
+            flavorDimensions "generation"
+            productFlavors {
+                gen1 {
+                    dimension "generation"
+                    applicationIdSuffix ".gen1"
+                    versionNameSuffix "-GEN1"
+                }
+                gen2 {
+                    dimension "generation"
+                    applicationIdSuffix ".gen2"
+                    versionNameSuffix "-GEN2"
+                }
+            }
         }
+
         compileOptions {
             JavaVersion.VERSION_17
             JavaVersion.VERSION_17
@@ -87,16 +102,19 @@ android {
 
         implementation 'androidx.core:core:1.16.0'
 
-        //cp libs
-        //implementation files('libs/cpsdk.cpbase.v2.0.2.aar')
-        implementation files('libs/cpsdk.cpbase.v2.0.4.6.aar') //NON GIRA SU APOLLO 8 e TANK2
+        /*
+       GEN2= APOLLO7, APOLLO10 APOLLO12
+       GEN1= APOLLO8 TANK2
+        */
+        // GEN2 (librerie più nuove)
+        gen2Implementation files('libs/cpsdk.cpbase.v2.0.4.6.aar')
+        gen2Implementation files('libs/cpsdk.cpcomm.v2.0.4.6.aar')
+        gen2Implementation files('libs/cputils.v1.0.1.aar')
 
-        //implementation files('libs/cpsdk.cpcomm.v2.0.2.1.aar')
-        implementation files('libs/cpsdk.cpcomm.v2.0.4.6.aar') //NON GIRA SU APOLLO 8 e TANK2
-
-        //implementation files('libs/cpsdk.cputils.v2.0.4.6.aar')//nuova aggiunta crash
-        implementation files('libs/cputils.v1.0.1.aar')
-
+        // GEN1 (Apollo8, Tank2: librerie compatibili)
+        gen1Implementation files('libs/cpsdk.cpbase.v2.0.2.aar')
+        gen1Implementation files('libs/cpsdk.cpcomm.v2.0.2.1.aar')
+        gen1Implementation files('libs/cputils.v1.0.1.aar')
 
         implementation fileTree(dir: 'libs', include: ['*.jar'])
         //noinspection GradleCompatible
@@ -172,6 +190,11 @@ android {
         // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on
         implementation("org.bouncycastle:bcpkix-jdk18on:1.81")
 
+        implementation 'androidx.appcompat:appcompat:1.7.1'
+        implementation 'com.google.android.material:material:1.12.0'
+        implementation 'androidx.activity:activity:1.10.1'
+        implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+
     }
     buildTypes {
         release {
@@ -185,11 +208,20 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
+
+
+    //generazione apk
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def flavor = variant.productFlavors[0]?.name ?: "noflavor"
+            def buildType = variant.buildType.name
+            def versionName = variant.versionName
+
+            // Nome customizzato: esempio "GEN1-4.0.0-DEBUG.apk"
+            outputFileName = "STX-MC_V_${versionName}-${buildType.toUpperCase()}.apk"
+        }
+    }
 }
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.activity:activity:1.10.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-}
+
 
