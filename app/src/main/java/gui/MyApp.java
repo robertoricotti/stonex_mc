@@ -33,7 +33,6 @@ import androidx.annotation.NonNull;
 
 import com.cp.cputils.Apollo2;
 import com.cp.cputils.ApolloPro;
-import com.cpdevice.cpcomm.boards.CPDEVICE;
 import com.example.stx_dig.R;
 
 import java.io.File;

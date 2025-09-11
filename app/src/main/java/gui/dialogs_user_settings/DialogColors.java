@@ -139,7 +139,7 @@ public class DialogColors {
                     MyColorClass.colorGroundX = (activity.getResources().getColor(R.color.GROUNDblue));
                     MyColorClass.colorGroundY = (activity.getResources().getColor(R.color.GROUNDblue));
                     MyColorClass.colorStick = (activity.getResources().getColor(R.color.orange));
-                    MyColorClass.colorBucket = (activity.getResources().getColor(R.color.orange));
+                    MyColorClass.colorBucket = (activity.getResources().getColor(R.color._____cancel_text));
                     MyColorClass.colorPoint = (activity.getResources().getColor(R.color.GROUNDred));
                     MyColorClass.colorPoly = (activity.getResources().getColor(R.color.magenta));
                     MyColorClass.colorOffsetLine = (activity.getResources().getColor(R.color.bg_sfsred));

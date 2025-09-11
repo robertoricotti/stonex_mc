@@ -17,11 +17,9 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -34,15 +32,11 @@ import event_bus.SerialEvent;
 import gui.MyApp;
 import gui.debug_ecu.Serial_Msg_Debug;
 import gui.gps.NmeaGenerator;
-import gui.grading_dozergrader.Grading3D_DXF;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
-import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
-import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.gnss.NmeaListener;
 import utils.MyDeviceManager;
-import utils.UnitsConversion;
 
 
 public class CanSender extends Service {
@@ -57,12 +51,7 @@ public class CanSender extends Service {
     private ScheduledExecutorService scheduledExecutorService1min;
     Executor mExecutor;
     private static final int THREAD_POOL_SIZE = 1;
-    byte[] pendenza;
-    byte[] sinistra;
-    byte[] mezzo;
-    byte[] destra;
-    int slope, left, cent, right;
-    private static byte indiceECU, btnP, btnM, btnTest;
+    private static boolean FlipFlop;
 
     public CanSender() {
 
@@ -138,18 +127,21 @@ public class CanSender extends Service {
                     MyDeviceManager.CanWrite(1, 2049, 8, new byte[]{-1, -1, -1, -1, -1, -1, -1, -1});
                 }
             }*/
-            if (DataSaved.my_comPort == 4) {
-                new SerialEvent(NmeaGenerator.generateLLQ());
-                new SerialEvent(NmeaGenerator.generateGPHDT());
-                new SerialEvent(NmeaGenerator.generateGPGGA());
-                if (MyApp.visibleActivity instanceof Serial_Msg_Debug) {
-                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
-                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
-                    EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
+            FlipFlop=!FlipFlop;
+            if(FlipFlop) {
+                if (DataSaved.my_comPort == 4) {
+                    new SerialEvent(NmeaGenerator.generateLLQ());
+                    new SerialEvent(NmeaGenerator.generateGPHDT());
+                    new SerialEvent(NmeaGenerator.generateGPGGA());
+                    if (MyApp.visibleActivity instanceof Serial_Msg_Debug) {
+                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
+                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
+                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
+                    }
+                    NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
+                    NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
+                    NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
                 }
-                NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
-                NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
-                NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
             }
         }
 
@@ -326,7 +318,8 @@ public class CanSender extends Service {
 
         if (senderExecutor2000 != null) {
             senderExecutor2000.shutdown();
-        }if (senderExecutorGrade_50 != null) {
+        }
+        if (senderExecutorGrade_50 != null) {
             senderExecutorGrade_50.shutdown();
         }
         if (scheduledExecutorService1min != null) {

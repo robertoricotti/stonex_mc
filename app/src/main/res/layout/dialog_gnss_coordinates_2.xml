@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/sfondo_bottone_bianco">
@@ -360,7 +359,6 @@
 
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/rtkpiu"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
@@ -369,10 +367,10 @@
                 android:text="+"
                 android:textColor="@color/white"
                 android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tvrtk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -383,10 +381,10 @@
                 android:text="Max AGE\n5.0s"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/rtkmeno"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
@@ -395,11 +393,11 @@
                 android:text="-"
                 android:textColor="@color/white"
                 android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/qtpiu"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
@@ -408,10 +406,10 @@
                 android:text="+"
                 android:textColor="@color/white"
                 android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tvqt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -422,10 +420,10 @@
                 android:text="TYPE\nFix"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/qtmeno"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
@@ -434,12 +432,11 @@
                 android:text="-"
                 android:textColor="@color/white"
                 android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
         </LinearLayout>
     </LinearLayout>
-
-
 
 
     <ImageView
@@ -449,10 +446,10 @@
         android:padding="2dp"
         android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/_editZ"
+        app:layout_constraintRight_toRightOf="parent"
+        app:tint="@color/_____cancel_text" />
 
-         />
     <ImageView
         android:id="@+id/_editZ"
         android:layout_width="50dp"
@@ -470,307 +467,335 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:padding="2dp"
+        android:src="@drawable/sim_96"
         app:layout_constraintBottom_toBottomOf="parent"
-       app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/_editZ"
+        app:layout_constraintLeft_toLeftOf="parent"
 
-        app:tint="@color/_____cancel_text"
-        android:src="@drawable/sim_96"/>
+        app:layout_constraintRight_toLeftOf="@id/_editZ"
+        app:tint="@color/_____cancel_text" />
+
     <ProgressBar
         android:id="@+id/progresss"
-        android:layout_margin="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:layout_margin="50dp"
         android:background="@color/transparentblack"
+        android:visibility="gone"
 
         />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginRight="10dp"
-        android:background="@drawable/custom_background_transp_2">
+        android:background="@drawable/custom_background_transp_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:background="@drawable/custom_background_transp"
             android:gravity="center"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
             android:paddingHorizontal="5dp"
-            android:background="@drawable/custom_background_transp">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
-                android:layout_marginVertical="5dp"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="SENSORS"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="SENSORS"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idframe"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:background="@color/red"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:text="FRAME"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:background="@color/red"
+                android:gravity="center"
+                android:text="FRAME"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idboom1"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:background="@color/red"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:text="BOOM 1"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:background="@color/red"
+                android:gravity="center"
+                android:text="BOOM 1"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idBoom2"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:background="@color/red"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:text="BOOM 2"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:background="@color/red"
+                android:gravity="center"
+                android:text="BOOM 2"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idStick"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:background="@color/red"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:text="STICK"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:background="@color/red"
+                android:gravity="center"
+                android:text="STICK"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idbucket"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:background="@color/red"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:text="BUCKET"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:background="@color/red"
+                android:gravity="center"
+                android:text="BUCKET"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idTilt"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:layout_marginVertical="5dp"
                 android:background="@color/red"
+                android:gravity="center"
+                android:text="TILT"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:text="TILT"/>
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
             <TextView
-                android:layout_marginVertical="5dp"
                 android:id="@+id/idExtra"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:layout_marginVertical="5dp"
                 android:background="@color/transparent"
+                android:gravity="center"
+                android:text="EXTRA HDT"
                 android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="EXTRA HDT"/>
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:background="@drawable/custom_background_transp"
             android:gravity="center"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
             android:paddingHorizontal="5dp"
-            android:background="@drawable/custom_background_transp">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
-                android:layout_marginVertical="5dp"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="Angle °"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="Angle °"/>
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
             <TextView
-                android:layout_marginVertical="5dp"
                 android:id="@+id/idframeAng"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idboom1Ang"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idBoom2Ang"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idStickAng"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idbucketAng"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
                 android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/idTiltAng"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
                 android:layout_marginVertical="5dp"
-                android:id="@+id/idExtraAng"
                 android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/idExtraAng"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
                 android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:background="@drawable/custom_background_transp"
             android:gravity="center"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/custom_background_transp">
-            <TextView
-                android:layout_marginVertical="5dp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="Offset"/>
-            <TextView
-                android:layout_marginVertical="5dp"
-                android:id="@+id/idframeOff"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
-                android:layout_marginVertical="5dp"
-                android:id="@+id/idboom1Off"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
-                android:layout_marginVertical="5dp"
-                android:id="@+id/idBoom2Off"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
-                android:layout_marginVertical="5dp"
-                android:id="@+id/idStickOff"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
-                android:layout_marginVertical="5dp"
-                android:id="@+id/idbucketOff"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
-                android:layout_marginVertical="5dp"
-                android:id="@+id/idTiltOff"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text="0.00°"/>
-            <TextView
-                android:layout_marginVertical="5dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-                android:gravity="center"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="Offset"
+                android:textColor="@color/black"
                 android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/idframeOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
                 android:textColor="@color/_____cancel_text"
-                android:textStyle="bold"
-                android:text=""/>
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/idboom1Off"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/idBoom2Off"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/idStickOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/idbucketOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/idTiltOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text="0.00°"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/_____cancel_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </LinearLayout>

@@ -3,6 +3,7 @@ package gui.my_opengl;
 
 import static gui.MyApp.errorCode;
 import static gui.MyApp.hAlarm;
+import static services.CanService.Dozer_Auto_Main;
 import static services.ReadProjectService.isFinishedDTM;
 import static services.ReadProjectService.isFinishedPOINT;
 import static services.ReadProjectService.isFinishedPOLY;
@@ -66,6 +67,8 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
+    public static boolean prepLeft,prepRight,prepSS;
+    TextView AUTO_SX,AUTO_SS,AUTO_DX;
     Dialog_Blade_Wear dialogBladeWear;
     public static boolean PNEZD_FUNCTION;
     ImageView allarmeAlt;
@@ -276,9 +279,24 @@ public class My3DActivity extends BaseClass {
 
             gl_benne.setImageResource((R.drawable.window_blade));
         }
+        AUTO_SX=findViewById(R.id.AM_SX);
+        AUTO_SS=findViewById(R.id.AM_SS);
+        AUTO_DX=findViewById(R.id.AM_DX);
     }
 
     private void onClick() {
+        AUTO_SX.setOnLongClickListener(view -> {
+             prepLeft=!prepLeft;
+             return false;
+        });
+        AUTO_SS.setOnLongClickListener(view -> {
+            prepSS=!prepSS;
+            return false;
+        });
+        AUTO_DX.setOnLongClickListener(view -> {
+            prepRight=!prepRight;
+            return false;
+        });
 
         gl_sound.setOnClickListener(view -> {
             if(!dialogAudioSystem.alertDialog.isShowing()){
@@ -829,7 +847,9 @@ public class My3DActivity extends BaseClass {
             }
 
             setLightBar();
+            AutoHandling();
         } catch (Exception e) {
+            Log.e("ErrorUI",Log.getStackTraceString(e));
         }
 
     }
@@ -1395,5 +1415,60 @@ public class My3DActivity extends BaseClass {
 
 
 
+    }
+
+    private void AutoHandling(){
+        if(DataSaved.isWL==0||
+        DataSaved.isWL==1){
+            AUTO_SX.setVisibility(View.INVISIBLE);
+            AUTO_SS.setVisibility(View.INVISIBLE);
+            AUTO_DX.setVisibility(View.INVISIBLE);
+        }else {
+            if(DataSaved.isWL==4) {
+                //GRADER
+                AUTO_SX.setVisibility(View.VISIBLE);
+                AUTO_SS.setVisibility(View.VISIBLE);
+                AUTO_DX.setVisibility(View.VISIBLE);
+                if(prepLeft){
+                    AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                }
+                if(prepSS){
+                    AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                }
+                if(prepRight){
+                    AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                }
+            }else {
+                //DOZER
+                prepSS=false;
+                AUTO_SX.setVisibility(View.VISIBLE);
+                AUTO_SS.setVisibility(View.INVISIBLE);
+                AUTO_DX.setVisibility(View.VISIBLE);
+                if(prepLeft){
+                    if(Dozer_Auto_Main){
+                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                    }else {
+                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                    }
+                }else {
+                    AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_manuale));
+                }
+
+                if(prepRight){
+                    if(Dozer_Auto_Main){
+                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                    }else {
+                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                    }
+                }else {
+                    AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
+                }
+            }
+
+
+
+
+
+        }
     }
 }

@@ -16,7 +16,7 @@
         android:id="@+id/immagine"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-       android:layout_margin="2dp"
+        android:layout_margin="2dp"
         android:src="@drawable/swingboom"
         app:layout_constraintBottom_toTopOf="@id/val"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -49,8 +49,7 @@
         app:layout_constraintLeft_toRightOf="@id/save"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hc"
-
-        />
+        app:tint="@color/_____cancel_text" />
 
     <EditText
         android:id="@+id/val"
@@ -71,16 +70,15 @@
         android:id="@+id/unita"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:focusableInTouchMode="false"
         android:gravity="center|left"
+        android:text="[m]"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:focusableInTouchMode="false"
         app:layout_constraintBottom_toTopOf="@id/hc"
         app:layout_constraintLeft_toRightOf="@id/val"
-        android:text="[m]"
-        app:layout_constraintTop_toBottomOf="@id/immagine"
-        />
+        app:layout_constraintTop_toBottomOf="@id/immagine" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

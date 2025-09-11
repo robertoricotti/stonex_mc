@@ -39,6 +39,8 @@
         app:layout_constraintBottom_toTopOf="@id/hc0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/vc1"
+        android:padding="5dp"
+        app:tint="@color/blue"
         android:layout_margin="45dp"/>
     <ImageView
         android:id="@+id/to2D"
@@ -52,6 +54,7 @@
         app:layout_constraintRight_toLeftOf="@id/vc2"
         android:layout_margin="45dp"
         android:padding="5dp"
+
         />
     <ImageView
         android:id="@+id/toProfile"
@@ -82,5 +85,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hc"
+        app:tint="@color/white"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

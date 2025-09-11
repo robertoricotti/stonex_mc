@@ -128,7 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guidTop"
+        app:layout_constraintTop_toBottomOf="@id/AM_DX"
         android:background="@color/transparent"
         android:textStyle="normal"
         android:textSize="18sp"
@@ -266,6 +266,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/topLay"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:gravity="center"
@@ -655,5 +656,56 @@
         app:layout_constraintRight_toRightOf="parent"
         android:background="@color/yellow"
         android:src="@drawable/danger_altezza"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/diviAuto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.5"
+        android:orientation="vertical"/>
+    <TextView
+        android:id="@+id/AM_SX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:gravity="center"
+        android:padding="2dp"
+        android:text=" AUTO "
+        android:background="@drawable/sfondo_auto_enabled"
+        app:layout_constraintTop_toBottomOf="@id/guidTop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+    <TextView
+        android:id="@+id/AM_SS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:gravity="center"
+        android:padding="2dp"
+        android:text=" AUTO "
+        android:background="@drawable/sfondo_auto_prepared"
+        app:layout_constraintTop_toBottomOf="@id/guidTop"
+        app:layout_constraintRight_toRightOf="@id/diviAuto"
+        app:layout_constraintLeft_toLeftOf="@id/diviAuto"
+        />
+    <TextView
+        android:id="@+id/AM_DX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:gravity="center"
+        android:padding="2dp"
+        android:background="@drawable/sfondo_manuale"
+        android:text=" AUTO "
+        app:layout_constraintTop_toBottomOf="@id/guidTop"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
