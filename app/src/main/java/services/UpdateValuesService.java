@@ -275,7 +275,7 @@ public class UpdateValuesService extends Service {
                         MyData.push("M" + i + "f", "1.00");
                     }
                     if (gpsdeltaY == null) {
-                        MyData.push("M" + i + "_OffsetGPSY", "1.00");
+                        MyData.push("M" + i + "_OffsetGPSY", "0.50");
                     }
                     if (gpsdeltaZ == null) {
                         MyData.push("M" + i + "_OffsetGPSZ", "1.00");

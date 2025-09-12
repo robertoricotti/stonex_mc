@@ -6,33 +6,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="gui.boot_and_choose.LicenseFail_Activity">
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/divid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8"/>
-<TextView
-    android:id="@+id/messaggio"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:textSize="22dp"
-    android:textColor="@color/_____cancel_text"
-    android:textStyle="bold|italic"
-    android:gravity="center"
-    android:text="@string/error_license"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toTopOf="@id/divid"
-    />
-    <ImageView
-        android:id="@+id/reload"
-        android:layout_width="0dp"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <TextView
+        android:id="@+id/messaggio"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/error_license"
+        android:textColor="@color/_____cancel_text"
+        android:textSize="22dp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toTopOf="@id/divid"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/erase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:padding="5dp"
+        android:src="@drawable/delete_btn"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divid"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:tint="@color/_____cancel_text"
+
+        />
+
+    <ImageView
+        android:id="@+id/reload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:padding="5dp"
         android:src="@drawable/restart_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/erase"
         app:tint="@color/_____cancel_text"
 
         />

@@ -4,6 +4,9 @@ package gui.my_opengl;
 import static gui.MyApp.errorCode;
 import static gui.MyApp.hAlarm;
 import static services.CanService.Dozer_Auto_Main;
+import static services.CanService.Grader_AutoRight;
+import static services.CanService.Grader_Auto_Left;
+import static services.CanService.Grader_Auto_SS;
 import static services.ReadProjectService.isFinishedDTM;
 import static services.ReadProjectService.isFinishedPOINT;
 import static services.ReadProjectService.isFinishedPOLY;
@@ -1430,13 +1433,41 @@ public class My3DActivity extends BaseClass {
                 AUTO_SS.setVisibility(View.VISIBLE);
                 AUTO_DX.setVisibility(View.VISIBLE);
                 if(prepLeft){
-                    AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                    if(Grader_Auto_Left){
+                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                        //TODO MESSAGGI CONTROLLO LAMA DOZER LEFT
+                    }else {
+                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                    }
+                }else {
+                    AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_manuale));
                 }
+
+
+
                 if(prepSS){
-                    AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                    if(Grader_Auto_SS){
+                        AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                        //TODO MESSAGGI CONTROLLO LAMA DOZER SS
+                    }else {
+                        AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                    }
+                }else {
+                    AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_manuale));
                 }
+
+
+
+
                 if(prepRight){
-                    AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                    if(Grader_AutoRight){
+                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                        //TODO MESSAGGI CONTROLLO LAMA DOZER RIGHT
+                    }else {
+                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                    }
+                }else {
+                    AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
                 }
             }else {
                 //DOZER
@@ -1447,6 +1478,7 @@ public class My3DActivity extends BaseClass {
                 if(prepLeft){
                     if(Dozer_Auto_Main){
                         AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                        //TODO MESSAGGI CONTROLLO LAMA DOZER LIFT
                     }else {
                         AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
                     }
@@ -1457,6 +1489,7 @@ public class My3DActivity extends BaseClass {
                 if(prepRight){
                     if(Dozer_Auto_Main){
                         AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                        //TODO MESSAGGI CONTROLLO LAMA DOZER TILT
                     }else {
                         AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
                     }
