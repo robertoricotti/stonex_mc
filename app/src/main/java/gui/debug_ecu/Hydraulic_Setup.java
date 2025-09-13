@@ -14,7 +14,7 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomToast;
-import hydro.Hydro_Activity_Entering;
+import gui.hydro.Hydro_Activity_Entering;
 import services.CanService;
 import utils.MyDeviceManager;
 import utils.Utils;

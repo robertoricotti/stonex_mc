@@ -95,6 +95,7 @@ public class FrameCalib extends AppCompatActivity {
         tempHDT = findViewById(R.id.tempHdt);
         useYawF = findViewById(R.id.useYawF);
         useYawF.setVisibility(View.GONE);
+        tempHDT.setVisibility(View.INVISIBLE);
     }
 
     @SuppressLint("SetTextI18n")

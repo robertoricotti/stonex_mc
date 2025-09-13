@@ -1,21 +1,15 @@
-package hydro;
+package gui.hydro;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.ImageDecoderKt;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.stx_dig.R;
 
 import gui.debug_ecu.Hydraulic_Setup;
-import gui.debug_ecu.Hydro_Lobby;
 import gui.dialogs_and_toast.CustomToast;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;

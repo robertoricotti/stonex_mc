@@ -1,5 +1,6 @@
-package hydro;
+package gui.hydro;
 
+import static packexcalib.exca.DataSaved.CAT_Type;
 import static packexcalib.exca.DataSaved.maxSpeedLeftDW;
 import static packexcalib.exca.DataSaved.maxSpeedLeftUP;
 import static packexcalib.exca.DataSaved.maxSpeedRightDW;
@@ -13,6 +14,7 @@ import static packexcalib.exca.DataSaved.minSpeedRightUP;
 import static packexcalib.exca.DataSaved.minSpeedSS_A;
 import static packexcalib.exca.DataSaved.minSpeedSS_B;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -27,13 +29,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
-import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import services.CanService;
 import utils.MyData;
 import utils.MyDeviceManager;
 import utils.UnitsConversion;
 
-public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
+
+public class CAT_SEA_Activity extends AppCompatActivity {
     Handler sendHandler = new Handler();
     Runnable sendRunnable;
     Handler handler = new Handler();
@@ -43,25 +45,19 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
     TextView testValve, testo, funzione, tipo, pagina;
     int maxMenu;
     EditText valore;
+    byte leftDir = (byte) 0xF2;
+    byte rightDir = (byte) 0xF2;
+    byte ssDir = (byte) 0xF2;
+    byte valueLEFT = 0;
+    byte valueRIGHT = 0;
+    byte valueSS = 0;
 
-
-    int valueLEFT = 20000;
-    int valueRIGHT = 20000;
-    int valueSS = 20000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_deere_liebherr);
-        MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
-                new byte[]{(byte) 0xF4,
-                        (byte) 0xF0,
-                        (byte) 0x13,
-                        (byte) 0x23,
-                        (byte) 0x0,
-                        (byte) 0x82,
-                        (byte) 0x0,
-                        (byte) 0xB0});
+        setContentView(R.layout.activity_cat_sea);
+        CanService.CAT_Joystick = "NOT CONNECTED";
         maxMenu = 13;
         findView();
         onClick();
@@ -73,6 +69,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
             indexMachine = 0;
         }
         sendMsg();
+
     }
 
     private void findView() {
@@ -89,6 +86,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
         pagina = findViewById(R.id.pagina);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void onClick() {
         testValve.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -96,78 +94,78 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                     testValve.setAlpha(0.1f);
                     switch (voceMenu) {
                         case 0:
-                            valueLEFT = UnitsConversion.myscalIntD(minSpeedLeftUP,0,255,20000,5000);
-                            valueRIGHT = 20000;
-                            valueSS = 20000;
-
+                            valueLEFT = (byte) UnitsConversion.limitInt(minSpeedLeftUP, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            leftDir = (byte) 0xF2;
                             break;
                         case 1:
-                            valueLEFT = UnitsConversion.myscalIntD(maxSpeedLeftUP,0,255,20000,5000);
-                            valueRIGHT = 20000;
-                            valueSS = 20000;
-
+                            valueLEFT = (byte) UnitsConversion.limitInt(maxSpeedLeftUP, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            leftDir = (byte) 0xF2;
                             break;
                         case 2:
-                            valueLEFT =  UnitsConversion.myscalIntD(minSpeedLeftDW, 0, 255,20000,35000);
-                            valueRIGHT = 20000;
-                            valueSS = 20000;
-
+                            valueLEFT = (byte) UnitsConversion.limitInt(minSpeedLeftDW, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            leftDir = (byte) 0xF1;
                             break;
                         case 3:
-                            valueLEFT =  UnitsConversion.myscalIntD(maxSpeedLeftDW, 0, 255,20000,35000);
-                            valueRIGHT = 20000;
-                            valueSS = 20000;
-
+                            valueLEFT = (byte) UnitsConversion.limitInt(maxSpeedLeftDW, 0, 255);
+                            valueRIGHT = 0;
+                            valueSS = 0;
+                            leftDir = (byte) 0xF1;
                             break;
 
                         case 4:
-                            valueRIGHT = UnitsConversion.myscalIntD(minSpeedRightUP, 0, 255,20000,5000);
-                            valueLEFT = 20000;
-                            valueSS = 20000;
-
+                            valueRIGHT = (byte) UnitsConversion.limitInt(minSpeedRightUP, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            rightDir = (byte) 0xF2;
                             break;
                         case 5:
-                            valueRIGHT =  UnitsConversion.myscalIntD(maxSpeedRightUP, 0, 255,20000,5000);
-                            valueLEFT = 20000;
-                            valueSS = 20000;
-
+                            valueRIGHT = (byte) UnitsConversion.limitInt(maxSpeedRightUP, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            rightDir = (byte) 0xF2;
                             break;
                         case 6:
-                            valueRIGHT = UnitsConversion.myscalIntD(minSpeedRightDW, 0, 255,20000,35000);
-                            valueLEFT = 20000;
-                            valueSS = 20000;
-
+                            valueRIGHT = (byte) UnitsConversion.limitInt(minSpeedRightDW, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            rightDir = (byte) 0xF1;
                             break;
                         case 7:
-                            valueRIGHT = UnitsConversion.myscalIntD(maxSpeedRightDW, 0, 255,20000,35000);
-                            valueLEFT = 20000;
-                            valueSS = 20000;
-
+                            valueRIGHT = (byte) UnitsConversion.limitInt(maxSpeedRightDW, 0, 255);
+                            valueLEFT = 0;
+                            valueSS = 0;
+                            rightDir = (byte) 0xF1;
                             break;
 
                         case 8:
-                            valueSS = UnitsConversion.myscalIntD(minSpeedSS_A, 0, 255,20000,5000);
-                            valueLEFT = 20000;
-                            valueRIGHT = 20000;
-
+                            valueSS = (byte) UnitsConversion.limitInt(minSpeedSS_A, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            ssDir = (byte) 0xF1;
                             break;
                         case 9:
-                            valueSS = UnitsConversion.myscalIntD(maxSpeedSS_A, 0, 255,20000,5000);
-                            valueLEFT = 20000;
-                            valueRIGHT = 20000;
-
+                            valueSS = (byte) UnitsConversion.limitInt(maxSpeedSS_A, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            ssDir = (byte) 0xF1;
                             break;
                         case 10:
-                            valueSS = UnitsConversion.myscalIntD(minSpeedSS_B, 0, 255,20000,35000);
-                            valueLEFT = 20000;
-                            valueRIGHT = 20000;
-
+                            valueSS = (byte) UnitsConversion.limitInt(minSpeedSS_B, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            ssDir = (byte) 0xF2;
                             break;
                         case 11:
-                            valueSS = UnitsConversion.myscalIntD(maxSpeedSS_B, 0, 255,20000,35000);
-                            valueLEFT = 20000;
-                            valueRIGHT = 20000;
-
+                            valueSS = (byte) UnitsConversion.limitInt(maxSpeedSS_B, 0, 255);
+                            valueLEFT = 0;
+                            valueRIGHT = 0;
+                            ssDir = (byte) 0xF2;
                             break;
 
 
@@ -175,9 +173,12 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                     return true;
                 case MotionEvent.ACTION_UP:
                     testValve.setAlpha(1.0f);
-                    valueLEFT = 20000;
-                    valueRIGHT = 20000;
-                    valueSS = 20000;
+                    leftDir = (byte) 0xF2;
+                    rightDir = (byte) 0xF2;
+                    ssDir = (byte) 0xF2;
+                    valueLEFT = 0;
+                    valueRIGHT = 0;
+                    valueSS = 0;
                     return true;
             }
             return false; // permette comunque al click di propagare
@@ -259,7 +260,11 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                     if (maxSpeedSS_B > 0)
                         maxSpeedSS_B--;
                     break;
-
+                case 12:
+                    CAT_Type--;
+                    CAT_Type = Math.abs(CAT_Type) % 3;
+                    MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
+                    break;
                 default:
                     break;
             }
@@ -341,7 +346,11 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                     if (maxSpeedSS_B < 255)
                         maxSpeedSS_B++;
                     break;
-
+                case 12:
+                    CAT_Type++;
+                    CAT_Type = Math.abs(CAT_Type) % 3;
+                    MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
+                    break;
                 default:
                     break;
             }
@@ -362,7 +371,11 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
             voceMenu = Math.abs(voceMenu) % maxMenu;
 
         });
-
+        tipo.setOnClickListener(view -> {
+            CAT_Type++;
+            CAT_Type = Math.abs(CAT_Type) % 3;
+            MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
+        });
         back.setOnClickListener(view -> {
             android.app.AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.exit));
@@ -382,7 +395,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                 MyData.push("M" + indexMachine + "maxSpeedSS_A", String.valueOf(maxSpeedSS_A));
                 MyData.push("M" + indexMachine + "minSpeedSS_B", String.valueOf(minSpeedSS_B));
                 MyData.push("M" + indexMachine + "maxSpeedSS_B", String.valueOf(maxSpeedSS_B));
-                startActivity(new Intent(DEERE_LIEBHERR_Activity.this, Hydro_Activity_Entering.class));
+                startActivity(new Intent(CAT_SEA_Activity.this, Hydro_Activity_Entering.class));
                 finish();
             });
             // Aggiungi il pulsante "No"
@@ -398,14 +411,25 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
 
     public void updateUI() {
         pagina.setText((voceMenu + 1) + " / " + (maxMenu));
+        switch (CAT_Type) {
+            case 0:
+                tipo.setText("CAT K - N Series");
+                break;
+            case 1:
+                tipo.setText("CAT NextGen");
+                break;
 
+            case 2:
+                tipo.setText("CAT M Series");
+                break;
+        }
 
         switch (voceMenu) {
             case 0:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedLeftUP));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("LEFT MIN SPEED UP");
+                funzione.setText("LEFT THRESHOLD UP");
                 testo.setText("LEFT RISE Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -430,7 +454,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedLeftDW));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("LEFT MIN SPEED DOWN");
+                funzione.setText("LEFT THRESHOLD DOWN");
                 testo.setText("LEFT LOWER Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -453,7 +477,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedRightUP));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("RIGHT MIN SPEED UP");
+                funzione.setText("RIGHT THRESHOLD UP");
                 testo.setText("RIGHT RISE Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -476,7 +500,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedRightDW));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("RIGHT MIN SPEED DOWN");
+                funzione.setText("RIGHT THRESHOLD DOWN");
                 testo.setText("RIGHT LOWER Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -498,7 +522,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedSS_A));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("BLADE SIDESHIFT MIN SPEED LEFT");
+                funzione.setText("BLADE SIDESHIFT THRESHOLD LEFT");
                 testo.setText("SIDESHIFT LEFT Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -521,7 +545,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedSS_B));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("BLADE SIDESHIFT MIN SPEED RIGHT");
+                funzione.setText("BLADE SIDESHIFT THRESHOLD RIGHT");
                 testo.setText("SIDESHIFT RIGHT Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -541,11 +565,22 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
             case 12:
                 valore.setVisibility(TextView.INVISIBLE);
                 funzione.setTextColor(Color.BLACK);
-                funzione.setText("CAN DATA MAP");
-                testo.setText("Dozer: " + CanService.JD_Joystick + "\n" + "Grader: " + CanService.JD_GP_Joystyck);
+                funzione.setText("MACHINE MODEL");
+                switch (CAT_Type) {
+                    case 0:
+                        testo.setText("CAT K - N Series\n\n" + CanService.CAT_Joystick);
+                        break;
+                    case 1:
+                        testo.setText("CAT NextGen\n\n" + CanService.CAT_Joystick);
+                        break;
 
+                    case 2:
+                        testo.setText("CAT M Series\n\n" + CanService.CAT_Joystick);
+                        break;
+                }
                 break;
         }
+
     }
 
     private void executeMenuAction_M() {
@@ -586,7 +621,11 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
             case 11:
                 if (maxSpeedSS_B > 0) maxSpeedSS_B--;
                 break;
-
+            case 12:
+                CAT_Type--;
+                CAT_Type = Math.abs(CAT_Type) % 3;
+                MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
+                break;
             default:
                 break;
         }
@@ -630,7 +669,11 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
             case 11:
                 if (maxSpeedSS_B < 255) maxSpeedSS_B++;
                 break;
-
+            case 12:
+                CAT_Type++;
+                CAT_Type = Math.abs(CAT_Type) % 3;
+                MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
+                break;
             default:
                 break;
         }
@@ -640,23 +683,35 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
         sendRunnable = new Runnable() {
             @Override
             public void run() {
-                byte[]valoreSX= new byte[]{0x4E,0x20};
-                byte[]valoreDX= new byte[]{0x4E,0x20};
-                byte[]valoreSS= new byte[]{0x4E,0x20};
+                MyDeviceManager.CanWrite(1, 0x18FE3185, 8,
+                        new byte[]{valueLEFT,
+                                (byte) 0xFF,
+                                leftDir,//F2=Up F1=Down
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF});
 
-                valoreSX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueLEFT);
-                valoreDX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueRIGHT);
-                valoreSS= PLC_DataTypes_LittleEndian.U16_to_bytes(valueSS);
-                MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
-                        new byte[]{
-                                (byte) 0xF2,
-                                (byte) 0x1A,
-                                (byte) valoreSX[0],
-                                (byte) valoreSX[1],
-                                (byte) valoreDX[0],
-                                (byte) valoreDX[1],
-                                (byte) valoreSS[0],
-                                (byte) valoreSS[1]  });
+                MyDeviceManager.CanWrite(1, 0x18FE3285, 8,
+                        new byte[]{valueRIGHT,
+                                (byte) 0xFF,
+                                rightDir,//F2=Up F1=Down
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF});
+
+                MyDeviceManager.CanWrite(1, 0x18FE3385, 8,
+                        new byte[]{valueSS,
+                                (byte) 0xFF,
+                                ssDir,//F2=Right F1=Left
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF});
 
                 sendHandler.postDelayed(this, 50);
             }
@@ -664,4 +719,6 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
         };
         sendHandler.postDelayed(sendRunnable, 500); // primo repeat dopo 500ms
     }
+
+
 }

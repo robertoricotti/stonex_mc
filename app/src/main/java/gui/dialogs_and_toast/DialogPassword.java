@@ -14,11 +14,10 @@ import android.widget.EditText;
 
 import com.example.stx_dig.R;
 
-import gui.debug_ecu.Hydro_Lobby;
 import gui.gps.Nuovo_Gps;
 import gui.tech_menu.CanOpenTSM;
 import gui.tech_menu.Nuova_Machine_Settings;
-import hydro.Hydro_Activity_Entering;
+import gui.hydro.Hydro_Activity_Entering;
 import utils.FullscreenActivity;
 import utils.MyData;
 

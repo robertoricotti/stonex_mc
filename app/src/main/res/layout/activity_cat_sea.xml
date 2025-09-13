@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_gray"
-    tools:context="hydro.CAT_SEA_Activity">
+    tools:context="gui.hydro.CAT_SEA_Activity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/topla"

@@ -42,7 +42,7 @@ import utils.MyDeviceManager;
 
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
-    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO,ckSchermo,ckMach,ck22;
+    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO,ckSchermo,ckMach,ck22,ckVecchia;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, menu_1, menu_2, saveToFile, readFromFile, status,bt_canopen;
     ConstraintLayout constraintLayout, constraintLayout_2,constraintLayout_3;
@@ -106,6 +106,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ck22=findViewById(R.id.ck22);
         ckUHF = findViewById(R.id.ck3);
         ckUpper = findViewById(R.id.ck4);
+        ckVecchia=findViewById(R.id.ckVecchia);
         ckIMU = findViewById(R.id.ck5);
         ckDEMO = findViewById(R.id.ck6);
         saveToFile = findViewById(R.id.img01);
@@ -143,12 +144,21 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ckIMU.setOnClickListener(view -> {
             ckDEMO.setChecked(false);
             ckIMU.setChecked(true);
+            ckVecchia.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "3");
+
+        });
+        ckVecchia.setOnClickListener(view -> {
+            ckDEMO.setChecked(false);
+            ckVecchia.setChecked(true);
+            ckIMU.setChecked(false);
+            MyData.push("M" + machineSel + "_useCanOpen", "1");
 
         });
         ckDEMO.setOnClickListener(view -> {
             ckDEMO.setChecked(true);
             ckIMU.setChecked(false);
+            ckVecchia.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "5");
         });
 
@@ -650,6 +660,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ck22.setChecked(MyData.get_Int("M"+machineSel+"Extra_Heading")!=0);
         ckDO.setChecked(MyData.get_Int("M" + machineSel + "_enOUT") != 0);
         ckIMU.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 3);//TSM
+        ckVecchia.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 1);//G2
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag
         ckUpper.setChecked(MyData.get_Int("UpperBar_Visible") == 1);
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);

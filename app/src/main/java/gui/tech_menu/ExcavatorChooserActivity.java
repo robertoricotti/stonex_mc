@@ -18,13 +18,12 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
-import drill_pile.gui.Drill_MainPage;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
 import gui.debug_ecu.Can_Msg_Debug;
-import hydro.Hydro_Activity_Entering;
+import gui.hydro.Hydro_Activity_Entering;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;

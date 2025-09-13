@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hydro.Hydro_Activity_Entering">
+    tools:context="gui.hydro.Hydro_Activity_Entering">
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/topla"
         android:layout_width="match_parent"

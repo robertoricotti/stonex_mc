@@ -1,4 +1,4 @@
-package hydro;
+package gui.hydro;
 
 
 import static packexcalib.exca.DataSaved.maxSpeedLeftDW;
@@ -382,7 +382,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedLeftUP));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("LEFT MIN SPEED UP");
+                funzione.setText("LEFT THRESHOLD UP");
                 testo.setText("LEFT RISE Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -407,7 +407,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedLeftDW));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("LEFT MIN SPEED DOWN");
+                funzione.setText("LEFT THRESHOLD DOWN");
                 testo.setText("LEFT LOWER Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -430,7 +430,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedRightUP));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("RIGHT MIN SPEED UP");
+                funzione.setText("RIGHT THRESHOLD UP");
                 testo.setText("RIGHT RISE Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -453,7 +453,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedRightDW));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("RIGHT MIN SPEED DOWN");
+                funzione.setText("RIGHT THRESHOLD DOWN");
                 testo.setText("RIGHT LOWER Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -475,7 +475,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedSS_A));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("BLADE SIDESHIFT MIN SPEED LEFT");
+                funzione.setText("BLADE SIDESHIFT THRESHOLD LEFT");
                 testo.setText("SIDESHIFT LEFT Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +
@@ -498,7 +498,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedSS_B));
                 funzione.setTextColor(Color.BLUE);
-                funzione.setText("BLADE SIDESHIFT MIN SPEED RIGHT");
+                funzione.setText("BLADE SIDESHIFT THRESHOLD RIGHT");
                 testo.setText("SIDESHIFT RIGHT Minimum Hydraulic Speed\n" +
                         "Set the Machine to the operating rpm\n" +
                         "Increase the Value by 1 and press TEST\n until the cylinder starts moving slowly.\n" +

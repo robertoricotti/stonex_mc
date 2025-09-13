@@ -77,37 +77,37 @@
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
         <activity
-            android:name="hydro.DOOSAN_Activity"
+            android:name="gui.hydro.DOOSAN_Activity"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="hydro.CASE_Activity"
+            android:name="gui.hydro.CASE_Activity"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="hydro.KOMATSU_Activity"
+            android:name="gui.hydro.KOMATSU_Activity"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
-            android:name="hydro.DEERE_LIEBHERR_Activity"
+            android:name="gui.hydro.DEERE_LIEBHERR_Activity"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="hydro.CAT_SEA_Activity"
+            android:name="gui.hydro.CAT_SEA_Activity"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
-            android:name="hydro.Hydro_Activity_Entering"
+            android:name="gui.hydro.Hydro_Activity_Entering"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
