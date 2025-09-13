@@ -198,7 +198,7 @@ public class UpdateValuesService extends Service {
 
 
                     if (nameM == null) {
-                        MyData.push("M" + i + "_Name", ("DEFULT " + i).toUpperCase());
+                        MyData.push("M" + i + "_Name", ("DEFAULT " + i).toUpperCase());
                     }
                     if (reverseRoto == null) {
                         MyData.push("M" + i + "revTiltRot", "0");
