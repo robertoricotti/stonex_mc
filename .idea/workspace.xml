@@ -551,6 +551,13 @@
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_gain.xml">
         <config>
+          <state>Landscape</state>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_gain_hydro.xml">
+        <config>
+          <state>Landscape</state>
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
@@ -886,30 +893,30 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="AUTO textview addes">
+    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="dialog gain e hydro points">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Dialog_Gain_Hydro.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/cent_left.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/cent_right.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/left_right.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_gain_hydro.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydraulic_Setup.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Hydraulic_Setup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/DialogPassword.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/DialogPassword.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/FrameCalib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/FrameCalib.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/CASE_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/CASE_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/CAT_SEA_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/CAT_SEA_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/DEERE_LIEBHERR_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/DEERE_LIEBHERR_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/DOOSAN_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/DOOSAN_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/Hydro_Activity_Entering.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Hydro_Activity_Entering.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/hydro/KOMATSU_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/KOMATSU_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_calibrazione_macchine.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_calibrazione_macchine.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_case.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_case.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_cat_sea.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_cat_sea.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_deere_liebherr.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_deere_liebherr.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_doosan.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_doosan.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_entering.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_entering.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_komatsu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_komatsu.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/et --hard a540f3cf" beforeDir="false" afterPath="$PROJECT_DIR$/et --hard a540f3cf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-el/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-el/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-es/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-es/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-fr/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-fr/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ko/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ko/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-nl-rNL/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-nl-rNL/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-pt/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-pt/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ro-rRO/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ro-rRO/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-zh/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-zh/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -919,7 +926,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -928,8 +935,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -1076,22 +1083,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00016" summary="menu utente dialogs ok">
-      <option name="closed" value="true" />
-      <created>1754049746661</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1754049746661</updated>
-    </task>
-    <task id="LOCAL-00017" summary="01/08/2025 18.16 license ok pnezd ok">
-      <option name="closed" value="true" />
-      <created>1754065404936</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1754065404936</updated>
     </task>
     <task id="LOCAL-00018" summary="predisposta usura lama">
       <option name="closed" value="true" />
@@ -1469,7 +1460,23 @@
       <option name="project" value="LOCAL" />
       <updated>1757699294544</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="ripristino G2">
+      <option name="closed" value="true" />
+      <created>1757759855903</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1757759855904</updated>
+    </task>
+    <task id="LOCAL-00066" summary="ripristino G2">
+      <option name="closed" value="true" />
+      <created>1757760156377</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1757760156377</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1484,8 +1491,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="tentativo fix geoid lag" />
-    <MESSAGE value="tentato BUGFIX per lag geoide. 12 agosto 2025" />
     <MESSAGE value="introdotto letura roof_heading" />
     <MESSAGE value="da finire dialog calibrazione swing boom" />
     <MESSAGE value="swing_boom implementato manca da aggiustare grafica 3D" />
@@ -1509,7 +1514,9 @@
     <MESSAGE value="JD E KOMATSU TECH MENU DONE" />
     <MESSAGE value="doppia compilazione per GEN1 e GEN2" />
     <MESSAGE value="AUTO textview addes" />
-    <option name="LAST_COMMIT_MESSAGE" value="AUTO textview addes" />
+    <MESSAGE value="ripristino G2" />
+    <MESSAGE value="dialog gain e hydro points" />
+    <option name="LAST_COMMIT_MESSAGE" value="dialog gain e hydro points" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
@@ -1531,22 +1538,22 @@
         </entry>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1757682771182" />
+            <CheckInfo lastCheckTimestamp="1757798778705" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1757682771181" />
+            <CheckInfo lastCheckTimestamp="1757798778705" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1757682771181" />
+            <CheckInfo lastCheckTimestamp="1757798778704" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1757682771182" />
+            <CheckInfo lastCheckTimestamp="1757798778703" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.test">

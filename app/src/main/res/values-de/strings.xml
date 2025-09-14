@@ -17,6 +17,8 @@
     <string name="en_uhf_ntrip">UHF/NTRIP UMSCHALTEN</string>
     <string name="uppaer_bar">OBERE LEISTE IMMER SICHTBAR AUF ARBEITSSEITE</string>
     <string name="interface_type">HYDRAULIK-SCHNITTSTELLENTYP</string>
+    <string name="hydro_cp">HYDRAULISCHE\nSTEUERPUNKTE</string>
+    <string name="hydro_apply">NEUE HYDRAULIKWERTE ANWENDEN</string>
 
 
     <string name="save">SPEICH</string>

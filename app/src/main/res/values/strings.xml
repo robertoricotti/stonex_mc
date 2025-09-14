@@ -15,7 +15,8 @@
     <string name="savepara">SAVE ALL PARAMETERS TO EXTERNAL MEMORY</string>
     <string name="savepara_pro">Do You Want to Proceed ?</string>
     <string name="write_para">OVERWRITE ALL APPLICATION PARAMETERS</string>
-
+    <string name="hydro_cp">HYDRAULIC\nCONTROL POINTS</string>
+    <string name="hydro_apply">APPLY NEW HYDRAULIC VALUES</string>
 
     <string name="mac_setup">MACHINE SETUP</string>
     <string name="sens_config">CAN SENSOR CONFIG</string>

@@ -27,6 +27,8 @@
     <string name="savepara">모든 매개변수를 외부 메모리에 저장</string>
     <string name="savepara_pro">계속하시겠습니까?</string>
     <string name="write_para">모든 애플리케이션 매개변수 덮어쓰기</string>
+    <string name="hydro_cp">유압\n제어 지점</string>
+    <string name="hydro_apply">새로운 유압 값 적용</string>
 
     <string name="save">저장</string>
     <string name="exit">종료</string>

@@ -196,6 +196,11 @@ public class UpdateValuesService extends Service {
                     String maxSpeedSS_B = MyData.get_String("M" + i + "maxSpeedSS_B");
                     String CAT_Type = MyData.get_String("M" + i + "CAT_Type");
 
+                    String GAIN_LEFT = MyData.get_String("M" + i + "GAIN_LEFT");
+                    String GAIN_RIGHT = MyData.get_String("M" + i + "GAIN_RIGHT");
+                    String HYDRAULIC_CONTROL_POINT = MyData.get_String("M" + i + "HYDRAULIC_CONTROL_POINT");
+
+
 
                     if (nameM == null) {
                         MyData.push("M" + i + "_Name", ("DEFAULT " + i).toUpperCase());
@@ -479,6 +484,16 @@ public class UpdateValuesService extends Service {
 
                     if (CAT_Type == null) {
                         MyData.push("M" + i + "CAT_Type", "0");
+                    }
+
+                    if (GAIN_LEFT == null) {
+                        MyData.push("M" + i + "GAIN_LEFT", "1");
+                    }
+                    if (GAIN_RIGHT == null) {
+                        MyData.push("M" + i + "GAIN_RIGHT", "1");
+                    }
+                    if (HYDRAULIC_CONTROL_POINT == null) {
+                        MyData.push("M" + i + "HYDRAULIC_CONTROL_POINT", "0");
                     }
 
 
@@ -1279,6 +1294,22 @@ public class UpdateValuesService extends Service {
                     DataSaved.CAT_Type = MyData.get_Int("M" + indexMach + "CAT_Type");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di CAT_Type: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.GAIN_LEFT = MyData.get_Int("M" + indexMach + "GAIN_LEFT");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di GAIN_LEFT: " + e.getMessage());
+                }
+                try {
+                    DataSaved.GAIN_RIGHT = MyData.get_Int("M" + indexMach + "GAIN_RIGHT");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di GAIN_RIGHT: " + e.getMessage());
+                }
+                try {
+                    DataSaved.HYDRAULIC_CONTROL_POINT = MyData.get_Int("M" + indexMach + "HYDRAULIC_CONTROL_POINT");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di HYDRAULIC_CONTROL_POINT: " + e.getMessage());
                 }
 
                 ////end draw

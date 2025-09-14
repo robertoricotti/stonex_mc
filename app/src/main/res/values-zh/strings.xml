@@ -27,6 +27,8 @@
     <string name="savepara_pro">是否要继续？</string>
     <string name="write_para">覆盖所有应用程序参数</string>
 
+    <string name="hydro_cp">液压\n控制点</string>
+    <string name="hydro_apply">应用新的液压值</string>
 
     <string name="save">保存参数</string>
     <string name="exit">逃离键</string>

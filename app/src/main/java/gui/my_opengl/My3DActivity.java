@@ -57,6 +57,7 @@ import gui.draw_class.MyColorClass;
 import gui.gps.NmeaGenerator;
 import gui.grade_draw_class.Grade_DrawDXF_Layer1;
 import gui.grade_draw_class.Grade_DrawDXF_Layer2;
+import gui.hydro.Dialog_Gain_Hydro;
 import gui.projects.Dialog_PRJ_Folder;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
@@ -74,7 +75,7 @@ public class My3DActivity extends BaseClass {
     TextView AUTO_SX,AUTO_SS,AUTO_DX;
     Dialog_Blade_Wear dialogBladeWear;
     public static boolean PNEZD_FUNCTION;
-    ImageView allarmeAlt;
+    ImageView allarmeAlt,gl_hydroP;
     String bucketName;
     int indexMachineSelected,indexBucketSelected;
     TextView generalnfo,generalCoord;
@@ -105,6 +106,7 @@ public class My3DActivity extends BaseClass {
     DialogColors dialogColors;
     DialogAudioSystem dialogAudioSystem;
     Dialog_Add_Pnezd dialogAddPnezd;
+    Dialog_Gain_Hydro diaolgGainHydro;
     private MyGLSurfaceView glSurfaceView;
 
     TextView boxLeft, boxCent, boxRight, txtCutFill, txtDist;
@@ -252,6 +254,7 @@ public class My3DActivity extends BaseClass {
         gl_benne=findViewById(R.id.gl_benne);
         allarmeAlt = findViewById(R.id.allarmeAlt);
         gl_sound=findViewById(R.id.gl_sound);
+        gl_hydroP=findViewById(R.id.gl_hydroP);
         allarmeAlt.setVisibility(View.GONE);
         dialogMapMode = new Dialog_MapMode(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
@@ -262,6 +265,7 @@ public class My3DActivity extends BaseClass {
         dialogPointPoly = new Dialog_Point_Poly(this);
         dialogAddPnezd=new Dialog_Add_Pnezd(this, pathToPNEZD);
         dialogBladeWear=new Dialog_Blade_Wear(this);
+        diaolgGainHydro=new Dialog_Gain_Hydro(this);
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
@@ -278,9 +282,11 @@ public class My3DActivity extends BaseClass {
         panel2.setBackgroundColor(MyColorClass.colorSfondo);
         if(DataSaved.isWL==0||DataSaved.isWL==1){
             gl_benne.setImageResource((R.drawable.benna_vuota1));
+            gl_hydroP.setVisibility(View.GONE);
         }else {
 
             gl_benne.setImageResource((R.drawable.window_blade));
+            gl_hydroP.setVisibility(View.VISIBLE);
         }
         AUTO_SX=findViewById(R.id.AM_SX);
         AUTO_SS=findViewById(R.id.AM_SS);
@@ -288,6 +294,11 @@ public class My3DActivity extends BaseClass {
     }
 
     private void onClick() {
+        gl_hydroP.setOnClickListener(view -> {
+            if(!diaolgGainHydro.dialog.isShowing()){
+                diaolgGainHydro.show();
+            }
+        });
         AUTO_SX.setOnLongClickListener(view -> {
              prepLeft=!prepLeft;
              return false;
@@ -1421,6 +1432,11 @@ public class My3DActivity extends BaseClass {
     }
 
     private void AutoHandling(){
+        if(!diaolgGainHydro.dialog.isShowing()){
+            Log.d("Mostrando","Non mostra");
+        }else {
+            Log.d("Mostrando","MOSTRA");
+        }
         if(DataSaved.isWL==0||
         DataSaved.isWL==1){
             AUTO_SX.setVisibility(View.INVISIBLE);

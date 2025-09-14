@@ -27,6 +27,8 @@
     <string name="savepara">ENREGISTRER TOUS LES PARAMÈTRES DANS LA MÉMOIRE EXTERNE</string>
     <string name="savepara_pro">VOULEZ-VOUS CONTINUER ?</string>
     <string name="write_para">ÉCRASER TOUS LES PARAMÈTRES DE L APPLICATION</string>
+    <string name="hydro_cp">POINTS DE CONTRÔLE\nHYDRAULIQUES</string>
+    <string name="hydro_apply">APPLIQUER DE NOUVELLES VALEURS HYDRAULIQUES</string>
 
     <string name="exit">SORTIE</string>
     <string name="rename_file">RENOMMER LE FICHIER</string>

@@ -26,6 +26,8 @@
     <string name="savepara">GUARDAR TODOS LOS PARÁMETROS EN LA MEMORIA EXTERNA</string>
     <string name="savepara_pro">¿DESEA CONTINUAR?</string>
     <string name="write_para">SOBRESCRIBIR TODOS LOS PARÁMETROS DE LA APLICACIÓN</string>
+    <string name="hydro_cp">PUNTOS DE CONTROL\nHIDRÁULICOS</string>
+    <string name="hydro_apply">APLICAR NUEVOS VALORES HIDRÁULICOS</string>
 
     <string name="save">SALVAR</string>
     <string name="exit">SALIR</string>

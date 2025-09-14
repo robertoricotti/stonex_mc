@@ -19,6 +19,8 @@
     <string name="en_uhf_ntrip">ΕΝΑΛΛΑΓΗ UHF/NTRIP</string>
     <string name="uppaer_bar">ΠΑΝΩ ΜΠΑΡΑ ΠΑΝΤΑ ΟΡΑΤΗ ΣΤΗ ΣΕΛΙΔΑ ΕΡΓΑΣΙΑΣ</string>
     <string name="interface_type">ΤΥΠΟΣ ΥΔΡΑΥΛΙΚΗΣ ΔΙΕΠΑΦΗΣ</string>
+    <string name="hydro_cp">ΥΔΡΑΥΛΙΚΑ\nΣΗΜΕΙΑ ΕΛΕΓΧΟΥ</string>
+    <string name="hydro_apply">ΕΦΑΡΜΟΓΗ ΝΕΩΝ ΥΔΡΑΥΛΙΚΩΝ ΤΙΜΩΝ</string>
 
 
     <string name="exit">ΕΞΟΔΟΣ</string>

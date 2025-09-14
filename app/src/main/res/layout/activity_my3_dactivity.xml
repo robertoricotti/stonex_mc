@@ -387,7 +387,16 @@
             android:layout_marginRight="4dp"
             android:gravity="center"
             android:orientation="vertical">
-
+            <ImageView
+                android:id="@+id/gl_hydroP"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/custom_background_test3d"
+                android:clickable="true"
+                android:padding="3dp"
+                android:src="@drawable/lama_doze_blank_gain_left"
+                app:tint="@color/white" />
             <ImageView
                 android:id="@+id/gl_benne"
                 android:layout_width="match_parent"

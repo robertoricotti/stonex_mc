@@ -17,6 +17,9 @@
     <string name="procedi">Do You Want To Proceed ?</string>
     <string name="mac_setup">MACHINE SETUP</string>
     <string name="sens_config">CAN SENSOR CONFIG</string>
+    <string name="hydro_cp">HYDRAULIC\nCONTROL POINTS</string>
+    <string name="hydro_apply">APPLY NEW HYDRAULIC VALUES</string>
+
     <string name="save">SAVE</string>
     <string name="exit">EXIT</string>
     <string name="rename_file">RENAME FILE</string>

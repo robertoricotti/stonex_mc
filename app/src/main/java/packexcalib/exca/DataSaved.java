@@ -44,6 +44,10 @@ public class DataSaved {
 
     public static double Off_Incr_Step;
 
+    public static int GAIN_LEFT;
+    public static int GAIN_RIGHT;
+    public static int HYDRAULIC_CONTROL_POINT;//0=CENTER-RIGHT    1=CENTER-LEFT   2=LEFT-RIGHT
+
 
     ///
     public static String machineName;
