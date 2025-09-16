@@ -19,8 +19,8 @@ import gui.digging_excavator.Digging1D;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.surfcreator.DistToLine;
-import packexcalib.surfcreator.DistToPoint;
-import utils.UnitsConversion;
+import utils.DistToPoint;
+import utils.MyMCUtils;
 
 
 public class Draw1D extends View {
@@ -338,7 +338,7 @@ public class Draw1D extends View {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                float i= (float)UnitsConversion.myscaleD(getHeight(),500f,600f,0.8,1.6);
+                float i= (float) MyMCUtils.myscaleD(getHeight(),500f,600f,0.8,1.6);
                 float x = event.getX() *i;
                 float y = event.getY() *i;
                 switch (event.getAction()) {

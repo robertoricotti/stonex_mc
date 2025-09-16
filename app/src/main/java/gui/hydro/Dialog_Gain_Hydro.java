@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.example.stx_dig.R;
 
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.ExcavatorLib;
 import utils.MyData;
 
 public class Dialog_Gain_Hydro {
@@ -82,19 +83,34 @@ public class Dialog_Gain_Hydro {
         machineSelected = MyData.get_Int("MachineSelected");
         gainL.setText(String.valueOf(MyData.get_Int("M" + machineSelected + "GAIN_LEFT")));
         gainR.setText(String.valueOf(MyData.get_Int("M" + machineSelected + "GAIN_RIGHT")));
-        switch (DataSaved.HYDRAULIC_CONTROL_POINT) {
-            case 0:
-                lamaCP.setImageResource((R.drawable.cent_right));
-                break;
+        if (DataSaved.isWL == 4) {
+            switch (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER) {
+                case 0:
+                    lamaCP.setImageResource((R.drawable.cent_right));
+                    break;
 
-            case 1:
-                lamaCP.setImageResource((R.drawable.cent_left));
-                break;
+                case 1:
+                    lamaCP.setImageResource((R.drawable.cent_left));
+                    break;
 
-            case 2:
-                lamaCP.setImageResource((R.drawable.left_right));
-                break;
+                case 2:
+                    lamaCP.setImageResource((R.drawable.left_right));
+                    break;
+            }
+        } else {
+            switch (DataSaved.HYDRAULIC_CONTROL_POINT_DOZER) {
+                case 0:
+                    lamaCP.setImageResource((R.drawable.cent_right));
+                    break;
+
+                case 1:
+                    lamaCP.setImageResource((R.drawable.cent_left));
+                    break;
+
+
+            }
         }
+
     }
 
     private void onClick() {
@@ -126,14 +142,26 @@ public class Dialog_Gain_Hydro {
             updateLama();
         });
         lamaSX.setOnClickListener(view -> {
-            if (DataSaved.HYDRAULIC_CONTROL_POINT > 0) {
-                DataSaved.HYDRAULIC_CONTROL_POINT -= 1;
+            if(DataSaved.isWL==4) {
+                if (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER > 0) {
+                    DataSaved.HYDRAULIC_CONTROL_POINT_GRADER -= 1;
+                }
+            }else {
+                if (DataSaved.HYDRAULIC_CONTROL_POINT_DOZER > 0) {
+                    DataSaved.HYDRAULIC_CONTROL_POINT_DOZER -= 1;
+                }
             }
             updateLama();
         });
         lamaDX.setOnClickListener(view -> {
-            if (DataSaved.HYDRAULIC_CONTROL_POINT < 2) {
-                DataSaved.HYDRAULIC_CONTROL_POINT += 1;
+            if(DataSaved.isWL==4) {
+                if (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER < 2) {
+                    DataSaved.HYDRAULIC_CONTROL_POINT_GRADER += 1;
+                }
+            }else {
+                if (DataSaved.HYDRAULIC_CONTROL_POINT_DOZER < 1) {
+                    DataSaved.HYDRAULIC_CONTROL_POINT_DOZER += 1;
+                }
             }
             updateLama();
         });
@@ -146,7 +174,8 @@ public class Dialog_Gain_Hydro {
             builder.setPositiveButton(R.string.yes, (dialog, which) -> {
                 MyData.push("M" + machineSelected + "GAIN_LEFT", String.valueOf(DataSaved.GAIN_LEFT));
                 MyData.push("M" + machineSelected + "GAIN_RIGHT", String.valueOf(DataSaved.GAIN_RIGHT));
-                MyData.push("M" + machineSelected + "HYDRAULIC_CONTROL_POINT", String.valueOf(DataSaved.HYDRAULIC_CONTROL_POINT));
+                MyData.push("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_GRADER", String.valueOf(DataSaved.HYDRAULIC_CONTROL_POINT_GRADER));
+                MyData.push("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_DOZER", String.valueOf(DataSaved.HYDRAULIC_CONTROL_POINT_DOZER));
                 dialog.dismiss();
                 this.dialog.dismiss();
 
@@ -154,7 +183,8 @@ public class Dialog_Gain_Hydro {
             builder.setNegativeButton(R.string.no, (dialog, which) -> {
                 DataSaved.GAIN_LEFT = MyData.get_Int("M" + machineSelected + "GAIN_LEFT");
                 DataSaved.GAIN_RIGHT = MyData.get_Int("M" + machineSelected + "GAIN_RIGHT");
-                DataSaved.HYDRAULIC_CONTROL_POINT = MyData.get_Int("M" + machineSelected + "HYDRAULIC_CONTROL_POINT");
+                DataSaved.HYDRAULIC_CONTROL_POINT_GRADER = MyData.get_Int("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_GRADER");
+                DataSaved.HYDRAULIC_CONTROL_POINT_DOZER = MyData.get_Int("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_DOZER");
                 dialog.dismiss();
                 this.dialog.dismiss();
 
@@ -167,18 +197,32 @@ public class Dialog_Gain_Hydro {
     private void updateLama() {
         gainL.setText(String.valueOf(DataSaved.GAIN_LEFT));
         gainR.setText(String.valueOf(DataSaved.GAIN_RIGHT));
-        switch (DataSaved.HYDRAULIC_CONTROL_POINT) {
-            case 0:
-                lamaCP.setImageResource((R.drawable.cent_right));
-                break;
+        if (DataSaved.isWL == 4) {
+            switch (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER) {
+                case 0:
+                    lamaCP.setImageResource((R.drawable.cent_right));
+                    break;
 
-            case 1:
-                lamaCP.setImageResource((R.drawable.cent_left));
-                break;
+                case 1:
+                    lamaCP.setImageResource((R.drawable.cent_left));
+                    break;
 
-            case 2:
-                lamaCP.setImageResource((R.drawable.left_right));
-                break;
+                case 2:
+                    lamaCP.setImageResource((R.drawable.left_right));
+                    break;
+            }
+        } else {
+            switch (DataSaved.HYDRAULIC_CONTROL_POINT_DOZER) {
+                case 0:
+                    lamaCP.setImageResource((R.drawable.cent_right));
+                    break;
+
+                case 1:
+                    lamaCP.setImageResource((R.drawable.cent_left));
+                    break;
+
+
+            }
         }
     }
 }

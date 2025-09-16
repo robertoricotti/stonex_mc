@@ -30,9 +30,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.stx_dig.R;
 
 import services.CanService;
+import utils.MyMCUtils;
 import utils.MyData;
 import utils.MyDeviceManager;
-import utils.UnitsConversion;
 
 
 public class CAT_SEA_Activity extends AppCompatActivity {
@@ -94,75 +94,75 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                     testValve.setAlpha(0.1f);
                     switch (voceMenu) {
                         case 0:
-                            valueLEFT = (byte) UnitsConversion.limitInt(minSpeedLeftUP, 0, 255);
+                            valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftUP, 0, 255);
                             valueRIGHT = 0;
                             valueSS = 0;
                             leftDir = (byte) 0xF2;
                             break;
                         case 1:
-                            valueLEFT = (byte) UnitsConversion.limitInt(maxSpeedLeftUP, 0, 255);
+                            valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftUP, 0, 255);
                             valueRIGHT = 0;
                             valueSS = 0;
                             leftDir = (byte) 0xF2;
                             break;
                         case 2:
-                            valueLEFT = (byte) UnitsConversion.limitInt(minSpeedLeftDW, 0, 255);
+                            valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftDW, 0, 255);
                             valueRIGHT = 0;
                             valueSS = 0;
                             leftDir = (byte) 0xF1;
                             break;
                         case 3:
-                            valueLEFT = (byte) UnitsConversion.limitInt(maxSpeedLeftDW, 0, 255);
+                            valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftDW, 0, 255);
                             valueRIGHT = 0;
                             valueSS = 0;
                             leftDir = (byte) 0xF1;
                             break;
 
                         case 4:
-                            valueRIGHT = (byte) UnitsConversion.limitInt(minSpeedRightUP, 0, 255);
+                            valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightUP, 0, 255);
                             valueLEFT = 0;
                             valueSS = 0;
                             rightDir = (byte) 0xF2;
                             break;
                         case 5:
-                            valueRIGHT = (byte) UnitsConversion.limitInt(maxSpeedRightUP, 0, 255);
+                            valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightUP, 0, 255);
                             valueLEFT = 0;
                             valueSS = 0;
                             rightDir = (byte) 0xF2;
                             break;
                         case 6:
-                            valueRIGHT = (byte) UnitsConversion.limitInt(minSpeedRightDW, 0, 255);
+                            valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightDW, 0, 255);
                             valueLEFT = 0;
                             valueSS = 0;
                             rightDir = (byte) 0xF1;
                             break;
                         case 7:
-                            valueRIGHT = (byte) UnitsConversion.limitInt(maxSpeedRightDW, 0, 255);
+                            valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightDW, 0, 255);
                             valueLEFT = 0;
                             valueSS = 0;
                             rightDir = (byte) 0xF1;
                             break;
 
                         case 8:
-                            valueSS = (byte) UnitsConversion.limitInt(minSpeedSS_A, 0, 255);
+                            valueSS = (byte) MyMCUtils.limitInt(minSpeedSS_A, 0, 255);
                             valueLEFT = 0;
                             valueRIGHT = 0;
                             ssDir = (byte) 0xF1;
                             break;
                         case 9:
-                            valueSS = (byte) UnitsConversion.limitInt(maxSpeedSS_A, 0, 255);
+                            valueSS = (byte) MyMCUtils.limitInt(maxSpeedSS_A, 0, 255);
                             valueLEFT = 0;
                             valueRIGHT = 0;
                             ssDir = (byte) 0xF1;
                             break;
                         case 10:
-                            valueSS = (byte) UnitsConversion.limitInt(minSpeedSS_B, 0, 255);
+                            valueSS = (byte) MyMCUtils.limitInt(minSpeedSS_B, 0, 255);
                             valueLEFT = 0;
                             valueRIGHT = 0;
                             ssDir = (byte) 0xF2;
                             break;
                         case 11:
-                            valueSS = (byte) UnitsConversion.limitInt(maxSpeedSS_B, 0, 255);
+                            valueSS = (byte) MyMCUtils.limitInt(maxSpeedSS_B, 0, 255);
                             valueLEFT = 0;
                             valueRIGHT = 0;
                             ssDir = (byte) 0xF2;

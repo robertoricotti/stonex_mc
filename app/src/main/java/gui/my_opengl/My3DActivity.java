@@ -3,6 +3,15 @@ package gui.my_opengl;
 
 import static gui.MyApp.errorCode;
 import static gui.MyApp.hAlarm;
+import static packexcalib.exca.DataSaved.GAIN_LEFT;
+import static packexcalib.exca.DataSaved.GAIN_RIGHT;
+import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_DOZER;
+import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_GRADER;
+import static packexcalib.exca.DataSaved.maxSpeedRightDW;
+import static packexcalib.exca.DataSaved.maxSpeedRightUP;
+import static packexcalib.exca.DataSaved.minSpeedRightDW;
+import static packexcalib.exca.DataSaved.minSpeedRightUP;
+import static packexcalib.exca.ExcavatorLib.correctRoll;
 import static services.CanService.Dozer_Auto_Main;
 import static services.CanService.Grader_AutoRight;
 import static services.CanService.Grader_Auto_Left;
@@ -36,7 +45,6 @@ import androidx.constraintlayout.widget.Guideline;
 import com.example.stx_dig.R;
 
 import gui.BaseClass;
-
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
@@ -67,18 +75,23 @@ import services.TriangleService;
 import utils.LeicaLB;
 import utils.MyData;
 import utils.MyDeviceManager;
+import utils.MyMCUtils;
 import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
-    public static boolean prepLeft,prepRight,prepSS;
-    TextView AUTO_SX,AUTO_SS,AUTO_DX;
+    double QL, QC, QR;
+    double GroundSlope;
+    int valueKomL = 0, valueKomR = 0, valueCATL = 0, valueCATR = 0, valueJDL = 20000, valueJDR = 20000;
+    byte dirCAT_L, dirCAT_R, dirCAT_SS;
+    public static boolean prepLeft, prepRight, prepSS;
+    TextView AUTO_SX, AUTO_SS, AUTO_DX;
     Dialog_Blade_Wear dialogBladeWear;
     public static boolean PNEZD_FUNCTION;
-    ImageView allarmeAlt,gl_hydroP;
+    ImageView allarmeAlt, gl_hydroP;
     String bucketName;
-    int indexMachineSelected,indexBucketSelected;
-    TextView generalnfo,generalCoord;
+    int indexMachineSelected, indexBucketSelected;
+    TextView generalnfo, generalCoord;
     int initialFunction = 0;
     int indexAudioSystem;
     static float vol;
@@ -111,15 +124,16 @@ public class My3DActivity extends BaseClass {
 
     TextView boxLeft, boxCent, boxRight, txtCutFill, txtDist;
     LinearLayout sideBar, frameCent;
-    ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto,gl_benne;
-    ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce,btn_pnezd;
-    ImageView gl_sound,gl_pnezd,gl_bright,gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
+    ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto, gl_benne;
+    ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce, btn_pnezd;
+    ImageView gl_sound, gl_pnezd, gl_bright, gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
     public static boolean isPan, glFace, glPoint, glText, glVista3d, glPoly, glFilter, glGradient, glFill;
     DialogOffset_3D dialogOffset;
     Dialog_Point_Poly dialogPointPoly;
     static String whats = null;
     boolean serviseStrarted;
     String pathToPNEZD;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,9 +153,9 @@ public class My3DActivity extends BaseClass {
         try {
 
             pathToPNEZD = MyData.get_String("progettoSelected");
-            pathToPNEZD = pathToPNEZD.substring(0,pathToPNEZD.lastIndexOf("/"));
-            String pathCompleto=pathToPNEZD+"/"+pathToPNEZD.substring(pathToPNEZD.lastIndexOf("/",pathToPNEZD.length()+1))+".csv";
-            DataSaved.PNEZDPath=pathCompleto;
+            pathToPNEZD = pathToPNEZD.substring(0, pathToPNEZD.lastIndexOf("/"));
+            String pathCompleto = pathToPNEZD + "/" + pathToPNEZD.substring(pathToPNEZD.lastIndexOf("/", pathToPNEZD.length() + 1)) + ".csv";
+            DataSaved.PNEZDPath = pathCompleto;
             if (whats == null) {
                 Intent intent = getIntent();
                 whats = intent.getStringExtra("whats");
@@ -150,7 +164,7 @@ public class My3DActivity extends BaseClass {
                     NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                     DataSaved.demoEAST = DataSaved.dxfFaces.get(0).getP1().getX();
                     NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
-                    DataSaved.demoZ = DataSaved.dxfFaces.get(0).getP1().getZ()+2;
+                    DataSaved.demoZ = DataSaved.dxfFaces.get(0).getP1().getZ() + 2;
                     NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                     MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                     MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
@@ -186,25 +200,25 @@ public class My3DActivity extends BaseClass {
 
         btn_hide.callOnClick();
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        if(DataSaved.isWL==0) {
+        if (DataSaved.isWL == 0) {
             try {
-                indexBucketSelected = MyData.get_Int("M" + indexMachineSelected +"BucketSelected");
+                indexBucketSelected = MyData.get_Int("M" + indexMachineSelected + "BucketSelected");
                 bucketName = MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucketSelected + "_Name").toUpperCase();
 
             } catch (Exception e) {
-                bucketName="";
+                bucketName = "";
             }
 
-        }else {
-            bucketName="";
+        } else {
+            bucketName = "";
         }
     }
 
     private void findView() {
         panel1 = findViewById(R.id.panel1D);
         panel2 = findViewById(R.id.panel2D);
-        generalnfo=findViewById(R.id.generalInfo);
-        generalCoord=findViewById(R.id.generaCoord);
+        generalnfo = findViewById(R.id.generalInfo);
+        generalCoord = findViewById(R.id.generaCoord);
         exit = findViewById(R.id.digMenu);
         gl_pan_pinch = findViewById(R.id.gl_pan_pinch);
         gl_facce = findViewById(R.id.gl_facce);
@@ -218,7 +232,7 @@ public class My3DActivity extends BaseClass {
         gl_filter = findViewById(R.id.gl_filter);
         gl_folder = findViewById(R.id.gl_folder);
         gl_gradient = findViewById(R.id.gl_gradient);
-        gl_pnezd=findViewById(R.id.gl_pnezd);
+        gl_pnezd = findViewById(R.id.gl_pnezd);
         btn_hide = findViewById(R.id.btn_hide);
         btn_show = findViewById(R.id.btn_show);
         sideBar = findViewById(R.id.sideLayout);
@@ -227,7 +241,7 @@ public class My3DActivity extends BaseClass {
         btn_zoomP = findViewById(R.id.gl_zoomP);
         btn_zoomM = findViewById(R.id.gl_zoomM);
         btn_croce = findViewById(R.id.gl_croce);
-        btn_pnezd=findViewById(R.id.btn_pnezd);
+        btn_pnezd = findViewById(R.id.btn_pnezd);
         bucketEdge = findViewById(R.id.bucketEdge);
         boxLeft = findViewById(R.id.txtLeft);
         boxCent = findViewById(R.id.txtCent);
@@ -250,11 +264,11 @@ public class My3DActivity extends BaseClass {
         freccia = findViewById(R.id.arrowOr);
         lucchetto = findViewById(R.id.lockOr);
         txtDist = findViewById(R.id.txtDist);
-        gl_bright=findViewById(R.id.gl_bright);
-        gl_benne=findViewById(R.id.gl_benne);
+        gl_bright = findViewById(R.id.gl_bright);
+        gl_benne = findViewById(R.id.gl_benne);
         allarmeAlt = findViewById(R.id.allarmeAlt);
-        gl_sound=findViewById(R.id.gl_sound);
-        gl_hydroP=findViewById(R.id.gl_hydroP);
+        gl_sound = findViewById(R.id.gl_sound);
+        gl_hydroP = findViewById(R.id.gl_hydroP);
         allarmeAlt.setVisibility(View.GONE);
         dialogMapMode = new Dialog_MapMode(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
@@ -263,68 +277,68 @@ public class My3DActivity extends BaseClass {
         dialogAudioSystem = new DialogAudioSystem(this);
         dialogOffset = new DialogOffset_3D(this);
         dialogPointPoly = new Dialog_Point_Poly(this);
-        dialogAddPnezd=new Dialog_Add_Pnezd(this, pathToPNEZD);
-        dialogBladeWear=new Dialog_Blade_Wear(this);
-        diaolgGainHydro=new Dialog_Gain_Hydro(this);
+        dialogAddPnezd = new Dialog_Add_Pnezd(this, pathToPNEZD);
+        dialogBladeWear = new Dialog_Blade_Wear(this);
+        diaolgGainHydro = new Dialog_Gain_Hydro(this);
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
-        if(DataSaved.isWL<2) {
+        if (DataSaved.isWL < 2) {
             layer1Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer1_Tilt(this) : new DrawDXF_Layer1(this);
             layer2Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer2_Tilt(this) : new DrawDXF_Layer2(this);
-        }else {
-            layer1Canvas =new Grade_DrawDXF_Layer1(this);
-            layer2Canvas =new Grade_DrawDXF_Layer2(this);
+        } else {
+            layer1Canvas = new Grade_DrawDXF_Layer1(this);
+            layer2Canvas = new Grade_DrawDXF_Layer2(this);
         }
         panel1.addView(layer1Canvas);
         panel2.addView(layer2Canvas);
         panel1.setBackgroundColor(MyColorClass.colorSfondo);
         panel2.setBackgroundColor(MyColorClass.colorSfondo);
-        if(DataSaved.isWL==0||DataSaved.isWL==1){
+        if (DataSaved.isWL == 0 || DataSaved.isWL == 1) {
             gl_benne.setImageResource((R.drawable.benna_vuota1));
             gl_hydroP.setVisibility(View.GONE);
-        }else {
+        } else {
 
             gl_benne.setImageResource((R.drawable.window_blade));
             gl_hydroP.setVisibility(View.VISIBLE);
         }
-        AUTO_SX=findViewById(R.id.AM_SX);
-        AUTO_SS=findViewById(R.id.AM_SS);
-        AUTO_DX=findViewById(R.id.AM_DX);
+        AUTO_SX = findViewById(R.id.AM_SX);
+        AUTO_SS = findViewById(R.id.AM_SS);
+        AUTO_DX = findViewById(R.id.AM_DX);
     }
 
     private void onClick() {
         gl_hydroP.setOnClickListener(view -> {
-            if(!diaolgGainHydro.dialog.isShowing()){
+            if (!diaolgGainHydro.dialog.isShowing()) {
                 diaolgGainHydro.show();
             }
         });
         AUTO_SX.setOnLongClickListener(view -> {
-             prepLeft=!prepLeft;
-             return false;
+            prepLeft = !prepLeft;
+            return false;
         });
         AUTO_SS.setOnLongClickListener(view -> {
-            prepSS=!prepSS;
+            prepSS = !prepSS;
             return false;
         });
         AUTO_DX.setOnLongClickListener(view -> {
-            prepRight=!prepRight;
+            prepRight = !prepRight;
             return false;
         });
 
         gl_sound.setOnClickListener(view -> {
-            if(!dialogAudioSystem.alertDialog.isShowing()){
+            if (!dialogAudioSystem.alertDialog.isShowing()) {
                 dialogAudioSystem.show();
             }
         });
         gl_benne.setOnClickListener(view -> {
-            if(DataSaved.isWL==0||DataSaved.isWL==1) {
+            if (DataSaved.isWL == 0 || DataSaved.isWL == 1) {
                 Intent i = new Intent(this, BucketChooserActivity.class);
                 i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                 startActivity(i);
                 finish();
-            }else {
-                if(!dialogBladeWear.dialog.isShowing()){
+            } else {
+                if (!dialogBladeWear.dialog.isShowing()) {
                     dialogBladeWear.show();
                 }
             }
@@ -459,10 +473,10 @@ public class My3DActivity extends BaseClass {
         gl_pnezd.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
-           PNEZD_FUNCTION=!PNEZD_FUNCTION;
+            PNEZD_FUNCTION = !PNEZD_FUNCTION;
         });
         btn_pnezd.setOnClickListener(view -> {
-            if(!dialogAddPnezd.dialog.isShowing()){
+            if (!dialogAddPnezd.dialog.isShowing()) {
                 dialogAddPnezd.show();
             }
         });
@@ -508,7 +522,6 @@ public class My3DActivity extends BaseClass {
                 MyData.push("glAngleX", String.valueOf(MyGLRenderer.angleX));
                 MyData.push("glAngleY", String.valueOf(MyGLRenderer.angleY));
                 MyData.push("glAngleY_Extra", String.valueOf(MyGLRenderer.angleY_extra));
-
 
 
             } catch (Exception e) {
@@ -602,23 +615,23 @@ public class My3DActivity extends BaseClass {
                     DataSaved.bucketEdge = -1;
                 switch (DataSaved.bucketEdge) {
                     case 1:
-                        if(DataSaved.isWL==0) {
+                        if (DataSaved.isWL == 0) {
                             bucketEdge.setImageResource(R.drawable.benna_misura_destra);
-                        }else {
+                        } else {
                             bucketEdge.setImageResource(R.drawable.lama_misura_destra);
                         }
                         break;
                     case 0:
-                        if(DataSaved.isWL==0) {
+                        if (DataSaved.isWL == 0) {
                             bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
-                        }else {
+                        } else {
                             bucketEdge.setImageResource(R.drawable.lama_misura_cnt);
                         }
                         break;
                     case -1:
-                        if(DataSaved.isWL==0) {
+                        if (DataSaved.isWL == 0) {
                             bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
-                        }else {
+                        } else {
                             bucketEdge.setImageResource(R.drawable.lama_misura_sinistra);
                         }
                         break;
@@ -735,10 +748,10 @@ public class My3DActivity extends BaseClass {
                 btn_show.setVisibility(View.GONE);
             }
 
-            if(PNEZD_FUNCTION){
+            if (PNEZD_FUNCTION) {
                 btn_pnezd.setVisibility(View.VISIBLE);
                 gl_pnezd.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-            }else {
+            } else {
                 btn_pnezd.setVisibility(View.GONE);
                 gl_pnezd.setImageTintList(ColorStateList.valueOf(Color.WHITE));
             }
@@ -749,19 +762,19 @@ public class My3DActivity extends BaseClass {
             }
             generalCoord.setTextColor(MyColorClass.colorConstraint);
             generalnfo.setTextColor(MyColorClass.colorConstraint);
-            generalnfo.setText(bucketName+"\n"+"Offset: "+Utils.readUnitOfMeasure(String.valueOf(-DataSaved.offsetH)));
-            switch (DataSaved.bucketEdge){
+            generalnfo.setText(bucketName + "\n" + "Offset: " + Utils.readUnitOfMeasure(String.valueOf(-DataSaved.offsetH)));
+            switch (DataSaved.bucketEdge) {
                 case -1:
-                    generalCoord.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1]))+ "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])));
+                    generalCoord.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])));
                     break;
 
                 case 0:
-                    generalCoord.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1]))+ "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])));
+                    generalCoord.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])));
 
                     break;
 
                 case 1:
-                    generalCoord.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1]))+ "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])));
+                    generalCoord.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])));
 
                     break;
             }
@@ -775,23 +788,23 @@ public class My3DActivity extends BaseClass {
             btn_show.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
             switch (DataSaved.bucketEdge) {
                 case 1:
-                    if(DataSaved.isWL==0) {
+                    if (DataSaved.isWL == 0) {
                         bucketEdge.setImageResource(R.drawable.benna_misura_destra);
-                    }else {
+                    } else {
                         bucketEdge.setImageResource(R.drawable.lama_misura_destra);
                     }
                     break;
                 case 0:
-                    if(DataSaved.isWL==0) {
+                    if (DataSaved.isWL == 0) {
                         bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
-                    }else {
+                    } else {
                         bucketEdge.setImageResource(R.drawable.lama_misura_cnt);
                     }
                     break;
                 case -1:
-                    if(DataSaved.isWL==0) {
+                    if (DataSaved.isWL == 0) {
                         bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
-                    }else {
+                    } else {
                         bucketEdge.setImageResource(R.drawable.lama_misura_sinistra);
                     }
                     break;
@@ -863,7 +876,7 @@ public class My3DActivity extends BaseClass {
             setLightBar();
             AutoHandling();
         } catch (Exception e) {
-            Log.e("ErrorUI",Log.getStackTraceString(e));
+            Log.e("ErrorUI", Log.getStackTraceString(e));
         }
 
     }
@@ -879,7 +892,7 @@ public class My3DActivity extends BaseClass {
             isPan = true;
             gl_vista.setImageResource(R.drawable.duedi_vista);
         }
-        int colorUp = 0, colorDown=0, colorGreen=0;
+        int colorUp = 0, colorDown = 0, colorGreen = 0;
         int colorUpCF, colorDownCF, colorGreenCF;
         if (DataSaved.colorMode == 0) {
             colorUpCF = R.drawable.custom_background_test3d_rosso;
@@ -892,10 +905,10 @@ public class My3DActivity extends BaseClass {
         }
         if (!isCutFill) {
             boxLeft.setVisibility(View.VISIBLE);
-            if(DataSaved.isAutoSnap>0) {
+            if (DataSaved.isAutoSnap > 0) {
                 frameCent.setVisibility(View.VISIBLE);
                 boxCent.setVisibility(View.GONE);
-            }else {
+            } else {
                 frameCent.setVisibility(View.GONE);
                 boxCent.setVisibility(View.VISIBLE);
 
@@ -914,13 +927,13 @@ public class My3DActivity extends BaseClass {
             }
         } else {
             txtCutFill.setVisibility(View.VISIBLE);
-            if((MyData.get_Int("UpperBar_Visible") == 1)) {
+            if ((MyData.get_Int("UpperBar_Visible") == 1)) {
                 boxLeft.setVisibility(View.VISIBLE);
                 boxRight.setVisibility(View.VISIBLE);
-                if(DataSaved.isAutoSnap>0) {
+                if (DataSaved.isAutoSnap > 0) {
                     frameCent.setVisibility(View.VISIBLE);
                     boxCent.setVisibility(View.GONE);
-                }else {
+                } else {
                     frameCent.setVisibility(View.GONE);
                     boxCent.setVisibility(View.VISIBLE);
 
@@ -928,13 +941,13 @@ public class My3DActivity extends BaseClass {
                 colorUp = R.drawable.custom_background_test3d_box;
                 colorDown = R.drawable.custom_background_test3d_box;
                 colorGreen = R.drawable.custom_background_test3d_box;
-            }else {
+            } else {
                 boxLeft.setVisibility(View.GONE);
                 boxRight.setVisibility(View.GONE);
                 boxCent.setVisibility(View.GONE);
-                if(DataSaved.isAutoSnap>0) {
+                if (DataSaved.isAutoSnap > 0) {
                     frameCent.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     frameCent.setVisibility(View.GONE);
 
                 }
@@ -1020,7 +1033,6 @@ public class My3DActivity extends BaseClass {
 
 
         }
-
 
 
         switch (DataSaved.typeView) {
@@ -1398,7 +1410,6 @@ public class My3DActivity extends BaseClass {
     }
 
 
-
     private void setLightBar() {
         switch (DataSaved.bucketEdge) {
             case -1:
@@ -1416,7 +1427,7 @@ public class My3DActivity extends BaseClass {
         }
     }
 
-    private void updateMemories(){
+    private void updateMemories() {
         MyData.push("typeView", String.valueOf(DataSaved.typeView));
         MyData.push("glGradient", String.valueOf(glGradient));
         MyData.push("glFill", String.valueOf(glFill));
@@ -1428,96 +1439,344 @@ public class My3DActivity extends BaseClass {
         MyData.push("glFilter", String.valueOf(glFilter));
 
 
-
     }
 
-    private void AutoHandling(){
-        if(!diaolgGainHydro.dialog.isShowing()){
-            Log.d("Mostrando","Non mostra");
-        }else {
-            Log.d("Mostrando","MOSTRA");
-        }
-        if(DataSaved.isWL==0||
-        DataSaved.isWL==1){
-            AUTO_SX.setVisibility(View.INVISIBLE);
-            AUTO_SS.setVisibility(View.INVISIBLE);
-            AUTO_DX.setVisibility(View.INVISIBLE);
-        }else {
-            if(DataSaved.isWL==4) {
-                //GRADER
-                AUTO_SX.setVisibility(View.VISIBLE);
-                AUTO_SS.setVisibility(View.VISIBLE);
-                AUTO_DX.setVisibility(View.VISIBLE);
-                if(prepLeft){
-                    if(Grader_Auto_Left){
-                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                        //TODO MESSAGGI CONTROLLO LAMA DOZER LEFT
-                    }else {
-                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
-                    }
-                }else {
-                    AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_manuale));
-                }
+    private void AutoHandling() {
 
+        dirCAT_L = (byte) 0xF2;
+        dirCAT_R = (byte) 0xF2;
+        dirCAT_SS = (byte) 0xF2;
 
+        if (diaolgGainHydro.dialog.isShowing()) {
+            QL = 0;
+            QC = 0;
+            QR = 0;
+            GroundSlope = correctRoll;
+            valueKomL = 0;
+            valueKomR = 0;
+            valueCATL = 0;
+            valueCATR = 0;
+            valueJDL = 20000;
+            valueJDR = 20000;
+            dirCAT_L = (byte) 0xF2;
+            dirCAT_R = (byte) 0xF2;
+            dirCAT_SS = (byte) 0xF2;
 
-                if(prepSS){
-                    if(Grader_Auto_SS){
-                        AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                        //TODO MESSAGGI CONTROLLO LAMA DOZER SS
-                    }else {
-                        AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
-                    }
-                }else {
-                    AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_manuale));
-                }
+        } else {
 
-
-
-
-                if(prepRight){
-                    if(Grader_AutoRight){
-                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                        //TODO MESSAGGI CONTROLLO LAMA DOZER RIGHT
-                    }else {
-                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
-                    }
-                }else {
-                    AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
-                }
-            }else {
-                //DOZER
-                prepSS=false;
-                AUTO_SX.setVisibility(View.VISIBLE);
+            QL = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_SX;
+            QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
+            QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
+            //TODO qui calcoli
+            if (DataSaved.isWL == 0 || DataSaved.isWL == 1) {
+                AUTO_SX.setVisibility(View.INVISIBLE);
                 AUTO_SS.setVisibility(View.INVISIBLE);
-                AUTO_DX.setVisibility(View.VISIBLE);
-                if(prepLeft){
-                    if(Dozer_Auto_Main){
-                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                        //TODO MESSAGGI CONTROLLO LAMA DOZER LIFT
-                    }else {
-                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                AUTO_DX.setVisibility(View.INVISIBLE);
+                QL = 0;
+                QC = 0;
+                QR = 0;
+                GroundSlope = correctRoll;
+                valueKomL = 0;
+                valueKomR = 0;
+                valueCATL = 0;
+                valueCATR = 0;
+                valueJDL = 20000;
+                valueJDR = 20000;
+                dirCAT_L = (byte) 0xF2;
+                dirCAT_R = (byte) 0xF2;
+                dirCAT_SS = (byte) 0xF2;
+            } else {
+
+                if (DataSaved.isWL == 4) {
+                    //GRADER
+                    AUTO_SX.setVisibility(View.VISIBLE);
+                    AUTO_SS.setVisibility(View.VISIBLE);
+                    AUTO_DX.setVisibility(View.VISIBLE);
+                    switch (HYDRAULIC_CONTROL_POINT_GRADER) {
+                        case 0:
+                            handleLama(QC,QR);
+                            break;
+
+                        case 1:
+                            handleLama(QC,QL);
+                            break;
+
+                        case 2://left right
+                            handleLama(QL,QR);
+                            break;
                     }
-                }else {
-                    AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_manuale));
+                    if (prepLeft) {
+                        if (Grader_Auto_Left) {
+                            AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                            //TODO MESSAGGI CONTROLLO LAMA DOZER LEFT
+
+
+                        } else {
+                            AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                        }
+                    } else {
+                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_manuale));
+                    }
+
+
+                    if (prepSS) {
+                        if (Grader_Auto_SS) {
+                            AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                            //TODO MESSAGGI CONTROLLO LAMA DOZER SS
+
+                        } else {
+                            AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                        }
+                    } else {
+                        AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_manuale));
+                    }
+
+
+                    if (prepRight) {
+                        if (Grader_AutoRight) {
+                            AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                            //TODO MESSAGGI CONTROLLO LAMA DOZER RIGHT
+
+
+                        } else {
+                            AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                        }
+                    } else {
+                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
+                    }
+                } else {
+                    //DOZER
+                    if (!isInRange(DataSaved.deadbandH, QC) && Math.abs(QC) < DataSaved.HYDRAULIC_WINDOW) {
+                        if (QC < -DataSaved.deadbandH) {
+
+                            dirCAT_L = (byte) 0xF2;
+                            valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
+                            valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
+
+                            valueKomL = (int) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
+                            valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
+
+                            valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
+                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
+                            valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
+
+
+                        } else if (QC > DataSaved.deadbandH) {
+                            dirCAT_L = (byte) 0xF1;
+                            valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
+                            valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
+
+                            valueKomL = (int) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
+                            valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
+                            valueKomL = valueKomL * -1;
+
+
+                            valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
+                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
+                            valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
+                        }
+                    } else {
+                        valueKomL = 0;
+                        valueCATL = 0;
+                        valueJDL = 20000;
+                        dirCAT_L = (byte) 0xF2;
+                        dirCAT_SS = (byte) 0xF2;
+                    }
+                    switch (HYDRAULIC_CONTROL_POINT_DOZER) {
+                        case 0:
+                            GroundSlope = MyMCUtils.bladeSlope(TriangleService.posC, TriangleService.posR);
+                            break;
+
+                        case 1:
+                            GroundSlope = MyMCUtils.bladeSlope(TriangleService.posL, TriangleService.posC);
+                            break;
+
+                    }
+                    if (!isInRangeAng(correctRoll, GroundSlope, DataSaved.deadbandFlatAngle)) {
+                        double deviation = deviationFromSetpoint(correctRoll, GroundSlope, DataSaved.deadbandFlatAngle);
+                        deviation=MyMCUtils.ledder(GAIN_RIGHT)*deviation;
+
+                        if (deviation > DataSaved.deadbandFlatAngle) {
+                            dirCAT_R = (byte) 0xF2;
+                            valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
+                            valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
+
+                            valueKomR = (int) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
+                            valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
+
+
+                            valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
+                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
+                            valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
+
+                        } else if (deviation < -DataSaved.deadbandFlatAngle) {
+                            dirCAT_R = (byte) 0xF1;
+                            valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightDW, maxSpeedRightDW);
+                            valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
+
+                            valueKomR = (int) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightDW, maxSpeedRightDW);
+                            valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
+                            valueKomR = valueKomR * -1;
+
+
+                            valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
+                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
+                            valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
+
+                        }
+
+
+                    } else {
+                        valueKomR = 0;
+                        valueCATR = 0;
+                        valueJDR = 20000;
+                        dirCAT_R = (byte) 0xF2;
+                        dirCAT_SS = (byte) 0xF2;
+                    }
+
+
+                    prepSS = false;
+                    AUTO_SX.setVisibility(View.VISIBLE);
+                    AUTO_SS.setVisibility(View.INVISIBLE);
+                    AUTO_DX.setVisibility(View.VISIBLE);
+
+
+                    if (prepLeft) {
+                        if (Dozer_Auto_Main) {
+                            AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                            //TODO MESSAGGI CONTROLLO LAMA DOZER LIFT
+
+                        } else {
+                            AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+
+
+                        }
+                    } else {
+                        AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_manuale));
+
+                    }
+
+
+                    if (prepRight) {
+                        if (Dozer_Auto_Main) {
+                            AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
+                            //TODO MESSAGGI CONTROLLO LAMA DOZER TILT
+
+
+                        } else {
+                            AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+
+
+                        }
+                    } else {
+                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
+
+                    }
                 }
 
-                if(prepRight){
-                    if(Dozer_Auto_Main){
-                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                        //TODO MESSAGGI CONTROLLO LAMA DOZER TILT
-                    }else {
-                        AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
-                    }
-                }else {
-                    AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
-                }
+
             }
+        }
 
 
+        Log.d("myRIGHT", valueKomR + "  " + (dirCAT_R & 0xFF) + "  " + valueCATR + "  " + valueJDR);
+        Log.d("myLEFT", valueKomL + "  " + (dirCAT_L & 0xFF) + "  " + valueCATL + "  " + valueJDL);
+    }
+
+    private boolean isInRange(double range, double value) {
+        return Math.abs(value) < Math.abs(range);
+    }
+
+    private boolean isInRangeAng(double currentAngle, double setPoint, double tolerance) {
+        return Math.abs(currentAngle - setPoint) <= tolerance;
+    }
+
+    public static double deviationFromSetpoint(double currentAngle, double setPoint, double tolerance) {
+        double diff = currentAngle - setPoint;
+
+        // Se la differenza assoluta è dentro la tolleranza, ritorna 0
+        if (Math.abs(diff) <= tolerance) {
+            return 0.0;
+        }
+
+        // Altrimenti ritorna la differenza (positiva o negativa)
+        return diff;
+    }
+
+    private void handleLama(double LL,double RR){
+        if (!isInRange(DataSaved.deadbandH, LL) && Math.abs(LL) < DataSaved.HYDRAULIC_WINDOW) {
+            if (LL < -DataSaved.deadbandH) {
+
+                dirCAT_L = (byte) 0xF2;
+                valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
+                valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
+
+                valueKomL = (int) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
+                valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
+
+                valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
+                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
+                valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
 
 
+            } else if (LL > DataSaved.deadbandH) {
+                dirCAT_L = (byte) 0xF1;
+                valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
+                valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
 
+                valueKomL = (int) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
+                valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
+                valueKomL = valueKomL * -1;
+
+
+                valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
+                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
+                valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
+            }
+        } else {
+            valueKomL = 0;
+            valueCATL = 0;
+            valueJDL = 20000;
+            dirCAT_L = (byte) 0xF2;
+            dirCAT_SS = (byte) 0xF2;
+        }
+
+
+        if (!isInRange(DataSaved.deadbandH, RR) && Math.abs(RR) < DataSaved.HYDRAULIC_WINDOW) {
+            if (RR < -DataSaved.deadbandH) {
+
+                dirCAT_R = (byte) 0xF2;
+                valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightUP, maxSpeedRightUP);
+                valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
+
+                valueKomR = (int) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightUP, maxSpeedRightUP);
+                valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
+
+                valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightUP, maxSpeedRightUP);
+                valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
+                valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
+
+
+            } else if (RR > DataSaved.deadbandH) {
+                dirCAT_R = (byte) 0xF1;
+                valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW,maxSpeedRightDW);
+                valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
+
+                valueKomR = (int) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW, maxSpeedRightDW);
+                valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
+                valueKomR = valueKomR * -1;
+
+
+                valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW, maxSpeedRightDW);
+                valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
+                valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
+            }
+        } else {
+            valueKomR = 0;
+            valueCATR = 0;
+            valueJDR = 20000;
+            dirCAT_R = (byte) 0xF2;
+            dirCAT_SS = (byte) 0xF2;
         }
     }
 }

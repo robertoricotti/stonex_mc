@@ -13,7 +13,6 @@ import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -50,7 +49,7 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 
 public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callback{
     float cingoliWidth;

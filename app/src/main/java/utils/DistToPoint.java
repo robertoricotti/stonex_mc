@@ -1,4 +1,4 @@
-package packexcalib.surfcreator;
+package utils;
 
 public class DistToPoint {
 

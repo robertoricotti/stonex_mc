@@ -198,8 +198,8 @@ public class UpdateValuesService extends Service {
 
                     String GAIN_LEFT = MyData.get_String("M" + i + "GAIN_LEFT");
                     String GAIN_RIGHT = MyData.get_String("M" + i + "GAIN_RIGHT");
-                    String HYDRAULIC_CONTROL_POINT = MyData.get_String("M" + i + "HYDRAULIC_CONTROL_POINT");
-
+                    String HYDRAULIC_CONTROL_POINT_GRADER = MyData.get_String("M" + i + "HYDRAULIC_CONTROL_POINT_GRADER");
+                    String HYDRAULIC_CONTROL_POINT_DOZER = MyData.get_String("M" + i + "HYDRAULIC_CONTROL_POINT_DOZER");
 
 
                     if (nameM == null) {
@@ -492,8 +492,11 @@ public class UpdateValuesService extends Service {
                     if (GAIN_RIGHT == null) {
                         MyData.push("M" + i + "GAIN_RIGHT", "1");
                     }
-                    if (HYDRAULIC_CONTROL_POINT == null) {
-                        MyData.push("M" + i + "HYDRAULIC_CONTROL_POINT", "0");
+                    if (HYDRAULIC_CONTROL_POINT_GRADER == null) {
+                        MyData.push("M" + i + "HYDRAULIC_CONTROL_POINT_GRADER", "2");
+                    }
+                    if (HYDRAULIC_CONTROL_POINT_DOZER == null) {
+                        MyData.push("M" + i + "HYDRAULIC_CONTROL_POINT_DOZER", "0");
                     }
 
 
@@ -1307,9 +1310,14 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di GAIN_RIGHT: " + e.getMessage());
                 }
                 try {
-                    DataSaved.HYDRAULIC_CONTROL_POINT = MyData.get_Int("M" + indexMach + "HYDRAULIC_CONTROL_POINT");
+                    DataSaved.HYDRAULIC_CONTROL_POINT_GRADER = MyData.get_Int("M" + indexMach + "HYDRAULIC_CONTROL_POINT_GRADER");
                 } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di HYDRAULIC_CONTROL_POINT: " + e.getMessage());
+                    Log.e("Error", "Errore nell'inizializzazione di HYDRAULIC_CONTROL_POINT_GRADER: " + e.getMessage());
+                }
+                try {
+                    DataSaved.HYDRAULIC_CONTROL_POINT_DOZER = MyData.get_Int("M" + indexMach + "HYDRAULIC_CONTROL_POINT_DOZER");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di HYDRAULIC_CONTROL_POINT_DOZER: " + e.getMessage());
                 }
 
                 ////end draw

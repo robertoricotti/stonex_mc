@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,7 +41,7 @@ import packexcalib.exca.Exca_Quaternion;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 import utils.MyData;
 import utils.Utils;
 

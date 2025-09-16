@@ -23,7 +23,7 @@ import com.example.stx_dig.R;
 import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 import utils.FullscreenActivity;
 import utils.MyData;
 import utils.Utils;

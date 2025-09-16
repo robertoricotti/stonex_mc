@@ -2,16 +2,12 @@ package gui.draw_class;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.stx_dig.R;
@@ -22,8 +18,7 @@ import gui.digging_excavator.Digging2D;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.surfcreator.DistToLine;
-import packexcalib.surfcreator.DistToPoint;
-import utils.UnitsConversion;
+import utils.DistToPoint;
 
 public class Draw2D_Layer1 extends View {
     Paint paint;

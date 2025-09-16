@@ -29,7 +29,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 import utils.FullscreenActivity;
 import utils.MyData;
 import utils.Utils;

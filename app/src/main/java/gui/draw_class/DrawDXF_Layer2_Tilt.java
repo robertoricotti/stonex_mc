@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -28,8 +27,7 @@ import dxf.Point2D;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import services.TriangleService;
-import utils.MyData;
-import utils.UnitsConversion;
+import utils.MyMCUtils;
 import utils.Utils;
 
 public class DrawDXF_Layer2_Tilt  extends View {
@@ -76,7 +74,7 @@ public class DrawDXF_Layer2_Tilt  extends View {
             //-------------------------------- INIT BUCKET --------------------------------
             double bucketWidth = DataSaved.W_Bucket * scala;
             double mDist = (DataSaved.L_Bucket-DataSaved.L_Tilt)*Math.sin(Math.toRadians(Math.abs(ExcavatorLib.correctBucket))) ;
-            mDist=UnitsConversion.limitD(mDist,0.3,Double.MAX_VALUE);
+            mDist= MyMCUtils.limitD(mDist,0.3,Double.MAX_VALUE);
             double bucketHeight= mDist*scala;
 
             PointF left_top_bucket = new PointF();

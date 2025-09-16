@@ -2,9 +2,7 @@ package gui.draw_class;
 
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -12,18 +10,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.stx_dig.R;
-
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +49,7 @@ import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import packexcalib.surfcreator.DistToLine;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 
 public class Top_View_DXF extends View {
     private Matrix canvasMatrix = new Matrix();

@@ -1,6 +1,8 @@
 package packexcalib.surfcreator;
 
 
+import utils.DistToPoint;
+
 public class DistToLine {
 
     double linedistance;

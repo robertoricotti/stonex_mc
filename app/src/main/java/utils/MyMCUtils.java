@@ -1,6 +1,8 @@
 package utils;
 
-public class UnitsConversion {
+import android.util.Log;
+
+public class MyMCUtils {
 
     public static double DegToPercent(String str) {
         double a = Math.toRadians(Double.parseDouble(str));
@@ -49,6 +51,24 @@ public class UnitsConversion {
     }
     public static int limitInt(int value,int min,int max) {
         return Math.max(min, Math.min(value, max));
+    }
+
+    public static double ledder(int Gain){
+        return myscaleD((double)Gain,1,255,1,10);
+    }
+    public static double bladeSlope(double[] Pleft,double[] Pright){
+
+        boolean isNegative=Pleft[2]<Pright[2];
+
+        double dist2D= DistToPoint.dist2D(Pleft,Pright);
+        double dist3D=DistToPoint.dist3D(Pleft,Pright);
+
+        double slope=Math.toDegrees(Math.sqrt((dist3D*dist3D)-(dist2D*dist2D)));
+        if(isNegative){
+            slope=slope*-1;
+        }
+        return slope;
+
     }
 
 

@@ -120,7 +120,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static int licenseType =-1;
     public static String expiry="2001-12-31";
 
-    public static final long timeUI = 65;
+    public static final long timeUI = 55;
     public static String[] geoidAll=new String[]{};
     public static String GEOIDE_PATH = null;
     public static String gridFile_GR = "";

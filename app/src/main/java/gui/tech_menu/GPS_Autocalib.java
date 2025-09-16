@@ -23,7 +23,7 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.CircumferenceCenterCalculator;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 import services.UpdateValuesService;
 import utils.MyData;
 

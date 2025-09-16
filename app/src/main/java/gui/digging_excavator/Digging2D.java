@@ -43,7 +43,7 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Excavator_RealValues;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 import services.CanSender;
 import services.CanService;
 import utils.LeicaLB;

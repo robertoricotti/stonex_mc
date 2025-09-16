@@ -6,19 +6,14 @@ import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_Yaw_Tilt;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 
-import android.util.Log;
-
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
-import cloud.WebSocketPlugin;
 import gui.MyApp;
 import gui.digging_excavator.DiggingProfile;
 import packexcalib.gnss.NmeaListener;
 import packexcalib.mymatrix.PointCalculator;
 import packexcalib.surfcreator.DistToLine;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 import packexcalib.surfcreator.Surface_4pts;
 import services.TriangleService;
 

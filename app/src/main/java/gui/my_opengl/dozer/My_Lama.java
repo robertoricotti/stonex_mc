@@ -14,17 +14,12 @@ import static services.TriangleService.getProjectedPointOnSegment3D;
 import static services.TriangleService.*;
 
 
-import java.util.List;
-
 import dxf.Point3D;
-import dxf.Segment;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
-import packexcalib.surfcreator.DistToLine;
-import packexcalib.surfcreator.DistToPoint;
 
 public class My_Lama {
 

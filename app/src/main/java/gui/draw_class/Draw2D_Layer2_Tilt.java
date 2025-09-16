@@ -10,9 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.stx_dig.R;
@@ -22,8 +20,7 @@ import java.util.ArrayList;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.surfcreator.DistToLine;
-import packexcalib.surfcreator.DistToPoint;
-import utils.UnitsConversion;
+import utils.DistToPoint;
 import utils.Utils;
 
 

@@ -18,11 +18,11 @@ import dxf.Polyline;
 import dxf.Polyline_2D;
 import dxf.Segment;
 import gui.my_opengl.Point3DF;
-import utils.MyData;
 
 public class DataSaved {
     //settaggi idraulici
     public static int Interface_Type;
+    public static double HYDRAULIC_WINDOW=0.5;
 
 
     public static int minSpeedLeftUP;
@@ -46,8 +46,8 @@ public class DataSaved {
 
     public static int GAIN_LEFT;
     public static int GAIN_RIGHT;
-    public static int HYDRAULIC_CONTROL_POINT;//0=CENTER-RIGHT    1=CENTER-LEFT   2=LEFT-RIGHT
-
+    public static int HYDRAULIC_CONTROL_POINT_GRADER;//0=CENTER-RIGHT    1=CENTER-LEFT   2=LEFT-RIGHT
+    public static int HYDRAULIC_CONTROL_POINT_DOZER;//0=CENTER-RIGHT    1=CENTER-LEFT
 
     ///
     public static String machineName;

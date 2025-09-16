@@ -8,15 +8,11 @@ import static packexcalib.exca.ExcavatorLib.correctRoll;
 import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 
-import android.util.Log;
-
 import dxf.Point3D;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
-import packexcalib.exca.ExcavatorLib;
-import packexcalib.gnss.NmeaListener;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 
 
 public class My_Frame {

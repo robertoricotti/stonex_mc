@@ -4,14 +4,12 @@ import static packexcalib.exca.DataSaved.polylines;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
-import static packexcalib.exca.ExcavatorLib.coordMiniPitch;
 import static services.ReadProjectService.fileExtensionPOINT;
 
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.IBinder;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,7 +43,7 @@ import gui.my_opengl.exca.PuntiBenna;
 import gui.my_opengl.wheel.My_Wheel;
 import packexcalib.exca.DataSaved;
 import packexcalib.surfcreator.DistToLine;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 import packexcalib.surfcreator.TriangleHelper;
 import utils.MyData;
 
@@ -59,6 +57,7 @@ public class TriangleService extends Service {
     private boolean isRunning = false;
     private ExecutorService executor;
     public static double quota3D_SX, quota3D_CT, quota3D_DX;
+    public static double [] posL,posC,posR;
     public static double dist3D_SX, dist3D_CT, dist3D_DX;
     public static boolean ltOffGrid, ctOffGrid, rtOffGrid;
     static Point2D[] Line_Avanti, Line_Dietro, Line_Destra, Line_Sinistra;
@@ -78,6 +77,9 @@ public class TriangleService extends Service {
             indexAudio=0;
         }
         super.onCreate();
+        posL=new double[3];
+        posC=new double[3];
+        posR=new double[3];
         countPnezd = -1;
         startSort = false;
         DataSaved.filteredPolylines = new ArrayList<>();
@@ -433,6 +435,9 @@ public class TriangleService extends Service {
         double deltaZL = triangleHelper.calculateDeltaZ(newPositionL);
         double deltaZC = triangleHelper.calculateDeltaZ(newPositionC);
         double deltaZR = triangleHelper.calculateDeltaZ(newPositionR);
+        posL=new double[]{newPositionL[0],newPositionL[1],triangleHelper.calculateZ(newPositionL)};
+        posC=new double[]{newPositionC[0],newPositionC[1],triangleHelper.calculateZ(newPositionC)};
+        posR=new double[]{newPositionR[0],newPositionR[1],triangleHelper.calculateZ(newPositionR)};
 
         ltOffGrid = deltaZL == Double.MIN_VALUE;
         ctOffGrid = deltaZC == Double.MIN_VALUE;

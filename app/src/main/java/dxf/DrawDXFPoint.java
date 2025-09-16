@@ -1,15 +1,9 @@
 package dxf;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.util.Log;
 
 import gui.draw_class.MyColorClass;
-import packexcalib.exca.DataSaved;
-import utils.UnitsConversion;
-import utils.Utils;
 
 public class DrawDXFPoint {
     public static void draw(Canvas canvas,Paint paint,Point3D point,float bucketX,float bucketY, double bucketEst, double bucketNord, float scala,int color,double rotationAngle) {

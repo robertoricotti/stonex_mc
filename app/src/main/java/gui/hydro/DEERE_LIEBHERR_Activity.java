@@ -29,9 +29,9 @@ import com.example.stx_dig.R;
 
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import services.CanService;
+import utils.MyMCUtils;
 import utils.MyData;
 import utils.MyDeviceManager;
-import utils.UnitsConversion;
 
 public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
     Handler sendHandler = new Handler();
@@ -96,75 +96,75 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                     testValve.setAlpha(0.1f);
                     switch (voceMenu) {
                         case 0:
-                            valueLEFT = UnitsConversion.myscalIntD(minSpeedLeftUP,0,255,20000,5000);
+                            valueLEFT = MyMCUtils.myscalIntD(minSpeedLeftUP,0,255,20000,5000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 1:
-                            valueLEFT = UnitsConversion.myscalIntD(maxSpeedLeftUP,0,255,20000,5000);
+                            valueLEFT = MyMCUtils.myscalIntD(maxSpeedLeftUP,0,255,20000,5000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 2:
-                            valueLEFT =  UnitsConversion.myscalIntD(minSpeedLeftDW, 0, 255,20000,35000);
+                            valueLEFT =  MyMCUtils.myscalIntD(minSpeedLeftDW, 0, 255,20000,35000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 3:
-                            valueLEFT =  UnitsConversion.myscalIntD(maxSpeedLeftDW, 0, 255,20000,35000);
+                            valueLEFT =  MyMCUtils.myscalIntD(maxSpeedLeftDW, 0, 255,20000,35000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
 
                         case 4:
-                            valueRIGHT = UnitsConversion.myscalIntD(minSpeedRightUP, 0, 255,20000,5000);
+                            valueRIGHT = MyMCUtils.myscalIntD(minSpeedRightUP, 0, 255,20000,5000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 5:
-                            valueRIGHT =  UnitsConversion.myscalIntD(maxSpeedRightUP, 0, 255,20000,5000);
+                            valueRIGHT =  MyMCUtils.myscalIntD(maxSpeedRightUP, 0, 255,20000,5000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 6:
-                            valueRIGHT = UnitsConversion.myscalIntD(minSpeedRightDW, 0, 255,20000,35000);
+                            valueRIGHT = MyMCUtils.myscalIntD(minSpeedRightDW, 0, 255,20000,35000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 7:
-                            valueRIGHT = UnitsConversion.myscalIntD(maxSpeedRightDW, 0, 255,20000,35000);
+                            valueRIGHT = MyMCUtils.myscalIntD(maxSpeedRightDW, 0, 255,20000,35000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
 
                         case 8:
-                            valueSS = UnitsConversion.myscalIntD(minSpeedSS_A, 0, 255,20000,5000);
+                            valueSS = MyMCUtils.myscalIntD(minSpeedSS_A, 0, 255,20000,5000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 
                             break;
                         case 9:
-                            valueSS = UnitsConversion.myscalIntD(maxSpeedSS_A, 0, 255,20000,5000);
+                            valueSS = MyMCUtils.myscalIntD(maxSpeedSS_A, 0, 255,20000,5000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 
                             break;
                         case 10:
-                            valueSS = UnitsConversion.myscalIntD(minSpeedSS_B, 0, 255,20000,35000);
+                            valueSS = MyMCUtils.myscalIntD(minSpeedSS_B, 0, 255,20000,35000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 
                             break;
                         case 11:
-                            valueSS = UnitsConversion.myscalIntD(maxSpeedSS_B, 0, 255,20000,35000);
+                            valueSS = MyMCUtils.myscalIntD(maxSpeedSS_B, 0, 255,20000,35000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 

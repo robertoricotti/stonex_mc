@@ -146,6 +146,33 @@ public class TriangleHelper {
         }
         return Double.MIN_VALUE; // Se non viene trovato nessun triangolo
     }
+    public double calculateZ(double[] currentPosition){
+        for (Face3D face : DataSaved.filteredFaces) {
+            if (isLayerEnabled(face.getLayer().getLayerName())) {
+                // Estrai i vertici del triangolo dalla Face3D
+                Point3D p1 = face.getP1();
+                Point3D p2 = face.getP2();
+                Point3D p3 = face.getP3();
+
+                // Converti i Point3D in array di double per il calcolo
+                double[] v0 = new double[]{p1.getX(), p1.getY(), p1.getZ()};
+                double[] v1 = new double[]{p2.getX(), p2.getY(), p2.getZ()};
+                double[] v2 = new double[]{p3.getX(), p3.getY(), p3.getZ()};
+
+                // Controlla se il punto è nel triangolo in 2D (ignora Z)
+                double[] projectedCurrentPosition = new double[]{currentPosition[0], currentPosition[1]};
+                if (isPointInTriangle(projectedCurrentPosition,
+                        new double[]{v0[0], v0[1]},
+                        new double[]{v1[0], v1[1]},
+                        new double[]{v2[0], v2[1]})) {
+
+                    return calculateTriangleHeight(currentPosition, v0, v1, v2);
+
+                }
+            }
+        }
+        return Double.MIN_VALUE;
+    }
 
 
     private boolean isPointInTriangle(double[] p, double[] v0, double[] v1, double[] v2) {

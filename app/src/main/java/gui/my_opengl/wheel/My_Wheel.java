@@ -25,7 +25,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 
 public class My_Wheel {
     static Point3DF P1_sx, P2_sx, P3_sx, P4_sx, P5_sx, P6_sx, P7_sx, P8_sx;

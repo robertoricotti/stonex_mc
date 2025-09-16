@@ -634,8 +634,9 @@
     <ImageView
         android:id="@+id/btn_hide"
         android:layout_width="40dp"
-        android:layout_height="0dp"
+        android:layout_height="100dp"
         android:alpha="0.6"
+        android:background="@drawable/sfondo_bottone_trasparente"
         android:src="@drawable/arrow_forward_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/sideLayout"
@@ -644,9 +645,11 @@
     <ImageView
         android:id="@+id/btn_show"
         android:layout_width="40dp"
-        android:layout_height="0dp"
+        android:layout_height="100dp"
         android:alpha="0.6"
-        android:src="@drawable/arrow_back_96"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        android:src="@drawable/arrow_forward_96"
+        android:rotation="180"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -97,10 +97,10 @@ public class CanSender extends Service {
            /* if (MyApp.licenseType == 5) {
                 try {
 
-                    slope = UnitsConversion.limitInt((int) (ExcavatorLib.correctRoll * 100), Short.MIN_VALUE, Short.MAX_VALUE);
-                    left = UnitsConversion.limitInt((int) (TriangleService.quota3D_SX * 1000), Short.MIN_VALUE, Short.MAX_VALUE);
-                    cent = (int) UnitsConversion.limitD(TriangleService.quota3D_CT * 1000, Short.MIN_VALUE, Short.MAX_VALUE);
-                    right = (int) UnitsConversion.limitD(TriangleService.quota3D_DX * 1000, Short.MIN_VALUE, Short.MAX_VALUE);
+                    slope = MyMCUtils.limitInt((int) (ExcavatorLib.correctRoll * 100), Short.MIN_VALUE, Short.MAX_VALUE);
+                    left = MyMCUtils.limitInt((int) (TriangleService.quota3D_SX * 1000), Short.MIN_VALUE, Short.MAX_VALUE);
+                    cent = (int) MyMCUtils.limitD(TriangleService.quota3D_CT * 1000, Short.MIN_VALUE, Short.MAX_VALUE);
+                    right = (int) MyMCUtils.limitD(TriangleService.quota3D_DX * 1000, Short.MIN_VALUE, Short.MAX_VALUE);
                     pendenza = PLC_DataTypes_LittleEndian.S16_to_bytes((short) slope);
                     sinistra = PLC_DataTypes_LittleEndian.S16_to_bytes((short) -left);
                     mezzo = PLC_DataTypes_LittleEndian.S16_to_bytes((short) -cent);

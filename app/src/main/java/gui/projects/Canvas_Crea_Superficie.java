@@ -44,7 +44,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
-import packexcalib.surfcreator.DistToPoint;
+import utils.DistToPoint;
 import utils.Utils;
 
 public class Canvas_Crea_Superficie extends View {
