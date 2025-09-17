@@ -900,44 +900,11 @@
   <component name="ChangeListManager">
     <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="dialog gain e hydro points">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXFPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXFPoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/DialogSlope.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/DialogSlope.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging1D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging1D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw1D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw1D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer1.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer1_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer1_Tilt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer2.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer2_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Draw2D_Layer2_Tilt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2_Tilt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF_S.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF_S.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/CAT_SEA_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/CAT_SEA_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/DEERE_LIEBHERR_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/DEERE_LIEBHERR_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Dialog_Gain_Hydro.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Dialog_Gain_Hydro.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/KOMATSU_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/KOMATSU_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/dozer/My_Lama.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/dozer/My_Lama.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Frame.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Frame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/wheel/My_Wheel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/wheel/My_Wheel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Activity_Crea_Superficie.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Activity_Crea_Superficie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_Parametri_AB.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_Parametri_AB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/GPS_Autocalib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/GPS_Autocalib.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/DistToLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/DistToLine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/DistToPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/DistToPoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/Surface_4pts.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/Surface_4pts.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/TriangleHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/TriangleHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/UnitsConversion.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyMCUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1104,14 +1071,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00019" summary="da rifare activity xyz">
-      <option name="closed" value="true" />
-      <created>1754238777210</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1754238777210</updated>
     </task>
     <task id="LOCAL-00020" summary="da rifare activity xyz">
       <option name="closed" value="true" />
@@ -1497,7 +1456,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757841209741</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="dialog gain e hydro points">
+      <option name="closed" value="true" />
+      <created>1758055326537</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1758055326537</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

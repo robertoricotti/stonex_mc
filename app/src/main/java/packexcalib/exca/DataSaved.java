@@ -22,7 +22,10 @@ import gui.my_opengl.Point3DF;
 public class DataSaved {
     //settaggi idraulici
     public static int Interface_Type;
-    public static double HYDRAULIC_WINDOW=0.5;
+    public static double HYDRAULIC_WINDOW;
+    public static double tolleranza_Z;
+    public static double tolleranza_XY;
+    public static double tolleranza_Slope;
 
 
     public static int minSpeedLeftUP;

@@ -1221,7 +1221,7 @@ public class My3DActivity extends BaseClass {
                     dist = TriangleService.dist3D_DX;
                     break;
             }
-            if (Math.abs(dist) <= DataSaved.deadbandH) {
+            if (Math.abs(dist) <= DataSaved.tolleranza_XY) {
                 frameCent.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_verde));
                 freccia.setImageTintList(ColorStateList.valueOf(getColor(R.color._____cancel_text)));
                 freccia.setImageResource(R.drawable.baseline_radio_button_checked_96);
@@ -1494,15 +1494,15 @@ public class My3DActivity extends BaseClass {
                     AUTO_DX.setVisibility(View.VISIBLE);
                     switch (HYDRAULIC_CONTROL_POINT_GRADER) {
                         case 0:
-                            handleLama(QC,QR);
+                            handleLamaGrader(QC,QR);
                             break;
 
                         case 1:
-                            handleLama(QC,QL);
+                            handleLamaGrader(QC,QL);
                             break;
 
                         case 2://left right
-                            handleLama(QL,QR);
+                            handleLamaGrader(QL,QR);
                             break;
                     }
                     if (prepLeft) {
@@ -1546,8 +1546,8 @@ public class My3DActivity extends BaseClass {
                     }
                 } else {
                     //DOZER
-                    if (!isInRange(DataSaved.deadbandH, QC) && Math.abs(QC) < DataSaved.HYDRAULIC_WINDOW) {
-                        if (QC < -DataSaved.deadbandH) {
+                    if (!isInRange(DataSaved.tolleranza_Z, QC) && Math.abs(QC) < DataSaved.HYDRAULIC_WINDOW) {
+                        if (QC < -DataSaved.tolleranza_Z) {
 
                             dirCAT_L = (byte) 0xF2;
                             valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
@@ -1561,7 +1561,7 @@ public class My3DActivity extends BaseClass {
                             valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
 
 
-                        } else if (QC > DataSaved.deadbandH) {
+                        } else if (QC > DataSaved.tolleranza_Z) {
                             dirCAT_L = (byte) 0xF1;
                             valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
                             valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
@@ -1592,11 +1592,11 @@ public class My3DActivity extends BaseClass {
                             break;
 
                     }
-                    if (!isInRangeAng(correctRoll, GroundSlope, DataSaved.deadbandFlatAngle)) {
-                        double deviation = deviationFromSetpoint(correctRoll, GroundSlope, DataSaved.deadbandFlatAngle);
+                    if (!isInRangeAng(correctRoll, GroundSlope, DataSaved.tolleranza_Slope)) {
+                        double deviation = deviationFromSetpoint(correctRoll, GroundSlope, DataSaved.tolleranza_Slope);
                         deviation=MyMCUtils.ledder(GAIN_RIGHT)*deviation;
 
-                        if (deviation > DataSaved.deadbandFlatAngle) {
+                        if (deviation > DataSaved.tolleranza_Slope) {
                             dirCAT_R = (byte) 0xF2;
                             valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
                             valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
@@ -1609,7 +1609,7 @@ public class My3DActivity extends BaseClass {
                             valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
                             valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
 
-                        } else if (deviation < -DataSaved.deadbandFlatAngle) {
+                        } else if (deviation < -DataSaved.tolleranza_Slope) {
                             dirCAT_R = (byte) 0xF1;
                             valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightDW, maxSpeedRightDW);
                             valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
@@ -1703,9 +1703,9 @@ public class My3DActivity extends BaseClass {
         return diff;
     }
 
-    private void handleLama(double LL,double RR){
-        if (!isInRange(DataSaved.deadbandH, LL) && Math.abs(LL) < DataSaved.HYDRAULIC_WINDOW) {
-            if (LL < -DataSaved.deadbandH) {
+    private void handleLamaGrader(double LL, double RR){
+        if (!isInRange(DataSaved.tolleranza_Z, LL) && Math.abs(LL) < DataSaved.HYDRAULIC_WINDOW) {
+            if (LL < -DataSaved.tolleranza_Z) {
 
                 dirCAT_L = (byte) 0xF2;
                 valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
@@ -1719,7 +1719,7 @@ public class My3DActivity extends BaseClass {
                 valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
 
 
-            } else if (LL > DataSaved.deadbandH) {
+            } else if (LL > DataSaved.tolleranza_Z) {
                 dirCAT_L = (byte) 0xF1;
                 valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
                 valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
@@ -1742,8 +1742,8 @@ public class My3DActivity extends BaseClass {
         }
 
 
-        if (!isInRange(DataSaved.deadbandH, RR) && Math.abs(RR) < DataSaved.HYDRAULIC_WINDOW) {
-            if (RR < -DataSaved.deadbandH) {
+        if (!isInRange(DataSaved.tolleranza_Z, RR) && Math.abs(RR) < DataSaved.HYDRAULIC_WINDOW) {
+            if (RR < -DataSaved.tolleranza_Z) {
 
                 dirCAT_R = (byte) 0xF2;
                 valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightUP, maxSpeedRightUP);
@@ -1757,7 +1757,7 @@ public class My3DActivity extends BaseClass {
                 valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
 
 
-            } else if (RR > DataSaved.deadbandH) {
+            } else if (RR > DataSaved.tolleranza_Z) {
                 dirCAT_R = (byte) 0xF1;
                 valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW,maxSpeedRightDW);
                 valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);

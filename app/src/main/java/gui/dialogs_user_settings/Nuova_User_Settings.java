@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.stx_dig.R;
 
 import gui.boot_and_choose.Activity_Home_Page;
-import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
@@ -45,8 +44,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
     ImageView imgLocale, imgLse, imgCutFill, but_piu, but_meno, but_piu_db, but_meno_db, but_piu_an, but_meno_an;
     String intLang = "";
     int indexAudioSelected;
-    double myStep,myStepAngle;
-    TextView tvRotateMode;
+    double myStep, myStepAngle;
+    TextView tvRotateMode, tvAXYValue, tvAngAutoValue, tvZValue,tvWINDOWValue;
+    ImageView but_meno_auto_z, but_piu_auto_z, but_meno_ang_auto, but_piu_ang_auto, but_meno_xy, but_piu_xy,but_meno_auto_window,but_piu_auto_window;
 
 
     @Override
@@ -76,6 +76,22 @@ public class Nuova_User_Settings extends AppCompatActivity {
         dialogColors = new DialogColors(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogInfoApp = new Dialog_InfoApp(this);
+
+
+        tvAXYValue = findViewById(R.id.tvAXYValue);
+        tvWINDOWValue=findViewById(R.id.tvWINDOWValue);
+        tvAngAutoValue = findViewById(R.id.tvAngAutoValue);
+        tvZValue = findViewById(R.id.tvZValue);
+        but_meno_auto_z = findViewById(R.id.but_meno_auto_z);
+        but_piu_auto_z = findViewById(R.id.but_piu_auto_z);
+        but_meno_ang_auto = findViewById(R.id.but_meno_ang_auto);
+        but_piu_ang_auto = findViewById(R.id.but_piu_ang_auto);
+        but_meno_xy = findViewById(R.id.but_meno_xy);
+        but_piu_xy = findViewById(R.id.but_piu_xy);
+        but_meno_auto_window=findViewById(R.id.but_meno_auto_window);
+        but_piu_auto_window=findViewById(R.id.but_piu_auto_window);
+
+
         status = findViewById(R.id.img00);
         wifi = findViewById(R.id.img01);
         back = findViewById(R.id.btn_1);
@@ -96,11 +112,11 @@ public class Nuova_User_Settings extends AppCompatActivity {
         tvoffstep = findViewById(R.id.tvoffstep);
         but_piu = findViewById(R.id.but_piu);
         but_meno = findViewById(R.id.but_meno);
-        but_piu_db=findViewById(R.id.but_piu_db);
-        but_meno_db=findViewById(R.id.but_meno_db);
-        but_piu_an=findViewById(R.id.but_piu_ang);
-        but_meno_an=findViewById(R.id.but_meno_ang);
-        tvRotateMode=findViewById(R.id.tvRotateMode);
+        but_piu_db = findViewById(R.id.but_piu_db);
+        but_meno_db = findViewById(R.id.but_meno_db);
+        but_piu_an = findViewById(R.id.but_piu_ang);
+        but_meno_an = findViewById(R.id.but_meno_ang);
+        tvRotateMode = findViewById(R.id.tvRotateMode);
 
     }
 
@@ -120,7 +136,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
             if (DataSaved.Off_Incr_Step > 0) {
                 DataSaved.Off_Incr_Step -= myStep;
             }
-            if(DataSaved.Off_Incr_Step<=myStep)DataSaved.Off_Incr_Step=myStep;
+            if (DataSaved.Off_Incr_Step <= myStep) DataSaved.Off_Incr_Step = myStep;
             MyData.push("Off_Incr_Step", String.valueOf(DataSaved.Off_Incr_Step));
         });
         /// //////////////////////////////////
@@ -134,10 +150,76 @@ public class Nuova_User_Settings extends AppCompatActivity {
             if (DataSaved.deadbandH > 0) {
                 DataSaved.deadbandH -= myStep;
             }
-            if(DataSaved.deadbandH<=myStep)DataSaved.deadbandH=myStep;
+            if (DataSaved.deadbandH <= myStep) DataSaved.deadbandH = myStep;
             MyData.push("Deadband_H", String.valueOf(DataSaved.deadbandH));
         });
         /// //////////////////////////////////
+        /// ////nuovi
+        but_piu_auto_z.setOnClickListener(view -> {
+            DataSaved.tolleranza_Z += myStep;
+            MyData.push("tolleranza_Z", String.valueOf(DataSaved.tolleranza_Z));
+
+        });
+
+        but_meno_auto_z.setOnClickListener(view -> {
+
+            if (DataSaved.tolleranza_Z > 0) {
+                DataSaved.tolleranza_Z -= myStep;
+            }
+            if (DataSaved.tolleranza_Z <= myStep) DataSaved.tolleranza_Z = myStep;
+            MyData.push("tolleranza_Z", String.valueOf(DataSaved.tolleranza_Z));
+        });
+
+
+
+        but_piu_auto_window.setOnClickListener(view -> {
+            DataSaved.HYDRAULIC_WINDOW += myStep;
+            MyData.push("HYDRAULIC_WINDOW", String.valueOf(DataSaved.tolleranza_Z));
+
+        });
+
+        but_meno_auto_window.setOnClickListener(view -> {
+
+            if (DataSaved.HYDRAULIC_WINDOW > 0) {
+                DataSaved.HYDRAULIC_WINDOW -= myStep;
+            }
+            if (DataSaved.HYDRAULIC_WINDOW <= myStep) DataSaved.HYDRAULIC_WINDOW = myStep;
+            MyData.push("HYDRAULIC_WINDOW", String.valueOf(DataSaved.HYDRAULIC_WINDOW));
+        });
+
+
+        but_piu_ang_auto.setOnClickListener(view -> {
+            DataSaved.tolleranza_Slope += myStepAngle;
+            MyData.push("tolleranza_Slope", String.valueOf(DataSaved.tolleranza_Slope));
+
+        });
+
+        but_meno_ang_auto.setOnClickListener(view -> {
+
+            if (DataSaved.tolleranza_Slope > 0) {
+                DataSaved.tolleranza_Slope -= myStepAngle;
+            }
+            if (DataSaved.tolleranza_Slope <= myStepAngle) DataSaved.tolleranza_Slope = myStepAngle;
+            MyData.push("tolleranza_Slope", String.valueOf(DataSaved.tolleranza_Slope));
+        });
+
+
+        but_piu_xy.setOnClickListener(view -> {
+            DataSaved.tolleranza_XY += myStep;
+            MyData.push("tolleranza_XY", String.valueOf(DataSaved.tolleranza_XY));
+
+        });
+
+        but_meno_xy.setOnClickListener(view -> {
+
+            if (DataSaved.tolleranza_XY > 0) {
+                DataSaved.tolleranza_XY -= myStep;
+            }
+            if (DataSaved.tolleranza_XY <= myStep) DataSaved.tolleranza_XY = myStep;
+            MyData.push("tolleranza_XY", String.valueOf(DataSaved.tolleranza_XY));
+        });
+
+        /// /////nuovi
 
         but_piu_an.setOnClickListener(view -> {
             DataSaved.deadbandFlatAngle += myStepAngle;
@@ -150,7 +232,8 @@ public class Nuova_User_Settings extends AppCompatActivity {
             if (DataSaved.deadbandFlatAngle > 0) {
                 DataSaved.deadbandFlatAngle -= myStepAngle;
             }
-            if(DataSaved.deadbandFlatAngle<=myStepAngle)DataSaved.deadbandFlatAngle=myStepAngle;
+            if (DataSaved.deadbandFlatAngle <= myStepAngle)
+                DataSaved.deadbandFlatAngle = myStepAngle;
             MyData.push("Deadband_FlatAngle", String.valueOf(DataSaved.deadbandFlatAngle));
         });
 
@@ -189,7 +272,6 @@ public class Nuova_User_Settings extends AppCompatActivity {
         });
 
 
-
         imgLocale.setOnClickListener(view -> {
             if (!dialogLanguages.dialog.isShowing()) {
                 dialogLanguages.show();
@@ -223,8 +305,8 @@ public class Nuova_User_Settings extends AppCompatActivity {
         });
         tvRotateMode.setOnClickListener(view -> {
             DataSaved.lock3dRotation++;
-            DataSaved.lock3dRotation=DataSaved.lock3dRotation%2;
-            MyData.push("lock3dRotation",String.valueOf(DataSaved.lock3dRotation));
+            DataSaved.lock3dRotation = DataSaved.lock3dRotation % 2;
+            MyData.push("lock3dRotation", String.valueOf(DataSaved.lock3dRotation));
         });
     }
 
@@ -232,9 +314,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
         try {
             indexAudioSelected = MyData.get_Int("indexAudioSystem");
             tvAudioValue.setText(indexAudioSelected == 0 ? "OFF" : ("ON / " + MyData.get_Int("volumeAudioSystem") * 10) + " %");
-            if(DataSaved.lock3dRotation>0){
+            if (DataSaved.lock3dRotation > 0) {
                 tvRotateMode.setText(R.string.rotate_w);
-            }else {
+            } else {
                 tvRotateMode.setText(R.string.rotate_m);
             }
 
@@ -338,68 +420,110 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
             switch (myInt) {
                 case 0:
-                    myStepAngle=0.1;
+                    myStepAngle = 0.1;
+                    tvZValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAXYValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
+                    tvWINDOWValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
+
+
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
-                    tvVertValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    stepValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    myStep=0.005;
+                    tvVertValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    stepValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    myStep = 0.005;
                     break;
                 case 1:
-                    myStepAngle=0.055;
+                    myStepAngle = 0.055;
+                    tvZValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAXYValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
+                    tvWINDOWValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
-                    tvVertValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    stepValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    myStep=0.005;
+                    tvVertValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    stepValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    myStep = 0.005;
                     break;
 
                 case 2:
-                    myStepAngle=0.1;
+                    myStepAngle = 0.1;
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
+                    tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
-                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    myStep=0.0033;
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    myStep = 0.0033;
                     break;
                 case 3:
-                    myStepAngle=0.055;
+                    myStepAngle = 0.055;
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
+                    tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
-                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    myStep=0.0033;
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    myStep = 0.0033;
                     break;
 
                 case 4:
-                    myStepAngle=0.1;
+                    myStepAngle = 0.1;
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
+                    tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
-                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    myStep=0.0033;
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    myStep = 0.0033;
                     break;
                 case 5:
-                    myStepAngle=0.055;
+                    myStepAngle = 0.055;
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
+                    tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
-                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    myStep=0.0033;
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    myStep = 0.0033;
                     break;
                 case 6:
-                    myStepAngle=0.1;
+                    myStepAngle = 0.1;
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
+                    tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
-                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    myStep=0.0033;
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    myStep = 0.0033;
                     break;
                 case 7:
-                    myStepAngle=0.055;
+                    myStepAngle = 0.055;
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
+                    tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
-                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step))+"  "+ Utils.getMetriSimbol().replace("[","").replace("]",""));
-                    myStep=0.0033;
+                    tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    myStep = 0.0033;
                     break;
             }
 
             tvoffstep.setText("EXTERNAL OFFSET STEP Inc/Dec");
         } catch (Exception ex) {
-            Log.e("UserMenu",Log.getStackTraceString(ex));
+            Log.e("UserMenu", Log.getStackTraceString(ex));
         }
     }
 

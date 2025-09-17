@@ -676,8 +676,286 @@
 
             <View
                 android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="@color/bg_sfsred" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                    android:src="@drawable/auto_blade_acc" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvBladeAcc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="AUTO Z DeadBand"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <ImageView
+                    android:id="@+id/but_meno_auto_z"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_meno" />
+
+                <TextView
+                    android:id="@+id/tvZValue"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg_gray"
+                    android:gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:text="+/- 0.02 [m]"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <ImageView
+                    android:id="@+id/but_piu_auto_z"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_piu" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/_____cancel_text" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                    android:src="@drawable/window_blade" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvWINDOW"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="HYDR-AUTO WINDOW"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <ImageView
+                    android:id="@+id/but_meno_auto_window"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_meno" />
+
+                <TextView
+                    android:id="@+id/tvWINDOWValue"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg_gray"
+                    android:gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:text="+/- 0.30 [m]"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <ImageView
+                    android:id="@+id/but_piu_auto_window"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_piu" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                    android:src="@drawable/doz_blade_slope" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvAutoAng"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="AUTO SLOPE DeadBand"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <ImageView
+                    android:id="@+id/but_meno_ang_auto"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_meno" />
+
+                <TextView
+                    android:id="@+id/tvAngAutoValue"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg_gray"
+                    android:gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:text="+/- 5.00°"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <ImageView
+                    android:id="@+id/but_piu_ang_auto"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_piu" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                    android:src="@drawable/xy_accuracy_icon" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvAXY"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="XY DeadBand"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <ImageView
+                    android:id="@+id/but_meno_xy"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_meno" />
+
+                <TextView
+                    android:id="@+id/tvAXYValue"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg_gray"
+                    android:gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:text="+/- 0.02 [m]"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <ImageView
+                    android:id="@+id/but_piu_xy"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_piu" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
+
 
         </LinearLayout>
 

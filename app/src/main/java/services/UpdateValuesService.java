@@ -607,6 +607,10 @@ public class UpdateValuesService extends Service {
                 String laser_height_Zero = MyData.get_String("Laser_Height_Zero");
                 String laser_reach_Zero = MyData.get_String("Laser_Reach_Zero");
                 String deadbandH = MyData.get_String("Deadband_H");
+                String tolleranza_Z = MyData.get_String("tolleranza_Z");
+                String HYDRAULIC_WINDOW = MyData.get_String("HYDRAULIC_WINDOW");
+                String tolleranza_XY = MyData.get_String("tolleranza_XY");
+                String tolleranza_Slope = MyData.get_String("tolleranza_Slope");
                 String driftStep = MyData.get_String("driftStep");
                 String driftSign = MyData.get_String("driftSign");
                 String deadbandFA = MyData.get_String("Deadband_FlatAngle");
@@ -702,6 +706,18 @@ public class UpdateValuesService extends Service {
 
                     if (deadbandH == null) {
                         MyData.push("Deadband_H", "0.02");
+                    }
+                    if (tolleranza_Z == null) {
+                        MyData.push("tolleranza_Z", "0.02");
+                    }
+                    if (HYDRAULIC_WINDOW == null) {
+                        MyData.push("HYDRAULIC_WINDOW", "0.5");
+                    }
+                    if (tolleranza_XY == null) {
+                        MyData.push("tolleranza_XY", "0.02");
+                    }
+                    if (tolleranza_Slope == null) {
+                        MyData.push("tolleranza_Slope", "3.0");
                     }
                     if (driftStep == null) {
                         MyData.push("driftStep", "0");
@@ -1399,6 +1415,32 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di deadbandH: " + e.getMessage());
                 }
+                /// dozer
+                try {
+                    DataSaved.tolleranza_Z = MyData.get_Double("tolleranza_Z");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di tolleranza_Z: " + e.getMessage());
+                }
+                try {
+                    DataSaved.HYDRAULIC_WINDOW = MyData.get_Double("HYDRAULIC_WINDOW");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di HYDRAULIC_WINDOW: " + e.getMessage());
+                }
+                try {
+                    DataSaved.tolleranza_XY = MyData.get_Double("tolleranza_XY");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di tolleranza_XY: " + e.getMessage());
+                }
+                try {
+                    DataSaved.tolleranza_Slope = MyData.get_Double("tolleranza_Slope");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di tolleranza_Slope: " + e.getMessage());
+                }
+
+
+
+
+            /// end dozer
 
                 try {
                     DataSaved.driftStep = MyData.get_Int("driftStep");
