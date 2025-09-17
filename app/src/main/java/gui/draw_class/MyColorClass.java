@@ -1,6 +1,10 @@
 package gui.draw_class;
 
 
+import android.util.Log;
+
+import com.example.stx_dig.R;
+
 import java.net.PortUnreachableException;
 
 public class MyColorClass {
@@ -9,6 +13,7 @@ public class MyColorClass {
     public static int colorGroundX;
     public static int colorStick;
     public static int colorBucket;
+
     public static int colorLabel;
     public static int colorSfondo;
     public static int colorConstraint;

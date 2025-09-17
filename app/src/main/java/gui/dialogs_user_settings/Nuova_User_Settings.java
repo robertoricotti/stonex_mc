@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
@@ -22,6 +23,7 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
+import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Sensors_Decoder;
 import services.UpdateValuesService;
@@ -32,6 +34,7 @@ import utils.WifiHelper;
 
 public class Nuova_User_Settings extends AppCompatActivity {
     // Variabili di supporto
+    static int miocoloreBenna,miocoloreStick;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isRepeating = false;
     ImageView status, wifi, back, info, lock;
@@ -50,9 +53,11 @@ public class Nuova_User_Settings extends AppCompatActivity {
     String intLang = "";
     int indexAudioSelected;
     double myStep, myStepAngle;
-    TextView tvRotateMode, tvAXYValue, tvAngAutoValue, tvZValue,tvWINDOWValue;
-    ImageView but_meno_auto_z, but_piu_auto_z, but_meno_ang_auto, but_piu_ang_auto, but_meno_xy, but_piu_xy,but_meno_auto_window,but_piu_auto_window;
+    TextView tvRotateMode, tvAXYValue, tvAngAutoValue, tvZValue, tvWINDOWValue;
+    ImageView but_meno_auto_z, but_piu_auto_z, but_meno_ang_auto, but_piu_ang_auto, but_meno_xy, but_piu_xy, but_meno_auto_window, but_piu_auto_window;
 
+    ImageView but_meno_bkc, but_piu_bkc, but_meno_boom, but_piu_boom;
+    TextView coloreBenna, coloreBoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,11 @@ public class Nuova_User_Settings extends AppCompatActivity {
     }
 
     private void findView() {
+
+
+        // ricava indice se ti serve per ciclarli
+        miocoloreBenna = colorResToIndex(MyColorClass.colorBucket);
+        miocoloreStick = colorResToIndex(MyColorClass.colorStick);
         dialogAudioSystem = new DialogAudioSystem(this);
         dialogPassword = new DialogPassword(this);
         dialogHeightAlarm = new DialogHeightAlarm(this);
@@ -84,7 +94,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
 
         tvAXYValue = findViewById(R.id.tvAXYValue);
-        tvWINDOWValue=findViewById(R.id.tvWINDOWValue);
+        tvWINDOWValue = findViewById(R.id.tvWINDOWValue);
         tvAngAutoValue = findViewById(R.id.tvAngAutoValue);
         tvZValue = findViewById(R.id.tvZValue);
         but_meno_auto_z = findViewById(R.id.but_meno_auto_z);
@@ -93,8 +103,17 @@ public class Nuova_User_Settings extends AppCompatActivity {
         but_piu_ang_auto = findViewById(R.id.but_piu_ang_auto);
         but_meno_xy = findViewById(R.id.but_meno_xy);
         but_piu_xy = findViewById(R.id.but_piu_xy);
-        but_meno_auto_window=findViewById(R.id.but_meno_auto_window);
-        but_piu_auto_window=findViewById(R.id.but_piu_auto_window);
+        but_meno_auto_window = findViewById(R.id.but_meno_auto_window);
+        but_piu_auto_window = findViewById(R.id.but_piu_auto_window);
+
+
+        but_meno_bkc = findViewById(R.id.but_meno_bkc);
+        but_piu_bkc = findViewById(R.id.but_piu_bkc);
+        but_meno_boom = findViewById(R.id.but_meno_boom);
+        but_piu_boom = findViewById(R.id.but_piu_boom);
+
+        coloreBenna = findViewById(R.id.coloreBenna);
+        coloreBoom = findViewById(R.id.coloreBoom);
 
 
         status = findViewById(R.id.img00);
@@ -132,6 +151,58 @@ public class Nuova_User_Settings extends AppCompatActivity {
     }
 
     private void onClick() {
+        but_meno_bkc.setOnClickListener(view -> {
+            miocoloreBenna = normalizeIndex(miocoloreBenna - 1);
+
+            int resId = indexToColorRes(miocoloreBenna);                  // resource id
+            int colorInt = ContextCompat.getColor(this, resId);           // colore ARGB
+
+            MyColorClass.colorBucket = colorInt;                          // salva ARGB in memoria
+            MyData.push("coloreBenna", String.valueOf(colorInt));         // salva ARGB in DB
+
+            applyColorsToViews();
+        });
+
+        but_piu_bkc.setOnClickListener(view -> {
+            miocoloreBenna = normalizeIndex(miocoloreBenna + 1);
+
+            int resId = indexToColorRes(miocoloreBenna);
+            int colorInt = ContextCompat.getColor(this, resId);
+
+            MyColorClass.colorBucket = colorInt;
+            MyData.push("coloreBenna", String.valueOf(colorInt));
+
+            applyColorsToViews();
+        });
+
+// --- analoghi per boom ---
+
+        but_meno_boom.setOnClickListener(view -> {
+            miocoloreStick = normalizeIndex(miocoloreStick - 1);
+
+            int resId = indexToColorRes(miocoloreStick);
+            int colorInt = ContextCompat.getColor(this, resId);
+
+            MyColorClass.colorStick = colorInt;
+            MyData.push("coloreStick", String.valueOf(colorInt));
+
+            applyColorsToViews();
+        });
+
+        but_piu_boom.setOnClickListener(view -> {
+            miocoloreStick = normalizeIndex(miocoloreStick + 1);
+
+            int resId = indexToColorRes(miocoloreStick);
+            int colorInt = ContextCompat.getColor(this, resId);
+
+            MyColorClass.colorStick = colorInt;
+            MyData.push("coloreStick", String.valueOf(colorInt));
+
+            applyColorsToViews();
+        });
+
+
+
         but_piu.setOnClickListener(view -> {
             DataSaved.Off_Incr_Step += myStep;
             MyData.push("Off_Incr_Step", String.valueOf(DataSaved.Off_Incr_Step));
@@ -176,7 +247,6 @@ public class Nuova_User_Settings extends AppCompatActivity {
         });
 
 
-
         setupAutoRepeat(but_piu_auto_window, () -> {
             DataSaved.HYDRAULIC_WINDOW += myStep;
             MyData.push("HYDRAULIC_WINDOW", String.valueOf(DataSaved.HYDRAULIC_WINDOW));
@@ -191,7 +261,6 @@ public class Nuova_User_Settings extends AppCompatActivity {
             }
             MyData.push("HYDRAULIC_WINDOW", String.valueOf(DataSaved.HYDRAULIC_WINDOW));
         });
-
 
 
         but_piu_ang_auto.setOnClickListener(view -> {
@@ -433,7 +502,6 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     tvWINDOWValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
 
 
-
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     stepValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -528,6 +596,8 @@ public class Nuova_User_Settings extends AppCompatActivity {
             }
 
             tvoffstep.setText("EXTERNAL OFFSET STEP Inc/Dec");
+
+            applyColorsToViews();
         } catch (Exception ex) {
             Log.e("UserMenu", Log.getStackTraceString(ex));
         }
@@ -570,5 +640,48 @@ public class Nuova_User_Settings extends AppCompatActivity {
             return false;
         });
     }
+
+
+
+
+
+    private static final int[] COLOR_RES = {
+            R.color.bg,
+            R.color._____cancel_text,
+            R.color.yellow,
+            R.color.cyan,
+            R.color.magenta,
+            R.color.red,
+            R.color.blue,
+            R.color.volvo_grey,
+            R.color.element_green,
+            R.color.orange,
+            R.color.purple_200,
+            R.color.purple_700,
+            R.color.white
+    };
+
+    private int normalizeIndex(int idx) {
+        int n = COLOR_RES.length;
+        return ((idx % n) + n) % n;
+    }
+
+    private int indexToColorRes(int idx) {
+        return COLOR_RES[normalizeIndex(idx)];
+    }
+
+    // se ti serve: ottenere indice dal resource id (ritorna -1 se non presente)
+    private int colorResToIndex(int resId) {
+        for (int i = 0; i < COLOR_RES.length; i++) {
+            if (COLOR_RES[i] == resId) return i;
+        }
+        return -1;
+    }
+
+    private void applyColorsToViews() {
+        coloreBenna.setBackgroundColor(MyColorClass.colorBucket);
+        coloreBoom.setBackgroundColor(MyColorClass.colorStick);
+    }
+
 
 }

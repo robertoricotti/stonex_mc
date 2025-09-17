@@ -41,7 +41,7 @@
 
                 <ImageView
                     android:layout_width="120dp"
-                    android:layout_height="60dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/ligth_96" />
@@ -97,7 +97,7 @@
 
                 <ImageView
                     android:layout_width="120dp"
-                    android:layout_height="60dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/baseline_flag_24" />
@@ -149,7 +149,7 @@
 
                 <ImageView
                     android:layout_width="120dp"
-                    android:layout_height="60dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/measuring" />
@@ -205,7 +205,7 @@
 
                 <ImageView
                     android:layout_width="120dp"
-                    android:layout_height="60dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/tolleranza_metri_" />
@@ -237,6 +237,7 @@
                     android:id="@+id/but_meno_db"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_meno" />
 
@@ -258,6 +259,7 @@
                     android:id="@+id/but_piu_db"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_piu" />
 
@@ -308,6 +310,7 @@
                     android:id="@+id/but_meno_ang"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_meno" />
 
@@ -328,6 +331,7 @@
                     android:id="@+id/but_piu_ang"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_piu" />
 
@@ -338,74 +342,7 @@
                 android:layout_height="1dp"
                 android:background="@color/_____cancel_text" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="60dp"
-                    android:background="@color/bg_gray"
-                    android:padding="5dp"
-                    android:src="@drawable/offset" />
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
-
-                <TextView
-                    android:id="@+id/tvoffstep"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
-                    android:background="@color/bg_gray"
-                    android:ems="15"
-                    android:gravity="center|left"
-                    android:paddingHorizontal="20dp"
-                    android:text="EXTERNAL OFFSET STEP"
-                    android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold|italic" />
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
-
-                <ImageView
-                    android:id="@+id/but_meno"
-                    android:layout_width="70dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:src="@drawable/bottone_meno" />
-
-                <TextView
-                    android:id="@+id/tvOffStepValue"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@color/bg_gray"
-                    android:gravity="center"
-                    android:paddingHorizontal="20dp"
-                    android:text="0.01"
-                    android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold|italic" />
-
-                <ImageView
-                    android:id="@+id/but_piu"
-                    android:layout_width="70dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:src="@drawable/bottone_piu" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/_____cancel_text" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -415,7 +352,7 @@
 
                 <ImageView
                     android:layout_width="120dp"
-                    android:layout_height="60dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/audio" />
@@ -471,7 +408,7 @@
 
                 <ImageView
                     android:layout_width="120dp"
-                    android:layout_height="60dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/laser_btn" />
@@ -523,7 +460,7 @@
 
                 <ImageView
                     android:layout_width="120dp"
-                    android:layout_height="60dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/invert_colors" />
@@ -575,7 +512,7 @@
 
                 <ImageView
                     android:layout_width="120dp"
-                    android:layout_height="60dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/allarme_altezza" />
@@ -631,7 +568,7 @@
 
                 <ImageView
                     android:layout_width="120dp"
-                    android:layout_height="60dp"
+                    android:layout_height="70dp"
                     android:background="@color/bg_gray"
                     android:padding="5dp"
                     android:src="@drawable/gl_rotate_3d" />
@@ -673,11 +610,240 @@
                     android:textStyle="bold|italic" />
 
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                     />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvBuckColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="BUCKET-BLADE COLOR"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <ImageView
+                    android:id="@+id/but_meno_bkc"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:rotation="180"
+                    android:src="@drawable/key_arrow_right" />
+
+                <TextView
+                    android:id="@+id/coloreBenna"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg"
+                    android:gravity="center"
+                    android:layout_marginHorizontal="40dp"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <ImageView
+                    android:id="@+id/but_piu_bkc"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/key_arrow_right" />
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                    />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvBoomColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="BOOM-FRAME COLOR"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <ImageView
+                    android:id="@+id/but_meno_boom"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:rotation="180"
+                    android:src="@drawable/key_arrow_right" />
+
+                <TextView
+                    android:id="@+id/coloreBoom"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg"
+                    android:gravity="center"
+                    android:layout_marginHorizontal="40dp"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <ImageView
+                    android:id="@+id/but_piu_boom"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/key_arrow_right" />
+            </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- HYDRAULIC SOTTO!-->
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:background="@color/bg_sfsred" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                    android:src="@drawable/offset" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvoffstep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="EXTERNAL OFFSET STEP"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <ImageView
+                    android:id="@+id/but_meno"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_meno" />
+
+                <TextView
+                    android:id="@+id/tvOffStepValue"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg_gray"
+                    android:gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:text="0.01"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <ImageView
+                    android:id="@+id/but_piu"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_piu" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -719,6 +885,7 @@
                     android:id="@+id/but_meno_auto_z"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_meno" />
 
@@ -739,6 +906,7 @@
                     android:id="@+id/but_piu_auto_z"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_piu" />
 
@@ -788,6 +956,7 @@
                     android:id="@+id/but_meno_auto_window"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_meno" />
 
@@ -808,6 +977,7 @@
                     android:id="@+id/but_piu_auto_window"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_piu" />
 
@@ -857,6 +1027,7 @@
                     android:id="@+id/but_meno_ang_auto"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_meno" />
 
@@ -877,6 +1048,7 @@
                     android:id="@+id/but_piu_ang_auto"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_piu" />
 
@@ -926,6 +1098,7 @@
                     android:id="@+id/but_meno_xy"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_meno" />
 
@@ -946,6 +1119,7 @@
                     android:id="@+id/but_piu_xy"
                     android:layout_width="70dp"
                     android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
                     android:layout_marginHorizontal="20dp"
                     android:src="@drawable/bottone_piu" />
 

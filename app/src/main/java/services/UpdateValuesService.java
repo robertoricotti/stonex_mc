@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import gui.MyApp;
+import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import utils.MyData;
@@ -759,10 +760,10 @@ public class UpdateValuesService extends Service {
                         MyData.push("coloreX", "3");
                     }
                     if (colorBenna == null) {
-                        MyData.push("coloreBenna", "0");
+                        MyData.push("coloreBenna", String.valueOf(R.color.bg));
                     }
                     if (colorStick == null) {
-                        MyData.push("coloreStick", "0");
+                        MyData.push("coloreStick", String.valueOf(R.color.bg));
                     }
                     if (scaleFactor == null) {
                         MyData.push("scaleFactor", "150");
@@ -955,6 +956,22 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     DataSaved.wifiSSID = "";
                 }
+
+                try {
+                    MyColorClass.colorBucket = MyData.get_Int("coloreBenna");
+                } catch (Exception e) {
+                    MyColorClass.colorBucket=R.color.bg;
+                }
+                try {
+                    MyColorClass.colorStick = MyData.get_Int("coloreStick");
+                } catch (Exception e) {
+                    MyColorClass.colorStick=R.color.bg;
+                }
+
+
+
+
+
                 try {
                     DataSaved.language = MyData.get_String("language");
 

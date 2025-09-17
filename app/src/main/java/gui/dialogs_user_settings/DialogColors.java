@@ -99,8 +99,8 @@ public class DialogColors {
                     MyColorClass.colorLabel = ((Color.YELLOW));
                     MyColorClass.colorGroundX = (activity.getResources().getColor(R.color.GROUNDred));
                     MyColorClass.colorGroundY = (activity.getResources().getColor(R.color.cyan));
-                    MyColorClass.colorStick = (activity.getResources().getColor(R.color.orange));
-                    MyColorClass.colorBucket = (activity.getResources().getColor(R.color.orange));
+                    //MyColorClass.colorStick = (activity.getResources().getColor(R.color.orange));
+                    //MyColorClass.colorBucket = (activity.getResources().getColor(R.color.orange));
                     MyColorClass.colorPoint = (activity.getResources().getColor(R.color.red));
                     MyColorClass.colorPoly = (activity.getResources().getColor(R.color.teal_200));
 
@@ -120,8 +120,8 @@ public class DialogColors {
                     MyColorClass.colorLabel = (activity.getResources().getColor(R.color.blue));
                     MyColorClass.colorGroundX = (activity.getResources().getColor(R.color.GROUNDblue));
                     MyColorClass.colorGroundY = (activity.getResources().getColor(R.color.GROUNDblue));
-                    MyColorClass.colorStick = (activity.getResources().getColor(R.color.orange));
-                    MyColorClass.colorBucket = (activity.getResources().getColor(R.color.orange));
+                    //MyColorClass.colorStick = (activity.getResources().getColor(R.color.orange));
+                    //MyColorClass.colorBucket = (activity.getResources().getColor(R.color.orange));
                     MyColorClass.colorPoint = (activity.getResources().getColor(R.color.GROUNDred));
                     MyColorClass.colorPoly = (activity.getResources().getColor(R.color._____cancel_text));
                     MyColorClass.colorOffsetLine = (activity.getResources().getColor(R.color.bg_sfsred));
@@ -138,8 +138,8 @@ public class DialogColors {
                     MyColorClass.colorLabel = (activity.getResources().getColor(R.color.blue));
                     MyColorClass.colorGroundX = (activity.getResources().getColor(R.color.GROUNDblue));
                     MyColorClass.colorGroundY = (activity.getResources().getColor(R.color.GROUNDblue));
-                    MyColorClass.colorStick = (activity.getResources().getColor(R.color.orange));
-                    MyColorClass.colorBucket = (activity.getResources().getColor(R.color._____cancel_text));
+                    //MyColorClass.colorStick = (activity.getResources().getColor(R.color.orange));
+                    //MyColorClass.colorBucket = (activity.getResources().getColor(R.color._____cancel_text));
                     MyColorClass.colorPoint = (activity.getResources().getColor(R.color.GROUNDred));
                     MyColorClass.colorPoly = (activity.getResources().getColor(R.color.magenta));
                     MyColorClass.colorOffsetLine = (activity.getResources().getColor(R.color.bg_sfsred));
@@ -157,8 +157,8 @@ public class DialogColors {
                     MyColorClass.colorLabel = (activity.getResources().getColor(R.color.black));
                     MyColorClass.colorGroundX = (activity.getResources().getColor(R.color.GROUNDblue));
                     MyColorClass.colorGroundY = (activity.getResources().getColor(R.color.GROUNDblue));
-                    MyColorClass.colorStick = (activity.getResources().getColor(R.color.orange));
-                    MyColorClass.colorBucket = (activity.getResources().getColor(R.color.dark_gray));
+                   // MyColorClass.colorStick = (activity.getResources().getColor(R.color.orange));
+                    //MyColorClass.colorBucket = (activity.getResources().getColor(R.color.dark_gray));
                     MyColorClass.colorPoint = (activity.getResources().getColor(R.color.GROUNDred));
                     MyColorClass.colorPoly = (activity.getResources().getColor(R.color.magenta));
                     MyColorClass.colorOffsetLine = (activity.getResources().getColor(R.color.bg_sfsred));

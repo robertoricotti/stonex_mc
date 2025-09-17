@@ -396,8 +396,8 @@ public class LaunchScreenActivity extends BaseClass {
                 MyColorClass.colorLabel = ((Color.YELLOW));
                 MyColorClass.colorGroundX = (getResources().getColor(R.color.GROUNDred));
                 MyColorClass.colorGroundY = (getResources().getColor(R.color.cyan));
-                MyColorClass.colorStick = (getResources().getColor(R.color.orange));
-                MyColorClass.colorBucket = (getResources().getColor(R.color.orange));
+                //MyColorClass.colorStick = (getResources().getColor(R.color.orange));
+               // MyColorClass.colorBucket = (getResources().getColor(R.color.orange));
                 MyColorClass.colorPoint = (getResources().getColor(R.color.red));
                 MyColorClass.colorPoly = (getResources().getColor(R.color.teal_200));
 
@@ -417,8 +417,8 @@ public class LaunchScreenActivity extends BaseClass {
                 MyColorClass.colorLabel = (getResources().getColor(R.color.blue));
                 MyColorClass.colorGroundX = (getResources().getColor(R.color.GROUNDblue));
                 MyColorClass.colorGroundY = (getResources().getColor(R.color.GROUNDblue));
-                MyColorClass.colorStick = (getResources().getColor(R.color.orange));
-                MyColorClass.colorBucket = (getResources().getColor(R.color.orange));
+                //MyColorClass.colorStick = (getResources().getColor(R.color.orange));
+                //MyColorClass.colorBucket = (getResources().getColor(R.color.orange));
                 MyColorClass.colorPoint = (getResources().getColor(R.color.GROUNDred));
                 MyColorClass.colorPoly = (getResources().getColor(R.color._____cancel_text));
                 MyColorClass.colorOffsetLine = (getResources().getColor(R.color.bg_sfsred));
@@ -435,8 +435,8 @@ public class LaunchScreenActivity extends BaseClass {
                 MyColorClass.colorLabel = (getResources().getColor(R.color.blue));
                 MyColorClass.colorGroundX = (getResources().getColor(R.color.GROUNDblue));
                 MyColorClass.colorGroundY = (getResources().getColor(R.color.GROUNDblue));
-                MyColorClass.colorStick = (getResources().getColor(R.color.orange));
-                MyColorClass.colorBucket = (getResources().getColor(R.color.dark_gray));
+                //MyColorClass.colorStick = (getResources().getColor(R.color.orange));
+                //MyColorClass.colorBucket = (getResources().getColor(R.color.dark_gray));
                 MyColorClass.colorPoint = (getResources().getColor(R.color.GROUNDred));
                 MyColorClass.colorPoly = (getResources().getColor(R.color.magenta));
                 MyColorClass.colorOffsetLine = (getResources().getColor(R.color.bg_sfsred));
@@ -454,8 +454,8 @@ public class LaunchScreenActivity extends BaseClass {
                 MyColorClass.colorLabel = (getResources().getColor(R.color.black));
                 MyColorClass.colorGroundX = (getResources().getColor(R.color.GROUNDblue));
                 MyColorClass.colorGroundY = (getResources().getColor(R.color.GROUNDblue));
-                MyColorClass.colorStick = (getResources().getColor(R.color.orange));
-                MyColorClass.colorBucket = (getResources().getColor(R.color.orange));
+                //MyColorClass.colorStick = (getResources().getColor(R.color.orange));
+                //MyColorClass.colorBucket = (getResources().getColor(R.color.orange));
                 MyColorClass.colorPoint = (getResources().getColor(R.color.GROUNDred));
                 MyColorClass.colorPoly = (getResources().getColor(R.color.magenta));
                 MyColorClass.colorOffsetLine = (getResources().getColor(R.color.bg_sfsred));
