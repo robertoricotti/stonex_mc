@@ -898,13 +898,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="dialog gain e hydro points">
+    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="parametri idraulici utente aggiunti">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1071,14 +1067,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00020" summary="da rifare activity xyz">
-      <option name="closed" value="true" />
-      <created>1754257523808</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1754257523808</updated>
     </task>
     <task id="LOCAL-00021" summary="da testare activity xyz">
       <option name="closed" value="true" />
@@ -1464,7 +1452,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758055326537</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="parametri idraulici utente aggiunti">
+      <option name="closed" value="true" />
+      <created>1758119517881</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1758119517882</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1479,7 +1475,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="introdotto letura roof_heading" />
     <MESSAGE value="da finire dialog calibrazione swing boom" />
     <MESSAGE value="swing_boom implementato manca da aggiustare grafica 3D" />
     <MESSAGE value="apk di test per swing boom" />
@@ -1504,7 +1499,8 @@
     <MESSAGE value="AUTO textview addes" />
     <MESSAGE value="ripristino G2" />
     <MESSAGE value="dialog gain e hydro points" />
-    <option name="LAST_COMMIT_MESSAGE" value="dialog gain e hydro points" />
+    <MESSAGE value="parametri idraulici utente aggiunti" />
+    <option name="LAST_COMMIT_MESSAGE" value="parametri idraulici utente aggiunti" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

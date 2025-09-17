@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +31,9 @@ import utils.Utils;
 import utils.WifiHelper;
 
 public class Nuova_User_Settings extends AppCompatActivity {
-
+    // Variabili di supporto
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean isRepeating = false;
     ImageView status, wifi, back, info, lock;
     DialogAudioSystem dialogAudioSystem;
     DialogHeightAlarm dialogHeightAlarm;
@@ -172,20 +177,21 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
 
 
-        but_piu_auto_window.setOnClickListener(view -> {
+        setupAutoRepeat(but_piu_auto_window, () -> {
             DataSaved.HYDRAULIC_WINDOW += myStep;
-            MyData.push("HYDRAULIC_WINDOW", String.valueOf(DataSaved.tolleranza_Z));
-
+            MyData.push("HYDRAULIC_WINDOW", String.valueOf(DataSaved.HYDRAULIC_WINDOW));
         });
 
-        but_meno_auto_window.setOnClickListener(view -> {
-
+        setupAutoRepeat(but_meno_auto_window, () -> {
             if (DataSaved.HYDRAULIC_WINDOW > 0) {
                 DataSaved.HYDRAULIC_WINDOW -= myStep;
             }
-            if (DataSaved.HYDRAULIC_WINDOW <= myStep) DataSaved.HYDRAULIC_WINDOW = myStep;
+            if (DataSaved.HYDRAULIC_WINDOW <= myStep) {
+                DataSaved.HYDRAULIC_WINDOW = myStep;
+            }
             MyData.push("HYDRAULIC_WINDOW", String.valueOf(DataSaved.HYDRAULIC_WINDOW));
         });
+
 
 
         but_piu_ang_auto.setOnClickListener(view -> {
@@ -531,6 +537,38 @@ public class Nuova_User_Settings extends AppCompatActivity {
         back.setEnabled(b);
         status.setEnabled(b);
         info.setEnabled(b);
+    }
+
+
+    private void setupAutoRepeat(ImageView button, Runnable action) {
+        button.setOnClickListener(v -> action.run());
+
+        button.setOnLongClickListener(v -> {
+            isRepeating = true;
+
+            // Primo ritardo di 500ms prima di iniziare la ripetizione
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isRepeating) {
+                        action.run();
+                        handler.postDelayed(this, 50); // ripeti ogni 50ms
+                    }
+                }
+            }, 500);
+
+            return true; // segnala che il long click è gestito
+        });
+
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    isRepeating = false; // stop
+                    break;
+            }
+            return false;
+        });
     }
 
 }
