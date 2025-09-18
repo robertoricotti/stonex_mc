@@ -21,6 +21,13 @@
     <string name="interface_type">ΤΥΠΟΣ ΥΔΡΑΥΛΙΚΗΣ ΔΙΕΠΑΦΗΣ</string>
     <string name="hydro_cp">ΥΔΡΑΥΛΙΚΑ\nΣΗΜΕΙΑ ΕΛΕΓΧΟΥ</string>
     <string name="hydro_apply">ΕΦΑΡΜΟΓΗ ΝΕΩΝ ΥΔΡΑΥΛΙΚΩΝ ΤΙΜΩΝ</string>
+    <string name="color_bucket">ΧΡΩΜΑ ΚΟΥΒΑ - ΛΕΠΙΔΑΣ</string>
+    <string name="color_boom">ΧΡΩΜΑ ΒΡΑΧΙΟΝΑ - ΠΛΑΙΣΙΟΥ</string>
+    <string name="ext_offset">ΒΗΜΑ ΕΞΩΤΕΡΙΚΗΣ ΜΕΤΑΤΟΠΙΣΗΣ</string>
+    <string name="auto_z_db">ΖΩΝΗ ΝΕΚΡΗΣ ΕΥΑΙΣΘΗΣΙΑΣ ΥΨΟΥΣ</string>
+    <string name="hydro_window">ΠΑΡΑΘΥΡΟ ΥΔΡΑΥΛΙΚΗΣ ΕΜΠΛΟΚΗΣ</string>
+    <string name="auto_slope_db">ΖΩΝΗ ΝΕΚΡΗΣ ΕΥΑΙΣΘΗΣΙΑΣ ΚΛΙΣΗΣ</string>
+    <string name="xy_db">ΖΩΝΗ ΝΕΚΡΗΣ ΕΥΑΙΣΘΗΣΙΑΣ XY</string>
 
 
     <string name="exit">ΕΞΟΔΟΣ</string>

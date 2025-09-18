@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.core.content.ContextCompat;
+
 import com.example.stx_dig.R;
 
 import org.locationtech.proj4j.CRSFactory;
@@ -604,6 +606,9 @@ public class UpdateValuesService extends Service {
                 String canBaud1 = MyData.get_String("canBaud1");
                 String canBaud2 = MyData.get_String("canBaud2");
 
+                String glScale = MyData.get_String("glScale");
+                String glFace=MyData.get_String("glFace");
+
 
                 String laser_height_Zero = MyData.get_String("Laser_Height_Zero");
                 String laser_reach_Zero = MyData.get_String("Laser_Reach_Zero");
@@ -701,6 +706,13 @@ public class UpdateValuesService extends Service {
                     if (canBaud2 == null) {
                         MyData.push("canBaud2", "250000");
                     }
+                    if(glScale==null){
+                        MyData.push("glScale","0.7");
+                    }
+                    if(glFace==null){
+                        MyData.push("glFace","true");
+                    }
+
                     if (mybrightness == null) {
                         MyData.push("brightness", "1.0");
                     }
@@ -760,10 +772,11 @@ public class UpdateValuesService extends Service {
                         MyData.push("coloreX", "3");
                     }
                     if (colorBenna == null) {
-                        MyData.push("coloreBenna", String.valueOf(R.color.bg));
+                        ;
+                        MyData.push("coloreBenna", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
                     }
                     if (colorStick == null) {
-                        MyData.push("coloreStick", String.valueOf(R.color.bg));
+                        MyData.push("coloreStick", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
                     }
                     if (scaleFactor == null) {
                         MyData.push("scaleFactor", "150");

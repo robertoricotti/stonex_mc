@@ -6,6 +6,7 @@ import static gui.my_opengl.MyGLRenderer.scale;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -110,6 +111,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
             scale *= adjustedFactor;
             scale = Math.max(0.09f, Math.min(scale, 1.5f));
+
             return true;
         }
 

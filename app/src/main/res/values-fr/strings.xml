@@ -30,6 +30,14 @@
     <string name="hydro_cp">POINTS DE CONTRÔLE\nHYDRAULIQUES</string>
     <string name="hydro_apply">APPLIQUER DE NOUVELLES VALEURS HYDRAULIQUES</string>
 
+    <string name="color_bucket">COULEUR DU GODET - LAME</string>
+    <string name="color_boom">COULEUR DE LA FLÈCHE - CHÂSSIS</string>
+    <string name="ext_offset">PAS DE DÉCALAGE EXTERNE</string>
+    <string name="auto_z_db">BANDE MORTE D’ÉLÉVATION</string>
+    <string name="hydro_window">FENÊTRE D’ENGAGEMENT HYDRAULIQUE</string>
+    <string name="auto_slope_db">BANDE MORTE DE PENTE</string>
+    <string name="xy_db">BANDE MORTE XY</string>
+
     <string name="exit">SORTIE</string>
     <string name="rename_file">RENOMMER LE FICHIER</string>
     <string name="wait_until">Attendez que le projet soit mis à jour</string>

@@ -29,6 +29,14 @@
     <string name="hydro_cp">PUNTOS DE CONTROL\nHIDRÁULICOS</string>
     <string name="hydro_apply">APLICAR NUEVOS VALORES HIDRÁULICOS</string>
 
+    <string name="color_bucket">COLOR DEL CUBO - HOJA</string>
+    <string name="color_boom">COLOR DEL BRAZO - BASTIDOR</string>
+    <string name="ext_offset">PASO DE DESPLAZAMIENTO EXTERNO</string>
+    <string name="auto_z_db">BANDA MUERTA DE ELEVACIÓN</string>
+    <string name="hydro_window">VENTANA DE ENGANCHE HIDRÁULICO</string>
+    <string name="auto_slope_db">BANDA MUERTA DE PENDIENTE</string>
+    <string name="xy_db">BANDA MUERTA XY</string>
+
     <string name="save">SALVAR</string>
     <string name="exit">SALIR</string>
     <string name="rename_file">RENOMBRAR ARCHIVO</string>

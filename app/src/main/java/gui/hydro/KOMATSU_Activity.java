@@ -617,13 +617,13 @@ public class KOMATSU_Activity extends AppCompatActivity {
         sendRunnable = new Runnable() {
             @Override
             public void run() {
-                byte[] valoreSX = new byte[]{0x4E, 0x20};
-                byte[] valoreDX = new byte[]{0x4E, 0x20};
-                byte[] valoreSS = new byte[]{0x4E, 0x20};
+                byte[] valoreSX = new byte[]{0, 0};
+                byte[] valoreDX = new byte[]{0, 0};
+
 
                 valoreSX = PLC_DataTypes_LittleEndian.U16_to_bytes(valueLEFT);
                 valoreDX = PLC_DataTypes_LittleEndian.U16_to_bytes(valueRIGHT);
-                valoreSS = PLC_DataTypes_LittleEndian.U16_to_bytes(valueSS);
+
                 MyDeviceManager.CanWrite(1, 0x0CFF3202, 8,
                         new byte[]{
 

@@ -28,6 +28,13 @@
     <string name="write_para">SOVRASCRIVI TUTTI I PARAMETRI DELL APPLICAZIONE</string>
     <string name="hydro_cp">PUNTI DI CONTROLLO\nIDRAULICI</string>
     <string name="hydro_apply">APPLICA NUOVI VALORI IDRAULICI</string>
+    <string name="color_bucket">COLORE BENNA - LAMA</string>
+    <string name="color_boom">COLORE BRACCIO - TELAIO</string>
+    <string name="ext_offset">PASSO OFFSET ESTERNO</string>
+    <string name="auto_z_db">BANDA MORTA QUOTA</string>
+    <string name="hydro_window">FINESTRA INNESCO IDRAULICO</string>
+    <string name="auto_slope_db">BANDA MORTA PENDENZA</string>
+    <string name="xy_db">BANDA MORTA XY</string>
 
 
     <string name="save">SALVA</string>

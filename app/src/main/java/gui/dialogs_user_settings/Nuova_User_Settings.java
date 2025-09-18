@@ -646,18 +646,19 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
 
     private static final int[] COLOR_RES = {
-            R.color.bg,
+
             R.color._____cancel_text,
-            R.color.yellow,
-            R.color.cyan,
-            R.color.magenta,
-            R.color.red,
-            R.color.blue,
             R.color.volvo_grey,
-            R.color.element_green,
-            R.color.orange,
-            R.color.purple_200,
             R.color.purple_700,
+            R.color.blue,
+            R.color.magenta,
+            R.color.purple_200,
+            R.color.cyan,
+            R.color.red,
+            R.color.bg,
+            R.color.orange,
+            R.color.yellow,
+            R.color.element_green,
             R.color.white
     };
 

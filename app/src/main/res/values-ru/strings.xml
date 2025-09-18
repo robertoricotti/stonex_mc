@@ -29,6 +29,14 @@
     <string name="hydro_cp">ГИДРАВЛИЧЕСКИЕ\nКОНТРОЛЬНЫЕ ТОЧКИ</string>
     <string name="hydro_apply">ПРИМЕНИТЬ НОВЫЕ ГИДРАВЛИЧЕСКИЕ ЗНАЧЕНИЯ</string>
 
+    <string name="color_bucket">ЦВЕТ КОВША - ЛЕЗВИЯ</string>
+    <string name="color_boom">ЦВЕТ СТРЕЛЫ - РАМЫ</string>
+    <string name="ext_offset">ШАГ ВНЕШНЕГО СМЕЩЕНИЯ</string>
+    <string name="auto_z_db">МЁРТВАЯ ЗОНА ВЫСОТЫ</string>
+    <string name="hydro_window">ОКНО ВКЛЮЧЕНИЯ ГИДРАВЛИКИ</string>
+    <string name="auto_slope_db">МЁРТВАЯ ЗОНА НАКЛОНА</string>
+    <string name="xy_db">МЁРТВАЯ ЗОНА XY</string>
+
 
     <string name="save">СОХРАНИТЬ</string>
     <string name="exit">ЭСК</string>

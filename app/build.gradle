@@ -72,12 +72,12 @@ android {
                 gen1 {
                     dimension "generation"
                     applicationIdSuffix ".gen1"
-                    versionNameSuffix "-GEN1"
+                    versionNameSuffix " -GEN1"
                 }
                 gen2 {
                     dimension "generation"
                     applicationIdSuffix ".gen2"
-                    versionNameSuffix "-GEN2"
+                    versionNameSuffix " -GEN2"
                 }
             }
         }

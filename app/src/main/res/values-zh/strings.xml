@@ -30,6 +30,14 @@
     <string name="hydro_cp">液压\n控制点</string>
     <string name="hydro_apply">应用新的液压值</string>
 
+    <string name="color_bucket">铲斗 - 刀片颜色</string>
+    <string name="color_boom">动臂 - 机架颜色</string>
+    <string name="ext_offset">外部偏移步长</string>
+    <string name="auto_z_db">高程死区</string>
+    <string name="hydro_window">液压啮合窗口</string>
+    <string name="auto_slope_db">坡度死区</string>
+    <string name="xy_db">XY死区</string>
+
     <string name="save">保存参数</string>
     <string name="exit">逃离键</string>
     <string name="rename_file">重命名文件</string>

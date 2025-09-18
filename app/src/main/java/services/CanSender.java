@@ -287,6 +287,19 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
+            if(DataSaved.Interface_Type==2){
+                if(! (MyApp.visibleActivity instanceof My3DActivity)){
+                    MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
+                            new byte[]{(byte) 0xF4,
+                                    (byte) 0xF0,
+                                    (byte) 0x13,
+                                    (byte) 0x23,
+                                    (byte) 0x0,
+                                    (byte) 0x82,
+                                    (byte) 0x0,
+                                    (byte) 0xB0});
+                }
+            }
 
 
             if (DataSaved.isCanOpen == 5) {

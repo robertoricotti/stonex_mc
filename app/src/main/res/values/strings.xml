@@ -18,6 +18,14 @@
     <string name="hydro_cp">HYDRAULIC\nCONTROL POINTS</string>
     <string name="hydro_apply">APPLY NEW HYDRAULIC VALUES</string>
 
+    <string name="color_bucket">BUCKET - BLADE COLOR</string>
+    <string name="color_boom">BOOM - FRAME COLOR</string>
+    <string name="ext_offset">EXTERNAL OFFSET STEP</string>
+    <string name="auto_z_db">ELEVATION DEADBAND</string>
+    <string name="hydro_window">HYDRAULIC ENGAGEMENT WINDOW</string>
+    <string name="auto_slope_db">SLOPE DEADBAND</string>
+    <string name="xy_db">XY DEADBAND</string>
+
     <string name="mac_setup">MACHINE SETUP</string>
     <string name="sens_config">CAN SENSOR CONFIG</string>
     <string name="mch_schema">DRAW 3D MACHINE SCHEMA</string>

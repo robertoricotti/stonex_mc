@@ -69,6 +69,7 @@ import gui.hydro.Dialog_Gain_Hydro;
 import gui.projects.Dialog_PRJ_Folder;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
+import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import services.TriangleService;
@@ -82,8 +83,8 @@ import utils.Utils;
 public class My3DActivity extends BaseClass {
     double QL, QC, QR;
     double GroundSlope;
-    int valueKomL = 0, valueKomR = 0, valueCATL = 0, valueCATR = 0, valueJDL = 20000, valueJDR = 20000;
-    byte dirCAT_L, dirCAT_R, dirCAT_SS;
+    int valueKomL = 0, valueKomR = 0, valueCATL = 0, valueCATR = 0,valueCATSS=0, valueJDL = 20000, valueJDR = 20000,valueJDSS=20000;
+    byte dirCAT_L, dirCAT_R, dirCAT_SS= (byte) 0xF2;
     public static boolean prepLeft, prepRight, prepSS;
     TextView AUTO_SX, AUTO_SS, AUTO_DX;
     Dialog_Blade_Wear dialogBladeWear;
@@ -212,6 +213,20 @@ public class My3DActivity extends BaseClass {
         } else {
             bucketName = "";
         }
+
+        if(DataSaved.Interface_Type==2){
+
+                MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
+                        new byte[]{(byte) 0xF4,
+                                (byte) 0xF0,
+                                (byte) 0x13,
+                                (byte) 0x23,
+                                (byte) 0x0,
+                                (byte) 0x82,
+                                (byte) 0x0,
+                                (byte) 0xB0});
+        }
+
     }
 
     private void findView() {
@@ -1644,32 +1659,54 @@ public class My3DActivity extends BaseClass {
                     if (prepLeft) {
                         if (Dozer_Auto_Main) {
                             AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                            //TODO MESSAGGI CONTROLLO LAMA DOZER LIFT
+                            if(Math.abs(QC)>DataSaved.HYDRAULIC_WINDOW){
+                                valueKomL = 0;
+                                valueCATL = 0;
+                                valueJDL = 20000;
+                                dirCAT_L = (byte) 0xF2;
+                            }
 
                         } else {
                             AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
-
+                            valueKomL = 0;
+                            valueCATL = 0;
+                            valueJDL = 20000;
+                            dirCAT_L = (byte) 0xF2;
 
                         }
                     } else {
                         AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_manuale));
+                        valueKomL = 0;
+                        valueCATL = 0;
+                        valueJDL = 20000;
+                        dirCAT_L = (byte) 0xF2;
 
+                        valueKomR = 0;
+                        valueCATR = 0;
+                        valueJDR = 20000;
+                        dirCAT_R = (byte) 0xF2;
                     }
 
 
                     if (prepRight) {
                         if (Dozer_Auto_Main) {
                             AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                            //TODO MESSAGGI CONTROLLO LAMA DOZER TILT
-
 
                         } else {
                             AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                            valueKomR = 0;
+                            valueCATR = 0;
+                            valueJDR = 20000;
+                            dirCAT_R = (byte) 0xF2;
 
 
                         }
                     } else {
                         AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
+                        valueKomR = 0;
+                        valueCATR = 0;
+                        valueJDR = 20000;
+                        dirCAT_R = (byte) 0xF2;
 
                     }
                 }
@@ -1678,7 +1715,7 @@ public class My3DActivity extends BaseClass {
             }
         }
 
-
+       invioMessaggiDozer();
         Log.d("myRIGHT", valueKomR + "  " + (dirCAT_R & 0xFF) + "  " + valueCATR + "  " + valueJDR);
         Log.d("myLEFT", valueKomL + "  " + (dirCAT_L & 0xFF) + "  " + valueCATL + "  " + valueJDL);
     }
@@ -1777,6 +1814,96 @@ public class My3DActivity extends BaseClass {
             valueJDR = 20000;
             dirCAT_R = (byte) 0xF2;
             dirCAT_SS = (byte) 0xF2;
+        }
+    }
+
+    private void invioMessaggiDozer(){
+        switch (DataSaved.Interface_Type){
+            case 0:
+                //TODO output ECU
+                break;
+
+            case 1:
+                //CAT
+                MyDeviceManager.CanWrite(1, 0x18FE3185, 8,
+                        new byte[]{(byte) valueCATL,
+                                (byte) 0xFF,
+                                dirCAT_L,//F2=Up F1=Down
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF});
+
+                MyDeviceManager.CanWrite(1, 0x18FE3285, 8,
+                        new byte[]{(byte) valueCATR,
+                                (byte) 0xFF,
+                                dirCAT_R,//F2=Up F1=Down
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF});
+
+                MyDeviceManager.CanWrite(1, 0x18FE3385, 8,
+                        new byte[]{(byte) valueCATSS,
+                                (byte) 0xFF,
+                                dirCAT_SS,//F2=Right F1=Left
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF,
+                                (byte) 0xFF});
+
+                break;
+
+
+            case 2:
+                //JD
+
+                byte[]valoreSX= new byte[]{0x4E,0x20};
+                byte[]valoreDX= new byte[]{0x4E,0x20};
+                byte[]valoreSS= new byte[]{0x4E,0x20};
+
+                valoreSX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDL);
+                valoreDX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDR);
+                valoreSS= PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDSS);
+                MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
+                        new byte[]{
+                                (byte) 0xF2,
+                                (byte) 0x1A,
+                                (byte) valoreSX[0],
+                                (byte) valoreSX[1],
+                                (byte) valoreDX[0],
+                                (byte) valoreDX[1],
+                                (byte) valoreSS[0],
+                                (byte) valoreSS[1]  });
+
+                break;
+
+            case 3:
+                //KOMATSU
+
+                byte[] valoreSXK = new byte[]{0, 0};
+                byte[] valoreDXK = new byte[]{0, 0};
+
+
+                valoreSXK = PLC_DataTypes_LittleEndian.U16_to_bytes(valueKomL);
+                valoreDXK = PLC_DataTypes_LittleEndian.U16_to_bytes(valueKomR);
+
+                MyDeviceManager.CanWrite(1, 0x0CFF3202, 8,
+                        new byte[]{
+
+                                (byte) valoreSXK[0],
+                                (byte) valoreSXK[1],
+                                (byte) valoreDXK[0],
+                                (byte) valoreDXK[1],
+                                0,
+                                0,
+                                0,
+                                0});
+
+                break;
         }
     }
 }

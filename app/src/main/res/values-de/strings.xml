@@ -20,6 +20,14 @@
     <string name="hydro_cp">HYDRAULISCHE\nSTEUERPUNKTE</string>
     <string name="hydro_apply">NEUE HYDRAULIKWERTE ANWENDEN</string>
 
+    <string name="color_bucket">SCHAUFEL - SCHILD FARBE</string>
+    <string name="color_boom">AUSLEGER - RAHMEN FARBE</string>
+    <string name="ext_offset">EXTERNER OFFSET-SCHRITT</string>
+    <string name="auto_z_db">HÖHEN-TOTBAND</string>
+    <string name="hydro_window">HYDRAULISCHES EINGRIFFSFENSTER</string>
+    <string name="auto_slope_db">NEIGUNGS-TOTBAND</string>
+    <string name="xy_db">XY-TOTBAND</string>
+
 
     <string name="save">SPEICH</string>
     <string name="exit">EXIT</string>

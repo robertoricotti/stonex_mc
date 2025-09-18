@@ -341,7 +341,77 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/_____cancel_text" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                    android:src="@drawable/xy_accuracy_icon" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <TextView
+                    android:id="@+id/tvAXY"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/xy_db"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <ImageView
+                    android:id="@+id/but_meno_xy"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_meno" />
+
+                <TextView
+                    android:id="@+id/tvAXYValue"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg_gray"
+                    android:gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:text="+/- 0.02 [m]"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
+
+                <ImageView
+                    android:id="@+id/but_piu_xy"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/bottone_piu" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
 
 
             <LinearLayout
@@ -614,77 +684,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/_____cancel_text" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="70dp"
-                    android:background="@color/bg_gray"
-                    android:padding="5dp"
-                     />
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
-
-                <TextView
-                    android:id="@+id/tvBuckColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
-                    android:background="@color/bg_gray"
-                    android:ems="15"
-                    android:gravity="center|left"
-                    android:paddingHorizontal="20dp"
-                    android:text="BUCKET-BLADE COLOR"
-                    android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold|italic" />
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
-
-                <ImageView
-                    android:id="@+id/but_meno_bkc"
-                    android:layout_width="70dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/sfondo_bottone_trasparente"
-                    android:layout_marginHorizontal="20dp"
-                    android:rotation="180"
-                    android:src="@drawable/key_arrow_right" />
-
-                <TextView
-                    android:id="@+id/coloreBenna"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@color/bg"
-                    android:gravity="center"
-                    android:layout_marginHorizontal="40dp"
-                    android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold|italic" />
-
-                <ImageView
-                    android:id="@+id/but_piu_bkc"
-                    android:layout_width="70dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/sfondo_bottone_trasparente"
-                    android:layout_marginHorizontal="20dp"
-                    android:src="@drawable/key_arrow_right" />
-            </LinearLayout>
 
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/_____cancel_text" />
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -711,7 +714,7 @@
                     android:ems="15"
                     android:gravity="center|left"
                     android:paddingHorizontal="20dp"
-                    android:text="BOOM-FRAME COLOR"
+                    android:text="@string/color_boom"
                     android:textColor="@color/black"
                     android:textSize="22sp"
                     android:textStyle="bold|italic" />
@@ -733,11 +736,11 @@
                 <TextView
                     android:id="@+id/coloreBoom"
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@color/bg"
                     android:gravity="center"
-                    android:layout_marginHorizontal="40dp"
+                    android:layout_marginHorizontal="50dp"
                     android:textColor="@color/black"
                     android:textSize="22sp"
                     android:textStyle="bold|italic" />
@@ -751,20 +754,76 @@
                     android:src="@drawable/key_arrow_right" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="70dp"
+                    android:background="@color/bg_gray"
+                    android:padding="5dp"
+                    />
 
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
 
+                <TextView
+                    android:id="@+id/tvBuckColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:background="@color/bg_gray"
+                    android:ems="15"
+                    android:gravity="center|left"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/color_bucket"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
 
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
 
+                <ImageView
+                    android:id="@+id/but_meno_bkc"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:rotation="180"
+                    android:src="@drawable/key_arrow_right" />
 
+                <TextView
+                    android:id="@+id/coloreBenna"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@color/bg"
+                    android:gravity="center"
+                    android:layout_marginHorizontal="50dp"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic" />
 
-
-
-
-
-
-
+                <ImageView
+                    android:id="@+id/but_piu_bkc"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/key_arrow_right" />
+            </LinearLayout>
 
 
 
@@ -800,7 +859,7 @@
                     android:ems="15"
                     android:gravity="center|left"
                     android:paddingHorizontal="20dp"
-                    android:text="EXTERNAL OFFSET STEP"
+                    android:text="@string/ext_offset"
                     android:textColor="@color/black"
                     android:textSize="22sp"
                     android:textStyle="bold|italic" />
@@ -871,7 +930,7 @@
                     android:ems="15"
                     android:gravity="center|left"
                     android:paddingHorizontal="20dp"
-                    android:text="AUTO Z DeadBand"
+                    android:text="@string/auto_z_db"
                     android:textColor="@color/black"
                     android:textSize="22sp"
                     android:textStyle="bold|italic" />
@@ -942,7 +1001,7 @@
                     android:ems="15"
                     android:gravity="center|left"
                     android:paddingHorizontal="20dp"
-                    android:text="HYDR-AUTO WINDOW"
+                    android:text="@string/hydro_window"
                     android:textColor="@color/black"
                     android:textSize="22sp"
                     android:textStyle="bold|italic" />
@@ -1013,7 +1072,7 @@
                     android:ems="15"
                     android:gravity="center|left"
                     android:paddingHorizontal="20dp"
-                    android:text="AUTO SLOPE DeadBand"
+                    android:text="@string/auto_slope_db"
                     android:textColor="@color/black"
                     android:textSize="22sp"
                     android:textStyle="bold|italic" />
@@ -1058,77 +1117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/_____cancel_text" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="70dp"
-                    android:background="@color/bg_gray"
-                    android:padding="5dp"
-                    android:src="@drawable/xy_accuracy_icon" />
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
-
-                <TextView
-                    android:id="@+id/tvAXY"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
-                    android:background="@color/bg_gray"
-                    android:ems="15"
-                    android:gravity="center|left"
-                    android:paddingHorizontal="20dp"
-                    android:text="XY DeadBand"
-                    android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold|italic" />
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
-
-                <ImageView
-                    android:id="@+id/but_meno_xy"
-                    android:layout_width="70dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/sfondo_bottone_trasparente"
-                    android:layout_marginHorizontal="20dp"
-                    android:src="@drawable/bottone_meno" />
-
-                <TextView
-                    android:id="@+id/tvAXYValue"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@color/bg_gray"
-                    android:gravity="center"
-                    android:paddingHorizontal="20dp"
-                    android:text="+/- 0.02 [m]"
-                    android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold|italic" />
-
-                <ImageView
-                    android:id="@+id/but_piu_xy"
-                    android:layout_width="70dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/sfondo_bottone_trasparente"
-                    android:layout_marginHorizontal="20dp"
-                    android:src="@drawable/bottone_piu" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/_____cancel_text" />
 
 
         </LinearLayout>

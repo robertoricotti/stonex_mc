@@ -29,6 +29,14 @@
     <string name="hydro_cp">PONTOS DE CONTROLE\nHIDRÁULICOS</string>
     <string name="hydro_apply">APLICAR NOVOS VALORES HIDRÁULICOS</string>
 
+    <string name="color_bucket">COR DO BALDE - LÂMINA</string>
+    <string name="color_boom">COR DO BRAÇO - QUADRO</string>
+    <string name="ext_offset">PASSO DE DESLOCAMENTO EXTERNO</string>
+    <string name="auto_z_db">FAIXA MORTA DE ELEVAÇÃO</string>
+    <string name="hydro_window">JANELA DE ENGATE HIDRÁULICO</string>
+    <string name="auto_slope_db">FAIXA MORTA DE INCLINAÇÃO</string>
+    <string name="xy_db">FAIXA MORTA XY</string>
+
 
     <string name="save">SALVAR</string>
     <string name="exit">ESC</string>
