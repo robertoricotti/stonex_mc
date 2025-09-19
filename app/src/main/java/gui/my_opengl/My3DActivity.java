@@ -3,15 +3,9 @@ package gui.my_opengl;
 
 import static gui.MyApp.errorCode;
 import static gui.MyApp.hAlarm;
-import static packexcalib.exca.DataSaved.GAIN_LEFT;
-import static packexcalib.exca.DataSaved.GAIN_RIGHT;
-import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_DOZER;
-import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_GRADER;
-import static packexcalib.exca.DataSaved.maxSpeedRightDW;
-import static packexcalib.exca.DataSaved.maxSpeedRightUP;
-import static packexcalib.exca.DataSaved.minSpeedRightDW;
-import static packexcalib.exca.DataSaved.minSpeedRightUP;
-import static packexcalib.exca.ExcavatorLib.correctRoll;
+import static services.CanSender.prepLeft;
+import static services.CanSender.prepRight;
+import static services.CanSender.prepSS;
 import static services.CanService.Dozer_Auto_Main;
 import static services.CanService.Grader_AutoRight;
 import static services.CanService.Grader_Auto_Left;
@@ -69,23 +63,17 @@ import gui.hydro.Dialog_Gain_Hydro;
 import gui.projects.Dialog_PRJ_Folder;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
-import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import services.TriangleService;
 import utils.LeicaLB;
 import utils.MyData;
 import utils.MyDeviceManager;
-import utils.MyMCUtils;
 import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
-    double QL, QC, QR;
-    double GroundSlope;
-    int valueKomL = 0, valueKomR = 0, valueCATL = 0, valueCATR = 0,valueCATSS=0, valueJDL = 20000, valueJDR = 20000,valueJDSS=20000;
-    byte dirCAT_L, dirCAT_R, dirCAT_SS= (byte) 0xF2;
-    public static boolean prepLeft, prepRight, prepSS;
+
     TextView AUTO_SX, AUTO_SS, AUTO_DX;
     Dialog_Blade_Wear dialogBladeWear;
     public static boolean PNEZD_FUNCTION;
@@ -120,7 +108,7 @@ public class My3DActivity extends BaseClass {
     DialogColors dialogColors;
     DialogAudioSystem dialogAudioSystem;
     Dialog_Add_Pnezd dialogAddPnezd;
-    Dialog_Gain_Hydro diaolgGainHydro;
+    public static Dialog_Gain_Hydro diaolgGainHydro;
     private MyGLSurfaceView glSurfaceView;
 
     TextView boxLeft, boxCent, boxRight, txtCutFill, txtDist;
@@ -214,17 +202,17 @@ public class My3DActivity extends BaseClass {
             bucketName = "";
         }
 
-        if(DataSaved.Interface_Type==2){
+        if (DataSaved.Interface_Type == 2) {
 
-                MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
-                        new byte[]{(byte) 0xF4,
-                                (byte) 0xF0,
-                                (byte) 0x13,
-                                (byte) 0x23,
-                                (byte) 0x0,
-                                (byte) 0x82,
-                                (byte) 0x0,
-                                (byte) 0xB0});
+            MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
+                    new byte[]{(byte) 0xF4,
+                            (byte) 0xF0,
+                            (byte) 0x13,
+                            (byte) 0x23,
+                            (byte) 0x0,
+                            (byte) 0x82,
+                            (byte) 0x0,
+                            (byte) 0xB0});
         }
 
     }
@@ -1457,49 +1445,13 @@ public class My3DActivity extends BaseClass {
     }
 
     private void AutoHandling() {
+        if(MyApp.licenseType==5) {
 
-        dirCAT_L = (byte) 0xF2;
-        dirCAT_R = (byte) 0xF2;
-        dirCAT_SS = (byte) 0xF2;
-
-        if (diaolgGainHydro.dialog.isShowing()) {
-            QL = 0;
-            QC = 0;
-            QR = 0;
-            GroundSlope = correctRoll;
-            valueKomL = 0;
-            valueKomR = 0;
-            valueCATL = 0;
-            valueCATR = 0;
-            valueJDL = 20000;
-            valueJDR = 20000;
-            dirCAT_L = (byte) 0xF2;
-            dirCAT_R = (byte) 0xF2;
-            dirCAT_SS = (byte) 0xF2;
-
-        } else {
-
-            QL = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_SX;
-            QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
-            QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
-            //TODO qui calcoli
             if (DataSaved.isWL == 0 || DataSaved.isWL == 1) {
                 AUTO_SX.setVisibility(View.INVISIBLE);
                 AUTO_SS.setVisibility(View.INVISIBLE);
                 AUTO_DX.setVisibility(View.INVISIBLE);
-                QL = 0;
-                QC = 0;
-                QR = 0;
-                GroundSlope = correctRoll;
-                valueKomL = 0;
-                valueKomR = 0;
-                valueCATL = 0;
-                valueCATR = 0;
-                valueJDL = 20000;
-                valueJDR = 20000;
-                dirCAT_L = (byte) 0xF2;
-                dirCAT_R = (byte) 0xF2;
-                dirCAT_SS = (byte) 0xF2;
+
             } else {
 
                 if (DataSaved.isWL == 4) {
@@ -1507,23 +1459,10 @@ public class My3DActivity extends BaseClass {
                     AUTO_SX.setVisibility(View.VISIBLE);
                     AUTO_SS.setVisibility(View.VISIBLE);
                     AUTO_DX.setVisibility(View.VISIBLE);
-                    switch (HYDRAULIC_CONTROL_POINT_GRADER) {
-                        case 0:
-                            handleLamaGrader(QC,QR);
-                            break;
 
-                        case 1:
-                            handleLamaGrader(QC,QL);
-                            break;
-
-                        case 2://left right
-                            handleLamaGrader(QL,QR);
-                            break;
-                    }
                     if (prepLeft) {
                         if (Grader_Auto_Left) {
                             AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                            //TODO MESSAGGI CONTROLLO LAMA DOZER LEFT
 
 
                         } else {
@@ -1537,7 +1476,7 @@ public class My3DActivity extends BaseClass {
                     if (prepSS) {
                         if (Grader_Auto_SS) {
                             AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                            //TODO MESSAGGI CONTROLLO LAMA DOZER SS
+
 
                         } else {
                             AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
@@ -1550,8 +1489,6 @@ public class My3DActivity extends BaseClass {
                     if (prepRight) {
                         if (Grader_AutoRight) {
                             AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                            //TODO MESSAGGI CONTROLLO LAMA DOZER RIGHT
-
 
                         } else {
                             AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
@@ -1561,96 +1498,6 @@ public class My3DActivity extends BaseClass {
                     }
                 } else {
                     //DOZER
-                    if (!isInRange(DataSaved.tolleranza_Z, QC) && Math.abs(QC) < DataSaved.HYDRAULIC_WINDOW) {
-                        if (QC < -DataSaved.tolleranza_Z) {
-
-                            dirCAT_L = (byte) 0xF2;
-                            valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
-                            valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
-
-                            valueKomL = (int) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
-                            valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
-
-                            valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
-                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
-                            valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
-
-
-                        } else if (QC > DataSaved.tolleranza_Z) {
-                            dirCAT_L = (byte) 0xF1;
-                            valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
-                            valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
-
-                            valueKomL = (int) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
-                            valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
-                            valueKomL = valueKomL * -1;
-
-
-                            valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
-                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
-                            valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
-                        }
-                    } else {
-                        valueKomL = 0;
-                        valueCATL = 0;
-                        valueJDL = 20000;
-                        dirCAT_L = (byte) 0xF2;
-                        dirCAT_SS = (byte) 0xF2;
-                    }
-                    switch (HYDRAULIC_CONTROL_POINT_DOZER) {
-                        case 0:
-                            GroundSlope = MyMCUtils.bladeSlope(TriangleService.posC, TriangleService.posR);
-                            break;
-
-                        case 1:
-                            GroundSlope = MyMCUtils.bladeSlope(TriangleService.posL, TriangleService.posC);
-                            break;
-
-                    }
-                    if (!isInRangeAng(correctRoll, GroundSlope, DataSaved.tolleranza_Slope)) {
-                        double deviation = deviationFromSetpoint(correctRoll, GroundSlope, DataSaved.tolleranza_Slope);
-                        deviation=MyMCUtils.ledder(GAIN_RIGHT)*deviation;
-
-                        if (deviation > DataSaved.tolleranza_Slope) {
-                            dirCAT_R = (byte) 0xF2;
-                            valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
-                            valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
-
-                            valueKomR = (int) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
-                            valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
-
-
-                            valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
-                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
-                            valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
-
-                        } else if (deviation < -DataSaved.tolleranza_Slope) {
-                            dirCAT_R = (byte) 0xF1;
-                            valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightDW, maxSpeedRightDW);
-                            valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
-
-                            valueKomR = (int) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightDW, maxSpeedRightDW);
-                            valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
-                            valueKomR = valueKomR * -1;
-
-
-                            valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
-                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
-                            valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
-
-                        }
-
-
-                    } else {
-                        valueKomR = 0;
-                        valueCATR = 0;
-                        valueJDR = 20000;
-                        dirCAT_R = (byte) 0xF2;
-                        dirCAT_SS = (byte) 0xF2;
-                    }
-
-
-                    prepSS = false;
                     AUTO_SX.setVisibility(View.VISIBLE);
                     AUTO_SS.setVisibility(View.INVISIBLE);
                     AUTO_DX.setVisibility(View.VISIBLE);
@@ -1659,34 +1506,16 @@ public class My3DActivity extends BaseClass {
                     if (prepLeft) {
                         if (Dozer_Auto_Main) {
                             AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-                            if(Math.abs(QC)>DataSaved.HYDRAULIC_WINDOW){
-                                valueKomL = 0;
-                                valueCATL = 0;
-                                valueJDL = 20000;
-                                dirCAT_L = (byte) 0xF2;
-                            }
+
 
                         } else {
                             AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
-                            valueKomL = 0;
-                            valueCATL = 0;
-                            valueJDL = 20000;
-                            dirCAT_L = (byte) 0xF2;
 
                         }
                     } else {
                         AUTO_SX.setBackground(getDrawable(R.drawable.sfondo_manuale));
-                        valueKomL = 0;
-                        valueCATL = 0;
-                        valueJDL = 20000;
-                        dirCAT_L = (byte) 0xF2;
 
-                        valueKomR = 0;
-                        valueCATR = 0;
-                        valueJDR = 20000;
-                        dirCAT_R = (byte) 0xF2;
                     }
-
 
                     if (prepRight) {
                         if (Dozer_Auto_Main) {
@@ -1694,216 +1523,25 @@ public class My3DActivity extends BaseClass {
 
                         } else {
                             AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
-                            valueKomR = 0;
-                            valueCATR = 0;
-                            valueJDR = 20000;
-                            dirCAT_R = (byte) 0xF2;
 
 
                         }
                     } else {
                         AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
-                        valueKomR = 0;
-                        valueCATR = 0;
-                        valueJDR = 20000;
-                        dirCAT_R = (byte) 0xF2;
+
 
                     }
                 }
 
 
             }
-        }
 
-       invioMessaggiDozer();
-        Log.d("myRIGHT", valueKomR + "  " + (dirCAT_R & 0xFF) + "  " + valueCATR + "  " + valueJDR);
-        Log.d("myLEFT", valueKomL + "  " + (dirCAT_L & 0xFF) + "  " + valueCATL + "  " + valueJDL);
-    }
-
-    private boolean isInRange(double range, double value) {
-        return Math.abs(value) < Math.abs(range);
-    }
-
-    private boolean isInRangeAng(double currentAngle, double setPoint, double tolerance) {
-        return Math.abs(currentAngle - setPoint) <= tolerance;
-    }
-
-    public static double deviationFromSetpoint(double currentAngle, double setPoint, double tolerance) {
-        double diff = currentAngle - setPoint;
-
-        // Se la differenza assoluta è dentro la tolleranza, ritorna 0
-        if (Math.abs(diff) <= tolerance) {
-            return 0.0;
-        }
-
-        // Altrimenti ritorna la differenza (positiva o negativa)
-        return diff;
-    }
-
-    private void handleLamaGrader(double LL, double RR){
-        if (!isInRange(DataSaved.tolleranza_Z, LL) && Math.abs(LL) < DataSaved.HYDRAULIC_WINDOW) {
-            if (LL < -DataSaved.tolleranza_Z) {
-
-                dirCAT_L = (byte) 0xF2;
-                valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
-                valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
-
-                valueKomL = (int) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
-                valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
-
-                valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
-                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
-                valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
-
-
-            } else if (LL > DataSaved.tolleranza_Z) {
-                dirCAT_L = (byte) 0xF1;
-                valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
-                valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255);
-
-                valueKomL = (int) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
-                valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
-                valueKomL = valueKomL * -1;
-
-
-                valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
-                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
-                valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
-            }
-        } else {
-            valueKomL = 0;
-            valueCATL = 0;
-            valueJDL = 20000;
-            dirCAT_L = (byte) 0xF2;
-            dirCAT_SS = (byte) 0xF2;
-        }
-
-
-        if (!isInRange(DataSaved.tolleranza_Z, RR) && Math.abs(RR) < DataSaved.HYDRAULIC_WINDOW) {
-            if (RR < -DataSaved.tolleranza_Z) {
-
-                dirCAT_R = (byte) 0xF2;
-                valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightUP, maxSpeedRightUP);
-                valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
-
-                valueKomR = (int) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightUP, maxSpeedRightUP);
-                valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
-
-                valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightUP, maxSpeedRightUP);
-                valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
-                valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
-
-
-            } else if (RR > DataSaved.tolleranza_Z) {
-                dirCAT_R = (byte) 0xF1;
-                valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW,maxSpeedRightDW);
-                valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
-
-                valueKomR = (int) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW, maxSpeedRightDW);
-                valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
-                valueKomR = valueKomR * -1;
-
-
-                valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW, maxSpeedRightDW);
-                valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
-                valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
-            }
-        } else {
-            valueKomR = 0;
-            valueCATR = 0;
-            valueJDR = 20000;
-            dirCAT_R = (byte) 0xF2;
-            dirCAT_SS = (byte) 0xF2;
+        }else {
+            AUTO_SX.setVisibility(View.INVISIBLE);
+            AUTO_SS.setVisibility(View.INVISIBLE);
+            AUTO_DX.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void invioMessaggiDozer(){
-        switch (DataSaved.Interface_Type){
-            case 0:
-                //TODO output ECU
-                break;
 
-            case 1:
-                //CAT
-                MyDeviceManager.CanWrite(1, 0x18FE3185, 8,
-                        new byte[]{(byte) valueCATL,
-                                (byte) 0xFF,
-                                dirCAT_L,//F2=Up F1=Down
-                                (byte) 0xFF,
-                                (byte) 0xFF,
-                                (byte) 0xFF,
-                                (byte) 0xFF,
-                                (byte) 0xFF});
-
-                MyDeviceManager.CanWrite(1, 0x18FE3285, 8,
-                        new byte[]{(byte) valueCATR,
-                                (byte) 0xFF,
-                                dirCAT_R,//F2=Up F1=Down
-                                (byte) 0xFF,
-                                (byte) 0xFF,
-                                (byte) 0xFF,
-                                (byte) 0xFF,
-                                (byte) 0xFF});
-
-                MyDeviceManager.CanWrite(1, 0x18FE3385, 8,
-                        new byte[]{(byte) valueCATSS,
-                                (byte) 0xFF,
-                                dirCAT_SS,//F2=Right F1=Left
-                                (byte) 0xFF,
-                                (byte) 0xFF,
-                                (byte) 0xFF,
-                                (byte) 0xFF,
-                                (byte) 0xFF});
-
-                break;
-
-
-            case 2:
-                //JD
-
-                byte[]valoreSX= new byte[]{0x4E,0x20};
-                byte[]valoreDX= new byte[]{0x4E,0x20};
-                byte[]valoreSS= new byte[]{0x4E,0x20};
-
-                valoreSX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDL);
-                valoreDX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDR);
-                valoreSS= PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDSS);
-                MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
-                        new byte[]{
-                                (byte) 0xF2,
-                                (byte) 0x1A,
-                                (byte) valoreSX[0],
-                                (byte) valoreSX[1],
-                                (byte) valoreDX[0],
-                                (byte) valoreDX[1],
-                                (byte) valoreSS[0],
-                                (byte) valoreSS[1]  });
-
-                break;
-
-            case 3:
-                //KOMATSU
-
-                byte[] valoreSXK = new byte[]{0, 0};
-                byte[] valoreDXK = new byte[]{0, 0};
-
-
-                valoreSXK = PLC_DataTypes_LittleEndian.U16_to_bytes(valueKomL);
-                valoreDXK = PLC_DataTypes_LittleEndian.U16_to_bytes(valueKomR);
-
-                MyDeviceManager.CanWrite(1, 0x0CFF3202, 8,
-                        new byte[]{
-
-                                (byte) valoreSXK[0],
-                                (byte) valoreSXK[1],
-                                (byte) valoreDXK[0],
-                                (byte) valoreDXK[1],
-                                0,
-                                0,
-                                0,
-                                0});
-
-                break;
-        }
-    }
 }

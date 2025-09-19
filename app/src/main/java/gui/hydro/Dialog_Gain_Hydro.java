@@ -23,7 +23,7 @@ public class Dialog_Gain_Hydro {
     Activity activity;
     public Dialog dialog;
     int machineSelected;
-    ImageView lamaDX, lamaCP, lamaSX, gainLPiu, gainLMen, gainRPiu, gainRMen, save, cancel;
+    ImageView lamaDX, lamaCP, gainLPiu, gainLMen, gainRPiu, gainRMen, save, cancel;
     TextView gainL, gainR, centerTitle;
 
     public Dialog_Gain_Hydro(Activity activity) {
@@ -50,8 +50,8 @@ public class Dialog_Gain_Hydro {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 0.9);
-        int height = (int) (displayMetrics.heightPixels * 0.85);
+        int width = (int) (displayMetrics.widthPixels *1);
+        int height = (int) (displayMetrics.heightPixels * 1);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
         findView();
@@ -64,7 +64,7 @@ public class Dialog_Gain_Hydro {
     private void findView() {
         lamaDX = dialog.findViewById(R.id.lamaDX);
         lamaCP = dialog.findViewById(R.id.lamaCP);
-        lamaSX = dialog.findViewById(R.id.lamaSX);
+
         gainLPiu = dialog.findViewById(R.id.gainLPiu);
         gainLMen = dialog.findViewById(R.id.gainLMen);
         gainRPiu = dialog.findViewById(R.id.gainRPiu);
@@ -141,27 +141,17 @@ public class Dialog_Gain_Hydro {
             }
             updateLama();
         });
-        lamaSX.setOnClickListener(view -> {
-            if(DataSaved.isWL==4) {
-                if (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER > 0) {
-                    DataSaved.HYDRAULIC_CONTROL_POINT_GRADER -= 1;
-                }
-            }else {
-                if (DataSaved.HYDRAULIC_CONTROL_POINT_DOZER > 0) {
-                    DataSaved.HYDRAULIC_CONTROL_POINT_DOZER -= 1;
-                }
-            }
-            updateLama();
-        });
+
         lamaDX.setOnClickListener(view -> {
             if(DataSaved.isWL==4) {
-                if (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER < 2) {
+
                     DataSaved.HYDRAULIC_CONTROL_POINT_GRADER += 1;
-                }
+                    DataSaved.HYDRAULIC_CONTROL_POINT_GRADER=DataSaved.HYDRAULIC_CONTROL_POINT_GRADER%3;
+
             }else {
-                if (DataSaved.HYDRAULIC_CONTROL_POINT_DOZER < 1) {
+
                     DataSaved.HYDRAULIC_CONTROL_POINT_DOZER += 1;
-                }
+                DataSaved.HYDRAULIC_CONTROL_POINT_DOZER=DataSaved.HYDRAULIC_CONTROL_POINT_DOZER%2;
             }
             updateLama();
         });
