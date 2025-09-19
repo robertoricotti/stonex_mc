@@ -181,6 +181,7 @@
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_dig_3d.xml">
         <config>
+          <state>Landscape</state>
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
@@ -629,6 +630,7 @@
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_map_mode.xml">
         <config>
+          <state>Landscape</state>
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
@@ -664,6 +666,7 @@
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_point_poly.xml">
         <config>
+          <state>Landscape</state>
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
@@ -899,11 +902,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="spostato hydraulic control in service">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/ColorRamp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Dialog_Gain_Hydro.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Dialog_Gain_Hydro.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_MapMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_MapMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Point_Poly.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Point_Poly.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_gain_hydro.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_gain_hydro.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/TriangleHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/TriangleHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_map_mode.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_map_mode.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_point_poly.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_point_poly.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -913,7 +920,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -1087,14 +1094,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00024" summary="pre-versione beta_1">
-      <option name="closed" value="true" />
-      <created>1754496984955</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1754496984955</updated>
     </task>
     <task id="LOCAL-00025" summary="rilascio prima beta">
       <option name="closed" value="true" />
@@ -1480,7 +1479,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758206196599</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="spostato hydraulic control in service">
+      <option name="closed" value="true" />
+      <created>1758297602216</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1758297602216</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

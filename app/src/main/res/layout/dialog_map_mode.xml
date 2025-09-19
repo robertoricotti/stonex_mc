@@ -91,6 +91,7 @@
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/seekbar"
         app:layout_constraintRight_toRightOf="@id/mezzeria"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -102,6 +103,7 @@
         android:layout_marginHorizontal="20dp"
         android:max="10"
         android:min="1"
+        app:layout_constraintBottom_toTopOf="@id/orizzontale"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/fine"
         app:layout_constraintTop_toBottomOf="@id/mTitolo" />
@@ -118,6 +120,7 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/seekbar"
         app:layout_constraintLeft_toRightOf="@id/mezzeria"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -128,7 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/AM_DX"
+        app:layout_constraintBottom_toTopOf="@id/generalInfo"
         android:background="@color/transparent"
         android:textStyle="normal"
         android:textSize="18sp"
@@ -369,6 +369,16 @@
         app:layout_constraintTop_toBottomOf="@id/guidTop"
         app:layout_constraintRight_toRightOf="parent"
         />
+    <ImageView
+        android:id="@+id/navigatorHDT"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@color/transparent"
+        android:rotation="180"
+        android:src="@drawable/stakeout_ref_north"
+        app:layout_constraintTop_toBottomOf="@id/AM_DX"
+        app:layout_constraintRight_toRightOf="parent"
+        app:tint="@color/white"/>
     <LinearLayout
         android:id="@+id/sideLayout"
         android:layout_width="130dp"
@@ -669,6 +679,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
+
 
     <ImageView
         android:id="@+id/allarmeAlt"

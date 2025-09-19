@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray">
+    android:background="@drawable/sfondo_dialog_chiara">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/centerV"
@@ -212,12 +212,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ckAutoSnap" />
 
-    <Button
+    <ImageView
         android:id="@+id/salva"
         android:layout_width="130dp"
         android:layout_height="50dp"
         android:backgroundTint="@color/bg_sfsblue"
-        android:text="@string/save"
+        android:src="@drawable/save_btn"
         android:textColor="@color/white"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -225,14 +225,13 @@
         app:layout_constraintRight_toLeftOf="@id/dismiss"
         app:layout_constraintTop_toBottomOf="@id/lowH" />
 
-    <Button
+    <ImageView
         android:id="@+id/dismiss"
         android:layout_width="130dp"
         android:layout_height="50dp"
         android:backgroundTint="@color/_____cancel_text"
-        android:text="@string/exit"
-        android:textColor="@color/white"
-        android:textSize="22sp"
+        android:src="@drawable/btn_close_web"
+        app:tint="@color/_____cancel_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/salva"
         app:layout_constraintRight_toRightOf="parent"

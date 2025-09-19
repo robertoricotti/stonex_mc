@@ -1,6 +1,8 @@
 package gui.dialogs_and_toast;
 
 
+import static packexcalib.surfcreator.TriangleHelper.MAX_NUMERO_FACCE;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -124,9 +126,9 @@ public class Dialog_MapMode {
 
         if (DataSaved.RaggioDXF < 200) {
             seekBar.setProgress((int) DataSaved.RaggioDXF / 10);
-            valore.setText((int) DataSaved.RaggioDXF + "");
+            valore.setText(( Utils.readUnitOfMeasureLITE(String.valueOf((int)DataSaved.RaggioDXF)))+ "");
         } else {
-            valore.setText("MAX");
+            valore.setText("MAX FACES: "+MAX_NUMERO_FACCE);
             seekBar.setProgress((int) 100);
         }
 
@@ -174,10 +176,11 @@ public class Dialog_MapMode {
                 // TODO Auto-generated method stub
 
                 if (progress < 10) {
-                    valore.setText(progress * 10 + "");
+                    valore.setText(( Utils.readUnitOfMeasureLITE(String.valueOf((int)progress*10)))+ "");
+                    //valore.setText(progress * 10 + "");
                     prog = progress * 10;
                 } else {
-                    valore.setText("MAX");
+                    valore.setText("MAX FACES: "+MAX_NUMERO_FACCE);
                     prog = 10000;
                 }
 

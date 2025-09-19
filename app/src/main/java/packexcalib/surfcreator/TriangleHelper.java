@@ -15,6 +15,7 @@ import dxf.Polyline;
 import packexcalib.exca.DataSaved;
 
 public class TriangleHelper {
+    public static final int MAX_NUMERO_FACCE=5000;
 
 
     public TriangleHelper() {
@@ -44,8 +45,8 @@ public class TriangleHelper {
         });
 
         // Limita il numero massimo di facce a 5000
-        if (filteredTriangles.size() > 5000) {
-            filteredTriangles = filteredTriangles.subList(0, 5000);
+        if (filteredTriangles.size() > MAX_NUMERO_FACCE) {
+            filteredTriangles = filteredTriangles.subList(0, MAX_NUMERO_FACCE);
         }
 
         // Aggiorna DataSaved.filteredFaces

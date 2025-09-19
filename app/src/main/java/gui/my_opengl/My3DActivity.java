@@ -73,6 +73,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
+    ImageView navigatorHDT;
 
     TextView AUTO_SX, AUTO_SS, AUTO_DX;
     Dialog_Blade_Wear dialogBladeWear;
@@ -218,6 +219,8 @@ public class My3DActivity extends BaseClass {
     }
 
     private void findView() {
+        navigatorHDT=findViewById(R.id.navigatorHDT);
+        navigatorHDT.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
         panel1 = findViewById(R.id.panel1D);
         panel2 = findViewById(R.id.panel2D);
         generalnfo = findViewById(R.id.generalInfo);
@@ -888,9 +891,15 @@ public class My3DActivity extends BaseClass {
         view1.setBackgroundColor(MyColorClass.colorConstraint);
         view2.setBackgroundColor(MyColorClass.colorConstraint);
         if (glVista3d) {
+            navigatorHDT.setVisibility(View.INVISIBLE);
             freccia.setVisibility(View.INVISIBLE);
             gl_vista.setImageResource(R.drawable.tredi_vista);
         } else {
+            navigatorHDT.setVisibility(View.VISIBLE);
+            float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
+            rotBus = rotBus % 360;
+
+            navigatorHDT.setRotation(rotBus);
             freccia.setVisibility(View.VISIBLE);
             isPan = true;
             gl_vista.setImageResource(R.drawable.duedi_vista);

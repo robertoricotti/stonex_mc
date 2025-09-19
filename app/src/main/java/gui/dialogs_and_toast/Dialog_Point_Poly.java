@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ public class Dialog_Point_Poly {
     Activity activity;
     public Dialog dialog;
 
-    Button save, exit;
+    ImageView save, exit;
     CheckBox ckBoxPOINT, ckBoxPOLY, ckNone;
     TextView projInfo;
 
