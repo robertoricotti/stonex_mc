@@ -261,12 +261,13 @@ public class Dialog_Point_Poly {
                     }
                 }
 
-                PointAdapter pointAdapter = new PointAdapter(activePoints, point ->
-                        Log.d("Dialog_Point_Poly", "Cliccato Punto: " +
-                                (point.getName() != null ? point.getName() : point.getId()))
-                        //TODO usare punto selezionata
-                );
+                PointAdapter pointAdapter = new PointAdapter(activePoints);
+                pointAdapter.setOnItemClickListener(point -> {
+                    Log.d("Dialog_Point_Poly", "Cliccato Punto: " +
+                            (point.getName() != null ? point.getName() : point.getId()));
+                });
                 recyclerView.setAdapter(pointAdapter);
+
                 break;
 
             case 2: // polilinee
@@ -278,13 +279,14 @@ public class Dialog_Point_Poly {
                     }
                 }
 
-                PolylineAdapter polyAdapter = new PolylineAdapter(activePolys, poly ->
-                        Log.d("Dialog_Point_Poly", "Cliccata Polilinea, Layer: " +
-                                (poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer") +
-                                ", Vertici=" + poly.getVertexCount())
-                        //TODO usare polilinea selezionata
-                );
+                PolylineAdapter polyAdapter = new PolylineAdapter(activePolys);
+                polyAdapter.setOnItemClickListener(poly -> {
+                    Log.d("Dialog_Point_Poly", "Cliccata Polilinea, Layer: " +
+                            (poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer") +
+                            ", Vertici=" + poly.getVertexCount());
+                });
                 recyclerView.setAdapter(polyAdapter);
+
                 break;
 
             default:
@@ -310,57 +312,76 @@ public class Dialog_Point_Poly {
     }
 
     private void refreshRecyclerView() {
-
         int enType = DataSaved.isAutoSnap;
 
         switch (enType) {
-            case 0: // niente
+            case 0:
                 recyclerView.setAdapter(null);
                 break;
 
             case 1: // punti
+            {
                 List<Point3D> activePoints = new ArrayList<>();
                 for (Point3D p : DataSaved.points) {
                     if (isItemLayerEnabled(p.getLayer())) activePoints.add(p);
                 }
 
-                PointAdapter pointAdapter = new PointAdapter(activePoints, point -> {
-                    selectedItem = point;
-                    Log.d("Dialog_Point_Poly", "Cliccato Punto: " +
-                            (point.getName() != null ? point.getName() : point.getId()));
+                PointAdapter pointAdapter = new PointAdapter(activePoints);
+                pointAdapter.setOnItemClickListener(point ->
+                        Log.d("Dialog_Point_Poly", "Cliccato Punto: " + (point.getName() != null ? point.getName() : point.getId()))
+                );
+                pointAdapter.setOnItemLongClickListener(point -> {
+                    DataSaved.lockUnlock=1;
+                    DataSaved.nearestPoint = point;
+                    Log.d("Selezioni", DataSaved.selectedPoly + "  " + DataSaved.nearestPoint);
                 });
-
+                pointAdapter.setSelectedItem(DataSaved.nearestPoint); // evidenzia subito se esiste
                 recyclerView.setAdapter(pointAdapter);
-                break;
+                if (DataSaved.nearestPoint != null) {
+                    int index = activePoints.indexOf(DataSaved.nearestPoint);
+                    if (index >= 0) {
+                        recyclerView.scrollToPosition(index);
+                    }
+                } else {
+                    recyclerView.scrollToPosition(0); // nessun punto selezionato → vai all’inizio
+                }
+            }
+            break;
 
             case 2: // polilinee
+            {
                 List<Polyline> activePolys = new ArrayList<>();
                 for (Polyline poly : DataSaved.polylines) {
                     if (isItemLayerEnabled(poly.getLayer())) activePolys.add(poly);
                 }
 
-                PolylineAdapter polyAdapter = new PolylineAdapter(activePolys, poly -> {
-                    selectedItem = poly;
-                    Log.d("Dialog_Point_Poly", "Cliccata Polilinea, Layer: " +
-                            (poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer") +
-                            ", Vertici=" + poly.getVertexCount());
+                PolylineAdapter polyAdapter = new PolylineAdapter(activePolys);
+                polyAdapter.setOnItemClickListener(poly ->
+                        Log.d("Dialog_Point_Poly", "Cliccata Polilinea, Layer: " +
+                                (poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer") +
+                                ", Vertici=" + poly.getVertexCount())
+                );
+                polyAdapter.setOnItemLongClickListener(poly -> {
+                    DataSaved.lockUnlock=1;
+                    DataSaved.selectedPoly = poly;
+                    Log.d("Selezioni", DataSaved.selectedPoly + "  " + DataSaved.nearestPoint);
                 });
-
+                polyAdapter.setSelectedItem(DataSaved.selectedPoly); // evidenzia subito se esiste
                 recyclerView.setAdapter(polyAdapter);
-                break;
+                if (DataSaved.selectedPoly != null) {
+                    int index = activePolys.indexOf(DataSaved.selectedPoly);
+                    if (index >= 0) {
+                        recyclerView.scrollToPosition(index);
+                    }
+                } else {
+                    recyclerView.scrollToPosition(0); // nessuna poly selezionata → vai all’inizio
+                }
+
+            }
+            break;
         }
     }
 
-
-
-    // Evidenzia la selezione singola
-    private <T> void highlightSelected(RecyclerView.Adapter adapter, T item) {
-        if (adapter instanceof PointAdapter) {
-            ((PointAdapter) adapter).setSelectedItem(item);
-        } else if (adapter instanceof PolylineAdapter) {
-            ((PolylineAdapter) adapter).setSelectedItem(item);
-        }
-    }
 }
 
 

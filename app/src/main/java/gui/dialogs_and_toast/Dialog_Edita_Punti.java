@@ -162,16 +162,16 @@ public class Dialog_Edita_Punti {
             }*/
         });
         quota.setOnClickListener(view -> {
-           /* if (uom == 4 || uom == 5) {
-                if (!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(side);
-                }
+            if (uom == 4 || uom == 5) {
+               /* if (!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(quota);
+                }*/
 
             } else {
                 if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(side);
+                    customNumberDialog.show(quota);
                 }
-            }*/
+            }
         });
         side.setOnClickListener(view -> {
             if (uom == 4 || uom == 5) {

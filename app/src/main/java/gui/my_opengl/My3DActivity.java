@@ -120,7 +120,6 @@ public class My3DActivity extends BaseClass {
     public static boolean isPan, glFace, glPoint, glText, glVista3d, glPoly, glFilter, glGradient, glFill;
     DialogOffset_3D dialogOffset;
     Dialog_Point_Poly dialogPointPoly;
-    static String whats = null;
     boolean serviseStrarted;
     String pathToPNEZD;
 
@@ -146,22 +145,7 @@ public class My3DActivity extends BaseClass {
             pathToPNEZD = pathToPNEZD.substring(0, pathToPNEZD.lastIndexOf("/"));
             String pathCompleto = pathToPNEZD + "/" + pathToPNEZD.substring(pathToPNEZD.lastIndexOf("/", pathToPNEZD.length() + 1)) + ".csv";
             DataSaved.PNEZDPath = pathCompleto;
-            if (whats == null) {
-                Intent intent = getIntent();
-                whats = intent.getStringExtra("whats");
-                if (DataSaved.my_comPort == 4 && whats != null) {
-                    DataSaved.demoNORD = DataSaved.dxfFaces.get(0).getP1().getY();
-                    NmeaGenerator.LATITUDE = DataSaved.demoNORD;
-                    DataSaved.demoEAST = DataSaved.dxfFaces.get(0).getP1().getX();
-                    NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
-                    DataSaved.demoZ = DataSaved.dxfFaces.get(0).getP1().getZ() + 2;
-                    NmeaGenerator.ALTITUDE = DataSaved.demoZ;
-                    MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
-                    MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
-                    MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
 
-                }
-            }
         } catch (Exception e) {
             new CustomToast(this, "NO DTM FOUND").show_alert();
         }
@@ -219,7 +203,7 @@ public class My3DActivity extends BaseClass {
     }
 
     private void findView() {
-        navigatorHDT=findViewById(R.id.navigatorHDT);
+        navigatorHDT = findViewById(R.id.navigatorHDT);
         navigatorHDT.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
         panel1 = findViewById(R.id.panel1D);
         panel2 = findViewById(R.id.panel2D);
@@ -314,6 +298,10 @@ public class My3DActivity extends BaseClass {
     }
 
     private void onClick() {
+        navigatorHDT.setOnLongClickListener(view -> {
+            locateMachine();
+            return false;
+        });
         gl_hydroP.setOnClickListener(view -> {
             if (!diaolgGainHydro.dialog.isShowing()) {
                 diaolgGainHydro.show();
@@ -688,7 +676,7 @@ public class My3DActivity extends BaseClass {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        whats = null;
+
         stopService(new Intent(this, TriangleService.class));
     }
 
@@ -1454,7 +1442,7 @@ public class My3DActivity extends BaseClass {
     }
 
     private void AutoHandling() {
-        if(MyApp.licenseType==5) {
+        if (MyApp.licenseType == 5) {
 
             if (DataSaved.isWL == 0 || DataSaved.isWL == 1) {
                 AUTO_SX.setVisibility(View.INVISIBLE);
@@ -1545,7 +1533,7 @@ public class My3DActivity extends BaseClass {
 
             }
 
-        }else {
+        } else {
             AUTO_SX.setVisibility(View.INVISIBLE);
             AUTO_SS.setVisibility(View.INVISIBLE);
             AUTO_DX.setVisibility(View.INVISIBLE);
@@ -1553,4 +1541,18 @@ public class My3DActivity extends BaseClass {
     }
 
 
+    private void locateMachine() {
+        if (DataSaved.my_comPort == 4) {
+            DataSaved.demoNORD = DataSaved.dxfFaces.get(0).getP1().getY();
+            NmeaGenerator.LATITUDE = DataSaved.demoNORD;
+            DataSaved.demoEAST = DataSaved.dxfFaces.get(0).getP1().getX();
+            NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
+            DataSaved.demoZ = DataSaved.dxfFaces.get(0).getP1().getZ() + 2;
+            NmeaGenerator.ALTITUDE = DataSaved.demoZ;
+            MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
+            MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
+            MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
+
+        }
+    }
 }

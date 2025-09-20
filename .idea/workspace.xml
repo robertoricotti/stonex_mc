@@ -636,6 +636,7 @@
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_modify_z.xml">
         <config>
+          <state>Landscape</state>
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
@@ -913,15 +914,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="aggiunta bussola in activity di lavoro per vista 2D">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/PointAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/PolylineAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_point.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_polyline.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_MapMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_MapMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/PointAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/PointAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/PolylineAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/PolylineAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Edit_Zeta.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Edit_Zeta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Edita_Punti.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Edita_Punti.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Point_Poly.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Point_Poly.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_point_poly.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_point_poly.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_point.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_point.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_polyline.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_polyline.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1105,14 +1106,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00026" summary="rilascio prima beta 2">
-      <option name="closed" value="true" />
-      <created>1754573125414</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1754573125414</updated>
     </task>
     <task id="LOCAL-00027" summary="mega BUGFIX per gnss data">
       <option name="closed" value="true" />
@@ -1498,7 +1491,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758321306046</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="aggiunta bussola in activity di lavoro per vista 2D">
+      <option name="closed" value="true" />
+      <created>1758357171931</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1758357171931</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1560,22 +1561,22 @@
         </entry>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1758290032018" />
+            <CheckInfo lastCheckTimestamp="1758404654626" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1758290032019" />
+            <CheckInfo lastCheckTimestamp="1758404654623" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1758290032018" />
+            <CheckInfo lastCheckTimestamp="1758404654623" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1758290032019" />
+            <CheckInfo lastCheckTimestamp="1758404654625" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.test">

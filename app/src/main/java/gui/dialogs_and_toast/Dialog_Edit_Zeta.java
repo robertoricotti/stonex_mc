@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Window;
@@ -31,12 +32,15 @@ public class Dialog_Edit_Zeta {
     TextView est, nord, uom, titolo;
     EditText zeta;
     int index;
+    CustomNumberDialog customNumberDialog;
+    CustomNumberDialogFtIn customNumberDialogFtIn;
 
     public Dialog_Edit_Zeta(Activity activity, int index) {
 
         this.activity = activity;
         this.index = index;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+
     }
 
     public void show() {
@@ -64,6 +68,8 @@ public class Dialog_Edit_Zeta {
         findView();
         init();
         onClick();
+        customNumberDialog=new CustomNumberDialog(activity,0);
+        customNumberDialogFtIn=new CustomNumberDialogFtIn(activity,0);
     }
 
     private void findView() {
@@ -118,12 +124,20 @@ public class Dialog_Edit_Zeta {
 
     private void onClick() {
         zeta.setOnClickListener(view -> {
+            Log.d("DioCane","Dio CANE");
             int index = MyData.get_Int("Unit_Of_Measure");
             if (index == 4 || index == 5) {
-                new CustomNumberDialogFtIn(activity, 0).show(zeta);
+                if(!customNumberDialogFtIn.dialog.isShowing()){
+                    customNumberDialogFtIn.show(zeta);
+                }
+
             } else {
-                new CustomNumberDialog(activity, 0).show(zeta);
+                if(!customNumberDialog.dialog.isShowing()){
+                    customNumberDialog.show(zeta);
+                }
+
             }
+            Log.d("DioCane","Dio CANEEEE");
         });
         save.setOnClickListener(view -> {
             if (activity instanceof Activity_Crea_Superficie && !isSaving) {
