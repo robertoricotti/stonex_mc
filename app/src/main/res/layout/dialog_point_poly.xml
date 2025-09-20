@@ -80,7 +80,7 @@
         android:background="@drawable/custom_background_transp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/projInfo"
+        app:layout_constraintBottom_toTopOf="@id/recyclerView"
         app:layout_constraintTop_toTopOf="@id/topH">
 
         <TextView
@@ -164,8 +164,10 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/projInfo"
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="20dp"
@@ -179,38 +181,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lineoff_lay" />
 
-    <EditText
-        android:id="@+id/et_ptly"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:focusableInTouchMode="false"
-        android:gravity="center|start"
-        android:hint="Search by name"
-        android:maxLines="1"
-        android:paddingHorizontal="30dp"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/listView"
-        app:layout_constraintLeft_toRightOf="@id/ckAutoSnap"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topH" />
 
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="10dp"
-        android:background="@color/white"
-        android:divider="@color/black"
-
-        android:dividerHeight="1px"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/lowH"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ckAutoSnap" />
 
     <ImageView
         android:id="@+id/salva"

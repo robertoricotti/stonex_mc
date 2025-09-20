@@ -22,9 +22,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.stx_dig.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dxf.DisplayItem;
+import dxf.Point3D;
+import dxf.Polyline;
 import gui.projects.LayerAdapter;
 import packexcalib.exca.DataSaved;
 import services.TriangleService;
@@ -50,6 +53,7 @@ public class Dialog_MapMode {
     }
 
     public void show() {
+
         activity.stopService(new Intent(activity,TriangleService.class));
         dialog.create();
         dialog.setContentView(R.layout.dialog_map_mode);
@@ -220,6 +224,7 @@ public class Dialog_MapMode {
         });
 
     }
+
 
 
 }

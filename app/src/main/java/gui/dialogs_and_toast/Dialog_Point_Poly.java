@@ -20,8 +20,19 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.stx_dig.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import dxf.Layer;
+import dxf.Point3D;
+import dxf.PointAdapter;
+import dxf.Polyline;
+import dxf.PolylineAdapter;
 import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -29,16 +40,14 @@ import utils.Utils;
 
 public class Dialog_Point_Poly {
 
-    String strDiRicerca = "";
-    ListView listView;
+
+
     Activity activity;
     public Dialog dialog;
-
+    RecyclerView recyclerView;
     ImageView save, exit;
     CheckBox ckBoxPOINT, ckBoxPOLY, ckNone;
-    TextView projInfo;
 
-    EditText editText;
     CustomQwertyDialog customQwertyDialog;
     int select = 0;
     int tmpAutoSnap = 0;
@@ -85,14 +94,14 @@ public class Dialog_Point_Poly {
         WindowManager.LayoutParams wlp = window.getAttributes();
         dialog.getWindow().setLayout(larg, alt);
         wlp.gravity = Gravity.CENTER;
+
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
         update();
         onClick();
-
-
+        refreshRecyclerView();
     }
 
     private void findView() {
@@ -102,9 +111,8 @@ public class Dialog_Point_Poly {
         ckBoxPOINT = dialog.findViewById(R.id.ckAutoSnap);
         ckBoxPOLY = dialog.findViewById(R.id.ckAutoSnapPoly);
         ckNone = dialog.findViewById(R.id.ckNone);
-        editText = dialog.findViewById(R.id.et_ptly);
-        listView = dialog.findViewById(R.id.listView);
-        projInfo = dialog.findViewById(R.id.projInfo);
+        recyclerView = dialog.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         layoff = dialog.findViewById(R.id.lineoff_lay);
         lineTit = dialog.findViewById(R.id.lineTit);
         valore = dialog.findViewById(R.id.off_valore);
@@ -117,59 +125,14 @@ public class Dialog_Point_Poly {
 
     private void init() {
 
-        strDiRicerca = editText.getText().toString();
+
 
 
 
     }
 
     private void update() {
-        int f = 0, l = 0, p = 0, l2 = 0;
-        try {
-            f = DataSaved.dxfFaces.size();
-        } catch (Exception e) {
-            f = 0;
-        }
-        try {
-            l = DataSaved.polylines.size();
-        } catch (Exception e) {
-            l = 0;
-        }
-        try {
-            l2 = DataSaved.polylines_2D.size();
-        } catch (Exception e) {
-            l2 = 0;
-        }
 
-        try {
-            p = DataSaved.points.size();
-        } catch (Exception e) {
-            p = 0;
-        }
-
-        String pt = "";
-        try {
-            pt = DataSaved.progettoSelected.replace("/storage/emulated/0/StonexMC_V4/Projects/", "");
-        } catch (Exception e) {
-            pt = "null";
-        }
-        String pl = "";
-        try {
-            pl = DataSaved.progettoSelected_POLY.replace("/storage/emulated/0/StonexMC_V4/Projects/", "");
-        } catch (Exception e) {
-            pl = "null";
-        }
-        String pp = "";
-        try {
-            pp = DataSaved.progettoSelected_POINT.replace("/storage/emulated/0/StonexMC_V4/Projects/", "");
-        } catch (Exception e) {
-            pp = "null";
-        }
-        String pj = "";
-
-        Log.d("werty", DataSaved.dxfFaces.size() + "");
-        myS = "PROJ. NAME: " + pt + "\t\t\t" + "3D FACES: " + f + "\n" + "PROJ. NAME: " + pl + "\t\t\t" + "3D POLYLINES: " + l + "   2D POLY: " + l2 + "\n" +
-                "PROJ. NAME: " + pp + "\t\t\t" + "3D POINTS: " + p + "\n" + "PROJ. NAME: " + pj + "\t\t\t";
         switch (DataSaved.isAutoSnap) {
             case 0:
                 ckNone.setChecked(true);
@@ -192,11 +155,15 @@ public class Dialog_Point_Poly {
                 break;
         }
 
-        editText.setEnabled(DataSaved.isAutoSnap == 0);
 
-        projInfo.setText(myS);
+
         lineTit.setText("LINE OFFSET " + Utils.getMetriSimbol());
         valore.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)));
+        populateList(
+                DataSaved.isAutoSnap,   // passa direttamente il valore 0,1,2
+                DataSaved.points,       // lista dei Point3D dal parser
+                DataSaved.polylines     // lista delle Polyline dal parser
+        );
 
     }
 
@@ -242,27 +209,14 @@ public class Dialog_Point_Poly {
             valore.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)));
         });
 
-        listView.setOnItemLongClickListener((myAdapter, myView, myItemInt, mylng) -> {
 
-            for (int i = 0; i < listView.getChildCount(); i++) {
-                listView.getChildAt(i).setBackgroundColor(activity.getColor(R.color.white));
-            }
 
-            myView.setBackgroundColor(activity.getColor(R.color.yellow));
-            selectedItem = listView.getItemAtPosition(myItemInt);
-            if (select == 0) {
-                tmpAutoSnap = 3;
-            } else {
-                tmpAutoSnap = 4;
-            }
-
-            return false;
-        });
 
         ckNone.setOnClickListener(view -> {
             DataSaved.isAutoSnap = 0;
             DataSaved.lockUnlock = 0;
             update();
+            refreshRecyclerView();
 
         });
         ckBoxPOINT.setOnClickListener(view -> {
@@ -270,12 +224,14 @@ public class Dialog_Point_Poly {
             DataSaved.isAutoSnap = 1;
             DataSaved.lockUnlock = 0;
             update();
+            refreshRecyclerView();
 
         });
         ckBoxPOLY.setOnClickListener(view -> {
             DataSaved.isAutoSnap = 2;
             DataSaved.lockUnlock = 0;
             update();
+            refreshRecyclerView();
         });
 
         save.setOnClickListener(view -> {
@@ -287,12 +243,125 @@ public class Dialog_Point_Poly {
         exit.setOnClickListener(view -> {
             dialog.dismiss();
         });
-        editText.setOnClickListener((View v) -> {
-            if (!customQwertyDialog.dialog.isShowing())
-                customQwertyDialog.show(editText);
-        });
 
+
+    }
+    private void populateList(int enType, List<Point3D> points, List<Polyline> polylines) {
+        switch (enType) {
+            case 0: // niente
+                recyclerView.setAdapter(null);
+                break;
+
+            case 1: // punti
+                // Filtra solo punti con layer abilitato
+                List<Point3D> activePoints = new ArrayList<>();
+                for (Point3D p : points) {
+                    if (p.getLayer() != null && p.getLayer().isEnable()) {
+                        activePoints.add(p);
+                    }
+                }
+
+                PointAdapter pointAdapter = new PointAdapter(activePoints, point ->
+                        Log.d("Dialog_Point_Poly", "Cliccato Punto: " +
+                                (point.getName() != null ? point.getName() : point.getId()))
+                        //TODO usare punto selezionata
+                );
+                recyclerView.setAdapter(pointAdapter);
+                break;
+
+            case 2: // polilinee
+                // Filtra solo polilinee con layer abilitato
+                List<Polyline> activePolys = new ArrayList<>();
+                for (Polyline poly : polylines) {
+                    if (poly.getLayer() != null && poly.getLayer().isEnable()) {
+                        activePolys.add(poly);
+                    }
+                }
+
+                PolylineAdapter polyAdapter = new PolylineAdapter(activePolys, poly ->
+                        Log.d("Dialog_Point_Poly", "Cliccata Polilinea, Layer: " +
+                                (poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer") +
+                                ", Vertici=" + poly.getVertexCount())
+                        //TODO usare polilinea selezionata
+                );
+                recyclerView.setAdapter(polyAdapter);
+                break;
+
+            default:
+                recyclerView.setAdapter(null);
+                break;
+        }
+    }
+
+    // Metodo per verificare se il layer è abilitato (usa stesso criterio del canvas)
+    private boolean isItemLayerEnabled(Layer layer) {
+        if (layer == null) return false;
+        String layerName = layer.getLayerName();
+        if (layerName == null || layerName.isEmpty()) return false;
+
+        for (Layer l : DataSaved.dxfLayers_DTM)
+            if (layerName.equals(l.getLayerName()) && l.isEnable()) return true;
+        for (Layer l : DataSaved.dxfLayers_POLY)
+            if (layerName.equals(l.getLayerName()) && l.isEnable()) return true;
+        for (Layer l : DataSaved.dxfLayers_POINT)
+            if (layerName.equals(l.getLayerName()) && l.isEnable()) return true;
+
+        return false;
+    }
+
+    private void refreshRecyclerView() {
+
+        int enType = DataSaved.isAutoSnap;
+
+        switch (enType) {
+            case 0: // niente
+                recyclerView.setAdapter(null);
+                break;
+
+            case 1: // punti
+                List<Point3D> activePoints = new ArrayList<>();
+                for (Point3D p : DataSaved.points) {
+                    if (isItemLayerEnabled(p.getLayer())) activePoints.add(p);
+                }
+
+                PointAdapter pointAdapter = new PointAdapter(activePoints, point -> {
+                    selectedItem = point;
+                    Log.d("Dialog_Point_Poly", "Cliccato Punto: " +
+                            (point.getName() != null ? point.getName() : point.getId()));
+                });
+
+                recyclerView.setAdapter(pointAdapter);
+                break;
+
+            case 2: // polilinee
+                List<Polyline> activePolys = new ArrayList<>();
+                for (Polyline poly : DataSaved.polylines) {
+                    if (isItemLayerEnabled(poly.getLayer())) activePolys.add(poly);
+                }
+
+                PolylineAdapter polyAdapter = new PolylineAdapter(activePolys, poly -> {
+                    selectedItem = poly;
+                    Log.d("Dialog_Point_Poly", "Cliccata Polilinea, Layer: " +
+                            (poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer") +
+                            ", Vertici=" + poly.getVertexCount());
+                });
+
+                recyclerView.setAdapter(polyAdapter);
+                break;
+        }
     }
 
 
+
+    // Evidenzia la selezione singola
+    private <T> void highlightSelected(RecyclerView.Adapter adapter, T item) {
+        if (adapter instanceof PointAdapter) {
+            ((PointAdapter) adapter).setSelectedItem(item);
+        } else if (adapter instanceof PolylineAdapter) {
+            ((PolylineAdapter) adapter).setSelectedItem(item);
+        }
+    }
 }
+
+
+
