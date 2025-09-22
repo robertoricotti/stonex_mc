@@ -143,7 +143,7 @@
                 android:textStyle="bold"/>
             <ImageView
                 android:id="@+id/save"
-                android:layout_width="50dp"
+                android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:src="@drawable/add_96"
                 android:layout_weight="0.5"

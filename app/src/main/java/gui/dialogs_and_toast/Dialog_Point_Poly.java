@@ -39,6 +39,9 @@ import utils.MyData;
 import utils.Utils;
 
 public class Dialog_Point_Poly {
+
+    private PointAdapter pointAdapter; // 👈 variabile di classe
+    private PolylineAdapter polyAdapter;
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private boolean isRepeating = false;
@@ -47,7 +50,7 @@ public class Dialog_Point_Poly {
     Activity activity;
     public Dialog dialog;
     RecyclerView recyclerView;
-    ImageView  exit;
+    ImageView  exit,img_search,img_clean;
     CheckBox ckBoxPOINT, ckBoxPOLY, ckNone;
 
     CustomQwertyDialog customQwertyDialog;
@@ -56,12 +59,13 @@ public class Dialog_Point_Poly {
 
     Object selectedItem;
     String myS;
-    LinearLayout layoff;
+    LinearLayout layoff,cercaPunto;
     TextView lineTit;
-    EditText valore;
+    EditText valore,et_cercaPunto;
     Button piu, meno, clear, pm;
     CustomNumberDialog customNumberDialog;
     CustomNumberDialogFtIn customNumberDialogFtIn;
+
     int larg = 1000, alt = 600;
     DisplayMetrics displayMetrics;
 
@@ -140,6 +144,10 @@ public class Dialog_Point_Poly {
                 break;
         }
 
+        img_clean=dialog.findViewById(R.id.img_clean);
+        img_search=dialog.findViewById(R.id.img_search);
+        et_cercaPunto=dialog.findViewById(R.id.et_cercaPunto);
+        cercaPunto=dialog.findViewById(R.id.cercaPunto);
         exit = dialog.findViewById(R.id.dismiss);
         ckBoxPOINT = dialog.findViewById(R.id.ckAutoSnap);
         ckBoxPOLY = dialog.findViewById(R.id.ckAutoSnapPoly);
@@ -169,12 +177,14 @@ public class Dialog_Point_Poly {
                 ckBoxPOLY.setChecked(false);
                 ckBoxPOINT.setChecked(false);
                 layoff.setVisibility(View.INVISIBLE);
+                cercaPunto.setVisibility(View.INVISIBLE);
                 break;
             case 1:
                 ckNone.setChecked(false);
                 ckBoxPOLY.setChecked(false);
                 ckBoxPOINT.setChecked(true);
                 layoff.setVisibility(View.INVISIBLE);
+                cercaPunto.setVisibility(View.VISIBLE);
                 break;
 
             case 2:
@@ -182,6 +192,7 @@ public class Dialog_Point_Poly {
                 ckBoxPOLY.setChecked(true);
                 ckBoxPOINT.setChecked(false);
                 layoff.setVisibility(View.VISIBLE);
+                cercaPunto.setVisibility(View.INVISIBLE);
                 break;
         }
 
@@ -198,6 +209,25 @@ public class Dialog_Point_Poly {
 
 
     private void onClick() {
+        img_search.setOnClickListener(view -> {
+            if (pointAdapter != null) {
+                String query = et_cercaPunto.getText().toString();
+                pointAdapter.filter(query);
+            }
+        });
+
+        img_clean.setOnClickListener(view -> {
+            et_cercaPunto.setText("");
+            if (pointAdapter != null) {
+                pointAdapter.filter(""); // reset
+            }
+        });
+
+        et_cercaPunto.setOnClickListener(view -> {
+            if(!customQwertyDialog.dialog.isShowing()){
+                customQwertyDialog.show(et_cercaPunto);
+            }
+        });
         valore.setOnClickListener(view -> {
             if (MyData.get_Int("Unit_Of_Measure") == 0 |
                     MyData.get_Int("Unit_Of_Measure") == 1 |
@@ -284,7 +314,7 @@ public class Dialog_Point_Poly {
                     }
                 }
 
-                PointAdapter pointAdapter = new PointAdapter(activePoints);
+                 pointAdapter = new PointAdapter(activePoints);
                 pointAdapter.setOnItemClickListener(point -> {
                     Log.d("Dialog_Point_Poly", "Cliccato Punto: " +
                             (point.getName() != null ? point.getName() : point.getId()));
@@ -302,7 +332,7 @@ public class Dialog_Point_Poly {
                     }
                 }
 
-                PolylineAdapter polyAdapter = new PolylineAdapter(activePolys);
+                 polyAdapter = new PolylineAdapter(activePolys);
                 polyAdapter.setOnItemClickListener(poly -> {
                     Log.d("Dialog_Point_Poly", "Cliccata Polilinea, Layer: " +
                             (poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer") +
@@ -354,7 +384,7 @@ public class Dialog_Point_Poly {
                     if (isItemLayerEnabled(p.getLayer())) activePoints.add(p);
                 }
 
-                PointAdapter pointAdapter = new PointAdapter(activePoints);
+                 pointAdapter = new PointAdapter(activePoints);
                 pointAdapter.setOnItemClickListener(point ->
                         Log.d("Dialog_Point_Poly", "Cliccato Punto: " + (point.getName() != null ? point.getName() : point.getId()))
                 );
@@ -383,7 +413,7 @@ public class Dialog_Point_Poly {
                     if (isItemLayerEnabled(poly.getLayer())) activePolys.add(poly);
                 }
 
-                PolylineAdapter polyAdapter = new PolylineAdapter(activePolys);
+                 polyAdapter = new PolylineAdapter(activePolys);
                 polyAdapter.setOnItemClickListener(poly ->
                         Log.d("Dialog_Point_Poly", "Cliccata Polilinea, Layer: " +
                                 (poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer") +

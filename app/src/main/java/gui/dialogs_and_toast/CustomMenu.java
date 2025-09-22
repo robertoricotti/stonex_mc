@@ -65,7 +65,7 @@ public class CustomMenu {
     }
 
     private void findView() {
-        Log.d("WHOCALL",whoCall);
+
         if(whoCall.equals("RADIO CHANNEL")){
             resetFrq=alertDialog.findViewById(R.id.resetR);
             resetFrq.setOnClickListener(view -> {

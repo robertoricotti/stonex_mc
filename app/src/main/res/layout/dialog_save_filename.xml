@@ -28,7 +28,7 @@
         app:layout_constraintGuide_percent="0.3" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline116"
+        android:id="@+id/bassa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -84,7 +84,7 @@
         android:text="@string/save"
         android:textColor="@color/white"
         android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline116"
+        app:layout_constraintBottom_toTopOf="@+id/bassa"
         app:layout_constraintEnd_toStartOf="@+id/exit"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline115" />
@@ -97,7 +97,7 @@
         android:text="@string/exit"
         android:textColor="@color/white"
         android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline116"
+        app:layout_constraintBottom_toTopOf="@+id/bassa"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/save"
         app:layout_constraintTop_toTopOf="@+id/guideline115" />

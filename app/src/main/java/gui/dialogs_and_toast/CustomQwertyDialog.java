@@ -326,16 +326,16 @@ public class CustomQwertyDialog {
                         if (created) {
                             isOK = true;
                             new CustomToast(activity, fullPath).show_alert();
-                            Log.d("FolderCreation", "Cartella creata: " + fullPath);
+
                         } else {
                             isOK = false;
                             new CustomToast(activity, getName() + " Error").show_error();
-                            Log.e("FolderCreation", "Errore nella creazione della cartella");
+
                         }
                     } else {
                         isOK = false;
                         new CustomToast(activity, getName() + " Already Exists").show_error();
-                        Log.d("FolderCreation", "Cartella già esistente: " + fullPath);
+
                     }
                     index = -1;
                     flag = -1;

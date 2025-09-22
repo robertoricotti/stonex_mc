@@ -28,7 +28,7 @@
         app:layout_constraintGuide_percent="0.3" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline116"
+        android:id="@+id/bassa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -103,7 +103,7 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:src="@drawable/pick_imag"
-        app:layout_constraintBottom_toTopOf="@+id/guideline116"
+        app:layout_constraintBottom_toTopOf="@+id/bassa"
         app:layout_constraintRight_toLeftOf="@id/_h_yes2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline117"
@@ -116,7 +116,7 @@
         android:alpha="0.2"
         android:rotationY="180"
         app:tint="@color/_____cancel_text"
-        app:layout_constraintBottom_toTopOf="@+id/guideline116"
+        app:layout_constraintBottom_toTopOf="@+id/bassa"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/add_new"
         app:layout_constraintTop_toTopOf="@+id/guideline117" />

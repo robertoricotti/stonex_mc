@@ -87,7 +87,7 @@ public class CanFileTransfer {
             File file = new File(filePath);
             int fileLength = (int) file.length();
             int totalBytesSent = 0;
-            Log.d("SerialFileTransfer", "File Len: " + fileLength);
+
 
             try (FileInputStream fis = new FileInputStream(file)) {
                 // Send SOF + Length of file

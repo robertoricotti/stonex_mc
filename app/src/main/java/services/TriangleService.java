@@ -345,7 +345,7 @@ public class TriangleService extends Service {
 
                 countPnezd++;
                 if (countPnezd % 100 == 0) {
-                    Log.d("Scanning","Scanning...");
+
                     scanPNEZD();
                 }
 
@@ -752,12 +752,13 @@ public class TriangleService extends Service {
 
                 if (!DataSaved.points.contains(newPoint)) {
                     DataSaved.points.add(newPoint);
+
+                }
+
+                if (!DataSaved.filteredPoints.contains(newPoint)) {
+                    DataSaved.filteredPoints.add(newPoint);
                 }
             }
-
-            // Aggiorna la lista filtrata
-            DataSaved.filteredPoints = new ArrayList<>(DataSaved.points);
-
 
 
         }

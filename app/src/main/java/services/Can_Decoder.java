@@ -26,7 +26,7 @@ public class Can_Decoder {
             msgFrame = new byte[len];
             System.arraycopy(msg, 5, msgFrame, 0, len);
             //CanService_Other.OnCan(mID,msgFrame);
-            Log.d("MYCAN",mID+"  "+ Arrays.toString(msgFrame));
+
 
 
 

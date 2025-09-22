@@ -43,13 +43,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/ligth_96" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvBright"
@@ -99,13 +96,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/baseline_flag_24" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvLocale"
@@ -151,13 +145,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/measuring" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvUom"
@@ -207,13 +198,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/tolleranza_metri_" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvVert"
@@ -280,13 +268,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/tolleranza_angolo" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvAng"
@@ -351,13 +336,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/xy_accuracy_icon" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvAXY"
@@ -424,13 +406,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/audio" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvSound"
@@ -480,13 +459,9 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/laser_btn" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
 
                 <TextView
                     android:id="@+id/tvLs"
@@ -532,13 +507,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/invert_colors" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvInvCol"
@@ -584,13 +556,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/allarme_altezza" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvHAlarm"
@@ -640,13 +609,10 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
+                    android:padding="15dp"
                     android:src="@drawable/gl_rotate_3d" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvRotation3d"
@@ -701,10 +667,7 @@
                     android:padding="5dp"
                     />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvBoomColor"
@@ -772,10 +735,6 @@
                     android:padding="5dp"
                     />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
 
                 <TextView
                     android:id="@+id/tvBuckColor"
@@ -843,13 +802,11 @@
                     android:layout_width="120dp"
                     android:layout_height="70dp"
                     android:background="@color/bg_gray"
-                    android:padding="5dp"
-                    android:src="@drawable/offset" />
+                    android:padding="15dp"
+                    android:src="@drawable/offset"
+                    />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvoffstep"
@@ -917,10 +874,7 @@
                     android:padding="5dp"
                     android:src="@drawable/auto_blade_acc" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvBladeAcc"
@@ -988,10 +942,7 @@
                     android:padding="5dp"
                     android:src="@drawable/window_blade" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvWINDOW"
@@ -1059,10 +1010,7 @@
                     android:padding="5dp"
                     android:src="@drawable/doz_blade_slope" />
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/_____cancel_text" />
+
 
                 <TextView
                     android:id="@+id/tvAutoAng"

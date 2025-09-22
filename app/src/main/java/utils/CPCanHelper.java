@@ -335,7 +335,7 @@ public class CPCanHelper {
                     switch (channel.ordinal()) {
                         case 1:
                             if (mSocketCanProxy != null) {
-                                Log.d("CanID", id + " ");
+
                                 if (id > 2047) {
                                     mSocketCanProxy.sendCanFrame(id | ISocketCanFrame.CAN_EFF_FLAG, data.length, data);
                                 } else {

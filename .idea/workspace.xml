@@ -751,6 +751,7 @@
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_unit_of_measure.xml">
         <config>
+          <state>Landscape</state>
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
@@ -915,48 +916,43 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="prima aggiunta selezione  manuale poly e punti">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/OnPNEZDItemActionListener.java" afterDir="false" />
+    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="finire filteredPoints">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DXFParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DXFParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/PNEZDPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/PNEZDPoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Point3D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Point3D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/PointAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/PointAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/PolylineAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/PolylineAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Add_Pnezd.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Add_Pnezd.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_HiddenPin_Calc.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_HiddenPin_Calc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CustomMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CustomMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CustomQwertyDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CustomQwertyDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Point_Poly.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Point_Poly.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/PNEZDAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/PNEZDAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/DialogUnitOfMeasure.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/DialogUnitOfMeasure.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/dozer/GL_DrawDozer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/dozer/GL_DrawDozer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/GL_DrawExca.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/GL_DrawExca.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/wheel/GL_DrawWheel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/wheel/GL_DrawWheel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/Can_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/Can_Decoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/CPCanHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/CPCanHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/CanFileTransfer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/CanFileTransfer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/FullscreenActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/FullscreenActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/arcoda_file_manage_dialog.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/arcoda_file_manage_dialog.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_add_pnezd.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_add_pnezd.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_hidden_pin.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_hidden_pin.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_add_surface.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_add_surface.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_alarm_pivot.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_alarm_pivot.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_audio.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_audio.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_audio_s80.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_audio_s80.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_close_app.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_close_app.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_heading.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_heading.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_laser.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_laser.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_laser_s80.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_laser_s80.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_point_poly.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_point_poly.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_pnezd_point.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_pnezd_point.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_point.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_point.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_polyline.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_polyline.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-el/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-el/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-es/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-es/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-fr/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-fr/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ko/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ko/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-nl-rNL/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-nl-rNL/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-pt/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-pt/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ro-rRO/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ro-rRO/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-zh/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-zh/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_save_filename.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_save_filename.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_sensor_alert.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_sensor_alert.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_sensor_alert_s80.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_sensor_alert_s80.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_touch_e_go.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_touch_e_go.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_touch_e_go_s80.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_touch_e_go_s80.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_unit_of_measure.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_unit_of_measure.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_viewport.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_viewport.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/informations_dialog.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/informations_dialog.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1141,14 +1137,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00028" summary="PUNTO DI ROTTURA Folder= StonexMC_V4 pre-apk test">
-      <option name="closed" value="true" />
-      <created>1754612027902</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1754612027902</updated>
     </task>
     <task id="LOCAL-00029" summary="PUNTO DI ROTTURA Folder= StonexMC_V4 pre-apk test">
       <option name="closed" value="true" />
@@ -1534,7 +1522,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758411159427</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="finire filteredPoints">
+      <option name="closed" value="true" />
+      <created>1758552818202</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1758552818203</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1549,7 +1545,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="komatsu_can_xls" />
     <MESSAGE value="komatsu_can JD CAT D6N E GRADER M_xls" />
     <MESSAGE value="finito acquisizioni CAN" />
     <MESSAGE value="inizio nuovo menu idraulico" />
@@ -1574,7 +1569,8 @@
     <MESSAGE value="spostato hydraulic control in service" />
     <MESSAGE value="aggiunta bussola in activity di lavoro per vista 2D" />
     <MESSAGE value="prima aggiunta selezione  manuale poly e punti" />
-    <option name="LAST_COMMIT_MESSAGE" value="prima aggiunta selezione  manuale poly e punti" />
+    <MESSAGE value="finire filteredPoints" />
+    <option name="LAST_COMMIT_MESSAGE" value="finire filteredPoints" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

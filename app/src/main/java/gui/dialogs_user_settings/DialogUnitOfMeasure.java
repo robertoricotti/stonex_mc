@@ -58,7 +58,7 @@ public class DialogUnitOfMeasure {
             DisplayMetrics displayMetrics = new DisplayMetrics();
             activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
             int width = (int) (displayMetrics.widthPixels * 0.95);
-            int height = (int) (displayMetrics.heightPixels * 0.85);
+            int height = (int) (displayMetrics.heightPixels * 0.75);
             alertDialog.getWindow().setLayout(width, height);
             alertDialog.getWindow().setGravity(Gravity.CENTER);
             alertDialog.show();

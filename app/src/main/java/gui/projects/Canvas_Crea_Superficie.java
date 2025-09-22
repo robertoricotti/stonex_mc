@@ -1419,7 +1419,7 @@ public class Canvas_Crea_Superficie extends View {
                 if (text == null || text.isEmpty() || text.equals(" ") || text.equals("")) {
                     text = point3DS[i].getId();
                 }
-                Log.d("Testo", text);
+
                 canvas.drawText(text
                         ,
                         (float) (rotatedPoints.get(i)[0] + 10f),

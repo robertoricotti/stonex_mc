@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -66,6 +67,10 @@ import gui.digging_excavator.Digging_CutAndFill1D;
 import gui.digging_excavator.Digging_CutAndFill2D;
 import gui.gps.Nuovo_Gps;
 import gui.grading_dozergrader.Grading3D_DXF;
+import gui.hydro.CAT_SEA_Activity;
+import gui.hydro.DEERE_LIEBHERR_Activity;
+import gui.hydro.Hydro_Activity_Entering;
+import gui.hydro.KOMATSU_Activity;
 import gui.my_opengl.My3DActivity;
 import gui.profiles.ProfileCalibAuto;
 import gui.profiles.ProfileCalibManual;
@@ -87,10 +92,6 @@ import gui.tech_menu.StickCalib;
 import gui.tech_menu.TiltCalib;
 import gui.tech_menu.Tilt_Blade;
 import gui.tech_menu.XYZ_Calib;
-import gui.hydro.CAT_SEA_Activity;
-import gui.hydro.DEERE_LIEBHERR_Activity;
-import gui.hydro.Hydro_Activity_Entering;
-import gui.hydro.KOMATSU_Activity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
@@ -104,24 +105,24 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
-    private static final int numGeoidiInterni=1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
+    private static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio
-    public static boolean isAlto,isBasso,isCentro;
+    public static boolean isAlto, isBasso, isCentro;
     private MediaPlayer mediaPlayer;
     private Handler handler;
     private Runnable soundChecker;
     private String currentState = "";
     private boolean isCheckerRunning = false;
     //license
-    public static String deviceBuild="";
+    public static String deviceBuild = "";
     public static int errorCode;
-    public static String activationCode="none";
+    public static String activationCode = "none";
     public static String restoreCode;
-    public static int licenseType =-1;
-    public static String expiry="2001-12-31";
+    public static int licenseType = -1;
+    public static String expiry = "2001-12-31";
 
     public static final long timeUI = 55;
-    public static String[] geoidAll=new String[]{};
+    public static String[] geoidAll = new String[]{};
     public static String GEOIDE_PATH = null;
     public static String gridFile_GR = "";
     public static String DEVICE_SN = "";
@@ -140,7 +141,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     private volatile boolean mRunning = false;
     private ScheduledExecutorService executorService;
     public static final boolean GEN1 = Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("qti");
-    public static final boolean GEN2 = Build.BRAND.equals("TANK2_7_10") ||Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS");
+    public static final boolean GEN2 = Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS");
 
     @Override
     public void onCreate() {
@@ -149,10 +150,10 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         UpdateValuesService.isUpodating = true;
         registerActivityLifecycleCallbacks(this);
 
-        if (Build.BRAND.equals("TANK2_7_10") ||Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
+        if (Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             isApollo = true;
             folderPath = "/StonexMC_V4";
-            if (Build.BRAND.equals("TANK2_7_10") ||Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS") || Build.BRAND.equals("APOLLO2_10")) {
+            if (Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS") || Build.BRAND.equals("APOLLO2_10")) {
                 apollo2 = Apollo2.getInstance(this);
                 MyApp.DEVICE_SN = apollo2.getDeviceSN();
             } else {
@@ -187,14 +188,14 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             //Log.d("machinestate", "null");
         }
 
-       // String nlgeo =copyGeoidFromAssets(this,"nlgeo2018.ugf","nlgeo2018.ugf");
+        // String nlgeo =copyGeoidFromAssets(this,"nlgeo2018.ugf","nlgeo2018.ugf");
         //String belg=copyGeoidFromAssets(this,"belgium_hbg18.ugf","belgium_hbg18.ugf");
-        String deu =copyGeoidFromAssets(this,"DEUTSCH_GEOID.GGF","DEUTSCH_GEOID.GGF");
-       // String riga =copyGeoidFromAssets(this,"RIGA20.UGF","RIGA20.UGF");
+        String deu = copyGeoidFromAssets(this, "DEUTSCH_GEOID.GGF", "DEUTSCH_GEOID.GGF");
+        // String riga =copyGeoidFromAssets(this,"RIGA20.UGF","RIGA20.UGF");
 
         String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
 
-        geoidAll=listFilesInFolderGeoid(pp);
+        geoidAll = listFilesInFolderGeoid(pp);
 
         // Crea un nuovo array con spazio per i 3 elementi aggiuntivi
         int originalLength = geoidAll != null ? geoidAll.length : 0;
@@ -207,9 +208,9 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
         // Aggiungi le 3 nuove stringhe
         newGeoidAll[originalLength] = deu;
-       // newGeoidAll[originalLength + 1] = belg;
-       // newGeoidAll[originalLength + 2] = deu;
-       // newGeoidAll[originalLength + 3] = riga;
+        // newGeoidAll[originalLength + 1] = belg;
+        // newGeoidAll[originalLength + 2] = deu;
+        // newGeoidAll[originalLength + 3] = riga;
 
         // Sovrascrivi l'array originale
         geoidAll = newGeoidAll;
@@ -295,10 +296,11 @@ git push
             LanguageSetter.setLocale(activity, MyData.get_String("language"));
 
         } catch (Exception e) {
-            Toast.makeText(activity,"Failed to set Language",Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Failed to set Language", Toast.LENGTH_LONG).show();
         }
 
     }
+
     private void startConditionChecker(Context context) {
         if (isCheckerRunning) return;
 
@@ -367,7 +369,6 @@ git push
     }
 
 
-
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
 
@@ -415,7 +416,6 @@ git push
                         @Override
                         public void run() {
                             try {
-
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {
                                     frameCounter += 1;
@@ -532,7 +532,7 @@ git push
             ((Digging_CutAndFill2D) activity).updateUI();
         } else if (activity instanceof DiggingProfile) {
             ((DiggingProfile) activity).updateUI();
-        }  else if (activity instanceof ProfileCalibAuto) {
+        } else if (activity instanceof ProfileCalibAuto) {
             ((ProfileCalibAuto) activity).updateUI();
         } else if (activity instanceof ProfileCalibManual) {
             ((ProfileCalibManual) activity).updateUI();
@@ -554,7 +554,7 @@ git push
             ((GPS_Autocalib) activity).updateUI();
         } else if (activity instanceof LinkageCalib) {
             ((LinkageCalib) activity).updateUI();
-        }   else if (activity instanceof StickCalib) {
+        } else if (activity instanceof StickCalib) {
             ((StickCalib) activity).updateUI();
         } else if (activity instanceof TiltCalib) {
             ((TiltCalib) activity).updateUI();
@@ -568,7 +568,7 @@ git push
             ((Tilt_Blade) activity).updateUI();
         } else if (activity instanceof Grading3D_DXF) {
             ((Grading3D_DXF) activity).updateUI();
-        }  else if (activity instanceof Activity_Crea_Superficie) {
+        } else if (activity instanceof Activity_Crea_Superficie) {
             ((Activity_Crea_Superficie) activity).updateUI();
         } else if (activity instanceof Hydraulic_Setup) {
             ((Hydraulic_Setup) activity).updateUI();
@@ -578,24 +578,22 @@ git push
         } else if (activity instanceof Activity_Home_Page) {
             ((Activity_Home_Page) activity).updateUI();
 
-        }else if (activity instanceof Nuova_Blade_Calib) {
+        } else if (activity instanceof Nuova_Blade_Calib) {
             ((Nuova_Blade_Calib) activity).updateUI();
 
-        }else if (activity instanceof Nuova_Machine_Settings) {
+        } else if (activity instanceof Nuova_Machine_Settings) {
             ((Nuova_Machine_Settings) activity).updateUI();
 
-        }else if (activity instanceof Hydro_Activity_Entering) {
+        } else if (activity instanceof Hydro_Activity_Entering) {
             ((Hydro_Activity_Entering) activity).updateUI();
 
-        }else if (activity instanceof Can_Msg_Debug) {
+        } else if (activity instanceof Can_Msg_Debug) {
             ((Can_Msg_Debug) activity).updateUI();
 
-        }
-        else if (activity instanceof CAT_SEA_Activity) {
+        } else if (activity instanceof CAT_SEA_Activity) {
             ((CAT_SEA_Activity) activity).updateUI();
 
-        }
-        else if (activity instanceof DEERE_LIEBHERR_Activity) {
+        } else if (activity instanceof DEERE_LIEBHERR_Activity) {
             ((DEERE_LIEBHERR_Activity) activity).updateUI();
 
         } else if (activity instanceof KOMATSU_Activity) {
@@ -757,6 +755,7 @@ git push
             return null;
         }
     }
+
     public static String[] listFilesInFolderGeoid(String folderPath) {
 
         File folder = new File(folderPath);
@@ -773,8 +772,8 @@ git push
 
         List<String> ugfFiles = new ArrayList<>();
         for (File file : files) {
-            if (file.isFile() && (file.getName().toLowerCase().endsWith(".ugf")||
-                    file.getName().toLowerCase().endsWith(".bin")||
+            if (file.isFile() && (file.getName().toLowerCase().endsWith(".ugf") ||
+                    file.getName().toLowerCase().endsWith(".bin") ||
                     file.getName().toLowerCase().endsWith(".ggf"))) {
                 ugfFiles.add(file.getAbsolutePath());
             }
@@ -782,7 +781,6 @@ git push
 
         return ugfFiles.toArray(new String[0]);
     }
-
 
 
 }

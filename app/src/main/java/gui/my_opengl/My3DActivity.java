@@ -147,7 +147,7 @@ public class My3DActivity extends BaseClass {
             DataSaved.PNEZDPath = pathCompleto;
 
         } catch (Exception e) {
-            new CustomToast(this, "NO DTM FOUND").show_alert();
+            new CustomToast(this, "NO CSV FOUND").show_alert();
         }
         findView();
         onClick();
@@ -347,7 +347,7 @@ public class My3DActivity extends BaseClass {
             DataSaved.lockUnlock = DataSaved.lockUnlock % 2;
         });
         lineReference.setOnClickListener((View v) -> {
-            Log.d("PointsCheck", "Totale punti in DataSaved.points = " + DataSaved.points.size());
+
             if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
                 if (!dialogPointPoly.dialog.isShowing()) {
                     dialogPointPoly.show();
@@ -1455,7 +1455,8 @@ public class My3DActivity extends BaseClass {
                 if (DataSaved.isWL == 4) {
                     //GRADER
                     AUTO_SX.setVisibility(View.VISIBLE);
-                    AUTO_SS.setVisibility(View.VISIBLE);
+                   //todo AUTO_SS.setVisibility(View.VISIBLE);
+                    AUTO_SS.setVisibility(View.INVISIBLE);
                     AUTO_DX.setVisibility(View.VISIBLE);
 
                     if (prepLeft) {
