@@ -73,6 +73,7 @@ public class LandXMLParser {
                             double z = Double.parseDouble(coordinates[2]);
 
                             Point3D point = new Point3D(id, x * conversionFactor, y * conversionFactor, z * conversionFactor);
+                            point.setFilename(filePath);
                             point.setLayer(layer); // Associa il punto al layer corrente
                             pointsMap.put(id, point);
                             landXMLData.addPoint(point); // Aggiungi al dataset generale

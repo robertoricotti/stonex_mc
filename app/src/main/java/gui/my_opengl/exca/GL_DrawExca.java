@@ -24,6 +24,7 @@ import android.opengl.GLES11;
 import android.util.Log;
 
 import java.nio.FloatBuffer;
+import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
@@ -158,7 +159,19 @@ public class GL_DrawExca {
 
                 case 2:
                 case 4:
-                    GLDrawer.drawSelectedPoly(gl, DataSaved.selectedPoly.getVertices(), 5f, Color.GREEN, scale);
+                    // Scegli quale polyline disegnare
+                    List<Point3D> polyVertices;
+                    if (DataSaved.selectedPoly_OFFSET != null && DataSaved.line_Offset != 0) {
+                        polyVertices = DataSaved.selectedPoly_OFFSET.getVertices();
+                    } else if (DataSaved.selectedPoly != null) {
+                        polyVertices = DataSaved.selectedPoly.getVertices();
+                    } else {
+                        polyVertices = null;
+                    }
+
+                    if (polyVertices != null) {
+                        GLDrawer.drawSelectedPoly(gl, polyVertices, 5f, Color.GREEN, scale);
+                    }
                     drawLineDist(gl, 5f, Color.GREEN, scale);
                     break;
             }
@@ -247,7 +260,19 @@ public class GL_DrawExca {
 
                     case 2:
                     case 4:
-                        GLDrawer.drawSelectedPoly(gl, DataSaved.selectedPoly.getVertices(), 5f, Color.GREEN, scale);
+                        // Scegli quale polyline disegnare
+                        List<Point3D> polyVertices;
+                        if (DataSaved.selectedPoly_OFFSET != null && DataSaved.line_Offset != 0) {
+                            polyVertices = DataSaved.selectedPoly_OFFSET.getVertices();
+                        } else if (DataSaved.selectedPoly != null) {
+                            polyVertices = DataSaved.selectedPoly.getVertices();
+                        } else {
+                            polyVertices = null;
+                        }
+
+                        if (polyVertices != null) {
+                            GLDrawer.drawSelectedPoly(gl, polyVertices, 5f, Color.GREEN, scale);
+                        }
                         drawLineDist(gl, 5f, Color.GREEN, scale);
                         break;
                 }

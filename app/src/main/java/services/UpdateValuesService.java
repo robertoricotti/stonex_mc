@@ -205,6 +205,9 @@ public class UpdateValuesService extends Service {
                     String HYDRAULIC_CONTROL_POINT_DOZER = MyData.get_String("M" + i + "HYDRAULIC_CONTROL_POINT_DOZER");
 
 
+                    String colorBenna = MyData.get_String("M" + i +"coloreBenna");
+                    String colorStick = MyData.get_String("M" + i +"coloreStick");
+
                     if (nameM == null) {
                         MyData.push("M" + i + "_Name", ("DEFAULT " + i).toUpperCase());
                     }
@@ -307,6 +310,13 @@ public class UpdateValuesService extends Service {
                     }
 
                     //draw
+                    if (colorBenna == null) {
+                        ;
+                        MyData.push("M" + i +"coloreBenna", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
+                    }
+                    if (colorStick == null) {
+                        MyData.push("M" + i +"coloreStick", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
+                    }
                     if (larghezza_Carro == null) {
                         MyData.push("M" + i + "larghezza_Carro", "2.0");
                     }
@@ -627,8 +637,7 @@ public class UpdateValuesService extends Service {
                 String volumeAudioSystem = MyData.get_String("volumeAudioSystem");
                 String colorY = MyData.get_String("coloreY");
                 String colorX = MyData.get_String("coloreX");
-                String colorBenna = MyData.get_String("coloreBenna");
-                String colorStick = MyData.get_String("coloreStick");
+
                 String scaleFactor = MyData.get_String("scaleFactor");
                 String scaleFactor3d = MyData.get_String("scaleFactor3D");
                 String scaleFactorvista1D = MyData.get_String("scaleFactor_vista1D");
@@ -771,13 +780,7 @@ public class UpdateValuesService extends Service {
                     if (colorX == null) {
                         MyData.push("coloreX", "3");
                     }
-                    if (colorBenna == null) {
-                        ;
-                        MyData.push("coloreBenna", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
-                    }
-                    if (colorStick == null) {
-                        MyData.push("coloreStick", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
-                    }
+
                     if (scaleFactor == null) {
                         MyData.push("scaleFactor", "150");
                     }
@@ -970,16 +973,7 @@ public class UpdateValuesService extends Service {
                     DataSaved.wifiSSID = "";
                 }
 
-                try {
-                    MyColorClass.colorBucket = MyData.get_Int("coloreBenna");
-                } catch (Exception e) {
-                    MyColorClass.colorBucket=R.color.bg;
-                }
-                try {
-                    MyColorClass.colorStick = MyData.get_Int("coloreStick");
-                } catch (Exception e) {
-                    MyColorClass.colorStick=R.color.bg;
-                }
+
 
 
 
@@ -1025,6 +1019,26 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di profileSelected: " + e.getMessage());
                 }
+
+
+
+
+                try {
+                    MyColorClass.colorBucket = MyData.get_Int("M" + indexMach +"coloreBenna");
+                } catch (Exception e) {
+                    MyColorClass.colorBucket=R.color.bg;
+                }
+                try {
+                    MyColorClass.colorStick = MyData.get_Int("M" + indexMach +"coloreStick");
+                } catch (Exception e) {
+                    MyColorClass.colorStick=R.color.bg;
+                }
+
+
+
+
+
+
                 try {
                     DataSaved.machineName = MyData.get_String("M" + indexMach + "_Name");
                 } catch (Exception e) {

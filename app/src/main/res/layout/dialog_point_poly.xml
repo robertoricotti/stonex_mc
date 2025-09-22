@@ -17,14 +17,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.12" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/lowH"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75" />
+        app:layout_constraintGuide_percent="0.8" />
 
 
     <CheckBox
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
 
         android:layout_marginVertical="20dp"
-        android:text="Point Auto Snap"
+        android:text="Point Snap"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
 
         android:layout_marginVertical="20dp"
-        android:text="Polyline Auto Snap"
+        android:text="Polyline Snap"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -168,6 +168,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="20dp"
@@ -176,25 +177,17 @@
         android:gravity="center|left"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@id/salva"
+        app:layout_constraintBottom_toTopOf="@id/dismiss"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lineoff_lay" />
+        app:layout_constraintTop_toBottomOf="@id/lineoff_lay"
+        android:scrollbars="vertical"
+        android:scrollbarSize="24dp"
+        android:scrollbarStyle="outsideOverlay"/>
 
 
 
-    <ImageView
-        android:id="@+id/salva"
-        android:layout_width="130dp"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/bg_sfsblue"
-        android:src="@drawable/save_btn"
-        android:textColor="@color/white"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/dismiss"
-        app:layout_constraintTop_toBottomOf="@id/lowH" />
+
 
     <ImageView
         android:id="@+id/dismiss"
@@ -204,7 +197,7 @@
         android:src="@drawable/btn_close_web"
         app:tint="@color/_____cancel_text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/salva"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lowH" />
 

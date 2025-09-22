@@ -29,6 +29,7 @@
     <string name="write_para">모든 애플리케이션 매개변수 덮어쓰기</string>
     <string name="hydro_cp">유압\n제어 지점</string>
     <string name="hydro_apply">새로운 유압 값 적용</string>
+    <string name="delete_obj">선택한 객체를 삭제하시겠습니까?</string>
 
     <string name="color_bucket">버킷 - 블레이드 색상</string>
     <string name="color_boom">붐 - 프레임 색상</string>

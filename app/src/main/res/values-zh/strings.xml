@@ -26,6 +26,7 @@
     <string name="savepara">将所有参数保存到外部存储器</string>
     <string name="savepara_pro">是否要继续？</string>
     <string name="write_para">覆盖所有应用程序参数</string>
+    <string name="delete_obj">删除所选对象？</string>
 
     <string name="hydro_cp">液压\n控制点</string>
     <string name="hydro_apply">应用新的液压值</string>

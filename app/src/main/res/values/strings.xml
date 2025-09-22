@@ -169,6 +169,7 @@
     <string name="file_exists">The File Already Exists</string>
     <string name="overwrite">OVERWRITE ?</string>
     <string name="delete_file">DELETE SELECTED FILE ?</string>
+    <string name="delete_obj">DELETE SELECTED OBLECT ?</string>
     <string name="select_file">SELECT A FILE</string>
     <string name="deleted">DELETED</string>
     <string name="showAlign">Show Machine Alignment</string>

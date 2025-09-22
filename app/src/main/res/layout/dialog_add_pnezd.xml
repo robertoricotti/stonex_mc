@@ -16,12 +16,14 @@
         android:id="@+id/remove"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/remove_96"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/lista"
+        android:src="@drawable/delete_raw"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintLeft_toRightOf="@id/lista"
+        app:layout_constraintRight_toLeftOf="@id/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hc"
-        app:tint="@color/red"
+        android:padding="2dp"
+       app:tint="@color/_____cancel_text"
 
         />
 
@@ -29,9 +31,12 @@
         android:id="@+id/lista"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/view_btn"
-        app:layout_constraintLeft_toRightOf="@id/remove"
-        app:layout_constraintRight_toLeftOf="@id/cancel"
+        android:src="@drawable/key_arrow_right"
+        android:background="@drawable/sfondo_bottone_trasparente"
+
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/remove"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hc"
         app:tint="@color/_____cancel_text"
@@ -42,7 +47,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/btn_close_web"
-        app:layout_constraintLeft_toRightOf="@id/lista"
+        app:layout_constraintLeft_toRightOf="@id/remove"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hc"
@@ -138,7 +143,7 @@
                 android:textStyle="bold"/>
             <ImageView
                 android:id="@+id/save"
-                android:layout_width="match_parent"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/add_96"
                 android:layout_weight="0.5"

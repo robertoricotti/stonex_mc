@@ -195,6 +195,7 @@ public class DXFParser {
                                 }
                             } else if (currentPolyline != null) {
                                 if (line.equals("8") && !vertexRead) {
+                                    currentPolyline.setFilename(filePath);
                                     layerName = br.readLine().trim();
                                     Integer color = layerColors.get(layerName); // Ottieni colore dal layer
                                     if (color != null) {
@@ -336,6 +337,7 @@ public class DXFParser {
                             } else if (currentPoint != null) {
                                 switch (line) {
                                     case "8": // Layer del punto
+                                        currentPoint.setFilename(filePath);
                                         layerName = br.readLine().trim();
                                         Integer color = layerColors.get(layerName); // Ottieni colore dal layer
                                         Layer pointLayer;

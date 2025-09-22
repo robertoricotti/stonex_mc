@@ -28,6 +28,7 @@
     <string name="hydro_window">ΠΑΡΑΘΥΡΟ ΥΔΡΑΥΛΙΚΗΣ ΕΜΠΛΟΚΗΣ</string>
     <string name="auto_slope_db">ΖΩΝΗ ΝΕΚΡΗΣ ΕΥΑΙΣΘΗΣΙΑΣ ΚΛΙΣΗΣ</string>
     <string name="xy_db">ΖΩΝΗ ΝΕΚΡΗΣ ΕΥΑΙΣΘΗΣΙΑΣ XY</string>
+    <string name="delete_obj">ΔΙΑΓΡΑΦΗ ΕΠΙΛΕΓΜΕΝΟΥ ΑΝΤΙΚΕΙΜΕΝΟΥ;</string>
 
 
     <string name="exit">ΕΞΟΔΟΣ</string>

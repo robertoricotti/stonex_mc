@@ -1,10 +1,16 @@
 package dxf;
 
+import static gui.MyApp.folderPath;
+import static gui.MyApp.visibleActivity;
+
 import android.app.Activity;
+import android.content.res.ColorStateList;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,18 +24,6 @@ import java.util.List;
 
 import android.graphics.Color;
 
-
-import android.graphics.Color;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PointAdapter extends RecyclerView.Adapter<PointAdapter.PointViewHolder> {
 
@@ -74,12 +68,28 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.PointViewHol
     @Override
     public void onBindViewHolder(@NonNull PointViewHolder holder, int position) {
         Point3D point = points.get(position);
-        holder.textView.setText(point.getName() != null ? point.getName()+"   E:"+point.getX()+" N:"+point.getY()+" Z:"+point.getZ()
-                : point.getId()+"   E:"+point.getX()+"  N:"+point.getY()+"  Z:"+point.getZ());
+        String s=point.getFilename();
+        if(s==null){
+            s="";
+        }else {
+            s=s.replace(Environment.getExternalStorageDirectory().toString() + folderPath,"");
+        }
+
+        try {
+            holder.textView.setText(s+"\n"+point.getId()+"    E:"+point.getX()+"    N:"+point.getY()+"  Z:"+point.getZ()+"    "+point.getDescription());
+            holder.textView.setTextColor(Color.BLACK);
+            holder.imageView.setImageTintList(ColorStateList.valueOf(point.getColore()));
+        } catch (Exception e) {
+            holder.textView.setText(e.getMessage());
+            holder.textView.setTextColor(Color.RED);
+            holder.imageView.setImageTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+
+
+        }
 
         // evidenzia selezionato in magenta
         if (point.equals(selectedPoint)) {
-            holder.itemView.setBackgroundColor(Color.YELLOW);
+            holder.itemView.setBackgroundColor(visibleActivity.getResources().getColor(R.color.bg_sfsgreen));
         } else {
             holder.itemView.setBackgroundColor(Color.WHITE);
         }
@@ -102,9 +112,12 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.PointViewHol
 
     static class PointViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
+        ImageView imageView;
         PointViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.textViewPoint); // assicurati che l'id corrisponda
+            imageView=itemView.findViewById(R.id.imgPunto);
+
         }
     }
 }

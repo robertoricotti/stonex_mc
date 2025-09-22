@@ -1,14 +1,15 @@
 package gui.dialogs_and_toast;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,7 +18,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,13 +39,15 @@ import utils.MyData;
 import utils.Utils;
 
 public class Dialog_Point_Poly {
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
-
+    private boolean isRepeating = false;
+    double myStep;
 
     Activity activity;
     public Dialog dialog;
     RecyclerView recyclerView;
-    ImageView save, exit;
+    ImageView  exit;
     CheckBox ckBoxPOINT, ckBoxPOLY, ckNone;
 
     CustomQwertyDialog customQwertyDialog;
@@ -60,12 +62,13 @@ public class Dialog_Point_Poly {
     Button piu, meno, clear, pm;
     CustomNumberDialog customNumberDialog;
     CustomNumberDialogFtIn customNumberDialogFtIn;
-    int larg=1000,alt=600;
+    int larg = 1000, alt = 600;
     DisplayMetrics displayMetrics;
+
     public Dialog_Point_Poly(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
-        customQwertyDialog = new CustomQwertyDialog(activity,null);
+        customQwertyDialog = new CustomQwertyDialog(activity, null);
         customNumberDialog = new CustomNumberDialog(activity, -1);
         customNumberDialogFtIn = new CustomNumberDialogFtIn(activity, -1);
         displayMetrics = new DisplayMetrics();
@@ -105,8 +108,38 @@ public class Dialog_Point_Poly {
     }
 
     private void findView() {
+        int myInt = MyData.get_Int("Unit_Of_Measure");
 
-        save = dialog.findViewById(R.id.salva);
+        switch (myInt) {
+            case 0:
+                myStep = 0.005;
+                break;
+            case 1:
+
+                myStep = 0.005;
+                break;
+
+            case 2:
+                myStep = 0.0033;
+                break;
+            case 3:
+                myStep = 0.0033;
+                break;
+
+            case 4:
+                myStep = 0.0033;
+                break;
+            case 5:
+                myStep = 0.0033;
+                break;
+            case 6:
+                myStep = 0.0033;
+                break;
+            case 7:
+                myStep = 0.0033;
+                break;
+        }
+
         exit = dialog.findViewById(R.id.dismiss);
         ckBoxPOINT = dialog.findViewById(R.id.ckAutoSnap);
         ckBoxPOLY = dialog.findViewById(R.id.ckAutoSnapPoly);
@@ -124,9 +157,6 @@ public class Dialog_Point_Poly {
     }
 
     private void init() {
-
-
-
 
 
     }
@@ -156,7 +186,6 @@ public class Dialog_Point_Poly {
         }
 
 
-
         lineTit.setText("LINE OFFSET " + Utils.getMetriSimbol());
         valore.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)));
         populateList(
@@ -170,45 +199,40 @@ public class Dialog_Point_Poly {
 
     private void onClick() {
         valore.setOnClickListener(view -> {
-            if(MyData.get_Int("Unit_Of_Measure")==0|
-                    MyData.get_Int("Unit_Of_Measure")==1|
-                    MyData.get_Int("Unit_Of_Measure")==2|
-                    MyData.get_Int("Unit_Of_Measure")==3|
-                    MyData.get_Int("Unit_Of_Measure")==6|
-                    MyData.get_Int("Unit_Of_Measure")==7) {
+            if (MyData.get_Int("Unit_Of_Measure") == 0 |
+                    MyData.get_Int("Unit_Of_Measure") == 1 |
+                    MyData.get_Int("Unit_Of_Measure") == 2 |
+                    MyData.get_Int("Unit_Of_Measure") == 3 |
+                    MyData.get_Int("Unit_Of_Measure") == 6 |
+                    MyData.get_Int("Unit_Of_Measure") == 7) {
                 if (!customNumberDialog.dialog.isShowing()) {
                     customNumberDialog.show(valore);
                 }
-            }else {
-                if (!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(valore);
-                }
+            } else {
+                new CustomToast(activity,"Use + / -").show_alert();
             }
 
         });
         pm.setOnClickListener(view -> {
             if (DataSaved.line_Offset != 0) {
-                //DataSaved.lockUnlock=0;
                 DataSaved.line_Offset = DataSaved.line_Offset * -1;
                 valore.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)));
             }
         });
         clear.setOnClickListener(view -> {
-            if(DataSaved.line_Offset!=0){
-                DataSaved.lockUnlock=0;
-            }
+
             DataSaved.line_Offset = 0;
             valore.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)));
         });
-        piu.setOnClickListener(view -> {
-            DataSaved.line_Offset += 0.01;
-            valore.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)));
-        });
-        meno.setOnClickListener(view -> {
-            DataSaved.line_Offset -= 0.01;
+        setupAutoRepeat(piu,()->{
+            DataSaved.line_Offset += myStep;
             valore.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)));
         });
 
+        setupAutoRepeat(meno,()->{
+            DataSaved.line_Offset -=myStep;
+            valore.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)));
+        });
 
 
 
@@ -234,18 +258,17 @@ public class Dialog_Point_Poly {
             refreshRecyclerView();
         });
 
-        save.setOnClickListener(view -> {
-            if(DataSaved.isAutoSnap==2) {
+
+        exit.setOnClickListener(view -> {
+            if (DataSaved.isAutoSnap == 2) {
                 MyData.push("line_Offset", String.valueOf(DataSaved.line_Offset));
             }
-            dialog.dismiss();
-        });
-        exit.setOnClickListener(view -> {
             dialog.dismiss();
         });
 
 
     }
+
     private void populateList(int enType, List<Point3D> points, List<Polyline> polylines) {
         switch (enType) {
             case 0: // niente
@@ -301,6 +324,11 @@ public class Dialog_Point_Poly {
         String layerName = layer.getLayerName();
         if (layerName == null || layerName.isEmpty()) return false;
 
+        // 🔹 Caso speciale: i PNEZD sono sempre attivi
+        if ("MyPNEZD".equals(layerName) && DataSaved.PNEZDPath != null) {
+            return true;
+        }
+
         for (Layer l : DataSaved.dxfLayers_DTM)
             if (layerName.equals(l.getLayerName()) && l.isEnable()) return true;
         for (Layer l : DataSaved.dxfLayers_POLY)
@@ -331,7 +359,7 @@ public class Dialog_Point_Poly {
                         Log.d("Dialog_Point_Poly", "Cliccato Punto: " + (point.getName() != null ? point.getName() : point.getId()))
                 );
                 pointAdapter.setOnItemLongClickListener(point -> {
-                    DataSaved.lockUnlock=1;
+                    DataSaved.lockUnlock = 1;
                     DataSaved.nearestPoint = point;
                     Log.d("Selezioni", DataSaved.selectedPoly + "  " + DataSaved.nearestPoint);
                 });
@@ -362,7 +390,7 @@ public class Dialog_Point_Poly {
                                 ", Vertici=" + poly.getVertexCount())
                 );
                 polyAdapter.setOnItemLongClickListener(poly -> {
-                    DataSaved.lockUnlock=1;
+                    DataSaved.lockUnlock = 1;
                     DataSaved.selectedPoly = poly;
                     Log.d("Selezioni", DataSaved.selectedPoly + "  " + DataSaved.nearestPoint);
                 });
@@ -381,6 +409,39 @@ public class Dialog_Point_Poly {
             break;
         }
     }
+
+
+    private void setupAutoRepeat(Button button, Runnable action) {
+        button.setOnClickListener(v -> action.run());
+
+        button.setOnLongClickListener(v -> {
+            isRepeating = true;
+
+            // Primo ritardo di 500ms prima di iniziare la ripetizione
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isRepeating) {
+                        action.run();
+                        handler.postDelayed(this, 50); // ripeti ogni 50ms
+                    }
+                }
+            }, 500);
+
+            return true; // segnala che il long click è gestito
+        });
+
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    isRepeating = false; // stop
+                    break;
+            }
+            return false;
+        });
+    }
+
 
 }
 

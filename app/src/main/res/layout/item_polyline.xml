@@ -3,14 +3,33 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="1dp">
-
-    <TextView
-        android:id="@+id/textViewPolyline"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:textSize="16sp"
-        android:textStyle="italic|bold"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/imgLine"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="2dp"
+            android:padding="2dp"
+            android:background="@drawable/sfondo_bottone_bianco"
+            android:src="@drawable/ball"
+            />
+
+        <TextView
+            android:id="@+id/textViewPolyline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:lines="2"
+            />
+
+    </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"

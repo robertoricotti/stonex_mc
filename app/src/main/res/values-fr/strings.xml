@@ -29,6 +29,7 @@
     <string name="write_para">ÉCRASER TOUS LES PARAMÈTRES DE L APPLICATION</string>
     <string name="hydro_cp">POINTS DE CONTRÔLE\nHYDRAULIQUES</string>
     <string name="hydro_apply">APPLIQUER DE NOUVELLES VALEURS HYDRAULIQUES</string>
+    <string name="delete_obj">SUPPRIMER L OBJET SÉLECTIONNÉ ?</string>
 
     <string name="color_bucket">COULEUR DU GODET - LAME</string>
     <string name="color_boom">COULEUR DE LA FLÈCHE - CHÂSSIS</string>
@@ -171,12 +172,12 @@
     <string name="cloud_file_tr">TRANSFERT DE FICHIERS\nCLOUD</string>
     <string name="local_projects">DOSSIER\nPROJETS LOCAUX</string>
     <string name="punto_salvato">POINT AJOUTÉ</string>
-    <string name="punto_rimosso">POINT SUPPRIMÉ</string>
+    <string name="punto_rimosso">POINT SUPPRIME</string>
     <string name="off_grid">OFF SURFACE</string>
     <string name="file_exists">Le fichier existe déjà</string>
     <string name="overwrite">ÉCRASER ?</string>
     <string name="delete_file">SUPPRIMER LE FICHIER SÉLECTIONNÉ ?</string>
-    <string name="select_file">SÉLECTIONNEZ UN FICHIER</string>
+    <string name="select_file">SELECTIONNEZ UN FICHIER</string>
     <string name="deleted">SUPPRIMÉ</string>
     <string name="showAlign">" Afficher l'alignement de la machine"</string>
     <string name="add_surface">NOUVELLE SURFACE</string>

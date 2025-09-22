@@ -1,8 +1,11 @@
 package gui.dialogs_and_toast;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +19,8 @@ import dxf.PNEZDPoint;
 
 public class PNEZDAdapter extends RecyclerView.Adapter<PNEZDAdapter.ViewHolder> {
     private List<PNEZDPoint> pointList;
-
+    private PNEZDPoint selectedItem = null;
+    private OnPNEZDItemActionListener listener;
     public PNEZDAdapter(List<PNEZDPoint> pointList) {
         this.pointList = pointList;
     }
@@ -35,8 +39,29 @@ public class PNEZDAdapter extends RecyclerView.Adapter<PNEZDAdapter.ViewHolder> 
         holder.pointNumberText.setText("P: " + point.getPointNumber());
         holder.coordinatesText.setText("N: " + point.getNorthing() + " | E: " + point.getEasting() + " | Z: " + point.getElevation());
         holder.descriptionText.setText(point.getDescription());
-        holder.pointColor.setBackgroundColor(point.getColor());
+        holder.pointColor.setImageTintList(ColorStateList.valueOf(point.getColor()));
+
+        // Evidenzia se è selezionato
+        if (point.equals(selectedItem)) {
+            holder.itemView.setBackgroundColor(Color.YELLOW); // <-- qui scegli il colore
+        } else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+        // Click normale → selezione
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onItemClick(point);
+
+            setSelectedItem(point); // aggiorna evidenziazione
+        });
+
+        // Long click → elimina
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null) listener.onItemDelete(point);
+            return true;
+        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -44,7 +69,8 @@ public class PNEZDAdapter extends RecyclerView.Adapter<PNEZDAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView pointNumberText, coordinatesText, descriptionText,pointColor;
+        TextView pointNumberText, coordinatesText, descriptionText;
+        ImageView pointColor;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -63,5 +89,27 @@ public class PNEZDAdapter extends RecyclerView.Adapter<PNEZDAdapter.ViewHolder> 
         if (getItemCount() > 0) {
             recyclerView.scrollToPosition(getItemCount() - 1);
         }
+    }
+
+    // Metodo pubblico per aggiornare la selezione con toggle
+    public void setSelectedItem(PNEZDPoint point) {
+        if (this.selectedItem != null && this.selectedItem.equals(point)) {
+            // Se il punto cliccato è già selezionato → deseleziona
+            this.selectedItem = null;
+        } else {
+            // Altrimenti seleziona il nuovo
+            this.selectedItem = point;
+        }
+        notifyDataSetChanged(); // forza il redraw della RecyclerView
+    }
+    public void removeSelectedItem() {
+        if (selectedItem != null) {
+            pointList.remove(selectedItem);
+            selectedItem = null; // reset selezione
+            notifyDataSetChanged(); // aggiorna RecyclerView
+        }
+    }
+    public PNEZDPoint getSelectedItem() {
+        return selectedItem;
     }
 }

@@ -35,6 +35,7 @@
     <string name="hydro_window">FINESTRA INNESCO IDRAULICO</string>
     <string name="auto_slope_db">BANDA MORTA PENDENZA</string>
     <string name="xy_db">BANDA MORTA XY</string>
+    <string name="delete_obj">ELIMINARE OGGETTO SELEZIONATO?</string>
 
 
     <string name="save">SALVA</string>

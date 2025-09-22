@@ -2,11 +2,12 @@ package dxf;
 
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Point3D implements Serializable {
     private static final long serialVersionUID = 1L;
     double x, y, z,bulge;
-    String id,description;
+    String id,description,filename;
     int colore;
     Layer layer;
 
@@ -50,6 +51,25 @@ public class Point3D implements Serializable {
         this.colore=colore;
         this.layer=layer;
     }
+    public Point3D(String filename,double x, double y, double z, int colore,Layer layer) {
+        this.filename=filename;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.colore=colore;
+        this.layer=layer;
+    }
+
+    public Point3D(String filename,String id,double x, double y, double z, int colore,Layer layer,String description) {
+        this.filename=filename;
+        this.id=id;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.colore=colore;
+        this.layer=layer;
+        this.description=description;
+    }
     public Point3D(String id,double x, double y, double z, double bulge,int colore,Layer layer,String description) {
         this.id=id;
         this.x = x;
@@ -59,6 +79,17 @@ public class Point3D implements Serializable {
         this.colore=colore;
         this.layer=layer;
         this.description=description;
+    }
+    public Point3D(String filename,String id,double x, double y, double z, double bulge,int colore,Layer layer,String description) {
+        this.id=id;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.bulge = bulge;
+        this.colore=colore;
+        this.layer=layer;
+        this.description=description;
+        this.filename=filename;
     }
     @Override
     public String toString() {
@@ -160,6 +191,8 @@ public class Point3D implements Serializable {
     public String getId() {
         return id;
     }
+
+
     public void setName(String description){
         this.description=description;
     }
@@ -172,4 +205,37 @@ public class Point3D implements Serializable {
         double newZ = this.z + fraction * (target.z - this.z);
         return new Point3D(newX, newY, newZ);
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Point3D)) return false;
+        Point3D other = (Point3D) o;
+        return Double.compare(x, other.x) == 0 &&
+                Double.compare(y, other.y) == 0 &&
+                Double.compare(z, other.z) == 0 &&
+                Objects.equals(layer, other.layer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z, layer);
+    }
+
 }

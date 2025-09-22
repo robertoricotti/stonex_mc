@@ -1,9 +1,14 @@
 package dxf;
 
+import static gui.MyApp.folderPath;
+
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -69,8 +74,19 @@ public class PolylineAdapter extends RecyclerView.Adapter<PolylineAdapter.Polyli
     @Override
     public void onBindViewHolder(@NonNull PolylineViewHolder holder, int position) {
         Polyline poly = polylines.get(position);
-        String layerName = poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer";
-        holder.textView.setText("Layer: " + layerName + ", Vertici: " + poly.getVertexCount());
+        String s=poly.getFilename();
+        try {
+            s=s.replace(Environment.getExternalStorageDirectory().toString() + folderPath,"");
+            String layerName = poly.getLayer() != null ? poly.getLayer().getLayerName() : "Nessun layer";
+            holder.textView.setText(s+"\nLayer: " + layerName + ", Vertici: " + poly.getVertexCount());
+            holder.textView.setTextColor(Color.BLACK);
+            holder.imageView.setImageTintList(ColorStateList.valueOf(poly.getLineColor()));
+        } catch (Exception e) {
+            holder.textView.setText(e.getMessage());
+            holder.textView.setTextColor(Color.RED);
+            holder.imageView.setImageTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+        }
+
 
         if (poly.equals(selectedPolyline)) {
             holder.itemView.setBackgroundColor(Color.YELLOW);
@@ -96,9 +112,11 @@ public class PolylineAdapter extends RecyclerView.Adapter<PolylineAdapter.Polyli
 
     static class PolylineViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
+        ImageView imageView;
         PolylineViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.textViewPolyline); // assicurati che l'id corrisponda
+            textView = itemView.findViewById(R.id.textViewPolyline);
+            imageView=itemView.findViewById(R.id.imgLine);
         }
     }
 }

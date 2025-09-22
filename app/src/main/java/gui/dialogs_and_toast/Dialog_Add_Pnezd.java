@@ -149,6 +149,7 @@ public class Dialog_Add_Pnezd {
         pnezd_color = dialog.findViewById(R.id.pnezd_color);
         ETdescription = dialog.findViewById(R.id.descr);
         ETdescription.setText(MyData.get_String("lastDescription"));
+        lista.setRotation(0f);
 
     }
 
@@ -163,11 +164,13 @@ public class Dialog_Add_Pnezd {
                         customView.setVisibility(View.INVISIBLE);
                         save.setVisibility(View.INVISIBLE);
                         removelast.setVisibility(View.VISIBLE);
+                        lista.setRotation(0f);
                     } else {
                         save.setVisibility(View.VISIBLE);
                         removelast.setVisibility(View.INVISIBLE);
                         recyclerView.setVisibility(View.INVISIBLE);
                         customView.setVisibility(View.VISIBLE);
+                        lista.setRotation(180f);
                     }
                     filename.setText(filepath.replace("/storage/emulated/0/", ""));
                     String Snord = "0.000", Sest = "0.000", Squota = "0.000";
@@ -272,29 +275,33 @@ public class Dialog_Add_Pnezd {
             dialog.dismiss();
         });
         removelast.setOnClickListener(view -> {
-            // Crea un nuovo AlertDialog.Builder
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Remove Point?");
-            builder.setIcon(activity.getResources().getDrawable(R.drawable.delete));
+            if(adapter.getSelectedItem()!=null) {
+                // Crea un nuovo AlertDialog.Builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle(activity.getString(R.string.delete_obj));
+                builder.setIcon(activity.getResources().getDrawable(R.drawable.delete));
 
-            // Aggiungi il pulsante "Sì"
-            builder.setPositiveButton(activity.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    codeRemoveLast();
+                // Aggiungi il pulsante "Sì"
+                builder.setPositiveButton(activity.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        codeRemoveSelected();
 
-                }
+                    }
 
-            });
-            builder.setNegativeButton(activity.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+                });
+                builder.setNegativeButton(activity.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
 
-                }
-            });
-            builder.show();
+                    }
+                });
+                builder.show();
 
+            }else {
+                new CustomToast(activity,"No Selection").show();
+            }
 
         });
 
@@ -444,6 +451,77 @@ public class Dialog_Add_Pnezd {
             }
         }
     }
+
+    private void codeRemoveSelected() {
+        if (adapter != null) {
+            // Prendi il punto selezionato dall'adapter
+            PNEZDPoint selected = adapter.getSelectedItem();
+            if (selected == null) return;
+
+            String selectedFilename = selected.getFilename();
+
+            // Rimuovi dalla lista interna dei PNEZD
+            DataSaved.pnezdPoints.remove(selected);
+
+            //  Rimuovi dal file CSV e aggiorna numerazione
+            File file = new File(filepath);
+            if (!file.exists()) return;
+
+            List<String> lines = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lines.add(line);
+                }
+            } catch (IOException e) {
+                Log.e("Dialog_Add_Pnezd", "Errore lettura CSV: " + e.getMessage());
+                return;
+            }
+
+            if (lines.size() <= 1) return; // niente dati oltre intestazione
+
+            // Rimuovi la riga del punto selezionato
+            lines.removeIf(line -> {
+                if (line.trim().isEmpty()) return false;
+                String[] parts = line.split(",");
+                try {
+                    int num = Integer.parseInt(parts[0].trim());
+                    return num == selected.getPointNumber();
+                } catch (Exception e) {
+                    return false;
+                }
+            });
+
+            // Riscrivi il CSV con numeri progressivi
+            try (FileWriter writer = new FileWriter(file, false)) {
+                writer.write(lines.get(0) + "\n"); // intestazione
+                for (int i = 1; i < lines.size(); i++) {
+                    String[] parts = lines.get(i).split(",");
+                    parts[0] = String.valueOf(i); // riassegna numero progressivo
+                    writer.write(String.join(",", parts) + "\n");
+                }
+                writer.flush();
+                new CustomToast(activity, "Point Removed").show_alert();
+            } catch (IOException e) {
+                Log.e("Dialog_Add_Pnezd", "Errore scrittura CSV: " + e.getMessage());
+            }
+
+            // 3️⃣ Rimuovi il punto selezionato da DataSaved.points SOLO se layer = "MyPNEZD"
+            DataSaved.points.removeIf(p ->
+                    p.getLayer() != null &&
+                            "MyPNEZD".equals(p.getLayer().getLayerName()) &&
+                            selectedFilename.equals(p.getFilename())
+            );
+
+            // 4️⃣ Aggiorna l’adapter con la lista aggiornata
+            List<PNEZDPoint> nuoviPunti = leggiCSV(filepath);
+            adapter.updateData(nuoviPunti);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+
+
 
     private void codeRemoveLast() {
         {

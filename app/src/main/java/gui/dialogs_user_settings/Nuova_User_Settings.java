@@ -34,7 +34,7 @@ import utils.WifiHelper;
 
 public class Nuova_User_Settings extends AppCompatActivity {
     // Variabili di supporto
-    static int miocoloreBenna,miocoloreStick;
+    static int miocoloreBenna, miocoloreStick;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isRepeating = false;
     ImageView status, wifi, back, info, lock;
@@ -158,7 +158,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
             int colorInt = ContextCompat.getColor(this, resId);           // colore ARGB
 
             MyColorClass.colorBucket = colorInt;                          // salva ARGB in memoria
-            MyData.push("coloreBenna", String.valueOf(colorInt));         // salva ARGB in DB
+            MyData.push("M"+MyData.get_Int("MachineSelected")+"coloreBenna", String.valueOf(colorInt));         // salva ARGB in DB
 
             applyColorsToViews();
         });
@@ -170,7 +170,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
             int colorInt = ContextCompat.getColor(this, resId);
 
             MyColorClass.colorBucket = colorInt;
-            MyData.push("coloreBenna", String.valueOf(colorInt));
+            MyData.push("M"+MyData.get_Int("MachineSelected")+"coloreBenna", String.valueOf(colorInt));
 
             applyColorsToViews();
         });
@@ -184,7 +184,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
             int colorInt = ContextCompat.getColor(this, resId);
 
             MyColorClass.colorStick = colorInt;
-            MyData.push("coloreStick", String.valueOf(colorInt));
+            MyData.push("M"+MyData.get_Int("MachineSelected")+"coloreStick", String.valueOf(colorInt));
 
             applyColorsToViews();
         });
@@ -196,11 +196,10 @@ public class Nuova_User_Settings extends AppCompatActivity {
             int colorInt = ContextCompat.getColor(this, resId);
 
             MyColorClass.colorStick = colorInt;
-            MyData.push("coloreStick", String.valueOf(colorInt));
+            MyData.push("M"+MyData.get_Int("MachineSelected")+"coloreStick", String.valueOf(colorInt));
 
             applyColorsToViews();
         });
-
 
 
         but_piu.setOnClickListener(view -> {
@@ -640,9 +639,6 @@ public class Nuova_User_Settings extends AppCompatActivity {
             return false;
         });
     }
-
-
-
 
 
     private static final int[] COLOR_RES = {

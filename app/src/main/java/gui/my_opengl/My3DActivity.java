@@ -347,6 +347,7 @@ public class My3DActivity extends BaseClass {
             DataSaved.lockUnlock = DataSaved.lockUnlock % 2;
         });
         lineReference.setOnClickListener((View v) -> {
+            Log.d("PointsCheck", "Totale punti in DataSaved.points = " + DataSaved.points.size());
             if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
                 if (!dialogPointPoly.dialog.isShowing()) {
                     dialogPointPoly.show();

@@ -4,12 +4,12 @@ import static packexcalib.exca.DataSaved.polylines;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
-import static services.ReadProjectService.fileExtensionPOINT;
 
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,8 +43,8 @@ import gui.my_opengl.exca.PuntiBenna;
 import gui.my_opengl.wheel.My_Wheel;
 import packexcalib.exca.DataSaved;
 import packexcalib.surfcreator.DistToLine;
-import utils.DistToPoint;
 import packexcalib.surfcreator.TriangleHelper;
+import utils.DistToPoint;
 import utils.MyData;
 
 public class TriangleService extends Service {
@@ -57,7 +57,7 @@ public class TriangleService extends Service {
     private boolean isRunning = false;
     private ExecutorService executor;
     public static double quota3D_SX, quota3D_CT, quota3D_DX;
-    public static double [] posL,posC,posR;
+    public static double[] posL, posC, posR;
     public static double dist3D_SX, dist3D_CT, dist3D_DX;
     public static boolean ltOffGrid, ctOffGrid, rtOffGrid;
     static Point2D[] Line_Avanti, Line_Dietro, Line_Destra, Line_Sinistra;
@@ -72,14 +72,14 @@ public class TriangleService extends Service {
     @Override
     public void onCreate() {
         try {
-            indexAudio= MyData.get_Int("indexAudioSystem");
+            indexAudio = MyData.get_Int("indexAudioSystem");
         } catch (Exception e) {
-            indexAudio=0;
+            indexAudio = 0;
         }
         super.onCreate();
-        posL=new double[3];
-        posC=new double[3];
-        posR=new double[3];
+        posL = new double[3];
+        posC = new double[3];
+        posR = new double[3];
         countPnezd = -1;
         startSort = false;
         DataSaved.filteredPolylines = new ArrayList<>();
@@ -205,45 +205,78 @@ public class TriangleService extends Service {
 
                             case 2:
 
+
+
                                 if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
-                                    List<Segment> allOffsetSegments;
-                                    allOffsetSegments = buildOffsetForSnap(DataSaved.filteredPolylines, DataSaved.line_Offset);
+
+                                    // Genera segmenti offset a partire dalle polilinee filtrate
+                                    List<Segment> allOffsetSegments = buildOffsetForSnap(DataSaved.filteredPolylines, DataSaved.line_Offset);
+
+                                    Point3D referencePoint;
                                     switch (DataSaved.bucketEdge) {
                                         case -1:
-                                            DataSaved.selectedPoly = findClosestSegment(new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], 0), allOffsetSegments).getPolyline();
-                                            DataSaved.nearestSegment = findClosestSegment(new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], 0), allOffsetSegments);
-
-                                            DataSaved.selectedPoly_OFFSET = DataSaved.selectedPoly;
-                                            dist3D_SX = Math.abs(new DistToLine(bucketLeftCoord[0], bucketLeftCoord[1], DataSaved.nearestSegment.getStart().getX(), DataSaved.nearestSegment.getStart().getY(), DataSaved.nearestSegment.getEnd().getX(), DataSaved.nearestSegment.getEnd().getY()).getLinedistance());
-
+                                            referencePoint = new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], 0);
                                             break;
-
                                         case 0:
-                                            DataSaved.selectedPoly = findClosestSegment(new Point3D(bucketCoord[0], bucketCoord[1], 0), allOffsetSegments).getPolyline();
-                                            DataSaved.nearestSegment = findClosestSegment(new Point3D(bucketCoord[0], bucketCoord[1], 0), allOffsetSegments);
-                                            DataSaved.selectedPoly_OFFSET = DataSaved.selectedPoly;
-                                            dist3D_CT = Math.abs(new DistToLine(bucketCoord[0], bucketCoord[1], DataSaved.nearestSegment.getStart().getX(), DataSaved.nearestSegment.getStart().getY(), DataSaved.nearestSegment.getEnd().getX(), DataSaved.nearestSegment.getEnd().getY()).getLinedistance());
-
+                                            referencePoint = new Point3D(bucketCoord[0], bucketCoord[1], 0);
                                             break;
-
                                         case 1:
-                                            DataSaved.selectedPoly = findClosestSegment(new Point3D(bucketRightCoord[0], bucketRightCoord[1], 0), allOffsetSegments).getPolyline();
-                                            DataSaved.nearestSegment = findClosestSegment(new Point3D(bucketRightCoord[0], bucketRightCoord[1], 0), allOffsetSegments);
-                                            DataSaved.selectedPoly_OFFSET = DataSaved.selectedPoly;
-                                            dist3D_DX = Math.abs(new DistToLine(bucketRightCoord[0], bucketRightCoord[1], DataSaved.nearestSegment.getStart().getX(), DataSaved.nearestSegment.getStart().getY(), DataSaved.nearestSegment.getEnd().getX(), DataSaved.nearestSegment.getEnd().getY()).getLinedistance());
-
+                                            referencePoint = new Point3D(bucketRightCoord[0], bucketRightCoord[1], 0);
                                             break;
+                                        default:
+                                            referencePoint = new Point3D(bucketCoord[0], bucketCoord[1], 0);
+                                            break;
+                                    }
 
+                                    Segment closestSegment;
 
+                                    if (DataSaved.lockUnlock == 0) {
+                                        // comportamento normale: trova il segmento più vicino tra tutti
+                                        closestSegment = findClosestSegment(referencePoint, allOffsetSegments);
+                                        DataSaved.selectedPoly = closestSegment.getPolyline();
+                                    } else {
+                                        // lock attivo: calcola l'offset partendo sempre dall'originale
+                                        Polyline offsetPoly = DataSaved.line_Offset != 0 ?
+                                                JTSOffsetHelper.generateOffsetPolyline(DataSaved.selectedPoly, DataSaved.line_Offset) :
+                                                DataSaved.selectedPoly;
+
+                                        // genera segmenti della polyline selezionata solo
+                                        List<Segment> lockedSegments = new ArrayList<>();
+                                        List<Point3D> verts = offsetPoly.getVertices();
+                                        for (int i = 0; i < verts.size() - 1; i++) {
+                                            lockedSegments.add(new Segment(verts.get(i), verts.get(i + 1), DataSaved.selectedPoly));
+                                        }
+
+                                        closestSegment = findClosestSegment(referencePoint, lockedSegments);
+                                    }
+
+                                    // salva i risultati
+                                    DataSaved.nearestSegment = closestSegment;
+                                    DataSaved.selectedPoly_OFFSET = closestSegment != null ? closestSegment.getPolyline() : null;
+
+                                    // calcola le distanze 3D
+                                    if (DataSaved.bucketEdge == -1 && closestSegment != null) {
+                                        dist3D_SX = Math.abs(new DistToLine(bucketLeftCoord[0], bucketLeftCoord[1],
+                                                closestSegment.getStart().getX(), closestSegment.getStart().getY(),
+                                                closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
+                                    } else if (DataSaved.bucketEdge == 0 && closestSegment != null) {
+                                        dist3D_CT = Math.abs(new DistToLine(bucketCoord[0], bucketCoord[1],
+                                                closestSegment.getStart().getX(), closestSegment.getStart().getY(),
+                                                closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
+                                    } else if (DataSaved.bucketEdge == 1 && closestSegment != null) {
+                                        dist3D_DX = Math.abs(new DistToLine(bucketRightCoord[0], bucketRightCoord[1],
+                                                closestSegment.getStart().getX(), closestSegment.getStart().getY(),
+                                                closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
                                     }
 
                                 } else {
                                     DataSaved.isAutoSnap = 0;
-
                                 }
 
-
                                 break;
+
+
+
 
 
                         }
@@ -311,13 +344,14 @@ public class TriangleService extends Service {
 
 
                 countPnezd++;
-                if (countPnezd % 10 == 0) {
+                if (countPnezd % 100 == 0) {
+                    Log.d("Scanning","Scanning...");
                     scanPNEZD();
                 }
 
 
                 //Conditions
-                if (indexAudio>0) {
+                if (indexAudio > 0) {
                     switch (DataSaved.bucketEdge) {
                         case -1:
                             if (!ltOffGrid) {
@@ -386,7 +420,7 @@ public class TriangleService extends Service {
                             }
                             break;
                     }
-                }else {
+                } else {
                     MyApp.isCentro = false;
                     MyApp.isAlto = false;
                     MyApp.isBasso = false;
@@ -435,9 +469,9 @@ public class TriangleService extends Service {
         double deltaZL = triangleHelper.calculateDeltaZ(newPositionL);
         double deltaZC = triangleHelper.calculateDeltaZ(newPositionC);
         double deltaZR = triangleHelper.calculateDeltaZ(newPositionR);
-        posL=new double[]{newPositionL[0],newPositionL[1],triangleHelper.calculateZ(newPositionL)};
-        posC=new double[]{newPositionC[0],newPositionC[1],triangleHelper.calculateZ(newPositionC)};
-        posR=new double[]{newPositionR[0],newPositionR[1],triangleHelper.calculateZ(newPositionR)};
+        posL = new double[]{newPositionL[0], newPositionL[1], triangleHelper.calculateZ(newPositionL)};
+        posC = new double[]{newPositionC[0], newPositionC[1], triangleHelper.calculateZ(newPositionC)};
+        posR = new double[]{newPositionR[0], newPositionR[1], triangleHelper.calculateZ(newPositionR)};
 
         ltOffGrid = deltaZL == Double.MIN_VALUE;
         ctOffGrid = deltaZC == Double.MIN_VALUE;
@@ -472,8 +506,7 @@ public class TriangleService extends Service {
 
     public static Segment findClosestSegment(Point3D point, List<Segment> segments) {
         if (DataSaved.lockUnlock == 0) {
-            isUpdating = false;
-            // Comportamento attuale: trovare il segmento più vicino tra quelli passati
+            //  Comportamento attuale: cerca il più vicino tra tutti
             Segment closestSegment = null;
             double minDistance = Double.MAX_VALUE;
 
@@ -486,19 +519,27 @@ public class TriangleService extends Service {
             }
 
             return closestSegment;
+
         } else {
-
-
+            //  Usa SEMPRE la polyline offsettata della selezionata
             if (DataSaved.selectedPoly == null || DataSaved.selectedPoly.getVertices().size() < 2)
                 return null;
 
-            List<Segment> lockedSegments = new ArrayList<>();
-            List<Point3D> verts = DataSaved.selectedPoly.getVertices();
-            for (int i = 0; i < verts.size() - 1; i++) {
-                lockedSegments.add(new Segment(verts.get(i), verts.get(i + 1), DataSaved.selectedPoly));
+            Polyline polyToUse;
+            if (DataSaved.line_Offset == 0) {
+                polyToUse = DataSaved.selectedPoly;
+            } else {
+                polyToUse = JTSOffsetHelper.generateOffsetPolyline(DataSaved.selectedPoly, DataSaved.line_Offset);
             }
 
-            // Cerca il segmento più vicino tra quelli della polilinea bloccata
+            if (polyToUse == null || polyToUse.getVertices().size() < 2) return null;
+
+            List<Segment> lockedSegments = new ArrayList<>();
+            List<Point3D> verts = polyToUse.getVertices();
+            for (int i = 0; i < verts.size() - 1; i++) {
+                lockedSegments.add(new Segment(verts.get(i), verts.get(i + 1), polyToUse));
+            }
+
             Segment closestSegment = null;
             double minDistance = Double.MAX_VALUE;
 
@@ -513,6 +554,7 @@ public class TriangleService extends Service {
             return closestSegment;
         }
     }
+
 
     private static double pointToSegmentDistance(Point3D p, Segment segment) {
         double x = p.getX(), y = p.getY();
@@ -594,7 +636,7 @@ public class TriangleService extends Service {
         for (Polyline poly : polylines) {
             Polyline polyToUse;
 
-            // ⚠️ Se offset == 0, usa direttamente la polyline originale
+            //  Se offset == 0, usa direttamente la polyline originale
             if (offset == 0) {
                 polyToUse = poly;
             } else {
@@ -631,7 +673,8 @@ public class TriangleService extends Service {
     }
 
     public static void scanPNEZD() {
-        if (My3DActivity.PNEZD_FUNCTION) {
+        if (My3DActivity.PNEZD_FUNCTION || DataSaved.isAutoSnap == 1||My3DActivity.glPoint) {
+
             try {
                 String filePath = DataSaved.PNEZDPath; // <-- Qui metti il path corretto
                 File file = new File(filePath);
@@ -667,9 +710,9 @@ public class TriangleService extends Service {
 
                                 PNEZDPoint punto;
                                 if (color != null) {
-                                    punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description, color);
+                                    punto = new PNEZDPoint(filePath, pointNumber, northing, easting, elevation, description, color);
                                 } else {
-                                    punto = new PNEZDPoint(pointNumber, northing, easting, elevation, description);
+                                    punto = new PNEZDPoint(filePath, pointNumber, northing, easting, elevation, description);
                                 }
 
                                 punti.add(punto);
@@ -685,26 +728,38 @@ public class TriangleService extends Service {
 
                 DataSaved.pnezdPoints = punti;
             } catch (Exception e) {
-                DataSaved.pnezdPoints = new ArrayList<>();
+                Log.e("PnezdE", Log.getStackTraceString(e));
             }
 
-            if (fileExtensionPOINT != null) {
-                if (fileExtensionPOINT.toLowerCase().equals("csv")) {
-                    // ✅ Svuota prima la lista
-                    DataSaved.points.clear();
 
-                    for (PNEZDPoint p : DataSaved.pnezdPoints) {
-                        DataSaved.points.add(new Point3D(
-                                p.getEasting(),
-                                p.getNorthing(),
-                                p.getElevation(),
-                                p.getColor(),
-                                new Layer(DataSaved.progettoSelected_POINT, "Layer", Color.WHITE, true)
-                        ));
-                    }
-                    DataSaved.filteredPoints = DataSaved.points;
+            // Non fare clear() se vuoi aggiungere
+            if (DataSaved.points == null) {
+                DataSaved.points = new ArrayList<>();
+            }
+
+            // Aggiungi i PNEZD solo se non sono già presenti
+            for (PNEZDPoint p : DataSaved.pnezdPoints) {
+                Point3D newPoint = new Point3D(
+                        p.getFilename(),
+                        "PNEZD: "+String.valueOf(p.getPointNumber()),
+                        p.getEasting(),
+                        p.getNorthing(),
+                        p.getElevation(),
+                        p.getColor(),
+                        new Layer(DataSaved.PNEZDPath, "MyPNEZD", Color.WHITE, true),
+                        p.getDescription()
+                );
+
+                if (!DataSaved.points.contains(newPoint)) {
+                    DataSaved.points.add(newPoint);
                 }
             }
+
+            // Aggiorna la lista filtrata
+            DataSaved.filteredPoints = new ArrayList<>(DataSaved.points);
+
+
+
         }
 
 

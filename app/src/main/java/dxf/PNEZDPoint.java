@@ -1,6 +1,7 @@
 package dxf;
 
 public class PNEZDPoint {
+    private String filename;   // Nome
     private int pointNumber;      // P
     private double northing;      // N
     private double easting;       // E
@@ -17,6 +18,15 @@ public class PNEZDPoint {
         this.description = description;
         this.color = null; // Colore non impostato
     }
+    public PNEZDPoint(String filename,int pointNumber, double northing, double easting, double elevation, String description) {
+        this.filename=filename;
+        this.pointNumber = pointNumber;
+        this.northing = northing;
+        this.easting = easting;
+        this.elevation = elevation;
+        this.description = description;
+        this.color = null; // Colore non impostato
+    }
 
     // Costruttore con colore
     public PNEZDPoint(int pointNumber, double northing, double easting, double elevation, String description, int color) {
@@ -26,6 +36,16 @@ public class PNEZDPoint {
         this.elevation = elevation;
         this.description = description;
         this.color = color;
+    }
+    // Costruttore con colore e filePath
+    public PNEZDPoint(String filename,int pointNumber, double northing, double easting, double elevation, String description, int color) {
+        this.pointNumber = pointNumber;
+        this.northing = northing;
+        this.easting = easting;
+        this.elevation = elevation;
+        this.description = description;
+        this.color = color;
+        this.filename=filename;
     }
 
     // Getter e Setter
@@ -83,5 +103,13 @@ public class PNEZDPoint {
     public String toString() {
         return pointNumber + ", " + northing + ", " + easting + ", " + elevation + ", " + description +
                 (color != null ? ", Color: " + color : ", Color: (none)");
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getFilename() {
+        return filename;
     }
 }

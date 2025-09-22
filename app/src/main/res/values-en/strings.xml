@@ -19,7 +19,7 @@
     <string name="sens_config">CAN SENSOR CONFIG</string>
     <string name="hydro_cp">HYDRAULIC\nCONTROL POINTS</string>
     <string name="hydro_apply">APPLY NEW HYDRAULIC VALUES</string>
-
+    <string name="delete_obj">DELETE SELECTED OBLECT ?</string>
     <string name="color_bucket">BUCKET - BLADE COLOR</string>
     <string name="color_boom">BOOM - FRAME COLOR</string>
     <string name="ext_offset">EXTERNAL OFFSET STEP</string>

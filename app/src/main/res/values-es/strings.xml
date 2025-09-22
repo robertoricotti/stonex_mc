@@ -28,6 +28,7 @@
     <string name="write_para">SOBRESCRIBIR TODOS LOS PARÁMETROS DE LA APLICACIÓN</string>
     <string name="hydro_cp">PUNTOS DE CONTROL\nHIDRÁULICOS</string>
     <string name="hydro_apply">APLICAR NUEVOS VALORES HIDRÁULICOS</string>
+    <string name="delete_obj">¿ELIMINAR EL OBJETO SELECCIONADO?</string>
 
     <string name="color_bucket">COLOR DEL CUBO - HOJA</string>
     <string name="color_boom">COLOR DEL BRAZO - BASTIDOR</string>

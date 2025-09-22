@@ -2,6 +2,7 @@ package gui.my_opengl;
 
 
 import static gui.my_opengl.My3DActivity.PNEZD_FUNCTION;
+import static gui.my_opengl.My3DActivity.glPoint;
 
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
@@ -195,7 +196,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
-                            if (PNEZD_FUNCTION) {
+                            if (PNEZD_FUNCTION||glPoint) {
                                 GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
                                 GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
                             }
@@ -225,7 +226,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
-                            if (PNEZD_FUNCTION) {
+                            if (PNEZD_FUNCTION||glPoint) {
                                 GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
                                 GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
                             }
@@ -252,7 +253,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
-                            if (PNEZD_FUNCTION) {
+                            if (PNEZD_FUNCTION||glPoint) {
                                 GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
                                 GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
                             }
@@ -277,13 +278,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                                 GLDrawer.drawCircles2D(gl11, DataSaved.circles, 2f, scale);
 
                             }
-                            if (My3DActivity.glPoint) {
+                            if (glPoint) {
                                 GLDrawer.drawPoints(gl11, DataSaved.filteredPoints, 10f, scale, isXMLPoint);
                             }
                             if (My3DActivity.glText) {
                                 GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
                             }
-                            if (PNEZD_FUNCTION) {
+                            if (PNEZD_FUNCTION||glPoint) {
                                 GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
                                 GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
                             }

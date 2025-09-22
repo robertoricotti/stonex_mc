@@ -1,20 +1,26 @@
 package gui.dialogs_and_toast;
 
-import static gui.MyApp.isApollo;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.stx_dig.R;
+
+import java.io.File;
 import java.util.Arrays;
 
+import gui.projects.ProjectAdapter;
 import packexcalib.gnss.CircumferenceCenterCalculator;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -22,7 +28,7 @@ import utils.MyData;
 public class Dialog_HiddenPin_Calc {
     Activity activity;
    public Dialog dialog;
-    Button btn_calc,close;
+    ImageView btn_calc,close,btn_apply;
     EditText etX1, etX2, etX3, etY1, etY2, etY3;
 
     TextView res_m, res_ft, res_deg;
@@ -37,11 +43,8 @@ public class Dialog_HiddenPin_Calc {
     public void show() {
 
         dialog.create();
-        if(isApollo) {
-            dialog.setContentView(R.layout.dialog_hidden_pin);
-        }else {
-            dialog.setContentView(R.layout.dialog_hidden_pin_s80);
-        }
+        dialog.setContentView(R.layout.dialog_hidden_pin);
+
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
         if (window != null) {
@@ -50,7 +53,6 @@ public class Dialog_HiddenPin_Calc {
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         dialog.show();
-        //dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
@@ -61,6 +63,7 @@ public class Dialog_HiddenPin_Calc {
     private void findView(){
         close=dialog.findViewById(R.id.esci);
         btn_calc=dialog.findViewById(R.id.calcol);
+        btn_apply=dialog.findViewById(R.id.applica);
         etX1 = dialog.findViewById(R.id.et_x1);
         etX2 = dialog.findViewById(R.id.et_x2);
         etX3 = dialog.findViewById(R.id.et_x3);
@@ -70,6 +73,7 @@ public class Dialog_HiddenPin_Calc {
         res_m = dialog.findViewById(R.id.txt_result_m);
         res_ft = dialog.findViewById(R.id.txt_result_ft);
         res_deg = dialog.findViewById(R.id.txt_result_deg);
+        btn_apply.setVisibility(View.INVISIBLE);
 
     }
     private void onClick(){
@@ -93,6 +97,29 @@ public class Dialog_HiddenPin_Calc {
         });
         close.setOnClickListener(view -> {
             dialog.dismiss();
+        });
+        btn_apply.setOnClickListener(view -> {
+            // Crea un nuovo AlertDialog.Builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle(" "+activity.getResources().getString(R.string.save));
+            builder.setIcon(activity.getResources().getDrawable(R.drawable.save));
+
+            // Aggiungi il pulsante "Sì"
+            builder.setPositiveButton(activity.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            builder.setNegativeButton(activity.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                }
+            });
+            builder.show();
+
         });
 
         btn_calc.setOnClickListener(view -> {

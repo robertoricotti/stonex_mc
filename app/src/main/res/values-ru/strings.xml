@@ -28,6 +28,7 @@
     <string name="write_para">ПЕРЕЗАПИСАТЬ ВСЕ ПАРАМЕТРЫ ПРИЛОЖЕНИЯ</string>
     <string name="hydro_cp">ГИДРАВЛИЧЕСКИЕ\nКОНТРОЛЬНЫЕ ТОЧКИ</string>
     <string name="hydro_apply">ПРИМЕНИТЬ НОВЫЕ ГИДРАВЛИЧЕСКИЕ ЗНАЧЕНИЯ</string>
+    <string name="delete_obj">УДАЛИТЬ ВЫБРАННЫЙ ОБЪЕКТ?</string>
 
     <string name="color_bucket">ЦВЕТ КОВША - ЛЕЗВИЯ</string>
     <string name="color_boom">ЦВЕТ СТРЕЛЫ - РАМЫ</string>

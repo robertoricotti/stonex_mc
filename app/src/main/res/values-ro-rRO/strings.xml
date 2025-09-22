@@ -29,6 +29,7 @@
     <string name="write_para">SUPRASCRIE TOȚI PARAMETRII APLICAȚIEI</string>
     <string name="hydro_cp">PUNCTE DE CONTROL\nHIDRAULICE</string>
     <string name="hydro_apply">APLICĂ NOI VALORI HIDRAULICE</string>
+    <string name="delete_obj">ȘTERGEȚI OBIECTUL SELECTAT?</string>
 
     <string name="color_bucket">CULOARE CUPĂ - LAMĂ</string>
     <string name="color_boom">CULOARE BRAȚ - CADRU</string>

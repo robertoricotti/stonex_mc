@@ -8,6 +8,7 @@ import java.util.List;
 import gui.my_opengl.GL_Methods;
 
 public class Polyline implements Serializable {
+    String filename;
     private static final long serialVersionUID = 1L;
     private transient FloatBuffer vertexBuffer;
     List<Point3D> vertices = new ArrayList<>();
@@ -18,6 +19,11 @@ public class Polyline implements Serializable {
     }
 
     public Polyline(List<Point3D> vertices,Layer layer) {
+        this.vertices = vertices;
+        this.layer=layer;
+    }
+    public Polyline(List<Point3D> vertices,String filename,Layer layer) {
+        this.filename=filename;
         this.vertices = vertices;
         this.layer=layer;
     }
@@ -71,5 +77,13 @@ public class Polyline implements Serializable {
     }
     public int getVertexCount() {
         return vertices != null ? vertices.size() : 0;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getFilename() {
+        return filename;
     }
 }
