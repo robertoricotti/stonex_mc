@@ -143,7 +143,11 @@ public class UpdateValuesService extends Service {
                     String distG1_G2 = MyData.get_String("M" + i + "_distG1_G2");
                     String useYawFrame = MyData.get_String("M" + i + "useYawFrame");
                     String useQuickSwitch = MyData.get_String("M" + i + "useQuickSwitch");
-
+                    String Wheel_Steer_Rev = MyData.get_String("M" + i + "Wheel_Steer_Rev");
+                    String Wheel_Steer_Min = MyData.get_String("M" + i + "Wheel_Steer_Min");
+                    String Wheel_Steer_Med = MyData.get_String("M" + i + "Wheel_Steer_Med");
+                    String Wheel_Steer_Max = MyData.get_String("M" + i + "Wheel_Steer_Max");
+                    String Wheel_Steer_Range = MyData.get_String("M" + i + "Wheel_Steer_Range");
 
                     String swingLen = MyData.get_String("M" + i + "_Swing_Len");
 
@@ -205,8 +209,8 @@ public class UpdateValuesService extends Service {
                     String HYDRAULIC_CONTROL_POINT_DOZER = MyData.get_String("M" + i + "HYDRAULIC_CONTROL_POINT_DOZER");
 
 
-                    String colorBenna = MyData.get_String("M" + i +"coloreBenna");
-                    String colorStick = MyData.get_String("M" + i +"coloreStick");
+                    String colorBenna = MyData.get_String("M" + i + "coloreBenna");
+                    String colorStick = MyData.get_String("M" + i + "coloreStick");
 
                     if (nameM == null) {
                         MyData.push("M" + i + "_Name", ("DEFAULT " + i).toUpperCase());
@@ -304,6 +308,21 @@ public class UpdateValuesService extends Service {
                     if (useQuickSwitch == null) {
                         MyData.push("M" + i + "useQuickSwitch", "0");
                     }
+                    if(Wheel_Steer_Rev== null){
+                        MyData.push("M"+i+"Wheel_Steer_Rev","1");
+                    }
+                    if(Wheel_Steer_Min== null){
+                        MyData.push("M"+i+"Wheel_Steer_Min","0");
+                    }
+                    if(Wheel_Steer_Med== null){
+                        MyData.push("M"+i+"Wheel_Steer_Med","2500");
+                    }
+                    if(Wheel_Steer_Max== null){
+                        MyData.push("M"+i+"Wheel_Steer_Max","5000");
+                    }
+                    if(Wheel_Steer_Range== null){
+                        MyData.push("M"+i+"Wheel_Steer_Range","45");
+                    }
 
                     if (swingLen == null) {
                         MyData.push("M" + i + "_Swing_Len", "0.0");
@@ -312,10 +331,10 @@ public class UpdateValuesService extends Service {
                     //draw
                     if (colorBenna == null) {
                         ;
-                        MyData.push("M" + i +"coloreBenna", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
+                        MyData.push("M" + i + "coloreBenna", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
                     }
                     if (colorStick == null) {
-                        MyData.push("M" + i +"coloreStick", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
+                        MyData.push("M" + i + "coloreStick", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
                     }
                     if (larghezza_Carro == null) {
                         MyData.push("M" + i + "larghezza_Carro", "2.0");
@@ -617,7 +636,7 @@ public class UpdateValuesService extends Service {
                 String canBaud2 = MyData.get_String("canBaud2");
 
                 String glScale = MyData.get_String("glScale");
-                String glFace=MyData.get_String("glFace");
+                String glFace = MyData.get_String("glFace");
 
 
                 String laser_height_Zero = MyData.get_String("Laser_Height_Zero");
@@ -715,11 +734,11 @@ public class UpdateValuesService extends Service {
                     if (canBaud2 == null) {
                         MyData.push("canBaud2", "250000");
                     }
-                    if(glScale==null){
-                        MyData.push("glScale","0.7");
+                    if (glScale == null) {
+                        MyData.push("glScale", "0.7");
                     }
-                    if(glFace==null){
-                        MyData.push("glFace","true");
+                    if (glFace == null) {
+                        MyData.push("glFace", "true");
                     }
 
                     if (mybrightness == null) {
@@ -974,11 +993,6 @@ public class UpdateValuesService extends Service {
                 }
 
 
-
-
-
-
-
                 try {
                     DataSaved.language = MyData.get_String("language");
 
@@ -1021,22 +1035,16 @@ public class UpdateValuesService extends Service {
                 }
 
 
-
-
                 try {
-                    MyColorClass.colorBucket = MyData.get_Int("M" + indexMach +"coloreBenna");
+                    MyColorClass.colorBucket = MyData.get_Int("M" + indexMach + "coloreBenna");
                 } catch (Exception e) {
-                    MyColorClass.colorBucket=R.color.bg;
+                    MyColorClass.colorBucket = R.color.bg;
                 }
                 try {
-                    MyColorClass.colorStick = MyData.get_Int("M" + indexMach +"coloreStick");
+                    MyColorClass.colorStick = MyData.get_Int("M" + indexMach + "coloreStick");
                 } catch (Exception e) {
-                    MyColorClass.colorStick=R.color.bg;
+                    MyColorClass.colorStick = R.color.bg;
                 }
-
-
-
-
 
 
                 try {
@@ -1482,9 +1490,7 @@ public class UpdateValuesService extends Service {
                 }
 
 
-
-
-            /// end dozer
+                /// end dozer
 
                 try {
                     DataSaved.driftStep = MyData.get_Int("driftStep");
@@ -1554,6 +1560,32 @@ public class UpdateValuesService extends Service {
                     DataSaved.useQuickSwitch = MyData.get_Int("M" + indexMach + "useQuickSwitch");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di useQuickSwitch: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.Wheel_Steer_Rev = MyData.get_Int("M" + indexMach + "Wheel_Steer_Rev");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Wheel_Steer_Rev: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Wheel_Steer_Min = MyData.get_Int("M" + indexMach + "Wheel_Steer_Min");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Wheel_Steer_Min: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Wheel_Steer_Med = MyData.get_Int("M" + indexMach + "Wheel_Steer_Med");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Wheel_Steer_Max: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Wheel_Steer_Max = MyData.get_Int("M" + indexMach + "Wheel_Steer_Max");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Wheel_Steer_Max: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Wheel_Steer_Range = MyData.get_Int("M" + indexMach + "Wheel_Steer_Range");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Wheel_Steer_Range: " + e.getMessage());
                 }
 
 

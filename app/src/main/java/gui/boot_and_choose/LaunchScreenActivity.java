@@ -48,7 +48,9 @@ import packexcalib.exca.ExcavatorLib;
 import services.UpdateValuesService;
 import utils.MyData;
 import utils.MyDeviceManager;
+import utils.MyMCUtils;
 import utils.NetworkUtils;
+import utils.Utils;
 
 
 @SuppressLint("CustomSplashScreen")
@@ -120,13 +122,13 @@ public class LaunchScreenActivity extends BaseClass {
 
                 MyData.push("BUILD", deviceId.toString());
 
-
                 startMe();
 
 
             }
 
             private void startMe() {
+
 
                 try {
                     if(MyData.get_String("ckSchermo")!=null) {

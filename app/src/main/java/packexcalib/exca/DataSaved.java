@@ -52,6 +52,14 @@ public class DataSaved {
     public static int HYDRAULIC_CONTROL_POINT_GRADER;//0=CENTER-RIGHT    1=CENTER-LEFT   2=LEFT-RIGHT
     public static int HYDRAULIC_CONTROL_POINT_DOZER;//0=CENTER-RIGHT    1=CENTER-LEFT
 
+
+
+    public static double Wheel_Steer_Rev;
+    public static double Wheel_Steer_Min;
+    public static double Wheel_Steer_Med;
+    public static double Wheel_Steer_Max;
+    public static double Wheel_Steer_Range;
+
     ///
     public static String machineName;
     public static int lock3dRotation;

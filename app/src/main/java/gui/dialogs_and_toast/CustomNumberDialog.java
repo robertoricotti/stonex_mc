@@ -32,7 +32,7 @@ public class CustomNumberDialog {
     int mode = -1;
 
 
-    public CustomNumberDialog(Activity activity, int flag) {
+    public CustomNumberDialog(Activity activity, int flag) {//-1 per puri
         this.flag = flag;
         this.activity = activity;
         dialog = new Dialog(activity);
@@ -284,7 +284,6 @@ public class CustomNumberDialog {
                     }
 
 
-
                     c = true;
                     dec = 0;
                     dialog.dismiss();
@@ -325,8 +324,7 @@ public class CustomNumberDialog {
 
     private void onLongClick() {
         bdel.setOnLongClickListener((View v) -> {
-            if (value.getText().toString().length() > 0)
-                value.setText("");
+            if (value.getText().toString().length() > 0) value.setText("");
             return true;
         });
     }

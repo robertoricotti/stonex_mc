@@ -34,6 +34,7 @@ import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_CanBaud;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
+import gui.dialogs_and_toast.Dialog_Wheel_Steer;
 import gui.gps.Nuovo_Gps;
 import packexcalib.exca.DataSaved;
 import serial.SerialPortManager;
@@ -46,13 +47,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, menu_1, menu_2, saveToFile, readFromFile, status,bt_canopen;
     ConstraintLayout constraintLayout, constraintLayout_2,constraintLayout_3;
-    TextView tvSwing,tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ,toCanopen,toDamping,can1bd,can2bd;
+    TextView toExtraSensor, tvSwing,tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ,toCanopen,toDamping,can1bd,can2bd;
     EditText mchName,techInfo;
     int mode, machineSel;
     public static boolean menu1_visible, menu2_visible,menu3_visible;
     DialogPassword dialogPassword;
     Dialog_CanBaud dialogCanBaud;
     Dialog_Swing_Boom dialogSwingBoom;
+    Dialog_Wheel_Steer dialogWheelSteer;
     int small,bigg;
 
     @Override
@@ -78,6 +80,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         customQwertyDialog = new CustomQwertyDialog(this,null);
         dialogSwingBoom=new Dialog_Swing_Boom(this);
+        dialogWheelSteer=new Dialog_Wheel_Steer(this);
         machineSel = MyData.get_Int("MachineSelected");
         mode = MyData.get_Int("M" + machineSel + "_isWL");
         back = findViewById(R.id.btn_1);
@@ -92,6 +95,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         constraintLayout_2 = findViewById(R.id.constr_2);
         constraintLayout_3 = findViewById(R.id.constr_3);
         tvSwing=findViewById(R.id.tvSwing);
+        toExtraSensor=findViewById(R.id.toExtraSensor);
         tvFrame = findViewById(R.id.toFrame);
         tvBoom1 = findViewById(R.id.toBoom1);
         tvBoom2 = findViewById(R.id.toBoom2);
@@ -241,6 +245,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         tvSwing.setOnClickListener(view -> {
             if(!dialogSwingBoom.dialog.isShowing()){
                 dialogSwingBoom.show();
+            }
+        });
+        toExtraSensor.setOnClickListener(view -> {
+            if(!dialogWheelSteer.dialog.isShowing()){
+                dialogWheelSteer.show();
             }
         });
         tvFrame.setOnClickListener(view -> {
@@ -452,6 +461,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         switch (mode) {
             case 0:
                 //Excavatore
+                toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.VISIBLE);
                 tvSwing.setVisibility(View.VISIBLE);
                 tvSwing.setText("SWING BOOM");
@@ -469,6 +479,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 1:
                 //Wheel
+                if(DataSaved.Extra_Heading>0) {
+                    toExtraSensor.setVisibility(View.VISIBLE);
+                }else {
+                    toExtraSensor.setVisibility(View.GONE);
+                }
                 tvFrame.setVisibility(View.VISIBLE);
                 tvBoom1.setVisibility(View.VISIBLE);
                 tvSwing.setVisibility(View.VISIBLE);
@@ -492,6 +507,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             case 2:
             case 3:
                 //Dozer
+                toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.GONE);
                 tvSwing.setVisibility(View.GONE);
                 tvBoom1.setVisibility(View.VISIBLE);
@@ -513,6 +529,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 4:
                 //Grader
+                toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.GONE);
                 tvSwing.setVisibility(View.GONE);
                 tvBoom1.setVisibility(View.VISIBLE);

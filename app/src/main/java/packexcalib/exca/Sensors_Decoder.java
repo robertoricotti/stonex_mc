@@ -12,7 +12,7 @@ public class Sensors_Decoder {
     public static boolean isMobaTilt;
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
     public static double Deg_roll, Deg_pitch, Deg_boom1, Deg_boom2, Deg_stick, Deg_bucket, Deg_tilt, Deg_Benna_W_Tilt, Deg_bucket_DEMO,
-            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom;
+            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom,WheelSteer;
     public static int V_Laser = 255, flagLaserConnected, flagDefault, flagLaser;
 
     static double norm, ax_norm, ay_norm, az_norm;
@@ -47,6 +47,16 @@ public class Sensors_Decoder {
                 }
             } else {
                 ExtensionBoom = 0;
+            }
+
+            if(DataSaved.Extra_Heading>0){
+                if (id == 0x1A2) {
+                    int v = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+                    WheelSteer = -v * 0.0001;
+                    WheelSteer = WheelSteer*DataSaved.Wheel_Steer_Rev;
+                }
+            }else {
+                WheelSteer = 0;
             }
 
 

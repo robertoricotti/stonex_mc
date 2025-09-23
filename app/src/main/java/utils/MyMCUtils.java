@@ -71,6 +71,30 @@ public class MyMCUtils {
 
     }
 
+    public static double profile_3pt(double input, double min, double cent, double max, double maxSteerAngle) {
+        double halfAngle = maxSteerAngle / 2.0;
+
+        if (cent <= min || max <= cent) {
+            return 0;
+        }
+
+        if (input <= min) {
+            return -halfAngle;
+        } else if (input >= max) {
+            return halfAngle;
+        } else if (input == cent) {
+            return 0.0;
+        } else if (input < cent) {
+            // Scala da min→cent → [-halfAngle → 0]
+            return -halfAngle + (input - min) * (0.0 - (-halfAngle)) / (cent - min);
+        } else {
+            // Scala da cent→max → [0 → +halfAngle]
+            return 0.0 + (input - cent) * (halfAngle - 0.0) / (max - cent);
+        }
+    }
+
+
+
 
 
 }
