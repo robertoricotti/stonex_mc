@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import gui.gps.NmeaGenerator;
+import utils.MyMCUtils;
 
 
 public class Sensors_Decoder {
@@ -12,8 +13,8 @@ public class Sensors_Decoder {
     public static boolean isMobaTilt;
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
     public static double Deg_roll, Deg_pitch, Deg_boom1, Deg_boom2, Deg_stick, Deg_bucket, Deg_tilt, Deg_Benna_W_Tilt, Deg_bucket_DEMO,
-            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom,WheelSteer;
-    public static int V_Laser = 255, flagLaserConnected, flagDefault, flagLaser;
+            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom;
+    public static int V_Laser = 255, flagLaserConnected, flagDefault, flagLaser, WheelSteer;
 
     static double norm, ax_norm, ay_norm, az_norm;
     static double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ, _x486, _y486, _z486;
@@ -32,13 +33,11 @@ public class Sensors_Decoder {
 
 
     private static final Queue<Double> boomRollBuffer = new LinkedList<>();
+    private static final Queue<Double> tiltBuffer = new LinkedList<>();
 
     public static void Moba_G2_Decoder_Update(int id, byte[] data, double[] values) {
         try {
 
-            /*
-            TSM ID:FR=385, B1=386, B2=387, ST=388,BK=389,TL=390
-             */
             if (DataSaved.isExtensionBoom > 0) {
                 if (id == 0x188) {
                     int v = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
@@ -49,13 +48,18 @@ public class Sensors_Decoder {
                 ExtensionBoom = 0;
             }
 
-            if(DataSaved.Extra_Heading>0){
+            if (DataSaved.Extra_Heading > 0) {
                 if (id == 0x1A2) {
-                    int v = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                    WheelSteer = -v * 0.0001;
-                    WheelSteer = WheelSteer*DataSaved.Wheel_Steer_Rev;
+                    WheelSteer = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+
+                    WheelSteer = WheelSteer * DataSaved.Wheel_Steer_Rev;
+                    DataSaved.SteerWheel_Result = MyMCUtils.profile_3pt(WheelSteer,
+                            DataSaved.Wheel_Steer_Min,
+                            DataSaved.Wheel_Steer_Med,
+                            DataSaved.Wheel_Steer_Max,
+                            DataSaved.Wheel_Steer_Range);
                 }
-            }else {
+            } else {
                 WheelSteer = 0;
             }
 
@@ -387,6 +391,7 @@ public class Sensors_Decoder {
                                     qY /= qnorm;
                                     qZ /= qnorm;
                                     eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
+                                    eulerAngles[2]=movingAverage_tilt(eulerAngles[2],15);
                                     switch (DataSaved.lrTilt) {
                                         case 1:
                                             //Left
@@ -467,57 +472,8 @@ public class Sensors_Decoder {
                             }
                             //TSM gravity vector
                             switch (id & 0x1FFFFFFF) {
-                                case 90181733:
-                                    //0x5601065
-                                    //Frame MOBA
-                                    mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                                    qW = mqW / 23768.0d;
-                                    qX = mqX / 23768.0d;
-                                    qY = mqY / 23768.0d;
-                                    qZ = mqZ / 23768.0d;
-                                    qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                                    qW /= qnorm;
-                                    qX /= qnorm;
-                                    qY /= qnorm;
-                                    qZ /= qnorm;
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
 
-                                    switch (DataSaved.lrFrame) {
-                                        case 0:
-                                            Deg_pitch = 0;
-                                            Deg_roll = 0;
-                                            Deg_Yaw_Frame = 0;
-                                            break;
-                                        case 1:
-                                            //Avanti
-                                            Deg_pitch = -eulerAngles[1];
-                                            Deg_roll = -eulerAngles[0];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        case 2:
-                                            //Destra
-                                            Deg_pitch = -eulerAngles[0];
-                                            Deg_roll = eulerAngles[1];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        case 3:
-                                            //Dietro
-                                            Deg_pitch = eulerAngles[1];
-                                            Deg_roll = eulerAngles[0];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        case 4:
-                                            //Sinistra
-                                            Deg_pitch = eulerAngles[0];
-                                            Deg_roll = -eulerAngles[1];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
 
-                                    }
-                                    break;
                                 case 0x381:
                                     acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
                                     acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
@@ -549,8 +505,7 @@ public class Sensors_Decoder {
                                             Deg_pitch = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                                             break;
                                     }
-                                    Deg_pitch=movingAverage(Deg_pitch,3);
-                                    Deg_roll=movingAverage(Deg_roll,3);
+
                                     break;
 
                                 case 0x382:
@@ -572,7 +527,6 @@ public class Sensors_Decoder {
                                             Deg_boom1 = 0d;
                                             break;
                                     }
-                                    Deg_boom1=movingAverage(Deg_boom1,3);
                                     break;
 
                                 case 0x387:
@@ -596,7 +550,6 @@ public class Sensors_Decoder {
                                             break;
                                     }
 
-                                    Deg_boom2=movingAverage(Deg_boom2,3);
                                     break;
 
                                 case 0x384:
@@ -611,11 +564,11 @@ public class Sensors_Decoder {
                                     switch (DataSaved.lrStick) {
                                         case 1:
                                             Deg_stick = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            Deg_Boom_Roll =( -Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
+                                            Deg_Boom_Roll = (-Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
                                             break;
                                         case -1:
                                             Deg_stick = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            Deg_Boom_Roll =( Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
+                                            Deg_Boom_Roll = (Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
                                             break;
                                         default:
                                             Deg_stick = 0d;
@@ -626,7 +579,7 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
-                                    Deg_Boom_Roll=movingAverage(Deg_Boom_Roll,10);
+                                    Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
                                     break;
 
                                 case 0x385:
@@ -655,7 +608,6 @@ public class Sensors_Decoder {
                                             Deg_bucket = 0d;
                                             break;
                                     }
-                                    Deg_bucket=movingAverage(Deg_bucket,3);
                                     break;
                                 case 0x383:
                                     flagDefault += 100;
@@ -680,6 +632,7 @@ public class Sensors_Decoder {
                                     qY /= qnorm;
                                     qZ /= qnorm;
                                     eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
+                                    eulerAngles[2]=movingAverage_tilt(eulerAngles[2],15);
                                     switch (DataSaved.lrTilt) {
                                         case 1:
                                             //Left
@@ -723,8 +676,7 @@ public class Sensors_Decoder {
                                             Deg_Yaw_Tilt = 0;
                                             break;
                                     }
-                                    Deg_Benna_W_Tilt=movingAverage(Deg_Benna_W_Tilt,3);
-                                    Deg_tilt=movingAverage(Deg_tilt,3);
+
                                     break;
                                 case 0x486:
                                     isMobaTilt = false;
@@ -756,8 +708,7 @@ public class Sensors_Decoder {
 
 
                                     // Visualizza il valore dello yaw
-                                    Deg_Yaw_Tilt = movingAverage(yawDegrees,20);
-
+                                    Deg_Yaw_Tilt = (yawDegrees);
 
 
                                     break;
@@ -1011,6 +962,7 @@ public class Sensors_Decoder {
                         default:
                             switch (id & 0x1FFFFFFF) {
                                 case 0x386:
+                                case 0x385:
                                     acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
                                     acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
                                     acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
@@ -1211,7 +1163,7 @@ public class Sensors_Decoder {
         return new double[]{roll, pitch, yaw};
     }
 
-    public static double movingAverage(double newVal,int WINDOW) {
+    public static double movingAverage_boomroll(double newVal, int WINDOW) {
         if (boomRollBuffer.size() >= WINDOW) {
             boomRollBuffer.poll(); // rimuove il più vecchio
         }
@@ -1219,5 +1171,15 @@ public class Sensors_Decoder {
         double sum = 0;
         for (double v : boomRollBuffer) sum += v;
         return sum / boomRollBuffer.size();
+    }
+
+    public static double movingAverage_tilt(double newVal, int WINDOW) {
+        if (tiltBuffer.size() >= WINDOW) {
+            tiltBuffer.poll(); // rimuove il più vecchio
+        }
+        tiltBuffer.add(newVal);
+        double sum = 0;
+        for (double v : tiltBuffer) sum += v;
+        return sum / tiltBuffer.size();
     }
 }

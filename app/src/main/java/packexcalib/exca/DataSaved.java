@@ -54,11 +54,12 @@ public class DataSaved {
 
 
 
-    public static double Wheel_Steer_Rev;
-    public static double Wheel_Steer_Min;
-    public static double Wheel_Steer_Med;
-    public static double Wheel_Steer_Max;
+    public static int Wheel_Steer_Rev;
+    public static int Wheel_Steer_Min;
+    public static int Wheel_Steer_Med;
+    public static int Wheel_Steer_Max;
     public static double Wheel_Steer_Range;
+    public static double SteerWheel_Result;
 
     ///
     public static String machineName;

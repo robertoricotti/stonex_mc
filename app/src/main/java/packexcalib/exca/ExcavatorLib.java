@@ -13,9 +13,9 @@ import gui.digging_excavator.DiggingProfile;
 import packexcalib.gnss.NmeaListener;
 import packexcalib.mymatrix.PointCalculator;
 import packexcalib.surfcreator.DistToLine;
-import utils.DistToPoint;
 import packexcalib.surfcreator.Surface_4pts;
 import services.TriangleService;
+import utils.DistToPoint;
 
 public class ExcavatorLib {
 
@@ -26,7 +26,7 @@ public class ExcavatorLib {
     public static double yawSensor;
     public static int indexSezione;
     public static boolean overturn;
-    public static  double[]coordRoll,coordPitch;
+    public static double[] coordRoll, coordPitch;
     static double[] arrLower = new double[3];
     static double[] arr = new double[6];
     public static double quota2D, quotaLASER_2D, actualX2D, actualY2D, distToSurf, distToSurfX, quotaSx, quotaDx, distanza_inclinata;
@@ -76,16 +76,26 @@ public class ExcavatorLib {
             larghezzabenna = DataSaved.W_Bucket;
 
 
+            if (DataSaved.isWL == 0 || DataSaved.isWL == 2 || DataSaved.isWL == 3 || DataSaved.isWL == 4) {
+                if (DataSaved.Extra_Heading != 0) {
 
+                    if (NmeaListener.roof_Orientation != 999.999) {
+                        swing_boom_angle = NmeaListener.roof_Orientation - (NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
 
-            if(DataSaved.Extra_Heading!=0){
-                if(NmeaListener.roof_Orientation!=999.999) {
-                    swing_boom_angle = NmeaListener.roof_Orientation - (NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
-                }else {
-                    swing_boom_angle=0;
+                    } else {
+                        swing_boom_angle = 0;
+                    }
+                } else {
+                    swing_boom_angle = 0;
                 }
-            }else {
-                swing_boom_angle=0;
+            }
+            if (DataSaved.isWL == 1) {
+                if (DataSaved.Extra_Heading != 0) {
+                    swing_boom_angle = DataSaved.SteerWheel_Result;
+                }else {
+                    swing_boom_angle = 0;
+                }
+
             }
 
             if (GPS_Enabled == 1) {
@@ -143,9 +153,9 @@ public class ExcavatorLib {
                             coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, gps1_X_dev, hdtR);
                         }
                         if (gps1_Y_dev < 0) {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(gps1_Y_dev)+DataSaved.miniPitch_L, hdtReverse);
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(gps1_Y_dev) + DataSaved.miniPitch_L, hdtReverse);
                         } else {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, gps1_Y_dev-DataSaved.miniPitch_L, hdt0);
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, gps1_Y_dev - DataSaved.miniPitch_L, hdt0);
                         }//DY = Centro perno boom1
 
 
@@ -254,7 +264,7 @@ public class ExcavatorLib {
                         hdt_LAMA = hdt0;
                         yawSensor = 0;
 
-                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, gps1_Z_dev+DataSaved.usuraLamaCX, hdt0);
+                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, gps1_Z_dev + DataSaved.usuraLamaCX, hdt0);
                         if (gps1_X_dev < 0) {
                             coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, gps1_X_dev, hdtL);
                         } else {

@@ -321,7 +321,7 @@ public class UpdateValuesService extends Service {
                         MyData.push("M"+i+"Wheel_Steer_Max","5000");
                     }
                     if(Wheel_Steer_Range== null){
-                        MyData.push("M"+i+"Wheel_Steer_Range","45");
+                        MyData.push("M"+i+"Wheel_Steer_Range","70.0");
                     }
 
                     if (swingLen == null) {
@@ -1583,7 +1583,7 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di Wheel_Steer_Max: " + e.getMessage());
                 }
                 try {
-                    DataSaved.Wheel_Steer_Range = MyData.get_Int("M" + indexMach + "Wheel_Steer_Range");
+                    DataSaved.Wheel_Steer_Range = MyData.get_Double("M" + indexMach + "Wheel_Steer_Range");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Wheel_Steer_Range: " + e.getMessage());
                 }

@@ -38,7 +38,7 @@ public class CanService extends Service {
     boolean Off_Inc, Off_Dec;
 
     public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck;
-    public static int isAuto, errorEcu, hydraMachineType, valveType, left_Rise_min, left_Rise_Max, left_Lower_min, left_Lower_Max,
+    public static int SteerConnected,isAuto, errorEcu, hydraMachineType, valveType, left_Rise_min, left_Rise_Max, left_Lower_min, left_Lower_Max,
             right_Rise_min, right_Rise_Max, right_Lower_min, right_Lower_Max, hydr_Window, left_Gain, right_Gain, elevationDB, slopeDB, reverseLeft, reverseRight;
     public static int altosx, centrosx, bassosx, altodx, centrodx, m, bassodx;
     public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, nolaserbeam_L, nolaserbeam_R, ECU_Connected, isAutoL, isAutoR, outW_L, outW_R;
@@ -89,6 +89,7 @@ public class CanService extends Service {
             handler_tl.postDelayed(timeoutRunnable_tl, 3000);
         }
         handler_ECU_Connected.postDelayed(timeoutRunnable_CU_Connected, 3000);
+        handler_steer.postDelayed(timeoutRunnable_steer, 3000);
         super.onCreate();
     }
 
@@ -250,6 +251,19 @@ public class CanService extends Service {
                 double[] arrayData = new double[]{hdt, gps_type, DataSaved.deltaX, DataSaved.deltaY, DataSaved.deltaZ, DataSaved.deltaGPS2, spigoloX, spigoloY, spigoloZ, 0};
                 Sensors_Decoder.Moba_G2_Decoder_Update(id, msg, arrayData);
 
+                if(DataSaved.isWL==1){
+                    if(DataSaved.Extra_Heading>0) {
+                        if (id == 0x1A2) {
+                            SteerConnected = 2;
+                            handler_steer.removeCallbacks(timeoutRunnable_steer);
+                            handler_steer.postDelayed(timeoutRunnable_steer, 3000);
+                        }
+                    }else {
+                        SteerConnected=0;
+                    }
+                }else {
+                    SteerConnected=0;
+                }
                 switch (DataSaved.isCanOpen) {
                     case 1:
                     case 3:
@@ -645,6 +659,13 @@ public class CanService extends Service {
         return null;
     }
 
+    private final Handler handler_steer=new Handler();
+    private final Runnable timeoutRunnable_steer=new Runnable() {
+        @Override
+        public void run() {
+            SteerConnected=1;
+        }
+    };
     private final Handler handler_nmeaSTX = new Handler();
     private final Runnable timeoutRunnable_nmea2k = new Runnable() {
         @Override

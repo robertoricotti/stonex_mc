@@ -463,8 +463,13 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 //Excavatore
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.VISIBLE);
-                tvSwing.setVisibility(View.VISIBLE);
-                tvSwing.setText("SWING BOOM");
+                if(DataSaved.Extra_Heading>0) {
+                    tvSwing.setVisibility(View.VISIBLE);
+                    tvSwing.setText("SWING BOOM");
+                }else {
+                    tvSwing.setVisibility(View.GONE);
+                    tvSwing.setText("SWING BOOM");
+                }
                 tvBoom1.setVisibility(View.VISIBLE);
                 tvBoom1.setText("BOOM 1");
                 tvBoom2.setVisibility(View.VISIBLE);
@@ -481,13 +486,15 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 //Wheel
                 if(DataSaved.Extra_Heading>0) {
                     toExtraSensor.setVisibility(View.VISIBLE);
+                    tvSwing.setVisibility(View.VISIBLE);
+                    tvSwing.setText("STEERING PIVOT");
                 }else {
                     toExtraSensor.setVisibility(View.GONE);
+                    tvSwing.setVisibility(View.GONE);
+                    tvSwing.setText("STEERING PIVOT");
                 }
                 tvFrame.setVisibility(View.VISIBLE);
                 tvBoom1.setVisibility(View.VISIBLE);
-                tvSwing.setVisibility(View.VISIBLE);
-                tvSwing.setText("STEERING PIVOT");
                 tvBoom2.setVisibility(View.GONE);
                 tvStick.setVisibility(View.VISIBLE);
                 tvStick.setText("MAIN BOOM");

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
+import packexcalib.exca.DataSaved;
+import packexcalib.exca.Sensors_Decoder;
+import services.CanService;
 import utils.FullscreenActivity;
 import utils.MyData;
 
@@ -83,15 +87,59 @@ public class Dialog_Wheel_Steer {
         tvInput = dialog.findViewById(R.id.tvInput);
         tvRange = dialog.findViewById(R.id.tvRange);
         tvRedsult = dialog.findViewById(R.id.tvResult);
+        DataSaved.Wheel_Steer_Rev=MyData.get_Int("M"+indexM+"Wheel_Steer_Rev");
+        if(DataSaved.Wheel_Steer_Rev==1){
+            setRev.setChecked(false);
+        }else if(DataSaved.Wheel_Steer_Rev==-1){
+            setRev.setChecked(false);
+        }
+        tvRange.setText(String.valueOf(DataSaved.Wheel_Steer_Range));
     }
 
     private void onClick() {
+        setRev.setOnClickListener(view -> {
+            if(DataSaved.Wheel_Steer_Rev==1){
+                DataSaved.Wheel_Steer_Rev=-1;
+            }else {
+                DataSaved.Wheel_Steer_Rev=1;
+            }
+            MyData.push("M"+indexM+"Wheel_Steer_Rev",String.valueOf(DataSaved.Wheel_Steer_Rev));
+        });
         tvRange.setOnClickListener(view -> {
             if(!customNumberDialog.dialog.isShowing()){
                 customNumberDialog.show(tvRange);
             }
         });
+        setMin.setOnLongClickListener(view -> {
+            if(CanService.SteerConnected==2) {
+                DataSaved.Wheel_Steer_Min = Sensors_Decoder.WheelSteer;
+                MyData.push("M" + indexM + "Wheel_Steer_Min", String.valueOf(DataSaved.Wheel_Steer_Min));
+            }
+            return false;
+        });
+
+        setCent.setOnLongClickListener(view -> {
+            if(CanService.SteerConnected==2) {
+                DataSaved.Wheel_Steer_Med = Sensors_Decoder.WheelSteer;
+                MyData.push("M" + indexM + "Wheel_Steer_Med", String.valueOf(DataSaved.Wheel_Steer_Med));
+            }
+            return false;
+        });
+
+        setMax.setOnLongClickListener(view -> {
+            if(CanService.SteerConnected==2) {
+                DataSaved.Wheel_Steer_Max = Sensors_Decoder.WheelSteer;
+                MyData.push("M" + indexM + "Wheel_Steer_Max", String.valueOf(DataSaved.Wheel_Steer_Max));
+            }
+            return false;
+        });
         close.setOnClickListener(view -> {
+            stopUpdatingCoordinates();
+            dialog.dismiss();
+        });
+        save.setOnClickListener(view -> {
+            MyData.push("M" + indexM + "Wheel_Steer_Max", String.valueOf(DataSaved.Wheel_Steer_Range));
+            stopUpdatingCoordinates();
             dialog.dismiss();
         });
 
@@ -101,8 +149,36 @@ public class Dialog_Wheel_Steer {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                try {
+                    DataSaved.Wheel_Steer_Range=Double.parseDouble(tvRange.getText().toString());
+                } catch (NumberFormatException e) {
+                    tvRange.setText(e.toString());
+                }
+                if(!customNumberDialog.dialog.isShowing()){
+                    tvRange.setText(String.valueOf(DataSaved.Wheel_Steer_Range));
+                }
 
 
+                tvMin.setText(String.valueOf(DataSaved.Wheel_Steer_Min));
+                tvCent.setText(String.valueOf(DataSaved.Wheel_Steer_Med));
+                tvMax.setText(String.valueOf(DataSaved.Wheel_Steer_Max));
+                tvInput.setText(String.valueOf(Sensors_Decoder.WheelSteer));
+                if(CanService.SteerConnected==0){
+                    tvRedsult.setText("DISABLED");
+                    tvRedsult.setTextColor(Color.DKGRAY);
+                } else if (CanService.SteerConnected==2) {
+                    tvRedsult.setText(String.format("%.2f", DataSaved.SteerWheel_Result));
+                    tvRedsult.setTextColor(Color.BLUE);
+
+                } else if (CanService.SteerConnected==1) {
+                    tvRedsult.setText("DISCONNECTED");
+                    tvRedsult.setTextColor(Color.RED);
+                }
+                tvRedsult.setText(String.format("%.2f", DataSaved.SteerWheel_Result).replace(",","."));
+
+                if (isUpdating) {
+                    updateUI();
+                }
             }
         }, 100);
     }
