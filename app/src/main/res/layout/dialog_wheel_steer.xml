@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1"/>
+        app:layout_constraintGuide_percent="0.12"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/midH"
         android:layout_width="wrap_content"
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9"/>
+        app:layout_constraintGuide_percent="0.92"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/mezzo"
         android:layout_width="wrap_content"
@@ -57,18 +57,32 @@
         app:layout_constraintTop_toBottomOf="@id/tv1"
         app:layout_constraintLeft_toLeftOf="parent"/>
     <CheckBox
-        android:id="@+id/setRev"
+        android:id="@+id/setLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="REVERSE"
+        android:text=" LEFT"
         android:textSize="20sp"
         android:textStyle="bold"
         android:buttonTint="@color/black"
         android:textColor="@color/black"
-        app:layout_constraintLeft_toLeftOf="@id/tvInput"
-        app:layout_constraintRight_toRightOf="@id/tvInput"
-        app:layout_constraintTop_toBottomOf="@id/tvInput"
-        android:layout_marginVertical="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/mezzo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/topH"
+        />
+    <CheckBox
+        android:id="@+id/setRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" RIGHT"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:buttonTint="@color/black"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/mezzo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/topH"
         />
     <Button
         android:id="@+id/setMin"
@@ -208,9 +222,9 @@
         android:src="@drawable/wl_steer_ang"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/mezzo"
-        app:layout_constraintTop_toBottomOf="@+id/setRev"
+        app:layout_constraintTop_toBottomOf="@+id/setMin"
         app:layout_constraintBottom_toTopOf="@id/lowH"
-        android:layout_margin="50dp"/>
+        android:layout_margin="25dp"/>
 
     <ImageView
         android:id="@+id/save"
@@ -235,8 +249,8 @@
         android:lines="2"
         android:gravity="center"
         android:text="0.0"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/pippo"
+        android:layout_marginVertical="5dp"
+        app:layout_constraintBottom_toTopOf="@id/tvResult"
         app:layout_constraintLeft_toLeftOf="@id/pippo"
         app:layout_constraintRight_toRightOf="@id/pippo"
         />
@@ -252,9 +266,10 @@
         android:gravity="center"
         android:ems="8"
         android:text="STEERING\nRANGE (°)"
+        android:layout_marginVertical="5dp"
         app:layout_constraintLeft_toRightOf="@id/mezzo"
-        app:layout_constraintTop_toTopOf="@id/ser"
-        app:layout_constraintBottom_toBottomOf="@id/ser"
+
+        app:layout_constraintBottom_toTopOf="@id/tvRange"
         />
     <ImageView
         android:id="@+id/close"
@@ -282,7 +297,7 @@
         app:layout_constraintLeft_toLeftOf="@id/mezzo"
 
         app:layout_constraintTop_toBottomOf="@id/midH"
-        app:layout_constraintBottom_toTopOf="@id/lowH"
+        app:layout_constraintBottom_toBottomOf="@id/ser"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

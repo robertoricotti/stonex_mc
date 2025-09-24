@@ -34,7 +34,7 @@ public class Dialog_Wheel_Steer {
     Button setMin, setCent, setMax, piuRange, menoRange;
     TextView tvMin, tvCent, tvMax, tvInput, tvRedsult;
     EditText tvRange;
-    CheckBox setRev;
+    CheckBox setLeft,setRight;
     CustomNumberDialog customNumberDialog;
 
     public Dialog_Wheel_Steer(Activity activity) {
@@ -77,7 +77,8 @@ public class Dialog_Wheel_Steer {
         customNumberDialog = new CustomNumberDialog(activity, 999);
         close = dialog.findViewById(R.id.close);
         save = dialog.findViewById(R.id.save);
-        setRev = dialog.findViewById(R.id.setRev);
+        setLeft = dialog.findViewById(R.id.setLeft);
+        setRight = dialog.findViewById(R.id.setRight);
         setMin = dialog.findViewById(R.id.setMin);
         setCent = dialog.findViewById(R.id.setMed);
         setMax = dialog.findViewById(R.id.setMax);
@@ -88,23 +89,20 @@ public class Dialog_Wheel_Steer {
         tvRange = dialog.findViewById(R.id.tvRange);
         tvRedsult = dialog.findViewById(R.id.tvResult);
         DataSaved.Wheel_Steer_Rev=MyData.get_Int("M"+indexM+"Wheel_Steer_Rev");
-        if(DataSaved.Wheel_Steer_Rev==1){
-            setRev.setChecked(false);
-        }else if(DataSaved.Wheel_Steer_Rev==-1){
-            setRev.setChecked(false);
-        }
+
         tvRange.setText(String.valueOf(DataSaved.Wheel_Steer_Range));
     }
 
     private void onClick() {
-        setRev.setOnClickListener(view -> {
-            if(DataSaved.Wheel_Steer_Rev==1){
-                DataSaved.Wheel_Steer_Rev=-1;
-            }else {
-                DataSaved.Wheel_Steer_Rev=1;
-            }
+        setLeft.setOnClickListener(view -> {
+            DataSaved.Wheel_Steer_Rev=-1;
             MyData.push("M"+indexM+"Wheel_Steer_Rev",String.valueOf(DataSaved.Wheel_Steer_Rev));
         });
+        setRight.setOnClickListener(view -> {
+            DataSaved.Wheel_Steer_Rev=1;
+            MyData.push("M"+indexM+"Wheel_Steer_Rev",String.valueOf(DataSaved.Wheel_Steer_Rev));
+        });
+
         tvRange.setOnClickListener(view -> {
             if(!customNumberDialog.dialog.isShowing()){
                 customNumberDialog.show(tvRange);
@@ -138,7 +136,7 @@ public class Dialog_Wheel_Steer {
             dialog.dismiss();
         });
         save.setOnClickListener(view -> {
-            MyData.push("M" + indexM + "Wheel_Steer_Max", String.valueOf(DataSaved.Wheel_Steer_Range));
+            MyData.push("M" + indexM + "Wheel_Steer_Range", String.valueOf(DataSaved.Wheel_Steer_Range));
             stopUpdatingCoordinates();
             dialog.dismiss();
         });
@@ -149,6 +147,13 @@ public class Dialog_Wheel_Steer {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if(DataSaved.Wheel_Steer_Rev==1){
+                    setLeft.setChecked(false);
+                    setRight.setChecked(true);
+                }else if(DataSaved.Wheel_Steer_Rev==-1){
+                    setLeft.setChecked(true);
+                    setRight.setChecked(false);
+                }
                 try {
                     DataSaved.Wheel_Steer_Range=Double.parseDouble(tvRange.getText().toString());
                 } catch (NumberFormatException e) {

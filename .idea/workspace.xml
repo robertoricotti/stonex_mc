@@ -922,13 +922,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="prima implementazione steering wheel">
+    <list default="true" id="1619afeb-3b2a-471f-a324-6020738148e5" name="Changes" comment="implementato sensore steering Wheel Loader">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/PointAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/PointAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Add_Pnezd.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Add_Pnezd.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/PNEZDAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/PNEZDAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/CPCanHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/CPCanHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Wheel_Steer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Wheel_Steer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_wheel_steer.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_wheel_steer.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1112,14 +1109,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753375843176</updated>
-    </task>
-    <task id="LOCAL-00032" summary="beta con opzione pulsanti navigazione abilitati">
-      <option name="closed" value="true" />
-      <created>1754751293447</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1754751293447</updated>
     </task>
     <task id="LOCAL-00033" summary="rotazione macchina/mondo e draw mach scheme introdotte">
       <option name="closed" value="true" />
@@ -1505,7 +1494,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758667581581</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="implementato sensore steering Wheel Loader">
+      <option name="closed" value="true" />
+      <created>1758702547617</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1758702547617</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1520,7 +1517,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="inizio nuovo menu idraulico" />
     <MESSAGE value="settato toggle per auto" />
     <MESSAGE value="progressi su CAT idraulica" />
     <MESSAGE value="progressi su CAT idraulica step2" />
@@ -1545,7 +1541,8 @@
     <MESSAGE value="finire filteredPoints" />
     <MESSAGE value="apk TEST 23092025" />
     <MESSAGE value="prima implementazione steering wheel" />
-    <option name="LAST_COMMIT_MESSAGE" value="prima implementazione steering wheel" />
+    <MESSAGE value="implementato sensore steering Wheel Loader" />
+    <option name="LAST_COMMIT_MESSAGE" value="implementato sensore steering Wheel Loader" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
@@ -1567,22 +1564,22 @@
         </entry>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1758614879327" />
+            <CheckInfo lastCheckTimestamp="1758705822631" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1758614879328" />
+            <CheckInfo lastCheckTimestamp="1758705822633" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1758614879329" />
+            <CheckInfo lastCheckTimestamp="1758705822632" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1758614879329" />
+            <CheckInfo lastCheckTimestamp="1758705822632" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.test">
