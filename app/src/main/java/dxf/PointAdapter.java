@@ -104,31 +104,58 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.PointViewHol
     @Override
     public void onBindViewHolder(@NonNull PointViewHolder holder, int position) {
         Point3D point = points.get(position);
-        String s = point.getFilename();
-        if (s == null) {
-            s = "";
-        } else {
-            s = s.replace(Environment.getExternalStorageDirectory().toString() + folderPath, "");
+
+        // Fallback sicuri
+        String filename = "";
+        try {
+            if (point.getFilename() != null) {
+                filename = point.getFilename()
+                        .replace(Environment.getExternalStorageDirectory().toString() + folderPath, "");
+            }
+        } catch (Exception ignored) {}
+
+        String idStr = "";
+        try {
+            idStr = point.getId() != null ? point.getId().toString() : "";
+        } catch (Exception ignored) {}
+
+        double x = 0.0, y = 0.0, z = 0.0;
+        try { x = point.getX(); } catch (Exception ignored) {}
+        try { y = point.getY(); } catch (Exception ignored) {}
+        try { z = point.getZ(); } catch (Exception ignored) {}
+
+        String desc = "";
+        try { desc = point.getDescription() != null ? point.getDescription() : ""; } catch (Exception ignored) {}
+
+        int color;
+        try {
+            color = point.getColore();
+            if (color == 0) {
+                color = Color.GRAY; // fallback se mancante
+            }
+        } catch (Exception e) {
+            color = Color.GRAY; // fallback sicuro
         }
 
         try {
             holder.textView.setText(
-                    s + "\n" +
-                            point.getId() +
-                            "    E:" + point.getX() +
-                            "    N:" + point.getY() +
-                            "  Z:" + point.getZ() +
-                            "    " + point.getDescription()
+                    filename + "\n" +
+                            idStr +
+                            "    N:" + y +
+                            "    E:" + x +
+                            "  Z:" + z +
+                            "    " + desc
             );
             holder.textView.setTextColor(Color.BLACK);
-            holder.imageView.setImageTintList(ColorStateList.valueOf(point.getColore()));
+            holder.imageView.setImageTintList(ColorStateList.valueOf(color));
         } catch (Exception e) {
-            holder.textView.setText(e.getMessage());
+            // Se anche la renderizzazione fallisce, mostra errore
+            holder.textView.setText("***********");
             holder.textView.setTextColor(Color.RED);
             holder.imageView.setImageTintList(ColorStateList.valueOf(Color.TRANSPARENT));
         }
 
-        // evidenzia selezionato
+        // Evidenzia selezionato
         if (point.equals(selectedPoint)) {
             holder.itemView.setBackgroundColor(
                     visibleActivity.getResources().getColor(R.color.bg_sfsgreen)

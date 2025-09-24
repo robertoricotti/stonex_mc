@@ -2,6 +2,7 @@ package gui.dialogs_and_toast;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,32 +36,57 @@ public class PNEZDAdapter extends RecyclerView.Adapter<PNEZDAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PNEZDPoint point = pointList.get(position);
-        holder.pointNumberText.setText("P: " + point.getPointNumber());
-        holder.coordinatesText.setText("N: " + point.getNorthing() + " | E: " + point.getEasting() + " | Z: " + point.getElevation());
-        holder.descriptionText.setText(point.getDescription());
-        holder.pointColor.setImageTintList(ColorStateList.valueOf(point.getColor()));
+        try {
+            PNEZDPoint point = pointList.get(position);
 
-        // Evidenzia se è selezionato
-        if (point.equals(selectedItem)) {
-            holder.itemView.setBackgroundColor(Color.YELLOW); // <-- qui scegli il colore
-        } else {
+            // Numero punto
+            holder.pointNumberText.setText("P: " + point.getPointNumber());
+
+            // Coordinate (se 0 → N/A)
+            String northing = (point.getNorthing() == 0) ? "N/A" : String.valueOf(point.getNorthing());
+            String easting  = (point.getEasting()  == 0) ? "N/A" : String.valueOf(point.getEasting());
+            String elevation= (point.getElevation()== 0) ? "N/A" : String.valueOf(point.getElevation());
+
+            holder.coordinatesText.setText("N: " + northing + " | E: " + easting + " | Z: " + elevation);
+
+            // Descrizione
+            String description = (point.getDescription() != null && !point.getDescription().isEmpty())
+                    ? point.getDescription()
+                    : "Nessuna descrizione";
+            holder.descriptionText.setText(description);
+
+            // Colore con fallback
+            int color = point.getColor() != 0 ? point.getColor() : Color.GRAY;
+            holder.pointColor.setImageTintList(ColorStateList.valueOf(color));
+
+            // Evidenzia selezione
+            holder.itemView.setBackgroundColor(
+                    point.equals(selectedItem) ? Color.YELLOW : Color.TRANSPARENT
+            );
+
+            // Click selezione
+            holder.itemView.setOnClickListener(v -> {
+                if (listener != null) listener.onItemClick(point);
+                setSelectedItem(point);
+            });
+
+            // Long click elimina
+            holder.itemView.setOnLongClickListener(v -> {
+                if (listener != null) listener.onItemDelete(point);
+                return true;
+            });
+
+        } catch (Exception e) {
+            Log.e("PNEZDAdapter", "Errore in onBindViewHolder posizione " + position, e);
+            holder.pointNumberText.setText("P: ERR");
+            holder.coordinatesText.setText("Dati mancanti");
+            holder.descriptionText.setText("Elemento corrotto");
+            holder.pointColor.setImageTintList(ColorStateList.valueOf(Color.RED));
             holder.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
-
-        // Click normale → selezione
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onItemClick(point);
-
-            setSelectedItem(point); // aggiorna evidenziazione
-        });
-
-        // Long click → elimina
-        holder.itemView.setOnLongClickListener(v -> {
-            if (listener != null) listener.onItemDelete(point);
-            return true;
-        });
     }
+
+
 
 
     @Override

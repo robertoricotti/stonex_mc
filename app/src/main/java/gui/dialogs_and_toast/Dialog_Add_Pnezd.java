@@ -28,10 +28,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.stx_dig.R;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -420,20 +422,40 @@ public class Dialog_Add_Pnezd {
     }
 
     private void aggiungiPuntoAlCSV(PNEZDPoint punto) {
-        try (FileWriter writer = new FileWriter(filepath, true)) {
+        File file = new File(filepath);
+        try (FileWriter fw = new FileWriter(file, true);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+
+            // 🔹 Controlla se serve aggiungere newline prima di scrivere
+            if (file.length() > 0) {
+                try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+                    raf.seek(file.length() - 1);
+                    int lastByte = raf.read();
+                    if (lastByte != '\n' && lastByte != '\r') {
+                        bw.newLine();
+                    }
+                }
+            }
+
+            // Scrivi la nuova riga
             String riga = punto.getPointNumber() + "," +
                     punto.getNorthing() + "," +
                     punto.getEasting() + "," +
                     punto.getElevation() + "," +
                     punto.getDescription() + "," +
-                    punto.getColor() + "\n";
-            writer.write(riga);
-            writer.flush();
+                    punto.getColor();
+
+            bw.write(riga);
+            bw.newLine(); // sempre newline dopo
+            bw.flush();
+
             Log.d("Dialog_Add_Pnezd", "Punto aggiunto: " + riga);
+
         } catch (IOException e) {
             Log.e("Dialog_Add_Pnezd", "Errore scrittura CSV: " + e.getMessage());
         }
     }
+
 
     private void startUpdatingCoordinates() {
         if (!isUpdating) {

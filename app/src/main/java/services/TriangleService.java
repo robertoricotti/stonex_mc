@@ -673,10 +673,10 @@ public class TriangleService extends Service {
     }
 
     public static void scanPNEZD() {
-        if (My3DActivity.PNEZD_FUNCTION || DataSaved.isAutoSnap == 1||My3DActivity.glPoint) {
+        if (My3DActivity.PNEZD_FUNCTION || DataSaved.isAutoSnap == 1 || My3DActivity.glPoint) {
 
             try {
-                String filePath = DataSaved.PNEZDPath; // <-- Qui metti il path corretto
+                String filePath = DataSaved.PNEZDPath;
                 File file = new File(filePath);
 
                 List<PNEZDPoint> punti = new ArrayList<>();
@@ -691,57 +691,67 @@ public class TriangleService extends Service {
                                 firstLine = false; // salta intestazione
                                 continue;
                             }
-
-                            if (line.trim().isEmpty()) continue; // salta righe vuote
+                            if (line.trim().isEmpty()) continue;
 
                             String[] parts = line.split(",");
 
+                            // Default values
+                            int pointNumber = -1;
+                            double northing = 0.0;
+                            double easting = 0.0;
+                            double elevation = 0.0;
+                            String description = "";
+                            int color = Color.RED; // fallback costante
+
                             try {
-                                int pointNumber = Integer.parseInt(parts[0].trim());
-                                double northing = Double.parseDouble(parts[1].trim());
-                                double easting = Double.parseDouble(parts[2].trim());
-                                double elevation = Double.parseDouble(parts[3].trim());
-                                String description = parts.length > 4 ? parts[4].trim() : "";
-
-                                Integer color = null;
-                                if (parts.length > 5 && !parts[5].trim().isEmpty()) {
+                                if (parts.length > 0 && !parts[0].trim().isEmpty())
+                                    pointNumber = Integer.parseInt(parts[0].trim());
+                                if (parts.length > 1 && !parts[1].trim().isEmpty())
+                                    northing = Double.parseDouble(parts[1].trim());
+                                if (parts.length > 2 && !parts[2].trim().isEmpty())
+                                    easting = Double.parseDouble(parts[2].trim());
+                                if (parts.length > 3 && !parts[3].trim().isEmpty())
+                                    elevation = Double.parseDouble(parts[3].trim());
+                                if (parts.length > 4)
+                                    description = parts[4].trim();
+                                if (parts.length > 5 && !parts[5].trim().isEmpty())
                                     color = Integer.parseInt(parts[5].trim());
-                                }
-
-                                PNEZDPoint punto;
-                                if (color != null) {
-                                    punto = new PNEZDPoint(filePath, pointNumber, northing, easting, elevation, description, color);
-                                } else {
-                                    punto = new PNEZDPoint(filePath, pointNumber, northing, easting, elevation, description);
-                                }
-
-                                punti.add(punto);
-
-                            } catch (NumberFormatException ex) {
-                                // ignora righe malformate
-                                ex.printStackTrace();
+                            } catch (Exception ex) {
+                                Log.e("PNEZD", "Parse parziale fallito, uso valori di default: " + line);
                             }
+
+                            // Se manca pointNumber, salta la riga
+                            if (pointNumber == -1) continue;
+
+                            PNEZDPoint punto = new PNEZDPoint(
+                                    filePath,
+                                    pointNumber,
+                                    northing,
+                                    easting,
+                                    elevation,
+                                    description,
+                                    color
+                            );
+                            punti.add(punto);
                         }
                     }
-                } else {
                 }
 
                 DataSaved.pnezdPoints = punti;
+
             } catch (Exception e) {
                 Log.e("PnezdE", Log.getStackTraceString(e));
             }
 
-
-            // Non fare clear() se vuoi aggiungere
             if (DataSaved.points == null) {
                 DataSaved.points = new ArrayList<>();
             }
 
-            // Aggiungi i PNEZD solo se non sono già presenti
+            // Aggiungi sempre i PNEZD
             for (PNEZDPoint p : DataSaved.pnezdPoints) {
                 Point3D newPoint = new Point3D(
                         p.getFilename(),
-                        "PNEZD: "+String.valueOf(p.getPointNumber()),
+                        "PNEZD: " + p.getPointNumber(),
                         p.getEasting(),
                         p.getNorthing(),
                         p.getElevation(),
@@ -752,18 +762,12 @@ public class TriangleService extends Service {
 
                 if (!DataSaved.points.contains(newPoint)) {
                     DataSaved.points.add(newPoint);
-
                 }
-
                 if (!DataSaved.filteredPoints.contains(newPoint)) {
                     DataSaved.filteredPoints.add(newPoint);
                 }
             }
-
-
         }
-
-
     }
 
     @Override
