@@ -35,7 +35,7 @@ public class Sensors_Decoder {
     private static final Queue<Double> boomRollBuffer = new LinkedList<>();
     private static final Queue<Double> tiltBuffer = new LinkedList<>();
 
-    public static void Moba_G2_Decoder_Update(int id, byte[] data, double[] values) {
+    public static void Moba_G2_Decoder_Update(int id, byte[] data) {
         try {
 
             if (DataSaved.isExtensionBoom > 0) {
@@ -438,7 +438,7 @@ public class Sensors_Decoder {
 
 
                             }
-                            ExcavatorLib.Excavator(values);
+                            ExcavatorLib.Excavator();
                             break;
                         case 2:
                         case 3://TSM
@@ -745,7 +745,7 @@ public class Sensors_Decoder {
                                     }
                                     break;
                             }
-                            ExcavatorLib.Excavator(values);
+                            ExcavatorLib.Excavator();
                             break;
                         case 5:
                             //demo ROLLER
@@ -902,7 +902,7 @@ public class Sensors_Decoder {
 
 
                             gpsSimul(new boolean[]{rotL, rotR, latP, latM, lonP, lonM, qP, qM});
-                            ExcavatorLib.Excavator(values);
+                            ExcavatorLib.Excavator();
                             break;
                     }
 
@@ -1067,7 +1067,7 @@ public class Sensors_Decoder {
                     }
 
 
-                    ExcavatorLib.Excavator(values);
+                    ExcavatorLib.Excavator();
                     break;
 
             }

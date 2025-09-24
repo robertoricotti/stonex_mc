@@ -42,20 +42,13 @@ public class ExcavatorLib {
     public static double[] coordinateLASER = new double[]{0, 0, 0};
     public static double[] startXYZ;
     public static double swing_boom_angle;//TODO
+    static double ActualX, ActualY, ActualZ;
 
-    public static void Excavator(double[] measures) {
+    public static void Excavator() {
         try {
 
-            double hdt = measures[0];//dinamica offsettato da 2D
-            double GPS_Enabled = measures[1];//1=2D no Laser - 2=2D Laser - 3=3D GPS
-            double gps1_X_dev = measures[2];//X dev in metri da gps1 a centro macchina
-            double gps1_Y_dev = measures[3];//Y dev in metri da gps1 a centro macchina
-            double gps1_Z_dev = measures[4];//Z dev in metri da gps1 a centro macchina
-            double gps2_deg_dev = measures[5];//offset gradi HDT per avere HDT=0;
-            double ActualX = measures[6];//coordinate EST antenna GPS1 in metri o X toolPoint nel 2D
-            double ActualY = measures[7];//coordinate NORD antenna GPS1 in metri o Y toolPoint nel 2D
-            double ActualZ = measures[8];//coordinate QUOTA antenna GPS1 in metri o Z toolPoint nel 2D
-            double OffsetZOper = measures[9];//offsetZ operatore
+            boolean GPS_Enabled = DataSaved.portView >= 2;
+
 
             correctPitch = Excavator_RealValues.realPitch(DataSaved.offsetPitch);//dato da utilizzare nel software già offsettato
             correctBoom1 = Excavator_RealValues.realBoom1(DataSaved.offsetBoom1);
@@ -92,52 +85,25 @@ public class ExcavatorLib {
             if (DataSaved.isWL == 1) {
                 if (DataSaved.Extra_Heading != 0) {
                     swing_boom_angle = DataSaved.SteerWheel_Result;
-                }else {
+                } else {
                     swing_boom_angle = 0;
                 }
 
             }
 
-            if (GPS_Enabled == 1) {
+            if (GPS_Enabled) {
 
                 myPitchLen = 0;
                 myRollLen = 0;
-                double hdt0 = NmeaListener.mch_Orientation + gps2_deg_dev;
-                if (hdt0 > 360) {
-                    hdt0 -= 360;
-                } else if (hdt0 < 0) {
-                    hdt0 += 360;
-                }
+                double hdt0 = ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
                 ////////
-                hdt_BOOM = hdt0 + swing_boom_angle;
-                if (hdt_BOOM > 360) {
-                    hdt_BOOM -= 360;
-                } else if (hdt_BOOM < 0) {
-                    hdt_BOOM += 360;
-                }
+                hdt_BOOM = ((hdt0 + swing_boom_angle) % 360 + 360) % 360;
 
+                double hdtR = ((hdt0 + 90) % 360 + 360) % 360;
 
-                /////////////////
+                double hdtL = ((hdt0 - 90) % 360 + 360) % 360;
 
-                double hdtR = hdt0 + 90;
-                if (hdtR > 360) {
-                    hdtR -= 360;
-                } else if (hdtR < 0) {
-                    hdtR += 360;
-                }
-                double hdtL = hdt0 - 90;
-                if (hdtL > 360) {
-                    hdtL -= 360;
-                } else if (hdtL < 0) {
-                    hdtL += 360;
-                }
-                double hdtReverse = hdt0 + 180;
-                if (hdtReverse > 360) {
-                    hdtReverse -= 360;
-                } else if (hdtReverse < 0) {
-                    hdtReverse += 360;
-                }
-
+                double hdtReverse = ((hdt0 + 180) % 360 + 360) % 360;
 
                 // with GPS
 
@@ -146,16 +112,16 @@ public class ExcavatorLib {
                     case 0:
                     case 1:
 
-                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, gps1_Z_dev, hdt0);
-                        if (gps1_X_dev < 0) {
-                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, gps1_X_dev, hdtL);
+                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ, hdt0);
+                        if (DataSaved.deltaX < 0) {
+                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, DataSaved.deltaX, hdtL);
                         } else {
-                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, gps1_X_dev, hdtR);
+                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, DataSaved.deltaX, hdtR);
                         }
-                        if (gps1_Y_dev < 0) {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(gps1_Y_dev) + DataSaved.miniPitch_L, hdtReverse);
+                        if (DataSaved.deltaY < 0) {
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(DataSaved.deltaY) + DataSaved.miniPitch_L, hdtReverse);
                         } else {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, gps1_Y_dev - DataSaved.miniPitch_L, hdt0);
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, DataSaved.deltaY - DataSaved.miniPitch_L, hdt0);
                         }//DY = Centro perno boom1
 
 
@@ -264,16 +230,16 @@ public class ExcavatorLib {
                         hdt_LAMA = hdt0;
                         yawSensor = 0;
 
-                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, gps1_Z_dev + DataSaved.usuraLamaCX, hdt0);
-                        if (gps1_X_dev < 0) {
-                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, gps1_X_dev, hdtL);
+                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ + DataSaved.usuraLamaCX, hdt0);
+                        if (DataSaved.deltaX < 0) {
+                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, DataSaved.deltaX, hdtL);
                         } else {
-                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, gps1_X_dev, hdtR);
+                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, DataSaved.deltaX, hdtR);
                         }
-                        if (gps1_Y_dev < 0) {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(gps1_Y_dev), hdtReverse + yawSensor);
+                        if (DataSaved.deltaY < 0) {
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(DataSaved.deltaY), hdtReverse + yawSensor);
                         } else {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, gps1_Y_dev, hdt0);
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, DataSaved.deltaY, hdt0);
                         }//DY = Centro LAMA
                         bucketCoord = coordinateDY;
                         bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctRoll, correctPitch, DataSaved.W_Blade_RIGHT, hdt0 + 90 + yawSensor);
@@ -304,7 +270,7 @@ public class ExcavatorLib {
                 }
 
 
-            } else if (GPS_Enabled == 0) {
+            } else {
                 startXYZ = new double[]{0, 0, 0};
                 //To Do 2D
                 coordinateDZ = new double[]{0, 0, 0};
@@ -312,37 +278,18 @@ public class ExcavatorLib {
                 coordinateDY = new double[]{0, 0, 0};
                 //qui gestire yaw del sensore frame
 
-                if (hdt == 999.999) {
-                    hdt = 0;
-                }
+
                 if (MyApp.visibleActivity.toString().contains("Profile")) {
                     hdt_DRITTO = 0;//no rotaz
                 } else {
-                    hdt_DRITTO = hdt + 0;//no rotaz
+                    hdt_DRITTO = (NmeaListener.roof_Orientation - DataSaved.offsetHDT) + 0;//no rotaz
                 }
-                double hdt_BOOM = hdt_DRITTO + swing_boom_angle;
-                if (hdt_BOOM > 360) {
-                    hdt_BOOM -= 360;
-                } else if (hdt_BOOM < 0) {
-                    hdt_BOOM += 360;
-                }
+                double hdt_BOOM = ((hdt_DRITTO + swing_boom_angle) % 360 + 360) % 360;
 
 
-                hdt_DESTRA = hdt_DRITTO + 90;
-                if (hdt_DESTRA > 360) {
-                    hdt_DESTRA -= 360;
-                }
-                if (hdt_DESTRA < 0) {
-                    hdt_DESTRA += 360;
-                }//rotaz destra
+                 hdt_DESTRA = ((hdt_DRITTO + 90) % 360 + 360) % 360;
 
-                hdt_SINISTRA = hdt_DRITTO + 270;
-                if (hdt_SINISTRA < 0) {
-                    hdt_SINISTRA = hdt_SINISTRA + 360;
-                }
-                if (hdt_SINISTRA > 360) {
-                    hdt_SINISTRA -= 360;
-                }//rotaz sinistra
+                hdt_SINISTRA = ((hdt_DRITTO + 270) % 360 + 360) % 360;
 
                 coordRoll = Exca_Quaternion.endPoint(startXYZ, -correctRoll, correctPitch, DataSaved.L_Roll, hdt_DESTRA);
 
@@ -391,7 +338,30 @@ public class ExcavatorLib {
                     PointCalculator pointCalculatorS2 = new PointCalculator(p3);
                     double[] p4 = pointCalculatorS2.calculateEndPoint(-DataSaved.slopeY, 0, 90, 0, 30, 0);
 
-                    Surface_4pts surface4pts = new Surface_4pts(new double[]{p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2], p4[0], p4[1], p4[2], OffsetZOper});
+                    Surface_4pts surface4pts = new Surface_4pts(new double[]{p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2], p4[0], p4[1], p4[2], 0});
+                    switch (DataSaved.bucketEdge) {
+                        case 1:
+                            ActualX = ExcavatorLib.bucketRightCoord[0];//x
+                            ActualY = ExcavatorLib.bucketRightCoord[1];//y
+                            ActualZ = ExcavatorLib.bucketRightCoord[2];//z
+                            break;
+                        case 0:
+                            ActualX = ExcavatorLib.bucketCoord[0];
+                            ActualY = ExcavatorLib.bucketCoord[1];
+                            ActualZ = ExcavatorLib.bucketCoord[2];
+                            break;
+
+                        case -1:
+                            ActualX = ExcavatorLib.bucketLeftCoord[0];
+                            ActualY = ExcavatorLib.bucketLeftCoord[1];
+                            ActualZ = ExcavatorLib.bucketLeftCoord[2];
+                            break;
+                        default:
+                            ActualX = ExcavatorLib.bucketCoord[0];
+                            ActualY = ExcavatorLib.bucketCoord[1];
+                            ActualZ = ExcavatorLib.bucketCoord[2];
+                            break;
+                    }
                     quota2D = surface4pts.getAltitudeDifference(ActualX, ActualY, ActualZ);
                     quotaCentro = surface4pts.getAltitudeDifference(bucketCoord[0], bucketCoord[1], bucketCoord[2]);
                     quotaSx = surface4pts.getAltitudeDifference(bucketLeftCoord[0], bucketLeftCoord[1], bucketLeftCoord[2]);

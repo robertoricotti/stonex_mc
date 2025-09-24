@@ -171,85 +171,12 @@ public class CanService extends Service {
                     }
                 }
 
-                double hdt = 0;
-                double gps_type = 0;
-
-                if (DataSaved.portView == 0) {
-                    hdt = 0;
-                    gps_type = 0;
-                    spigoloX = ExcavatorLib.bucketCoord[0];
-                    spigoloY = ExcavatorLib.bucketCoord[1];
-                    spigoloZ = ExcavatorLib.bucketCoord[2];
-                } else if (DataSaved.portView == 1) {
-                    //
-                    hdt = NmeaListener.roof_Orientation - DataSaved.offsetHDT;
-
-                    if (hdt < 0) {
-                        hdt = hdt + 360;
-                    }
-                    gps_type = 0;
-                    switch (DataSaved.bucketEdge) {
-                        case 1:
-                            spigoloX = ExcavatorLib.bucketRightCoord[0];//x
-                            spigoloY = ExcavatorLib.bucketRightCoord[1];//y
-                            spigoloZ = ExcavatorLib.bucketRightCoord[2];//z
-                            break;
-                        case 0:
-                            spigoloX = ExcavatorLib.bucketCoord[0];
-                            spigoloY = ExcavatorLib.bucketCoord[1];
-                            spigoloZ = ExcavatorLib.bucketCoord[2];
-                            break;
-
-                        case -1:
-                            spigoloX = ExcavatorLib.bucketLeftCoord[0];
-                            spigoloY = ExcavatorLib.bucketLeftCoord[1];
-                            spigoloZ = ExcavatorLib.bucketLeftCoord[2];
-                            break;
-                        default:
-                            spigoloX = ExcavatorLib.bucketCoord[0];
-                            spigoloY = ExcavatorLib.bucketCoord[1];
-                            spigoloZ = ExcavatorLib.bucketCoord[2];
-                            break;
-                    }
 
 
-                } else if (DataSaved.portView >= 2) {
-                    hdt = 0;
-                    gps_type = 1;
-                    switch (DataSaved.bucketEdge) {
-                        case -1:
-                            spigoloX = ExcavatorLib.bucketLeftCoord[0];
-                            spigoloY = ExcavatorLib.bucketLeftCoord[1];
-                            spigoloZ = ExcavatorLib.bucketLeftCoord[2];
-                            break;
-
-                        case 0:
-                            spigoloX = ExcavatorLib.bucketCoord[0];
-                            spigoloY = ExcavatorLib.bucketCoord[1];
-                            spigoloZ = ExcavatorLib.bucketCoord[2];
-                            break;
-
-                        case 1:
-                            spigoloX = ExcavatorLib.bucketRightCoord[0];
-                            spigoloY = ExcavatorLib.bucketRightCoord[1];
-                            spigoloZ = ExcavatorLib.bucketRightCoord[2];
-                            break;
-                        default:
-                            spigoloX = ExcavatorLib.bucketCoord[0];
-                            spigoloY = ExcavatorLib.bucketCoord[1];
-                            spigoloZ = ExcavatorLib.bucketCoord[2];
-                            break;
-
-                    }
-
-                }
-
-
-                if (DataSaved.isWL > 1) {
+                if (DataSaved.isWL ==2||DataSaved.isWL==3||DataSaved.isWL==4) {
                     DataSaved.deltaZ = DataSaved.altezzaLama + DataSaved.altezzaPali;
                 }
-                double[] arrayData = new double[]{hdt, gps_type, DataSaved.deltaX, DataSaved.deltaY, DataSaved.deltaZ, DataSaved.deltaGPS2, spigoloX, spigoloY, spigoloZ, 0};
-                Sensors_Decoder.Moba_G2_Decoder_Update(id, msg, arrayData);
+                Sensors_Decoder.Moba_G2_Decoder_Update(id, msg);
 
                 if(DataSaved.isWL==1){
                     if(DataSaved.Extra_Heading>0) {

@@ -324,16 +324,28 @@ git push
     }
 
     private void checkAndPlaySound(Context context) {
-        String newState;
-
-        if (isAlto) {
-            newState = "alto";
-        } else if (isCentro) {
-            newState = "centro";
-        } else if (isBasso) {
-            newState = "basso";
-        } else {
-            newState = "";
+        String newState="";
+        int indexAudioSystem = MyData.get_Int("indexAudioSystem");
+        if(indexAudioSystem!=2) {
+            if (isAlto) {
+                newState = "alto";
+            } else if (isCentro) {
+                newState = "centro";
+            } else if (isBasso) {
+                newState = "basso";
+            } else {
+                newState = "";
+            }
+        }else {
+            if (isAlto) {
+                newState = "";
+            } else if (isCentro) {
+                newState = "centro";
+            } else if (isBasso) {
+                newState = "basso";
+            } else {
+                newState = "";
+            }
         }
 
         if (!newState.equals(currentState) || mediaPlayer == null || !mediaPlayer.isPlaying()) {

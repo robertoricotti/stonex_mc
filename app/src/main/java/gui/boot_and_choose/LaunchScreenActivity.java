@@ -89,9 +89,7 @@ public class LaunchScreenActivity extends BaseClass {
 
         textView = findViewById(R.id.textView5);
         textView.setText("STX MC " + BuildConfig.VERSION_NAME);
-
-
-        ExcavatorLib.Excavator(new double[100]);
+        ExcavatorLib.Excavator();
         UpdateValuesService.firstLaunch = false;
         Dialog_Trench.leftW_d = 0.5f;
         Dialog_Trench.rightW_d = 0.5f;
