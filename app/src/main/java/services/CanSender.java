@@ -434,6 +434,7 @@ public class CanSender extends Service {
                             handleLamaGrader(QL,QR,ltOffGrid,rtOffGrid);
                             break;
                     }
+                    handleSideShift(DataSaved.bucketEdge,DataSaved.line_Offset);
 
                 } else {
                     //DOZER
@@ -703,6 +704,45 @@ public class CanSender extends Service {
             dirCAT_R = (byte) 0xF2;
             dirCAT_SS = (byte) 0xF2;
         }
+
+
+    }
+
+    private void handleSideShift(int bladeEdge,double offset){
+        double dist = 0;
+        double rot;
+        double rotFix = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
+        rot = TriangleService.orientamentoFreccia + rotFix;
+        rot=((rot + 0) % 360 + 360) % 360;
+
+        /*
+        se  30 <rot> 120  la lama deve andare verso destra
+        se  240<rot>300  la lama deve andare a sinistra
+        */
+        switch (bladeEdge) {
+            case -1:
+                dist = TriangleService.dist3D_SX;
+
+                break;
+            case 0:
+                dist = TriangleService.dist3D_CT;
+                break;
+
+            case 1:
+                dist = TriangleService.dist3D_DX;
+                break;
+        }
+        dist=dist+offset;
+        if(Grader_Auto_SS){
+            //TODO sideshift
+            Log.w("SideShift",dist+"    "+rot);
+        }else {
+            valueCATSS=0;
+            valueJDSS=20000;
+            dirCAT_SS= (byte) 0xF2;
+            Log.d("SideShift",dist+"    "+rot);
+        }
+    
     }
 
     private void invioMessaggiDozer(){

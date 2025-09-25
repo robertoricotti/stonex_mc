@@ -1455,8 +1455,7 @@ public class My3DActivity extends BaseClass {
                 if (DataSaved.isWL == 4) {
                     //GRADER
                     AUTO_SX.setVisibility(View.VISIBLE);
-                   //todo AUTO_SS.setVisibility(View.VISIBLE);
-                    AUTO_SS.setVisibility(View.INVISIBLE);
+                    AUTO_SS.setVisibility(View.VISIBLE);
                     AUTO_DX.setVisibility(View.VISIBLE);
 
                     if (prepLeft) {

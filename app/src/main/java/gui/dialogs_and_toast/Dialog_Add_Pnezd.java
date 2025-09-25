@@ -528,12 +528,15 @@ public class Dialog_Add_Pnezd {
                 Log.e("Dialog_Add_Pnezd", "Errore scrittura CSV: " + e.getMessage());
             }
 
-            // 3️⃣ Rimuovi il punto selezionato da DataSaved.points SOLO se layer = "MyPNEZD"
-            DataSaved.points.removeIf(p ->
-                    p.getLayer() != null &&
-                            "MyPNEZD".equals(p.getLayer().getLayerName()) &&
-                            selectedFilename.equals(p.getFilename())
-            );
+            DataSaved.points.removeIf(p -> {
+                String layerName = (p.getLayer() != null) ? p.getLayer().getLayerName() : null;
+                String name = p.getName();
+
+                boolean isPnezd = "MyPNEZD".equals(layerName); // sicuro anche se null
+                boolean matches = (name != null && name.equals("PNEZD: " + selected.getPointNumber()));
+
+                return isPnezd && matches;
+            });
 
             // 4️⃣ Aggiorna l’adapter con la lista aggiornata
             List<PNEZDPoint> nuoviPunti = leggiCSV(filepath);
