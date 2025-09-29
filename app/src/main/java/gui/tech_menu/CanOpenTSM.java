@@ -282,7 +282,7 @@ public class CanOpenTSM extends AppCompatActivity {
 
         changeId.setOnClickListener(view -> {
             Handler handler = new Handler();
-            MyDeviceManager.CanWrite(0, sourceID, 8, new byte[]{47, 1, 48, 0, (byte) (destID), 0, 0, 0});
+            MyDeviceManager.CanWrite(0, sourceID, 8, new byte[]{0x2F, 1, 0x30, 0, (byte) (destID), 0, 0, 0});
             handler.postDelayed(this::msg47, 100);
             handler.postDelayed(this::msg48, 200);
             handler.postDelayed(this::msg49, 400);
@@ -658,7 +658,7 @@ public class CanOpenTSM extends AppCompatActivity {
     private void msg47() {
         isSend = true;
         progresso=20;
-        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
     }
 
     private void msg48() {

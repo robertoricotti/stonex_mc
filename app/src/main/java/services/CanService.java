@@ -263,7 +263,7 @@ public class CanService extends Service {
                                 handler_tl.postDelayed(timeoutRunnable_tl, 3000);
                             }
                         } else {
-                            if ((id == 902 || id == 90181738 || id == 90181733) && DataSaved.lrBucket != 0) {
+                            if ((id == 901 ||id == 902 || id == 90181738 || id == 90181733) && DataSaved.lrBucket != 0) {
                                 tiltOK = true;
                                 tiltDisc = false;
                                 handler_tl.removeCallbacks(timeoutRunnable_tl);
@@ -355,9 +355,8 @@ public class CanService extends Service {
             }
 
             if (channel == 2) {
-
                 //CAN2
-                if (id == 0x1CF00D22 && DataSaved.Interface_Type == 1) {
+                if (id == 0x1CF00D22 && DataSaved.Interface_Type <2) {
                     CAT_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
                     boolean[] booleans = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
                     boolean[] bGrad_Left = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[1]);
@@ -398,23 +397,6 @@ public class CanService extends Service {
                     }
 
                 }
-
-                if (id == 0x0CFF3302&& DataSaved.Interface_Type == 3) {
-                    KOMATSU_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
-                    if (MyApp.visibleActivity instanceof My3DActivity) {
-                        Dozer_Auto_Main=msg[6]==1;
-                    }else {
-                        Dozer_Auto_Main = false;
-                        Grader_Auto_Left = false;
-                        Grader_AutoRight = false;
-                        Grader_Auto_SS = false;
-                        AutoManToggle.Can_Toggled_Auto = false;
-                        AutoManToggle.Can_Toggled_Auto_L = false;
-                        AutoManToggle.Can_Toggled_Auto_R = false;
-                        AutoManToggle.Can_Toggled_Auto_SS = false;
-                    }
-                }
-
                 if (id == 0x0CF00D80&& DataSaved.Interface_Type == 2) {
                     JD_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
                     boolean[] booleans = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
@@ -454,6 +436,23 @@ public class CanService extends Service {
                     }
                     Log.d("JDD",Grader_Auto_Left+" "+Grader_AutoRight+" "+Grader_Auto_SS);
                 }
+                if (id == 0x0CFF3302&& DataSaved.Interface_Type == 3) {
+                    KOMATSU_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
+                    if (MyApp.visibleActivity instanceof My3DActivity) {
+                        Dozer_Auto_Main=msg[6]==1;
+                    }else {
+                        Dozer_Auto_Main = false;
+                        Grader_Auto_Left = false;
+                        Grader_AutoRight = false;
+                        Grader_Auto_SS = false;
+                        AutoManToggle.Can_Toggled_Auto = false;
+                        AutoManToggle.Can_Toggled_Auto_L = false;
+                        AutoManToggle.Can_Toggled_Auto_R = false;
+                        AutoManToggle.Can_Toggled_Auto_SS = false;
+                    }
+                }
+
+
 
                 if (id == 2066) {
                     ECU_Connected = true;

@@ -118,6 +118,7 @@ public class CPCanHelper {
                 case "SRT8PROS":
                 case "SRT7PROS":
                 case "APOLLO2_10":
+                case "APOLLO2_7":
 
                     try {
 
@@ -142,7 +143,7 @@ public class CPCanHelper {
                     }
 
                     break;
-                case "APOLLO2_7":
+
                 case "TANK2_7_10":
 
                     try {
@@ -238,6 +239,7 @@ public class CPCanHelper {
                 case "SRT8PROS":
                 case "SRT7PROS":
                 case "APOLLO2_10":
+                case "APOLLO2_7":
 
                     if (mProxy.isConnected()) {
                         mProxy.disconnect();
@@ -247,7 +249,7 @@ public class CPCanHelper {
                     }
                     break;
 
-                case "APOLLO2_7":
+
                 case "TANK2_7_10":
 
                     //CPV3 release
@@ -307,7 +309,7 @@ public class CPCanHelper {
                 case "SRT8PROS":
                 case "SRT7PROS":
                 case "APOLLO2_10":
-
+                case "APOLLO2_7":
                     if (mProxy != null) {
                         if (mProxy.isConnected()) {
                             boolean t = id > 2047;
@@ -315,7 +317,7 @@ public class CPCanHelper {
                         }
                     }
                     break;
-                case "APOLLO2_7":
+
                 case "TANK2_7_10":
                     try {
                         if (mCPVxProtocol != null) {
