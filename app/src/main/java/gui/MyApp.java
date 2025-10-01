@@ -428,6 +428,7 @@ git push
                         @Override
                         public void run() {
                             try {
+
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {
                                     frameCounter += 1;

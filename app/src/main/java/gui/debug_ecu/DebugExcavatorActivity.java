@@ -39,6 +39,7 @@ import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
 import services.CanService;
 import services.ReadProjectService;
+import utils.CPCanHelper;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -114,7 +115,7 @@ public class DebugExcavatorActivity extends BaseClass {
     }
     private void updateVoltage(){
         try {
-            power = MyDeviceManager.getVoltage();
+            power = Float.parseFloat(CPCanHelper.voltApollo2);
 
         } catch (Exception e) {
             power=0f;

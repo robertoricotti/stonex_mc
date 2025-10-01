@@ -207,29 +207,7 @@ public class MyDeviceManager {
 */
     }
 
-    public static float getVoltage() {
-        float result = 0;
-        String s = Build.BRAND;
-        switch (s) {
-            case "APOLLO2_7":
-            case "APOLLO2_12_PRO":
-            case "APOLLO2_12_PLUS":
-            case "APOLLO2_10":
-            case "TANK2_7_10":
-                result = Float.parseFloat(CPCanHelper.voltApollo2);
 
-                break;
-            case "SRT8PROS":
-            case "SRT7PROS":
-
-                break;
-
-        }
-
-
-
-        return result;
-    }
 
     public static void CanWrite(int channel, int id, int dlc, byte[] msg) {
         ICPCanFrame.Channel channel1 = null;

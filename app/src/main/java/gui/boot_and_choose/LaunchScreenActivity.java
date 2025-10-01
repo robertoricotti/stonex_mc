@@ -26,6 +26,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
+import com.cpdevice.cpcomm.common.CPCommConfig;
 import com.example.stx_dig.BuildConfig;
 import com.example.stx_dig.R;
 
@@ -86,7 +87,6 @@ public class LaunchScreenActivity extends BaseClass {
         MyColorClass.colorTriangle = Color.BLACK;
         pgBar = findViewById(R.id.progressBar);
         animazione = findViewById(R.id.animazione);
-
         textView = findViewById(R.id.textView5);
         textView.setText("STX MC " + BuildConfig.VERSION_NAME);
         ExcavatorLib.Excavator();

@@ -5,7 +5,6 @@ import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static packexcalib.gnss.CRS_Strings._2100;
 import static packexcalib.gnss.CRS_Strings._28992;
 import static packexcalib.gnss.CRS_Strings._31370;
-import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.Bluetooth_GNSS_Service.GNSSServiceState;
 import static services.CanService.nmeaSTX_Disc;
@@ -17,7 +16,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -29,21 +27,15 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
-import java.util.Arrays;
-
 import gui.BaseClass;
 import gui.MyApp;
-import gui.digging_excavator.Digging3D_DXF;
-import gui.grading_dozergrader.Grading3D_DXF;
-import gui.my_opengl.My3DActivity;
-import gui.projects.Activity_Crea_Superficie;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
-import packexcalib.exca.Excavator_RealValues;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.NmeaListener;
 import services.Bluetooth_GNSS_Service;
+import utils.CPCanHelper;
 import utils.FullscreenActivity;
 import utils.LanguageSetter;
 import utils.MyData;
@@ -51,16 +43,17 @@ import utils.MyDeviceManager;
 import utils.Utils;
 
 public class Dialog_GNSS_Coordinates extends BaseClass {
+    TextView textViewPW;
     Dialog_Edit_Zeta_DXF dialogEditZetaDxf;
     ProgressBar progressBar;
     Activity activity;
     public Dialog alertDialog;
-    ImageView save,  title, BTConnect, serialCon, editZ, rtkMode;
-    TextView txmchdt, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon,extraAng;
-    TextView framA,boomA,boom2A,stickA,bucketA,tiltA;
-    TextView framO,boomO,boom2O,stickO,bucketO,tiltO;
+    ImageView save, title, BTConnect, serialCon, editZ, rtkMode;
+    TextView txmchdt, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon, extraAng;
+    TextView framA, boomA, boom2A, stickA, bucketA, tiltA;
+    TextView framO, boomO, boom2O, stickO, bucketO, tiltO;
     Button cqpiu, cqmeno;
-    TextView tvCq,frame,boom1,boom2,stick,bucket,tilt;
+    TextView tvCq, frame, boom1, boom2, stick, bucket, tilt;
     private boolean isUpdating = false;
     private Handler handler;
     EpsgDialog epsgDialog;
@@ -99,7 +92,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
     private void findView() {
         LanguageSetter.setLocale(activity, "en");
-
+        textViewPW = alertDialog.findViewById(R.id.powerS);
         title = alertDialog.findViewById(R.id.titleG);//
         txSat = alertDialog.findViewById(R.id.txSat);//
         txAge = alertDialog.findViewById(R.id.txage);//
@@ -122,34 +115,34 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         imbl = alertDialog.findViewById(R.id.imbl);
         imbc = alertDialog.findViewById(R.id.imbc);
         imbr = alertDialog.findViewById(R.id.imbr);
-        framA=alertDialog.findViewById(R.id.idframeAng);
-        boomA=alertDialog.findViewById(R.id.idboom1Ang);
-        boom2A=alertDialog.findViewById(R.id.idBoom2Ang);
-        stickA=alertDialog.findViewById(R.id.idStickAng);
-        bucketA=alertDialog.findViewById(R.id.idbucketAng);
-        tiltA=alertDialog.findViewById(R.id.idTiltAng);
-        framO=alertDialog.findViewById(R.id.idframeOff);
-        boomO=alertDialog.findViewById(R.id.idboom1Off);
-        boom2O=alertDialog.findViewById(R.id.idBoom2Off);
-        stickO=alertDialog.findViewById(R.id.idStickOff);
-        bucketO=alertDialog.findViewById(R.id.idbucketOff);
-        tiltO=alertDialog.findViewById(R.id.idTiltOff);
+        framA = alertDialog.findViewById(R.id.idframeAng);
+        boomA = alertDialog.findViewById(R.id.idboom1Ang);
+        boom2A = alertDialog.findViewById(R.id.idBoom2Ang);
+        stickA = alertDialog.findViewById(R.id.idStickAng);
+        bucketA = alertDialog.findViewById(R.id.idbucketAng);
+        tiltA = alertDialog.findViewById(R.id.idTiltAng);
+        framO = alertDialog.findViewById(R.id.idframeOff);
+        boomO = alertDialog.findViewById(R.id.idboom1Off);
+        boom2O = alertDialog.findViewById(R.id.idBoom2Off);
+        stickO = alertDialog.findViewById(R.id.idStickOff);
+        bucketO = alertDialog.findViewById(R.id.idbucketOff);
+        tiltO = alertDialog.findViewById(R.id.idTiltOff);
         txCrs.setTextSize(14);
         editZ = alertDialog.findViewById(R.id._editZ);
         progressBar = alertDialog.findViewById(R.id.progresss);
-        frame=alertDialog.findViewById(R.id.idframe);
-         boom1=alertDialog.findViewById(R.id.idboom1);
-        boom2=alertDialog.findViewById(R.id.idBoom2);
-        stick=alertDialog.findViewById(R.id.idStick);
-        bucket=alertDialog.findViewById(R.id.idbucket);
-        tilt=alertDialog.findViewById(R.id.idTilt);
-        extraAng=alertDialog.findViewById(R.id.idExtraAng);
+        frame = alertDialog.findViewById(R.id.idframe);
+        boom1 = alertDialog.findViewById(R.id.idboom1);
+        boom2 = alertDialog.findViewById(R.id.idBoom2);
+        stick = alertDialog.findViewById(R.id.idStick);
+        bucket = alertDialog.findViewById(R.id.idbucket);
+        tilt = alertDialog.findViewById(R.id.idTilt);
+        extraAng = alertDialog.findViewById(R.id.idExtraAng);
 
 
     }
 
     public void init() {
-        if(DataSaved.isWL==2||DataSaved.isWL==3||DataSaved.isWL==4){
+        if (DataSaved.isWL == 2 || DataSaved.isWL == 3 || DataSaved.isWL == 4) {
             imbl.setImageResource(R.drawable.lama_misura_sinistra);
             imbc.setImageResource(R.drawable.lama_misura_cnt);
             imbr.setImageResource(R.drawable.lama_misura_destra);
@@ -158,9 +151,9 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         progressBar.setVisibility(View.INVISIBLE);
         indexMach = MyData.get_Int("MachineSelected");
         DataSaved.radioMode = MyData.get_Int("M" + indexMach + "radioMode");
-        if(DataSaved.useQuickSwitch==1){
-            rtkMode.setVisibility(View.VISIBLE);}
-        else {
+        if (DataSaved.useQuickSwitch == 1) {
+            rtkMode.setVisibility(View.VISIBLE);
+        } else {
             rtkMode.setVisibility(View.GONE);
         }
         if (isTech) {
@@ -215,8 +208,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     break;
 
             }
-            byte msg=0x03;
-
+            byte msg = 0x03;
 
 
             MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
@@ -238,8 +230,8 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         imbr.setOnClickListener(view -> {
             DataSaved.bucketEdge = 1;
             imbl.setBackgroundColor(activity.getColor(R.color.transparent));
-            imbc.setBackgroundColor( activity.getColor(R.color.transparent));
-            imbr.setBackgroundColor( activity.getColor(R.color.yellow));
+            imbc.setBackgroundColor(activity.getColor(R.color.transparent));
+            imbr.setBackgroundColor(activity.getColor(R.color.yellow));
 
         });
         rtkMode.setOnClickListener(view -> {
@@ -339,7 +331,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
         save.setOnClickListener((View v) -> {
             stopUpdatingCoordinates();
-           MyData.push("_cq3d", String.valueOf(DataSaved.Max_CQ3D));
+            MyData.push("_cq3d", String.valueOf(DataSaved.Max_CQ3D));
 
             alertDialog.dismiss();
         });
@@ -375,116 +367,121 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
             public void run() {
                 // Update coord TextView with new coordinates
                 try {
-                    if(DataSaved.Extra_Heading!=0){
+                    if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){
+                        textViewPW.setText("");
+                    }else {
+                        textViewPW.setText(CPCanHelper.voltApollo2 + " V");
+                    }
+                    if (DataSaved.Extra_Heading != 0) {
                         try {
-                            extraAng.setText(String.format("%.2f",NmeaListener.roof_Orientation)+" °");
+                            extraAng.setText(String.format("%.2f", NmeaListener.roof_Orientation) + " °");
                         } catch (Exception e) {
                             extraAng.setText("Error");
                         }
 
-                    }else {
+                    } else {
                         extraAng.setText("NOT USED");
                     }
-                    if(DataSaved.isWL<2){
-                        boolean[] b= PLC_DataTypes_BigEndian.U8_to_bitmask_be((byte) errorCode);
+                    if (DataSaved.isWL < 2) {
+                        boolean[] b = PLC_DataTypes_BigEndian.U8_to_bitmask_be((byte) errorCode);
 
                         tilt.setText("TILT");
-                        if(b[0]){
+                        if (b[0]) {
                             frame.setBackgroundColor(Color.RED);
                             frame.setTextColor(Color.WHITE);
-                            framO.setText(String.format("%.02f", DataSaved.offsetPitch).replace(",", ".")+"°"+"/"+
-                                    String.format("%.02f", DataSaved.offsetRoll).replace(",", ".")+"°");
-                        }else {
-                            if(DataSaved.lrFrame!=0) {
+                            framO.setText(String.format("%.02f", DataSaved.offsetPitch).replace(",", ".") + "°" + "/" +
+                                    String.format("%.02f", DataSaved.offsetRoll).replace(",", ".") + "°");
+                        } else {
+                            if (DataSaved.lrFrame != 0) {
                                 frame.setBackgroundColor(Color.GREEN);
                                 frame.setTextColor(Color.DKGRAY);
-                                framA.setText(String.format("%.02f", ExcavatorLib.correctPitch).replace(",", ".")+"°"+"/"+
-                                        String.format("%.02f", ExcavatorLib.correctRoll).replace(",", ".")+"°");
-                                framO.setText(String.format("%.02f", DataSaved.offsetPitch).replace(",", ".")+"°"+"/"+
-                                        String.format("%.02f", DataSaved.offsetRoll).replace(",", ".")+"°");
-                            }else {
+                                framA.setText(String.format("%.02f", ExcavatorLib.correctPitch).replace(",", ".") + "°" + "/" +
+                                        String.format("%.02f", ExcavatorLib.correctRoll).replace(",", ".") + "°");
+                                framO.setText(String.format("%.02f", DataSaved.offsetPitch).replace(",", ".") + "°" + "/" +
+                                        String.format("%.02f", DataSaved.offsetRoll).replace(",", ".") + "°");
+                            } else {
                                 frame.setBackgroundColor(Color.GRAY);
                                 frame.setTextColor(Color.WHITE);
 
                             }
                         }
 
-                        if(b[1]){
+                        if (b[1]) {
                             boom1.setBackgroundColor(Color.RED);
                             boom1.setTextColor(Color.WHITE);
-                            boomO.setText(String.format("%.02f", DataSaved.offsetBoom1).replace(",", ".")+"°");
-                        }else {
-                            if(DataSaved.lrBoom1!=0) {
+                            boomO.setText(String.format("%.02f", DataSaved.offsetBoom1).replace(",", ".") + "°");
+                        } else {
+                            if (DataSaved.lrBoom1 != 0) {
                                 boom1.setBackgroundColor(Color.GREEN);
                                 boom1.setTextColor(Color.DKGRAY);
-                                boomA.setText(String.format("%.02f",ExcavatorLib.correctBoom1).replace(",", ".")+"°");
-                                boomO.setText(String.format("%.02f", DataSaved.offsetBoom1).replace(",", ".")+"°");
-                            }else {
+                                boomA.setText(String.format("%.02f", ExcavatorLib.correctBoom1).replace(",", ".") + "°");
+                                boomO.setText(String.format("%.02f", DataSaved.offsetBoom1).replace(",", ".") + "°");
+                            } else {
                                 boom1.setBackgroundColor(Color.GRAY);
                                 boom1.setTextColor(Color.WHITE);
                             }
                         }
-                        if(b[2]){
+                        if (b[2]) {
                             boom2.setBackgroundColor(Color.RED);
                             boom2.setTextColor(Color.WHITE);
-                            boom2O.setText(String.format("%.02f", DataSaved.offsetBoom2).replace(",", ".")+"°");
-                        }else {
-                            if(DataSaved.lrBoom2!=0) {
+                            boom2O.setText(String.format("%.02f", DataSaved.offsetBoom2).replace(",", ".") + "°");
+                        } else {
+                            if (DataSaved.lrBoom2 != 0) {
                                 boom2.setBackgroundColor(Color.GREEN);
                                 boom2.setTextColor(Color.DKGRAY);
-                                boom2A.setText(String.format("%.02f",ExcavatorLib.correctBoom2).replace(",", ".")+"°");
-                                boom2O.setText(String.format("%.02f", DataSaved.offsetBoom2).replace(",", ".")+"°");
-                            }else {
+                                boom2A.setText(String.format("%.02f", ExcavatorLib.correctBoom2).replace(",", ".") + "°");
+                                boom2O.setText(String.format("%.02f", DataSaved.offsetBoom2).replace(",", ".") + "°");
+                            } else {
                                 boom2.setBackgroundColor(Color.GRAY);
                                 boom2.setTextColor(Color.WHITE);
                             }
                         }
-                        if(b[3]){
+                        if (b[3]) {
                             stick.setBackgroundColor(Color.RED);
                             stick.setTextColor(Color.WHITE);
-                            stickO.setText(String.format("%.02f", DataSaved.offsetStick).replace(",", ".")+"°");
-                        }else {
-                            if(DataSaved.lrStick!=0) {
+                            stickO.setText(String.format("%.02f", DataSaved.offsetStick).replace(",", ".") + "°");
+                        } else {
+                            if (DataSaved.lrStick != 0) {
                                 stick.setBackgroundColor(Color.GREEN);
                                 stick.setTextColor(Color.DKGRAY);
-                                stickA.setText(String.format("%.02f",ExcavatorLib.correctStick).replace(",", ".")+"°");
-                                stickO.setText(String.format("%.02f", DataSaved.offsetStick).replace(",", ".")+"°");
-                            }else {
+                                stickA.setText(String.format("%.02f", ExcavatorLib.correctStick).replace(",", ".") + "°");
+                                stickO.setText(String.format("%.02f", DataSaved.offsetStick).replace(",", ".") + "°");
+                            } else {
                                 stick.setBackgroundColor(Color.GRAY);
                                 stick.setTextColor(Color.WHITE);
                             }
                         }
-                        if(b[4]){
+                        if (b[4]) {
                             bucket.setBackgroundColor(Color.RED);
                             bucket.setTextColor(Color.WHITE);
-                            bucketO.setText(String.format("%.02f", DataSaved.offsetBucket).replace(",", ".")+"°");
-                        }else {
-                            if(DataSaved.lrBucket!=0) {
+                            bucketO.setText(String.format("%.02f", DataSaved.offsetBucket).replace(",", ".") + "°");
+                        } else {
+                            if (DataSaved.lrBucket != 0) {
                                 bucket.setBackgroundColor(Color.GREEN);
                                 bucket.setTextColor(Color.DKGRAY);
-                                bucketA.setText(String.format("%.02f",ExcavatorLib.correctBucket).replace(",", ".")+"°");
-                                bucketO.setText(String.format("%.02f", DataSaved.offsetBucket).replace(",", ".")+"°");
-                            }else {
+                                bucketA.setText(String.format("%.02f", ExcavatorLib.correctBucket).replace(",", ".") + "°");
+                                bucketO.setText(String.format("%.02f", DataSaved.offsetBucket).replace(",", ".") + "°");
+                            } else {
                                 bucket.setBackgroundColor(Color.GRAY);
                                 bucket.setTextColor(Color.WHITE);
                             }
                         }
-                        if(b[5]){
+                        if (b[5]) {
                             tilt.setBackgroundColor(Color.RED);
                             tilt.setTextColor(Color.WHITE);
-                            tiltO.setText(String.format("%.02f", DataSaved.offsetTilt).replace(",", ".")+"°");
-                        }else {
-                            if(DataSaved.lrTilt!=0) {
+                            tiltO.setText(String.format("%.02f", DataSaved.offsetTilt).replace(",", ".") + "°");
+                        } else {
+                            if (DataSaved.lrTilt != 0) {
                                 tilt.setBackgroundColor(Color.GREEN);
                                 tilt.setTextColor(Color.DKGRAY);
-                                tiltA.setText(String.format("%.02f",ExcavatorLib.correctTilt).replace(",", ".")+"°");
-                                tiltO.setText(String.format("%.02f", DataSaved.offsetTilt).replace(",", ".")+"°");
-                            }else {
+                                tiltA.setText(String.format("%.02f", ExcavatorLib.correctTilt).replace(",", ".") + "°");
+                                tiltO.setText(String.format("%.02f", DataSaved.offsetTilt).replace(",", ".") + "°");
+                            } else {
                                 tilt.setBackgroundColor(Color.GRAY);
                                 tilt.setTextColor(Color.WHITE);
                             }
                         }
-                    }else {
+                    } else {
 
                         frame.setBackgroundColor(Color.GRAY);
                         boom1.setBackgroundColor(Color.GRAY);
@@ -492,10 +489,10 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                         stick.setBackgroundColor(Color.GRAY);
                         bucket.setBackgroundColor(Color.GRAY);
                         tilt.setText("TILT/BLADE");
-                        if(errorCode==0){
+                        if (errorCode == 0) {
                             tilt.setBackgroundColor(Color.GREEN);
                             tilt.setTextColor(Color.DKGRAY);
-                        }else {
+                        } else {
                             tilt.setBackgroundColor(Color.RED);
                             tilt.setTextColor(Color.WHITE);
                         }
@@ -613,26 +610,26 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                     try {
 
-                        txtant1.setText("E: " + Utils.showCoords(String.valueOf(NmeaListener.Est1)) + "   N: " + Utils.showCoords(String.valueOf(NmeaListener.Nord1)) + "  Z: " + Utils.showCoords(String.valueOf(NmeaListener.Quota1))+ "  "+Utils.getMetriSimbolCoords());
-                        if (MyApp.GEOIDE_PATH!=null) {
+                        txtant1.setText("E: " + Utils.showCoords(String.valueOf(NmeaListener.Est1)) + "   N: " + Utils.showCoords(String.valueOf(NmeaListener.Nord1)) + "  Z: " + Utils.showCoords(String.valueOf(NmeaListener.Quota1)) + "  " + Utils.getMetriSimbolCoords());
+                        if (MyApp.GEOIDE_PATH != null) {
                             if (Deg2UTM.geoidError) {
                                 txCon.append("\nGRID ERROR");
                             } else {
                                 txCon.append("\nGRID OK");
                             }
-                        }else {
+                        } else {
                             txCon.append("\n ");
                         }
                     } catch (Exception e) {
 
                     }
                     try {
-                        txtbennasx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]))+ "  "+Utils.getMetriSimbolCoords());
+                        txtbennasx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])) + "  " + Utils.getMetriSimbolCoords());
 
-                        txtbennacx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]))+ "  "+Utils.getMetriSimbolCoords());
+                        txtbennacx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "  " + Utils.getMetriSimbolCoords());
 
                         //txtbennacx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "    " + decLatCx + "   " + decLonCx);
-                        txtbennadx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]))+ "  "+Utils.getMetriSimbolCoords());
+                        txtbennadx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "  " + Utils.getMetriSimbolCoords());
                         //txtbennadx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "    " + decLatDx + "   " + decLonDx);
 
 

@@ -44,7 +44,6 @@ public class DampingActivity extends AppCompatActivity {
             MyDeviceManager.CanWrite(0,0,2,new byte[]{1,0});
         }
 
-
         back = findViewById(R.id._back);
         tvfr = findViewById(R.id.tx_fr);
         tvb1 = findViewById(R.id.tx_b1);
@@ -270,7 +269,6 @@ public class DampingActivity extends AppCompatActivity {
         MyDeviceManager.CanWrite(0,0x604,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
         MyDeviceManager.CanWrite(0,0x605,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
         MyDeviceManager.CanWrite(0,0x606,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
-
     }
     private void  readNova(){
         MyDeviceManager.CanWrite(0,0x601,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
