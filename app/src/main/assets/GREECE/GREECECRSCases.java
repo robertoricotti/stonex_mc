@@ -8,6 +8,15 @@ public class GREECECRSCases {
                 ReadProjectService.startCRS();
                 dialog.dismiss();
                 break;
+                case "HEPOS__GGRS87_TM87_GRID.SP":
+                MyData.push("crs", "150580");
+                DataSaved.S_CRS = MyData.get_String("crs");
+                activity.recreate();
+                ReadProjectService.startCRS();
+                dialog.dismiss();
+                break;
+
+                
         }
     }
 }

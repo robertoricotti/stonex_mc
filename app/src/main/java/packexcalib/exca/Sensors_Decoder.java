@@ -1087,22 +1087,22 @@ public class Sensors_Decoder {
 
         if (keyEvents[2]) {
             // lat+
-            NmeaGenerator.LATITUDE += 0.022;
+            NmeaGenerator.LATITUDE += 0.005;
 
         }
         if (keyEvents[3]) {
             // lat-
-            NmeaGenerator.LATITUDE -= 0.022;
+            NmeaGenerator.LATITUDE -= 0.005;
 
         }
         if (keyEvents[5]) {
             // lon+
-            NmeaGenerator.LONGITUDE -= 0.022;
+            NmeaGenerator.LONGITUDE -= 0.005;
 
         }
         if (keyEvents[4]) {
             // F4
-            NmeaGenerator.LONGITUDE += 0.022;
+            NmeaGenerator.LONGITUDE += 0.005;
 
         }
         if (keyEvents[0]) {
@@ -1126,10 +1126,10 @@ public class Sensors_Decoder {
 
         }
         if (keyEvents[6]) {
-            NmeaGenerator.ALTITUDE += 0.002;
+            NmeaGenerator.ALTITUDE += 0.001;
         }
         if (keyEvents[7]) {
-            NmeaGenerator.ALTITUDE -= 0.002;
+            NmeaGenerator.ALTITUDE -= 0.001;
         }
     }
 

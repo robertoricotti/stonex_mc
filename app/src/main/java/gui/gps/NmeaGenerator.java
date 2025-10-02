@@ -1,5 +1,7 @@
 package gui.gps;
 
+import android.util.Log;
+
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
@@ -23,8 +25,8 @@ public class NmeaGenerator {
     public static String generateGPGGA() {
         try {
             double lat, lon;
-            lat = 38  ;//to test
-            lon = -8.231456;//to test
+            lat = 39.74040133208518 ;//to test
+            lon = 20.821570772611768;//to test
             NmeaListener.VRMS_ = "0.014";
             Calendar now = Calendar.getInstance();
             DecimalFormat decimalFormat = new DecimalFormat("0.0000000000", DecimalFormatSymbols.getInstance(Locale.US));

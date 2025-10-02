@@ -2753,6 +2753,8 @@ public class MyEpsgNumber {
 
     public final static int GREECE__ONSHORE__GGRS87__GREEK_GRID__2100 = 2100;
 
+    public final static int HEPOS__GGRS87_TM87_GRID = 150580;
+
     public final static int GREENLAND__12_W_TO_6_W__GR96__UTM_ZONE_29N__3189 = 3189;
 
     public final static int GREENLAND__18_W_TO_12_W__GR96__UTM_ZONE_28N__3188 = 3188;
@@ -3552,7 +3554,7 @@ public class MyEpsgNumber {
     public final static int NAMIBIA__WALVIS_BAY__HARTEBEESTHOEK94__LO15__2046 = 2046;
 
     public final static int NETHERLANDS__OFFSHORE__ED50__TM_5_NE__23095 = 23095;
-  public final static int NETHERLANDS__ONSHORE__AMERSFOORT__RD_NEW__28992 = 28992;
+    public final static int NETHERLANDS__ONSHORE__AMERSFOORT__RD_NEW__28992 = 28992;
 
     //public final static int RDNAPTRANS2018 = 28992;
 
@@ -8916,7 +8918,6 @@ public class MyEpsgNumber {
     public final static int YEMEN__YEMEN_NGN96__4980 = 4980;
 
     public final static int YEMEN__YEMEN_NGN96__GEOCENTRIC__4380 = 4380;
-
 
 
 }

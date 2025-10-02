@@ -95,6 +95,7 @@ import gui.tech_menu.XYZ_Calib;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
+import packexcalib.gnss.GridShiftTransformer;
 import services.CanSender;
 import services.CanService;
 import services.TriangleService;
@@ -124,7 +125,9 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static final long timeUI = 55;
     public static String[] geoidAll = new String[]{};
     public static String GEOIDE_PATH = null;
-    public static String gridFile_GR = "";
+    public static GridShiftTransformer heposTransformer;
+    public static String gridFile_GR_dE = "";
+    public static String gridFile_GR_dN = "";
     public static String DEVICE_SN = "";
     public static Activity visibleActivity;
     public static String Actualactivity;
@@ -217,7 +220,26 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
         //Log.d("GEOIDALL", Arrays.toString(geoidAll));
 
-        gridFile_GR = copyGeoidFromAssets(this, "greece_2km_v1_0.gsb", "greece_2km_v1_0.gsb");
+
+        try {
+            gridFile_GR_dE = copyGeoidFromAssets(this, "dE_2km_V1-0.grd", "dE_2km_V1-0.grd");
+            gridFile_GR_dN = copyGeoidFromAssets(this, "dN_2km_V1-0.grd", "dN_2km_V1-0.grd");
+            if (heposTransformer == null) {
+                try {
+                    File dEfile = new File(gridFile_GR_dE);
+                    File dNfile = new File(gridFile_GR_dN);
+
+                    heposTransformer = new GridShiftTransformer(dEfile, dNfile);
+                } catch (Exception e) {
+                    Log.e("GridShift",Log.getStackTraceString(e));
+                    heposTransformer = null;
+                }
+            }
+        } catch (Exception e) {
+            heposTransformer = null;
+            Log.e("GridShift",Log.getStackTraceString(e));
+        }
+
 
 
         myCrash();

@@ -34,7 +34,7 @@ public class UpdateValuesService extends Service {
     public static CoordinateReferenceSystem WGS84, UTM;
     public static CoordinateTransformFactory ctFactory;
     public static CoordinateTransform wgsToUtm, utmToWgs;
-    public static ProjCoordinate result, resultWgs;
+    public static ProjCoordinate shifted,result, resultWgs;
     long startTime, stopTime;
     public static boolean startedService;
     public static boolean isUpodating;
@@ -1908,6 +1908,7 @@ public class UpdateValuesService extends Service {
                         Log.e("Error", "Errore nell'inizializzazione di CanSender: " + e.getMessage());
                     }
                     result = new ProjCoordinate();
+                    shifted = new ProjCoordinate();
                     resultWgs = new ProjCoordinate();
                     ReadProjectService.startCRS();
 

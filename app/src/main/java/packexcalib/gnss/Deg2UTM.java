@@ -1,9 +1,11 @@
 package packexcalib.gnss;
 
 
+import static gui.MyApp.heposTransformer;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.UpdateValuesService.result;
+import static services.UpdateValuesService.shifted;
 import static services.UpdateValuesService.wgsToUtm;
 
 import android.util.Log;
@@ -16,6 +18,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import gui.MyApp;
+import services.UpdateValuesService;
 
 
 /*********************************************
@@ -287,16 +290,28 @@ public class Deg2UTM {
                         q = Z; geoidError = false;
                     }
 
-                    if (wgsToUtm != null && result != null) {
-                        wgsToUtm.transform(new ProjCoordinate(Lon, Lat, q), result);
-                        Easting  = result.x;
-                        Northing = result.y;
-                        Quota    = q;
-                        Zone     = (int) Math.floor(Lon / 6.0 + 31.0);
-                        Letter   = computeUtmLetter(Lat);
+                    if(crs.equals("150580")){
+
+                        if (heposTransformer != null) {
+
+                            shifted = heposTransformer.transform(Lat, Lon, q);
+                            Easting  = shifted.x;
+                            Northing = shifted.y+2000000;
+                            Quota    = shifted.z;
+                            Log.d("GridShift","E: "+Easting+"     N: "+Northing+" Q: "+Quota);
+                        }
+                    }else {
+                        if (wgsToUtm != null && result != null) {
+                            wgsToUtm.transform(new ProjCoordinate(Lon, Lat, q), result);
+                            Easting = result.x;
+                            Northing = result.y;
+                            Quota = q;
+                            Zone = (int) Math.floor(Lon / 6.0 + 31.0);
+                            Letter = computeUtmLetter(Lat);
+                        }
                     }
                 } catch (Exception e) {
-                    //Log.e("Deg2UTM", "Transform error", e);
+                    Log.e("GridShift", "Transform error", e);
                     geoidError = true;
                     if (wgsToUtm != null && result != null) {
                         wgsToUtm.transform(new ProjCoordinate(Lon, Lat, Z), result);

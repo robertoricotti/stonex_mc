@@ -4,7 +4,7 @@ public class CRS_Strings {
     public static final String _21500 = "BE ON_SH BD50 BRUSSELS BELGE LAMBERT 50";
     public static final String _31300 = "BE ON_SH BD72 BELGE LAMBERT 72";
     public static final String _31370 = "BE LAMBERT 72";
-    public static final String _2100 = "Greek Grid";
+    public static final String _150580 = "Greek Grid";
     public static final String _3447 = "BE ON_SH ETRS89 BELGIAN LAMBERT 2005";
     public static final String _3812 = "BE ON_SH ETRS89 BELGIAN LAMBERT 2008";
     public static final String _23095 = "NL OFF_SH ED50 TM 5 NE";
@@ -50,8 +50,8 @@ public class CRS_Strings {
             case "28991":
                 s = _28991;
                 break;
-            case "2100":
-                s =_2100;
+            case "150580":
+                s = _150580;
                 break;
             default:
                 s = crs;

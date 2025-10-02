@@ -1,7 +1,9 @@
 package services;
 
 
-import static gui.MyApp.gridFile_GR;
+import static gui.MyApp.gridFile_GR_dE;
+import static gui.MyApp.gridFile_GR_dN;
+import static gui.MyApp.heposTransformer;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static services.TriangleService.scanPNEZD;
 import static services.UpdateValuesService.UTM;
@@ -19,6 +21,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 
 import org.locationtech.proj4j.CRSFactory;
 import org.locationtech.proj4j.CoordinateTransformFactory;
@@ -46,6 +49,7 @@ import gui.projects.PickProject;
 import landxml.LandXMLData;
 import landxml.LandXMLParser;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.GridShiftTransformer;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -604,28 +608,31 @@ public class ReadProjectService extends Service {
 
         if (s != null) {
             if (!s.equals("UTM") && !s.equals(_NONE)) {
-                if (s.equals("2100")) {
+                if (s.equals("150580")) {
                     try {
                         crsFactory = new CRSFactory();
                         ctFactory = new CoordinateTransformFactory();
-                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
-                        try {
-                            UTM = crsFactory.createFromParameters("EPSG:2100",
-                                    "+proj=tmerc +lat_0=0 +lon_0=24 +k=0.9996 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=-199.87,74.79,246.62,0,0,0,0 +units=m " +
-                                            "+nadgrids=" + gridFile_GR + " +no_defs");
-                        } catch (UnsupportedParameterException e) {
-                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
-                        } catch (InvalidValueException e) {
-                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
-                        } catch (UnknownAuthorityCodeException e) {
-                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
+                        WGS84 = crsFactory.createFromName("epsg:4326");
+
+                        // >>> Non usare Proj4J per EGSA87 con griglia!
+                        // Inizializza il nostro trasformatore
+                        if (heposTransformer == null) {
+                            try {
+                                File dEfile = new File(gridFile_GR_dE);
+                                File dNfile = new File(gridFile_GR_dN);
+
+                                heposTransformer = new GridShiftTransformer(dEfile, dNfile);
+                            } catch (Exception e) {
+                                Log.e("GridShift",Log.getStackTraceString(e));
+                                heposTransformer = null;
+                            }
                         }
 
-                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
-                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } else {
+                }
+                else {
                     ////////
                     try {
                         result = new ProjCoordinate();

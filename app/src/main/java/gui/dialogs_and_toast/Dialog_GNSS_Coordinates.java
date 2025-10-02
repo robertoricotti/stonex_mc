@@ -2,7 +2,7 @@ package gui.dialogs_and_toast;
 
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
-import static packexcalib.gnss.CRS_Strings._2100;
+import static packexcalib.gnss.CRS_Strings._150580;
 import static packexcalib.gnss.CRS_Strings._28992;
 import static packexcalib.gnss.CRS_Strings._31370;
 import static packexcalib.gnss.CRS_Strings._UTM;
@@ -557,8 +557,8 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                         case "31370":
                             txCrs.setText(_31370);
                             break;
-                        case "2100":
-                            txCrs.setText(_2100);
+                        case "150580":
+                            txCrs.setText(_150580);
                             break;
                         default:
                             txCrs.setText("CRS");

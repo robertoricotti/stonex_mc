@@ -62,6 +62,7 @@ public class S3ManagerSingleton {
     private S3ManagerSingleton(Context context) {
         this.appContext = context.getApplicationContext();
     }
+
     public static S3ManagerSingleton getInstance(Context context) {
         if (instance == null) {
             synchronized (lock) {
@@ -436,6 +437,7 @@ public class S3ManagerSingleton {
      * Recupera ricorsivamente tutti i file nella cartella
      */
     private List<File> getAllFiles(File folder) {
+
         List<File> files = new ArrayList<>();
         File[] fileList = folder.listFiles();
         if (fileList != null) {
@@ -470,6 +472,7 @@ public class S3ManagerSingleton {
                         .withPrefix(finalS3FolderPath);
 
                 ObjectListing objectListing = s3Client.listObjects(listObjectsRequest);
+                @SuppressWarnings("unchecked")
                 List<S3ObjectSummary> objectSummaries = objectListing.getObjectSummaries();
 
                 // Calcola byte totali da scaricare (solo file, non cartelle)
@@ -731,7 +734,7 @@ public class S3ManagerSingleton {
         //Log.d("S3Manager:Refresh", "Scheduled credential refresh in " + delayInSeconds + " seconds");
     }
 
-
+    @SuppressWarnings("unchecked")
     private void addToTree(Map<String, Object> tree, String key, String prefix) {
         String relativePath = key.replace(prefix, "");
         String[] parts = relativePath.split("/");
@@ -745,6 +748,7 @@ public class S3ManagerSingleton {
             }
         }
     }
+
 
     private void uploadFolderRecursive(File folder, String s3BasePath) {
         for (File file : folder.listFiles()) {
@@ -800,6 +804,7 @@ public class S3ManagerSingleton {
 
         void onError(Exception e);
     }
+    @SuppressWarnings("unchecked")
     private void addToTreeWithMetadata(Map<String, Object> tree, String key, String basePrefix, Date lastModified, long size) {
         String relativePath = key.substring(basePrefix.length());
         String[] parts = relativePath.split("/");

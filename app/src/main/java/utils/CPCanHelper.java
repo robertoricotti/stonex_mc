@@ -6,8 +6,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.cp.cputils.Apollo2;
-import com.cp.cputils.ApolloPro;
 import com.cpdevice.cpcomm.boards.CPDEVICE;
 import com.cpdevice.cpcomm.common.CPCommConfig;
 import com.cpdevice.cpcomm.common.SocketCanFrameRxListener;
@@ -22,7 +20,6 @@ import com.cpdevice.cpcomm.proto.CPVxProtocolProxy;
 import com.cpdevice.cpcomm.proto.Protocol;
 import com.cpdevice.cpcomm.proto.SocketCanProxy;
 
-import gui.MyApp;
 import packexcalib.exca.DataSaved;
 
 /**
@@ -215,9 +212,7 @@ public class CPCanHelper {
                             mCPVxProtocol.setOnVoltageChanged(new VoltageChangedListener() {
                                 @Override
                                 public void onVoltageChanged(float v) {
-
                                     voltApollo2 = String.valueOf(v);
-
                                 }
                             });
                         }
@@ -262,7 +257,6 @@ public class CPCanHelper {
 
 
     }
-
 
 
     /**

@@ -71,6 +71,7 @@ public class Dialog_To_DueDi {
     }
 
     private void onClick() {
+
         toProfile.setOnClickListener(view -> {
             DataSaved.portView=0;
             DataSaved.profileSelected=0;
@@ -86,7 +87,6 @@ public class Dialog_To_DueDi {
                 activity.finish();
                 dialog.dismiss();
             } else {
-
                 new CustomToast(activity, "LICENSE MISSED").show_alert();
             }
         });
@@ -106,5 +106,6 @@ public class Dialog_To_DueDi {
             DataSaved.portView=2;
             dialog.dismiss();
         });
+
     }
 }
