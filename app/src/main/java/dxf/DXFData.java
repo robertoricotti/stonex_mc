@@ -16,14 +16,14 @@ import services.ReadProjectService;
 
 public class DXFData implements Serializable {
     private static final long serialVersionUID = 1L;
-    private List<Face3D> faces; // Cambiato da double[][] a Face3D
-    private List<Polyline> polylines;
-    private List<Point3D> points;
-    private List<Polyline_2D> polylines_2D;
-    private List<DxfText> texts;
-    private List<Arc> arcs;
-    private List<Circle> circles;
-    private List<Line> lines;
+    private List<Face3D> faces; // FACE3D
+    private List<Polyline> polylines;//POLYLINE
+    private List<Point3D> points;//POINT
+    private List<Polyline_2D> polylines_2D;//LWPOLYLINE
+    private List<DxfText> texts;//TEXT
+    private List<Arc> arcs;//ARC
+    private List<Circle> circles;//CIRCLE
+    private List<Line> lines;//LINE
     private List<Layer> layers;
 
     public DXFData() {

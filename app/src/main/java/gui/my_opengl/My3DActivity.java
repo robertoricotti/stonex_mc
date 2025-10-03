@@ -880,7 +880,13 @@ public class My3DActivity extends BaseClass {
         view1.setBackgroundColor(MyColorClass.colorConstraint);
         view2.setBackgroundColor(MyColorClass.colorConstraint);
         if (glVista3d) {
-            navigatorHDT.setVisibility(View.INVISIBLE);
+            //navigatorHDT.setVisibility(View.INVISIBLE);
+            navigatorHDT.setVisibility(View.VISIBLE);
+            float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
+            rotBus = rotBus % 360;
+
+            navigatorHDT.setRotation(rotBus);
+            //
             freccia.setVisibility(View.INVISIBLE);
             gl_vista.setImageResource(R.drawable.tredi_vista);
         } else {
@@ -1544,15 +1550,49 @@ public class My3DActivity extends BaseClass {
 
     private void locateMachine() {
         if (DataSaved.my_comPort == 4) {
-            DataSaved.demoNORD = DataSaved.dxfFaces.get(0).getP1().getY();
-            NmeaGenerator.LATITUDE = DataSaved.demoNORD;
-            DataSaved.demoEAST = DataSaved.dxfFaces.get(0).getP1().getX();
-            NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
-            DataSaved.demoZ = DataSaved.dxfFaces.get(0).getP1().getZ() + 2;
-            NmeaGenerator.ALTITUDE = DataSaved.demoZ;
-            MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
-            MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
-            MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
+            try {
+                DataSaved.demoNORD = DataSaved.dxfFaces.get(0).getP1().getY();
+                NmeaGenerator.LATITUDE = DataSaved.demoNORD;
+                DataSaved.demoEAST = DataSaved.dxfFaces.get(0).getP1().getX();
+                NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
+                DataSaved.demoZ = DataSaved.dxfFaces.get(0).getP1().getZ() + 3;
+                NmeaGenerator.ALTITUDE = DataSaved.demoZ;
+                MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
+                MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
+                MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
+
+            } catch (Exception e) {
+                try {
+                    DataSaved.demoNORD = DataSaved.points.get(0).getY();
+                    NmeaGenerator.LATITUDE = DataSaved.demoNORD;
+                    DataSaved.demoEAST = DataSaved.points.get(0).getX();
+                    NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
+                    DataSaved.demoZ = DataSaved.points.get(0).getZ()+3;
+                    NmeaGenerator.ALTITUDE = DataSaved.demoZ;
+                    MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
+                    MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
+                    MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
+
+
+
+
+                } catch (Exception ex) {
+                    try {
+
+                        DataSaved.demoNORD = DataSaved.polylines.get(0).getVertices().get(0).getY();
+                        NmeaGenerator.LATITUDE = DataSaved.demoNORD;
+                        DataSaved.demoEAST = DataSaved.polylines.get(0).getVertices().get(0).getX();
+                        NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
+                        DataSaved.demoZ = DataSaved.polylines.get(0).getVertices().get(0).getZ()+3;
+                        NmeaGenerator.ALTITUDE = DataSaved.demoZ;
+                        MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
+                        MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
+                        MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
+                    } catch (Exception exception) {
+                       new CustomToast(My3DActivity.this,"Impossible to Locate Machine").show_error();
+                    }
+                }
+            }
 
         }
     }

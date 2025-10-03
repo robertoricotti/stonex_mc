@@ -5,7 +5,7 @@ plugins {
 
 android {
 
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.example.stx_mc"
@@ -222,6 +222,12 @@ android {
             outputFileName = "STX-MC_V_${versionName}-${buildType.toUpperCase()}.apk"
         }
     }
+}
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'androidx.activity:activity:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 }
 
 

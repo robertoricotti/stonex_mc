@@ -4,17 +4,27 @@
     <shared>
       <config />
     </shared>
+    <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_ecu.xml">
+        <config>
+          <state>Landscape</state>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+    </layouts>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="07c8d527-9291-440c-b242-93da6bf7df47" name="Changes" comment="grecia da testare">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Triangle3D.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/gridcolorizer/GridColorizer.java" afterDir="false" />
+    <list default="true" id="07c8d527-9291-440c-b242-93da6bf7df47" name="Changes" comment="inizio colorazione griglia">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/ECU_Activity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_ecu.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Point3D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Point3D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DXFData.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DXFData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +34,12 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -59,6 +74,11 @@
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="android.template.1000760991">
+      <recent name="gui.hydro" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Unnamed" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false" nameIsGenerated="true">
       <module name="STX_MC.app" />
@@ -149,11 +169,46 @@
       <option name="project" value="LOCAL" />
       <updated>1759420885283</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="inizio colorazione griglia">
+      <option name="closed" value="true" />
+      <created>1759481696416</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759481696416</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="grecia da testare" />
-    <option name="LAST_COMMIT_MESSAGE" value="grecia da testare" />
+    <MESSAGE value="inizio colorazione griglia" />
+    <option name="LAST_COMMIT_MESSAGE" value="inizio colorazione griglia" />
+  </component>
+  <component name="play_dynamic_filters_status">
+    <option name="appIdToCheckInfo">
+      <map>
+        <entry key="com.example.stx_mc.gen1">
+          <value>
+            <CheckInfo lastCheckTimestamp="1759495712018" />
+          </value>
+        </entry>
+        <entry key="com.example.stx_mc.gen1.test">
+          <value>
+            <CheckInfo lastCheckTimestamp="1759495712017" />
+          </value>
+        </entry>
+        <entry key="com.example.stx_mc.gen2">
+          <value>
+            <CheckInfo lastCheckTimestamp="1759495712017" />
+          </value>
+        </entry>
+        <entry key="com.example.stx_mc.gen2.test">
+          <value>
+            <CheckInfo lastCheckTimestamp="1759495712017" />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
