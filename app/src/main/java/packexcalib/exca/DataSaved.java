@@ -20,6 +20,18 @@ import dxf.Segment;
 import gui.my_opengl.Point3DF;
 
 public class DataSaved {
+    //Dragaggio
+    public static double HighThreshold;
+    public static double LowThreshold;
+    public static double PassoGriglia;
+    public static String DredgeFileName;
+
+
+
+
+
+
+
     //settaggi idraulici
     public static int Interface_Type;
     public static double HYDRAULIC_WINDOW;

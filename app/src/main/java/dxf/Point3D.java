@@ -123,6 +123,33 @@ public class Point3D implements Serializable {
         return this.x * other.x + this.y * other.y + this.z * other.z;
     }
 
+    public static Point3D centroidAreaWeighted(Face3D f) {
+        // split: (p1,p2,p3) e (p1,p3,p4)
+        Point3D c1 = triangleCentroid(f.p1, f.p2, f.p3);
+        double a1 = triangleArea(f.p1, f.p2, f.p3);
+        Point3D c2 = triangleCentroid(f.p1, f.p3, f.p4);
+        double a2 = triangleArea(f.p1, f.p3, f.p4);
+        double sumA = a1 + a2;
+        if (sumA == 0) return calculateCentroid(f.p1,f.p2,f.p3,f.p4); // fallback
+        double cx = (c1.x * a1 + c2.x * a2) / sumA;
+        double cy = (c1.y * a1 + c2.y * a2) / sumA;
+        double cz = (c1.z * a1 + c2.z * a2) / sumA;
+        return new Point3D(cx, cy, cz);
+    }
+    private static Point3D triangleCentroid(Point3D a, Point3D b, Point3D c) {
+        return new Point3D((a.x+b.x+c.x)/3.0, (a.y+b.y+c.y)/3.0, (a.z+b.z+c.z)/3.0);
+    }
+    private static double triangleArea(Point3D a, Point3D b, Point3D c) {
+        // area 3D = |(b-a)x(c-a)| / 2
+        double ux = b.x - a.x, uy = b.y - a.y, uz = b.z - a.z;
+        double vx = c.x - a.x, vy = c.y - a.y, vz = c.z - a.z;
+        double cx = uy * vz - uz * vy;
+        double cy = uz * vx - ux * vz;
+        double cz = ux * vy - uy * vx;
+        return Math.sqrt(cx*cx + cy*cy + cz*cz) * 0.5;
+    }
+
+
     Point3D cross(Point3D other) {
         return new Point3D(
                 this.y * other.z - this.z * other.y,
