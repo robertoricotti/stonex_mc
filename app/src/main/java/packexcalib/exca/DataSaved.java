@@ -25,8 +25,7 @@ public class DataSaved {
     public static double LowThreshold;
     public static double PassoGriglia;
     public static String DredgeFileName;
-
-
+    public static int EnableMapping;
 
 
 

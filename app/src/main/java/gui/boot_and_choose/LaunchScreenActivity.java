@@ -95,7 +95,6 @@ public class LaunchScreenActivity extends BaseClass {
         Dialog_Trench.rightW_d = 0.5f;
         LayerAdapter.selectA = true;
         deviceBuild=MyDeviceManager.getBuildVersion(this);
-
         if (licenseType == -1) {
             if (NetworkUtils.isInternetAvailable(this)) {
                 //cerca dal server

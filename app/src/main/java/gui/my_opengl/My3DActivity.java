@@ -1418,19 +1418,25 @@ public class My3DActivity extends BaseClass {
 
 
     private void setLightBar() {
-        switch (DataSaved.bucketEdge) {
-            case -1:
-                MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
-                //setAudio(TriangleService.quota3D_SX, !TriangleService.ltOffGrid);
-                break;
-            case 0:
-                MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ctOffGrid, TriangleService.quota3D_CT, DataSaved.deadbandH));
-                //setAudio(TriangleService.quota3D_CT, !TriangleService.ctOffGrid);
-                break;
-            case 1:
-                MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
-                //setAudio(TriangleService.quota3D_DX, !TriangleService.rtOffGrid);
-                break;
+        if(DataSaved.isWL==0||DataSaved.isWL==1) {
+            switch (DataSaved.bucketEdge) {
+                case -1:
+                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
+                    //setAudio(TriangleService.quota3D_SX, !TriangleService.ltOffGrid);
+                    break;
+                case 0:
+                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ctOffGrid, TriangleService.quota3D_CT, DataSaved.deadbandH));
+                    //setAudio(TriangleService.quota3D_CT, !TriangleService.ctOffGrid);
+                    break;
+                case 1:
+                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
+                    //setAudio(TriangleService.quota3D_DX, !TriangleService.rtOffGrid);
+                    break;
+            }
+        }else {
+            MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
+
+            MyDeviceManager.CanWrite(0, 0xA8, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
         }
     }
 
@@ -1573,12 +1579,8 @@ public class My3DActivity extends BaseClass {
                     MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
                     MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
 
-
-
-
                 } catch (Exception ex) {
                     try {
-
                         DataSaved.demoNORD = DataSaved.polylines.get(0).getVertices().get(0).getY();
                         NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                         DataSaved.demoEAST = DataSaved.polylines.get(0).getVertices().get(0).getX();

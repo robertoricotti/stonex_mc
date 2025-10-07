@@ -154,6 +154,10 @@ public class UpdateValuesService extends Service {
 
                     String iswl = MyData.get_String("M" + i + "_isWL");
                     String enOUT = MyData.get_String("M" + i + "_enOUT");
+                    String HighThreshold=MyData.get_String("M"+i+"HighThreshold");
+                    String LowThreshold=MyData.get_String("M"+i+"LowThreshold");
+                    String PassoGriglia=MyData.get_String("M"+i+"PassoGriglia");
+                    String EnableMapping=MyData.get_String("M"+i+"EnableMapping");
                     String comPort = MyData.get_String("M" + i + "_comPort");
                     String sc600 = MyData.get_String("M" + i + "_sc600");
                     String reqSpeed = MyData.get_String("M" + i + "reqSpeed");
@@ -363,6 +367,21 @@ public class UpdateValuesService extends Service {
                         }
 
                     }
+                    //dragaggio
+                    if (HighThreshold == null) {
+                        MyData.push("M" + i + "HighThreshold", "0.5");
+                    }
+                    if (LowThreshold == null) {
+                        MyData.push("M" + i + "LowThreshold", "0.5");
+                    }
+                    if (PassoGriglia == null) {
+                        MyData.push("M" + i + "PassoGriglia", "1.0");
+                    }
+                    if (EnableMapping == null) {
+                        MyData.push("M" + i + "EnableMapping", "0");
+                    }
+
+                    ///
                     if (enOUT == null) {
                         MyData.push("M" + i + "_enOUT", "0");
                     }
@@ -1607,6 +1626,33 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di enOUT: " + e.getMessage());
                 }
+
+                try {
+                    DataSaved.HighThreshold = MyData.get_Double("M" + indexMach + "HighThreshold");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di HighThreshold: " + e.getMessage());
+                }
+                try {
+                    DataSaved.LowThreshold = MyData.get_Double("M" + indexMach + "LowThreshold");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di LowThreshold: " + e.getMessage());
+                }
+                try {
+                    DataSaved.PassoGriglia = MyData.get_Double("M" + indexMach + "PassoGriglia");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di PassoGriglia: " + e.getMessage());
+                }
+                try {
+                    DataSaved.EnableMapping = MyData.get_Int("M" + indexMach + "EnableMapping");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di EnableMapping: " + e.getMessage());
+                }
+
+
+
+
+
+
                 try {
                     DataSaved.usuraLamaSX = MyData.get_Double("M" + indexMach + "usuraLamaSX");
                 } catch (Exception e) {

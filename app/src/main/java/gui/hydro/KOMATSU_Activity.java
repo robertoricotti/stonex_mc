@@ -377,6 +377,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
     }
 
     public void updateUI() {
+        pagina.setText((voceMenu + 1) + " / " + (maxMenu));
         switch (voceMenu) {
             case 0:
                 valore.setVisibility(TextView.VISIBLE);
