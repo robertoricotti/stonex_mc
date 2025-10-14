@@ -13,6 +13,8 @@ import static packexcalib.exca.DataSaved.minSpeedRightDW;
 import static packexcalib.exca.DataSaved.minSpeedRightUP;
 import static packexcalib.exca.DataSaved.minSpeedSS_A;
 import static packexcalib.exca.DataSaved.minSpeedSS_B;
+import static services.CanService.CAT_Connected;
+import static services.CanService.KOM_Connected;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -40,7 +42,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
     Handler handler = new Handler();
     Runnable repeater;
     int voceMenu, indexMachine;
-    ImageView back, menuP, menuM, valM, valP;
+    ImageView back, menuP, menuM, valM, valP,ECUCONN;
     TextView testValve, testo, funzione, tipo, pagina;
     int maxMenu;
     EditText valore;
@@ -78,6 +80,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
         valM = findViewById(R.id.val_M);
         valP = findViewById(R.id.val_P);
         pagina = findViewById(R.id.pagina);
+        ECUCONN=findViewById(R.id.ECUCONN);
     }
 
     private void onClick() {
@@ -523,6 +526,11 @@ public class KOMATSU_Activity extends AppCompatActivity {
                 testo.setText(CanService.KOMATSU_Joystick);
 
                 break;
+        }
+        if(KOM_Connected){
+            ECUCONN.setImageTintList(getColorStateList(R.color.green));
+        }else {
+            ECUCONN.setImageTintList(getColorStateList(R.color.red));
         }
     }
 

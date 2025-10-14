@@ -361,7 +361,6 @@ public class WebSocketPlugin {
             writer.write(jsonObject.toString()); // salva il JSON intero
             writer.close();
 
-
         } catch (JSONException e) {
             activationCode = "none";
             restoreCode = "none";

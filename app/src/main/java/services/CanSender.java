@@ -21,8 +21,6 @@ import static packexcalib.gnss.NmeaListener.mLat_1;
 import static packexcalib.gnss.NmeaListener.mLon_1;
 import static serial.SerialReadThread.serialEmpty;
 import static services.CanService.Dozer_Auto_Main;
-import static services.CanService.Grader_AutoRight;
-import static services.CanService.Grader_Auto_Left;
 import static services.CanService.Grader_Auto_SS;
 import static services.CanService.nmeaSTX_Disc;
 import static services.TriangleService.ctOffGrid;
@@ -34,9 +32,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
-
-import com.example.stx_dig.R;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -62,10 +57,10 @@ import utils.MyMCUtils;
 
 
 public class CanSender extends Service {
-   public static double QL, QC, QR;
+    public static double QL, QC, QR;
     public static double GroundSlope;
-    public static int valueKomL = 0, valueKomR = 0, valueCATL = 0, valueCATR = 0,valueCATSS=0, valueJDL = 20000, valueJDR = 20000,valueJDSS=20000;
-    public static byte dirCAT_L, dirCAT_R, dirCAT_SS= (byte) 0xF2;
+    public static int valueKomL = 0, valueKomR = 0, valueCATL = 0, valueCATR = 0, valueCATSS = 0, valueJDL = 20000, valueJDR = 20000, valueJDSS = 20000;
+    public static byte dirCAT_L, dirCAT_R, dirCAT_SS = (byte) 0xF2;
     public static boolean prepLeft, prepRight, prepSS;
     static Map<String, Object> payload;
     public static boolean tryingBTCAN = false;
@@ -121,17 +116,19 @@ public class CanSender extends Service {
         @Override
         public void run() {
             try {
-                if(MyApp.visibleActivity instanceof My3DActivity && MyApp.licenseType==5) {
-                    AutoHandling();
+                if (MyApp.licenseType == 5) {
+                    if (MyApp.visibleActivity instanceof My3DActivity) {
+                        AutoHandling();
+                    }
                 }
             } catch (Exception e) {
-                Log.e("CanErr",Log.getStackTraceString(e));
+                Log.e("CanErr", Log.getStackTraceString(e));
             }
 
 
             if (DataSaved.my_comPort == 4) {
-            FlipFlop=!FlipFlop;
-            if(FlipFlop) {
+                FlipFlop = !FlipFlop;
+                if (FlipFlop) {
 
                     new SerialEvent(NmeaGenerator.generateLLQ());
                     new SerialEvent(NmeaGenerator.generateGPHDT());
@@ -290,8 +287,8 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
-            if(DataSaved.Interface_Type==2){
-                if(! (MyApp.visibleActivity instanceof My3DActivity)){
+            if (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0) {
+                if (!(MyApp.visibleActivity instanceof My3DActivity)) {
                     MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
                             new byte[]{(byte) 0xF4,
                                     (byte) 0xF0,
@@ -390,16 +387,18 @@ public class CanSender extends Service {
             valueCATR = 0;
             valueJDL = 20000;
             valueJDR = 20000;
+            valueJDSS=20000;
             dirCAT_L = (byte) 0xF2;
             dirCAT_R = (byte) 0xF2;
             dirCAT_SS = (byte) 0xF2;
+
 
         } else {
 
             QL = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_SX;
             QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
             QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
-            //TODO qui calcoli
+
             if (DataSaved.isWL == 0 || DataSaved.isWL == 1) {
 
                 QL = 0;
@@ -412,6 +411,7 @@ public class CanSender extends Service {
                 valueCATR = 0;
                 valueJDL = 20000;
                 valueJDR = 20000;
+                valueJDSS=20000;
                 dirCAT_L = (byte) 0xF2;
                 dirCAT_R = (byte) 0xF2;
                 dirCAT_SS = (byte) 0xF2;
@@ -423,20 +423,21 @@ public class CanSender extends Service {
                     switch (HYDRAULIC_CONTROL_POINT_GRADER) {
                         case 0:
 
-                            handleLamaGrader(QC,QR,ctOffGrid,rtOffGrid);
+                            handleLamaGrader(QC, QR, ctOffGrid, rtOffGrid);
                             break;
 
                         case 1:
-                            handleLamaGrader(QC,QL,ctOffGrid,ltOffGrid);
+                            handleLamaGrader(QC, QL, ctOffGrid, ltOffGrid);
                             break;
 
                         case 2://left right
-                            handleLamaGrader(QL,QR,ltOffGrid,rtOffGrid);
+                            handleLamaGrader(QL, QR, ltOffGrid, rtOffGrid);
                             break;
                     }
-                    handleSideShift(DataSaved.bucketEdge,DataSaved.line_Offset);
+                    handleSideShift(DataSaved.bucketEdge, DataSaved.line_Offset);
 
                 } else {
+                    valueJDSS=20000;
                     //DOZER
                     if (!isInRange(DataSaved.tolleranza_Z, QC) && Math.abs(QC) < DataSaved.HYDRAULIC_WINDOW) {
                         if (QC < -DataSaved.tolleranza_Z) {
@@ -486,7 +487,7 @@ public class CanSender extends Service {
                     }
                     if (!isInRangeAng(correctRoll, GroundSlope, DataSaved.tolleranza_Slope)) {
                         double deviation = deviationFromSetpoint(correctRoll, GroundSlope, DataSaved.tolleranza_Slope);
-                        deviation=MyMCUtils.ledder(GAIN_RIGHT)*deviation;
+                        deviation = MyMCUtils.ledder(GAIN_RIGHT) * deviation;
 
                         if (deviation > DataSaved.tolleranza_Slope) {
                             dirCAT_R = (byte) 0xF2;
@@ -527,14 +528,17 @@ public class CanSender extends Service {
                     }
 
 
-                    prepSS = false;
-
+                    if(!prepSS){
+                        valueCATSS = 0;
+                        valueJDSS = 20000;
+                        dirCAT_SS = (byte) 0xF2;
+                    }
 
 
                     if (prepLeft) {
                         if (Dozer_Auto_Main) {
 
-                            if(Math.abs(QC)>DataSaved.HYDRAULIC_WINDOW||ctOffGrid){
+                            if (Math.abs(QC) > DataSaved.HYDRAULIC_WINDOW || ctOffGrid) {
                                 valueKomL = 0;
                                 valueCATL = 0;
                                 valueJDL = 20000;
@@ -565,7 +569,7 @@ public class CanSender extends Service {
 
                     if (prepRight) {
                         if (Dozer_Auto_Main) {
-                            if(HYDRAULIC_CONTROL_POINT_DOZER==0) {
+                            if (HYDRAULIC_CONTROL_POINT_DOZER == 0) {
                                 if (rtOffGrid) {
                                     valueKomR = 0;
                                     valueCATR = 0;
@@ -573,7 +577,7 @@ public class CanSender extends Service {
                                     dirCAT_R = (byte) 0xF2;
                                 }
                             }
-                            if(HYDRAULIC_CONTROL_POINT_DOZER==1) {
+                            if (HYDRAULIC_CONTROL_POINT_DOZER == 1) {
                                 if (ltOffGrid) {
                                     valueKomR = 0;
                                     valueCATR = 0;
@@ -607,6 +611,7 @@ public class CanSender extends Service {
 
         invioMessaggiDozer();
 
+
     }
 
     private boolean isInRange(double range, double value) {
@@ -629,8 +634,8 @@ public class CanSender extends Service {
         return diff;
     }
 
-    private void handleLamaGrader(double LL, double RR,boolean checkPointLeft,boolean checkPointRight){
-        if (!isInRange(DataSaved.tolleranza_Z, LL) && Math.abs(LL) < DataSaved.HYDRAULIC_WINDOW&& !checkPointLeft) {
+    private void handleLamaGrader(double LL, double RR, boolean checkPointLeft, boolean checkPointRight) {
+        if (!isInRange(DataSaved.tolleranza_Z, LL) && Math.abs(LL) < DataSaved.HYDRAULIC_WINDOW && !checkPointLeft) {
             if (LL < -DataSaved.tolleranza_Z) {
 
                 dirCAT_L = (byte) 0xF2;
@@ -664,11 +669,11 @@ public class CanSender extends Service {
             valueCATL = 0;
             valueJDL = 20000;
             dirCAT_L = (byte) 0xF2;
-            dirCAT_SS = (byte) 0xF2;
+
         }
 
 
-        if (!isInRange(DataSaved.tolleranza_Z, RR) && Math.abs(RR) < DataSaved.HYDRAULIC_WINDOW&& !checkPointRight) {
+        if (!isInRange(DataSaved.tolleranza_Z, RR) && Math.abs(RR) < DataSaved.HYDRAULIC_WINDOW && !checkPointRight) {
             if (RR < -DataSaved.tolleranza_Z) {
 
                 dirCAT_R = (byte) 0xF2;
@@ -685,7 +690,7 @@ public class CanSender extends Service {
 
             } else if (RR > DataSaved.tolleranza_Z) {
                 dirCAT_R = (byte) 0xF1;
-                valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW,maxSpeedRightDW);
+                valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW, maxSpeedRightDW);
                 valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
 
                 valueKomR = (int) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW, maxSpeedRightDW);
@@ -702,18 +707,18 @@ public class CanSender extends Service {
             valueCATR = 0;
             valueJDR = 20000;
             dirCAT_R = (byte) 0xF2;
-            dirCAT_SS = (byte) 0xF2;
+
         }
 
 
     }
 
-    private void handleSideShift(int bladeEdge,double offset){
+    private void handleSideShift(int bladeEdge, double offset) {
         double dist = 0;
         double rot;
         double rotFix = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
         rot = TriangleService.orientamentoFreccia + rotFix;
-        rot=((rot + 0) % 360 + 360) % 360;
+        rot = ((rot + 0) % 360 + 360) % 360;
 
         /*
         se  30 <rot> 120  la lama deve andare verso destra
@@ -732,23 +737,168 @@ public class CanSender extends Service {
                 dist = TriangleService.dist3D_DX;
                 break;
         }
-        dist=dist+offset;
-        if(Grader_Auto_SS){
+        dist = dist + offset;
+        if (Grader_Auto_SS) {
             //TODO sideshift
-            Log.w("SideShift",dist+"    "+rot);
-        }else {
-            valueCATSS=0;
-            valueJDSS=20000;
-            dirCAT_SS= (byte) 0xF2;
-            Log.d("SideShift",dist+"    "+rot);
+            switch (DataSaved.Interface_Type){
+                case 0:
+                case 2:
+                    //SS JD ECU
+
+                    if (!isInRange(DataSaved.tolleranza_XY, dist) && Math.abs(dist) < 0.5 ) {
+                            if (rot>240&&rot<300) {
+                                //LEFT minore di 20000
+                                valueJDSS = (byte) MyMCUtils.myscaleD(Math.abs(dist), 0, 0.5, DataSaved.minSpeedSS_A, DataSaved.maxSpeedSS_A);
+                                valueJDSS = (int) MyMCUtils.myscaleD(valueJDSS, 0, 255, 20000, 10000);
+                                valueJDSS = MyMCUtils.limitInt(valueJDSS, 10000, 20000);
+
+
+                            } else if ( rot>30&&rot<120) {
+                                //RIGHT maggiore di 20000
+                                valueJDSS = (byte) MyMCUtils.myscaleD(Math.abs(dist), 0, 0.5, DataSaved.minSpeedSS_B, DataSaved.maxSpeedSS_B);
+                                valueJDSS = (int) MyMCUtils.myscaleD(valueJDSS, 0, 255, 20000, 30000);
+                                valueJDSS = MyMCUtils.limitInt(valueJDSS, 20000, 30000);
+                            }else {
+                                valueCATSS = 0;
+                                valueJDSS = 20000;
+                                dirCAT_SS = (byte) 0xF2;
+                            }
+                        } else {
+                            valueCATSS = 0;
+                            valueJDSS = 20000;
+                            dirCAT_SS = (byte) 0xF2;
+
+                        }
+
+                        break;
+
+                case 1:
+                    //SS CAT
+                    if (!isInRange(DataSaved.tolleranza_XY, dist) && Math.abs(dist) < 0.5 ) {
+                    if(rot>30&&rot<120){
+                        dirCAT_SS = (byte) 0xF2;
+                        //RIGHT maggiore di 20000
+                        valueCATSS = (byte) MyMCUtils.myscaleD(Math.abs(dist), 0, 0.5, DataSaved.minSpeedSS_B, DataSaved.maxSpeedSS_B);
+                        valueCATSS = (byte) MyMCUtils.limitInt(valueCATSS, 0, 255);
+                    }else if(rot>240&&rot<300){
+                        dirCAT_SS = (byte) 0xF1;
+                        //LEFT minore di 20000
+                        valueCATSS = (byte) MyMCUtils.myscaleD(Math.abs(dist), 0, 0.5, DataSaved.minSpeedSS_A, DataSaved.maxSpeedSS_A);
+                        valueCATSS = (byte) MyMCUtils.limitInt(valueCATSS, 0, 255);
+                    }else {
+                        valueCATSS = 0;
+                        valueJDSS = 20000;
+                        dirCAT_SS = (byte) 0xF2;
+                    }
+
+                    } else {
+                        valueCATSS = 0;
+                        valueJDSS = 20000;
+                        dirCAT_SS = (byte) 0xF2;
+
+                    }
+                    break;
+
+
+            }
+
+            //Log.w("SideShift", dist + "    " + rot);
+        } else {
+            valueCATSS = 0;
+            valueJDSS = 20000;
+            dirCAT_SS = (byte) 0xF2;
+            //Log.d("SideShift", dist + "    " + rot);
         }
-    
+
     }
 
-    private void invioMessaggiDozer(){
-        switch (DataSaved.Interface_Type){
+    private void invioMessaggiDozer() {
+        switch (DataSaved.Interface_Type) {
             case 0:
-                //TODO output ECU
+                //ECU
+
+                byte[] valoreSX0 = new byte[]{0x4E, 0x20};
+                byte[] valoreDX0 = new byte[]{0x4E, 0x20};
+                byte[] valoreSS0 = new byte[]{0x4E, 0x20};
+
+                valoreSX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDL);
+                valoreDX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDR);
+                valoreSS0 = PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDSS);
+                MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
+                        new byte[]{
+                                (byte) 0xF2,
+                                (byte) 0x1A,
+                                (byte) valoreSX0[0],
+                                (byte) valoreSX0[1],
+                                (byte) valoreDX0[0],
+                                (byte) valoreDX0[1],
+                                (byte) valoreSS0[0],
+                                (byte) valoreSS0[1]});
+
+
+                // output 3e PARTI
+                byte[] left, cent, right;
+                byte[] dist = new byte[2];
+                byte[] Cq = new byte[2];
+                byte satN = 0, qFix = 0;
+                try {
+                    satN = Byte.parseByte(NmeaListener.ggaSat);
+                } catch (NumberFormatException e) {
+                    satN = 0;
+                }
+                try {
+                    qFix = Byte.parseByte(NmeaListener.ggaQuality);
+                } catch (NumberFormatException e) {
+                    qFix = 0;
+                }
+                try {
+                    Cq = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (Double.parseDouble(NmeaListener.VRMS_) * 1000));
+                } catch (NumberFormatException e) {
+                    Cq = new byte[2];
+                }
+
+                dist = switch (DataSaved.bucketEdge) {
+                    case -1 ->
+                            PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
+                    case 0 ->
+                            PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
+                    case 1 ->
+                            PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
+                    default -> dist;
+                };
+                left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_SX * 1000), (short) -32768, (short) 32767));
+                cent = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_CT * 1000), (short) -32768, (short) 32767));
+                right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_DX * 1000), (short) -32768, (short) 32767));
+
+                MyDeviceManager.CanWrite(1, 0x812, 8,
+                        new byte[]{
+                                left[0],
+                                left[1],
+                                cent[0],
+                                cent[1],
+                                right[0],
+                                right[1],
+                                (byte) 0xFA,
+                                (byte) DataSaved.isWL//DICE A TERZE PARTI CHE TIPO DI MACCHINA E'
+
+                        }
+                );
+
+
+                MyDeviceManager.CanWrite(1, 0x814, 8,
+                        new byte[]{
+                                dist[0],
+                                dist[1],
+                                satN,
+                                qFix,
+                                Cq[0],
+                                Cq[1],
+                                (byte) 0xFA,
+                                (byte) 0xFE
+
+
+                        }
+                );
                 break;
 
             case 1:
@@ -789,13 +939,13 @@ public class CanSender extends Service {
             case 2:
                 //JD
 
-                byte[]valoreSX= new byte[]{0x4E,0x20};
-                byte[]valoreDX= new byte[]{0x4E,0x20};
-                byte[]valoreSS= new byte[]{0x4E,0x20};
+                byte[] valoreSX = new byte[]{0x4E, 0x20};
+                byte[] valoreDX = new byte[]{0x4E, 0x20};
+                byte[] valoreSS = new byte[]{0x4E, 0x20};
 
-                valoreSX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDL);
-                valoreDX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDR);
-                valoreSS= PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDSS);
+                valoreSX = PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDL);
+                valoreDX = PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDR);
+                valoreSS = PLC_DataTypes_LittleEndian.U16_to_bytes(valueJDSS);
                 MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,
@@ -805,7 +955,7 @@ public class CanSender extends Service {
                                 (byte) valoreDX[0],
                                 (byte) valoreDX[1],
                                 (byte) valoreSS[0],
-                                (byte) valoreSS[1]  });
+                                (byte) valoreSS[1]});
 
                 break;
 

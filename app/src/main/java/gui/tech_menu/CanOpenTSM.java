@@ -386,7 +386,7 @@ public class CanOpenTSM extends AppCompatActivity {
     }
 
     private void msg7() {
-        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});//0x65766173
         progresso+=2;
 
     }

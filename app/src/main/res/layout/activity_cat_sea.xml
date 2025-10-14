@@ -199,7 +199,7 @@
             android:gravity="center|right"
             android:text="Machine Model:  "
             android:textColor="@color/white"
-            android:textSize="36sp"
+            android:textSize="34sp"
             android:textStyle="bold|italic" />
 
         <TextView
@@ -214,8 +214,19 @@
             android:gravity="center|left"
             android:text="CAT K-N"
             android:textColor="@color/yellow"
-            android:textSize="36sp"
+            android:textSize="34sp"
             android:textStyle="bold|italic" />
+        <ImageView
+            android:id="@+id/ECUCONN"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:padding="5dp"
+            android:rotation="135"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/outline_link_96"
+            app:tint="@color/white" />
 
 
     </LinearLayout>

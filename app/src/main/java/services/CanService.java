@@ -19,7 +19,6 @@ import gui.debug_ecu.Can_Msg_Debug;
 import gui.gps.Nuovo_Gps;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
-import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
@@ -29,32 +28,27 @@ import utils.CPCanHelper;
 import utils.CanFileReceiver;
 import utils.MyDeviceManager;
 import utils.OffsetAdjuster;
-import utils.Utils;
 
 public class CanService extends Service {
     public CanService() {
     }
 
-    boolean Off_Inc, Off_Dec;
-
+    //TODO Grader_Auto_SS SU JD ED ECU
     public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck;
-    public static int SteerConnected,isAuto, errorEcu, hydraMachineType, valveType, left_Rise_min, left_Rise_Max, left_Lower_min, left_Lower_Max,
-            right_Rise_min, right_Rise_Max, right_Lower_min, right_Lower_Max, hydr_Window, left_Gain, right_Gain, elevationDB, slopeDB, reverseLeft, reverseRight;
+    public static int SteerConnected, isAuto, errorEcu;
     public static int altosx, centrosx, bassosx, altodx, centrodx, m, bassodx;
-    public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, nolaserbeam_L, nolaserbeam_R, ECU_Connected, isAutoL, isAutoR, outW_L, outW_R;
+    public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected;
     public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK;
     CanFileReceiver receiver = new CanFileReceiver();
     public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc;
     public static boolean CanServiceState = false;
     int dlc;
-
-    static double spigoloX, spigoloY, spigoloZ;
     static CPCanHelper cpCanHelper;
 
     @Override
     public void onCreate() {
-
         cpCanHelper = CPCanHelper.getInstance();
+
         nmeaSTX_Disc = true;
         frameDisc = true;
         boom2Disc = true;
@@ -62,7 +56,6 @@ public class CanService extends Service {
         bucketDisc = true;
         tiltDisc = true;
         stickDisc = true;
-
         frameOK = false;
         boom1OK = false;
         boom2OK = false;
@@ -70,6 +63,10 @@ public class CanService extends Service {
         bucketOK = false;
         tiltOK = false;
         ECU_Connected = false;
+        CAT_Connected = false;
+        JD_Connected = false;
+        KOM_Connected = false;
+
         if (DataSaved.lrFrame != 0) {
             handler_frame.postDelayed(timeoutRunnable_frame, 3000);
         }
@@ -88,8 +85,15 @@ public class CanService extends Service {
         if (DataSaved.lrTilt != 0) {
             handler_tl.postDelayed(timeoutRunnable_tl, 3000);
         }
-        handler_ECU_Connected.postDelayed(timeoutRunnable_CU_Connected, 3000);
+        handler_ECU_Connected.postDelayed(timeoutRunnable_ECU_Connected, 3000);
+
         handler_steer.postDelayed(timeoutRunnable_steer, 3000);
+
+        handler_CAT_Connected.postDelayed(timeoutRunnable_CAT_Connected, 3000);
+        handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 3000);
+        handler_KOM_Connected.postDelayed(timeoutRunnable_KOM_Connected, 3000);
+
+
         super.onCreate();
     }
 
@@ -172,24 +176,23 @@ public class CanService extends Service {
                 }
 
 
-
-                if (DataSaved.isWL ==2||DataSaved.isWL==3||DataSaved.isWL==4) {
+                if (DataSaved.isWL == 2 || DataSaved.isWL == 3 || DataSaved.isWL == 4) {
                     DataSaved.deltaZ = DataSaved.altezzaLama + DataSaved.altezzaPali;
                 }
                 Sensors_Decoder.Moba_G2_Decoder_Update(id, msg);
 
-                if(DataSaved.isWL==1){
-                    if(DataSaved.Extra_Heading>0) {
+                if (DataSaved.isWL == 1) {
+                    if (DataSaved.Extra_Heading > 0) {
                         if (id == 0x1A2) {
                             SteerConnected = 2;
                             handler_steer.removeCallbacks(timeoutRunnable_steer);
                             handler_steer.postDelayed(timeoutRunnable_steer, 3000);
                         }
-                    }else {
-                        SteerConnected=0;
+                    } else {
+                        SteerConnected = 0;
                     }
-                }else {
-                    SteerConnected=0;
+                } else {
+                    SteerConnected = 0;
                 }
                 switch (DataSaved.isCanOpen) {
                     case 1:
@@ -263,7 +266,7 @@ public class CanService extends Service {
                                 handler_tl.postDelayed(timeoutRunnable_tl, 3000);
                             }
                         } else {
-                            if ((id == 901 ||id == 902 || id == 90181738 || id == 90181733) && DataSaved.lrBucket != 0) {
+                            if ((id == 901 || id == 902 || id == 90181738 || id == 90181733) && DataSaved.lrBucket != 0) {
                                 tiltOK = true;
                                 tiltDisc = false;
                                 handler_tl.removeCallbacks(timeoutRunnable_tl);
@@ -356,7 +359,10 @@ public class CanService extends Service {
 
             if (channel == 2) {
                 //CAN2
-                if (id == 0x1CF00D22 && DataSaved.Interface_Type <2) {
+                if (id == 0x1CF00D22 && DataSaved.Interface_Type == 1) {
+                    CAT_Connected = true;
+                    handler_CAT_Connected.removeCallbacks(timeoutRunnable_CAT_Connected);
+                    handler_CAT_Connected.postDelayed(timeoutRunnable_CAT_Connected, 2000);
                     CAT_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
                     boolean[] booleans = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
                     boolean[] bGrad_Left = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[1]);
@@ -397,13 +403,16 @@ public class CanService extends Service {
                     }
 
                 }
-                if (id == 0x0CF00D80&& DataSaved.Interface_Type == 2) {
+                if (id == 0x0CF00D80 && (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0)) {
+                    JD_Connected = true;
+                    handler_JD_Connected.removeCallbacks(timeoutRunnable_JD_Connected);
+                    handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 2000);
                     JD_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
                     boolean[] booleans = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
                     if (MyApp.visibleActivity instanceof My3DActivity) {
                         Dozer_Auto_Main = booleans[7];
                         OffsetAdjuster.update(booleans[2], booleans[3]);
-                    }else {
+                    } else {
                         Dozer_Auto_Main = false;
                         Grader_Auto_Left = false;
                         Grader_AutoRight = false;
@@ -415,16 +424,19 @@ public class CanService extends Service {
                     }
 
                 }
-                if (id == 0x0CF00DD5&& DataSaved.Interface_Type == 2) {
+                if (id == 0x0CF00DD5 && (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0)) {
+                    JD_Connected = true;
+                    handler_JD_Connected.removeCallbacks(timeoutRunnable_JD_Connected);
+                    handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 2000);
                     JD_GP_Joystyck = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
                     boolean[] booleans = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[3]);
                     boolean[] bGrad_Left = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[1]);
                     boolean[] bGrad_Right = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[2]);
                     if (MyApp.visibleActivity instanceof My3DActivity) {
                         Grader_Auto_Left = bGrad_Left[3];
-                        Grader_AutoRight=bGrad_Right[7];
+                        Grader_AutoRight = bGrad_Right[7];
                         OffsetAdjuster.update(booleans[6], booleans[7]);
-                    }else {
+                    } else {
                         Dozer_Auto_Main = false;
                         Grader_Auto_Left = false;
                         Grader_AutoRight = false;
@@ -434,13 +446,18 @@ public class CanService extends Service {
                         AutoManToggle.Can_Toggled_Auto_R = false;
                         AutoManToggle.Can_Toggled_Auto_SS = false;
                     }
-                    Log.d("JDD",Grader_Auto_Left+" "+Grader_AutoRight+" "+Grader_Auto_SS);
+                    Log.d("JDD", Grader_Auto_Left + " " + Grader_AutoRight + " " + Grader_Auto_SS);
                 }
-                if (id == 0x0CFF3302&& DataSaved.Interface_Type == 3) {
+
+                if (id == 0x0CFF3302 && DataSaved.Interface_Type == 3) {
+                    KOM_Connected = true;
+                    handler_KOM_Connected.removeCallbacks(timeoutRunnable_KOM_Connected);
+                    handler_KOM_Connected.postDelayed(timeoutRunnable_KOM_Connected, 2000);
+
                     KOMATSU_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
                     if (MyApp.visibleActivity instanceof My3DActivity) {
-                        Dozer_Auto_Main=msg[6]==1;
-                    }else {
+                        Dozer_Auto_Main = msg[6] == 1;
+                    } else {
                         Dozer_Auto_Main = false;
                         Grader_Auto_Left = false;
                         Grader_AutoRight = false;
@@ -452,75 +469,10 @@ public class CanService extends Service {
                     }
                 }
 
-
-
-                if (id == 2066) {
+                if (id == 2166) {
                     ECU_Connected = true;
-                    handler_ECU_Connected.removeCallbacks(timeoutRunnable_CU_Connected);
-                    handler_ECU_Connected.postDelayed(timeoutRunnable_CU_Connected, 1000);
-                    switch (msg[0]) {
-                        case 0:
-                            hydraMachineType = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 1:
-                            valveType = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 2:
-                            left_Rise_min = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 3:
-                            left_Rise_Max = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 4:
-                            left_Lower_min = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 5:
-                            left_Lower_Max = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 6:
-                            reverseLeft = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-
-                        case 7:
-                            right_Rise_min = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 8:
-                            right_Rise_Max = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 9:
-                            right_Lower_min = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 10:
-                            right_Lower_Max = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 11:
-                            reverseRight = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 12:
-                            hydr_Window = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 13:
-                            left_Gain = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 14:
-                            right_Gain = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 15:
-                            elevationDB = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-                        case 16:
-                            slopeDB = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
-                            break;
-
-                    }
-
-                    boolean[] stat = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[3]);
-                    isAutoL = stat[7];
-                    isAutoR = stat[6];
-                    outW_L = stat[5];
-                    outW_R = stat[4];
-
-
+                    handler_ECU_Connected.removeCallbacks(timeoutRunnable_ECU_Connected);
+                    handler_ECU_Connected.postDelayed(timeoutRunnable_ECU_Connected, 1000);
                 }
             }
 
@@ -531,8 +483,6 @@ public class CanService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-
         CanServiceState = true;
         try {
 
@@ -585,11 +535,11 @@ public class CanService extends Service {
         return null;
     }
 
-    private final Handler handler_steer=new Handler();
-    private final Runnable timeoutRunnable_steer=new Runnable() {
+    private final Handler handler_steer = new Handler();
+    private final Runnable timeoutRunnable_steer = new Runnable() {
         @Override
         public void run() {
-            SteerConnected=1;
+            SteerConnected = 1;
         }
     };
     private final Handler handler_nmeaSTX = new Handler();
@@ -699,15 +649,33 @@ public class CanService extends Service {
     };
 
     private final Handler handler_ECU_Connected = new Handler();
-    private final Runnable timeoutRunnable_CU_Connected = new Runnable() {
+    private final Runnable timeoutRunnable_ECU_Connected = new Runnable() {
         @Override
         public void run() {
             ECU_Connected = false;
-            isAutoL = false;
-            isAutoR = false;
-            outW_L = false;
-            outW_R = false;
+        }
+    };
 
+
+    private final Handler handler_CAT_Connected = new Handler();
+    private final Runnable timeoutRunnable_CAT_Connected = new Runnable() {
+        @Override
+        public void run() {
+            CAT_Connected = false;
+        }
+    };
+    private final Handler handler_JD_Connected = new Handler();
+    private final Runnable timeoutRunnable_JD_Connected = new Runnable() {
+        @Override
+        public void run() {
+            JD_Connected = false;
+        }
+    };
+    private final Handler handler_KOM_Connected = new Handler();
+    private final Runnable timeoutRunnable_KOM_Connected = new Runnable() {
+        @Override
+        public void run() {
+            KOM_Connected = false;
         }
     };
 

@@ -187,7 +187,7 @@ public class My3DActivity extends BaseClass {
             bucketName = "";
         }
 
-        if (DataSaved.Interface_Type == 2) {
+        if (DataSaved.Interface_Type == 2||DataSaved.Interface_Type==0) {
 
             MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
                     new byte[]{(byte) 0xF4,

@@ -160,7 +160,7 @@
         android:layout_margin="35dp"
         android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
-        android:text="HYDRAULIC\nVALVE"
+        android:text="STONEX\nECU"
         android:textSize="40sp"
         android:gravity="center"
         android:textStyle="bold|italic"

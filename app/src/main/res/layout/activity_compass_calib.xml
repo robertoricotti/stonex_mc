@@ -84,6 +84,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerInside"
+        android:padding="20dp"
         app:layout_constraintBottom_toTopOf="@+id/h3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/imgupdx"
@@ -96,6 +97,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerInside"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/h3"
         app:layout_constraintRight_toLeftOf="@id/txtDeltaX"
         app:layout_constraintTop_toTopOf="@+id/h1"
@@ -106,8 +108,8 @@
         android:id="@+id/imgdwdx"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:paddingLeft="350dp"
+        android:scaleType="centerInside"
+
         app:layout_constraintBottom_toTopOf="@+id/h5"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@id/imgupsx"
@@ -120,6 +122,8 @@
         android:id="@+id/aaaa"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:scaleType="centerInside"
+        android:padding="20dp"
         app:layout_constraintBottom_toTopOf="@+id/h5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/h3"
@@ -170,8 +174,8 @@
 
     <ImageView
         android:id="@+id/updateGps"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:padding="5dp"
         android:src="@drawable/btn_refresh"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -181,8 +185,8 @@
 
     <ImageView
         android:id="@+id/save"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:gravity="center"
         android:padding="5dp"
         android:src="@drawable/save_btn"
@@ -193,8 +197,8 @@
 
     <ImageView
         android:id="@+id/exit"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:backgroundTint="@color/dark_gray"
         android:gravity="center"
         android:padding="5dp"

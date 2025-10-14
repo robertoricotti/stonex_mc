@@ -190,7 +190,7 @@ public class UpdateValuesService extends Service {
 
                     String Extra_Heading = MyData.get_String("M" + i + "Extra_Heading");
 
-                    //TODO SETTAGGI IDRAULICI
+
                     String Interface_Type = MyData.get_String("M" + i + "Interface_Type");
                     String minSpeedLeftUP = MyData.get_String("M" + i + "minSpeedLeftUP");
                     String maxSpeedLeftUP = MyData.get_String("M" + i + "maxSpeedLeftUP");

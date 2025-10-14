@@ -56,7 +56,6 @@ import gui.buckets.BucketCalibTilt;
 import gui.buckets.BucketChooserActivity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.DebugExcavatorActivity;
-import gui.debug_ecu.Hydraulic_Setup;
 import gui.dialogs_and_toast.SensorAlertDialog;
 import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.digging_excavator.Digging1D;
@@ -69,6 +68,7 @@ import gui.gps.Nuovo_Gps;
 import gui.grading_dozergrader.Grading3D_DXF;
 import gui.hydro.CAT_SEA_Activity;
 import gui.hydro.DEERE_LIEBHERR_Activity;
+import gui.hydro.ECU_Activity;
 import gui.hydro.Hydro_Activity_Entering;
 import gui.hydro.KOMATSU_Activity;
 import gui.my_opengl.My3DActivity;
@@ -605,8 +605,8 @@ git push
             ((Grading3D_DXF) activity).updateUI();
         } else if (activity instanceof Activity_Crea_Superficie) {
             ((Activity_Crea_Superficie) activity).updateUI();
-        } else if (activity instanceof Hydraulic_Setup) {
-            ((Hydraulic_Setup) activity).updateUI();
+        } else if (activity instanceof ECU_Activity) {
+            ((ECU_Activity) activity).updateUI();
         } else if (activity instanceof My3DActivity) {
             ((My3DActivity) activity).updateUI();
 

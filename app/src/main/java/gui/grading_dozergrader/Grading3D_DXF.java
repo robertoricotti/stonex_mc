@@ -33,7 +33,6 @@ import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset_3D;
 import gui.dialogs_and_toast.Dialog_Edit_Coordinate_Demo;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
-import gui.dialogs_and_toast.Dialog_Gain;
 import gui.dialogs_and_toast.Dialog_MapMode;
 import gui.dialogs_and_toast.Dialog_Point_Poly;
 import gui.dialogs_user_settings.DialogColors;
@@ -48,7 +47,6 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import services.CanSender;
-import services.CanService;
 import services.TriangleService;
 import utils.LeicaLB;
 import utils.MyData;
@@ -56,7 +54,6 @@ import utils.MyDeviceManager;
 import utils.Utils;
 
 public class Grading3D_DXF extends BaseClass {
-    Dialog_Gain dialogGain;
     ImageView autoL, autoR;
     Dialog_MapMode dialogMapMode;
     Dialog_PRJ_Folder dialogPrjFolder;
@@ -139,7 +136,7 @@ public class Grading3D_DXF extends BaseClass {
             dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
             dialogColors = new DialogColors(this);
             dialogEditCoordinateDemo = new Dialog_Edit_Coordinate_Demo(this);
-            dialogGain = new Dialog_Gain(this);
+
 
         }
     }
@@ -286,9 +283,7 @@ public class Grading3D_DXF extends BaseClass {
             DataSaved.pickPP=!DataSaved.pickPP;
         });
         hydro_set.setOnClickListener(view -> {
-            if (!dialogGain.dialog.isShowing()) {
-                dialogGain.show();
-            }
+
         });
         bussola.setOnClickListener(view -> {
             if (DataSaved.my_comPort == 4) {
@@ -863,7 +858,7 @@ public class Grading3D_DXF extends BaseClass {
             txtwait.setVisibility(View.VISIBLE);
         }
         if (MyApp.licenseType == 5) {
-            if (CanService.isAutoL) {
+            if (false) {
                 autoL.setVisibility(View.VISIBLE);
                 autoL.setImageResource(R.drawable.auto_test_rosso);
                 autoL.setAlpha(1f);
@@ -872,7 +867,7 @@ public class Grading3D_DXF extends BaseClass {
                 autoL.setImageResource(R.drawable.auto_test_ko);
                 autoL.setAlpha(0.5f);
             }
-            if (CanService.isAutoR) {
+            if (false) {
                 autoR.setVisibility(View.VISIBLE);
                 autoR.setImageResource(R.drawable.auto_test_rosso);
                 autoR.setAlpha(1f);

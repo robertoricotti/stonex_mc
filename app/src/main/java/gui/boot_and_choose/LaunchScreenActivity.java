@@ -51,6 +51,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 import utils.MyMCUtils;
 import utils.NetworkUtils;
+import utils.TestAxio;
 import utils.Utils;
 
 
@@ -105,7 +106,7 @@ public class LaunchScreenActivity extends BaseClass {
             }
         }
 
-
+        startService(new Intent(LaunchScreenActivity.this, UpdateValuesService.class));
         count = new CountDownTimer(3000, 1) {
             @Override
             public void onTick(long l) {
@@ -116,17 +117,11 @@ public class LaunchScreenActivity extends BaseClass {
             @Override
             public void onFinish() {
                 deviceId = Build.BRAND;
-
                 MyData.push("BUILD", deviceId.toString());
-
                 startMe();
-
-
             }
 
             private void startMe() {
-
-
                 try {
                     if(MyData.get_String("ckSchermo")!=null) {
                         if (MyData.get_String("ckSchermo").equals("1")) {

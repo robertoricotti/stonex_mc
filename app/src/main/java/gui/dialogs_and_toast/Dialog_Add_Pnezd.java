@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dxf.PNEZDPoint;
 import packexcalib.exca.DataSaved;
@@ -546,77 +548,43 @@ public class Dialog_Add_Pnezd {
     }
 
 
-
-
-    private void codeRemoveLast() {
-        {
-            File file = new File(filepath);
-            if (!file.exists()) {
-                return;
-            }
-
-            List<String> lines = new ArrayList<>();
-
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    lines.add(line);
-                }
-            } catch (IOException e) {
-                Log.e("Dialog_Add_Pnezd", "Errore lettura CSV: " + e.getMessage());
-                return;
-            }
-
-            if (lines.size() <= 1) {
-                return;
-            }
-
-            // Rimuove l'ultima riga (ma mantiene intestazione)
-            lines.remove(lines.size() - 1);
-
-            try (FileWriter writer = new FileWriter(file, false)) {
-                for (String l : lines) {
-                    writer.write(l + "\n");
-                }
-                writer.flush();
-                new CustomToast(activity, "Point Removed").show_alert();
-            } catch (IOException e) {
-                Log.e("Dialog_Add_Pnezd", "Errore scrittura CSV: " + e.getMessage());
-            }
-
-            // Se visibile, aggiorna la lista
-
-            List<PNEZDPoint> nuoviPunti = leggiCSV(filepath);
-            adapter.updateData(nuoviPunti); // metodo custom
-            adapter.notifyDataSetChanged();
-        }
-    }
-
     private void codeSave() {
-        {
-            int numero = getNextPointNumber();  // ora è dinamico
+        int numero = getNextPointNumber();
 
-            String descrizione = "No Description";
-            try {
-                descrizione = ETdescription.getText().toString();
-            } catch (Exception e) {
-                descrizione = "No Data";
-            }
-
-            PNEZDPoint nuovoPunto = new PNEZDPoint(numero, nord, est, quota, descrizione, setColor(MyData.get_String("lastColor")));
-            aggiungiPuntoAlCSV(nuovoPunto);
-            MyData.push("lastDescription", descrizione);
-
-
-            List<PNEZDPoint> punti = leggiCSV(filepath);
-            adapter.updateData(punti); // metodo custom
-            adapter.notifyDataSetChanged();
-            new CustomToast(activity, "P" + numero + "\n" + descrizione + "\n").show_alert();
-            stopUpdatingCoordinates();
-            scanPNEZD();
-            dialog.dismiss();
+        String descrizione;
+        try {
+            descrizione = ETdescription.getText().toString().trim();
+        } catch (Exception e) {
+            descrizione = "No Data";
         }
+
+        //  Recupera ultimo salvataggio
+        String lastDesc = MyData.get_String("lastDescription");
+
+        //  Calcola eventuale incremento
+        descrizione = autoIncrementDescription(lastDesc, descrizione);
+
+        PNEZDPoint nuovoPunto = new PNEZDPoint(
+                numero,
+                nord,
+                est,
+                quota,
+                descrizione,
+                setColor(MyData.get_String("lastColor"))
+        );
+
+        aggiungiPuntoAlCSV(nuovoPunto);
+        MyData.push("lastDescription", descrizione);
+        List<PNEZDPoint> punti = leggiCSV(filepath);
+        adapter.updateData(punti);
+        adapter.notifyDataSetChanged();
+
+        new CustomToast(activity, "P" + numero + "\n" + descrizione + "\n").show_alert();
+        stopUpdatingCoordinates();
+        scanPNEZD();
+        dialog.dismiss();
     }
+
 
     private int setColor(String color) {
         return switch (color) {
@@ -650,4 +618,29 @@ public class Dialog_Add_Pnezd {
             }
         };
     }
+
+
+    private String autoIncrementDescription(String lastDesc, String currentDesc) {
+        if (currentDesc == null || currentDesc.trim().isEmpty()) return "No Data";
+
+        // Se è diverso dal precedente → reset
+        if (!currentDesc.equals(lastDesc)) {
+            return currentDesc;
+        }
+
+        // Cerca una desinenza tipo (num) alla fine
+        Pattern pattern = Pattern.compile("\\((\\d+)\\)$");
+        Matcher matcher = pattern.matcher(currentDesc.trim());
+
+        if (matcher.find()) {
+            int num = Integer.parseInt(matcher.group(1));
+            num++;
+            // sostituisci il numero dentro le parentesi
+            return matcher.replaceFirst("(" + num + ")");
+        } else {
+            // Non ha contatore → aggiungi (1)
+            return currentDesc + "(1)";
+        }
+    }
+
 }

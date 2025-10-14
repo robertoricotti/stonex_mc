@@ -41,6 +41,9 @@ public class MyMCUtils {
     public static double limitD(double value,double min,double max) {
         return Math.max(min, Math.min(value, max));
     }
+    public static short limitShort(short value,short min,short max) {
+        return (short) Math.max(min, Math.min(value, max));
+    }
     public static float limitF(float value,float min,float max) {
         return Math.max(min, Math.min(value, max));
     }

@@ -76,7 +76,7 @@
 <GeoidPar>
 <Use>1</Use>
 <Mode>0</Mode>
-<GeoidFile>/storage/emulated/0/StonexCube/Geoid/EST-GEOID2017.UGF</GeoidFile>
+<GeoidFile>/geo/sd/record/Geoid/EST-GEOID2017.UGF</GeoidFile>
 </GeoidPar>
 <ITRF>
 <Use>0</Use>

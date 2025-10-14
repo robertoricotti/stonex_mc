@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
-import gui.debug_ecu.Hydraulic_Setup;
 import gui.dialogs_and_toast.CustomToast;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
@@ -60,7 +59,7 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
             switch (DataSaved.Interface_Type){
                 case 0:
                     to_calib.setEnabled(false);
-                    startActivity(new Intent(Hydro_Activity_Entering.this, Hydraulic_Setup.class));
+                    startActivity(new Intent(Hydro_Activity_Entering.this, ECU_Activity.class));
                     finish();
                     break;
 

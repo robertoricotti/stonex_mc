@@ -87,24 +87,29 @@ public class Dialog_Gain_Hydro {
             switch (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER) {
                 case 0:
                     lamaCP.setImageResource((R.drawable.cent_right));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"CENTER-RIGHT");
                     break;
 
                 case 1:
                     lamaCP.setImageResource((R.drawable.cent_left));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"CENTER-LEFT");
                     break;
 
                 case 2:
                     lamaCP.setImageResource((R.drawable.left_right));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"LEFT-RIGHT");
                     break;
             }
         } else {
             switch (DataSaved.HYDRAULIC_CONTROL_POINT_DOZER) {
                 case 0:
                     lamaCP.setImageResource((R.drawable.cent_right));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"CENTER-RIGHT");
                     break;
 
                 case 1:
                     lamaCP.setImageResource((R.drawable.cent_left));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"CENTER-LEFT");
                     break;
 
 
@@ -191,24 +196,29 @@ public class Dialog_Gain_Hydro {
             switch (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER) {
                 case 0:
                     lamaCP.setImageResource((R.drawable.cent_right));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"CENTER-RIGHT");
                     break;
 
                 case 1:
                     lamaCP.setImageResource((R.drawable.cent_left));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"CENTER-LEFT");
                     break;
 
                 case 2:
                     lamaCP.setImageResource((R.drawable.left_right));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"LEFT-RIGHT");
                     break;
             }
         } else {
             switch (DataSaved.HYDRAULIC_CONTROL_POINT_DOZER) {
                 case 0:
                     lamaCP.setImageResource((R.drawable.cent_right));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"CENTER-RIGHT");
                     break;
 
                 case 1:
                     lamaCP.setImageResource((R.drawable.cent_left));
+                    centerTitle.setText(activity.getString(R.string.hydro_cp).toUpperCase()+"\n"+"CENTER-LEFT");
                     break;
 
 
