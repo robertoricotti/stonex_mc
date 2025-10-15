@@ -1,7 +1,14 @@
 package gui.boot_and_choose;
 
+import static gui.MyApp.DEVICE_SN;
+import static gui.MyApp.deu;
+import static gui.MyApp.folderPath;
+import static gui.MyApp.geoidAll;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.errorCode;
+import static gui.MyApp.listFilesInFolderGeoid;
+import static gui.MyApp.numGeoidiInterni;
+import static gui.MyApp.updateGeoidFolderFromCloud;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static services.ReadProjectService.numbers;
 import static services.UpdateValuesService.firstLaunch;
@@ -12,7 +19,9 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -22,6 +31,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
+import cloud.S3ManagerSingleton;
+import gui.MyApp;
 import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
@@ -41,6 +52,7 @@ import utils.MyDeviceManager;
 import utils.WifiHelper;
 
 public class Activity_Home_Page extends AppCompatActivity {
+    public static boolean HasDownloaded;
     ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo;
     CloseAppDialog closeAppDialog;
     ProgressBar progressBar;
@@ -82,6 +94,8 @@ public class Activity_Home_Page extends AppCompatActivity {
         }
 
         onClick();
+
+        scaricaGeoidi();
 
 
     }
@@ -307,5 +321,57 @@ public class Activity_Home_Page extends AppCompatActivity {
         super.onDestroy();
 
 
+    }
+    private void scaricaGeoidi(){
+
+        if(!HasDownloaded) {
+            try {
+                HasDownloaded=true;
+                String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
+                updateGeoidFolderFromCloud(
+                        pp,
+                        "serials/" + DEVICE_SN + "/Geoids/"
+
+
+                );
+                Log.d("S3Test", "Manager initialized: " + S3ManagerSingleton.isInitialized());
+
+
+                geoidAll = listFilesInFolderGeoid(pp);
+
+                // Crea un nuovo array con spazio per i 3 elementi aggiuntivi
+                int originalLength = geoidAll != null ? geoidAll.length : 0;
+                String[] newGeoidAll = new String[originalLength + numGeoidiInterni];
+
+                // Se l'array originale non è nullo, copialo
+                if (geoidAll != null) {
+                    System.arraycopy(geoidAll, 0, newGeoidAll, 0, originalLength);
+                }
+
+                newGeoidAll[originalLength] = deu;
+                geoidAll = newGeoidAll;
+            } catch (Exception e) {
+                HasDownloaded=false;
+                Log.e("S3Test", "Manager initialized: " + e.getMessage());
+            }
+        }else {
+            try {
+                String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
+                geoidAll = listFilesInFolderGeoid(pp);
+
+                // Crea un nuovo array con spazio per i 3 elementi aggiuntivi
+                int originalLength = geoidAll != null ? geoidAll.length : 0;
+                String[] newGeoidAll = new String[originalLength + numGeoidiInterni];
+
+                // Se l'array originale non è nullo, copialo
+                if (geoidAll != null) {
+                    System.arraycopy(geoidAll, 0, newGeoidAll, 0, originalLength);
+                }
+                newGeoidAll[originalLength] = deu;
+                geoidAll = newGeoidAll;
+            } catch (Exception ignored) {
+
+            }
+        }
     }
 }

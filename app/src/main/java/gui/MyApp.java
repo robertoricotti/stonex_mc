@@ -43,10 +43,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import cloud.S3ManagerSingleton;
 import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Ecu_Sensors_Activity;
 import gui.boot_and_choose.Activity_Home_Page;
@@ -106,7 +109,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
-    private static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
+    public static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio
     public static boolean isAlto, isBasso, isCentro;
     private MediaPlayer mediaPlayer;
@@ -133,6 +136,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static String Actualactivity;
     public static boolean hAlarm, isApollo, canError;
     public static String folderPath;
+    public static String deu;
     public double h;
     SensorAlertDialog sensorAlertDialog1, sensorAlertDialog2, sensorAlertDialog3, sensorAlertDialog4, sensorAlertDialog5, sensorAlertDialog6, sensorAlertDialogBLADE;
     int frameCounter;
@@ -191,12 +195,11 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             //Log.d("machinestate", "null");
         }
 
-        // String nlgeo =copyGeoidFromAssets(this,"nlgeo2018.ugf","nlgeo2018.ugf");
-        //String belg=copyGeoidFromAssets(this,"belgium_hbg18.ugf","belgium_hbg18.ugf");
-        String deu = copyGeoidFromAssets(this, "DEUTSCH_GEOID.GGF", "DEUTSCH_GEOID.GGF");
-        // String riga =copyGeoidFromAssets(this,"RIGA20.UGF","RIGA20.UGF");
+        deu = copyGeoidFromAssets(this, "DEUTSCH_GEOID.GGF", "DEUTSCH_GEOID.GGF");
+
 
         String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
+
 
         geoidAll = listFilesInFolderGeoid(pp);
 
@@ -209,18 +212,8 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             System.arraycopy(geoidAll, 0, newGeoidAll, 0, originalLength);
         }
 
-        // Aggiungi le 3 nuove stringhe
         newGeoidAll[originalLength] = deu;
-        // newGeoidAll[originalLength + 1] = belg;
-        // newGeoidAll[originalLength + 2] = deu;
-        // newGeoidAll[originalLength + 3] = riga;
-
-        // Sovrascrivi l'array originale
         geoidAll = newGeoidAll;
-
-        //Log.d("GEOIDALL", Arrays.toString(geoidAll));
-
-
         try {
             gridFile_GR_dE = copyGeoidFromAssets(this, "dE_2km_V1-0.grd", "dE_2km_V1-0.grd");
             gridFile_GR_dN = copyGeoidFromAssets(this, "dN_2km_V1-0.grd", "dN_2km_V1-0.grd");
@@ -792,7 +785,6 @@ git push
     }
 
     public static String[] listFilesInFolderGeoid(String folderPath) {
-
         File folder = new File(folderPath);
 
         if (!folder.exists() || !folder.isDirectory()) {
@@ -816,6 +808,80 @@ git push
 
         return ugfFiles.toArray(new String[0]);
     }
+
+    public static void updateGeoidFolderFromCloud(String localFolderPath, String remoteFolderPath) {
+        S3ManagerSingleton s3Manager = S3ManagerSingleton.getInstance(visibleActivity);
+
+        s3Manager.getFoldersFiles_2(remoteFolderPath, new S3ManagerSingleton.S3Callback() {
+            @Override
+            public void onSuccess(Map<String, Object> remoteFiles) {
+                //Log.d("GeoidSync", "Trovati " + remoteFiles.size() + " file sul cloud.");
+
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+
+                executor.execute(() -> {
+                    File localFolder = new File(localFolderPath);
+                    if (!localFolder.exists() && !localFolder.mkdirs()) {
+                        //Log.w("GeoidSync", "Impossibile creare la cartella locale: " + localFolder.getAbsolutePath());
+                        return;
+                    }
+
+                    for (String remoteFileName : remoteFiles.keySet()) {
+                        String lowerName = remoteFileName.toLowerCase();
+                        if (!(lowerName.endsWith(".ugf") || lowerName.endsWith(".bin") || lowerName.endsWith(".ggf"))) {
+                           // Log.d("GeoidSync", "Saltato file non valido: " + remoteFileName);
+                            continue;
+                        }
+
+                        File localFile = new File(localFolder, remoteFileName);
+                        boolean shouldDownload = false;
+
+                        if (!localFile.exists()) {
+                            shouldDownload = true;
+                            //Log.d("GeoidSync", "File mancante localmente: " + remoteFileName);
+                        } else {
+                            Object remoteSizeObj = remoteFiles.get(remoteFileName);
+                            long remoteSize = 0;
+                            if (remoteSizeObj instanceof Number) {
+                                remoteSize = ((Number) remoteSizeObj).longValue();
+                            } else {
+                                //Log.w("GeoidSync", "Formato dimensione file remoto non valido per " + remoteFileName);
+                                continue;
+                            }
+
+                            long localSize = localFile.length();
+                            if (localSize != remoteSize) {
+                                shouldDownload = true;
+                                //Log.d("GeoidSync", "File differente: " + remoteFileName + " (locale=" + localSize + ", remoto=" + remoteSize + ")");
+                            }
+                        }
+
+                        if (shouldDownload) {
+                            String s3Key = remoteFolderPath.endsWith("/") ?
+                                    remoteFolderPath + remoteFileName :
+                                    remoteFolderPath + "/" + remoteFileName;
+                           // Log.d("GeoidSync", "Scarico: " + s3Key + " -> " + localFile.getAbsolutePath());
+
+                            try {
+                                s3Manager.downloadFile(s3Key, localFile.getAbsolutePath());
+                            } catch (Exception e) {
+                               // Log.w("GeoidSync", "Errore download file " + remoteFileName + ": " + e.getMessage());
+                            }
+                        }
+                    }
+
+                    executor.shutdown();
+                   // Log.d("GeoidSync", "Sincronizzazione completata.");
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+               // Log.w("GeoidSync", "Impossibile sincronizzare geoid (offline?): " + e.getMessage());
+            }
+        });
+    }
+
 
 
 }

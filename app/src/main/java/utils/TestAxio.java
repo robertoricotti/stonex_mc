@@ -158,6 +158,14 @@ public class TestAxio extends Activity {
         scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
                 new byte[]{0x23, 0x23, 0x73, 0x01, 0x20, 0x4E, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS);
 
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+                new byte[]{0x2F, 0x02, 0x63, 0x01, 0x03, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS); // AO Decimal Digits PV = 3
+
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+                new byte[]{0x2F, 0x32, 0x63, 0x01, 0x03, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS); // AO Decimal Digits FV = 3
+
+
+
         // Control via CANopen RPDO1
         scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
                 new byte[]{0x2F, 0x40, 0x23, 0x01, 0x01, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS);

@@ -830,5 +830,46 @@ public class S3ManagerSingleton {
             }
         }
     }
+    public void getFoldersFiles_2(String folderPath, S3Callback callback) {
+        ensureExecutor();
+        if (s3Credentials == null) {
+            Log.e("S3Manager:GetFoldersFiles", "AWS credentials not initialized");
+            return;
+        }
+
+        executorService.execute(() -> {
+            Map<String, Object> files = new HashMap<>();
+            try {
+                String finalFolderPath = folderPath.endsWith("/") ? folderPath : folderPath + "/";
+
+                ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
+                        .withBucketName(s3Credentials.getBucketName())
+                        .withPrefix(finalFolderPath);
+                // ⚠️ RIMOSSO .withDelimiter("/")
+
+                ObjectListing objectListing;
+
+                do {
+                    objectListing = s3Client.listObjects(listObjectsRequest);
+
+                    for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+                        String key = objectSummary.getKey();
+                        if (!key.endsWith("/")) {
+                            files.put(key.replace(finalFolderPath, ""), objectSummary.getSize());
+                        }
+                    }
+
+                    listObjectsRequest.setMarker(objectListing.getNextMarker());
+                } while (objectListing.isTruncated()); // 🔁 continua finché ci sono altri oggetti
+
+                Log.d("S3Manager:GetFoldersFiles", "Trovati " + files.size() + " file in " + folderPath);
+                callback.onSuccess(files);
+
+            } catch (Exception e) {
+                Log.e("S3Manager:GetFoldersFiles", "Error listing folder files", e);
+                callback.onError(e);
+            }
+        });
+    }
 
 }
