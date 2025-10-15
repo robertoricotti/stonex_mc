@@ -525,7 +525,7 @@ public class Dialog_Add_Pnezd {
                     writer.write(String.join(",", parts) + "\n");
                 }
                 writer.flush();
-                new CustomToast(activity, "Point Removed").show_alert();
+                //new CustomToast(activity, "Point Removed").show_alert();
             } catch (IOException e) {
                 Log.e("Dialog_Add_Pnezd", "Errore scrittura CSV: " + e.getMessage());
             }
@@ -558,11 +558,8 @@ public class Dialog_Add_Pnezd {
             descrizione = "No Data";
         }
 
-        //  Recupera ultimo salvataggio
-        String lastDesc = MyData.get_String("lastDescription");
-
-        //  Calcola eventuale incremento
-        descrizione = autoIncrementDescription(lastDesc, descrizione);
+        // Usa la nuova funzione che controlla tutto il CSV
+        descrizione = autoIncrementDescription(descrizione);
 
         PNEZDPoint nuovoPunto = new PNEZDPoint(
                 numero,
@@ -573,17 +570,26 @@ public class Dialog_Add_Pnezd {
                 setColor(MyData.get_String("lastColor"))
         );
 
+        // Aggiunge al CSV
         aggiungiPuntoAlCSV(nuovoPunto);
+
+        // Aggiorna l'ultima descrizione salvata
         MyData.push("lastDescription", descrizione);
+
+        // Aggiorna la RecyclerView
         List<PNEZDPoint> punti = leggiCSV(filepath);
         adapter.updateData(punti);
         adapter.notifyDataSetChanged();
 
+        // Mostra il toast
         new CustomToast(activity, "P" + numero + "\n" + descrizione + "\n").show_alert();
+
+        // Ferma aggiornamento coordinate e ridisegna punti
         stopUpdatingCoordinates();
         scanPNEZD();
         dialog.dismiss();
     }
+
 
 
     private int setColor(String color) {
@@ -620,27 +626,56 @@ public class Dialog_Add_Pnezd {
     }
 
 
-    private String autoIncrementDescription(String lastDesc, String currentDesc) {
+    private String autoIncrementDescription(String currentDesc) {
         if (currentDesc == null || currentDesc.trim().isEmpty()) return "No Data";
 
-        // Se è diverso dal precedente → reset
-        if (!currentDesc.equals(lastDesc)) {
-            return currentDesc;
+        File file = new File(filepath);
+        if (!file.exists()) return currentDesc;
+
+        // Estrai base senza eventuale contatore
+        String baseName;
+        Pattern pattern = Pattern.compile("^(.*?)(?:\\((\\d+)\\))?$");
+        Matcher matcher = pattern.matcher(currentDesc.trim());
+        if (matcher.matches()) {
+            baseName = matcher.group(1).trim();
+        } else {
+            baseName = currentDesc.trim();
         }
 
-        // Cerca una desinenza tipo (num) alla fine
-        Pattern pattern = Pattern.compile("\\((\\d+)\\)$");
-        Matcher matcher = pattern.matcher(currentDesc.trim());
+        // Conta quante volte appare nel CSV il baseName
+        int count = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = reader.readLine()) != null) {
+                if (firstLine) { firstLine = false; continue; }
 
-        if (matcher.find()) {
-            int num = Integer.parseInt(matcher.group(1));
-            num++;
-            // sostituisci il numero dentro le parentesi
-            return matcher.replaceFirst("(" + num + ")");
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    String desc = parts[4].trim();
+                    Matcher m = pattern.matcher(desc);
+                    if (m.matches()) {
+                        String existingBase = m.group(1).trim();
+                        if (existingBase.equals(baseName)) {
+                            count++;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Log.e("Dialog_Add_Pnezd", "Errore lettura CSV per autoIncrement: " + e.getMessage());
+        }
+
+        // Se count == 0 → primo punto con questo nome → salva così com’è
+        // Se count >= 1 → aggiungi contatore (count)
+        if (count == 0) {
+            return baseName;
         } else {
-            // Non ha contatore → aggiungi (1)
-            return currentDesc + "(1)";
+            return baseName + "(" + count + ")";
         }
     }
+
+
+
 
 }

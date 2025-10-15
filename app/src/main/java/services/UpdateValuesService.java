@@ -929,7 +929,7 @@ public class UpdateValuesService extends Service {
 
                     }
                     if (lock3dRotation == null) {
-                        MyData.push("lock3dRotation", "0");
+                        MyData.push("lock3dRotation", "1");
                     }
                     if (Off_Incr_Step == null) {
                         MyData.push("Off_Incr_Step", "0.01");

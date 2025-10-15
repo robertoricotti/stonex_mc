@@ -191,8 +191,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
                 }
             }
             //Log.d("machinestate", MyData.get_String("machinestate"));
-        } else {
-            //Log.d("machinestate", "null");
         }
 
         deu = copyGeoidFromAssets(this, "DEUTSCH_GEOID.GGF", "DEUTSCH_GEOID.GGF");
