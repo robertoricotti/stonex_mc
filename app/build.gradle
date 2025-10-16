@@ -12,7 +12,7 @@ android {
         minSdk 26
         targetSdk 34
         versionCode 4000
-        versionName "4.0.0 NFR 14102025"
+        versionName "4.0.0_release_16_10_2025"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildFeatures.buildConfig = true

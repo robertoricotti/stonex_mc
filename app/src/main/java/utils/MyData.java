@@ -3,9 +3,14 @@ package utils;
 import static android.content.Context.MODE_PRIVATE;
 
 
+import static gui.MyApp.DEVICE_SN;
 import static gui.MyApp.folderPath;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -24,8 +29,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import cloud.S3ManagerSingleton;
 import gui.MyApp;
 import gui.dialogs_and_toast.CustomToast;
 import gui.tech_menu.ExcavatorChooserActivity;
@@ -163,58 +170,93 @@ public class MyData {
     }
 
     public static void exportAllToJson() {
-
-        File dirOut = new File(Environment.getExternalStorageDirectory(), folderPath+"/Config/");
+        File dirOut = new File(Environment.getExternalStorageDirectory(), folderPath + "/Config/");
         if (!dirOut.exists()) {
             dirOut.mkdirs();
         }
-
-        File jsonFile = new File(dirOut, "mcconfig.json");
+        String stringa="mcconfig_"+DEVICE_SN;
+        File jsonFile = new File(dirOut, stringa+".json");
 
         String[] allFiles = MyApp.visibleActivity.getApplicationContext().fileList();
         JSONObject jsonObject = new JSONObject();
-        //  CHIAVI DA ESCLUDERE (i nomi file equivalgono alle chiavi nel JSON)
+
+        // CHIAVI DA ESCLUDERE
         Set<String> excludeKeys = new HashSet<>(Arrays.asList(
                 "licenza",
                 "progettoSelected",
                 "progettoSelected_POINT",
                 "progettoSelected_POLY"
-                // aggiungi altre chiavi da ignorare
         ));
+
         for (String fileName : allFiles) {
-            if (fileName.equals("mcconfig.json")) continue; // evita il loop infinito
-            if (excludeKeys.contains(fileName)) continue;   // esclude chiavi specifiche
-            try {
-                FileInputStream fIn = MyApp.visibleActivity.getApplicationContext().openFileInput(fileName);
-                InputStreamReader isr = new InputStreamReader(fIn);
+            String stringas="mcconfig_"+DEVICE_SN;
+            if (fileName.equals(stringas+".json")) continue;
+            if (excludeKeys.contains(fileName)) continue;
+
+            try (FileInputStream fIn = MyApp.visibleActivity.getApplicationContext().openFileInput(fileName);
+                 InputStreamReader isr = new InputStreamReader(fIn)) {
+
                 char[] inputBuffer = new char[READ_BLOCK_SIZE];
                 StringBuilder s = new StringBuilder();
                 int charRead;
                 while ((charRead = isr.read(inputBuffer)) > 0) {
                     s.append(String.copyValueOf(inputBuffer, 0, charRead));
                 }
-                isr.close();
-
                 jsonObject.put(fileName, s.toString());
 
-            } catch (IOException | JSONException ignored) {
-            }
+            } catch (IOException | JSONException ignored) {}
         }
 
-        try {
-            FileOutputStream fos = new FileOutputStream(jsonFile);
-            OutputStreamWriter osw = new OutputStreamWriter(fos);
+        // ✅ Salvataggio in locale
+        try (FileOutputStream fos = new FileOutputStream(jsonFile);
+             OutputStreamWriter osw = new OutputStreamWriter(fos)) {
+
             osw.write(jsonObject.toString(4));
             osw.flush();
-            osw.close();
-        } catch (IOException ignored) {} catch (JSONException e) {
-            throw new RuntimeException(e);
+
+        } catch (IOException | JSONException e) {
+            Log.e("exportAllToJson", "Errore salvataggio JSON: " + e.getMessage());
+            return;
+        }
+
+        // ✅ Upload su cloud solo se online
+        if (isNetworkAvailable(MyApp.visibleActivity)) {
+            try {
+                String deviceSN=DEVICE_SN;
+                if (deviceSN == null || deviceSN.isEmpty()) {
+                    Log.w("S3Upload", "DEVICE_SN non definito, upload saltato");
+                    return;
+                }
+
+                String remotePath = "serials/" + deviceSN + "/Config/" + jsonFile.getName();
+                S3ManagerSingleton s3Manager = S3ManagerSingleton.getInstance(MyApp.visibleActivity);
+                s3Manager.uploadFile(jsonFile.getAbsolutePath(), remotePath);
+
+                Log.i("S3Upload", "Upload avviato: " + remotePath);
+
+            } catch (Exception e) {
+                Log.w("S3Upload", "Errore upload (nessuna azione): " + e.getMessage());
+            }
+        } else {
+            Log.i("S3Upload", "Nessuna connessione disponibile: salvataggio solo locale");
+        }
+    }
+
+    /** Controlla se c’è connessione internet */
+    private static boolean isNetworkAvailable(Context context) {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) return false;
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            return activeNetwork != null && activeNetwork.isConnected();
+        } catch (Exception e) {
+            return false;
         }
     }
 
     public static void restoreFromJson() {
-
-        File jsonFile = new File(Environment.getExternalStorageDirectory(), folderPath + "/Config/mcconfig.json");
+String stringa="mcconfig_"+DEVICE_SN;
+        File jsonFile = new File(Environment.getExternalStorageDirectory(), folderPath + "/Config/"+stringa+".json");
 
         if (!jsonFile.exists()){
             new CustomToast(MyApp.visibleActivity,"File Not Found").show_error();
