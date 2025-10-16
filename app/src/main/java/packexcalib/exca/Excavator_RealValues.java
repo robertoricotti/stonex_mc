@@ -156,6 +156,12 @@ public class Excavator_RealValues {
         return a;
 
     }
+    private static double normalizeAngle(double a) {
+        a = a % 360.0;
+        if (a > 180) a -= 360;
+        if (a < -180) a += 360;
+        return a;
+    }
 
     public static double[] realBucket(double offset, double offsetFlat, double dboffset, double L1, double L2, double L3, double L4) {
         double[] a = new double[4];
@@ -166,36 +172,30 @@ public class Excavator_RealValues {
         double angle = Deg_bucket;
         if (L1 > 0) {
             DBStickAngle = (((angle - correctStick) + dboffset) - 180.0) * -1;
-            if (DBStickAngle < -180) {
-                DBStickAngle += 360;
-            }
-            if (DBStickAngle > 180) {
-                DBStickAngle -= 360;
-            }
+            DBStickAngle=normalizeAngle(DBStickAngle);
             double tempA = 180 - DBStickAngle;
             L5 = Math.sqrt(Math.pow(L3, 2) + Math.pow(L1, 2) - 2 * L3 * L1 * Math.cos(tempA * Math.PI / 180));
             Ya = (Math.acos(((((L3 * L3) + (L5 * L5)) - ((L1 * L1))) / (2 * L3 * L5))) * 180 / Math.PI);
             double method = ((Math.pow(L5, 2) + Math.pow(L4, 2) - Math.pow(L2, 2)) / (2 * L5 * L4));
             if (method > 1) {
                 method = 1;
-                dbAlert = true;
-            } else {
-                dbAlert = false;
+                dbAlert=true;
+            }else {
+                dbAlert=false;
+            }
+            if (method < -1) {
+                method = -1;
+                dbAlert=true;
+            }else {
+                dbAlert=false;
             }
             Ba = Math.acos(method) * 180 / Math.PI;
             nuovaBucket = Ya + Ba;
             bennaSimulata = 180 + (mcorrectStrick) - nuovaBucket;
 
-            if (bennaSimulata > 179.99) {
-                bennaSimulata = (bennaSimulata) - 360.0;
-            }
-            if ((bennaSimulata - offset - 90.00) < -179.99) {
-                correctBucket = (bennaSimulata - offset - 90.00) + 360.00;
-            } else if ((bennaSimulata - offset - 90.00) > 179.99) {
-                correctBucket = (bennaSimulata - offset - 90.00) - 360.00;
-            } else {
-                correctBucket = (bennaSimulata - offset - 90.00);
-            }
+            bennaSimulata=normalizeAngle(bennaSimulata);
+
+            correctBucket = normalizeAngle(bennaSimulata - offset - 90.0);
         } else {
             if ((angle - offset - 90.00) < -179.99) {
                 correctBucket = (angle - offset - 90.00) + 360.00;
@@ -205,13 +205,7 @@ public class Excavator_RealValues {
                 correctBucket = (angle - offset - 90.00);
             }
         }
-        if ((correctBucket - offsetFlat) < -179.99) {
-            correctFlat = (correctBucket - offsetFlat) + 360.00;
-        } else if ((correctBucket - offsetFlat) > 179.99) {
-            correctFlat = (correctBucket - offsetFlat) - 360.00;
-        } else {
-            correctFlat = (correctBucket - offsetFlat);
-        }
+        correctFlat   = normalizeAngle(correctBucket - offsetFlat);
 
         a[0] = correctBucket;
         a[1] = correctFlat;

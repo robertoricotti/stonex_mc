@@ -61,7 +61,7 @@ public class CanSender extends Service {
     public static double GroundSlope;
     public static int valueKomL = 0, valueKomR = 0, valueCATL = 0, valueCATR = 0, valueCATSS = 0, valueJDL = 20000, valueJDR = 20000, valueJDSS = 20000;
     public static byte dirCAT_L, dirCAT_R, dirCAT_SS = (byte) 0xF2;
-    public static boolean prepLeft, prepRight, prepSS;
+    public static boolean prepLeft, prepRight;
     static Map<String, Object> payload;
     public static boolean tryingBTCAN = false;
     int connections = 0;
@@ -450,8 +450,8 @@ public class CanSender extends Service {
                             valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
 
                             valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
-                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
-                            valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
+                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
+                            valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
 
 
                         } else if (QC > DataSaved.tolleranza_Z) {
@@ -465,8 +465,9 @@ public class CanSender extends Service {
 
 
                             valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
-                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
-                            valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
+                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
+
+                            valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
                         }
                     } else {
                         valueKomL = 0;
@@ -499,8 +500,8 @@ public class CanSender extends Service {
 
 
                             valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
-                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
-                            valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
+                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
+                            valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
 
                         } else if (deviation < -DataSaved.tolleranza_Slope) {
                             dirCAT_R = (byte) 0xF1;
@@ -513,8 +514,8 @@ public class CanSender extends Service {
 
 
                             valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(deviation), 0, 30, minSpeedRightUP, maxSpeedRightUP);
-                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
-                            valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
+                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
+                            valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
 
                         }
 
@@ -528,7 +529,7 @@ public class CanSender extends Service {
                     }
 
 
-                    if(!prepSS){
+                    if(!Grader_Auto_SS){
                         valueCATSS = 0;
                         valueJDSS = 20000;
                         dirCAT_SS = (byte) 0xF2;
@@ -646,8 +647,8 @@ public class CanSender extends Service {
                 valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
 
                 valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
-                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
-                valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
+                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
+                valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
 
 
             } else if (LL > DataSaved.tolleranza_Z) {
@@ -658,11 +659,9 @@ public class CanSender extends Service {
                 valueKomL = (int) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
                 valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
                 valueKomL = valueKomL * -1;
-
-
                 valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
-                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
-                valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
+                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
+                valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
             }
         } else {
             valueKomL = 0;
@@ -684,8 +683,8 @@ public class CanSender extends Service {
                 valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
 
                 valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightUP, maxSpeedRightUP);
-                valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
-                valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
+                valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
+                valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
 
 
             } else if (RR > DataSaved.tolleranza_Z) {
@@ -699,8 +698,8 @@ public class CanSender extends Service {
 
 
                 valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW, maxSpeedRightDW);
-                valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
-                valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
+                valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
+                valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
             }
         } else {
             valueKomR = 0;

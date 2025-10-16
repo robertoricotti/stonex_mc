@@ -5,7 +5,6 @@ import static gui.MyApp.errorCode;
 import static gui.MyApp.hAlarm;
 import static services.CanSender.prepLeft;
 import static services.CanSender.prepRight;
-import static services.CanSender.prepSS;
 import static services.CanService.Dozer_Auto_Main;
 import static services.CanService.Grader_AutoRight;
 import static services.CanService.Grader_Auto_Left;
@@ -73,6 +72,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
+
     ImageView navigatorHDT;
 
     TextView AUTO_SX, AUTO_SS, AUTO_DX;
@@ -128,6 +128,7 @@ public class My3DActivity extends BaseClass {
         super.onCreate(savedInstanceState);
         checkBooleans();
         serviseStrarted = false;
+        Grader_Auto_SS=false;
         setContentView(R.layout.activity_my3_dactivity);
         progress = findViewById(R.id.progress);
         loading = findViewById(R.id.loading);
@@ -312,7 +313,7 @@ public class My3DActivity extends BaseClass {
             return false;
         });
         AUTO_SS.setOnLongClickListener(view -> {
-            prepSS = !prepSS;
+            Grader_Auto_SS = !Grader_Auto_SS;
             return false;
         });
         AUTO_DX.setOnLongClickListener(view -> {
@@ -677,7 +678,7 @@ public class My3DActivity extends BaseClass {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+       Grader_Auto_SS=false;
         stopService(new Intent(this, TriangleService.class));
     }
 
@@ -1483,17 +1484,17 @@ public class My3DActivity extends BaseClass {
                     }
 
 
-                    if (prepSS) {
+
                         if (Grader_Auto_SS) {
                             AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
 
 
                         } else {
-                            AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+                            AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_manuale));
                         }
-                    } else {
-                        AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_manuale));
-                    }
+
+
+
 
 
                     if (prepRight) {

@@ -312,7 +312,7 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
-
+                                    Deg_Boom_Roll=movingAverage_boomroll(Deg_Boom_Roll,10);
                                     break;
 
                                 case 0x385:
@@ -393,7 +393,7 @@ public class Sensors_Decoder {
                                     qY /= qnorm;
                                     qZ /= qnorm;
                                     eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    eulerAngles[2]=movingAverage_tilt(eulerAngles[2],15);
+                                    eulerAngles[2]=(eulerAngles[2]);
                                     switch (DataSaved.lrTilt) {
                                         case 1:
                                             //Left
@@ -581,7 +581,7 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
-                                    Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
+                                    Deg_Boom_Roll=movingAverage_boomroll(Deg_Boom_Roll,10);
                                     break;
 
                                 case 0x385:
@@ -634,7 +634,7 @@ public class Sensors_Decoder {
                                     qY /= qnorm;
                                     qZ /= qnorm;
                                     eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    eulerAngles[2]=movingAverage_tilt(eulerAngles[2],15);
+                                    eulerAngles[2]=(eulerAngles[2]);
                                     switch (DataSaved.lrTilt) {
                                         case 1:
                                             //Left

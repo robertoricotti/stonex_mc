@@ -298,7 +298,7 @@ public class Deg2UTM {
                             Easting  = shifted.x;
                             Northing = shifted.y+2000000;
                             Quota    = shifted.z;
-                            Log.d("GridShift","E: "+Easting+"     N: "+Northing+" Q: "+Quota);
+                            //Log.d("GridShift","E: "+Easting+"     N: "+Northing+" Q: "+Quota);
                         }
                     }else {
                         if (wgsToUtm != null && result != null) {
