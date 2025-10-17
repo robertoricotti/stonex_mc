@@ -1,18 +1,19 @@
 package packexcalib.gnss;
 
-
+import android.util.Log;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import java.io.*;
+import java.nio.*;
 import java.nio.channels.FileChannel;
 
 public class GeoideInterpolation {
 
     private static final int OFFSET_1 = 48;   // dimensione header
     private static final int OFFSET_2 = 146;  // offset dati
-
     private double latMin, latMax, lonMin, lonMax, dLat, dLon;
     private int quadroY, quadroX;
     private boolean rovescio;

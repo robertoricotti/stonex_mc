@@ -197,6 +197,12 @@ public class UpdateValuesService extends Service {
                     String minSpeedLeftDW = MyData.get_String("M" + i + "minSpeedLeftDW");
                     String maxSpeedLeftDW = MyData.get_String("M" + i + "maxSpeedLeftDW");
 
+                    String REVERSE_LEFT = MyData.get_String("M" + i + "REVERSE_LEFT");
+                    String REVERSE_RIGHT = MyData.get_String("M" + i + "REVERSE_RIGHT");
+                    String REVERSE_SS = MyData.get_String("M" + i + "REVERSE_SS");
+
+
+
                     String minSpeedRightUP = MyData.get_String("M" + i + "minSpeedRightUP");
                     String maxSpeedRightUP = MyData.get_String("M" + i + "maxSpeedRightUP");
                     String minSpeedRightDW = MyData.get_String("M" + i + "minSpeedRightDW");
@@ -490,7 +496,15 @@ public class UpdateValuesService extends Service {
                         MyData.push("M" + i + "Interface_Type", "0");
                     }
                     ///
-
+                    if (REVERSE_LEFT == null) {
+                        MyData.push("M" + i + "REVERSE_LEFT", "0");
+                    }
+                    if (REVERSE_RIGHT == null) {
+                        MyData.push("M" + i + "REVERSE_RIGHT", "0");
+                    }
+                    if (REVERSE_SS == null) {
+                        MyData.push("M" + i + "REVERSE_SS", "0");
+                    }
 
                     if (minSpeedLeftUP == null) {
                         MyData.push("M" + i + "minSpeedLeftUP", "0");
@@ -641,6 +655,7 @@ public class UpdateValuesService extends Service {
                 }
 
                 String licenza = MyData.get_String("licenza");
+                String coordOrder = MyData.get_String("coordOrder");
                 String screenOr = MyData.get_String("screenOr");
                 String wifiSSID = MyData.get_String("wifiSSID");
                 String boomresult = MyData.get_String("boomresult");
@@ -717,6 +732,9 @@ public class UpdateValuesService extends Service {
                 if (!startedService) {
                     if (licenza == null) {
                         MyData.push("licenza", "000000");
+                    }
+                    if (coordOrder == null) {
+                        MyData.push("coordOrder", "0");
                     }
                     if (screenOr == null) {
                         MyData.push("screenOr", "0");
@@ -1025,6 +1043,11 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di shortcutIndex: " + e.getMessage());
                 }
+                try {
+                    DataSaved.coordOrder = MyData.get_Int("coordOrder");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di coordOrder: " + e.getMessage());
+                }
 
                 try {
                     DataSaved.start2DX = MyData.get_Double("start2DX");
@@ -1314,6 +1337,34 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Interface_Type: " + e.getMessage());
                 }
+
+                /// //////
+                try {
+                    DataSaved.REVERSE_LEFT = MyData.get_Int("M" + indexMach + "REVERSE_LEFT");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di REVERSE_LEFT: " + e.getMessage());
+                }
+                try {
+                    DataSaved.REVERSE_RIGHT = MyData.get_Int("M" + indexMach + "REVERSE_RIGHT");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di REVERSE_RIGHT: " + e.getMessage());
+                }
+                try {
+                    DataSaved.REVERSE_SS = MyData.get_Int("M" + indexMach + "REVERSE_SS");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di REVERSE_SS: " + e.getMessage());
+                }
+
+
+
+
+            /// ///////
+
+
+
+
+
+
 
                 try {
                     DataSaved.minSpeedLeftUP = MyData.get_Int("M" + indexMach + "minSpeedLeftUP");

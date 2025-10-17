@@ -63,6 +63,10 @@ public class DataSaved {
     public static int HYDRAULIC_CONTROL_POINT_GRADER;//0=CENTER-RIGHT    1=CENTER-LEFT   2=LEFT-RIGHT
     public static int HYDRAULIC_CONTROL_POINT_DOZER;//0=CENTER-RIGHT    1=CENTER-LEFT
 
+    public static int REVERSE_LEFT;
+    public static int REVERSE_RIGHT;
+    public static int REVERSE_SS;
+
 
 
     public static int Wheel_Steer_Rev;
@@ -73,6 +77,8 @@ public class DataSaved {
     public static double SteerWheel_Result;
 
     ///
+    ///
+    public static int coordOrder;
     public static String machineName;
     public static int lock3dRotation;
     public static int ckSchermo;

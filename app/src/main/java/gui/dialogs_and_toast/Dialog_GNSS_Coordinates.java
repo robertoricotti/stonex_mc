@@ -335,10 +335,10 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
             alertDialog.dismiss();
         });
-        txCrs.setOnClickListener(view -> {
-            /*if(!epsgDialog.dialog.isShowing()){
-                epsgDialog.show(txCrs);
-            }*/
+        txtant1.setOnClickListener(view -> {
+            DataSaved.coordOrder+=1;
+            DataSaved.coordOrder=DataSaved.coordOrder%2;
+            MyData.push("coordOrder",String.valueOf(DataSaved.coordOrder));
         });
 
 
@@ -610,7 +610,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                     try {
 
-                        txtant1.setText("E: " + Utils.showCoords(String.valueOf(NmeaListener.Est1)) + "   N: " + Utils.showCoords(String.valueOf(NmeaListener.Nord1)) + "  Z: " + Utils.showCoords(String.valueOf(NmeaListener.Quota1)) + "  " + Utils.getMetriSimbolCoords());
+                        txtant1.setText(coordShowed(DataSaved.coordOrder)[0]);
                         if (MyApp.GEOIDE_PATH != null) {
                             if (Deg2UTM.geoidError) {
                                 txCon.append("\nGRID ERROR");
@@ -624,12 +624,12 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                     }
                     try {
-                        txtbennasx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])) + "  " + Utils.getMetriSimbolCoords());
+                        txtbennasx.setText(coordShowed(DataSaved.coordOrder)[1]);
 
-                        txtbennacx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "  " + Utils.getMetriSimbolCoords());
+                        txtbennacx.setText(coordShowed(DataSaved.coordOrder)[2]);
 
                         //txtbennacx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "    " + decLatCx + "   " + decLonCx);
-                        txtbennadx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "  " + Utils.getMetriSimbolCoords());
+                        txtbennadx.setText(coordShowed(DataSaved.coordOrder)[3]);
                         //txtbennadx.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "    " + decLatDx + "   " + decLonDx);
 
 
@@ -654,6 +654,25 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                 }
             }
         }, 100);
+    }
+
+    private static String[]coordShowed(int mode){
+        String s0="E: " + Utils.showCoords(String.valueOf(NmeaListener.Est1)) + "   N: " + Utils.showCoords(String.valueOf(NmeaListener.Nord1)) + "  Z: " + Utils.showCoords(String.valueOf(NmeaListener.Quota1)) + "  " + Utils.getMetriSimbolCoords();
+        String s1="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s2="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s3="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+
+
+        String s4="N: " + Utils.showCoords(String.valueOf(NmeaListener.Nord1)) + "   E: " + Utils.showCoords(String.valueOf(NmeaListener.Est1)) + "  Z: " + Utils.showCoords(String.valueOf(NmeaListener.Quota1)) + "  " + Utils.getMetriSimbolCoords();
+        String s5="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "   E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s6="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "   E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s7="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "   E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+
+        if(mode==0){
+            return new String[]{s0,s1,s2,s3};
+        }else {
+            return new String[]{s4,s5,s6,s7};
+        }
     }
 
 }

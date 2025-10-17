@@ -1,5 +1,8 @@
 package gui.hydro;
 
+import static packexcalib.exca.DataSaved.REVERSE_LEFT;
+import static packexcalib.exca.DataSaved.REVERSE_RIGHT;
+import static packexcalib.exca.DataSaved.REVERSE_SS;
 import static packexcalib.exca.DataSaved.maxSpeedLeftDW;
 import static packexcalib.exca.DataSaved.maxSpeedLeftUP;
 import static packexcalib.exca.DataSaved.maxSpeedRightDW;
@@ -21,6 +24,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
+import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import services.CanService;
 import utils.MyMCUtils;
@@ -45,6 +50,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
     TextView testValve, testo, funzione, tipo, pagina;
     int maxMenu;
     EditText valore;
+    CheckBox rev_left,rev_right,rev_ss;
 
 
     int valueLEFT = 20000;
@@ -89,10 +95,39 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
         valM = findViewById(R.id.val_M);
         valP = findViewById(R.id.val_P);
         pagina = findViewById(R.id.pagina);
+        rev_left=findViewById(R.id.rev_left);
+        rev_right=findViewById(R.id.rev_right);
+        rev_ss=findViewById(R.id.rev_ss);
         ECUCONN=findViewById(R.id.ECUCONN);
     }
 
     private void onClick() {
+        rev_left.setOnClickListener(view -> {
+            if(REVERSE_LEFT>0){
+                REVERSE_LEFT=0;
+            }else {
+                REVERSE_LEFT=1;
+            }
+            MyData.push("M"+indexMachine+"REVERSE_LEFT",String.valueOf(REVERSE_LEFT));
+
+        });
+        rev_right.setOnClickListener(view -> {
+            if(REVERSE_RIGHT>0){
+                REVERSE_RIGHT=0;
+            }else {
+                REVERSE_RIGHT=1;
+            }
+            MyData.push("M"+indexMachine+"REVERSE_RIGHT",String.valueOf(REVERSE_RIGHT));
+        });
+        rev_ss.setOnClickListener(view -> {
+            if(REVERSE_SS>0){
+                REVERSE_SS=0;
+            }else {
+                REVERSE_SS=1;
+            }
+            MyData.push("M"+indexMachine+"REVERSE_SS",String.valueOf(REVERSE_SS));
+        });
+
         testValve.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -400,6 +435,29 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
     }
 
     public void updateUI() {
+        rev_left.setChecked(DataSaved.REVERSE_LEFT == 1);
+        rev_right.setChecked(DataSaved.REVERSE_RIGHT == 1);
+        rev_ss.setChecked(DataSaved.REVERSE_SS == 1);
+
+        if(REVERSE_LEFT==1){
+            rev_left.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+        }else {
+            rev_left.setBackground(getDrawable(R.drawable.sfondo_manuale));
+        }
+
+        if(REVERSE_RIGHT==1){
+            rev_right.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+        }else {
+            rev_right.setBackground(getDrawable(R.drawable.sfondo_manuale));
+        }
+
+        if(REVERSE_SS==1){
+            rev_ss.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+        }else {
+            rev_ss.setBackground(getDrawable(R.drawable.sfondo_manuale));
+        }
+
+
         pagina.setText((voceMenu + 1) + " / " + (maxMenu));
         switch (voceMenu) {
             case 0:
@@ -651,9 +709,25 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                 byte[]valoreDX= new byte[]{0x4E,0x20};
                 byte[]valoreSS= new byte[]{0x4E,0x20};
 
-                valoreSX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueLEFT);
-                valoreDX= PLC_DataTypes_LittleEndian.U16_to_bytes(valueRIGHT);
-                valoreSS= PLC_DataTypes_LittleEndian.U16_to_bytes(valueSS);
+                int resultL,resultR,resultSS;
+                if(DataSaved.REVERSE_LEFT==1){
+                    resultL=40000-valueLEFT;
+                }else {
+                    resultL=valueLEFT;
+                }
+                if(DataSaved.REVERSE_RIGHT==1){
+                    resultR=40000-valueRIGHT;
+                }else {
+                    resultR=valueRIGHT;
+                }
+                if(DataSaved.REVERSE_SS==1){
+                    resultSS=40000-valueSS;
+                }else {
+                    resultSS=valueSS;
+                }
+                valoreSX= PLC_DataTypes_LittleEndian.U16_to_bytes(resultL);
+                valoreDX= PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
+                valoreSS= PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
                 MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,

@@ -761,16 +761,16 @@ public class My3DActivity extends BaseClass {
             generalnfo.setText(bucketName + "\n" + "Offset: " + Utils.readUnitOfMeasure(String.valueOf(-DataSaved.offsetH)));
             switch (DataSaved.bucketEdge) {
                 case -1:
-                    generalCoord.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])));
+                    generalCoord.setText(coordShow(DataSaved.coordOrder)[0]);
                     break;
 
                 case 0:
-                    generalCoord.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])));
+                    generalCoord.setText(coordShow(DataSaved.coordOrder)[1]);
 
                     break;
 
                 case 1:
-                    generalCoord.setText("E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])));
+                    generalCoord.setText(coordShow(DataSaved.coordOrder)[2]);
 
                     break;
             }
@@ -1597,6 +1597,23 @@ public class My3DActivity extends BaseClass {
                 }
             }
 
+        }
+    }
+
+    private static String[] coordShow(int mode){
+        String s0="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
+        String s1="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
+        String s2="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
+
+
+        String s4="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
+        String s5="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
+        String s6="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
+
+        if(mode==0){
+            return new String[]{s0,s1,s2};
+        }else {
+            return new String[]{s4,s5,s6};
         }
     }
 }
