@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -17,6 +20,7 @@ import com.example.stx_dig.R;
 
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
+import utils.FullscreenActivity;
 import utils.MyData;
 
 public class Dialog_Gain_Hydro {
@@ -25,6 +29,12 @@ public class Dialog_Gain_Hydro {
     int machineSelected;
     ImageView lamaDX, lamaCP, gainLPiu, gainLMen, gainRPiu, gainRMen, save, cancel;
     TextView gainL, gainR, centerTitle;
+    Handler handler = new Handler(Looper.getMainLooper());
+    // Definisci un Runnable separato per ciascun bottone
+    Runnable gainLPiuRepeater;
+    Runnable gainLMenRepeater;
+    Runnable gainRPiuRepeater;
+    Runnable gainRMenRepeater;
 
     public Dialog_Gain_Hydro(Activity activity) {
         this.activity = activity;
@@ -54,6 +64,7 @@ public class Dialog_Gain_Hydro {
         int height = (int) (displayMetrics.heightPixels * 1);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
+        FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
         onClick();
@@ -119,33 +130,130 @@ public class Dialog_Gain_Hydro {
     }
 
     private void onClick() {
+        // --- GAIN LEFT + ---
+        gainLPiu.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (DataSaved.GAIN_LEFT < 255) {
+                        DataSaved.GAIN_LEFT += 1;
+                    }
+                    updateLama();
+
+                    gainLPiuRepeater = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (DataSaved.GAIN_LEFT < 255) {
+                                DataSaved.GAIN_LEFT += 1;
+                                updateLama();
+                                handler.postDelayed(this, 100);
+                            }
+                        }
+                    };
+                    handler.postDelayed(gainLPiuRepeater, 1000);
+                    return true;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    handler.removeCallbacks(gainLPiuRepeater);
+                    return true;
+            }
+            return false;
+        });
+
+// --- GAIN LEFT - ---
+        gainLMen.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (DataSaved.GAIN_LEFT > 1) {
+                        DataSaved.GAIN_LEFT -= 1;
+                    }
+                    updateLama();
+
+                    gainLMenRepeater = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (DataSaved.GAIN_LEFT > 1) {
+                                DataSaved.GAIN_LEFT -= 1;
+                                updateLama();
+                                handler.postDelayed(this, 100);
+                            }
+                        }
+                    };
+                    handler.postDelayed(gainLMenRepeater, 1000);
+                    return true;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    handler.removeCallbacks(gainLMenRepeater);
+                    return true;
+            }
+            return false;
+        });
+
+// --- GAIN RIGHT + ---
+        gainRPiu.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (DataSaved.GAIN_RIGHT < 255) {
+                        DataSaved.GAIN_RIGHT += 1;
+                    }
+                    updateLama();
+
+                    gainRPiuRepeater = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (DataSaved.GAIN_RIGHT < 255) {
+                                DataSaved.GAIN_RIGHT += 1;
+                                updateLama();
+                                handler.postDelayed(this, 100);
+                            }
+                        }
+                    };
+                    handler.postDelayed(gainRPiuRepeater, 1000);
+                    return true;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    handler.removeCallbacks(gainRPiuRepeater);
+                    return true;
+            }
+            return false;
+        });
+
+// --- GAIN RIGHT - ---
+        gainRMen.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (DataSaved.GAIN_RIGHT > 1) {
+                        DataSaved.GAIN_RIGHT -= 1;
+                    }
+                    updateLama();
+
+                    gainRMenRepeater = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (DataSaved.GAIN_RIGHT > 1) {
+                                DataSaved.GAIN_RIGHT -= 1;
+                                updateLama();
+                                handler.postDelayed(this, 100);
+                            }
+                        }
+                    };
+                    handler.postDelayed(gainRMenRepeater, 1000);
+                    return true;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    handler.removeCallbacks(gainRMenRepeater);
+                    return true;
+            }
+            return false;
+        });
+
         cancel.setOnClickListener(view -> {
             dialog.dismiss();
         });
-        gainLPiu.setOnClickListener(view -> {
-            if (DataSaved.GAIN_LEFT < 255) {
-                DataSaved.GAIN_LEFT += 1;
-            }
-            updateLama();
-        });
-        gainLMen.setOnClickListener(view -> {
-            if (DataSaved.GAIN_LEFT > 1) {
-                DataSaved.GAIN_LEFT -= 1;
-            }
-            updateLama();
-        });
-        gainRPiu.setOnClickListener(view -> {
-            if (DataSaved.GAIN_RIGHT < 255) {
-                DataSaved.GAIN_RIGHT += 1;
-            }
-            updateLama();
-        });
-        gainRMen.setOnClickListener(view -> {
-            if (DataSaved.GAIN_RIGHT > 1) {
-                DataSaved.GAIN_RIGHT -= 1;
-            }
-            updateLama();
-        });
+
 
         lamaDX.setOnClickListener(view -> {
             if(DataSaved.isWL==4) {

@@ -920,154 +920,147 @@ public class Sensors_Decoder {
                 case 3:
                 case 4:
                     //Dozer e grader
-
-                    switch (DataSaved.isCanOpen) {
-                        case 5:
-                            switch (id) {
+                    if(DataSaved.my_comPort == 4){
+                        switch (id) {
 
 
-                                case 0x195:
+                            case 0x195:
 
-                                    boolean[] boo = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                    latP = boo[6];
-                                    latM = boo[7];
+                                boolean[] boo = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                                latP = boo[6];
+                                latM = boo[7];
+                                break;
+                            case 0x295:
+                                if (!isMobaTilt) {
+                                    int mTilt = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
+
+                                    Deg_tilt = mTilt * 1d;
+                                }
+                                break;
+
+
+                            case 0x3F0:
+
+
+                                boolean[] ba = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                                rotL = ba[1];
+                                rotR = ba[5];
+                                break;
+
+                            case 0x1F0:
+                                boolean[] be = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                                qP = be[4];
+                                qM = be[5];
+                                lonP = be[6];
+                                lonM = be[7];
+
+                                break;
+
+                        }
+                        gpsSimul(new boolean[]{rotL, rotR, latP, latM, lonP, lonM, qP, qM});
+                    }
+                    switch (id & 0x1FFFFFFF) {
+                        case 0x386:
+                        case 0x385:
+                            acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
+                            acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+                            acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
+                            norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
+                            ax_norm = (double) acc_y / norm;
+                            ay_norm = (double) acc_x / norm;
+                            az_norm = (double) acc_z / norm;
+                            switch (DataSaved.lrBucket) {
+                                case 0:
+                                    Deg_pitch = 0d;
+                                    Deg_roll = 0d;
                                     break;
-                                case 0x295:
-                                    if (!isMobaTilt) {
-                                        int mTilt = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
-
-                                        Deg_tilt = mTilt * 1d;
-                                    }
+                                case 1:
+                                    Deg_pitch = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                                    Deg_roll = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                                     break;
-
-
-                                case 0x3F0:
-
-
-                                    boolean[] ba = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                    rotL = ba[1];
-                                    rotR = ba[5];
+                                case -1:
+                                    Deg_pitch = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                                    Deg_roll = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                                     break;
+                                case 2://vert_up-DESTRA
+                                    Deg_pitch = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                                    Deg_roll = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
 
-                                case 0x1F0:
-                                    boolean[] be = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                    qP = be[4];
-                                    qM = be[5];
-                                    lonP = be[6];
-                                    lonM = be[7];
 
                                     break;
+                                case 3://vert_dw-SINISTRA
+                                    Deg_pitch = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                                    Deg_roll = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
 
+                                    break;
+                                default:
+                                    Deg_roll = 0d;
+                                    Deg_pitch = 0d;
+                                    break;
                             }
-                            gpsSimul(new boolean[]{rotL, rotR, latP, latM, lonP, lonM, qP, qM});
                             break;
-                        default:
-                            switch (id & 0x1FFFFFFF) {
-                                case 0x386:
-                                case 0x385:
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_y / norm;
-                                    ay_norm = (double) acc_x / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrBucket) {
-                                        case 0:
-                                            Deg_pitch = 0d;
-                                            Deg_roll = 0d;
-                                            break;
-                                        case 1:
-                                            Deg_pitch = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            Deg_roll = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            break;
-                                        case -1:
-                                            Deg_pitch = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            Deg_roll = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            break;
-                                        case 2://vert_up-DESTRA
-                                            Deg_pitch = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            Deg_roll = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                        //
+                        case 90181738:
+                        case 90181733:
+                            mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
+                            mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+                            mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
+                            mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
+                            qW = mqW / 23768.0d;
+                            qX = mqX / 23768.0d;
+                            qY = mqY / 23768.0d;
+                            qZ = mqZ / 23768.0d;
+                            qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
+                            qW /= qnorm;
+                            qX /= qnorm;
+                            qY /= qnorm;
+                            qZ /= qnorm;
 
 
-                                            break;
-                                        case 3://vert_dw-SINISTRA
-                                            Deg_pitch = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            Deg_roll = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-
-                                            break;
-                                        default:
-                                            Deg_roll = 0d;
-                                            Deg_pitch = 0d;
-                                            break;
-                                    }
+                            switch (DataSaved.lrBucket) {
+                                case 0:
+                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
+                                    Deg_pitch = 0;
+                                    Deg_roll = 0;
+                                    Deg_Yaw_Frame = 0;
                                     break;
-                                //
-                                case 90181738:
-                                case 90181733:
-                                    mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                                    qW = mqW / 23768.0d;
-                                    qX = mqX / 23768.0d;
-                                    qY = mqY / 23768.0d;
-                                    qZ = mqZ / 23768.0d;
-                                    qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                                    qW /= qnorm;
-                                    qX /= qnorm;
-                                    qY /= qnorm;
-                                    qZ /= qnorm;
-
-
-                                    switch (DataSaved.lrBucket) {
-                                        case 0:
-                                            eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                            Deg_pitch = 0;
-                                            Deg_roll = 0;
-                                            Deg_Yaw_Frame = 0;
-                                            break;
-                                        case 1:
-                                            //Avanti
-                                            eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                            Deg_pitch = -eulerAngles[1];
-                                            Deg_roll = -eulerAngles[0];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        case -1:
-                                            //Dietro
-                                            eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                            Deg_pitch = eulerAngles[1];
-                                            Deg_roll = eulerAngles[0];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        case 2:
-                                            //vert_up DESTRA
-                                            eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                            Deg_pitch = -eulerAngles[0];
-                                            Deg_roll = eulerAngles[1];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        case 3:
-                                            //vert_dw-SINISTRA
-                                            eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                            Deg_pitch = eulerAngles[0];
-                                            Deg_roll = -eulerAngles[1];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        default:
-                                            Deg_pitch = 0;
-                                            Deg_roll = 0;
-                                            Deg_Yaw_Frame = 0;
-                                            break;
-                                    }
+                                case 1:
+                                    //Avanti
+                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
+                                    Deg_pitch = -eulerAngles[1];
+                                    Deg_roll = -eulerAngles[0];
+                                    Deg_Yaw_Frame = eulerAngles[2];
                                     break;
-
+                                case -1:
+                                    //Dietro
+                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
+                                    Deg_pitch = eulerAngles[1];
+                                    Deg_roll = eulerAngles[0];
+                                    Deg_Yaw_Frame = eulerAngles[2];
+                                    break;
+                                case 2:
+                                    //vert_up DESTRA
+                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
+                                    Deg_pitch = -eulerAngles[0];
+                                    Deg_roll = eulerAngles[1];
+                                    Deg_Yaw_Frame = eulerAngles[2];
+                                    break;
+                                case 3:
+                                    //vert_dw-SINISTRA
+                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
+                                    Deg_pitch = eulerAngles[0];
+                                    Deg_roll = -eulerAngles[1];
+                                    Deg_Yaw_Frame = eulerAngles[2];
+                                    break;
+                                default:
+                                    Deg_pitch = 0;
+                                    Deg_roll = 0;
+                                    Deg_Yaw_Frame = 0;
+                                    break;
                             }
                             break;
 
                     }
-
 
                     ExcavatorLib.Excavator();
                     break;

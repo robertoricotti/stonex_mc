@@ -3,6 +3,7 @@ package services;
 
 import static gui.MyApp.hAlarm;
 import static gui.MyApp.isApollo;
+import static gui.MyApp.licenseType;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
 import static packexcalib.exca.DataSaved.GAIN_LEFT;
@@ -184,54 +185,58 @@ public class CanSender extends Service {
 
 
             try {
-                switch (DataSaved.my_comPort) {
-                    case 0:
-                        if (!nmeaSTX_Disc) {
-                            if (NmeaListener.ggaQuality.equals("4") && Double.parseDouble(NmeaListener.VRMS_) < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt != 999.999) {
-                                DataSaved.gpsOk = true;
-                            } else {
-                                DataSaved.gpsOk = false;
-                                connections++;
-                            }
-                        } else {
-                            DataSaved.gpsOk = false;
-                            connections++;
-                        }
+              if(licenseType>1) {
+                  switch (DataSaved.my_comPort) {
+                      case 0:
+                          if (!nmeaSTX_Disc) {
+                              if (NmeaListener.ggaQuality.equals("4") && Double.parseDouble(NmeaListener.VRMS_) < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt != 999.999) {
+                                  DataSaved.gpsOk = true;
+                              } else {
+                                  DataSaved.gpsOk = false;
+                                  connections++;
+                              }
+                          } else {
+                              DataSaved.gpsOk = false;
+                              connections++;
+                          }
 
-                        if (connections == 20) {
-                            byte speed = 0;
-                            switch (DataSaved.reqSpeed) {
-                                case 0:
-                                    speed = 5;
-                                    break;
-                                case 1:
-                                    speed = 4;
-                                    break;
-                                case 2:
-                                    speed = 3;
-                                    break;
-                                case 3:
-                                    speed = 0;
-                                    break;
+                          if (connections == 20) {
+                              byte speed = 0;
+                              switch (DataSaved.reqSpeed) {
+                                  case 0:
+                                      speed = 5;
+                                      break;
+                                  case 1:
+                                      speed = 4;
+                                      break;
+                                  case 2:
+                                      speed = 3;
+                                      break;
+                                  case 3:
+                                      speed = 0;
+                                      break;
 
-                            }
-                            byte msg = 0x03;
+                              }
+                              byte msg = 0x03;
 
 
-                            MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
-                            connections = 0;
-                        }
-                        break;
-                    case 1:
-                    case 2:
-                    case 3:
+                              MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+                              connections = 0;
+                          }
+                          break;
+                      case 1:
+                      case 2:
+                      case 3:
 
-                        DataSaved.gpsOk = gpsStat(NmeaListener.ggaQuality, Quota1, serialEmpty);
-                        break;
-                    case 4:
-                        DataSaved.gpsOk = true;
-                        break;
-                }
+                          DataSaved.gpsOk = gpsStat(NmeaListener.ggaQuality, Quota1, serialEmpty);
+                          break;
+                      case 4:
+                          DataSaved.gpsOk = true;
+                          break;
+                  }
+              }else {
+                  DataSaved.gpsOk=true;
+              }
 
 
             } catch (Exception e) {

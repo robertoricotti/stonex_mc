@@ -496,6 +496,8 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                             tilt.setBackgroundColor(Color.RED);
                             tilt.setTextColor(Color.WHITE);
                         }
+                        tiltA.setText(String.format("%.02f",ExcavatorLib.correctRoll).replace(",", ".")+ "°");
+                        tiltO.setText(String.format("%.02f",DataSaved.offsetRoll).replace(",", ".") + "°");
 
                     }
 

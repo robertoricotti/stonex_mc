@@ -51,29 +51,13 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="RELEASE 4.0.1 ufficiale">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="pre release 4.0.2 da testare automatico">
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen1/release/STX-MC_V_4.0.1_release_16_10_2025 -GEN1-RELEASE.apk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen1/release/baselineProfiles/0/STX-MC_V_4.0.1_release_16_10_2025 -GEN1-RELEASE.dm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen1/release/baselineProfiles/1/STX-MC_V_4.0.1_release_16_10_2025 -GEN1-RELEASE.dm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen1/release/output-metadata.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen2/release/STX-MC_V_4.0.1_release_16_10_2025 -GEN2-RELEASE.apk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen2/release/baselineProfiles/0/STX-MC_V_4.0.1_release_16_10_2025 -GEN2-RELEASE.dm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen2/release/baselineProfiles/1/STX-MC_V_4.0.1_release_16_10_2025 -GEN2-RELEASE.dm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen2/release/output-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/gen2/release/output-metadata.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_GNSS_Coordinates.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_GNSS_Coordinates.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/DEERE_LIEBHERR_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/DEERE_LIEBHERR_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/ECU_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/ECU_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/GeoidBin.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/GeoideInterpolation.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/GeoideInterpolation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Dialog_Gain_Hydro.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Dialog_Gain_Hydro.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_deere_liebherr.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_deere_liebherr.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_ecu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_ecu.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -252,7 +236,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760647168585</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="pre release 4.0.2 da testare automatico">
+      <option name="closed" value="true" />
+      <created>1760743747680</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1760743747680</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -260,7 +252,8 @@
     <MESSAGE value="Prima del Rilascio" />
     <MESSAGE value="RELEASE 4.0.0 ufficiale" />
     <MESSAGE value="RELEASE 4.0.1 ufficiale" />
-    <option name="LAST_COMMIT_MESSAGE" value="RELEASE 4.0.1 ufficiale" />
+    <MESSAGE value="pre release 4.0.2 da testare automatico" />
+    <option name="LAST_COMMIT_MESSAGE" value="pre release 4.0.2 da testare automatico" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
