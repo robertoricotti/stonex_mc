@@ -12,8 +12,8 @@
       "filters": [],
       "attributes": [],
       "versionCode": 4002,
-      "versionName": "4.0.2_release -GEN2",
-      "outputFile": "STX-MC_V_4.0.2_release -GEN2-RELEASE.apk"
+      "versionName": "4.0.2_20_10_2025 -GEN2",
+      "outputFile": "STX-MC_V_4.0.2_20_10_2025 -GEN2-RELEASE.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/STX-MC_V_4.0.2_release -GEN2-RELEASE.dm"
+        "baselineProfiles/1/STX-MC_V_4.0.2_20_10_2025 -GEN2-RELEASE.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/STX-MC_V_4.0.2_release -GEN2-RELEASE.dm"
+        "baselineProfiles/0/STX-MC_V_4.0.2_20_10_2025 -GEN2-RELEASE.dm"
       ]
     }
   ],

@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import cloud.S3ManagerSingleton;
+import cloud.WebSocketPlugin;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import utils.MyDeviceManager;
@@ -180,7 +182,11 @@ public class Remote_Activity extends AppCompatActivity {
                     }
                 });
             } else {
-                new CustomToast(Remote_Activity.this, "Not Logged In").show_error();
+                if (NetworkUtils.isInternetAvailable(this)) {
+
+                    WebSocketPlugin.getWebSocketPluginInstance(this).start();
+                }
+                Toast.makeText(this, "Not Logged In", Toast.LENGTH_SHORT).show();
             }
         });
         upload.setOnClickListener(view -> {
@@ -262,54 +268,6 @@ public class Remote_Activity extends AppCompatActivity {
                 new CustomToast(Remote_Activity.this, "Not Logged In").show_error();
             }
         });
-/*
-        download.setOnClickListener(view -> {
-            if (isAuthenticated) {
-                if (enImport && RemoteFilePath != null) {
-
-                    String localBaseName = adapterMC.getSelectedFilePath();
-                    String localParentPath = APP_PATH; // percorso base locale
-                    String uniqueName = generateUniqueLocalName(localBaseName, localParentPath);
-
-                    if (isF) {
-                        // cartella
-                        s3Manager.downloadFolderFromS3(
-                                RemoteFilePath,
-                                localParentPath + "/" + uniqueName,
-                                new S3ManagerSingleton.S3Callback() {
-                                    @Override
-                                    public void onSuccess(Map<String, Object> result) {
-                                        runOnUiThread(() -> {
-                                            adapterProj.setSelectedItem(-1);
-                                            adapterMC.setSelectedItem(-1);
-                                            if (adapterMC != null) adapterMC.notifyDataSetChanged();
-                                            if (adapterProj != null) adapterProj.notifyDataSetChanged();
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-                                        runOnUiThread(() -> Log.e("S3Manager:DownloadFolder",
-                                                "Errore durante il download della cartella: " + e.getMessage(), e));
-                                    }
-                                });
-                    } else {
-                        // file
-                        s3Manager.downloadFile(
-                                "serials/" + serialNumber + "/Projects/" + RemoteFilePath,
-                                localParentPath + "/" + uniqueName
-                        );
-                    }
-
-                    (new Handler()).postDelayed(this::refresha, 1000);
-
-                }
-            } else {
-                new CustomToast(Remote_Activity.this, "Not Logged In").show_error();
-            }
-        });
-*/
-
 
         download.setOnClickListener(view -> {
             if (isAuthenticated) {
