@@ -67,6 +67,7 @@ public class TriangleService extends Service {
     private static TriangleHelper triangleHelper;
     private static double[] lastPosition;
     int countPnezd = -1;
+    static double conversionFactor = 1;
 
 
     @Override
@@ -75,6 +76,29 @@ public class TriangleService extends Service {
             indexAudio = MyData.get_Int("indexAudioSystem");
         } catch (Exception e) {
             indexAudio = 0;
+        }
+        try {
+            switch (MyData.get_Int("Unit_Of_Measure")) {
+                case 0:
+                case 1:
+                    conversionFactor = 1;
+                    break;
+
+                case 2:
+                case 3:
+                    conversionFactor = 0.3048006096;
+                    break;
+                case 4:
+                case 5:
+                    conversionFactor = 0.3048006096;
+                    break;
+                case 6:
+                case 7:
+                    conversionFactor = 0.3048;
+                    break;
+            }
+        } catch (Exception e) {
+            conversionFactor=1;
         }
         super.onCreate();
         posL = new double[3];
@@ -346,7 +370,7 @@ public class TriangleService extends Service {
                 countPnezd++;
                 if (countPnezd % 100 == 0) {
 
-                    scanPNEZD();
+                    scanPNEZD(conversionFactor);
                 }
 
 
@@ -672,7 +696,7 @@ public class TriangleService extends Service {
         );
     }
 
-    public static void scanPNEZD() {
+    public static void scanPNEZD(double conversionFactor) {
         if (My3DActivity.PNEZD_FUNCTION || DataSaved.isAutoSnap == 1 || My3DActivity.glPoint) {
 
             try {
@@ -707,11 +731,11 @@ public class TriangleService extends Service {
                                 if (parts.length > 0 && !parts[0].trim().isEmpty())
                                     pointNumber = Integer.parseInt(parts[0].trim());
                                 if (parts.length > 1 && !parts[1].trim().isEmpty())
-                                    northing = Double.parseDouble(parts[1].trim());
+                                    northing = Double.parseDouble(parts[1].trim())*conversionFactor;
                                 if (parts.length > 2 && !parts[2].trim().isEmpty())
-                                    easting = Double.parseDouble(parts[2].trim());
+                                    easting = Double.parseDouble(parts[2].trim())*conversionFactor;
                                 if (parts.length > 3 && !parts[3].trim().isEmpty())
-                                    elevation = Double.parseDouble(parts[3].trim());
+                                    elevation = Double.parseDouble(parts[3].trim())*conversionFactor;
                                 if (parts.length > 4)
                                     description = parts[4].trim();
                                 if (parts.length > 5 && !parts[5].trim().isEmpty())

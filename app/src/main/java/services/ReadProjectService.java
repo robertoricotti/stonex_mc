@@ -285,7 +285,7 @@ public class ReadProjectService extends Service {
 
                                             case "csv":
                                                 //parsare pnezd
-                                                scanPNEZD();
+                                                scanPNEZD(conversionFactor);
                                                 isFinishedPOINT = true;
                                                 My3DActivity.PNEZD_FUNCTION=true;
                                                 break;
@@ -424,7 +424,7 @@ public class ReadProjectService extends Service {
                                                 break;
                                             case "csv":
                                                 //parsare pnezd
-                                                scanPNEZD();
+                                                scanPNEZD(conversionFactor);
                                                 isFinishedPOINT = true;
                                                 My3DActivity.PNEZD_FUNCTION=true;
                                                 break;

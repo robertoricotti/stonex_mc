@@ -138,6 +138,8 @@ public class MyDeviceManager {
     }
 
 
+
+
     public static void OUT1(Activity activity, int out) {
 
         switch (out) {

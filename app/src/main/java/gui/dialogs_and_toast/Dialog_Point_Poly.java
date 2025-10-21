@@ -84,7 +84,7 @@ public class Dialog_Point_Poly {
     public void show() {
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         larg = (int) (displayMetrics.widthPixels * 0.9);
-        alt = (int) (displayMetrics.heightPixels * 0.8);
+        alt = (int) (displayMetrics.heightPixels * 0.9);
         dialog.create();
         dialog.setContentView(R.layout.dialog_point_poly);
         dialog.setCancelable(true);
@@ -94,7 +94,7 @@ public class Dialog_Point_Poly {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente
             WindowManager.LayoutParams wlp = window.getAttributes();
             wlp.gravity = Gravity.CENTER;
-            wlp.dimAmount = 0.7f; //  Offusca sfondo (0 = nessun dim, 1 = nero pieno)
+            wlp.dimAmount = 0.75f; //  Offusca sfondo (0 = nessun dim, 1 = nero pieno)
             window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); // 🔹 Applica dim
             window.setAttributes(wlp);
         }

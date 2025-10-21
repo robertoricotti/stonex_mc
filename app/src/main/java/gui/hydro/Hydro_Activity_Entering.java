@@ -82,7 +82,10 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
 
                     break;
                 case 4:
-                    //to_calib.setEnabled(false);
+                    to_calib.setEnabled(false);
+                    startActivity(new Intent(Hydro_Activity_Entering.this, CASE_Activity.class));
+                    finish();
+
                     break;
                 case 5:
                     //to_calib.setEnabled(false);
@@ -108,11 +111,10 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
             return false;
         });
         cnh.setOnLongClickListener(view -> {
-            new CustomToast(Hydro_Activity_Entering.this,"Not Implemented").show_error();
-           /* DataSaved.Interface_Type=4;
+            DataSaved.Interface_Type=4;
             MyData.push("M"+indexMachine+"Interface_Type","4");
 
-            */
+
             return false;
         });
         doosan.setOnLongClickListener(view -> {

@@ -69,6 +69,7 @@ import gui.digging_excavator.Digging_CutAndFill1D;
 import gui.digging_excavator.Digging_CutAndFill2D;
 import gui.gps.Nuovo_Gps;
 import gui.grading_dozergrader.Grading3D_DXF;
+import gui.hydro.CASE_Activity;
 import gui.hydro.CAT_SEA_Activity;
 import gui.hydro.DEERE_LIEBHERR_Activity;
 import gui.hydro.ECU_Activity;
@@ -624,6 +625,8 @@ git push
 
         } else if (activity instanceof KOMATSU_Activity) {
             ((KOMATSU_Activity) activity).updateUI();
+        }else if (activity instanceof CASE_Activity) {
+            ((CASE_Activity) activity).updateUI();
         }
 
     }

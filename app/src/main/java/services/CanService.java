@@ -34,10 +34,10 @@ public class CanService extends Service {
     }
 
     //TODO Grader_Auto_SS SU JD ED ECU
-    public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck;
+    public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck,CASE_Joystick;
     public static int SteerConnected, isAuto, errorEcu;
     public static int altosx, centrosx, bassosx, altodx, centrodx, m, bassodx;
-    public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected;
+    public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected,CASE_Connected;
     public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK;
     CanFileReceiver receiver = new CanFileReceiver();
     public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc;
@@ -66,6 +66,7 @@ public class CanService extends Service {
         CAT_Connected = false;
         JD_Connected = false;
         KOM_Connected = false;
+        CASE_Connected=false;
 
         if (DataSaved.lrFrame != 0) {
             handler_frame.postDelayed(timeoutRunnable_frame, 3000);
@@ -86,9 +87,8 @@ public class CanService extends Service {
             handler_tl.postDelayed(timeoutRunnable_tl, 3000);
         }
         handler_ECU_Connected.postDelayed(timeoutRunnable_ECU_Connected, 3000);
-
         handler_steer.postDelayed(timeoutRunnable_steer, 3000);
-
+        handler_CASE_Connected.postDelayed(timeoutRunnable_CASE_Connected, 3000);
         handler_CAT_Connected.postDelayed(timeoutRunnable_CAT_Connected, 3000);
         handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 3000);
         handler_KOM_Connected.postDelayed(timeoutRunnable_KOM_Connected, 3000);
@@ -104,6 +104,7 @@ public class CanService extends Service {
 
                 EventBus.getDefault().post(new CanEvents(channel, null, id, dlc, msg));
             }
+
             if (channel == 1) {
                 if (DataSaved.isCanOpen == 1) {
                     if (id == 1409) {
@@ -356,9 +357,22 @@ public class CanService extends Service {
                     receiver.receivePacket(msg);
                 }
             }
-
             if (channel == 2) {
                 //CAN2
+                if(id==0x18F00DE3&&DataSaved.Interface_Type==4){
+                    CASE_Connected=true;
+                    handler_CASE_Connected.removeCallbacks(timeoutRunnable_CASE_Connected);
+                    handler_CASE_Connected.postDelayed(timeoutRunnable_CASE_Connected, 2000);
+                    CASE_Joystick="0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
+                    boolean[] booleansC = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
+                    if (MyApp.visibleActivity instanceof My3DActivity) {
+                        Dozer_Auto_Main = booleansC[6]&&booleansC[7];
+                        OffsetAdjuster.update(booleansC[2], booleansC[3]);
+                    }else {
+                        Dozer_Auto_Main=false;
+                    }
+
+                }
                 if (id == 0x1CF00D22 && DataSaved.Interface_Type == 1) {
                     CAT_Connected = true;
                     handler_CAT_Connected.removeCallbacks(timeoutRunnable_CAT_Connected);
@@ -485,7 +499,6 @@ public class CanService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         CanServiceState = true;
         try {
-
             byte speed = 0;
             switch (DataSaved.reqSpeed) {
 
@@ -655,7 +668,13 @@ public class CanService extends Service {
             ECU_Connected = false;
         }
     };
-
+    private final Handler handler_CASE_Connected = new Handler();
+    private final Runnable timeoutRunnable_CASE_Connected = new Runnable() {
+        @Override
+        public void run() {
+            CASE_Connected = false;
+        }
+    };
 
     private final Handler handler_CAT_Connected = new Handler();
     private final Runnable timeoutRunnable_CAT_Connected = new Runnable() {

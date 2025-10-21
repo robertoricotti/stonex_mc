@@ -64,11 +64,35 @@ public class Dialog_Add_Pnezd {
     double nord = 0.000;
     double est = 0.000;
     double quota = 100.000;
+    private static double conversionFactor=1;
 
     public Dialog_Add_Pnezd(Activity activity, String path) {
         this.activity = activity;
         this.path = path;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        try {
+            switch (MyData.get_Int("Unit_Of_Measure")) {
+                case 0:
+                case 1:
+                    conversionFactor = 1;
+                    break;
+
+                case 2:
+                case 3:
+                    conversionFactor = 0.3048006096;
+                    break;
+                case 4:
+                case 5:
+                    conversionFactor = 0.3048006096;
+                    break;
+                case 6:
+                case 7:
+                    conversionFactor = 0.3048;
+                    break;
+            }
+        } catch (Exception e) {
+            conversionFactor=1;
+        }
 
 
 // Estrai nome cartella
@@ -275,7 +299,7 @@ public class Dialog_Add_Pnezd {
         });
         cancel.setOnClickListener(view -> {
             stopUpdatingCoordinates();
-            scanPNEZD();
+            scanPNEZD(conversionFactor);
             dialog.dismiss();
         });
         removelast.setOnClickListener(view -> {
@@ -563,9 +587,9 @@ public class Dialog_Add_Pnezd {
 
         PNEZDPoint nuovoPunto = new PNEZDPoint(
                 numero,
-                nord,
-                est,
-                quota,
+                Double.parseDouble(Utils.writeMetri(String.valueOf(nord))),
+                Double.parseDouble(Utils.writeMetri(String.valueOf(est))),
+                Double.parseDouble(Utils.writeMetri(String.valueOf(quota))),
                 descrizione,
                 setColor(MyData.get_String("lastColor"))
         );
@@ -586,7 +610,7 @@ public class Dialog_Add_Pnezd {
 
         // Ferma aggiornamento coordinate e ridisegna punti
         stopUpdatingCoordinates();
-        scanPNEZD();
+        scanPNEZD(conversionFactor);
         dialog.dismiss();
     }
 

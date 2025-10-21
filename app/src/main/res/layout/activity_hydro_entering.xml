@@ -122,7 +122,6 @@
         app:layout_constraintBottom_toTopOf="@id/centa"
         app:layout_constraintRight_toRightOf="parent"/>
     <TextView
-        android:alpha="0.3"
         android:id="@+id/img_4"
         android:layout_width="0dp"
         android:layout_height="0dp"
