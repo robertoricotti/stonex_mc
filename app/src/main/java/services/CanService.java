@@ -357,6 +357,7 @@ public class CanService extends Service {
                     receiver.receivePacket(msg);
                 }
             }
+
             if (channel == 2) {
                 //CAN2
                 if(id==0x18F00DE3&&DataSaved.Interface_Type==4){

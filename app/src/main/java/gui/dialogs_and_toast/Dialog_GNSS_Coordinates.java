@@ -530,14 +530,8 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                         rtkMode.setImageResource(R.drawable.sim_96);
                     }
 
-                    double hdt = NmeaListener.mch_Orientation + DataSaved.deltaGPS2;
-                    hdt = hdt % 360;
-                    if (hdt > 360) {
-                        hdt -= 360;
-                    }
-                    if (hdt < 0) {
-                        hdt += 360;
-                    }
+                    double hdt = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+
 
 
                     txSat.setText(" " + NmeaListener.ggaSat);
@@ -640,12 +634,22 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     }
 
 
-                    if (NmeaListener.mch_Hdt == 999.999) {
-                        txmchdt.setText("HDT Error");
+                    if(DataSaved.my_comPort==0) {
+                        if (NmeaListener.mch_Hdt_1 == 999.999) {
+                            txmchdt.setText("HDT Error");
 
-                    } else {
-                        txmchdt.setText(String.format("%.2f", hdt).replace(",", ".") + " °");
+                        } else {
+                            txmchdt.setText(String.format("%.2f", hdt).replace(",", ".") + " °");
 
+                        }
+                    }else {
+                        if (NmeaListener.mch_Hdt== 999.999) {
+                            txmchdt.setText("HDT Error");
+
+                        } else {
+                            txmchdt.setText(String.format("%.2f", hdt).replace(",", ".") + " °");
+
+                        }
                     }
 
 
@@ -676,5 +680,10 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
             return new String[]{s4,s5,s6,s7};
         }
     }
-
+    private static double normalizeAngle(double a) {
+        a = a % 360.0;
+        if (a > 180) a -= 360;
+        if (a < -180) a += 360;
+        return a;
+    }
 }

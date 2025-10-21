@@ -78,7 +78,6 @@ public class CanSender extends Service {
     private static boolean FlipFlop;
 
     public CanSender() {
-
     }
 
     @Override
@@ -105,7 +104,6 @@ public class CanSender extends Service {
         senderExecutor2000 = Executors.newSingleThreadScheduledExecutor();
         senderExecutorGrade_50 = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService1min = Executors.newSingleThreadScheduledExecutor();
-
         senderExecutor500.scheduleAtFixedRate(new AsyncSender500(), 1000, 500, TimeUnit.MILLISECONDS);
         senderExecutor2000.scheduleAtFixedRate(new AsyncSender2000(), 1000, 2000, TimeUnit.MILLISECONDS);
         senderExecutorGrade_50.scheduleAtFixedRate(new gradeSender(), 2000, 50, TimeUnit.MILLISECONDS);
@@ -189,8 +187,14 @@ public class CanSender extends Service {
                 if (licenseType > 1) {
                     switch (DataSaved.my_comPort) {
                         case 0:
+                            double vrms=0;
+                            try {
+                                vrms=Double.parseDouble(NmeaListener.VRMS_);
+                            } catch (NumberFormatException e) {
+                                vrms=0.002;
+                            }
                             if (!nmeaSTX_Disc) {
-                                if (NmeaListener.ggaQuality.equals("4") && Double.parseDouble(NmeaListener.VRMS_) < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt != 999.999) {
+                                if (NmeaListener.ggaQuality.equals("4") && vrms < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt_1 != 999.999) {
                                     DataSaved.gpsOk = true;
                                 } else {
                                     DataSaved.gpsOk = false;

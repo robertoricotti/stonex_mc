@@ -119,14 +119,14 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     private String currentState = "";
     private boolean isCheckerRunning = false;
     //license
+
     public static String deviceBuild = "";
     public static int errorCode;
     public static String activationCode = "none";
     public static String restoreCode;
     public static int licenseType = -1;
     public static String expiry = "2001-12-31";
-
-    public static final long timeUI = 55;
+    public static final long timeUI = 65;
     public static String[] geoidAll = new String[]{};
     public static String GEOIDE_PATH = null;
     public static GridShiftTransformer heposTransformer;

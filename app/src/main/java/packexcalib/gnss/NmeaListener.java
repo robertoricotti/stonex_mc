@@ -1,25 +1,16 @@
 package packexcalib.gnss;
 
-import static packexcalib.gnss.CRS_Strings._28992;
-import static packexcalib.gnss.CRS_Strings._31370;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
 
-import android.util.Log;
-
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
-import cloud.WebSocketPlugin;
-import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 
 
 public class NmeaListener {
-static  Deg2UTM deg2UTM1;
+    static Deg2UTM deg2UTM1;
     static double tmpQuotaUTM = 0;
     static double tmpQuotaLOC = 0;
     static double tmpNordUTM = 0;
@@ -39,9 +30,9 @@ static  Deg2UTM deg2UTM1;
     public static int mZone;
     public static String VRMS_, HRMS_, _3DRMS;
     public static double mLat_1, mLon_1;
-    public static double Nord1, Est1, Quota1, mch_Orientation, mch_Hdt,roof_Orientation;
+    public static double Nord1, Est1, Quota1, mch_Orientation, mch_Hdt,mch_Hdt_1, roof_Orientation;
     public static String ggaNord, ggaEast, ggaNoS, ggaWoE, ggaZ1, ggaZ2, ggaSat, ggaDop, ggaQuality, ggaRtk, fix1;//String data from  GPS1
-
+    static boolean hdtError=false;
     /*
     NMEA STX Below
      */
@@ -115,13 +106,14 @@ static  Deg2UTM deg2UTM1;
                     case "$HCHDT":
 
                         try {
-                            mch_Hdt = Double.parseDouble(NmeaInput[1]);
-
                             if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
                                 mch_Hdt = 999.999;
+
+                            }else {
+                                mch_Hdt = Double.parseDouble(NmeaInput[1]);
                             }
                         } catch (Exception e) {
-                            mch_Hdt = 999.999;
+
 
                         }
                         break;
@@ -135,7 +127,7 @@ static  Deg2UTM deg2UTM1;
 
                         case "$GNGGA":
                         case "$GPGGA":
-                            if(DataSaved.my_comPort!=0) {
+                            if (DataSaved.my_comPort != 0) {
                                 try {
 
                                     ggaNord = NmeaInput[2];//Latitudine
@@ -194,21 +186,23 @@ static  Deg2UTM deg2UTM1;
                         case "$GNHDT":
                         case "$HCHDT":
 
-                            if(DataSaved.my_comPort!=0) {
+                            if (DataSaved.my_comPort != 0) {
                                 try {
-                                    mch_Hdt = Double.parseDouble(NmeaInput[1]);
-
                                     if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
                                         mch_Hdt = 999.999;
+                                    }else {
+                                        mch_Hdt = Double.parseDouble(NmeaInput[1]);
+                                        mch_Orientation = mch_Hdt;
+
+
                                     }
 
-
                                 } catch (Exception e) {
-                                    mch_Hdt = 999.999;
+
 
                                 }
-                                if(DataSaved.portView<2) {
-                                    if (DataSaved.my_comPort == 1 || DataSaved.my_comPort == 2|| DataSaved.my_comPort == 3) {
+                                if (DataSaved.portView < 2) {
+                                    if (DataSaved.my_comPort == 1 || DataSaved.my_comPort == 2 || DataSaved.my_comPort == 3) {
                                         roof_Orientation = mch_Hdt;
                                     }
                                 }
@@ -223,8 +217,8 @@ static  Deg2UTM deg2UTM1;
                                 String LatCQ = NmeaInput[6];
                                 String LonCQ = NmeaInput[7];
                                 String HgtCQ = NmeaInput[8].substring(0, NmeaInput[8].indexOf("*"));
-                                VRMS_ = String.format("%.3f", Float.parseFloat(HgtCQ.replace(",",".")));
-                                HRMS_ = String.format("%.3f", 2 * Math.sqrt(0.5 * ((Math.pow(Double.parseDouble(LatCQ.replace(",",".")), 2) + Math.pow(Double.parseDouble(LonCQ.replace(",",".")), 2)) / 2)));
+                                VRMS_ = String.format("%.3f", Float.parseFloat(HgtCQ.replace(",", ".")));
+                                HRMS_ = String.format("%.3f", 2 * Math.sqrt(0.5 * ((Math.pow(Double.parseDouble(LatCQ.replace(",", ".")), 2) + Math.pow(Double.parseDouble(LonCQ.replace(",", ".")), 2)) / 2)));
                                 ;
                                 _3DRMS = String.format("%.3f", Math.sqrt(Math.pow(Double.parseDouble(HRMS_), 2) + Math.pow(Double.parseDouble(VRMS_), 2)));
                                 ;
@@ -243,13 +237,7 @@ static  Deg2UTM deg2UTM1;
                     }
                 }
             }
-            try {
 
-                mch_Orientation = mch_Hdt;
-
-            } catch (Exception e) {
-                mch_Orientation = 0.000;
-            }
 
 
         } catch (Exception e) {
@@ -269,7 +257,7 @@ static  Deg2UTM deg2UTM1;
                 break;
 
             case 0x18FF0210:
-                //UTN EST +WGS84 Z
+                //UTM EST +WGS84 Z
 
                 tmpEstUTM = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]}) * 0.001;
                 tmpQuotaUTM = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[4], data[5], data[6], data[7]}) * 0.001;
@@ -279,19 +267,19 @@ static  Deg2UTM deg2UTM1;
                 mChar = (char) data[1];
                 mch_Orientation = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[2], data[3]}) * 0.01;
                 if (mch_Orientation == 655.35) {
-                    mch_Hdt = 999.999;
+                    mch_Hdt_1 = 999.999;
                 } else {
-                    mch_Hdt = mch_Orientation;
+                    mch_Hdt_1 = mch_Orientation;
                 }
-                if(DataSaved.portView<2) {
-                    if (DataSaved.my_comPort == 0 ) {
-                        roof_Orientation = mch_Hdt;
+                if (DataSaved.portView < 2) {
+                    if (DataSaved.my_comPort == 0) {
+                        roof_Orientation = mch_Hdt_1;
                     }
                 }
-                ggaQuality = String.valueOf(data[4]).replace(",",".");
+                ggaQuality = String.valueOf(data[4]).replace(",", ".");
                 quality();
-                ggaSat = String.valueOf(data[5]).replace(",",".");
-                ggaRtk = String.format("%.1f", (float) PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[6], data[7]}) * 0.1).replace(",",".");
+                ggaSat = String.valueOf(data[5]).replace(",", ".");
+                ggaRtk = String.format("%.1f", (float) PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[6], data[7]}) * 0.1).replace(",", ".");
 
                 break;
             case 0x18FF0410:
@@ -316,8 +304,8 @@ static  Deg2UTM deg2UTM1;
                 break;
             case 0x18FF0910:
                 //RMS
-                HRMS_ = String.format("%.3f", PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[0], data[1]}) * 0.001).replace(",",".");
-                VRMS_ = String.format("%.3f", PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[2], data[3]}) * 0.001).replace(",",".");
+                HRMS_ = String.format("%.3f", PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[0], data[1]}) * 0.001).replace(",", ".");
+                VRMS_ = String.format("%.3f", PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[2], data[3]}) * 0.001).replace(",", ".");
                 tmpGeoidSeparator = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[4], data[5], data[6], data[7]}) * 0.001;
                 break;
 
@@ -330,7 +318,7 @@ static  Deg2UTM deg2UTM1;
         }
         switch (DataSaved.S_CRS) {
             case _NONE:
-                deg2UTM1= new Deg2UTM(tmpNordLOC, tmpEstLOC, tmpQuotaLOC, _NONE);
+                deg2UTM1 = new Deg2UTM(tmpNordLOC, tmpEstLOC, tmpQuotaLOC, _NONE);
                 Nord1 = deg2UTM1.getNorthing();
                 Est1 = deg2UTM1.getEasting();
                 Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;

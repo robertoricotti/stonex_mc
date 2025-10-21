@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 4003,
-      "versionName": "4.0.3_21_10_2025 -GEN2",
-      "outputFile": "STX-MC_V_4.0.3_21_10_2025 -GEN2-RELEASE.apk"
+      "versionCode": 4005,
+      "versionName": "4.0.5_21_10_2025 TEST -GEN2",
+      "outputFile": "STX-MC_V_4.0.5_21_10_2025 TEST -GEN2-RELEASE.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/STX-MC_V_4.0.3_21_10_2025 -GEN2-RELEASE.dm"
+        "baselineProfiles/1/STX-MC_V_4.0.5_21_10_2025 TEST -GEN2-RELEASE.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/STX-MC_V_4.0.3_21_10_2025 -GEN2-RELEASE.dm"
+        "baselineProfiles/0/STX-MC_V_4.0.5_21_10_2025 TEST -GEN2-RELEASE.dm"
       ]
     }
   ],
