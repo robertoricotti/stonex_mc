@@ -1,5 +1,7 @@
 package packexcalib.exca;
 
+import static gui.gps.NmeaGenerator.HEADING;
+
 import android.util.Log;
 
 import java.util.LinkedList;
@@ -312,7 +314,7 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
-                                    Deg_Boom_Roll=movingAverage_boomroll(Deg_Boom_Roll,10);
+                                    Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
                                     break;
 
                                 case 0x385:
@@ -393,7 +395,7 @@ public class Sensors_Decoder {
                                     qY /= qnorm;
                                     qZ /= qnorm;
                                     eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    eulerAngles[2]=(eulerAngles[2]);
+                                    eulerAngles[2] = (eulerAngles[2]);
                                     switch (DataSaved.lrTilt) {
                                         case 1:
                                             //Left
@@ -581,7 +583,7 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
-                                    Deg_Boom_Roll=movingAverage_boomroll(Deg_Boom_Roll,10);
+                                    Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
                                     break;
 
                                 case 0x385:
@@ -634,7 +636,7 @@ public class Sensors_Decoder {
                                     qY /= qnorm;
                                     qZ /= qnorm;
                                     eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    eulerAngles[2]=(eulerAngles[2]);
+                                    eulerAngles[2] = (eulerAngles[2]);
                                     switch (DataSaved.lrTilt) {
                                         case 1:
                                             //Left
@@ -749,166 +751,8 @@ public class Sensors_Decoder {
                             }
                             ExcavatorLib.Excavator();
                             break;
-                        case 5:
-                            //demo ROLLER
-                            switch (id) {
-                                case 0x385:
 
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_y / norm;
-                                    ay_norm = (double) acc_x / norm;
-                                    az_norm = (double) acc_z / norm;
-
-                                    Deg_bucket_DEMO = (Math.atan2(ax_norm, -az_norm) * 180 / Math.PI);
-                                    Deg_bucket_DEMO += 180;
-                                    if (Deg_bucket_DEMO > 180) {
-                                        Deg_bucket_DEMO -= 360;
-                                    }
-                                    if (Deg_bucket_DEMO < -180) {
-                                        Deg_bucket_DEMO += 360;
-                                    }
-
-                                    break;
-                                case 0x395:
-
-                                    boolean[] b = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                    boom1P = b[3];
-                                    boom1M = b[7];
-                                    bucketC = b[1];
-                                    bucketA = b[5];
-
-                                    break;
-                                case 0x195:
-
-                                    boolean[] boo = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                    latP = boo[6];
-                                    latM = boo[7];
-                                    break;
-                                case 0x295:
-                                    if (!isMobaTilt) {
-                                        int mTilt = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
-
-                                        Deg_tilt = mTilt * 1d;
-                                    }
-                                    break;
-                                case 234868978:
-                                    if (DataSaved.lrTilt != 0) {
-                                        DataSaved.isTiltRotator = true;
-
-                                        if (PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon) {
-                                            double costa = (PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[0], data[1]}) * 100d) * 0.01d;
-
-                                            Deg_Roto = costa * (1d / 128d) - 0d;
-
-                                        }
-                                        if (DataSaved.reverseRotator == 1) {
-                                            Deg_Roto = Deg_Roto * -1;
-                                        }
-
-                                    }
-                                    break;
-                                case 0x2F0:
-
-                                    if (DataSaved.lrTilt != 0) {
-                                        DataSaved.isTiltRotator = true;
-                                        int mRoto = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
-
-                                        Deg_Roto = mRoto * 1d;
-                                        Deg_Roto = Deg_Roto % 360;
-                                        if (DataSaved.reverseRotator == 1) {
-                                            Deg_Roto = Deg_Roto * -1;
-                                        }
-                                    }
-
-
-                                    break;
-                                case 0x3F0:
-
-
-                                    boolean[] ba = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                    stickP = ba[7];
-                                    stickM = ba[3];
-                                    rotL = ba[1];
-                                    rotR = ba[5];
-                                    break;
-
-                                case 0x1F0:
-                                    boolean[] be = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                    qP = be[4];
-                                    qM = be[5];
-                                    lonP = be[6];
-                                    lonM = be[7];
-
-                                    break;
-                                case 90181738:
-                                    //0x560106A
-                                    //Tilt MOBA
-                                    isMobaTilt = true;
-                                    mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                                    qW = mqW / 23768.0d;
-                                    qX = mqX / 23768.0d;
-                                    qY = mqY / 23768.0d;
-                                    qZ = mqZ / 23768.0d;
-                                    qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                                    qW /= qnorm;
-                                    qX /= qnorm;
-                                    qY /= qnorm;
-                                    qZ /= qnorm;
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    switch (DataSaved.lrTilt) {
-                                        case 1:
-                                            //Left
-                                            Deg_Benna_W_Tilt = eulerAngles[0];
-                                            Deg_tilt = -eulerAngles[1];
-                                            Deg_Yaw_Tilt = eulerAngles[2];
-
-                                            break;
-                                        case -1:
-                                            //Right
-                                            Deg_Benna_W_Tilt = -eulerAngles[0];
-                                            Deg_tilt = eulerAngles[1];
-                                            Deg_Yaw_Tilt = eulerAngles[2];
-
-                                            break;
-                                    }
-                                    break;
-
-                            }
-                            if (boom1P) {
-                                Deg_boom1 += 0.05;
-                            }
-                            if (boom1M) {
-                                Deg_boom1 -= 0.05;
-                            }
-                            if (stickP) {
-                                Deg_stick += 0.05;
-                            }
-                            if (stickM) {
-                                Deg_stick -= 0.05;
-                            }
-                            if (bucketA) {
-                                Deg_Benna_W_Tilt += 0.05;
-                                Deg_bucket += 0.05;
-                            }
-                            if (bucketC) {
-                                Deg_Benna_W_Tilt -= 0.05;
-                                Deg_bucket -= 0.05;
-                            }
-
-
-                            gpsSimul(new boolean[]{rotL, rotR, latP, latM, lonP, lonM, qP, qM});
-                            ExcavatorLib.Excavator();
-                            break;
                     }
-
-
                     flagDefault--;
                     flagLaser -= 1;
                     flagLaserConnected--;
@@ -920,45 +764,6 @@ public class Sensors_Decoder {
                 case 3:
                 case 4:
                     //Dozer e grader
-                    if(DataSaved.my_comPort == 4){
-                        switch (id) {
-
-
-                            case 0x195:
-
-                                boolean[] boo = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                latP = boo[6];
-                                latM = boo[7];
-                                break;
-                            case 0x295:
-                                if (!isMobaTilt) {
-                                    int mTilt = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
-
-                                    Deg_tilt = mTilt * 1d;
-                                }
-                                break;
-
-
-                            case 0x3F0:
-
-
-                                boolean[] ba = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                rotL = ba[1];
-                                rotR = ba[5];
-                                break;
-
-                            case 0x1F0:
-                                boolean[] be = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
-                                qP = be[4];
-                                qM = be[5];
-                                lonP = be[6];
-                                lonM = be[7];
-
-                                break;
-
-                        }
-                        gpsSimul(new boolean[]{rotL, rotR, latP, latM, lonP, lonM, qP, qM});
-                    }
                     switch (id & 0x1FFFFFFF) {
                         case 0x386:
                         case 0x385:
@@ -1066,6 +871,220 @@ public class Sensors_Decoder {
                     break;
 
             }
+            if (DataSaved.my_comPort == 4) {
+                //demo ROLLER
+                switch (id) {
+                    case 0x195:
+
+                        boolean[] boo = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                        latP = boo[6];
+                        latM = boo[7];
+                        break;
+                    case 0x1F0:
+                        boolean[] be = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                        qP = be[4];
+                        qM = be[5];
+                        lonP = be[6];
+                        lonM = be[7];
+
+                        break;
+                    case 0x3F0:
+                        boolean[] ba = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                        rotL = ba[1];
+                        rotR = ba[5];
+                        break;
+                }
+                boolean[] keyEvents = new boolean[]{rotL, rotR, latP, latM, lonP, lonM, qP, qM};
+
+
+                if (keyEvents[0]) {
+                    // rotLeft
+                    HEADING -= 0.05;
+                    HEADING = normalizeAngle(HEADING);
+
+
+                }
+                if (keyEvents[1]) {
+                    // rotRight
+                    HEADING += 0.05;
+                    HEADING = normalizeAngle(HEADING);
+
+                }
+
+                if (keyEvents[2]) {
+                    // lat+
+                    NmeaGenerator.LATITUDE += 0.005;
+
+                }
+                if (keyEvents[3]) {
+                    // lat-
+                    NmeaGenerator.LATITUDE -= 0.005;
+
+                }
+                if (keyEvents[4]) {
+                    // F4
+                    NmeaGenerator.LONGITUDE += 0.005;
+
+                }
+                if (keyEvents[5]) {
+                    // lon+
+                    NmeaGenerator.LONGITUDE -= 0.005;
+
+                }
+
+
+                if (keyEvents[6]) {
+                    NmeaGenerator.ALTITUDE += 0.001;
+                }
+                if (keyEvents[7]) {
+                    NmeaGenerator.ALTITUDE -= 0.001;
+                }
+            }
+                if(DataSaved.isCanOpen==5) {
+                switch (id) {
+                    case 0x385:
+
+                        acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
+                        acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+                        acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
+
+                        norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
+                        ax_norm = (double) acc_y / norm;
+                        ay_norm = (double) acc_x / norm;
+                        az_norm = (double) acc_z / norm;
+
+                        Deg_bucket_DEMO = (Math.atan2(ax_norm, -az_norm) * 180 / Math.PI);
+                        Deg_bucket_DEMO += 180;
+                        if (Deg_bucket_DEMO > 180) {
+                            Deg_bucket_DEMO -= 360;
+                        }
+                        if (Deg_bucket_DEMO < -180) {
+                            Deg_bucket_DEMO += 360;
+                        }
+
+                        break;
+                    case 0x395:
+
+                        boolean[] b = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                        boom1P = b[3];
+                        boom1M = b[7];
+                        bucketC = b[1];
+                        bucketA = b[5];
+
+                        break;
+
+                    case 0x295:
+                        if (!isMobaTilt) {
+                            int mTilt = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
+
+                            Deg_tilt = mTilt * 1d;
+                        }
+                        break;
+                    case 234868978:
+                        if (DataSaved.lrTilt != 0) {
+                            DataSaved.isTiltRotator = true;
+
+                            if (PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon) {
+                                double costa = (PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[0], data[1]}) * 100d) * 0.01d;
+
+                                Deg_Roto = costa * (1d / 128d) - 0d;
+
+                            }
+                            if (DataSaved.reverseRotator == 1) {
+                                Deg_Roto = Deg_Roto * -1;
+                            }
+
+                        }
+                        break;
+                    case 0x2F0:
+
+                        if (DataSaved.lrTilt != 0) {
+                            DataSaved.isTiltRotator = true;
+                            int mRoto = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
+
+                            Deg_Roto = mRoto * 1d;
+                            Deg_Roto = Deg_Roto % 360;
+                            if (DataSaved.reverseRotator == 1) {
+                                Deg_Roto = Deg_Roto * -1;
+                            }
+                        }
+
+
+                        break;
+                    case 0x3F0:
+                        boolean[] ba = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                        stickP = ba[7];
+                        stickM = ba[3];
+
+                        break;
+
+
+                    case 90181738:
+                        //0x560106A
+                        //Tilt MOBA
+                        isMobaTilt = true;
+                        mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
+                        mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+                        mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
+                        mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
+                        qW = mqW / 23768.0d;
+                        qX = mqX / 23768.0d;
+                        qY = mqY / 23768.0d;
+                        qZ = mqZ / 23768.0d;
+                        qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
+                        qW /= qnorm;
+                        qX /= qnorm;
+                        qY /= qnorm;
+                        qZ /= qnorm;
+                        eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
+                        switch (DataSaved.lrTilt) {
+                            case 1:
+                                //Left
+                                Deg_Benna_W_Tilt = eulerAngles[0];
+                                Deg_tilt = -eulerAngles[1];
+                                Deg_Yaw_Tilt = eulerAngles[2];
+
+                                break;
+                            case -1:
+                                //Right
+                                Deg_Benna_W_Tilt = -eulerAngles[0];
+                                Deg_tilt = eulerAngles[1];
+                                Deg_Yaw_Tilt = eulerAngles[2];
+
+                                break;
+                        }
+                        break;
+
+                }
+
+                    if (boom1P) {
+                        Deg_boom1 += 0.05;
+                    }
+                    if (boom1M) {
+                        Deg_boom1 -= 0.05;
+                    }
+                    if (stickP) {
+                        Deg_stick += 0.05;
+                    }
+                    if (stickM) {
+                        Deg_stick -= 0.05;
+                    }
+                    if (bucketA) {
+                        Deg_Benna_W_Tilt += 0.05;
+                        Deg_bucket += 0.05;
+                    }
+                    if (bucketC) {
+                        Deg_Benna_W_Tilt -= 0.05;
+                        Deg_bucket -= 0.05;
+                    }
+
+
+
+
+
+
+                ExcavatorLib.Excavator();
+            }
 
         } catch (Exception e) {
             flagLaser--;
@@ -1075,55 +1094,11 @@ public class Sensors_Decoder {
 
     }
 
-    private static void gpsSimul(boolean[] keyEvents) {
-
-
-        if (keyEvents[2]) {
-            // lat+
-            NmeaGenerator.LATITUDE += 0.005;
-
-        }
-        if (keyEvents[3]) {
-            // lat-
-            NmeaGenerator.LATITUDE -= 0.005;
-
-        }
-        if (keyEvents[5]) {
-            // lon+
-            NmeaGenerator.LONGITUDE -= 0.005;
-
-        }
-        if (keyEvents[4]) {
-            // F4
-            NmeaGenerator.LONGITUDE += 0.005;
-
-        }
-        if (keyEvents[0]) {
-            // rotLeft
-            NmeaGenerator.HEADING -= 0.05;
-            if (NmeaGenerator.HEADING >= 360) {
-                NmeaGenerator.HEADING = 0;
-            } else if (NmeaGenerator.HEADING <= 0) {
-                NmeaGenerator.HEADING = 360;
-            }
-
-        }
-        if (keyEvents[1]) {
-            // rotRight
-            NmeaGenerator.HEADING += 0.05;
-            if (NmeaGenerator.HEADING >= 360) {
-                NmeaGenerator.HEADING = 0;
-            } else if (NmeaGenerator.HEADING <= 0) {
-                NmeaGenerator.HEADING = 360;
-            }
-
-        }
-        if (keyEvents[6]) {
-            NmeaGenerator.ALTITUDE += 0.001;
-        }
-        if (keyEvents[7]) {
-            NmeaGenerator.ALTITUDE -= 0.001;
-        }
+    private static double normalizeAngle(double a) {
+        a = a % 360.0;
+        if (a > 180) a -= 360;
+        if (a < -180) a += 360;
+        return a;
     }
 
 

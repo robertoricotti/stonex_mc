@@ -3,6 +3,7 @@ package gui.my_opengl;
 
 import static gui.MyApp.errorCode;
 import static gui.MyApp.hAlarm;
+import static gui.MyApp.isOffgrid;
 import static services.CanSender.prepLeft;
 import static services.CanSender.prepRight;
 import static services.CanService.Dozer_Auto_Main;
@@ -78,7 +79,7 @@ public class My3DActivity extends BaseClass {
     TextView AUTO_SX, AUTO_SS, AUTO_DX;
     Dialog_Blade_Wear dialogBladeWear;
     public static boolean PNEZD_FUNCTION;
-    ImageView allarmeAlt, gl_hydroP;
+    ImageView allarmeAlt,allarmeBound, gl_hydroP;
     String bucketName;
     int indexMachineSelected, indexBucketSelected;
     TextView generalnfo, generalCoord;
@@ -258,6 +259,7 @@ public class My3DActivity extends BaseClass {
         gl_bright = findViewById(R.id.gl_bright);
         gl_benne = findViewById(R.id.gl_benne);
         allarmeAlt = findViewById(R.id.allarmeAlt);
+        allarmeBound = findViewById(R.id.allarmeBound);
         gl_sound = findViewById(R.id.gl_sound);
         gl_hydroP = findViewById(R.id.gl_hydroP);
         allarmeAlt.setVisibility(View.GONE);
@@ -680,6 +682,8 @@ public class My3DActivity extends BaseClass {
         super.onDestroy();
        Grader_Auto_SS=false;
         stopService(new Intent(this, TriangleService.class));
+        MyDeviceManager.OUT1(MyApp.visibleActivity,0);
+        MyDeviceManager.OUT2(MyApp.visibleActivity,0);
     }
 
     private void checkBooleans() {
@@ -755,6 +759,15 @@ public class My3DActivity extends BaseClass {
                 allarmeAlt.setVisibility(View.VISIBLE);
             } else {
                 allarmeAlt.setVisibility(View.GONE);
+            }
+            if(DataSaved.enOUT==1){
+                if (isOffgrid) {
+                    allarmeBound.setVisibility(View.VISIBLE);
+                } else {
+                    allarmeBound.setVisibility(View.GONE);
+                }
+            }else {
+                allarmeBound.setVisibility(View.GONE);
             }
             generalCoord.setTextColor(MyColorClass.colorConstraint);
             generalnfo.setTextColor(MyColorClass.colorConstraint);

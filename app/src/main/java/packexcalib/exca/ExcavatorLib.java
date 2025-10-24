@@ -6,6 +6,8 @@ import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_Yaw_Tilt;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 
+import android.util.Log;
+
 import java.util.Arrays;
 
 import gui.MyApp;
@@ -184,6 +186,7 @@ public class ExcavatorLib {
                         arr = new double[]{coordB1[2], coordB2[2], coordST[2], bucketCoord[2], bucketLeftCoord[2], bucketRightCoord[2]};
                         Arrays.sort(arr);
                         highestPoint = arr[arr.length - 1];
+
                         if (DataSaved.isLowerEdge) {
                             double sinistra, centro, destra;
 
@@ -386,6 +389,9 @@ public class ExcavatorLib {
                     arr = new double[]{coordB1[2], coordB2[2], coordST[2], bucketCoord[2], bucketLeftCoord[2], bucketRightCoord[2]};
                     Arrays.sort(arr);
                     highestPoint = arr[arr.length - 1];
+
+
+
                     if (DataSaved.isLowerEdge) {
                         arrLower = new double[]{bucketLeftCoord[2], bucketCoord[2], bucketRightCoord[2]};
                         int minIndex = 0;
@@ -474,9 +480,11 @@ public class ExcavatorLib {
                         distanzaOrizzontale = new DistToPoint(myX, myY, 0, X[0], Y[0], 0).getDist_to_point() * -1;
 
                     }
+
                     arr = new double[]{coordB1[2], coordB2[2], coordST[2], bucketCoord[2], bucketLeftCoord[2], bucketRightCoord[2]};
                     Arrays.sort(arr);
                     highestPoint = arr[arr.length - 1];
+
 
                     if (DataSaved.isLowerEdge) {
                         arrLower = new double[]{bucketLeftCoord[2], bucketCoord[2], bucketRightCoord[2]};

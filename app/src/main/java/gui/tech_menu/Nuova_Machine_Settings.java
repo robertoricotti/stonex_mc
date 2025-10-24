@@ -183,9 +183,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             if (ckDO.isChecked()) {
                 ckDO.setChecked(false);
                 MyData.push("M" + machineSel + "_enOUT", "0");
+                DataSaved.enOUT=0;
             } else if (!ckDO.isChecked()) {
                 ckDO.setChecked(true);
                 MyData.push("M" + machineSel + "_enOUT", "1");
+                DataSaved.enOUT=1;
             }
         });
         ckUpper.setOnClickListener(view -> {

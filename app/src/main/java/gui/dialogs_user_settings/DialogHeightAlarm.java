@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
+import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -31,7 +32,7 @@ public class DialogHeightAlarm {
     Activity activity;
     public Dialog alertDialog;
     ImageView save,canc;
-    Button  set, reset, plus, minus;
+    Button  set,set2d, reset, plus, minus;
     EditText value, delta;
     TextView title;
     boolean p_pressed, m_pressed;
@@ -47,7 +48,6 @@ public class DialogHeightAlarm {
         this.activity = activity;
         alertDialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         alertDialog.setContentView(R.layout.dialog_alarm_pivot);
-
         alertDialog.setCancelable(false);
     }
 
@@ -59,6 +59,7 @@ public class DialogHeightAlarm {
         title = alertDialog.findViewById(R.id.title);
         canc = alertDialog.findViewById(R.id.exit);
         set = alertDialog.findViewById(R.id.setPivot);
+        set2d = alertDialog.findViewById(R.id.setPivot2D);
         save = alertDialog.findViewById(R.id.save);
         reset = alertDialog.findViewById(R.id.reset);
         value = alertDialog.findViewById(R.id.value);
@@ -69,8 +70,6 @@ public class DialogHeightAlarm {
 
     @SuppressLint("SetTextI18n")
     private void init() {
-
-
         alertDialog.setCancelable(false);
         Window window = alertDialog.getWindow();
         if (window != null) {
@@ -83,7 +82,7 @@ public class DialogHeightAlarm {
             // Calcola 75% della larghezza dello schermo
             DisplayMetrics displayMetrics = new DisplayMetrics();
             activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            int width = (int) (displayMetrics.widthPixels * 0.85);
+            int width = (int) (displayMetrics.widthPixels * 0.95);
             int height = (int) (displayMetrics.heightPixels * 0.85);
             alertDialog.getWindow().setLayout(width, height);
             alertDialog.getWindow().setGravity(Gravity.CENTER);
@@ -128,12 +127,28 @@ public class DialogHeightAlarm {
         });
 
         set.setOnClickListener((View v) -> {
+            DataSaved.portView=2;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            tmp = ExcavatorLib.highestPoint;
+            value.setText(Utils.readUnitOfMeasureLITE(String.valueOf(tmp)));
+        });
+        set2d.setOnClickListener((View v) -> {
+            DataSaved.portView=0;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             tmp = ExcavatorLib.highestPoint;
             value.setText(Utils.readUnitOfMeasureLITE(String.valueOf(tmp)));
         });
 
         reset.setOnClickListener((View v) -> {
-            MyData.push("Pivot_Height_Alarm", "100000.0");
+            MyData.push("Pivot_Height_Alarm", "10000000.0");
             MyData.push("DeltaPivot", String.valueOf(0));
             tmp = 10000000.0;
             value.setText("OFF");

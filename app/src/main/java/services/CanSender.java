@@ -68,7 +68,7 @@ public class CanSender extends Service {
     public static boolean tryingBTCAN = false;
     int connections = 0;
     int isTechCount, startCanopen;
-    public static byte onGrade, d0;
+    public static byte onGrade, d0,d1;
     private ScheduledExecutorService senderExecutorGrade_50;
     private ScheduledExecutorService senderExecutor500;
     private ScheduledExecutorService senderExecutor2000;
@@ -134,13 +134,14 @@ public class CanSender extends Service {
                     new SerialEvent(NmeaGenerator.generateGPHDT());
                     new SerialEvent(NmeaGenerator.generateGPGGA());
                     if (MyApp.visibleActivity instanceof Serial_Msg_Debug) {
-                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
-                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
                         EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
+                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
+                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
                     }
-                    NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
                     NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
                     NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
+                    NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
+
                 }
             }
         }

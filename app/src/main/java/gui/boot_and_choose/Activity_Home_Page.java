@@ -21,6 +21,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.stx_dig.R;
 
 import cloud.S3ManagerSingleton;
+import gui.BaseClass;
 import gui.MyApp;
 import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
@@ -51,7 +53,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 import utils.WifiHelper;
 
-public class Activity_Home_Page extends AppCompatActivity {
+public class Activity_Home_Page extends BaseClass {
     public static boolean HasDownloaded;
     ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo;
     CloseAppDialog closeAppDialog;

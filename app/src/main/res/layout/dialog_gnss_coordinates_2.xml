@@ -15,7 +15,7 @@
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:text="12.6V"
+        android:text="0.0V"
         android:layout_margin="10dp"
         />
 

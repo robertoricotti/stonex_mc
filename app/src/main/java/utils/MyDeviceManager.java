@@ -19,6 +19,8 @@ import com.cpdevice.cpcomm.frame.ICPCanFrame;
 
 import com.van.jni.VanCmd;
 
+import packexcalib.exca.DataSaved;
+
 
 public class MyDeviceManager {
     public static final String ACTION_HIDE_NAVIGATION = "action.ACTION_HIDE_NAVIGATION";
@@ -146,6 +148,7 @@ public class MyDeviceManager {
             case 0:
                 if (GEN1) {
                     VanCmd.exec("echo \"100006\" >/dev/gpio_dev", 0);//out 2 =OFF
+
                 } else if (GEN2) {
                     Apollo2.getInstance(activity).setOutput1(0);
 
@@ -153,10 +156,13 @@ public class MyDeviceManager {
                 break;
 
             case 1:
-                if (GEN1) {
-                    VanCmd.exec("echo \"100007\" >/dev/gpio_dev", 0);//out 2 =OFF
-                } else if (GEN2) {
-                    Apollo2.getInstance(activity).setOutput1(1);
+                if(DataSaved.enOUT==1) {
+                    if (GEN1) {
+                        VanCmd.exec("echo \"100007\" >/dev/gpio_dev", 0);//out 2 =OFF
+
+                    } else if (GEN2) {
+                        Apollo2.getInstance(activity).setOutput1(1);
+                    }
                 }
                 break;
 
@@ -172,15 +178,16 @@ public class MyDeviceManager {
                 } else if (GEN2) {
                     Apollo2.getInstance(activity).setOutput2(0);
 
-
                 }
                 break;
 
             case 1:
-                if (GEN1) {
-                    VanCmd.exec("echo \"100009\" >/dev/gpio_dev", 0);
-                } else if (GEN2) {
-                    Apollo2.getInstance(activity).setOutput2(1);
+                if(DataSaved.enOUT==1) {
+                    if (GEN1) {
+                        VanCmd.exec("echo \"100009\" >/dev/gpio_dev", 0);
+                    } else if (GEN2) {
+                        Apollo2.getInstance(activity).setOutput2(1);
+                    }
                 }
                 break;
 

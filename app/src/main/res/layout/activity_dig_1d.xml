@@ -355,7 +355,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:background="@color/yellow"
-        android:src="@drawable/danger_altezza"/>
+        android:src="@drawable/height_alarm"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/IndicatorH2"

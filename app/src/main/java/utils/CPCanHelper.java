@@ -309,7 +309,6 @@ public class CPCanHelper {
                 }
 
             } else if (!CPCommConfig.isUseSocketCanService() && !CPCommConfig.isUseMcuCanService()) {
-                //TANK2
                 try {
                     if (mCPVxProtocol != null) {
                         if (mCPVxProtocol.isConnected()) {

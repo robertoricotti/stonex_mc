@@ -188,12 +188,25 @@
         android:layout_width="130dp"
         android:layout_height="70dp"
         android:backgroundTint="@color/green"
-        android:text="@string/set"
+        android:text="SET 3D"
         android:textColor="@color/black"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@+id/value"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline120"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/setPivot2D"
+        app:layout_constraintTop_toTopOf="@+id/value"
+        app:layout_constraintVertical_bias="0.461" />
+    <Button
+        android:id="@+id/setPivot2D"
+        android:layout_width="130dp"
+        android:layout_height="70dp"
+        android:backgroundTint="@color/GROUNDblue"
+        android:text="SET 2D"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@+id/value"
+        app:layout_constraintRight_toLeftOf="@id/setPivot"
+        app:layout_constraintLeft_toRightOf="@id/guideline120"
         app:layout_constraintTop_toTopOf="@+id/value"
         app:layout_constraintVertical_bias="0.461" />
 

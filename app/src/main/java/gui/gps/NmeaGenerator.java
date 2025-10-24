@@ -15,7 +15,7 @@ import packexcalib.gnss.CalculateXor8;
 import packexcalib.gnss.NmeaListener;
 
 public class NmeaGenerator {
-    public static double LATITUDE, LONGITUDE, ALTITUDE, HEADING, NORD_SIMUL, EAST_SIMUL;
+    public static double LATITUDE, LONGITUDE, ALTITUDE, HEADING;
 
 
     static CalculateXor8 calculateXor8, calculateXorHdt;
@@ -101,6 +101,7 @@ public class NmeaGenerator {
 
     public static String generateGPHDT() {
         try {
+
             String sh = "$GPHDT,";
             String hdt = String.valueOf(HEADING).replace(",", ".");
             String gphdtString = sh + hdt + ",T";

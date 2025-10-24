@@ -53,7 +53,6 @@ import cloud.S3ManagerSingleton;
 import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Ecu_Sensors_Activity;
 import gui.boot_and_choose.Activity_Home_Page;
-import gui.boot_and_choose.LaunchScreenActivity;
 import gui.buckets.BucketCalib;
 import gui.buckets.BucketCalibTilt;
 import gui.buckets.BucketChooserActivity;
@@ -124,7 +123,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static int errorCode;
     public static String activationCode = "none";
     public static String restoreCode;
-    public static int licenseType = -1;
+    public static int licenseType = 5;
     public static String expiry = "2001-12-31";
     public static final long timeUI = 65;
     public static String[] geoidAll = new String[]{};
@@ -135,14 +134,14 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static String DEVICE_SN = "";
     public static Activity visibleActivity;
     public static String Actualactivity;
-    public static boolean hAlarm, isApollo, canError;
+    public static boolean hAlarm, isApollo, canError, isOffgrid;
     public static String folderPath;
     public static String deu;
     public double h;
     SensorAlertDialog sensorAlertDialog1, sensorAlertDialog2, sensorAlertDialog3, sensorAlertDialog4, sensorAlertDialog5, sensorAlertDialog6, sensorAlertDialogBLADE;
     int frameCounter;
     int showConnCounter, checkCounter;
-    boolean soundOn;
+    boolean soundOn, soundOn2;
     int accCount = 0;
     ApolloPro apolloPro;
     Apollo2 apollo2;
@@ -223,15 +222,14 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
                     heposTransformer = new GridShiftTransformer(dEfile, dNfile);
                 } catch (Exception e) {
-                    Log.e("GridShift",Log.getStackTraceString(e));
+                    Log.e("GridShift", Log.getStackTraceString(e));
                     heposTransformer = null;
                 }
             }
         } catch (Exception e) {
             heposTransformer = null;
-            Log.e("GridShift",Log.getStackTraceString(e));
+            Log.e("GridShift", Log.getStackTraceString(e));
         }
-
 
 
         myCrash();
@@ -338,9 +336,9 @@ git push
     }
 
     private void checkAndPlaySound(Context context) {
-        String newState="";
+        String newState = "";
         int indexAudioSystem = MyData.get_Int("indexAudioSystem");
-        if(indexAudioSystem!=2) {
+        if (indexAudioSystem != 2) {
             if (isAlto) {
                 newState = "alto";
             } else if (isCentro) {
@@ -350,7 +348,7 @@ git push
             } else {
                 newState = "";
             }
-        }else {
+        } else {
             if (isAlto) {
                 newState = "";
             } else if (isCentro) {
@@ -469,7 +467,10 @@ git push
                                         CanSender.tryingBTCAN = false;
                                     }
                                 }
-                                if (!(visibleActivity instanceof LaunchScreenActivity)) {
+                                if ((visibleActivity instanceof My3DActivity
+                                        || visibleActivity instanceof Digging2D
+                                        || visibleActivity instanceof Digging1D
+                                        || visibleActivity instanceof DiggingProfile)) {
                                     try {
                                         checkCounter++;
                                         if (checkCounter == 99) {
@@ -484,7 +485,6 @@ git push
                                             if (!soundOn) {
                                                 if (isApollo) {
                                                     MyDeviceManager.OUT1(visibleActivity, 1);
-
                                                 }
                                                 soundOn = true;
                                             }
@@ -492,6 +492,7 @@ git push
                                         } else {
                                             if (soundOn) {
                                                 if (isApollo) {
+
                                                     MyDeviceManager.OUT1(visibleActivity, 0);
 
                                                 }
@@ -501,16 +502,58 @@ git push
                                         }
 
 
+
+                                        switch (DataSaved.bucketEdge) {
+                                            case -1:
+                                                isOffgrid = TriangleService.ltOffGrid;
+
+                                                break;
+
+                                            case 0:
+                                                isOffgrid = TriangleService.ctOffGrid;
+                                                break;
+
+                                            case 1:
+                                                isOffgrid = TriangleService.rtOffGrid;
+                                                break;
+                                        }
+
+
+                                        if (isOffgrid) {
+                                            if (!soundOn2) {
+                                                if (isApollo) {
+
+                                                    MyDeviceManager.OUT2(visibleActivity, 1);
+                                                }
+                                                soundOn2 = true;
+                                            }
+
+                                        } else {
+                                            if (soundOn2) {
+                                                if (isApollo) {
+
+                                                    MyDeviceManager.OUT2(visibleActivity, 0);
+
+                                                }
+                                                soundOn2 = false;
+                                            }
+
+                                        }
+
+
                                     } catch (Exception e) {
                                         hAlarm = false;
+                                        isOffgrid = false;
                                     }
                                 } else {
                                     hAlarm = false;
+                                    isOffgrid = false;
                                 }
 
                             } catch (Exception e) {
 
                                 hAlarm = false;
+                                isOffgrid = false;
                             }
                             if (hAlarm) {
                                 CanSender.d0 = 1;
@@ -625,7 +668,7 @@ git push
 
         } else if (activity instanceof KOMATSU_Activity) {
             ((KOMATSU_Activity) activity).updateUI();
-        }else if (activity instanceof CASE_Activity) {
+        } else if (activity instanceof CASE_Activity) {
             ((CASE_Activity) activity).updateUI();
         }
 
@@ -830,7 +873,7 @@ git push
                     for (String remoteFileName : remoteFiles.keySet()) {
                         String lowerName = remoteFileName.toLowerCase();
                         if (!(lowerName.endsWith(".ugf") || lowerName.endsWith(".bin") || lowerName.endsWith(".ggf"))) {
-                           // Log.d("GeoidSync", "Saltato file non valido: " + remoteFileName);
+                            // Log.d("GeoidSync", "Saltato file non valido: " + remoteFileName);
                             continue;
                         }
 
@@ -861,28 +904,27 @@ git push
                             String s3Key = remoteFolderPath.endsWith("/") ?
                                     remoteFolderPath + remoteFileName :
                                     remoteFolderPath + "/" + remoteFileName;
-                           // Log.d("GeoidSync", "Scarico: " + s3Key + " -> " + localFile.getAbsolutePath());
+                            // Log.d("GeoidSync", "Scarico: " + s3Key + " -> " + localFile.getAbsolutePath());
 
                             try {
                                 s3Manager.downloadFile(s3Key, localFile.getAbsolutePath());
                             } catch (Exception e) {
-                               // Log.w("GeoidSync", "Errore download file " + remoteFileName + ": " + e.getMessage());
+                                // Log.w("GeoidSync", "Errore download file " + remoteFileName + ": " + e.getMessage());
                             }
                         }
                     }
 
                     executor.shutdown();
-                   // Log.d("GeoidSync", "Sincronizzazione completata.");
+                    // Log.d("GeoidSync", "Sincronizzazione completata.");
                 });
             }
 
             @Override
             public void onError(Exception e) {
-               // Log.w("GeoidSync", "Impossibile sincronizzare geoid (offline?): " + e.getMessage());
+                // Log.w("GeoidSync", "Impossibile sincronizzare geoid (offline?): " + e.getMessage());
             }
         });
     }
-
 
 
 }

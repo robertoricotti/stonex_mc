@@ -3,6 +3,8 @@ package packexcalib.gnss;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
 
+import android.util.Log;
+
 import java.nio.charset.StandardCharsets;
 
 import packexcalib.exca.DataSaved;
@@ -111,9 +113,10 @@ public class NmeaListener {
 
                             }else {
                                 mch_Hdt = Double.parseDouble(NmeaInput[1]);
+                                mch_Orientation = mch_Hdt;
                             }
                         } catch (Exception e) {
-
+                            Log.e("erroreHDT",Log.getStackTraceString(e));
 
                         }
                         break;
