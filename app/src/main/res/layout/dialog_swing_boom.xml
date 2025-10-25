@@ -11,19 +11,48 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.8" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/hv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
     <ImageView
         android:id="@+id/immagine"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="2dp"
         android:src="@drawable/swingboom"
         app:layout_constraintBottom_toTopOf="@id/val"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/immagine2"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <ImageView
+        android:id="@+id/immagine2"
+        android:layout_width="0dp"
+        android:visibility="visible"
+        android:layout_height="0dp"
+        android:layout_margin="2dp"
+        android:src="@drawable/boom_topview"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/val"
+        app:layout_constraintLeft_toRightOf="@id/hv"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
-
+        />
+    <TextView
+        android:id="@+id/angoloreal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/blue"
+        app:layout_constraintBottom_toTopOf="@id/hc"
+        app:layout_constraintLeft_toLeftOf="@id/valdeg"
+        app:layout_constraintRight_toRightOf="@id/valdeg"
+        android:text="0.00°\n"
         />
 
     <ImageView
@@ -33,6 +62,18 @@
         android:src="@drawable/save_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/update"
+        app:layout_constraintTop_toBottomOf="@id/hc"
+
+
+        />
+    <ImageView
+        android:id="@+id/update"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/refresh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/save"
         app:layout_constraintRight_toLeftOf="@id/cancel"
         app:layout_constraintTop_toBottomOf="@id/hc"
 
@@ -46,7 +87,7 @@
         android:layout_height="50dp"
         android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/save"
+        app:layout_constraintLeft_toRightOf="@id/update"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hc"
         app:tint="@color/_____cancel_text" />
@@ -63,7 +104,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/hc"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/hv"
         app:layout_constraintTop_toBottomOf="@id/immagine" />
 
     <EditText
@@ -78,6 +119,35 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/hc"
         app:layout_constraintLeft_toRightOf="@id/val"
+        app:layout_constraintTop_toBottomOf="@id/immagine" />
+
+    <EditText
+        android:id="@+id/valdeg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/hc"
+        app:layout_constraintLeft_toRightOf="@id/hv"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/immagine" />
+
+    <EditText
+        android:id="@+id/unitadeg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="false"
+        android:gravity="center|left"
+        android:text="°"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/hc"
+        app:layout_constraintLeft_toRightOf="@id/valdeg"
         app:layout_constraintTop_toBottomOf="@id/immagine" />
 
 

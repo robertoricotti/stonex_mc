@@ -374,7 +374,8 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     }
                     if (DataSaved.Extra_Heading != 0) {
                         try {
-                            extraAng.setText(String.format("%.2f", NmeaListener.roof_Orientation) + " °");
+                            double valore= NmeaListener.roof_Orientation+DataSaved.offsetSwingExca;
+                            extraAng.setText(String.format("%.2f", valore) + " °");
                         } catch (Exception e) {
                             extraAng.setText("Error");
                         }

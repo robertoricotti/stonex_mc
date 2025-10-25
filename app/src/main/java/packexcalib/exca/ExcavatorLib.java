@@ -94,12 +94,16 @@ public class ExcavatorLib {
             }
 
             if (GPS_Enabled) {
+                double offsetSwing=0;
+                if(DataSaved.isWL==0&&DataSaved.Extra_Heading==1){
+                    offsetSwing=DataSaved.offsetSwingExca;
+                }
 
                 myPitchLen = 0;
                 myRollLen = 0;
                 double hdt0 = ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
                 ////////
-                hdt_BOOM = ((hdt0 + swing_boom_angle) % 360 + 360) % 360;
+                hdt_BOOM = ((hdt0 + swing_boom_angle+offsetSwing) % 360 + 360) % 360;
 
                 double hdtR = ((hdt0 + 90) % 360 + 360) % 360;
 

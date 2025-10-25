@@ -684,27 +684,27 @@
 
     <ImageView
         android:id="@+id/allarmeAlt"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/guidLo"
         app:layout_constraintLeft_toRightOf="@id/allarmeBound"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@drawable/sfondo_dialog_scura"
         android:src="@drawable/height_alarm"/>
     <ImageView
         android:id="@+id/allarmeBound"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
+        android:backgroundTintMode="multiply"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/guidLo"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/allarmeAlt"
-        android:background="@drawable/sfondo_dialog_scura"
+
         android:src="@drawable/outside_boundary"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/diviAuto"

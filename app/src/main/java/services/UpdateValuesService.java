@@ -183,6 +183,7 @@ public class UpdateValuesService extends Service {
                     String larghezza_Frame = MyData.get_String("M" + i + "larghezza_Frame");
                     String lunghezza_Frame = MyData.get_String("M" + i + "lunghezza_Frame");
                     String larghezza_Braccio = MyData.get_String("M" + i + "larghezza_Braccio");
+                    String offsetSwingExca = MyData.get_String("M" + i + "offsetSwingExca");
 
                     String usuraLamaSX = MyData.get_String("M" + i + "usuraLamaSX");
                     String usuraLamaCX = MyData.get_String("M" + i + "usuraLamaCX");
@@ -360,6 +361,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (larghezza_Braccio == null) {
                         MyData.push("M" + i + "larghezza_Braccio", "0.2");
+                    }
+                    if (offsetSwingExca == null) {
+                        MyData.push("M" + i + "offsetSwingExca", "0.0");
                     }
 
 
@@ -1326,6 +1330,13 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di larghezza_Braccio: " + e.getMessage());
                 }
+
+                try {
+                    DataSaved.offsetSwingExca = MyData.get_Double("M" + indexMach + "offsetSwingExca");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di offsetSwingExca: " + e.getMessage());
+                }
+
                 try {
                     DataSaved.Extra_Heading = MyData.get_Int("M" + indexMach + "Extra_Heading");
                 } catch (Exception e) {

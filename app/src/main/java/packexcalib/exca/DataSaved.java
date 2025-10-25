@@ -121,7 +121,7 @@ public class DataSaved {
 
     public static double offsetZH;
 
-    // public static double offsetZR;
+     public static double offsetSwingExca;
 
     public static double offsetHDT;
 
