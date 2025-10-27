@@ -50,6 +50,8 @@ import landxml.LandXMLData;
 import landxml.LandXMLParser;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.GridShiftTransformer;
+import packexcalib.gnss.LocalizationFactory;
+import packexcalib.gnss.LocalizationModel;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -71,6 +73,7 @@ public class ReadProjectService extends Service {
     public static int numbers;
     public static boolean isFinishedDTM, isFinishedPOLY, isFinishedPOINT;
     static double conversionFactor = 1;
+    public static LocalizationModel model;
 
     public ReadProjectService() {
     }
@@ -653,7 +656,15 @@ public class ReadProjectService extends Service {
                     }
 
                     ///////////
-
+                }
+            }else if(s.equals(_NONE)){
+                String CRS_ESTERNO=MyData.get_String("CRS_ESTERNO");
+                if(CRS_ESTERNO!=null){
+                    try {
+                        model= LocalizationFactory.fromFile(new File(CRS_ESTERNO));
+                    } catch (Exception e) {
+                        Log.e("CRS_ESTERNO",Log.getStackTraceString(e));
+                    }
                 }
             }
             byte speed = 0;
@@ -673,7 +684,7 @@ public class ReadProjectService extends Service {
 
             }
             DataSaved.gpsOk = false;
-            byte msg = 0x03;
+            byte msg = 0x01;
 
             MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
         }

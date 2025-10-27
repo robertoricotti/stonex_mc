@@ -208,7 +208,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     break;
 
             }
-            byte msg = 0x03;
+            byte msg = 0x01;
 
 
             MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
@@ -375,7 +375,12 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     if (DataSaved.Extra_Heading != 0) {
                         try {
                             double valore= NmeaListener.roof_Orientation+DataSaved.offsetSwingExca;
-                            extraAng.setText(String.format("%.2f", valore) + " °");
+                            if(NmeaListener.roof_Orientation==999.999) {
+                                extraAng.setText("Error");
+                            }else{
+                                extraAng.setText(String.format("%.2f", valore) + " °");
+                            }
+
                         } catch (Exception e) {
                             extraAng.setText("Error");
                         }

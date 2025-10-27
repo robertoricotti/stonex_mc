@@ -185,7 +185,8 @@ public class MyData {
                 "licenza",
                 "progettoSelected",
                 "progettoSelected_POINT",
-                "progettoSelected_POLY"
+                "progettoSelected_POLY",
+                "CRS_ESTERNO"
         ));
 
         for (String fileName : allFiles) {
@@ -267,7 +268,8 @@ String stringa="mcconfig_"+DEVICE_SN;
                 "licenza",
                 "progettoSelected",
                 "progettoSelected_POINT",
-                "progettoSelected_POLY"
+                "progettoSelected_POLY",
+                "CRS_ESTERNO"
                 // aggiungi altre chiavi da ignorare
         ));
         try {

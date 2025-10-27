@@ -654,7 +654,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                                 break;
 
                         }
-                        MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{WRITE, (byte) 0x03, (byte) speed, (byte) 0x03});
+                        MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{WRITE, (byte) 0x01, (byte) speed, (byte) 0x03});
                         break;
                     case 1:
                         //s980

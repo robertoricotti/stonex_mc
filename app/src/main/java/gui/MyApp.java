@@ -441,6 +441,7 @@ git push
                         public void run() {
                             try {
 
+                                //Log.d("TestCRSSS",MyData.get_String("CRS_ESTERNO"));
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {
                                     frameCounter += 1;
@@ -551,7 +552,7 @@ git push
                                 }
 
                             } catch (Exception e) {
-
+                                Log.e("TestCRSSS",Log.getStackTraceString(e));
                                 hAlarm = false;
                                 isOffgrid = false;
                             }

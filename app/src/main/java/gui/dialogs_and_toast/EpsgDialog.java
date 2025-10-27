@@ -240,10 +240,10 @@ public class EpsgDialog {
                 break;
 
         }
-        byte msg=0x03;
+        byte msg=0x01;
 
 
-        Log.d("SCRS","start "+ crs+"  "+_NONE+"  "+msg);
+
         MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
         if(crs.equals(_NONE)){
             //setup LLQ

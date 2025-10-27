@@ -45,6 +45,7 @@ import gui.dialogs_and_toast.Diaalog_Set_SP;
 import gui.dialogs_and_toast.Dialog_Add_Surfaces;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.LocalizationFactory;
 import serial.SerialPortManager;
 import services.ReadProjectService;
 import utils.CanFileTransfer;
@@ -150,7 +151,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         long size1 = file.isDirectory() ? getFolderSize(file) : file.length();
                         arrayFiles.add(new ProjectAdapter.FileItem(file.getName(), isFolder, size1));
                     }
-                    if (file.getName().toLowerCase().endsWith(".sp")) {
+                    if (file.getName().toLowerCase().endsWith(".sp")||file.getName().toLowerCase().endsWith(".loc")) {
                         long size = file.isDirectory() ? getFolderSize(file) : file.length();
                         arraySP.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
                     }
@@ -401,6 +402,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
                         String match=getCrsCodeFromFileName(selectedFileName);
 
+
                         if(match!=null){
                             if(match.equals("UTM")){
                                 //UTM autozone
@@ -417,8 +419,11 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         }else {
                             //invia file SP
                             usaSP.setEnabled(false);
+                            MyData.push("CRS_ESTERNO", spAdapter.getSelectedFilePathAbs());
                             MyData.push("crs", ".SP FILE");
                             DataSaved.S_CRS = MyData.get_String("crs");
+
+                            /*
                             switch (DataSaved.my_comPort) {
                                 case 0:
                                     // Copia il file da assets a una directory accessibile
@@ -451,6 +456,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
 
                             }
+                            */
+                            ReadProjectService.model = LocalizationFactory.fromFile(new File(spAdapter.getSelectedFilePathAbs()));
                             usaSP.setEnabled(true);
 
                         }
@@ -606,7 +613,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
             File[] files = directory.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    if (file.getName().toLowerCase().endsWith(".sp")) {
+                    if (file.getName().toLowerCase().endsWith(".sp")||file.getName().toLowerCase().endsWith(".loc")) {
                         boolean isFolder = file.isDirectory();
                         long size = isFolder ? getFolderSize(file) : file.length();
                         nuovaLista.add(new ProjectFileAdapter.FileItem(

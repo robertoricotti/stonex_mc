@@ -182,7 +182,11 @@ public class Dialog_Swing_Boom {
             public void run() {
                 try {
                     double valore= NmeaListener.roof_Orientation+DataSaved.offsetSwingExca;
-                    valoreReal.setText(String.format("%.2f",valore)+" °\n\n\n");
+                    if(NmeaListener.roof_Orientation==999.999) {
+                        valoreReal.setText("Error" + " °\n\n\n");
+                    }else{
+                        valoreReal.setText(String.format("%.2f", valore) + " °\n\n\n");
+                    }
                     if (isUpdating) {
                         updateUI();
                     }

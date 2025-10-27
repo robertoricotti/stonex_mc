@@ -96,7 +96,9 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
                 icon.setImageResource(R.drawable.land_xml_immagine);
             } else if (fileExtension.equalsIgnoreCase("sp")) {
                 icon.setImageResource(R.drawable.accuracy);
-            } else if (fileExtension.equalsIgnoreCase("csv")) {
+            } else if (fileExtension.equalsIgnoreCase("loc")) {
+                icon.setImageResource(R.drawable.accuracy);
+            }else if (fileExtension.equalsIgnoreCase("csv")) {
                 icon.setImageResource(R.drawable.pnezd_menu);
             } else if (fileExtension.equalsIgnoreCase("txt")) {
                 icon.setImageResource(R.drawable.mytxt);

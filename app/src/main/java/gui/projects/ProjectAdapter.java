@@ -183,6 +183,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 icon.setImageResource(R.drawable.land_xml_immagine);
                 break;
             case "sp":
+            case "loc":
                 icon.setImageResource(R.drawable.accuracy);
                 break;
             case "csv":

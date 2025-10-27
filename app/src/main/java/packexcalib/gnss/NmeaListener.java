@@ -32,9 +32,9 @@ public class NmeaListener {
     public static int mZone;
     public static String VRMS_, HRMS_, _3DRMS;
     public static double mLat_1, mLon_1;
-    public static double Nord1, Est1, Quota1, mch_Orientation, mch_Hdt,mch_Hdt_1, roof_Orientation;
+    public static double Nord1, Est1, Quota1, mch_Orientation, mch_Hdt, mch_Hdt_1, roof_Orientation;
     public static String ggaNord, ggaEast, ggaNoS, ggaWoE, ggaZ1, ggaZ2, ggaSat, ggaDop, ggaQuality, ggaRtk, fix1;//String data from  GPS1
-    static boolean hdtError=false;
+    static boolean hdtError = false;
     /*
     NMEA STX Below
      */
@@ -52,7 +52,7 @@ public class NmeaListener {
             mNmea1 = NMEA0183.substring(NMEA0183.indexOf("*") + 1);
             mNmea2 = String.format("%02X", calculateXor8.xor);
 
-            if (DataSaved.S_CRS.equals(_NONE)) {
+            if (DataSaved.my_comPort==4) {//momentaneamente escluso
                 NmeaInput = NMEA0183.split(",");
                 switch (NmeaInput[0]) {
 
@@ -111,12 +111,12 @@ public class NmeaListener {
                             if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
                                 mch_Hdt = 999.999;
 
-                            }else {
+                            } else {
                                 mch_Hdt = Double.parseDouble(NmeaInput[1]);
                                 mch_Orientation = mch_Hdt;
                             }
                         } catch (Exception e) {
-                            Log.e("erroreHDT",Log.getStackTraceString(e));
+                            Log.e("erroreHDT", Log.getStackTraceString(e));
 
                         }
                         break;
@@ -175,6 +175,7 @@ public class NmeaListener {
 
                                     double qtemp = DataSaved.offset_Z_antenna + Double.parseDouble(ggaZ1.replace(",", ".")) + Double.parseDouble(ggaZ2.replace(",", "."));
                                     deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, qtemp, DataSaved.S_CRS);
+                                    Log.e("TestCRSSS", mLat_1 + "  " + mLon_1 + "   " + deg2UTM1.getNorthing() + "  " + deg2UTM1.getEasting());
                                     Nord1 = deg2UTM1.getNorthing();
                                     Est1 = deg2UTM1.getEasting();
                                     Quota1 = deg2UTM1.getQuota();
@@ -182,6 +183,7 @@ public class NmeaListener {
                                     mZone = deg2UTM1.getZone();
 
                                 } catch (Exception e) {
+                                    Log.e("TestCRSSS", Log.getStackTraceString(e));
                                 }
                             }
                             break;
@@ -193,7 +195,7 @@ public class NmeaListener {
                                 try {
                                     if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
                                         mch_Hdt = 999.999;
-                                    }else {
+                                    } else {
                                         mch_Hdt = Double.parseDouble(NmeaInput[1]);
                                         mch_Orientation = mch_Hdt;
 
@@ -240,7 +242,6 @@ public class NmeaListener {
                     }
                 }
             }
-
 
 
         } catch (Exception e) {

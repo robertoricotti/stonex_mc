@@ -234,7 +234,7 @@ public class CanSender extends Service {
                                         break;
 
                                 }
-                                byte msg = 0x03;
+                                byte msg = 0x01;
 
 
                                 MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
@@ -276,7 +276,7 @@ public class CanSender extends Service {
 
                     }
                     DataSaved.gpsOk = false;
-                    byte msg = 0x03;
+                    byte msg = 0x01;
 
 
                     MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});

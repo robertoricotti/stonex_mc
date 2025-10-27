@@ -43,6 +43,8 @@ import gui.MyApp;
 import gui.projects.Dialog_PRJ_Folder;
 import gui.projects.ProjectFileAdapter;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.LocalizationFactory;
+import packexcalib.gnss.LocalizationModel;
 import serial.SerialPortManager;
 import services.ReadProjectService;
 import utils.CanFileTransfer;
@@ -260,7 +262,8 @@ public class Diaalog_Set_SP {
                         MyData.push("LastSP", selectedFileName);
                         inUso.setText(selectedFileName);
                         String match=getCrsCodeFromFileName(selectedFileName);
-                        Log.e("testSP",selectedFolder+"/"+selectedFileName+"\n"+mPath);
+
+                        MyData.push("CRS_ESTERNO", selectedFolder+"/"+selectedFileName);
                         if(match!=null){
 
                             if(match.equals("UTM")){
@@ -290,17 +293,24 @@ public class Diaalog_Set_SP {
                                 dialog.dismiss();
                             }
                         }else {
+
                             //invia file SP
 
                             usaSP.setEnabled(false);
                             MyData.push("crs", ".SP FILE");
 
                             DataSaved.S_CRS = MyData.get_String("crs");
+
                             try {
+                                MyData.push("CRS_ESTERNO", selectedFolder+"/"+selectedFileName);
                                 copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
                             } catch (Exception e) {
                                 Log.e("testSP",Log.getStackTraceString(e));
                             }
+
+                            //TODO USARE .SP O .LOC RIPRISTINARE LO SWITCH PER TORNARE AD INVIO FILE SP
+
+                            /*
                             switch (DataSaved.my_comPort) {
                                 case 0:
                                     // Copia il file da assets a una directory accessibile
@@ -333,6 +343,8 @@ public class Diaalog_Set_SP {
 
 
                             }
+                            */
+                            ReadProjectService.model = LocalizationFactory.fromFile(new File(selectedFolder+"/"+selectedFileName));
                             usaSP.setEnabled(true);
                         }
 
@@ -367,7 +379,7 @@ public class Diaalog_Set_SP {
 
         });
         dismiss.setOnClickListener(view -> {
-            setupGNSS(DataSaved.S_CRS);
+           // setupGNSS(DataSaved.S_CRS);
 
             dialog.dismiss();
         });
@@ -637,7 +649,7 @@ public class Diaalog_Set_SP {
                 break;
 
         }
-        byte msg = 0x03;
+        byte msg = 0x01;
 
 
 
