@@ -184,6 +184,7 @@ public class Deg2UTM {
             case _UTM:
 
                 Zone = (int) Math.floor(Lon / 6 + 31);
+
                 if (Lat < -72)
                     Letter = 'C';
                 else if (Lat < -64)

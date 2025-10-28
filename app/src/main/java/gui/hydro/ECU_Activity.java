@@ -131,75 +131,75 @@ public class ECU_Activity extends AppCompatActivity {
                 case MotionEvent.ACTION_DOWN:
                     testValve.setAlpha(0.1f);
                     switch (voceMenu) {
-                        case 0:
+                        case 1:
                             valueLEFT = MyMCUtils.myscalIntD(minSpeedLeftUP, 0, 255, 20000, 35000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
-                        case 1:
+                        case 0:
                             valueLEFT = MyMCUtils.myscalIntD(maxSpeedLeftUP, 0, 255, 20000, 35000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
-                        case 2:
+                        case 3:
                             valueLEFT = MyMCUtils.myscalIntD(minSpeedLeftDW, 0, 255, 20000, 5000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
-                        case 3:
+                        case 2:
                             valueLEFT = MyMCUtils.myscalIntD(maxSpeedLeftDW, 0, 255, 20000, 5000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
 
-                        case 4:
+                        case 5:
                             valueRIGHT = MyMCUtils.myscalIntD(minSpeedRightUP, 0, 255, 20000, 35000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
-                        case 5:
+                        case 4:
                             valueRIGHT = MyMCUtils.myscalIntD(maxSpeedRightUP, 0, 255, 20000, 35000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
-                        case 6:
+                        case 7:
                             valueRIGHT = MyMCUtils.myscalIntD(minSpeedRightDW, 0, 255, 20000, 5000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
-                        case 7:
+                        case 6:
                             valueRIGHT = MyMCUtils.myscalIntD(maxSpeedRightDW, 0, 255, 20000, 5000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
 
-                        case 8:
+                        case 9:
                             valueSS = MyMCUtils.myscalIntD(minSpeedSS_A, 0, 255, 20000, 5000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 
                             break;
-                        case 9:
+                        case 8:
                             valueSS = MyMCUtils.myscalIntD(maxSpeedSS_A, 0, 255, 20000, 5000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 
                             break;
-                        case 10:
+                        case 11:
                             valueSS = MyMCUtils.myscalIntD(minSpeedSS_B, 0, 255, 20000, 35000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 
                             break;
-                        case 11:
+                        case 10:
                             valueSS = MyMCUtils.myscalIntD(maxSpeedSS_B, 0, 255, 20000, 35000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
@@ -247,51 +247,51 @@ public class ECU_Activity extends AppCompatActivity {
 
         valM.setOnClickListener(view -> {
             switch (voceMenu) {
-                case 0:
+                case 1:
                     if (minSpeedLeftUP > 0)
                         minSpeedLeftUP--;
                     break;
-                case 1:
+                case 0:
                     if (maxSpeedLeftUP > 0)
                         maxSpeedLeftUP--;
                     break;
-                case 2:
+                case 3:
                     if (minSpeedLeftDW > 0)
                         minSpeedLeftDW--;
                     break;
-                case 3:
+                case 2:
                     if (maxSpeedLeftDW > 0)
                         maxSpeedLeftDW--;
                     break;
-                case 4:
+                case 5:
                     if (minSpeedRightUP > 0)
                         minSpeedRightUP--;
                     break;
-                case 5:
+                case 4:
                     if (maxSpeedRightUP > 0)
                         maxSpeedRightUP--;
                     break;
-                case 6:
+                case 7:
                     if (minSpeedRightDW > 0)
                         minSpeedRightDW--;
                     break;
-                case 7:
+                case 6:
                     if (maxSpeedRightDW > 0)
                         maxSpeedRightDW--;
                     break;
-                case 8:
+                case 9:
                     if (minSpeedSS_A > 0)
                         minSpeedSS_A--;
                     break;
-                case 9:
+                case 8:
                     if (maxSpeedSS_A > 0)
                         maxSpeedSS_A--;
                     break;
-                case 10:
+                case 11:
                     if (minSpeedSS_B > 0)
                         minSpeedSS_B--;
                     break;
-                case 11:
+                case 10:
                     if (maxSpeedSS_B > 0)
                         maxSpeedSS_B--;
                     break;
@@ -329,51 +329,51 @@ public class ECU_Activity extends AppCompatActivity {
         });
         valP.setOnClickListener(view -> {
             switch (voceMenu) {
-                case 0:
+                case 1:
                     if (minSpeedLeftUP < 255)
                         minSpeedLeftUP++;
                     break;
-                case 1:
+                case 0:
                     if (maxSpeedLeftUP < 255)
                         maxSpeedLeftUP++;
                     break;
-                case 2:
+                case 3:
                     if (minSpeedLeftDW < 255)
                         minSpeedLeftDW++;
                     break;
-                case 3:
+                case 2:
                     if (maxSpeedLeftDW < 255)
                         maxSpeedLeftDW++;
                     break;
-                case 4:
+                case 5:
                     if (minSpeedRightUP < 255)
                         minSpeedRightUP++;
                     break;
-                case 5:
+                case 4:
                     if (maxSpeedRightUP < 255)
                         maxSpeedRightUP++;
                     break;
-                case 6:
+                case 7:
                     if (minSpeedRightDW < 255)
                         minSpeedRightDW++;
                     break;
-                case 7:
+                case 6:
                     if (maxSpeedRightDW < 255)
                         maxSpeedRightDW++;
                     break;
-                case 8:
+                case 9:
                     if (minSpeedSS_A < 255)
                         minSpeedSS_A++;
                     break;
-                case 9:
+                case 8:
                     if (maxSpeedSS_A < 255)
                         maxSpeedSS_A++;
                     break;
-                case 10:
+                case 11:
                     if (minSpeedSS_B < 255)
                         minSpeedSS_B++;
                     break;
-                case 11:
+                case 10:
                     if (maxSpeedSS_B < 255)
                         maxSpeedSS_B++;
                     break;
@@ -456,7 +456,7 @@ public class ECU_Activity extends AppCompatActivity {
             rev_ss.setBackground(getDrawable(R.drawable.sfondo_manuale));
         }
         switch (voceMenu) {
-            case 0:
+            case 1:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedLeftUP));
                 funzione.setTextColor(Color.BLUE);
@@ -468,7 +468,7 @@ public class ECU_Activity extends AppCompatActivity {
 
                 break;
 
-            case 1:
+            case 0:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedLeftUP));
                 funzione.setTextColor(Color.RED);
@@ -481,7 +481,7 @@ public class ECU_Activity extends AppCompatActivity {
 
                 break;
 
-            case 2:
+            case 3:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedLeftDW));
                 funzione.setTextColor(Color.BLUE);
@@ -492,7 +492,7 @@ public class ECU_Activity extends AppCompatActivity {
                         "0= NO MOVE");
 
                 break;
-            case 3:
+            case 2:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedLeftDW));
                 funzione.setTextColor(Color.RED);
@@ -504,7 +504,7 @@ public class ECU_Activity extends AppCompatActivity {
 
                 break;
 
-            case 4:
+            case 5:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedRightUP));
                 funzione.setTextColor(Color.BLUE);
@@ -516,7 +516,7 @@ public class ECU_Activity extends AppCompatActivity {
 
                 break;
 
-            case 5:
+            case 4:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedRightUP));
                 funzione.setTextColor(Color.RED);
@@ -527,7 +527,7 @@ public class ECU_Activity extends AppCompatActivity {
                         "MAX Speed must be higer than MIN Speed");
                 break;
 
-            case 6:
+            case 7:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedRightDW));
                 funzione.setTextColor(Color.BLUE);
@@ -538,7 +538,7 @@ public class ECU_Activity extends AppCompatActivity {
                         "0= NO MOVE");
                 break;
 
-            case 7:
+            case 6:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedRightDW));
                 funzione.setTextColor(Color.RED);
@@ -549,7 +549,7 @@ public class ECU_Activity extends AppCompatActivity {
                         "MAX Speed must be higer than MIN Speed");
                 break;
 
-            case 8:
+            case 9:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedSS_A));
                 funzione.setTextColor(Color.BLUE);
@@ -561,7 +561,7 @@ public class ECU_Activity extends AppCompatActivity {
 
                 break;
 
-            case 9:
+            case 8:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedSS_A));
                 funzione.setTextColor(Color.RED);
@@ -572,7 +572,7 @@ public class ECU_Activity extends AppCompatActivity {
                         "MAX Speed must be higer than MIN Speed");
                 break;
 
-            case 10:
+            case 11:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedSS_B));
                 funzione.setTextColor(Color.BLUE);
@@ -583,7 +583,7 @@ public class ECU_Activity extends AppCompatActivity {
                         "0= NO MOVE");
                 break;
 
-            case 11:
+            case 10:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedSS_B));
                 funzione.setTextColor(Color.RED);
@@ -610,40 +610,40 @@ public class ECU_Activity extends AppCompatActivity {
 
     private void executeMenuAction_M() {
         switch (voceMenu) {
-            case 0:
+            case 1:
                 if (minSpeedLeftUP > 0) minSpeedLeftUP--;
                 break;
-            case 1:
+            case 0:
                 if (maxSpeedLeftUP > 0) maxSpeedLeftUP--;
                 break;
-            case 2:
+            case 3:
                 if (minSpeedLeftDW > 0) minSpeedLeftDW--;
                 break;
-            case 3:
+            case 2:
                 if (maxSpeedLeftDW > 0) maxSpeedLeftDW--;
                 break;
-            case 4:
+            case 5:
                 if (minSpeedRightUP > 0) minSpeedRightUP--;
                 break;
-            case 5:
+            case 4:
                 if (maxSpeedRightUP > 0) maxSpeedRightUP--;
                 break;
-            case 6:
+            case 7:
                 if (minSpeedRightDW > 0) minSpeedRightDW--;
                 break;
-            case 7:
+            case 6:
                 if (maxSpeedRightDW > 0) maxSpeedRightDW--;
                 break;
-            case 8:
+            case 9:
                 if (minSpeedSS_A > 0) minSpeedSS_A--;
                 break;
-            case 9:
+            case 8:
                 if (maxSpeedSS_A > 0) maxSpeedSS_A--;
                 break;
-            case 10:
+            case 11:
                 if (minSpeedSS_B > 0) minSpeedSS_B--;
                 break;
-            case 11:
+            case 10:
                 if (maxSpeedSS_B > 0) maxSpeedSS_B--;
                 break;
 
@@ -654,40 +654,40 @@ public class ECU_Activity extends AppCompatActivity {
 
     private void executeMenuAction_P() {
         switch (voceMenu) {
-            case 0:
+            case 1:
                 if (minSpeedLeftUP < 255) minSpeedLeftUP++;
                 break;
-            case 1:
+            case 0:
                 if (maxSpeedLeftUP < 255) maxSpeedLeftUP++;
                 break;
-            case 2:
+            case 3:
                 if (minSpeedLeftDW < 255) minSpeedLeftDW++;
                 break;
-            case 3:
+            case 2:
                 if (maxSpeedLeftDW < 255) maxSpeedLeftDW++;
                 break;
-            case 4:
+            case 5:
                 if (minSpeedRightUP < 255) minSpeedRightUP++;
                 break;
-            case 5:
+            case 4:
                 if (maxSpeedRightUP < 255) maxSpeedRightUP++;
                 break;
-            case 6:
+            case 7:
                 if (minSpeedRightDW < 255) minSpeedRightDW++;
                 break;
-            case 7:
+            case 6:
                 if (maxSpeedRightDW < 255) maxSpeedRightDW++;
                 break;
-            case 8:
+            case 9:
                 if (minSpeedSS_A < 255) minSpeedSS_A++;
                 break;
-            case 9:
+            case 8:
                 if (maxSpeedSS_A < 255) maxSpeedSS_A++;
                 break;
-            case 10:
+            case 11:
                 if (minSpeedSS_B < 255) minSpeedSS_B++;
                 break;
-            case 11:
+            case 10:
                 if (maxSpeedSS_B < 255) maxSpeedSS_B++;
                 break;
 

@@ -24,6 +24,8 @@ import java.util.List;
 
 import android.graphics.Color;
 
+import utils.Utils;
+
 
 public class PointAdapter extends RecyclerView.Adapter<PointAdapter.PointViewHolder> {
 
@@ -141,9 +143,9 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.PointViewHol
             holder.textView.setText(
                     filename + "\n" +
                             idStr +
-                            "    N:" + y +
-                            "    E:" + x +
-                            "  Z:" + z +
+                            "    N:" + Utils.showCoords(String.valueOf(y)) +
+                            "    E:" + Utils.showCoords(String.valueOf(x)) +
+                            "  Z:" + Utils.showCoords(String.valueOf(z)) +
                             "    " + desc
             );
             holder.textView.setTextColor(Color.BLACK);

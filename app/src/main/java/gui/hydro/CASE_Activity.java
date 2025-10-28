@@ -31,9 +31,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
-
-import packexcalib.exca.DataSaved;
-import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import services.CanService;
 import utils.MyData;
 import utils.MyDeviceManager;
@@ -107,43 +104,43 @@ public class CASE_Activity extends AppCompatActivity {
                 case MotionEvent.ACTION_DOWN:
                     testValve.setAlpha(0.1f);
                     switch (voceMenu) {
-                        case 0:
+                        case 1:
                             valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftUP, 0, 255);
                             valueRIGHT = 0;
                             leftDir = (byte) 0xF2;
                             break;
-                        case 1:
+                        case 0:
                             valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftUP, 0, 255);
                             valueRIGHT = 0;
                             leftDir = (byte) 0xF2;
                             break;
-                        case 2:
+                        case 3:
                             valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftDW, 0, 255);
                             valueRIGHT = 0;
                             leftDir = (byte) 0xF1;
                             break;
-                        case 3:
+                        case 2:
                             valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftDW, 0, 255);
                             valueRIGHT = 0;
                             leftDir = (byte) 0xF1;
                             break;
 
-                        case 4:
+                        case 5:
                             valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightUP, 0, 255);
                             valueLEFT = 0;
                             rightDir = (byte) 0xF2;
                             break;
-                        case 5:
+                        case 4:
                             valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightUP, 0, 255);
                             valueLEFT = 0;
                             rightDir = (byte) 0xF2;
                             break;
-                        case 6:
+                        case 7:
                             valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightDW, 0, 255);
                             valueLEFT = 0;
                             rightDir = (byte) 0xF1;
                             break;
-                        case 7:
+                        case 6:
                             valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightDW, 0, 255);
                             valueLEFT = 0;
                             rightDir = (byte) 0xF1;
@@ -208,35 +205,35 @@ public class CASE_Activity extends AppCompatActivity {
 
         valM.setOnClickListener(view -> {
             switch (voceMenu) {
-                case 0:
+                case 1:
                     if (minSpeedLeftUP > 0)
                         minSpeedLeftUP--;
                     break;
-                case 1:
+                case 0:
                     if (maxSpeedLeftUP > 0)
                         maxSpeedLeftUP--;
                     break;
-                case 2:
+                case 3:
                     if (minSpeedLeftDW > 0)
                         minSpeedLeftDW--;
                     break;
-                case 3:
+                case 2:
                     if (maxSpeedLeftDW > 0)
                         maxSpeedLeftDW--;
                     break;
-                case 4:
+                case 5:
                     if (minSpeedRightUP > 0)
                         minSpeedRightUP--;
                     break;
-                case 5:
+                case 4:
                     if (maxSpeedRightUP > 0)
                         maxSpeedRightUP--;
                     break;
-                case 6:
+                case 7:
                     if (minSpeedRightDW > 0)
                         minSpeedRightDW--;
                     break;
-                case 7:
+                case 6:
                     if (maxSpeedRightDW > 0)
                         maxSpeedRightDW--;
                     break;
@@ -290,35 +287,35 @@ public class CASE_Activity extends AppCompatActivity {
         });
         valP.setOnClickListener(view -> {
             switch (voceMenu) {
-                case 0:
+                case 1:
                     if (minSpeedLeftUP < 255)
                         minSpeedLeftUP++;
                     break;
-                case 1:
+                case 0:
                     if (maxSpeedLeftUP < 255)
                         maxSpeedLeftUP++;
                     break;
-                case 2:
+                case 3:
                     if (minSpeedLeftDW < 255)
                         minSpeedLeftDW++;
                     break;
-                case 3:
+                case 2:
                     if (maxSpeedLeftDW < 255)
                         maxSpeedLeftDW++;
                     break;
-                case 4:
+                case 5:
                     if (minSpeedRightUP < 255)
                         minSpeedRightUP++;
                     break;
-                case 5:
+                case 4:
                     if (maxSpeedRightUP < 255)
                         maxSpeedRightUP++;
                     break;
-                case 6:
+                case 7:
                     if (minSpeedRightDW < 255)
                         minSpeedRightDW++;
                     break;
-                case 7:
+                case 6:
                     if (maxSpeedRightDW < 255)
                         maxSpeedRightDW++;
                     break;
@@ -401,7 +398,7 @@ public class CASE_Activity extends AppCompatActivity {
 
 
         switch (voceMenu) {
-            case 0:
+            case 1:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedLeftUP));
                 funzione.setTextColor(Color.BLUE);
@@ -413,7 +410,7 @@ public class CASE_Activity extends AppCompatActivity {
 
                 break;
 
-            case 1:
+            case 0:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedLeftUP));
                 funzione.setTextColor(Color.RED);
@@ -426,7 +423,7 @@ public class CASE_Activity extends AppCompatActivity {
 
                 break;
 
-            case 2:
+            case 3:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedLeftDW));
                 funzione.setTextColor(Color.BLUE);
@@ -437,7 +434,7 @@ public class CASE_Activity extends AppCompatActivity {
                         "0= NO MOVE");
 
                 break;
-            case 3:
+            case 2:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedLeftDW));
                 funzione.setTextColor(Color.RED);
@@ -449,7 +446,7 @@ public class CASE_Activity extends AppCompatActivity {
 
                 break;
 
-            case 4:
+            case 5:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedRightUP));
                 funzione.setTextColor(Color.BLUE);
@@ -461,7 +458,7 @@ public class CASE_Activity extends AppCompatActivity {
 
                 break;
 
-            case 5:
+            case 4:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedRightUP));
                 funzione.setTextColor(Color.RED);
@@ -472,7 +469,7 @@ public class CASE_Activity extends AppCompatActivity {
                         "MAX Speed must be higer than MIN Speed");
                 break;
 
-            case 6:
+            case 7:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(minSpeedRightDW));
                 funzione.setTextColor(Color.BLUE);
@@ -483,7 +480,7 @@ public class CASE_Activity extends AppCompatActivity {
                         "0= NO MOVE");
                 break;
 
-            case 7:
+            case 6:
                 valore.setVisibility(TextView.VISIBLE);
                 valore.setText(String.valueOf(maxSpeedRightDW));
                 funzione.setTextColor(Color.RED);
@@ -555,28 +552,28 @@ public class CASE_Activity extends AppCompatActivity {
 
     private void executeMenuAction_M() {
         switch (voceMenu) {
-            case 0:
+            case 1:
                 if (minSpeedLeftUP > 0) minSpeedLeftUP--;
                 break;
-            case 1:
+            case 0:
                 if (maxSpeedLeftUP > 0) maxSpeedLeftUP--;
                 break;
-            case 2:
+            case 3:
                 if (minSpeedLeftDW > 0) minSpeedLeftDW--;
                 break;
-            case 3:
+            case 2:
                 if (maxSpeedLeftDW > 0) maxSpeedLeftDW--;
                 break;
-            case 4:
+            case 5:
                 if (minSpeedRightUP > 0) minSpeedRightUP--;
                 break;
-            case 5:
+            case 4:
                 if (maxSpeedRightUP > 0) maxSpeedRightUP--;
                 break;
-            case 6:
+            case 7:
                 if (minSpeedRightDW > 0) minSpeedRightDW--;
                 break;
-            case 7:
+            case 6:
                 if (maxSpeedRightDW > 0) maxSpeedRightDW--;
                 break;
             case 8:
@@ -599,28 +596,28 @@ public class CASE_Activity extends AppCompatActivity {
 
     private void executeMenuAction_P() {
         switch (voceMenu) {
-            case 0:
+            case 1:
                 if (minSpeedLeftUP < 255) minSpeedLeftUP++;
                 break;
-            case 1:
+            case 0:
                 if (maxSpeedLeftUP < 255) maxSpeedLeftUP++;
                 break;
-            case 2:
+            case 3:
                 if (minSpeedLeftDW < 255) minSpeedLeftDW++;
                 break;
-            case 3:
+            case 2:
                 if (maxSpeedLeftDW < 255) maxSpeedLeftDW++;
                 break;
-            case 4:
+            case 5:
                 if (minSpeedRightUP < 255) minSpeedRightUP++;
                 break;
-            case 5:
+            case 4:
                 if (maxSpeedRightUP < 255) maxSpeedRightUP++;
                 break;
-            case 6:
+            case 7:
                 if (minSpeedRightDW < 255) minSpeedRightDW++;
                 break;
-            case 7:
+            case 6:
                 if (maxSpeedRightDW < 255) maxSpeedRightDW++;
                 break;
             case 8:

@@ -152,15 +152,15 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
-            int mchType=0;
-            if(DataSaved.isWL>4){
-                mchType=0;
-            }else {
-                mchType=DataSaved.isWL;
+            int mchType = 0;
+            if (DataSaved.isWL > 4) {
+                mchType = 0;
+            } else {
+                mchType = DataSaved.isWL;
             }
             boolean[] bStat = new boolean[8];
             bStat[0] = DataSaved.gpsOk;//vale 1
-            bStat[1] = mchType== 0;//exca  vale 2
+            bStat[1] = mchType == 0;//exca  vale 2
             bStat[2] = mchType == 1;//wheel  vale 4
             bStat[3] = mchType == 2;//dozer  vale 8
             bStat[4] = mchType == 4;//grader vale 16
@@ -1041,6 +1041,14 @@ public class CanSender extends Service {
                 cent = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_CT * 1000), (short) -32768, (short) 32767));
                 right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_DX * 1000), (short) -32768, (short) 32767));
 
+                boolean[] outSurf = new boolean[]{
+                        ltOffGrid,//128
+                        ctOffGrid,//64
+                        rtOffGrid,//32
+                        false, false, false, false, false
+
+                };
+
                 MyDeviceManager.CanWrite(1, 0x812, 8,
                         new byte[]{
                                 left[0],
@@ -1049,7 +1057,7 @@ public class CanSender extends Service {
                                 cent[1],
                                 right[0],
                                 right[1],
-                                (byte) 0xFA,
+                                (byte) PLC_DataTypes_LittleEndian.Encode_8_bool(outSurf),//TODO OFFGRID
                                 (byte) DataSaved.isWL//DICE A TERZE PARTI CHE TIPO DI MACCHINA E'
 
                         }

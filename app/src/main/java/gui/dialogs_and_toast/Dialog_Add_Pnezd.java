@@ -65,6 +65,7 @@ public class Dialog_Add_Pnezd {
     double est = 0.000;
     double quota = 100.000;
     private static double conversionFactor=1;
+    static String Snord = "0.000", Sest = "0.000", Squota = "0.000";
 
     public Dialog_Add_Pnezd(Activity activity, String path) {
         this.activity = activity;
@@ -201,7 +202,7 @@ public class Dialog_Add_Pnezd {
                         lista.setRotation(180f);
                     }
                     filename.setText(filepath.replace("/storage/emulated/0/", ""));
-                    String Snord = "0.000", Sest = "0.000", Squota = "0.000";
+                     Snord = "0.000"; Sest = "0.000"; Squota = "0.000";
                     try {
                         switch (DataSaved.bucketEdge) {
                             case -1:
@@ -587,9 +588,9 @@ public class Dialog_Add_Pnezd {
 
         PNEZDPoint nuovoPunto = new PNEZDPoint(
                 numero,
-                Double.parseDouble(Utils.writeMetri(String.valueOf(nord))),
-                Double.parseDouble(Utils.writeMetri(String.valueOf(est))),
-                Double.parseDouble(Utils.writeMetri(String.valueOf(quota))),
+                Double.parseDouble(Snord),
+                Double.parseDouble(Sest),
+                Double.parseDouble(Squota),
                 descrizione,
                 setColor(MyData.get_String("lastColor"))
         );

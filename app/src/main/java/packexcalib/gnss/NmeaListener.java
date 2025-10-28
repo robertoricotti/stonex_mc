@@ -322,7 +322,7 @@ public class NmeaListener {
         }
         switch (DataSaved.S_CRS) {
             case _NONE:
-                deg2UTM1 = new Deg2UTM(tmpNordLOC, tmpEstLOC, tmpQuotaLOC, _NONE);
+                deg2UTM1 = new Deg2UTM(tmpLat, tmpLon, tmpQuotaUTM, _NONE);
                 Nord1 = deg2UTM1.getNorthing();
                 Est1 = deg2UTM1.getEasting();
                 Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;
