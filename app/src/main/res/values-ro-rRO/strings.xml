@@ -38,6 +38,8 @@
     <string name="hydro_window">FEREASTRĂ CUPLARE HIDRAULICĂ</string>
     <string name="auto_slope_db">BANDĂ MOARTĂ PANTĂ</string>
     <string name="xy_db">BANDĂ MOARTĂ XY</string>
+    <string name="brigbck">LUMINĂ-FUNDAL</string>
+    <string name="etxoff">PAS OFFSET EXTERN Creșt./Scăd.</string>
 
 
     <string name="save">SALVEAZĂ</string>

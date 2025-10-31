@@ -30,6 +30,8 @@
     <string name="hydro_cp">POINTS DE CONTRÔLE\nHYDRAULIQUES</string>
     <string name="hydro_apply">APPLIQUER DE NOUVELLES VALEURS HYDRAULIQUES</string>
     <string name="delete_obj">SUPPRIMER L OBJET SÉLECTIONNÉ ?</string>
+    <string name="brigbck">LUMINOSITÉ-ARRIÈRE-PLAN</string>
+    <string name="etxoff">ÉTAPE DE DÉCALAGE EXTERNE Aug/Dim</string>
 
     <string name="color_bucket">COULEUR DU GODET - LAME</string>
     <string name="color_boom">COULEUR DE LA FLÈCHE - CHÂSSIS</string>

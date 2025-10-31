@@ -688,8 +688,8 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     }
     private static double normalizeAngle(double a) {
         a = a % 360.0;
-        if (a > 180) a -= 360;
-        if (a < -180) a += 360;
+        if (a < 0) a += 360.0;
         return a;
     }
+
 }

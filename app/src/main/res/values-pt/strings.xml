@@ -38,6 +38,8 @@
     <string name="auto_slope_db">FAIXA MORTA DE INCLINAÇÃO</string>
     <string name="xy_db">FAIXA MORTA XY</string>
 
+    <string name="brigbck">BRILHO-FUNDO</string>
+    <string name="etxoff">PASSO DE DESLOCAMENTO EXTERNO Aum/Dim</string>
 
     <string name="save">SALVAR</string>
     <string name="exit">ESC</string>

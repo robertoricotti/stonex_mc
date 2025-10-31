@@ -108,20 +108,7 @@
             android:layout_weight="4"
             android:padding="15dp"
             android:scaleType="centerInside" />
-        <ImageView
-            android:id="@+id/deleteFile"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="1.5dp"
-            android:layout_marginTop="2dp"
-            android:src="@drawable/delete_raw"
-            android:layout_weight="1"
-            android:padding="10dp"
-            app:tint="@color/white"
-            android:scaleType="centerInside"
-            android:visibility="invisible"
 
-            />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -131,6 +118,20 @@
             android:layout_weight="4"
             android:padding="15dp"
             android:scaleType="centerInside" />
+        <ImageView
+            android:id="@+id/testSP"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/imposta_coordinate"
+            android:layout_weight="1"
+            android:padding="10dp"
+            app:tint="@color/white"
+            android:scaleType="centerInside"
+
+
+            />
         <ImageView
             android:id="@+id/btn_3"
             android:layout_width="wrap_content"

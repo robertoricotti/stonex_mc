@@ -29,6 +29,8 @@
     <string name="hydro_cp">HYDRAULISCHE\nCONTROLEPUNTEN</string>
     <string name="hydro_apply">NIEUWE HYDRAULISCHE WAARDEN TOEPASSEN</string>
     <string name="delete_obj">GESELECTEERD OBJECT VERWIJDEREN?</string>
+    <string name="brigbck">HELDERHEID-ACHTERGROND</string>
+    <string name="etxoff">EXTERNE OFFSETSTAP Verh./Verm.</string>
 
     <string name="color_bucket">BAK - BLAD KLEUR</string>
     <string name="color_boom">GIEK - FRAME KLEUR</string>

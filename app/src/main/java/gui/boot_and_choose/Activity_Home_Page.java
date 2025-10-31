@@ -55,7 +55,7 @@ import utils.WifiHelper;
 
 public class Activity_Home_Page extends BaseClass {
     public static boolean HasDownloaded;
-    ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo;
+    ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo,testSP;
     CloseAppDialog closeAppDialog;
     ProgressBar progressBar;
     TextView stringsStat, titolo;
@@ -115,6 +115,7 @@ public class Activity_Home_Page extends BaseClass {
         toMachines.setEnabled(true);
         toUser.setEnabled(true);
         appInfo.setEnabled(true);
+        testSP.setEnabled(true);
         progressBar.setVisibility(View.INVISIBLE);
         stringsStat.setVisibility(View.INVISIBLE);
     }
@@ -140,6 +141,7 @@ public class Activity_Home_Page extends BaseClass {
         toUser = findViewById(R.id.img_1);
         newProj = findViewById(R.id.img_4);
         appInfo = findViewById(R.id.btn_3);
+        testSP=findViewById(R.id.testSP);
         try {
             String s = MyData.get_String("progettoSelected");
             s = s.replace("/storage/emulated/0/StonexMC_V4", "");
@@ -167,6 +169,11 @@ public class Activity_Home_Page extends BaseClass {
     }
 
     private void onClick() {
+        testSP.setOnClickListener(view -> {
+            enableAll(false);
+            startActivity(new Intent(this, SpTestActivity.class));
+            finish();
+        });
         toMachines.setOnClickListener(view -> {
             enableAll(false);
             startActivity(new Intent(this, ExcavatorChooserActivity.class));
@@ -252,10 +259,16 @@ public class Activity_Home_Page extends BaseClass {
         toUser.setEnabled(b);
         toMachines.setEnabled(b);
         appInfo.setEnabled(b);
+        testSP.setEnabled(b);
     }
 
     public void updateUI() {
         try {
+            if(isTech){
+                testSP.setVisibility(View.VISIBLE);
+            }else {
+                testSP.setVisibility(View.INVISIBLE);
+            }
             if (DataSaved.gpsOk && errorCode == 0) {
                 keyLic.setImageTintList(ColorStateList.valueOf(Color.GREEN));
             } else {

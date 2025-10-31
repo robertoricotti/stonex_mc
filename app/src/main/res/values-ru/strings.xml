@@ -37,6 +37,8 @@
     <string name="hydro_window">ОКНО ВКЛЮЧЕНИЯ ГИДРАВЛИКИ</string>
     <string name="auto_slope_db">МЁРТВАЯ ЗОНА НАКЛОНА</string>
     <string name="xy_db">МЁРТВАЯ ЗОНА XY</string>
+    <string name="brigbck">ЯРКОСТЬ-ФОН</string>
+    <string name="etxoff">ВНЕШНИЙ ШАГ СМЕЩЕНИЯ Ув./Ум.</string>
 
 
     <string name="save">СОХРАНИТЬ</string>

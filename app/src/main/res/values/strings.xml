@@ -17,6 +17,8 @@
     <string name="write_para">OVERWRITE ALL APPLICATION PARAMETERS</string>
     <string name="hydro_cp">HYDRAULIC\nCONTROL POINTS</string>
     <string name="hydro_apply">APPLY NEW HYDRAULIC VALUES</string>
+    <string name="brigbck">BRIGHTNESS-BACKGROUND</string>
+    <string name="etxoff">EXTERNAL OFFSET STEP Inc/Dec</string>
 
     <string name="color_bucket">BUCKET - BLADE COLOR</string>
     <string name="color_boom">BOOM - FRAME COLOR</string>

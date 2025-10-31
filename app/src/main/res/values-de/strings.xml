@@ -20,6 +20,8 @@
     <string name="hydro_cp">HYDRAULISCHE\nSTEUERPUNKTE</string>
     <string name="hydro_apply">NEUE HYDRAULIKWERTE ANWENDEN</string>
     <string name="delete_obj">AUSGEWÄHLTES OBJEKT LÖSCHEN?</string>
+    <string name="brigbck">HELLIGKEIT-HINTERGRUND</string>
+    <string name="etxoff">EXTERNER OFFSET-SCHRITT Erh./Verr.</string>
 
     <string name="color_bucket">SCHAUFEL - SCHILD FARBE</string>
     <string name="color_boom">AUSLEGER - RAHMEN FARBE</string>

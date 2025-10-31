@@ -37,6 +37,8 @@
     <string name="hydro_window">VENTANA DE ENGANCHE HIDRÁULICO</string>
     <string name="auto_slope_db">BANDA MUERTA DE PENDIENTE</string>
     <string name="xy_db">BANDA MUERTA XY</string>
+    <string name="brigbck">BRILLO-FONDO</string>
+    <string name="etxoff">PASO DE DESPLAZAMIENTO EXTERNO Aum/Dis</string>
 
     <string name="save">SALVAR</string>
     <string name="exit">SALIR</string>

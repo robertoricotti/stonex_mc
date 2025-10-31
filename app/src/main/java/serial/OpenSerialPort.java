@@ -55,7 +55,6 @@ public class OpenSerialPort {
                                 SerialPortManager.instance().sendCommand("GNHDT 0.05\r\n");
                                 SerialPortManager.instance().sendCommand("GPHDT 0.05\r\n");
                                 SerialPortManager.instance().sendCommand("SAVECONFIG\r\n");
-
                             } else {
                                 SerialPortManager.instance().sendCommand("CONFIG UNDULATION AUTO\r\n");
                                 SerialPortManager.instance().sendCommand("GNGGA COM1 10\r\n");
@@ -64,10 +63,10 @@ public class OpenSerialPort {
                                 SerialPortManager.instance().sendCommand("SAVECONFIG\r\n");
                             }
 
-
                         } catch (Exception e) {
                         }
-                    }{
+                    }
+                    {
                         if (DataSaved.gpsType == 1) {
                             //Log.d("Programmo","Programmo");
                             SerialPortManager.instance().sendCommand("SET,DEVICE.LOGLIST,GST:2000|GGA:100|HDT:100|GPLLQ:100|\r\n");

@@ -476,6 +476,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
                 case "nl":
                     imgLocale.setImageResource(R.drawable.btn_nl);
                     break;
+                case "ja":
+                    imgLocale.setImageResource(R.drawable.jpn);
+                    break;
                 default:
                     imgLocale.setImageResource(R.drawable.baseline_help_96);
                     break;

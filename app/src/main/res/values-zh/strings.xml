@@ -27,6 +27,8 @@
     <string name="savepara_pro">是否要继续？</string>
     <string name="write_para">覆盖所有应用程序参数</string>
     <string name="delete_obj">删除所选对象？</string>
+    <string name="brigbck">亮度-背景</string>
+    <string name="etxoff">外部偏移步 增/减</string>
 
     <string name="hydro_cp">液压\n控制点</string>
     <string name="hydro_apply">应用新的液压值</string>
