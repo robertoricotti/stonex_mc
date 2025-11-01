@@ -65,7 +65,7 @@
 
 
         <TextView
-            android:text="→ Input Local (E/N/Z)"
+            android:text="→ Input Local (N/E/Z)"
             android:textStyle="bold"
             android:layout_marginTop="12dp"
             android:layout_width="wrap_content"

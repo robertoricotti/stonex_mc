@@ -114,8 +114,8 @@ public class SpTestActivity extends Activity {
                 log("Error: " + e.getMessage());
             }
         });
-        init();
 
+        init();
     }
 
     private void log(String s) {
@@ -134,6 +134,7 @@ public class SpTestActivity extends Activity {
 
             log("✅ File SP successfully loaded");
             btnLoad.setText(MyData.get_String("CRS_ESTERNO"));
+            log("SP loaded: " + localizationFactory.getClass().getSimpleName());
         } catch (Exception e) {
             log("❌ Error loading SP: " + e.getMessage());
             btnLoad.setText(e.getMessage());

@@ -13,7 +13,7 @@ import packexcalib.exca.PLC_DataTypes_LittleEndian;
 
 public class NmeaListener {
     static Deg2UTM deg2UTM1;
-    static double tmpQuotaUTM = 0;
+    public static double tmpQuotaUTM = 0;
     static double tmpQuotaLOC = 0;
     static double tmpNordUTM = 0;
     static double tmpEstUTM = 0;
@@ -21,7 +21,7 @@ public class NmeaListener {
     static double tmpEstLOC = 0;
     static double tmpLat = 0;
     static double tmpLon = 0;
-    static double tmpGeoidSeparator = 0;
+    public static double tmpGeoidSeparator = 0;
 
     public static String[] NmeaInput;
     static CalculateXor8 calculateXor8;

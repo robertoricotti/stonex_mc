@@ -615,7 +615,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                         if(DataSaved.my_comPort!=4){
                             latlon.setText("Lat: "+String.format("%.9f",NmeaListener.mLat_1)+" Lon: "+
-                                    String.format("%.9f",NmeaListener.mLon_1));
+                                    String.format("%.9f",NmeaListener.mLon_1)+"  H: "+String.format("%.3f",(NmeaListener.tmpQuotaUTM+NmeaListener.tmpGeoidSeparator)));
                         }else {
                             latlon.setText("");
                         }
