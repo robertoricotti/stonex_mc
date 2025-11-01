@@ -151,7 +151,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         long size1 = file.isDirectory() ? getFolderSize(file) : file.length();
                         arrayFiles.add(new ProjectAdapter.FileItem(file.getName(), isFolder, size1));
                     }
-                    if (file.getName().toLowerCase().endsWith(".sp")||file.getName().toLowerCase().endsWith(".loc")) {
+                    if (file.getName().toLowerCase().endsWith(".sp")||file.getName().toLowerCase().endsWith(".loc")||file.getName().toLowerCase().endsWith(".lok")) {
                         long size = file.isDirectory() ? getFolderSize(file) : file.length();
                         arraySP.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size,file.getAbsolutePath()));
                     }
@@ -613,7 +613,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
             File[] files = directory.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    if (file.getName().toLowerCase().endsWith(".sp")||file.getName().toLowerCase().endsWith(".loc")) {
+                    if (file.getName().toLowerCase().endsWith(".sp")||file.getName().toLowerCase().endsWith(".loc")||file.getName().toLowerCase().endsWith(".lok")) {
                         boolean isFolder = file.isDirectory();
                         long size = isFolder ? getFolderSize(file) : file.length();
                         nuovaLista.add(new ProjectFileAdapter.FileItem(

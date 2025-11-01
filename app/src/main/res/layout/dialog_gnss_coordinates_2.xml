@@ -214,6 +214,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -223,18 +224,36 @@
                 android:layout_margin="10dp"
                 android:gravity="center"
                 android:src="@drawable/gps_setup" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
 
-            <TextView
-                android:id="@+id/txtant1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="2"
-                android:ems="6"
-                android:gravity="left|center_vertical"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+    <TextView
+        android:id="@+id/txtant1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="2"
+        android:ems="6"
+        android:gravity="left|center_vertical"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/latlon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="2"
+        android:ems="6"
+        android:gravity="left|center_vertical"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        />
+</LinearLayout>
+
 
         </LinearLayout>
 

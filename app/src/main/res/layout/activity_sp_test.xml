@@ -18,6 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/_____cancel_text"
             />
 
         <TextView
@@ -57,14 +59,18 @@
             android:text="→ Transform in Local (N, E ,Z)"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/bg_stonex_blue"
+            android:textColor="@color/white"/>
+
 
         <TextView
             android:text="→ Input Local (E/N/Z)"
             android:textStyle="bold"
             android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            />
 
 
 
@@ -96,7 +102,9 @@
             android:text="← Transform in Geo (Lat,Lon,H)"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/_____cancel_text"
+            android:textColor="@color/white"/>
 
         <TextView
             android:id="@+id/tvOutput"
@@ -115,6 +123,8 @@
             android:text="EXIT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/bg_sfsred"
+            android:textColor="@color/white"/>
     </LinearLayout>
 </ScrollView>

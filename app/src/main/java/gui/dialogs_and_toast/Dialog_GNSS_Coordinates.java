@@ -49,7 +49,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     Activity activity;
     public Dialog alertDialog;
     ImageView save, title, BTConnect, serialCon, editZ, rtkMode;
-    TextView txmchdt, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon, extraAng;
+    TextView txmchdt,latlon, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon, extraAng;
     TextView framA, boomA, boom2A, stickA, bucketA, tiltA;
     TextView framO, boomO, boom2O, stickO, bucketO, tiltO;
     Button cqpiu, cqmeno;
@@ -110,6 +110,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         txtbennacx = alertDialog.findViewById(R.id.txtbennacx);
         txtbennadx = alertDialog.findViewById(R.id.txtbennadx);
         txtant1 = alertDialog.findViewById(R.id.txtant1);
+        latlon = alertDialog.findViewById(R.id.latlon);
         txmchdt = alertDialog.findViewById(R.id.txmchdt);
         rtkMode = alertDialog.findViewById(R.id._switchRadio);
         imbl = alertDialog.findViewById(R.id.imbl);
@@ -612,6 +613,12 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                     try {
 
+                        if(DataSaved.my_comPort!=4){
+                            latlon.setText("Lat: "+String.format("%.9f",NmeaListener.mLat_1)+" Lon: "+
+                                    String.format("%.9f",NmeaListener.mLon_1));
+                        }else {
+                            latlon.setText("");
+                        }
                         txtant1.setText(coordShowed(DataSaved.coordOrder)[0]);
                         if (MyApp.GEOIDE_PATH != null) {
                             if (Deg2UTM.geoidError) {

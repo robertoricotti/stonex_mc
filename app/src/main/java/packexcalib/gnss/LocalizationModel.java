@@ -15,6 +15,7 @@ public interface LocalizationModel {
      * @param out array double di lunghezza >=3 in cui vengono scritti [X,Y,Z]
      */
     void toLocalFast(double lat, double lon, double h, double[] out);
+    void toGeoFast(double E,double N,double H,double[] out);
 
     /**
      * Comodità che ritorna un nuovo array (può allocare). Usalo solo se non sei nel nodo critico.

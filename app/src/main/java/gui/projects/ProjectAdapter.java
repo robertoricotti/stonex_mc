@@ -184,6 +184,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 break;
             case "sp":
             case "loc":
+            case "lok":
                 icon.setImageResource(R.drawable.accuracy);
                 break;
             case "csv":

@@ -12,6 +12,7 @@ public final class LocalizationFactory {
         String name = f.getName().toLowerCase();
         if (name.endsWith(".loc")) return CarlsonLocalization.fromLocFile(f);
         if (name.endsWith(".sp")) return SpLocalization.fromSpFile(f);
+        if (name.endsWith(".lok")) return LeicaLokLocalization.fromLokFile(f);
         throw new IllegalArgumentException("Formato non supportato: " + f.getName());
     }
 }
