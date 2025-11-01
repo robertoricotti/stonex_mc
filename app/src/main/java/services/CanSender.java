@@ -50,6 +50,7 @@ import gui.debug_ecu.Serial_Msg_Debug;
 import gui.gps.NmeaGenerator;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.gnss.NmeaListener;
@@ -969,42 +970,7 @@ public class CanSender extends Service {
 
     private void invioMessaggiDozer() {
         switch (DataSaved.Interface_Type) {
-            case 0:
-                //ECU
-
-                byte[] valoreSX0 = new byte[]{0x4E, 0x20};
-                byte[] valoreDX0 = new byte[]{0x4E, 0x20};
-                byte[] valoreSS0 = new byte[]{0x4E, 0x20};
-                int resultL, resultR, resultSS;
-                if (DataSaved.REVERSE_LEFT == 1) {
-                    resultL = 40000 - valueJDL;
-                } else {
-                    resultL = valueJDL;
-                }
-                if (DataSaved.REVERSE_RIGHT == 1) {
-                    resultR = 40000 - valueJDR;
-                } else {
-                    resultR = valueJDR;
-                }
-                if (DataSaved.REVERSE_SS == 1) {
-                    resultSS = 40000 - valueJDSS;
-                } else {
-                    resultSS = valueJDSS;
-                }
-
-                valoreSX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultL);
-                valoreDX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
-                valoreSS0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
-                MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
-                        new byte[]{
-                                (byte) 0xF2,
-                                (byte) 0x1A,
-                                (byte) valoreSX0[0],
-                                (byte) valoreSX0[1],
-                                (byte) valoreDX0[0],
-                                (byte) valoreDX0[1],
-                                (byte) valoreSS0[0],
-                                (byte) valoreSS0[1]});
+            case 255:
 
 
                 // output 3e PARTI
@@ -1049,6 +1015,24 @@ public class CanSender extends Service {
 
                 };
 
+                byte[] sinistra = new byte[4], centro = new byte[4], destra = new byte[4];
+                sinistra = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (ExcavatorLib.bucketLeftCoord[2] * 1000));
+                centro = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (ExcavatorLib.bucketCoord[2] * 1000));
+                destra = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (ExcavatorLib.bucketRightCoord[2] * 1000));
+                byte[] dtmSx = new byte[4], dtmCx = new byte[4], dtmDx = new byte[4],dtmFW=new byte[4],dtmBW=new byte[4];
+                dtmSx = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[0] * 1000));
+                dtmCx = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[1] * 1000));
+                dtmDx = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[2] * 1000));
+                dtmFW=PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[3] * 1000));
+                dtmBW=PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[4] * 1000));
+                byte[]heading=PLC_DataTypes_LittleEndian.U16_to_bytes((int) (ExcavatorLib.hdt_LAMA*100));
+                byte working=0;
+                if(MyApp.visibleActivity instanceof My3DActivity){
+                    working=1;
+                }
+
+
+
                 MyDeviceManager.CanWrite(1, 0x812, 8,
                         new byte[]{
                                 left[0],
@@ -1057,8 +1041,8 @@ public class CanSender extends Service {
                                 cent[1],
                                 right[0],
                                 right[1],
-                                (byte) PLC_DataTypes_LittleEndian.Encode_8_bool(outSurf),//TODO OFFGRID
-                                (byte) DataSaved.isWL//DICE A TERZE PARTI CHE TIPO DI MACCHINA E'
+                                (byte) PLC_DataTypes_LittleEndian.Encode_8_bool(outSurf),
+                                (byte) working
 
                         }
                 );
@@ -1072,12 +1056,86 @@ public class CanSender extends Service {
                                 qFix,
                                 Cq[0],
                                 Cq[1],
-                                (byte) 0xFA,
-                                (byte) 0xFE
+                                heading[0],
+                                heading[1]
 
 
                         }
                 );
+
+
+
+                MyDeviceManager.CanWrite(1, 0x816, 8,
+                        new byte[]{
+                                sinistra[0], sinistra[1], sinistra[2], sinistra[3],
+                                centro[0], centro[1], centro[2], centro[3],
+
+                        }
+                );
+
+                MyDeviceManager.CanWrite(1, 0x818, 8,
+                        new byte[]{
+                                destra[0], destra[1], destra[2], destra[3],
+                                dtmSx[0], dtmSx[1], dtmSx[2], dtmSx[3],
+
+                        }
+                );
+                MyDeviceManager.CanWrite(1, 0x820, 8,
+                        new byte[]{
+                                dtmCx[0], dtmCx[1], dtmCx[2], dtmCx[3],
+                                dtmDx[0], dtmDx[1], dtmDx[2], dtmDx[3],
+                        }
+                );
+
+                MyDeviceManager.CanWrite(1, 0x822, 8,
+                        new byte[]{
+                                dtmFW[0], dtmFW[1], dtmFW[2], dtmFW[3],
+                                dtmBW[0], dtmBW[1], dtmBW[2], dtmBW[3],
+                        }
+                );
+
+
+                break;
+            case 0:
+                //ECU
+
+
+                    byte[] valoreSX0 = new byte[]{0x4E, 0x20};
+                    byte[] valoreDX0 = new byte[]{0x4E, 0x20};
+                    byte[] valoreSS0 = new byte[]{0x4E, 0x20};
+                    int resultL, resultR, resultSS;
+                    if (DataSaved.REVERSE_LEFT == 1) {
+                        resultL = 40000 - valueJDL;
+                    } else {
+                        resultL = valueJDL;
+                    }
+                    if (DataSaved.REVERSE_RIGHT == 1) {
+                        resultR = 40000 - valueJDR;
+                    } else {
+                        resultR = valueJDR;
+                    }
+                    if (DataSaved.REVERSE_SS == 1) {
+                        resultSS = 40000 - valueJDSS;
+                    } else {
+                        resultSS = valueJDSS;
+                    }
+
+                    valoreSX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultL);
+                    valoreDX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
+                    valoreSS0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
+                    MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
+                            new byte[]{
+                                    (byte) 0xF2,
+                                    (byte) 0x1A,
+                                    (byte) valoreSX0[0],
+                                    (byte) valoreSX0[1],
+                                    (byte) valoreDX0[0],
+                                    (byte) valoreDX0[1],
+                                    (byte) valoreSS0[0],
+                                    (byte) valoreSS0[1]});
+
+
+
                 break;
 
             case 1:

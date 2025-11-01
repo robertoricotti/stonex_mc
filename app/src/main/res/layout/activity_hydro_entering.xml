@@ -137,14 +137,13 @@
         app:layout_constraintBottom_toTopOf="@id/botla"
         app:layout_constraintRight_toRightOf="@id/v1"/>
     <TextView
-        android:alpha="0.3"
         android:id="@+id/img_5"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="35dp"
         android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
-        android:text="DOOSAN\nDEVELON\nCAN-J1939"
+        android:text="OEM\nCAN OUTPUT"
         android:textSize="40sp"
         android:gravity="center"
         android:textStyle="bold|italic"

@@ -71,7 +71,7 @@ public class SpTestActivity extends Activity {
 
         btnToLocal.setOnClickListener(v -> {
             if (localizationFactory == null) {
-                toast("Load  file .SP");
+                toast("Load  file .SP - .LOC");
                 return;
             }
             try {
@@ -94,7 +94,7 @@ public class SpTestActivity extends Activity {
 
         btnToGeo.setOnClickListener(v -> {
             if (localizationFactory == null) {
-                toast("Load  file .SP");
+                toast("Load  file .SP - .LOC");
                 return;
             }
             try {
@@ -132,11 +132,11 @@ public class SpTestActivity extends Activity {
             File file = new File(MyData.get_String("CRS_ESTERNO"));
             localizationFactory = LocalizationFactory.fromFile(file);
 
-            log("✅ File SP successfully loaded");
+            log("✅ File  successfully loaded");
             btnLoad.setText(MyData.get_String("CRS_ESTERNO"));
-            log("SP loaded: " + localizationFactory.getClass().getSimpleName());
+            log("File loaded: " + localizationFactory.getClass().getSimpleName());
         } catch (Exception e) {
-            log("❌ Error loading SP: " + e.getMessage());
+            log("❌ Error loading File: " + e.getMessage());
             btnLoad.setText(e.getMessage());
         }
     }

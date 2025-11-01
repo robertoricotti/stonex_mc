@@ -87,8 +87,9 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
                     finish();
 
                     break;
-                case 5:
+                case 255:
                     //to_calib.setEnabled(false);
+                    new CustomToast(this,"OEM Can Out Selected").show_alert();
                     break;
             }
 
@@ -118,12 +119,12 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
             return false;
         });
         doosan.setOnLongClickListener(view -> {
-            new CustomToast(Hydro_Activity_Entering.this,"Not Implemented").show_error();
-            /*
-            DataSaved.Interface_Type=5;
-            MyData.push("M"+indexMachine+"Interface_Type","5");
 
-             */
+
+            DataSaved.Interface_Type=255;
+            MyData.push("M"+indexMachine+"Interface_Type","255");
+
+
             return false;
         });
         valve.setOnLongClickListener(view -> {
@@ -182,7 +183,7 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
                 doosan.setBackground(getDrawable(R.drawable.sfondo_bottone_grigio));
                 break;
 
-            case 5:
+            case 255:
                 valve.setBackground(getDrawable(R.drawable.sfondo_bottone_grigio));
                 cat.setBackground(getDrawable(R.drawable.sfondo_bottone_grigio));
                 deere.setBackground(getDrawable(R.drawable.sfondo_bottone_grigio));

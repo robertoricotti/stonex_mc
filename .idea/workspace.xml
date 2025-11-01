@@ -105,10 +105,11 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/gen2/release/STX-MC_V_4.0.7 -GEN2-RELEASE.apk" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_GNSS_Coordinates.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_GNSS_Coordinates.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/CarlsonLocalization.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/CarlsonLocalization.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_sp_test.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_sp_test.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Hydro_Activity_Entering.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Hydro_Activity_Entering.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_entering.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_entering.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +119,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -413,7 +414,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761993645900</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="4.0.8 in progress">
+      <option name="closed" value="true" />
+      <created>1762013772695</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1762013772695</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

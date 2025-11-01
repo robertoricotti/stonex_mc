@@ -32,6 +32,7 @@ public class DataSaved {
 
 
     //settaggi idraulici
+
     public static int Interface_Type;
     public static double HYDRAULIC_WINDOW;
     public static double tolleranza_Z;
