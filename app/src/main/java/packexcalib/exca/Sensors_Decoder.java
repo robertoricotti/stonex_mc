@@ -2,8 +2,6 @@ package packexcalib.exca;
 
 import static gui.gps.NmeaGenerator.HEADING;
 
-import android.util.Log;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -377,9 +375,47 @@ public class Sensors_Decoder {
 
                                     break;
 
-                                case 90181738:
+                                case 0x560106A:
                                     //0x560106A
                                     //Tilt MOBA
+
+
+                                    /*
+                                     mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
+                                    mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+                                    mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
+                                    mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
+                                    qW = mqW / 23768.0d;
+                                    qX = mqX / 23768.0d;
+                                    qY = mqY / 23768.0d;
+                                    qZ = mqZ / 23768.0d;
+                                    qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
+                                    qW /= qnorm;
+                                    qX /= qnorm;
+                                    qY /= qnorm;
+                                    qZ /= qnorm;
+                                    double[] qSensor = {qW, qX, qY, qZ};
+
+                                    // Rotazione per cambio frame (freccia a dx o sx)
+                                    double angle = Math.toRadians(-90 / 2.0); // usa -90 per lato opposto
+                                    double[] qRotFrame = {Math.cos(angle), Math.sin(angle), 0, 0}; // rotazione intorno a X ✅
+
+
+                                    // Applica la correzione
+                                    double[] qCorr = multiplyQuaternion(qRotFrame, qSensor);
+
+                                    // Normalizza
+                                    double norm = Math.sqrt(qCorr[0]*qCorr[0] + qCorr[1]*qCorr[1] + qCorr[2]*qCorr[2] + qCorr[3]*qCorr[3]);
+                                    for (int i = 0; i < 4; i++) qCorr[i] /= norm;
+
+                                    // Ora converti il quaternione corretto in Euler
+                                    double[] eulerAngles = quaternionToEuler(qCorr[0], qCorr[1], qCorr[2], qCorr[3]);
+                                    Log.d("QUATNUOVO",String.format("%.2f",eulerAngles[0])+"  "+
+                                            String.format("%.2f",eulerAngles[1])+"  "+
+                                            String.format("%.2f",eulerAngles[2]));
+                                    */
+
+
                                     isMobaTilt = true;
                                     mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
                                     mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
@@ -395,7 +431,7 @@ public class Sensors_Decoder {
                                     qY /= qnorm;
                                     qZ /= qnorm;
                                     eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    eulerAngles[2] = (eulerAngles[2]);
+
                                     switch (DataSaved.lrTilt) {
                                         case 1:
                                             //Left
@@ -412,6 +448,7 @@ public class Sensors_Decoder {
 
                                             break;
                                     }
+
                                     break;
 
                                 case 928:
@@ -940,7 +977,7 @@ public class Sensors_Decoder {
                     NmeaGenerator.ALTITUDE -= 0.001;
                 }
             }
-                if(DataSaved.isCanOpen==5) {
+            if (DataSaved.isCanOpen == 5) {
                 switch (id) {
                     case 0x385:
 
@@ -1057,30 +1094,26 @@ public class Sensors_Decoder {
 
                 }
 
-                    if (boom1P) {
-                        Deg_boom1 += 0.05;
-                    }
-                    if (boom1M) {
-                        Deg_boom1 -= 0.05;
-                    }
-                    if (stickP) {
-                        Deg_stick += 0.05;
-                    }
-                    if (stickM) {
-                        Deg_stick -= 0.05;
-                    }
-                    if (bucketA) {
-                        Deg_Benna_W_Tilt += 0.05;
-                        Deg_bucket += 0.05;
-                    }
-                    if (bucketC) {
-                        Deg_Benna_W_Tilt -= 0.05;
-                        Deg_bucket -= 0.05;
-                    }
-
-
-
-
+                if (boom1P) {
+                    Deg_boom1 += 0.05;
+                }
+                if (boom1M) {
+                    Deg_boom1 -= 0.05;
+                }
+                if (stickP) {
+                    Deg_stick += 0.05;
+                }
+                if (stickM) {
+                    Deg_stick -= 0.05;
+                }
+                if (bucketA) {
+                    Deg_Benna_W_Tilt += 0.05;
+                    Deg_bucket += 0.05;
+                }
+                if (bucketC) {
+                    Deg_Benna_W_Tilt -= 0.05;
+                    Deg_bucket -= 0.05;
+                }
 
 
                 ExcavatorLib.Excavator();
@@ -1152,4 +1185,48 @@ public class Sensors_Decoder {
         for (double v : tiltBuffer) sum += v;
         return sum / tiltBuffer.size();
     }
+
+    public static double[] multiplyQuaternion(double[] q1, double[] q2) {
+        double w1 = q1[0], x1 = q1[1], y1 = q1[2], z1 = q1[3];
+        double w2 = q2[0], x2 = q2[1], y2 = q2[2], z2 = q2[3];
+
+        double w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2;
+        double x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2;
+        double y = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2;
+        double z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2;
+
+        return new double[]{w, x, y, z};
+    }
+    /**
+     * Filtro complementare per fusione tra yaw IMU e heading GNSS.
+     *
+     * @param yawImu        Yaw calcolata dal sensore IMU (in gradi, 0–360)
+     * @param headingGnss   Heading GNSS assoluto (in gradi, 0–360)
+     * @param prevYawFused  Ultimo valore filtrato (in gradi)
+     * @param alpha         Peso dell’IMU (0.95–0.99)
+     * @return Nuovo valore di yaw fuso e filtrato
+     */
+    public static double complementaryYawFilter(double yawImu, double headingGnss, double prevYawFused, double alpha) {
+        // Correggi eventuali discontinuità (es. salto da 359° a 0°)
+        double diff = yawImu - prevYawFused;
+        if (diff > 180) diff -= 360;
+        if (diff < -180) diff += 360;
+
+        double imuContribution = prevYawFused + diff; // continuità IMU
+
+        // Fai lo stesso per heading GNSS
+        double diffGnss = headingGnss - imuContribution;
+        if (diffGnss > 180) diffGnss -= 360;
+        if (diffGnss < -180) diffGnss += 360;
+
+        // Filtro complementare
+        double fusedYaw = imuContribution + (1 - alpha) * diffGnss;
+
+        // Mantieni 0–360°
+        if (fusedYaw < 0) fusedYaw += 360;
+        if (fusedYaw >= 360) fusedYaw -= 360;
+
+        return fusedYaw;
+    }
+
 }

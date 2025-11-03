@@ -359,6 +359,17 @@ public class CanService extends Service {
             }
 
             if (channel == 2) {
+              /*  if(id==0x3FF){
+                    int pit;int rol;int yo;
+                    pit=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{msg[0],msg[1]});
+                    rol=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{msg[2],msg[3]});
+                    yo=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{msg[4],msg[5]});
+
+                    double anPit=(pit*180d)/32000d;
+                    double anRol=(rol*180d)/32000d;
+                    double anYaw=(yo*180d)/32000d;
+                    Log.d("FMI_Out",String.format("%.2f",anPit)+"   "+String.format("%.2f",anRol)+"   "+String.format("%.2f",anYaw));
+                }*/
                 //CAN2
                 if(id==0x18F00DE3&&DataSaved.Interface_Type==4){
                     CASE_Connected=true;
