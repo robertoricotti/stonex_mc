@@ -379,43 +379,6 @@ public class Sensors_Decoder {
                                     //0x560106A
                                     //Tilt MOBA
 
-
-                                    /*
-                                     mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                                    qW = mqW / 23768.0d;
-                                    qX = mqX / 23768.0d;
-                                    qY = mqY / 23768.0d;
-                                    qZ = mqZ / 23768.0d;
-                                    qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                                    qW /= qnorm;
-                                    qX /= qnorm;
-                                    qY /= qnorm;
-                                    qZ /= qnorm;
-                                    double[] qSensor = {qW, qX, qY, qZ};
-
-                                    // Rotazione per cambio frame (freccia a dx o sx)
-                                    double angle = Math.toRadians(-90 / 2.0); // usa -90 per lato opposto
-                                    double[] qRotFrame = {Math.cos(angle), Math.sin(angle), 0, 0}; // rotazione intorno a X ✅
-
-
-                                    // Applica la correzione
-                                    double[] qCorr = multiplyQuaternion(qRotFrame, qSensor);
-
-                                    // Normalizza
-                                    double norm = Math.sqrt(qCorr[0]*qCorr[0] + qCorr[1]*qCorr[1] + qCorr[2]*qCorr[2] + qCorr[3]*qCorr[3]);
-                                    for (int i = 0; i < 4; i++) qCorr[i] /= norm;
-
-                                    // Ora converti il quaternione corretto in Euler
-                                    double[] eulerAngles = quaternionToEuler(qCorr[0], qCorr[1], qCorr[2], qCorr[3]);
-                                    Log.d("QUATNUOVO",String.format("%.2f",eulerAngles[0])+"  "+
-                                            String.format("%.2f",eulerAngles[1])+"  "+
-                                            String.format("%.2f",eulerAngles[2]));
-                                    */
-
-
                                     isMobaTilt = true;
                                     mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
                                     mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});

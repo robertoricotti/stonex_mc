@@ -19,6 +19,7 @@ import gui.debug_ecu.Can_Msg_Debug;
 import gui.gps.Nuovo_Gps;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.FMI_Decoder;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
@@ -353,23 +354,13 @@ public class CanService extends Service {
                 }
 
 
-                if (id == 0x7DF) {
+                if (id == 0x7DF||id==0x560106A) {
                     receiver.receivePacket(msg);
                 }
             }
 
             if (channel == 2) {
-              /*  if(id==0x3FF){
-                    int pit;int rol;int yo;
-                    pit=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{msg[0],msg[1]});
-                    rol=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{msg[2],msg[3]});
-                    yo=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{msg[4],msg[5]});
-
-                    double anPit=(pit*180d)/32000d;
-                    double anRol=(rol*180d)/32000d;
-                    double anYaw=(yo*180d)/32000d;
-                    Log.d("FMI_Out",String.format("%.2f",anPit)+"   "+String.format("%.2f",anRol)+"   "+String.format("%.2f",anYaw));
-                }*/
+                //FMI_Decoder.decode(id,msg);
                 //CAN2
                 if(id==0x18F00DE3&&DataSaved.Interface_Type==4){
                     CASE_Connected=true;
@@ -474,7 +465,6 @@ public class CanService extends Service {
                     }
                     Log.d("JDD", Grader_Auto_Left + " " + Grader_AutoRight + " " + Grader_Auto_SS);
                 }
-
                 if (id == 0x0CFF3302 && DataSaved.Interface_Type == 3) {
                     KOM_Connected = true;
                     handler_KOM_Connected.removeCallbacks(timeoutRunnable_KOM_Connected);
@@ -494,7 +484,6 @@ public class CanService extends Service {
                         AutoManToggle.Can_Toggled_Auto_SS = false;
                     }
                 }
-
                 if (id == 2166) {
                     ECU_Connected = true;
                     handler_ECU_Connected.removeCallbacks(timeoutRunnable_ECU_Connected);

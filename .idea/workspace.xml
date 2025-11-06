@@ -102,17 +102,72 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.8 output terze parti da testare">
-      <change afterPath="$PROJECT_DIR$/app/src/main/assets/Can_3rdParts.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/BucketGeometry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Quaternion.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/FMI_Decoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen2/release/STX-MC_V_4.0.7 -GEN2-RELEASE.apk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Hydro_Activity_Entering.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/Hydro_Activity_Entering.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gen1/release/STX-MC_V_4.0.7 -GEN1-RELEASE.apk" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPANCRSCases.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPANCRSCases.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__120_E_TO_126_E_ONSHORE__TOKYO__UTM_ZONE_51N__3092.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__120_E_TO_126_E__JGD2000__UTM_ZONE_51N__3097.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__120_E_TO_126_E__JGD2011__UTM_ZONE_51N__6688.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__126_E_TO_132_E_ONSHORE__TOKYO__UTM_ZONE_52N__3093.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__126_E_TO_132_E__JGD2000__UTM_ZONE_52N__3098.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__126_E_TO_132_E__JGD2011__UTM_ZONE_52N__6689.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__132_E_TO_138_E_ONSHORE__TOKYO__UTM_ZONE_53N__3094.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__132_E_TO_138_E__JGD2000__UTM_ZONE_53N__3099.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__132_E_TO_138_E__JGD2011__UTM_ZONE_53N__6690.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__138_E_TO_144_E_ONSHORE__TOKYO__UTM_ZONE_54N__3095.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__138_E_TO_144_E__JGD2000__UTM_ZONE_54N__3100.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__138_E_TO_144_E__JGD2011__UTM_ZONE_54N__6691.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__144_E_TO_150_E_ONSHORE__TOKYO__UTM_ZONE_55N__3096.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__144_E_TO_150_E__JGD2000__UTM_ZONE_55N__3101.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__144_E_TO_150_E__JGD2011__UTM_ZONE_55N__6692.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__JGD2000__4946.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__JGD2000__GEOCENTRIC__4354.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__JGD2011__6666.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__MINAMITORI_SHIMA__MARCUS_ISLAND__ONSHORE__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XIX__2461.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__MINAMITORI_SHIMA__MARCUS_ISLAND__ONSHORE__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XIX__30179.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_III__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_III__2445.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_III__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_III__30163.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_II__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_II__2444.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_II__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_II__30162.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_IV__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_IV__2446.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_IV__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_IV__30164.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_IX__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_IX__2451.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_IX__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_IX__30169.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_I__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_I__2443.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_I__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_I__30161.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_VIII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_VIII__2450.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_VIII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_VIII__30168.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_VII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_VII__2449.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_VII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_VII__30167.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_VI__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_VI__2448.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_VI__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_VI__30166.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_V__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_V__2447.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_V__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_V__30165.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XIII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XIII__2455.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XIII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XIII__30173.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XII__2454.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XII__30172.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XIV__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XIV__2456.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XIV__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XIV__30174.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XI__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XI__2453.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XI__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XI__30171.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XVIII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XVIII__2460.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XVIII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XVIII__30178.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XVII__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XVII__2459.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XVII__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XVII__30177.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XVI__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XVI__2458.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XVI__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XVI__30176.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XV__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_XV__2457.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_XV__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_XV__30175.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_X__JGD2000__JAPAN_PLANE_RECTANGULAR_CS_X__2452.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/JAPAN/JAPAN__ZONE_X__TOKYO__JAPAN_PLANE_RECTANGULAR_CS_X__30170.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyEpsgNumber.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyEpsgNumber.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +177,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -162,6 +217,7 @@
     &quot;ApkExportedModule&quot;: &quot;STX_MC.app&quot;,
     &quot;ExportApk.ApkPathForSTX_MC.app&quot;: &quot;D:\\Development\\MC_V4\\app&quot;,
     &quot;Gradle.MC_V4:app [:app:packexcalib.gnss.ExampleUsage.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Logcat.SavePath&quot;: &quot;D:\\Development\\MC_V4&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -433,7 +489,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762040558021</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="4.0.8 output terze parti da testare">
+      <option name="closed" value="true" />
+      <created>1762206938812</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1762206938812</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -459,22 +523,22 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1762190274893" />
+            <CheckInfo lastCheckTimestamp="1762340418461" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1762190274894" />
+            <CheckInfo lastCheckTimestamp="1762340418438" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1762190274894" />
+            <CheckInfo lastCheckTimestamp="1762340418440" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1762190274894" />
+            <CheckInfo lastCheckTimestamp="1762340418439" />
           </value>
         </entry>
       </map>
