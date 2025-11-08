@@ -2,6 +2,7 @@ package gui.draw_class;
 
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static services.TriangleService.tutteLinee;
+import static utils.MyTypes.EXCAVATOR;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -160,7 +161,7 @@ public class DrawDXF_Layer2_Tilt  extends View {
 
 
             //--------------------------------- DRAW STICK --------------------------------
-            if(DataSaved.isWL==0) {
+            if(DataSaved.isWL==EXCAVATOR) {
                 if (!DataSaved.isTiltRotator) {
                     paint.setColor(MyColorClass.colorStick);
                     path.moveTo(stick.get(1).x, stick.get(1).y);

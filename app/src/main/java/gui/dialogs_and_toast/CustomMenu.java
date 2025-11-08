@@ -69,7 +69,7 @@ public class CustomMenu {
         if(whoCall.equals("RADIO CHANNEL")){
             resetFrq=alertDialog.findViewById(R.id.resetR);
             resetFrq.setOnClickListener(view -> {
-                MyDeviceManager.CanWrite(0,0x18FF1A01,8,new byte[]{0x20, (byte) 0x01, (byte) 0xFF, (byte) 1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                MyDeviceManager.CanWrite(true,0,0x18FF1A01,8,new byte[]{0x20, (byte) 0x01, (byte) 0xFF, (byte) 1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                 try {
                     SerialPortManager.instance().sendCommand("set,radio.frequency,438.125|440.125|441.125|442.125|443.125|444.125|446.125|447.125\r\n");
 

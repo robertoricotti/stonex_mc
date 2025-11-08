@@ -57,7 +57,7 @@ public class CASE_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_case);
-        MyDeviceManager.CanWrite(1, 0x18EEFFE6, 8,
+        MyDeviceManager.CanWrite(true,1, 0x18EEFFE6, 8,
                 new byte[]{(byte) 0xF4,
                         (byte) 0xF0,
                         (byte) 0xD3,
@@ -642,7 +642,7 @@ public class CASE_Activity extends AppCompatActivity {
         sendRunnable = new Runnable() {
             @Override
             public void run() {
-                MyDeviceManager.CanWrite(1, 0x18FE31E6, 8,
+                MyDeviceManager.CanWrite(true,1, 0x18FE31E6, 8,
                         new byte[]{valueLEFT,
                                 (byte) 0xFF,
                                 leftDir,//F2=Up F1=Down
@@ -652,7 +652,7 @@ public class CASE_Activity extends AppCompatActivity {
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(1, 0x18FE32E6, 8,
+                MyDeviceManager.CanWrite(true,1, 0x18FE32E6, 8,
                         new byte[]{valueRIGHT,
                                 (byte) 0xFF,
                                 rightDir,//F2=Up F1=Down

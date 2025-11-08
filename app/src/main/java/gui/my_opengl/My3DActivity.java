@@ -13,6 +13,11 @@ import static services.CanService.Grader_Auto_SS;
 import static services.ReadProjectService.isFinishedDTM;
 import static services.ReadProjectService.isFinishedPOINT;
 import static services.ReadProjectService.isFinishedPOLY;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.content.Context;
 import android.content.Intent;
@@ -176,7 +181,7 @@ public class My3DActivity extends BaseClass {
 
         btn_hide.callOnClick();
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        if (DataSaved.isWL == 0) {
+        if (DataSaved.isWL == EXCAVATOR) {
             try {
                 indexBucketSelected = MyData.get_Int("M" + indexMachineSelected + "BucketSelected");
                 bucketName = MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucketSelected + "_Name").toUpperCase();
@@ -191,7 +196,7 @@ public class My3DActivity extends BaseClass {
 
         if (DataSaved.Interface_Type == 2||DataSaved.Interface_Type==0) {
 
-            MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
+            MyDeviceManager.CanWrite(true,1, 0x18EEFF85, 8,
                     new byte[]{(byte) 0xF4,
                             (byte) 0xF0,
                             (byte) 0x13,
@@ -276,7 +281,7 @@ public class My3DActivity extends BaseClass {
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
-        if (DataSaved.isWL < 2) {
+        if (DataSaved.isWL < DOZER) {
             layer1Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer1_Tilt(this) : new DrawDXF_Layer1(this);
             layer2Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer2_Tilt(this) : new DrawDXF_Layer2(this);
         } else {
@@ -287,7 +292,7 @@ public class My3DActivity extends BaseClass {
         panel2.addView(layer2Canvas);
         panel1.setBackgroundColor(MyColorClass.colorSfondo);
         panel2.setBackgroundColor(MyColorClass.colorSfondo);
-        if (DataSaved.isWL == 0 || DataSaved.isWL == 1) {
+        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
             gl_benne.setImageResource((R.drawable.benna_vuota1));
             gl_hydroP.setVisibility(View.GONE);
         } else {
@@ -329,7 +334,7 @@ public class My3DActivity extends BaseClass {
             }
         });
         gl_benne.setOnClickListener(view -> {
-            if (DataSaved.isWL == 0 || DataSaved.isWL == 1) {
+            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
                 Intent i = new Intent(this, BucketChooserActivity.class);
                 i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                 startActivity(i);
@@ -613,21 +618,21 @@ public class My3DActivity extends BaseClass {
                     DataSaved.bucketEdge = -1;
                 switch (DataSaved.bucketEdge) {
                     case 1:
-                        if (DataSaved.isWL == 0) {
+                        if (DataSaved.isWL == EXCAVATOR) {
                             bucketEdge.setImageResource(R.drawable.benna_misura_destra);
                         } else {
                             bucketEdge.setImageResource(R.drawable.lama_misura_destra);
                         }
                         break;
                     case 0:
-                        if (DataSaved.isWL == 0) {
+                        if (DataSaved.isWL == EXCAVATOR) {
                             bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
                         } else {
                             bucketEdge.setImageResource(R.drawable.lama_misura_cnt);
                         }
                         break;
                     case -1:
-                        if (DataSaved.isWL == 0) {
+                        if (DataSaved.isWL == EXCAVATOR) {
                             bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
                         } else {
                             bucketEdge.setImageResource(R.drawable.lama_misura_sinistra);
@@ -797,21 +802,21 @@ public class My3DActivity extends BaseClass {
             btn_show.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
             switch (DataSaved.bucketEdge) {
                 case 1:
-                    if (DataSaved.isWL == 0) {
+                    if (DataSaved.isWL == EXCAVATOR) {
                         bucketEdge.setImageResource(R.drawable.benna_misura_destra);
                     } else {
                         bucketEdge.setImageResource(R.drawable.lama_misura_destra);
                     }
                     break;
                 case 0:
-                    if (DataSaved.isWL == 0) {
+                    if (DataSaved.isWL == EXCAVATOR) {
                         bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
                     } else {
                         bucketEdge.setImageResource(R.drawable.lama_misura_cnt);
                     }
                     break;
                 case -1:
-                    if (DataSaved.isWL == 0) {
+                    if (DataSaved.isWL == EXCAVATOR) {
                         bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
                     } else {
                         bucketEdge.setImageResource(R.drawable.lama_misura_sinistra);
@@ -1432,25 +1437,25 @@ public class My3DActivity extends BaseClass {
 
 
     private void setLightBar() {
-        if(DataSaved.isWL==0||DataSaved.isWL==1) {
+        if(DataSaved.isWL==EXCAVATOR||DataSaved.isWL==WHEELLOADER) {
             switch (DataSaved.bucketEdge) {
                 case -1:
-                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
                     //setAudio(TriangleService.quota3D_SX, !TriangleService.ltOffGrid);
                     break;
                 case 0:
-                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ctOffGrid, TriangleService.quota3D_CT, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.ctOffGrid, TriangleService.quota3D_CT, DataSaved.deadbandH));
                     //setAudio(TriangleService.quota3D_CT, !TriangleService.ctOffGrid);
                     break;
                 case 1:
-                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
                     //setAudio(TriangleService.quota3D_DX, !TriangleService.rtOffGrid);
                     break;
             }
         }else {
-            MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
+            MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
 
-            MyDeviceManager.CanWrite(0, 0xA8, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
+            MyDeviceManager.CanWrite(true,0, 0xA8, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
         }
     }
 
@@ -1471,14 +1476,14 @@ public class My3DActivity extends BaseClass {
     private void AutoHandling() {
         if (MyApp.licenseType == 5) {
 
-            if (DataSaved.isWL == 0 || DataSaved.isWL == 1) {
+            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
                 AUTO_SX.setVisibility(View.INVISIBLE);
                 AUTO_SS.setVisibility(View.INVISIBLE);
                 AUTO_DX.setVisibility(View.INVISIBLE);
 
             } else {
 
-                if (DataSaved.isWL == 4) {
+                if (DataSaved.isWL == GRADER) {
                     //GRADER
                     AUTO_SX.setVisibility(View.VISIBLE);
                     AUTO_SS.setVisibility(View.VISIBLE);
@@ -1520,7 +1525,7 @@ public class My3DActivity extends BaseClass {
                     } else {
                         AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
                     }
-                } else {
+                } else if(DataSaved.isWL==DOZER||DataSaved.isWL==DOZER_SIX) {
                     //DOZER
                     AUTO_SX.setVisibility(View.VISIBLE);
                     AUTO_SS.setVisibility(View.INVISIBLE);

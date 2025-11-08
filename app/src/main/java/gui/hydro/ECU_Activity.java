@@ -60,7 +60,7 @@ public class ECU_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ecu);
-        MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
+        MyDeviceManager.CanWrite(true,1, 0x18EEFF85, 8,
                 new byte[]{(byte) 0xF4,
                         (byte) 0xF0,
                         (byte) 0x13,
@@ -724,7 +724,7 @@ public class ECU_Activity extends AppCompatActivity {
                 valoreDX = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
                 valoreSS = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
 
-                MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
+                MyDeviceManager.CanWrite(true,1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,
                                 (byte) 0x1A,

@@ -29,6 +29,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public MyGLSurfaceView(Context context) {
         super(context);
+        // ✅ Abilita MSAA (4x) per avere bordi più morbidi
+        // Parametri: RGBA 8 bit, Depth 24 bit, 4x multisample
+        setEGLConfigChooser(8, 8, 8, 8, 24, 4);
         setEGLContextClientVersion(1);
 
         renderer = new MyGLRenderer();

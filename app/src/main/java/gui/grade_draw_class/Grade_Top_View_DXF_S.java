@@ -2,6 +2,7 @@ package gui.grade_draw_class;
 
 import static gui.grade_draw_class.Grade_Top_View_DXF.offsetY;
 import static gui.grade_draw_class.Grade_Top_View_DXF.offsetX;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,7 +13,6 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -113,7 +113,7 @@ public class Grade_Top_View_DXF_S extends SurfaceView implements SurfaceHolder.C
         }
 
 
-        if (DataSaved.isWL == 1) {
+        if (DataSaved.isWL == WHEELLOADER) {
             bucketWidth = DataSaved.W_Bucket * scala;
         } else {
             bucketWidth = DataSaved.W_Blade_TOT * scala;

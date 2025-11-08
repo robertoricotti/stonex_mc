@@ -3,6 +3,11 @@ package gui.tech_menu;
 import static gui.MyApp.errorCode;
 import static gui.boot_and_choose.LaunchScreenActivity.hasAuto;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -161,41 +166,41 @@ public class ExcavatorChooserActivity extends BaseClass {
         }
 
 
-        if (isWL1 == 1) {
+        if (isWL1 == WHEELLOADER) {
             machine1.setImageResource(R.drawable.wheel_machines_btn);
 
-        } else if (isWL1 == 2 || isWL1 == 3) {
+        } else if (isWL1 == DOZER || isWL1 == DOZER_SIX) {
             machine1.setImageResource(R.drawable.dozer_machines_btn);
             bucketM1.setImageResource(R.drawable.ecu_96);
 
-        } else if (isWL1 == 4) {
+        } else if (isWL1 == GRADER) {
             machine1.setImageResource(R.drawable.grader_btn);
             bucketM1.setImageResource(R.drawable.ecu_96);
         }
-        if (isWL2 == 1) {
+        if (isWL2 == WHEELLOADER) {
             machine2.setImageResource(R.drawable.wheel_machines_btn);
-        } else if (isWL2 == 2) {
+        } else if (isWL2 == DOZER||isWL2==DOZER_SIX) {
             machine2.setImageResource(R.drawable.dozer_machines_btn);
             bucketM2.setImageResource(R.drawable.ecu_96);
-        } else if (isWL2 == 4) {
+        } else if (isWL2 == GRADER) {
             machine2.setImageResource(R.drawable.grader_btn);
             bucketM2.setImageResource(R.drawable.ecu_96);
         }
-        if (isWL3 == 1) {
+        if (isWL3 == WHEELLOADER) {
             machine3.setImageResource(R.drawable.wheel_machines_btn);
-        } else if (isWL3 == 2) {
+        } else if (isWL3 == DOZER||isWL3==DOZER_SIX) {
             machine3.setImageResource(R.drawable.dozer_machines_btn);
             bucketM3.setImageResource(R.drawable.ecu_96);
-        } else if (isWL3 == 4) {
+        } else if (isWL3 == GRADER) {
             machine3.setImageResource(R.drawable.grader_btn);
             bucketM3.setImageResource(R.drawable.ecu_96);
         }
-        if (isWL4 == 1) {
+        if (isWL4 == WHEELLOADER) {
             machine4.setImageResource(R.drawable.wheel_machines_btn);
-        } else if (isWL4 == 2) {
+        } else if (isWL4 == DOZER||isWL4==DOZER_SIX) {
             machine4.setImageResource(R.drawable.dozer_machines_btn);
             bucketM4.setImageResource(R.drawable.ecu_96);
-        } else if (isWL4 == 4) {
+        } else if (isWL4 == GRADER) {
             machine4.setImageResource(R.drawable.grader_btn);
             bucketM4.setImageResource(R.drawable.ecu_96);
         }
@@ -360,7 +365,7 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         bucketM1.setOnClickListener((View v) -> {
             if (indexMachineSelected == 1) {
-                if (isWL1 == 0 || isWL1 == 1) {
+                if (isWL1 == EXCAVATOR|| isWL1 == WHEELLOADER) {
                     bucketM1.setEnabled(false);
                     Intent i = new Intent(this, BucketChooserActivity.class);
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
@@ -386,7 +391,7 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         bucketM2.setOnClickListener((View v) -> {
             if (indexMachineSelected == 2) {
-                if (isWL2 == 0 || isWL2 == 1) {
+                if (isWL2 == EXCAVATOR || isWL2 == WHEELLOADER) {
                     bucketM2.setEnabled(false);
                     Intent i = new Intent(this, BucketChooserActivity.class);
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
@@ -412,7 +417,7 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         bucketM3.setOnClickListener((View v) -> {
             if (indexMachineSelected == 3) {
-                if (isWL3 == 0 || isWL3 == 1) {
+                if (isWL3 == EXCAVATOR|| isWL3 == WHEELLOADER) {
                     bucketM3.setEnabled(false);
                     Intent i = new Intent(this, BucketChooserActivity.class);
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
@@ -438,7 +443,7 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         bucketM4.setOnClickListener((View v) -> {
             if (indexMachineSelected == 4) {
-                if (isWL4 == 0 || isWL4 == 1) {
+                if (isWL4 == EXCAVATOR || isWL4 == WHEELLOADER) {
                     bucketM4.setEnabled(false);
                     Intent i = new Intent(this, BucketChooserActivity.class);
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));

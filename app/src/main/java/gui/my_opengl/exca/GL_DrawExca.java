@@ -294,7 +294,8 @@ public class GL_DrawExca {
     private static void drawLineDist(GL11 gl, float lineW, int color,float scale) {
         try {
             // Abilita anti-aliasing e blending per linee più lisce
-            gl.glEnable(GL10.GL_LINE_SMOOTH);
+
+
             gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
             gl.glEnable(GL10.GL_BLEND);
             gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -322,7 +323,7 @@ public class GL_DrawExca {
 
             // Disabilita blending e line smooth dopo il disegno
             gl.glDisable(GL10.GL_BLEND);
-            gl.glDisable(GL10.GL_LINE_SMOOTH);
+
 
         } catch (Exception e) {
         }
@@ -332,7 +333,8 @@ public class GL_DrawExca {
         {
             try {
                 // Abilita anti-aliasing e blending per linee più lisce
-                gl.glEnable(GL10.GL_LINE_SMOOTH);
+
+
                 gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
                 gl.glEnable(GL10.GL_BLEND);
                 gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -362,7 +364,7 @@ public class GL_DrawExca {
 
                 // Disabilita blending e line smooth dopo il disegno
                 gl.glDisable(GL10.GL_BLEND);
-                gl.glDisable(GL10.GL_LINE_SMOOTH);
+
 
             } catch (Exception e) {
             }

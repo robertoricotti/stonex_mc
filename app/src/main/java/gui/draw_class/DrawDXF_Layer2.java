@@ -2,6 +2,8 @@ package gui.draw_class;
 
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static services.TriangleService.tutteLinee;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -75,7 +77,7 @@ public class DrawDXF_Layer2 extends View {
 
             mDist= MyMCUtils.limitD(mDist,0.3,Double.MAX_VALUE);
             double bucketHeight= mDist*scala;
-            if(DataSaved.isWL==1){
+            if(DataSaved.isWL==WHEELLOADER){
                 bucketHeight= DataSaved.L_Bucket*0.8*scala;
             }
 
@@ -146,7 +148,7 @@ public class DrawDXF_Layer2 extends View {
             setPoints(getDistance(rotation_point_stick.x, rotation_point_stick.y, left_top_stick.x, right_bottom_stick.y), getDegrees(rotation_point_stick.x, rotation_point_stick.y, left_top_stick.x, right_bottom_stick.y), stick_angle, stick);
 
             //--------------------------------- DRAW STICK --------------------------------
-            if(DataSaved.isWL==0) {
+            if(DataSaved.isWL==EXCAVATOR) {
                 paint.setColor(MyColorClass.colorStick);
                 path.moveTo(stick.get(1).x, stick.get(1).y);
                 path.lineTo(stick.get(2).x, stick.get(2).y);
@@ -162,7 +164,7 @@ public class DrawDXF_Layer2 extends View {
 
 
             //--------------------------------- DRAW BUCKET --------------------------------
-            if(DataSaved.isWL==0) {
+            if(DataSaved.isWL==EXCAVATOR) {
                 if ((ExcavatorLib.bucketCoord[2]) < (ExcavatorLib.coordST[2])) {
                     paint.setColor(MyColorClass.colorBucket);
                     path.moveTo(bucket.get(1).x, bucket.get(1).y);
@@ -278,7 +280,7 @@ public class DrawDXF_Layer2 extends View {
 
             //--------------------------------- DRAW TEXT ANGOLO --------------------------------
             paint.setColor(MyColorClass.colorConstraint);
-            if(DataSaved.isWL==1){
+            if(DataSaved.isWL==WHEELLOADER){
                 paint.setColor(Color.WHITE);
             }
             paint.setTextAlign(Paint.Align.CENTER);

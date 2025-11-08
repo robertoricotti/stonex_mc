@@ -35,7 +35,7 @@ public class CanFileTransfer {
             try (FileInputStream fis = new FileInputStream(file)) {
                 // Send SOF + Length of file (Big Endian U16, e.g., new byte[] {87, 16} means a dimension of 4183 bytes)
                 byte[] lengthHeader = createLengthHeader(fileLength);
-                MyDeviceManager.CanWrite(channel, id, lengthHeader.length, lengthHeader);
+                MyDeviceManager.CanWrite(true,channel, id, lengthHeader.length, lengthHeader);
 
 
                 // Send file data in packets
@@ -45,7 +45,7 @@ public class CanFileTransfer {
                     byte[] packet = new byte[bytesRead + 1];
                     System.arraycopy(buffer, 0, packet, 0, bytesRead);
                     packet[bytesRead] = EOF; // Adding EOF to the end of the packet
-                    MyDeviceManager.CanWrite(channel, id, packet.length, packet);
+                    MyDeviceManager.CanWrite(true,channel, id, packet.length, packet);
 
                     totalBytesSent += bytesRead;
 
@@ -63,13 +63,13 @@ public class CanFileTransfer {
                 }
 
                 // Send EOF to mark the end of transmission
-                MyDeviceManager.CanWrite(channel, id, 1, new byte[]{EOF});
+                MyDeviceManager.CanWrite(true,channel, id, 1, new byte[]{EOF});
 
                 // Send CRC for all data in the file
                 byte[] crcPacket = new byte[2];
                 short crc16 = calculateCRC16(filePath);
                 ByteBuffer.wrap(crcPacket).putShort(crc16);
-                MyDeviceManager.CanWrite(channel, id, crcPacket.length, crcPacket);
+                MyDeviceManager.CanWrite(true,channel, id, crcPacket.length, crcPacket);
                 sending = false;
 
                 // Final progress update to 100%

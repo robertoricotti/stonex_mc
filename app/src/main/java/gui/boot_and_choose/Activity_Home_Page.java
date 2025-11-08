@@ -13,6 +13,13 @@ import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static services.ReadProjectService.numbers;
 import static services.UpdateValuesService.firstLaunch;
 import static services.UpdateValuesService.startedService;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DRILL;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.SOLARDRILL;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -21,20 +28,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.stx_dig.R;
 
 import cloud.S3ManagerSingleton;
 import gui.BaseClass;
-import gui.MyApp;
 import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
@@ -162,7 +165,7 @@ public class Activity_Home_Page extends BaseClass {
         }else {
             DataSaved.portView=2;
         }
-        if (DataSaved.isWL > 0) {
+        if (DataSaved.isWL > EXCAVATOR) {
             toDueD.setAlpha(0.3f);
         }
 
@@ -185,7 +188,7 @@ public class Activity_Home_Page extends BaseClass {
             }
         });
         toDueD.setOnClickListener(view -> {
-            if (DataSaved.isWL > 0) {
+            if (DataSaved.isWL > EXCAVATOR) {
                 new CustomToast(this, " ").show_alert();
             } else {
                 //TODO apri 2D
@@ -297,25 +300,26 @@ public class Activity_Home_Page extends BaseClass {
             }
             stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " New Faces\n");
             switch (DataSaved.isWL) {
-                case 0:
+                case EXCAVATOR:
                     toDig.setImageResource(R.drawable.bottone_scava);
                     break;
 
-                case 1:
+                case WHEELLOADER:
                     toDig.setImageResource(R.drawable.bottone_loada);
                     break;
 
-                case 2:
-                case 3:
+                case DOZER:
+                case DOZER_SIX:
                     toDig.setImageResource(R.drawable.bottone_grada);
                     break;
 
 
-                case 4:
+                case GRADER:
                     toDig.setImageResource(R.drawable.bottone_grada);
 
                     break;
-                case 10:
+                case DRILL:
+                case SOLARDRILL:
                     toDig.setImageResource(R.drawable.bottone_drilla);
 
                     break;

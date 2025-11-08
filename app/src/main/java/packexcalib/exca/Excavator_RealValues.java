@@ -11,6 +11,7 @@ import static packexcalib.exca.Sensors_Decoder.Deg_roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_stick;
 import static packexcalib.exca.Sensors_Decoder.Deg_tilt;
 import static packexcalib.exca.Sensors_Decoder.V_Laser;
+import static utils.MyTypes.EXCAVATOR;
 
 public class Excavator_RealValues {
 
@@ -42,7 +43,7 @@ public class Excavator_RealValues {
         double a;
         double d = Deg_stick;
         mcorrectStrick = d;
-        if(DataSaved.isWL==0) {
+        if(DataSaved.isWL==EXCAVATOR) {
 
             if ((d - offset - 90.00) < -179.99) {
                 a = (d - offset - 90.00) + 360.00;

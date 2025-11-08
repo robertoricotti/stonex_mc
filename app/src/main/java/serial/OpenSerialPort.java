@@ -2,6 +2,7 @@ package serial;
 
 import static gui.MyApp.GEN1;
 import static gui.MyApp.GEN2;
+import static utils.MyTypes.S980;
 
 import android.content.Context;
 import android.os.Build;
@@ -67,7 +68,7 @@ public class OpenSerialPort {
                         }
                     }
                     {
-                        if (DataSaved.gpsType == 1) {
+                        if (DataSaved.gpsType == S980) {
                             //Log.d("Programmo","Programmo");
                             SerialPortManager.instance().sendCommand("SET,DEVICE.LOGLIST,GST:2000|GGA:100|HDT:100|GPLLQ:100|\r\n");
                            Thread.sleep(500);

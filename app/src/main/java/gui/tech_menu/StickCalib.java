@@ -1,5 +1,7 @@
 package gui.tech_menu;
 
+import static utils.MyTypes.WHEELLOADER;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -93,7 +95,7 @@ public class StickCalib extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void init() {
-        if(DataSaved.isWL==1){
+        if(DataSaved.isWL==WHEELLOADER){
             titolao.setText("MAIN BOOM");
         }
         isPresse = false;
@@ -179,13 +181,13 @@ public class StickCalib extends AppCompatActivity {
         MyData.push("M" + indexMachineSelected + "_LaserHStick", Utils.writeMetri(laserH.getText().toString()));
         MyData.push("M" + indexMachineSelected + "_isExt", String.valueOf(DataSaved.isExtensionBoom));
         if(isPresse){
-            MyDeviceManager.CanWrite(0,0x608,8,new byte[]{0x23,0x10,0x10,0x01,0x73,0x61,0x76,0x65});
+            MyDeviceManager.CanWrite(true,0,0x608,8,new byte[]{0x23,0x10,0x10,0x01,0x73,0x61,0x76,0x65});
         }
     }
 
     private void onClick() {
         setExt.setOnLongClickListener(view -> {
-            MyDeviceManager.CanWrite(0, 0x608, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x608, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
             isPresse=true;
             return false;
         });

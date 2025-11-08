@@ -112,10 +112,20 @@
                     android:id="@+id/sc600"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:buttonTint="@color/white"
                     android:ems="5"
                     android:text="SC600+  "
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <CheckBox
+                    android:id="@+id/standardnmea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:buttonTint="@color/white"
+                    android:ems="5"
+                    android:text="STD NMEA  "
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />

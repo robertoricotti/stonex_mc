@@ -2,6 +2,8 @@ package gui.draw_class;
 
 import static gui.draw_class.Top_View_DXF.offsetY;
 import static gui.draw_class.Top_View_DXF.offsetX;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -781,10 +783,10 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(getResources().getColor(R.color._____cancel_text));
         paint.setStyle(Paint.Style.FILL);
 
-        if (DataSaved.isWL == 0) {
+        if (DataSaved.isWL == EXCAVATOR) {
             canvas.drawRoundRect(leftCarroX - cingoliWidth, left_top_carro.y - (cingoliHeight * 5),
                     leftCarroX + cingoliWidth, right_bottom_carro.y - cingoliHeight, 10, 10, paint);
-        } else if (DataSaved.isWL == 1) {
+        } else if (DataSaved.isWL == WHEELLOADER) {
             //TODO whwwloader
         }
 

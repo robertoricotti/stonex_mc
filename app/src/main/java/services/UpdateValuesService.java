@@ -1,6 +1,10 @@
 package services;
 
 
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.WHEELLOADER;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -369,11 +373,11 @@ public class UpdateValuesService extends Service {
 
                     if (iswl == null) {
                         if (i == 1 || i == 2) {
-                            MyData.push("M" + i + "_isWL", "0");
+                            MyData.push("M" + i + "_isWL", String.valueOf(EXCAVATOR));
                         } else if (i == 3) {
-                            MyData.push("M" + i + "_isWL", "1");
+                            MyData.push("M" + i + "_isWL", String.valueOf(WHEELLOADER));
                         } else if (i == 4) {
-                            MyData.push("M" + i + "_isWL", "2");
+                            MyData.push("M" + i + "_isWL", String.valueOf(DOZER));
                         }
 
                     }

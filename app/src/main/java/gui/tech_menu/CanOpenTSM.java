@@ -70,7 +70,7 @@ public class CanOpenTSM extends AppCompatActivity {
         txtDest = findViewById(R.id.txt_dA);
         progressBar = findViewById(R.id.progressBar);
         txtProgress = findViewById(R.id.txtProgress);
-        MyDeviceManager.CanWrite(0, 0, 2, new byte[]{1, 0});
+        MyDeviceManager.CanWrite(true,0, 0, 2, new byte[]{1, 0});
         gotoCanOpen.setVisibility(View.INVISIBLE);
         backToNova.setVisibility(View.INVISIBLE);
         restoreDef.setVisibility(View.INVISIBLE);
@@ -282,7 +282,7 @@ public class CanOpenTSM extends AppCompatActivity {
 
         changeId.setOnClickListener(view -> {
             Handler handler = new Handler();
-            MyDeviceManager.CanWrite(0, sourceID, 8, new byte[]{0x2F, 1, 0x30, 0, (byte) (destID), 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, sourceID, 8, new byte[]{0x2F, 1, 0x30, 0, (byte) (destID), 0, 0, 0});
             handler.postDelayed(this::msg47, 100);
             handler.postDelayed(this::msg48, 200);
             handler.postDelayed(this::msg49, 400);
@@ -340,313 +340,313 @@ public class CanOpenTSM extends AppCompatActivity {
     private void msg1() {
         isSend = true;
         //msg1
-        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});
         //NMT startup avvia la comunicazione senza id 0 iniziale
         progresso+=2;
     }
 
     private void msg2() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg3() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg4() {
-        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
         progresso+=2;
 
     }
 
     private void msg5() {
-        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
         progresso+=2;
 
     }
 
     private void msg6() {
-        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
         progresso+=2;
 
     }
 
     private void msg7() {
-        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});//0x65766173
+        MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});//0x65766173
         progresso+=2;
 
     }
 
     private void msg8() {
-        MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT statyup
+        MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT statyup
         progresso+=2;
 
     }
 
     private void msg9() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg10() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg11() {
-        MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
         progresso+=2;
 
     }
 
     private void msg12() {
-        MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg13() {
-        MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg14() {
-        MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
         progresso+=2;
     }
 
     private void msg15() {
-        MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg16() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg17() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg18() {
-        MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg19() {
-        MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg20() {
-        MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg21() {
-        MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
         progresso+=2;
     }
 
     private void msg22() {
-        MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT STARTUP
+        MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT STARTUP
         progresso+=2;
     }
 
     private void msg23() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg24() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg25() {
-        MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg26() {
-        MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg27() {
-        MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg28() {
-        MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
         progresso+=2;
     }
 
     private void msg29() {
-        MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT STARTUP
+        MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT STARTUP
         progresso+=2;
     }
 
     private void msg30() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg31() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
-            MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg32() {
-        MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg33() {
-        MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg34() {
-        MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 3, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg35() {
-        MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
         progresso+=2;
     }
 
     private void msg36() {
-        MyDeviceManager.CanWrite(0, 0x606, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT STARTUP
+        MyDeviceManager.CanWrite(true,0, 0x606, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT STARTUP
         progresso+=2;
     }
 
     private void msg37() {
-        MyDeviceManager.CanWrite(0, 0x606, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x606, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
         progresso+=2;
     }
     private void msgT(){
-        MyDeviceManager.CanWrite(0, 0x606, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
-        MyDeviceManager.CanWrite(0, 0x606, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});//qui si abilita o disabilita il 480+id
+        MyDeviceManager.CanWrite(true,0, 0x606, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x606, 8, new byte[]{43, 3, 24, 5, 0, 0, 0, 0});//qui si abilita o disabilita il 480+id
         progresso+=2;
     }
 
     private void msg38() {
-        MyDeviceManager.CanWrite(0, 0x606, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 0x03, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x606, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 0x03, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg39() {
-        MyDeviceManager.CanWrite(0, 0x606, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x606, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
         progresso+=2;
     }
 
     private void msg40() {
-        MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT STARTUP
+        MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{0x23, (byte) 0x80, 0x1F, 0, 8, 0, 0, 0});//NMT STARTUP
         progresso+=2;
     }
 
     private void msg41() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{43, 0, 24, 5, 50, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{43, 0, 24, 5, 0, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg42() {
         if (DataSaved.isCanOpen == 2) {
-            MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{43, 2, 24, 5, 0, 0, 0, 0});
         } else if (DataSaved.isCanOpen == 3) {
-            MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
+            MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{43, 2, 24, 5, 50, 0, 0, 0});
         }
         progresso+=2;
     }
 
     private void msg43() {
-        MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{43, 0, 96, 0, 10, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg44() {
-        MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{47, 17, 96, 0, 65, 0, 0, 0});
         progresso+=2;
     }
 
     private void msg45() {
-        MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 0x03, 0, 0, 0});
+        MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 0x03, 0, 0, 0});
         progresso+=5;
     }
 
     private void msg46() {
         progresso=100;
-        MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
         new CustomToast(CanOpenTSM.this, getResources().getString(R.string.powercycle_sensor)).show();
         isSend = false;
         progresso=0;
@@ -658,42 +658,42 @@ public class CanOpenTSM extends AppCompatActivity {
     private void msg47() {
         isSend = true;
         progresso=20;
-        MyDeviceManager.CanWrite(0, 0x601, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x601, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
     }
 
     private void msg48() {
         progresso=30;
-        MyDeviceManager.CanWrite(0, 0x602, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x602, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
 
     }
 
     private void msg49() {
         progresso=60;
-        MyDeviceManager.CanWrite(0, 0x607, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x607, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
 
     }
 
     private void msg50() {
         progresso=65;
-        MyDeviceManager.CanWrite(0, 0x604, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x604, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
 
     }
 
     private void msg51() {
         progresso=70;
-        MyDeviceManager.CanWrite(0, 0x605, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x605, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
 
     }
 
     private void msg52() {
         progresso=85;
-        MyDeviceManager.CanWrite(0, 0x606, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x606, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
 
     }
 
     private void msg53() {
         progresso=100;
-        MyDeviceManager.CanWrite(0, 0x603, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+        MyDeviceManager.CanWrite(true,0, 0x603, 8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
         new CustomToast(CanOpenTSM.this, getResources().getString(R.string.powercycle_sensor)).show();
         isSend = false;
         progresso=0;

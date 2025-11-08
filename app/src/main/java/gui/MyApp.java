@@ -13,6 +13,8 @@ import static services.CanService.stickDisc;
 import static services.CanService.stickOK;
 import static services.CanService.tiltDisc;
 import static services.CanService.tiltOK;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -683,7 +685,7 @@ git push
     }
 
     private void checkDialogs() {
-        if (DataSaved.isWL < 2) {
+        if (DataSaved.isWL < DOZER) {
             canError = tiltDisc && DataSaved.lrTilt != 0 ||
                     bucketDisc && DataSaved.lrBucket != 0 ||
                     stickDisc && DataSaved.lrStick != 0 ||
@@ -699,7 +701,7 @@ git push
 
 
         if (visibleActivity instanceof Grading3D_DXF ||
-                (visibleActivity instanceof Activity_Crea_Superficie && DataSaved.isWL == 2) || (visibleActivity instanceof Activity_Crea_Superficie && DataSaved.isWL == 3)) {
+                (visibleActivity instanceof Activity_Crea_Superficie && DataSaved.isWL ==DOZER) || (visibleActivity instanceof Activity_Crea_Superficie && DataSaved.isWL == DOZER_SIX)) {
             if (!sensorAlertDialog6.alertDialog.isShowing() &&
                     !sensorAlertDialogBLADE.alertDialog.isShowing() &&
                     !sensorAlertDialog5.alertDialog.isShowing() &&
@@ -734,7 +736,7 @@ git push
                     !sensorAlertDialog3.alertDialog.isShowing() &&
                     !sensorAlertDialog2.alertDialog.isShowing() &&
                     !sensorAlertDialog1.alertDialog.isShowing() &&
-                    bucketDisc && DataSaved.lrBucket != 0 && DataSaved.isWL != 2) {
+                    bucketDisc && DataSaved.lrBucket != 0 && DataSaved.isWL < DOZER) {
                 sensorAlertDialog5.show();
             }
             if (!sensorAlertDialog6.alertDialog.isShowing() &&
@@ -778,7 +780,7 @@ git push
     }
 
     private void errori() {
-        if (DataSaved.isWL < 2) {
+        if (DataSaved.isWL < DOZER) {
             errorCode = PLC_DataTypes_BigEndian.Encode_8_bool_be(new boolean[]{
                     (!frameOK) && DataSaved.lrFrame != 0,
                     (!boom1OK) && DataSaved.lrBoom1 != 0,

@@ -1,6 +1,8 @@
 package gui.draw_class;
 
 
+import static utils.MyTypes.EXCAVATOR;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -108,7 +110,7 @@ public class Draw1D extends View {
             PointF piombo = new PointF(origin.x, origin.y + distance);
             float originAngle = getDegrees(origin.x, origin.y, piombo.x, piombo.y);
             PointF flat = new PointF();
-            if(DataSaved.isWL==0) {
+            if(DataSaved.isWL==EXCAVATOR) {
                 flat.x = (float) (origin.x + distance * Math.cos(originAngle + Math.toRadians(DataSaved.flat * -1))); //wl inv
                 flat.y = (float) (origin.y + distance * Math.sin(originAngle + Math.toRadians(DataSaved.flat * -1))); //wl inv
             }else {
@@ -130,7 +132,7 @@ public class Draw1D extends View {
             RectF oval = new RectF(left, top, right, bottom);
             float startAngle = 90;
             float sweepAngle=180;
-            if(DataSaved.isWL==0){
+            if(DataSaved.isWL==EXCAVATOR){
              sweepAngle = 180;}
             else {
                 sweepAngle = -180;
@@ -276,7 +278,7 @@ public class Draw1D extends View {
             float radius = getDistance(benna.get(0).x, benna.get(0).y, benna.get(13).x, benna.get(13).y) * 0.80f;
 
 
-            if(DataSaved.isWL==0) {
+            if(DataSaved.isWL==EXCAVATOR) {
                 path.moveTo(benna.get(0).x + (radius * 0.80f), benna.get(0).y); //wl inv
             }else {
                 path.moveTo(benna.get(0).x - (radius * 0.80f), (float) (benna.get(0).y-(DataSaved.L_Bucket*0.5*scala))); //wl inv

@@ -1,6 +1,10 @@
 package gui.gps;
 
 import static packexcalib.gnss.CRS_Strings._NONE;
+import static utils.MyTypes.S980;
+import static utils.MyTypes.SC600;
+import static utils.MyTypes.SMC;
+import static utils.MyTypes.STANDARD_NMEA;
 import static utils.Utils.convertIpStringToBytes;
 import static utils.Utils.createPackets;
 
@@ -14,7 +18,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.ValueCallback;
@@ -31,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,6 +52,7 @@ import java.util.List;
 
 import event_bus.CMD_Event;
 import event_bus.CanEvents;
+import gui.MyApp;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.Serial_Msg_Debug;
 import gui.dialogs_and_toast.CustomMenu;
@@ -87,7 +92,7 @@ public class Nuovo_Gps extends AppCompatActivity {
     ImageView back, gpsStat, debug, readAll, saveAll;
     ProgressBar progressBar2;
     TextView statusBar;
-    CheckBox ckSmc, ckS980, ckSc600, ckCan, ckHSL0, ckHSL2, ckWK0, ckDemo, ckRadio, ckNtrip, ck20, ck10, ck5, ckOff;
+    CheckBox ckSmc, ckS980, ckSc600, standardnmea, ckCan, ckHSL0, ckHSL2, ckWK0, ckDemo, ckRadio, ckNtrip, ck20, ck10, ck5, ckOff;
     EditText etIntero, etDecimale, etCh, tv1, tv2, tv3, tv4, tv5, tv6, tv7, tv8, tv9, tv28, tv38;
     Button defaultF, read0, read1, read2, read3, read4, read5, read6, read7, read8, read9, read10, read11, read12, read28, read38, readNet;
     Button write0, write1, write2, write3, write4, write5, write6, write7, write8, write9, write10, write11, write12, write28, write38, writeNet;
@@ -131,6 +136,9 @@ public class Nuovo_Gps extends AppCompatActivity {
     }
 
     public void updateUI() {
+        if(DataSaved.gpsType==STANDARD_NMEA){
+
+        }
         try {
             String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
             if (ssid != null) {
@@ -148,7 +156,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         } catch (Exception e) {
             wifistate.setBackgroundColor(getColor(R.color.light_yellow));
         }
-        if (DataSaved.gpsType == 0 && DataSaved.my_comPort == 0) {
+        if (DataSaved.gpsType == SMC && DataSaved.my_comPort == 0) {
             showLayouts(0);
             allerta.setVisibility(View.INVISIBLE);
         } else {
@@ -234,6 +242,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         ckSmc = findViewById(R.id.smc);
         ckS980 = findViewById(R.id.s980);
         ckSc600 = findViewById(R.id.sc600);
+        standardnmea = findViewById(R.id.standardnmea);
         ckCan = findViewById(R.id.can);
         ckHSL0 = findViewById(R.id.hsl0);
         ckHSL2 = findViewById(R.id.hsl2);
@@ -319,7 +328,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         isRead38 = false;
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         customNumberDialog = new CustomNumberDialog(this, 100);
-        customQwertyDialog = new CustomQwertyDialog(this,null);
+        customQwertyDialog = new CustomQwertyDialog(this, null);
         ckHSL0.setText(MyDeviceManager.serialCom(1).replaceAll("/dev/", ""));
         ckHSL2.setText(MyDeviceManager.serialCom(2).replaceAll("/dev/", ""));
         ckWK0.setText(MyDeviceManager.serialCom(3).replaceAll("/dev/", ""));
@@ -334,9 +343,10 @@ public class Nuovo_Gps extends AppCompatActivity {
         if (chan < 1) {
             chan = 1;
         }
-        ckSmc.setChecked(DataSaved.gpsType == 0);
-        ckS980.setChecked(DataSaved.gpsType == 1);
-        ckSc600.setChecked(DataSaved.gpsType == 2);
+        ckSmc.setChecked(DataSaved.gpsType == SMC);
+        ckS980.setChecked(DataSaved.gpsType == S980);
+        ckSc600.setChecked(DataSaved.gpsType == SC600);
+        standardnmea.setChecked(DataSaved.gpsType == STANDARD_NMEA);
         ckCan.setChecked(DataSaved.my_comPort == 0);
         ckHSL0.setChecked(DataSaved.my_comPort == 1);
         ckHSL2.setChecked(DataSaved.my_comPort == 2);
@@ -357,17 +367,22 @@ public class Nuovo_Gps extends AppCompatActivity {
             rbModem.setChecked(rbModem.isChecked());
         });
         ckSmc.setOnClickListener(view -> {
-            DataSaved.gpsType = 0;
+            DataSaved.gpsType = SMC;
             MyData.push("M" + indexOfMachine + "_sc600", String.valueOf(DataSaved.gpsType));
             init();
         });
         ckS980.setOnClickListener(view -> {
-            DataSaved.gpsType = 1;
+            DataSaved.gpsType = S980;
             MyData.push("M" + indexOfMachine + "_sc600", String.valueOf(DataSaved.gpsType));
             init();
         });
         ckSc600.setOnClickListener(view -> {
-            DataSaved.gpsType = 2;
+            DataSaved.gpsType = SC600;
+            MyData.push("M" + indexOfMachine + "_sc600", String.valueOf(DataSaved.gpsType));
+            init();
+        });
+        standardnmea.setOnClickListener(view -> {
+            DataSaved.gpsType = STANDARD_NMEA;
             MyData.push("M" + indexOfMachine + "_sc600", String.valueOf(DataSaved.gpsType));
             init();
         });
@@ -478,7 +493,7 @@ public class Nuovo_Gps extends AppCompatActivity {
             }
         });
         readAll.setOnClickListener(view -> {
-            if (!showWebUI && DataSaved.gpsType == 0 && DataSaved.my_comPort == 0) {
+            if (!showWebUI && DataSaved.gpsType == SMC && DataSaved.my_comPort == 0) {
                 allReading();
             }
         });
@@ -506,10 +521,12 @@ public class Nuovo_Gps extends AppCompatActivity {
                     geckoSession.close();
                 }*/
             } else {
-                showWebUI = !showWebUI;
-                if (showWebUI) {
-                    openWebUI();
-                }
+
+                    showWebUI = !showWebUI;
+                    if (showWebUI) {
+                        openWebUI();
+                    }
+
             }
         });
         back.setOnClickListener(view -> {
@@ -654,7 +671,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                                 break;
 
                         }
-                        MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{WRITE, (byte) 0x01, (byte) speed, (byte) 0x03});
+                        MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{WRITE, (byte) 0x01, (byte) speed, (byte) 0x03});
                         break;
                     case 1:
                         //s980
@@ -720,14 +737,14 @@ public class Nuovo_Gps extends AppCompatActivity {
                         //smc
                         if (DataSaved.radioMode == 0) {
                             //passa ad ntrip
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0x1, (byte) DataSaved.priorityNet, (byte) 0x1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0x1, (byte) DataSaved.priorityNet, (byte) 0x1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                             MyData.push("M" + indexOfMachine + "radioMode", "1");
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
                         } else {
                             //passa a uhf
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0, (byte) DataSaved.priorityNet, (byte) 0x1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0, (byte) DataSaved.priorityNet, (byte) 0x1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                             MyData.push("M" + indexOfMachine + "radioMode", "0");
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
                         }
                         break;
                     case 1:
@@ -770,7 +787,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                             if (chan > 0 && chan < 9) {
                                 showProgress(1000);
                                 statusBar.setText("Writing...");
-                                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x01, (byte) chan, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x01, (byte) chan, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
 
                             } else {
                                 new CustomToast(Nuovo_Gps.this, "VALID IS CH 1..8").show_alert();
@@ -804,7 +821,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                             mDec = Integer.parseInt(etDecimale.getText().toString().replace(" ", ""));
                             byte[] radioInt = PLC_DataTypes_LittleEndian.U16_to_bytes(mInt);
                             byte[] radioDec = PLC_DataTypes_LittleEndian.U16_to_bytes(mDec);
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x02, radioInt[0], radioInt[1], radioDec[0], radioDec[1], (byte) 0xFF, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x02, radioInt[0], radioInt[1], radioDec[0], radioDec[1], (byte) 0xFF, (byte) 0xFF});
                         } catch (NumberFormatException e) {
                             tostaFail(e.toString());
                         }
@@ -828,7 +845,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                 switch (DataSaved.gpsType) {
                     case 0:
                         //smc
-                        MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x03, (byte) proto, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                        MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x03, (byte) proto, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
 
                         break;
                     case 1:
@@ -848,7 +865,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                 switch (DataSaved.gpsType) {
                     case 0:
                         //smc
-                        MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x05, (byte) selectedSpacing, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                        MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x05, (byte) selectedSpacing, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
 
                         break;
                     case 1:
@@ -878,11 +895,11 @@ public class Nuovo_Gps extends AppCompatActivity {
                     case 0:
                         //smc
                         if (tv3.getText().toString().isEmpty()) {
-                            MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{WRITE, 0x07, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{WRITE, 0x07, (byte) 0xFF});
                         } else {
                             List<byte[]> packets = createPackets(tv3.getText().toString(), (byte) 0x07);
                             for (byte[] packet : packets) {
-                                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, packet);
+                                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, packet);
                             }
                         }
                         new CustomToast(this, "Read again after few seconds...").show_alert();
@@ -906,11 +923,11 @@ public class Nuovo_Gps extends AppCompatActivity {
                     case 0:
                         //smc
                         if (tv4.getText().toString().isEmpty()) {
-                            MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{WRITE, 0x08, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{WRITE, 0x08, (byte) 0xFF});
                         } else {
                             List<byte[]> packets2 = createPackets(tv4.getText().toString(), (byte) 0x08);
                             for (byte[] packet : packets2) {
-                                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, packet);
+                                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, packet);
                             }
                         }
                         new CustomToast(this, "Read again after few seconds...").show_alert();
@@ -934,11 +951,11 @@ public class Nuovo_Gps extends AppCompatActivity {
                     case 0:
                         //smc
                         if (tv5.getText().toString().isEmpty()) {
-                            MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{WRITE, 0x09, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{WRITE, 0x09, (byte) 0xFF});
                         } else {
                             List<byte[]> packets3 = createPackets(tv5.getText().toString(), (byte) 0x09);
                             for (byte[] packet : packets3) {
-                                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, packet);
+                                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, packet);
                             }
                         }
                         new CustomToast(this, "Read again after few seconds...").show_alert();
@@ -963,7 +980,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                         //smc
                         try {
                             ipBytes = convertIpStringToBytes(tv28.getText().toString());
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{WRITE, 0x0A, (byte) (ipBytes[0] & 0xff), (byte) (ipBytes[1] & 0xff), (byte) (ipBytes[2] & 0xff), (byte) (ipBytes[3] & 0xff), (byte) 0xFF, (byte) 0xFF});//
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{WRITE, 0x0A, (byte) (ipBytes[0] & 0xff), (byte) (ipBytes[1] & 0xff), (byte) (ipBytes[2] & 0xff), (byte) (ipBytes[3] & 0xff), (byte) 0xFF, (byte) 0xFF});//
                         } catch (Exception e) {
                             new CustomToast(this, "INVALID IP FORMAT").show_error();
                         }
@@ -989,7 +1006,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                         //smc
                         try {
                             mPort = PLC_DataTypes_LittleEndian.U32_to_bytes(Integer.parseInt(tv38.getText().toString().replace(" ", "")));
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{WRITE, 0x0B, mPort[0], mPort[1], mPort[2], mPort[3], (byte) 0xFF, (byte) 0xFF});//
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{WRITE, 0x0B, mPort[0], mPort[1], mPort[2], mPort[3], (byte) 0xFF, (byte) 0xFF});//
 
                         } catch (NumberFormatException e) {
                             new CustomToast(this, "INVALID PORT VALUE").show_error();
@@ -1015,11 +1032,11 @@ public class Nuovo_Gps extends AppCompatActivity {
                     case 0:
                         //smc
                         if (tv6.getText().toString().isEmpty()) {
-                            MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{WRITE, 0x0E, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{WRITE, 0x0E, (byte) 0xFF});
                         } else {
                             List<byte[]> packets5 = createPackets(tv6.getText().toString(), (byte) 0x0E);
                             for (byte[] packet : packets5) {
-                                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, packet);
+                                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, packet);
                             }
                         }
                         new CustomToast(this, "Read again after few seconds...").show_alert();
@@ -1041,11 +1058,11 @@ public class Nuovo_Gps extends AppCompatActivity {
                     case 0:
                         //smc
                         if (tv7.getText().toString().isEmpty()) {
-                            MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{WRITE, 0x0F, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{WRITE, 0x0F, (byte) 0xFF});
                         } else {
                             List<byte[]> packets6 = createPackets(tv7.getText().toString(), (byte) 0x0F);
                             for (byte[] packet : packets6) {
-                                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, packet);
+                                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, packet);
                             }
                         }
                         new CustomToast(this, "Read again after few seconds...").show_alert();
@@ -1069,11 +1086,11 @@ public class Nuovo_Gps extends AppCompatActivity {
                     case 0:
                         //smc
                         if (tv8.getText().toString().isEmpty()) {
-                            MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{WRITE, 0x0C, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{WRITE, 0x0C, (byte) 0xFF});
                         } else {
                             List<byte[]> packets4 = createPackets(tv8.getText().toString(), (byte) 0x0C);
                             for (byte[] packet : packets4) {
-                                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, packet);
+                                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, packet);
                             }
                         }
                         new CustomToast(this, "Read again after few seconds...").show_alert();
@@ -1102,7 +1119,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                         } catch (NumberFormatException e) {
                             upl = 10;
                         }
-                        MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{WRITE, 0x0D, (byte) upl, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//
+                        MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{WRITE, 0x0D, (byte) upl, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//
 
                         break;
                     case 1:
@@ -1129,7 +1146,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                         } else {
                             redio = 0;
                         }
-                        MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x11, (byte) redio, (byte) DataSaved.priorityNet, (byte) 0x1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                        MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x11, (byte) redio, (byte) DataSaved.priorityNet, (byte) 0x1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                         MyData.push("M" + indexOfMachine + "priorityNet", String.valueOf(DataSaved.priorityNet));
                         break;
                     case 1:
@@ -1156,7 +1173,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                     switch (DataSaved.gpsType) {
                         case 0:
                             //smc
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x01, (byte) 0xFF, (byte) 1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{WRITE, (byte) 0x01, (byte) 0xFF, (byte) 1, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                             break;
                         case 1:
                             //s980
@@ -1180,12 +1197,12 @@ public class Nuovo_Gps extends AppCompatActivity {
 
         });
         etIntero.setOnClickListener(view -> {
-            if (!customNumberDialog.dialog.isShowing() && DataSaved.gpsType == 0) {
+            if (!customNumberDialog.dialog.isShowing() && DataSaved.gpsType == SMC) {
                 customNumberDialog.show(etIntero, 3);
             }
         });
         etDecimale.setOnClickListener(view -> {
-            if (!customNumberDialog.dialog.isShowing() && DataSaved.gpsType == 0) {
+            if (!customNumberDialog.dialog.isShowing() && DataSaved.gpsType == SMC) {
                 customNumberDialog.show(etDecimale, 4);
             }
         });
@@ -1806,7 +1823,7 @@ public class Nuovo_Gps extends AppCompatActivity {
                 String[] substrings = cmdStatust.split("\\|");
                 try {
                     ///
-                    if (DataSaved.gpsType > 0) {
+                    if (DataSaved.gpsType > SMC) {
                         for (String substring : substrings) {
                             if (substring.contains("OK,GGA:")) {
                                 String fgga = substring.substring(substring.indexOf(":") + 1);
@@ -1835,7 +1852,7 @@ public class Nuovo_Gps extends AppCompatActivity {
 
                 }
                 try {
-                    if (DataSaved.gpsType > 0) {
+                    if (DataSaved.gpsType > SMC) {
                         String[] substringsR = cmdStatust.split(",");
                         if (substringsR[2].equals("ports.radio.enable")) {
 
@@ -2063,7 +2080,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{READ, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{READ, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                 break;
             case 1:
                 //s980
@@ -2082,7 +2099,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{READ, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
+                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{READ, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
                 break;
             case 1:
                 //s980
@@ -2100,7 +2117,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{READ, 0x01, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//READ RADIO CH
+                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{READ, 0x01, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//READ RADIO CH
                 break;
             case 1:
                 //s980
@@ -2117,7 +2134,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{READ, 0x02, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//READ RADIO FRQ
+                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{READ, 0x02, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//READ RADIO FRQ
                 break;
             case 1:
                 //s980
@@ -2134,7 +2151,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{READ, 0x03, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//READ RADIO PROTO
+                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{READ, 0x03, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//READ RADIO PROTO
                 break;
             case 1:
                 //s980
@@ -2151,7 +2168,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{READ, 0x05, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//READ RADIO CHN SPACING
+                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{READ, 0x05, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//READ RADIO CHN SPACING
                 break;
             case 1:
                 //s980
@@ -2174,7 +2191,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{READ, 0x07, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//APN REQUEST
+                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{READ, 0x07, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//APN REQUEST
                 break;
             case 1:
                 //s980
@@ -2191,7 +2208,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{READ, 0x08, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//APN USER REQ
+                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{READ, 0x08, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//APN USER REQ
 
                 break;
             case 1:
@@ -2209,7 +2226,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{READ, 0x09, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//APN PSW REQ
+                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{READ, 0x09, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//APN PSW REQ
                 break;
             case 1:
                 //s980
@@ -2226,7 +2243,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{READ, 0x0A, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//IP REQ
+                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{READ, 0x0A, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//IP REQ
                 break;
             case 1:
                 //s980
@@ -2243,7 +2260,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{READ, 0x0B, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//PORT REQUEST
+                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{READ, 0x0B, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//PORT REQUEST
                 break;
             case 1:
                 //s980
@@ -2260,7 +2277,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{READ, 0x0E, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP USER REQUEST
+                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{READ, 0x0E, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP USER REQUEST
                 break;
             case 1:
                 //s980
@@ -2278,7 +2295,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{READ, 0x0F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
+                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{READ, 0x0F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
                 break;
             case 1:
                 //s980
@@ -2295,7 +2312,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF2A01, 8, new byte[]{READ, 0x0C, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//MOUNT POINT REQUEST
+                MyDeviceManager.CanWrite(true, 0, 0x18FF2A01, 8, new byte[]{READ, 0x0C, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//MOUNT POINT REQUEST
                 break;
             case 1:
                 //s980
@@ -2312,7 +2329,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{READ, 0x0D, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//UPLOAD GGA REQUEST
+                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{READ, 0x0D, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//UPLOAD GGA REQUEST
                 break;
             case 1:
                 //s980
@@ -2327,7 +2344,7 @@ public class Nuovo_Gps extends AppCompatActivity {
         switch (DataSaved.gpsType) {
             case 0:
                 //smc
-                MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{READ, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
+                MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{READ, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
                 break;
             case 1:
                 //s980

@@ -244,7 +244,8 @@ public class SimpleBucket6Points {
 
         // Bordi visibili
         gl.glShadeModel(GL10.GL_SMOOTH);
-        gl.glEnable(GL10.GL_LINE_SMOOTH);
+
+
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
         float[] c = GL_Methods.parseColorToGL(Color.BLACK);
         gl.glLineWidth(1.5f);

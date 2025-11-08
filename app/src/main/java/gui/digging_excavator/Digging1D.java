@@ -2,6 +2,8 @@ package gui.digging_excavator;
 
 
 import static gui.MyApp.hAlarm;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -159,7 +161,7 @@ public class Digging1D extends BaseClass {
         flatAngleBar = new FlatAngleBar(this);
         centerLed.addView(flatAngleBar);
         panel1D.setBackgroundColor(MyColorClass.colorSfondo);
-        if (DataSaved.isWL == 1) {
+        if (DataSaved.isWL == WHEELLOADER) {
             centerLed.setRotationY(180f);
         }
 
@@ -412,17 +414,17 @@ public class Digging1D extends BaseClass {
             if (ExcavatorLib.distToSurf >= -DataSaved.deadbandH && ExcavatorLib.distToSurf <= DataSaved.deadbandH) {
                 leftLed.setTextColor(Color.GREEN);
                 leftLed.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.distToSurf)));
-                MyDeviceManager.CanWrite(0,0xA0,3, LeicaLB.mapping(false,ExcavatorLib.distToSurf,DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0,0xA0,3, LeicaLB.mapping(false,ExcavatorLib.distToSurf,DataSaved.deadbandH));
             }
             if (ExcavatorLib.distToSurf > DataSaved.deadbandH) {
                 leftLed.setTextColor(Color.WHITE);
                 leftLed.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.distToSurf)));
-                MyDeviceManager.CanWrite(0,0xA0,3, LeicaLB.mapping(false,ExcavatorLib.distToSurf,DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0,0xA0,3, LeicaLB.mapping(false,ExcavatorLib.distToSurf,DataSaved.deadbandH));
             }
             if (ExcavatorLib.distToSurf < -DataSaved.deadbandH) {
                 leftLed.setTextColor(Color.WHITE);
                 leftLed.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.distToSurf)));
-                MyDeviceManager.CanWrite(0,0xA0,3, LeicaLB.mapping(false,ExcavatorLib.distToSurf,DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0,0xA0,3, LeicaLB.mapping(false,ExcavatorLib.distToSurf,DataSaved.deadbandH));
             }
         } else {
             if (real_height >= -DataSaved.deadbandH && real_height <= DataSaved.deadbandH) {
@@ -444,19 +446,19 @@ public class Digging1D extends BaseClass {
             if (real_height >= -DataSaved.deadbandH && real_height <= DataSaved.deadbandH) {
                 leftLed.setTextColor(Color.GREEN);
                 leftLed.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(real_height)));
-                MyDeviceManager.CanWrite(0,0xA0,3, LeicaLB.mapping(false,real_height,DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0,0xA0,3, LeicaLB.mapping(false,real_height,DataSaved.deadbandH));
                 CanSender.onGrade= (byte) 128;
             }
             if (real_height > DataSaved.deadbandH) {
                 leftLed.setTextColor(Color.WHITE);
                 leftLed.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(real_height)));
-                MyDeviceManager.CanWrite(0,0xA0,3, LeicaLB.mapping(false,real_height,DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0,0xA0,3, LeicaLB.mapping(false,real_height,DataSaved.deadbandH));
                 CanSender.onGrade= (byte) 125;
             }
             if (real_height < -DataSaved.deadbandH) {
                 leftLed.setTextColor(Color.WHITE);
                 leftLed.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(real_height)));
-                MyDeviceManager.CanWrite(0,0xA0,3, LeicaLB.mapping(false,real_height,DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0,0xA0,3, LeicaLB.mapping(false,real_height,DataSaved.deadbandH));
                 CanSender.onGrade= (byte) 131;
             }
         }
@@ -474,13 +476,13 @@ public class Digging1D extends BaseClass {
         if ((ExcavatorLib.correctFlat >= (DataSaved.slopeY - DataSaved.deadbandFlatAngle)) && (ExcavatorLib.correctFlat <= (DataSaved.slopeY + DataSaved.deadbandFlatAngle))) {
             flatAngleBar.indexFlatBar = 1;
         } else if (ExcavatorLib.correctFlat > (DataSaved.slopeY + DataSaved.deadbandFlatAngle)) {
-            if (DataSaved.isWL == 0) {
+            if (DataSaved.isWL == EXCAVATOR) {
                 flatAngleBar.indexFlatBar = 0;
             } else {
                 flatAngleBar.indexFlatBar = 2;
             }
         } else if (ExcavatorLib.correctFlat < (DataSaved.slopeY - DataSaved.deadbandFlatAngle)) {
-            if (DataSaved.isWL == 0) {
+            if (DataSaved.isWL == EXCAVATOR) {
                 flatAngleBar.indexFlatBar = 2;
             } else {
                 flatAngleBar.indexFlatBar = 0;

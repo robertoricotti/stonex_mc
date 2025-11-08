@@ -521,7 +521,7 @@ public class CanService extends Service {
             byte msg = 0x01;
 
 
-            MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+            MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
             new OpenSerialPort(this);
         } catch (Exception e) {
             System.out.println(e);

@@ -5,8 +5,11 @@ import static packexcalib.exca.DataSaved.puntiProfilo;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_Yaw_Tilt;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
-
-import android.util.Log;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import java.util.Arrays;
 
@@ -71,7 +74,7 @@ public class ExcavatorLib {
             larghezzabenna = DataSaved.W_Bucket;
 
 
-            if (DataSaved.isWL == 0 || DataSaved.isWL == 2 || DataSaved.isWL == 3 || DataSaved.isWL == 4) {
+            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
                 if (DataSaved.Extra_Heading != 0) {
 
                     if (NmeaListener.roof_Orientation != 999.999) {
@@ -84,7 +87,7 @@ public class ExcavatorLib {
                     swing_boom_angle = 0;
                 }
             }
-            if (DataSaved.isWL == 1) {
+            if (DataSaved.isWL == WHEELLOADER) {
                 if (DataSaved.Extra_Heading != 0) {
                     swing_boom_angle = DataSaved.SteerWheel_Result;
                 } else {
@@ -95,7 +98,7 @@ public class ExcavatorLib {
 
             if (GPS_Enabled) {
                 double offsetSwing = 0;
-                if (DataSaved.isWL == 0 && DataSaved.Extra_Heading == 1) {
+                if (DataSaved.isWL == EXCAVATOR && DataSaved.Extra_Heading == 1) {
                     offsetSwing = DataSaved.offsetSwingExca;
                 }
 
@@ -115,8 +118,8 @@ public class ExcavatorLib {
 
                 startXYZ = new double[]{NmeaListener.Est1, NmeaListener.Nord1, NmeaListener.Quota1};
                 switch (DataSaved.isWL) {
-                    case 0:
-                    case 1:
+                    case EXCAVATOR:
+                    case WHEELLOADER:
                         coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ, hdt0);
                         if (DataSaved.deltaX < 0) {
                             coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, DataSaved.deltaX, hdtL);
@@ -228,9 +231,9 @@ public class ExcavatorLib {
                             }
                         }
                         break;
-                    case 2:
-                    case 3:
-                    case 4:
+                    case DOZER:
+                    case DOZER_SIX:
+                    case GRADER:
                         //dozer e grader
                         hdt_LAMA = hdt0;
                         yawSensor = 0;

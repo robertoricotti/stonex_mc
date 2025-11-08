@@ -1,5 +1,7 @@
 package gui.projects;
 
+import static utils.MyTypes.DOZER;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -145,7 +147,7 @@ public class Activity_Crea_Superficie extends BaseClass {
             switch (getIntent().getStringExtra("proj")) {
                 case "PLAN":
                     Canvas_Crea_Superficie.mode = 0;
-                    if (DataSaved.isWL < 2) {
+                    if (DataSaved.isWL < DOZER) {
                         statiImg.setImageResource(R.drawable.piano_benna);
                     } else {
                         statiImg.setImageResource(R.drawable.piano_lama);
@@ -160,7 +162,7 @@ public class Activity_Crea_Superficie extends BaseClass {
                     leftSLOPE = 0;
                     rightDIST = 20;
                     rightSLOPE = 0;
-                    if (DataSaved.isWL < 2) {
+                    if (DataSaved.isWL < DOZER) {
                         statiImg.setImageResource(R.drawable.ab_piano_benna);
                     } else {
                         statiImg.setImageResource(R.drawable.ab_piano_lama);
@@ -170,7 +172,7 @@ public class Activity_Crea_Superficie extends BaseClass {
                     Canvas_Crea_Superficie.mode = 2;
                     pointIndex = 0;
 
-                    if (DataSaved.isWL < 2) {
+                    if (DataSaved.isWL < DOZER) {
                         statiImg.setImageResource(R.drawable.perimetro_benna);
                     } else {
                         statiImg.setImageResource(R.drawable.perimetro_lama);
@@ -193,7 +195,7 @@ public class Activity_Crea_Superficie extends BaseClass {
 
                     break;
                 default:
-                    if (DataSaved.isWL < 2) {
+                    if (DataSaved.isWL < DOZER) {
                         statiImg.setImageResource(R.drawable.piano_benna);
                     } else {
                         statiImg.setImageResource(R.drawable.piano_lama);
@@ -201,7 +203,7 @@ public class Activity_Crea_Superficie extends BaseClass {
                     break;
             }
         } catch (Exception e) {
-            if (DataSaved.isWL < 2) {
+            if (DataSaved.isWL < DOZER) {
                 statiImg.setImageResource(R.drawable.piano_benna);
             } else {
                 statiImg.setImageResource(R.drawable.piano_lama);
@@ -217,7 +219,7 @@ public class Activity_Crea_Superficie extends BaseClass {
         dialogParametriAb = new Dialog_Parametri_AB(this);
         dialogEditZeta = new Dialog_Edit_Zeta(this, 100);
 
-        if (DataSaved.isWL < 2) {
+        if (DataSaved.isWL < DOZER) {
             bucketEdgeL.setImageResource(R.drawable.benna_misura_sinistra);
             bucketEdgeC.setImageResource(R.drawable.benna_misura_cnt);
             bucketEdgeR.setImageResource(R.drawable.benna_misura_destra);

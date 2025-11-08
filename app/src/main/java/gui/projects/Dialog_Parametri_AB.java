@@ -7,6 +7,7 @@ import static gui.projects.Activity_Crea_Superficie.puntiAB;
 import static gui.projects.Activity_Crea_Superficie.rightDIST;
 import static gui.projects.Activity_Crea_Superficie.rightSLOPE;
 import static gui.projects.Activity_Crea_Superficie.slopeAB;
+import static utils.MyTypes.DOZER;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -144,7 +145,7 @@ public class Dialog_Parametri_AB {
         txt_7.setText("POINT D " + Utils.getMetriSimbol());
         txt_8.setText("POINT E " + Utils.getMetriSimbol());
         txt_9.setText("POINT F " + Utils.getMetriSimbol());
-        if (DataSaved.isWL < 2) {
+        if (DataSaved.isWL < DOZER) {
             collectCL.setImageResource(R.drawable.benna_misura_sinistra);
             collectDL.setImageResource(R.drawable.benna_misura_sinistra);
             collectEL.setImageResource(R.drawable.benna_misura_sinistra);

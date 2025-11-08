@@ -3,11 +3,15 @@ package gui.my_opengl;
 
 import static gui.my_opengl.My3DActivity.PNEZD_FUNCTION;
 import static gui.my_opengl.My3DActivity.glPoint;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -103,7 +107,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
             // Altre opzioni possibili
             gl11.glShadeModel(GL11.GL_SMOOTH);
-            gl11.glEnable(GL11.GL_LINE_SMOOTH);
+
+            gl.glDisable(GL10.GL_POINT_SMOOTH); // opzionale, per sicurezza
             gl11.glEnable(GL10.GL_NICEST);
             gl11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_NICEST);
         }
@@ -296,15 +301,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     }
 
                     switch (DataSaved.isWL) {
-                        case 0:
+                        case EXCAVATOR:
                             GL_DrawExca.draw(gl11);
                             break;
-                        case 1:
+                        case WHEELLOADER:
                             GL_DrawWheel.draw(gl11);
                             break;
-                        case 2:
-                        case 3:
-                        case 4:
+                        case DOZER:
+                        case DOZER_SIX:
+                        case GRADER:
                             GL_DrawDozer.draw(gl11);
                             break;
 

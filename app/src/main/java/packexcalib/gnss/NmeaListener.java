@@ -12,16 +12,16 @@ import packexcalib.exca.PLC_DataTypes_LittleEndian;
 
 
 public class NmeaListener {
-    static Deg2UTM deg2UTM1;
-    public static double tmpQuotaUTM = 0;
-    static double tmpQuotaLOC = 0;
-    static double tmpNordUTM = 0;
-    static double tmpEstUTM = 0;
-    static double tmpNordLOC = 0;
-    static double tmpEstLOC = 0;
-    static double tmpLat = 0;
-    static double tmpLon = 0;
-    public static double tmpGeoidSeparator = 0;
+    static CoordinateXYZ coordinateXYZLLQ,coordinateXYZJKT,coordinateXYZ_1,coordinateXYZ,coord,coordUTM;
+    public static double tmpQuotaUTM ;
+    static double tmpQuotaLOC;
+    static double tmpNordUTM ;
+    static double tmpEstUTM ;
+    static double tmpNordLOC ;
+    static double tmpEstLOC ;
+    static double tmpLat ;
+    static double tmpLon ;
+    public static double tmpGeoidSeparator ;
 
     public static String[] NmeaInput;
     static CalculateXor8 calculateXor8;
@@ -69,11 +69,12 @@ public class NmeaListener {
                             qualityTrimble();
                             VRMS_ = "0.000";
                             Quota1 = DataSaved.offset_Z_antenna + Double.parseDouble(NmeaInput[11].replace("GHT+", "").replace("EHT+", "").replace(",", "."));
-                            deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, Quota1, DataSaved.S_CRS);
-                            Nord1 = deg2UTM1.getNorthing();
-                            Est1 = deg2UTM1.getEasting();
-                            mChar = deg2UTM1.getLetter();
-                            mZone = deg2UTM1.getZone();
+
+                            coordinateXYZJKT=Deg2UTM.trasform(mLat_1, mLon_1, Quota1, DataSaved.S_CRS);
+                            Nord1 = coordinateXYZJKT.getNorthing();
+                            Est1 = coordinateXYZJKT.getEasting();
+                            mChar = coordinateXYZJKT.getLetter();
+                            mZone = coordinateXYZJKT.getZone();
 
                         } catch (Exception e) {
                         }
@@ -93,12 +94,13 @@ public class NmeaListener {
                             qualityLeica();
                             VRMS_ = NmeaInput[9];
                             Quota1 = DataSaved.offset_Z_antenna + Double.parseDouble(NmeaInput[10].replace(",", "."));
-                            deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, Quota1, DataSaved.S_CRS);
-                            Nord1 = deg2UTM1.getNorthing();
-                            Est1 = deg2UTM1.getEasting();
-                            mChar = deg2UTM1.getLetter();
-                            mZone = deg2UTM1.getZone();
-                        } catch (Exception e) {
+
+                             coordinateXYZLLQ=Deg2UTM.trasform(mLat_1, mLon_1, Quota1, DataSaved.S_CRS);
+                            Nord1 = coordinateXYZLLQ.getNorthing();
+                            Est1 = coordinateXYZLLQ.getEasting();
+                            mChar = coordinateXYZLLQ.getLetter();
+                            mZone = coordinateXYZLLQ.getZone();
+                        } catch (Exception ignored) {
 
                         }
                         break;
@@ -147,7 +149,7 @@ public class NmeaListener {
                                     quality();
 
                                     //LATITUDINE
-                                    //4431.1234567
+
                                     int LatInt = Integer.parseInt(ggaNord.substring(0, 2));//estrae il 44 come int
                                     double LatDec = Double.parseDouble(ggaNord.substring(2, NmeaInput[2].length()));//estrae 31.1234567 come double
                                     if (ggaNoS.equals("N")) {
@@ -161,7 +163,7 @@ public class NmeaListener {
 
 
                                     //LONGITUDINE
-                                    //09912.1234567
+
                                     int LonInt = Integer.parseInt(ggaEast.substring(0, 3));//estrae 099 come int
                                     double LonDec = Double.parseDouble(ggaEast.substring(3, NmeaInput[2].length()));//estrae 12.1234567 come double
                                     if (ggaWoE.equals("E")) {
@@ -174,13 +176,13 @@ public class NmeaListener {
                                     }
 
                                     double qtemp = DataSaved.offset_Z_antenna + Double.parseDouble(ggaZ1.replace(",", ".")) + Double.parseDouble(ggaZ2.replace(",", "."));
-                                    deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, qtemp, DataSaved.S_CRS);
-                                    Log.e("TestCRSSS", mLat_1 + "  " + mLon_1 + "   " + deg2UTM1.getNorthing() + "  " + deg2UTM1.getEasting());
-                                    Nord1 = deg2UTM1.getNorthing();
-                                    Est1 = deg2UTM1.getEasting();
-                                    Quota1 = deg2UTM1.getQuota();
-                                    mChar = deg2UTM1.getLetter();
-                                    mZone = deg2UTM1.getZone();
+
+                                    coordinateXYZ_1=Deg2UTM.trasform(mLat_1, mLon_1, qtemp, DataSaved.S_CRS);
+                                    Nord1 = coordinateXYZ_1.getNorthing();
+                                    Est1 = coordinateXYZ_1.getEasting();
+                                    Quota1 = coordinateXYZ_1.getQuota();
+                                    mChar = coordinateXYZ_1.getLetter();
+                                    mZone = coordinateXYZ_1.getZone();
 
                                 } catch (Exception e) {
                                     Log.e("TestCRSSS", Log.getStackTraceString(e));
@@ -244,7 +246,7 @@ public class NmeaListener {
             }
 
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -322,22 +324,25 @@ public class NmeaListener {
         }
         switch (DataSaved.S_CRS) {
             case _NONE:
-                deg2UTM1 = new Deg2UTM(tmpLat, tmpLon, tmpQuotaUTM, _NONE);
-                Nord1 = deg2UTM1.getNorthing();
-                Est1 = deg2UTM1.getEasting();
-                Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;
+                 coord = Deg2UTM.trasform(tmpLat, tmpLon, tmpQuotaUTM, _NONE);
+                Nord1  = coord.getNorthing();
+                Est1   = coord.getEasting();
+                Quota1 = DataSaved.offset_Z_antenna + coord.getQuota() + tmpGeoidSeparator;
+
+
                 break;
             case _UTM:
-                deg2UTM1 = new Deg2UTM(mLat_1, mLon_1, tmpQuotaUTM, _UTM);
-                Nord1 = deg2UTM1.getNorthing();
-                Est1 = deg2UTM1.getEasting();
-                Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;
+
+                 coordUTM=Deg2UTM.trasform(mLat_1, mLon_1, tmpQuotaUTM, _UTM);
+                Nord1 = coordUTM.getNorthing();
+                Est1 = coordUTM.getEasting();
+                Quota1 = DataSaved.offset_Z_antenna + coordUTM.getQuota() + tmpGeoidSeparator;
                 break;
             default:
-                deg2UTM1 = new Deg2UTM(tmpLat, tmpLon, tmpQuotaUTM, DataSaved.S_CRS);
-                Nord1 = deg2UTM1.getNorthing();
-                Est1 = deg2UTM1.getEasting();
-                Quota1 = DataSaved.offset_Z_antenna + deg2UTM1.getQuota() + tmpGeoidSeparator;
+                 coordinateXYZ=Deg2UTM.trasform(tmpLat, tmpLon, tmpQuotaUTM, DataSaved.S_CRS);
+                Nord1 = coordinateXYZ.getNorthing();
+                Est1 = coordinateXYZ.getEasting();
+                Quota1 = DataSaved.offset_Z_antenna +coordinateXYZ.getQuota() + tmpGeoidSeparator;
                 break;
 
         }

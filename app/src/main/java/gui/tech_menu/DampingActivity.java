@@ -41,7 +41,7 @@ public class DampingActivity extends AppCompatActivity {
             readTSM();
             (new Handler()).postDelayed(this::readTSM, 1000);
         }else {
-            MyDeviceManager.CanWrite(0,0,2,new byte[]{1,0});
+            MyDeviceManager.CanWrite(true,0,0,2,new byte[]{1,0});
         }
 
         back = findViewById(R.id._back);
@@ -177,55 +177,55 @@ public class DampingActivity extends AppCompatActivity {
                 }
 
                 if (i == 2000) {
-                    MyDeviceManager.CanWrite(0, 0x601,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_Fr, 0, 0, 0});
+                    MyDeviceManager.CanWrite(true,0, 0x601,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_Fr, 0, 0, 0});
                 }
                 if (i == 2500) {
-                    MyDeviceManager.CanWrite(0, 0x601,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+                    MyDeviceManager.CanWrite(true,0, 0x601,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
                 }
 
 
                 if (i == 5000) {
-                    MyDeviceManager.CanWrite(0, 0x602,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_B1, 0, 0, 0});
+                    MyDeviceManager.CanWrite(true,0, 0x602,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_B1, 0, 0, 0});
                 }
                 if (i == 5500) {
-                    MyDeviceManager.CanWrite(0, 0x602,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+                    MyDeviceManager.CanWrite(true,0, 0x602,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
                 }
 
                 if (i == 8000) {
-                    MyDeviceManager.CanWrite(0, 0x607,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_B2, 0, 0, 0});
+                    MyDeviceManager.CanWrite(true,0, 0x607,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_B2, 0, 0, 0});
                 }
                 if (i == 8500) {
-                    MyDeviceManager.CanWrite(0, 0x607,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+                    MyDeviceManager.CanWrite(true,0, 0x607,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
                 }
 
 
                 if (i == 11000) {
-                    MyDeviceManager.CanWrite(0, 0x604,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_St, 0, 0, 0});
+                    MyDeviceManager.CanWrite(true,0, 0x604,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_St, 0, 0, 0});
                 }
 
                 if (i == 11500) {
-                    MyDeviceManager.CanWrite(0, 0x604,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+                    MyDeviceManager.CanWrite(true,0, 0x604,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
                 }
 
 
                 if (i == 12500) {
-                    MyDeviceManager.CanWrite(0, 0x605,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_Bk, 0, 0, 0});
+                    MyDeviceManager.CanWrite(true,0, 0x605,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_Bk, 0, 0, 0});
                 }
                 if (i == 14500) {
-                    MyDeviceManager.CanWrite(0, 0x605, 8,new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+                    MyDeviceManager.CanWrite(true,0, 0x605, 8,new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
                 }
                 if (i == 17000) {
-                    MyDeviceManager.CanWrite(0, 0x606,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_Tl, 0, 0, 0});
+                    MyDeviceManager.CanWrite(true,0, 0x606,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) DataSaved.damp_Tl, 0, 0, 0});
                 }
                 if (i == 17500) {
-                    MyDeviceManager.CanWrite(0, 0x606, 8,new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+                    MyDeviceManager.CanWrite(true,0, 0x606, 8,new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
                 }
 
                 if (i == 20000) {
-                    MyDeviceManager.CanWrite(0, 0x603,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 0x04, 0, 0, 0});
+                    MyDeviceManager.CanWrite(true,0, 0x603,8, new byte[]{0x2F, 0X0B, 0X30, 0X06, (byte) 0x04, 0, 0, 0});
                 }
                 if (i == 20500) {
-                    MyDeviceManager.CanWrite(0, 0x603,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
+                    MyDeviceManager.CanWrite(true,0, 0x603,8, new byte[]{35, 16, 16, 1, 0x73, 0x61, 0x76, 0x65});
                     new CustomToast(DampingActivity.this, getResources().getString(R.string.powercycle_sensor)).show();
                     (new Handler()).postDelayed(this::powerOn, 1000);
                     (new Handler()).postDelayed(this::powerOff, 5000);
@@ -263,20 +263,20 @@ public class DampingActivity extends AppCompatActivity {
 
     }
     private void readTSM(){
-        MyDeviceManager.CanWrite(0,0x601,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x602,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x607,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x604,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x605,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x606,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x601,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x602,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x607,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x604,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x605,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x606,8,new byte[]{0x40,0x0B,0x30,0x06,0,0,0,0});
     }
     private void  readNova(){
-        MyDeviceManager.CanWrite(0,0x601,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x602,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x603,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x604,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x605,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
-        MyDeviceManager.CanWrite(0,0x606,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x601,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x602,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x603,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x604,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x605,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
+        MyDeviceManager.CanWrite(true,0,0x606,8,new byte[]{0x40,0x60,0x23,0x0,0,0,0,0});
     }
 
 

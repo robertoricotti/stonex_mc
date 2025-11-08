@@ -242,7 +242,7 @@ public class DiggingProfile extends BaseClass {
                 textHeight.setTextSize(65);
                 textHeight.setBackgroundColor(getColor(R.color.gray));
                 textHeight.setText("OUT OF RANGE!");
-                MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(true, real_height, DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(true, real_height, DataSaved.deadbandH));
             } else {
                 if (!hAlarm) {
                     textHeight.setTextColor(Color.BLACK);
@@ -250,7 +250,7 @@ public class DiggingProfile extends BaseClass {
                 }
                 textHeight.setTextSize(85);
                 textHeight.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(real_height)));
-                MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
                 drawProfile.coloreQuota = Color.GREEN;
             }
         }
@@ -260,7 +260,7 @@ public class DiggingProfile extends BaseClass {
                 textHeight.setBackgroundColor(DataSaved.colorMode == 0 ? Color.RED : Color.BLUE);
             }
             textHeight.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(real_height)));
-            MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
+            MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
             drawProfile.coloreQuota = Color.WHITE;
         }
         if (real_height < -DataSaved.deadbandH) {
@@ -270,7 +270,7 @@ public class DiggingProfile extends BaseClass {
                 textHeight.setBackgroundColor(DataSaved.colorMode == 0 ? Color.BLUE : Color.RED);
             }
             textHeight.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(real_height)));
-            MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
+            MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
             drawProfile.coloreQuota = Color.WHITE;
         }
 

@@ -92,7 +92,7 @@ public class TestAxio extends Activity {
             // Fault ... FV1 = 0 microA (uscita 0 mA)
             setFV1(0);
             byte[] pv0 = PLC_DataTypes_LittleEndian.U32_to_bytes(0);
-            MyDeviceManager.CanWrite(1, 0x27F, 4, pv0);
+            MyDeviceManager.CanWrite(true,1, 0x27F, 4, pv0);
             Log.d(TAG, "FAULT - 0 mA");
             return;//esce dal metodo e non esegue il setFV1
         }
@@ -101,7 +101,7 @@ public class TestAxio extends Activity {
             // Valore negativo ... FV1 = 3500 microA
             setFV1(3500);
             byte[] pv0 = PLC_DataTypes_LittleEndian.U32_to_bytes(0);
-            MyDeviceManager.CanWrite(1, 0x27F, 4, pv0);
+            MyDeviceManager.CanWrite(true,1, 0x27F, 4, pv0);
             Log.d(TAG, "NEGATIVO - 3.5 mA");
             return;//esce dal metodo e non esegue il setFV1
         }
@@ -111,7 +111,7 @@ public class TestAxio extends Activity {
 
         // Invia valore RPDO- mandare quota
         byte[] pvBytes = PLC_DataTypes_LittleEndian.U32_to_bytes(position_mm);
-        MyDeviceManager.CanWrite(1, 0x27F, 4, pvBytes);
+        MyDeviceManager.CanWrite(true,1, 0x27F, 4, pvBytes);
         Log.d(TAG, "IN RANGE - PV=" + position_mm);
     }
 
@@ -123,7 +123,7 @@ public class TestAxio extends Activity {
             return; // evita riscritture inutili se il valore minimo mA non è cambiato
 
         byte[] val = PLC_DataTypes_LittleEndian.U32_to_bytes(microAmps);
-        MyDeviceManager.CanWrite(1, 0x67F, 8,
+        MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x23, 0x21, 0x73, 0x01, val[0], val[1], val[2], val[3]});
 
         lastFV1uA = microAmps;
@@ -142,47 +142,47 @@ public class TestAxio extends Activity {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         int delay = 0; // millisecondi cumulativi
 
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x000, 2,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x000, 2,
                 new byte[]{(byte) 0x80, 0x7F}), delay += 50, TimeUnit.MILLISECONDS); // NMT Pre-Operational
 
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x2B, 0x10, 0x63, 0x01, 0x14, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS); // Output 4–20mA
 
         // Scaling curve
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x23, 0x20, 0x73, 0x01, 0x00, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS);
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x23, 0x21, 0x73, 0x01, (byte) 0xA0, 0x0F, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS);
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x23, 0x22, 0x73, 0x01, data[0], data[1], data[2], data[3]}), delay += 50, TimeUnit.MILLISECONDS);
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x23, 0x23, 0x73, 0x01, 0x20, 0x4E, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS);
 
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x2F, 0x02, 0x63, 0x01, 0x03, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS); // AO Decimal Digits PV = 3
 
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x2F, 0x32, 0x63, 0x01, 0x03, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS); // AO Decimal Digits FV = 3
 
 
 
         // Control via CANopen RPDO1
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x2F, 0x40, 0x23, 0x01, 0x01, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS);
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x2F, 0x41, 0x23, 0x01, 0x01, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS);
 
         // Fault mode OFF
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x2F, 0x40, 0x63, 0x01, 0x00, 0x00, 0x00, 0x00}), delay += 50, TimeUnit.MILLISECONDS);
 
         // Save configuration
-        scheduler.schedule(() -> MyDeviceManager.CanWrite(1, 0x67F, 8,
+        scheduler.schedule(() -> MyDeviceManager.CanWrite(true,1, 0x67F, 8,
                 new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65}), delay += 50, TimeUnit.MILLISECONDS);
 
         // --- Wait 3 seconds, then Start Operational ---
         scheduler.schedule(() -> {
-            MyDeviceManager.CanWrite(1, 0x000, 2, new byte[]{0x01, 0x7F});
+            MyDeviceManager.CanWrite(true,1, 0x000, 2, new byte[]{0x01, 0x7F});
             Log.d(TAG, "Initial configuration complete - scaleMaxValue=" + scaleMaxValue);
 
             scheduler.shutdown();

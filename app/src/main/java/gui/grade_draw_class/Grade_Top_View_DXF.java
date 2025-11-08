@@ -1,18 +1,18 @@
 package gui.grade_draw_class;
 
 
-import static gui.draw_class.Top_View_DXF.offsetX;
-import static gui.draw_class.Top_View_DXF.offsetY;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -20,7 +20,6 @@ import android.view.View;
 
 import com.example.stx_dig.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import dxf.Arc;
@@ -108,7 +107,7 @@ public class Grade_Top_View_DXF extends View {
         }
 
 
-        if (DataSaved.isWL == 1) {
+        if (DataSaved.isWL == WHEELLOADER) {
             bucketWidth = DataSaved.W_Bucket * scala;
         } else {
             bucketWidth = DataSaved.W_Blade_TOT * scala;
@@ -150,7 +149,7 @@ public class Grade_Top_View_DXF extends View {
             canvas.rotate(45, center.x, center.y);
             canvas.rotate(-45, center.x, center.y);
             rotationAngle = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
-            if (DataSaved.isWL == 1) {
+            if (DataSaved.isWL == WHEELLOADER) {
                 l_bucket = DataSaved.W_Bucket;
                 w_bucket = DataSaved.W_Bucket;
             } else {
@@ -194,21 +193,21 @@ public class Grade_Top_View_DXF extends View {
             drawLama(canvas);
 
             switch (DataSaved.isWL) {
-                case 1:
+                case WHEELLOADER:
 
                     drawGomme();
                     drawBracciW(canvas);
                     drawLama(canvas);
                     drawWheel();
                     break;
-                case 2:
-                case 3:
+                case DOZER:
+                case DOZER_SIX:
                     drawCingoliDozer();
                     drawBracci(canvas);
                     drawDozer();
                     drawAntenna1(canvas, paint);
                     break;
-                case 4:
+                case GRADER:
                     drawGrader();
                     drawGommeGrader();
                     drawAntenna1(canvas, paint);

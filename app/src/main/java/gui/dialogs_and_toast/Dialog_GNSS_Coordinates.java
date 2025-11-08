@@ -8,6 +8,10 @@ import static packexcalib.gnss.CRS_Strings._31370;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.Bluetooth_GNSS_Service.GNSSServiceState;
 import static services.CanService.nmeaSTX_Disc;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.SMC;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -143,23 +147,23 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     }
 
     public void init() {
-        if (DataSaved.isWL == 2 || DataSaved.isWL == 3 || DataSaved.isWL == 4) {
+        if (DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
             imbl.setImageResource(R.drawable.lama_misura_sinistra);
             imbc.setImageResource(R.drawable.lama_misura_cnt);
             imbr.setImageResource(R.drawable.lama_misura_destra);
         }
-        MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x01, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
+        MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x01, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
         progressBar.setVisibility(View.INVISIBLE);
         indexMach = MyData.get_Int("MachineSelected");
         DataSaved.radioMode = MyData.get_Int("M" + indexMach + "radioMode");
-        if (DataSaved.useQuickSwitch == 1) {
-            rtkMode.setVisibility(View.VISIBLE);
-        } else {
-            rtkMode.setVisibility(View.GONE);
-        }
-        if (isTech) {
-            editZ.setVisibility(View.VISIBLE);
 
+        if (isTech) {
+            if (DataSaved.useQuickSwitch == 1&&DataSaved.gpsType==SMC) {
+                rtkMode.setVisibility(View.VISIBLE);
+            } else {
+                rtkMode.setVisibility(View.GONE);
+            }
+            editZ.setVisibility(View.VISIBLE);
             imbl.setBackgroundColor(DataSaved.bucketEdge == -1 ? activity.getColor(R.color.yellow) : activity.getColor(R.color.transparent));
             imbc.setBackgroundColor(DataSaved.bucketEdge == 0 ? activity.getColor(R.color.yellow) : activity.getColor(R.color.transparent));
             imbr.setBackgroundColor(DataSaved.bucketEdge == 1 ? activity.getColor(R.color.yellow) : activity.getColor(R.color.transparent));
@@ -182,7 +186,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     }
 
     public void switchingRadio() {
-        MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x20, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
+        MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
         if (progressBar.getVisibility() == View.VISIBLE) {
             progressBar.setVisibility(View.INVISIBLE);
             new CustomToast(activity, "Wait for DataLink mode switching\nand check Fix...").show_alert();
@@ -212,7 +216,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
             byte msg = 0x01;
 
 
-            MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+            MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
         });
         imbl.setOnClickListener(view -> {
             DataSaved.bucketEdge = -1;
@@ -245,9 +249,9 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     case 0:
                         //SMC
                         if (DataSaved.my_comPort == 0) {
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0, (byte) DataSaved.priorityNet, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0, (byte) DataSaved.priorityNet, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                             MyData.push("M" + indexMach + "radioMode", "0");
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
+                            MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
 
                         } else {
 
@@ -271,9 +275,9 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     case 0:
                         //SMC
                         if (DataSaved.my_comPort == 0) {
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0x1, (byte) DataSaved.priorityNet, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0x1, (byte) DataSaved.priorityNet, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                             MyData.push("M" + indexMach + "radioMode", "1");
-                            MyDeviceManager.CanWrite(0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
+                            MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
 
                         } else {
 
@@ -615,7 +619,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                         if(DataSaved.my_comPort!=4){
                             latlon.setText("Lat: "+String.format("%.9f",NmeaListener.mLat_1)+" Lon: "+
-                                    String.format("%.9f",NmeaListener.mLon_1)+"  H: "+String.format("%.3f",(NmeaListener.tmpQuotaUTM+NmeaListener.tmpGeoidSeparator)));
+                                    String.format("%.9f",NmeaListener.mLon_1)+"  H: "+String.format("%.3f",(NmeaListener.tmpQuotaUTM+NmeaListener.tmpGeoidSeparator))+"\n"+"Zone: "+NmeaListener.mZone+""+NmeaListener.mChar);
                         }else {
                             latlon.setText("");
                         }

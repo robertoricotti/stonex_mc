@@ -1,6 +1,7 @@
 package gui.draw_class;
 
 import static services.TriangleService.tutteLinee;
+import static utils.MyTypes.EXCAVATOR;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,7 +12,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -73,7 +73,7 @@ public class DrawDXF_Layer1 extends View {
             PointF piombo = new PointF(origin.x, origin.y + (float) distance);
             float originAngle = getDegrees(origin.x, origin.y, piombo.x, piombo.y);
             PointF flat = new PointF();
-            if (DataSaved.isWL == 0) {
+            if (DataSaved.isWL ==EXCAVATOR) {
                 flat.x = (float) (origin.x + distance * Math.cos(originAngle + Math.toRadians(DataSaved.flat * -1)));
                 flat.y = (float) (origin.y + distance * Math.sin(originAngle + Math.toRadians(DataSaved.flat * -1)));
             } else {
@@ -95,7 +95,7 @@ public class DrawDXF_Layer1 extends View {
             RectF oval = new RectF(left, top, right, bottom);
             float startAngle = 90;
             float sweepAngle = 180;
-            if (DataSaved.isWL == 0) {
+            if (DataSaved.isWL ==EXCAVATOR) {
                 sweepAngle = 180;
             } else {
                 sweepAngle = -180;
@@ -197,7 +197,7 @@ public class DrawDXF_Layer1 extends View {
 
             float radius = getDistance(bucket.get(0).x, bucket.get(0).y, bucket.get(13).x, bucket.get(13).y) * 0.80f;
 
-            if (DataSaved.isWL == 0) {
+            if (DataSaved.isWL == EXCAVATOR) {
                 path.moveTo(bucket.get(0).x + (radius * 0.80f), bucket.get(0).y);
                 path.quadTo(bucket.get(3).x, bucket.get(3).y, bucket.get(2).x, bucket.get(2).y);
                 path.lineTo(bucket.get(1).x, bucket.get(1).y);

@@ -46,7 +46,6 @@ public class GLDrawer {
     public static void drawFaces(GL11 gl, List<Face3D> faces, float lineW, float scale, boolean isXML) {
         if (!My3DActivity.glGradient) {
             try {
-                gl.glEnable(GL10.GL_LINE_SMOOTH);
                 gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
                 gl.glEnable(GL10.GL_BLEND);
                 gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -248,7 +247,8 @@ public class GLDrawer {
     }
 
     public static void drawPolylines(GL11 gl, List<Polyline> polylines, float lineW, float scale) {
-        gl.glEnable(GL10.GL_LINE_SMOOTH);
+
+
         gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
         gl.glEnable(GL10.GL_BLEND);
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -358,7 +358,8 @@ public class GLDrawer {
         float[] rgb = GL_Methods.parseColorToGL(c);
 
         // Abilita antialiasing e blending per linee più lisce
-        gl.glEnable(GL10.GL_LINE_SMOOTH);
+
+
         gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
         gl.glEnable(GL10.GL_BLEND);
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -386,7 +387,7 @@ public class GLDrawer {
 
         // Disabilita blending e line smooth se non servono altrove
         gl.glDisable(GL10.GL_BLEND);
-        gl.glDisable(GL10.GL_LINE_SMOOTH);
+
     }
 
     public static void drawPoints(GL11 gl, List<Point3D> points, float radius, float scale, boolean isXMLPoint) {
@@ -654,7 +655,8 @@ public class GLDrawer {
         if (lines == null || lines.isEmpty()) return;
 
         // Abilita antialiasing e blending per linee più lisce
-        gl.glEnable(GL10.GL_LINE_SMOOTH);
+
+
         gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
         gl.glEnable(GL10.GL_BLEND);
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -691,13 +693,14 @@ public class GLDrawer {
 
         // Disabilita blending e line smooth
         gl.glDisable(GL10.GL_BLEND);
-        gl.glDisable(GL10.GL_LINE_SMOOTH);
+
     }
 
 
     public static void drawCircles2D(GL11 gl, List<Circle> circles, float lineW, float scale) {
         // Abilita line smooth e blending per linee più morbide
-        gl.glEnable(GL10.GL_LINE_SMOOTH);
+
+
         gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
         gl.glEnable(GL10.GL_BLEND);
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -737,7 +740,7 @@ public class GLDrawer {
 
         // Disabilita blending e line smooth dopo il disegno
         gl.glDisable(GL10.GL_BLEND);
-        gl.glDisable(GL10.GL_LINE_SMOOTH);
+
     }
 
 
@@ -785,7 +788,8 @@ public class GLDrawer {
 
     public static void drawPolylines2D(GL11 gl, List<Polyline_2D> polylines, float lineW, float scale) {
         // Abilita line smooth e blending per linee più morbide
-        gl.glEnable(GL10.GL_LINE_SMOOTH);
+
+
         gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
         gl.glEnable(GL10.GL_BLEND);
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -843,7 +847,7 @@ public class GLDrawer {
 
         // Disabilita blending e line smooth dopo il disegno
         gl.glDisable(GL10.GL_BLEND);
-        gl.glDisable(GL10.GL_LINE_SMOOTH);
+
     }
 
 

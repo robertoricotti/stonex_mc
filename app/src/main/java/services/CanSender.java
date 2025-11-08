@@ -59,6 +59,8 @@ import utils.MyMCUtils;
 
 
 public class CanSender extends Service {
+    //private long lastCall = 0;
+    boolean sending;
     public static double QL, QC, QR;
     public static double GroundSlope;
     public static int valueCASE_L = 0, valueCASE_R = 0, valueKomL = 0, valueKomR = 0, valueCATL = 0, valueCATR = 0, valueCATSS = 0, valueJDL = 20000, valueJDR = 20000, valueJDSS = 20000;
@@ -108,7 +110,7 @@ public class CanSender extends Service {
         scheduledExecutorService1min = Executors.newSingleThreadScheduledExecutor();
         senderExecutor500.scheduleAtFixedRate(new AsyncSender500(), 1000, 500, TimeUnit.MILLISECONDS);
         senderExecutor2000.scheduleAtFixedRate(new AsyncSender2000(), 1000, 2000, TimeUnit.MILLISECONDS);
-        senderExecutorGrade_50.scheduleAtFixedRate(new gradeSender(), 2000, 50, TimeUnit.MILLISECONDS);
+        senderExecutorGrade_50.scheduleAtFixedRate(new gradeSender(), 2000, 25, TimeUnit.MILLISECONDS);
         scheduledExecutorService1min.scheduleAtFixedRate(new AsyncSender1min(), 1000, 60000, TimeUnit.MILLISECONDS);
         return START_STICKY;
     }
@@ -126,7 +128,6 @@ public class CanSender extends Service {
             } catch (Exception e) {
                 Log.e("CanErr", Log.getStackTraceString(e));
             }
-
 
             if (DataSaved.my_comPort == 4) {
                 FlipFlop = !FlipFlop;
@@ -239,7 +240,7 @@ public class CanSender extends Service {
                                 byte msg = 0x01;
 
 
-                                MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+                                MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
                                 connections = 0;
                             }
                             break;
@@ -281,7 +282,7 @@ public class CanSender extends Service {
                     byte msg = 0x01;
 
 
-                    MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+                    MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
                     connections = 0;
                 }
             }
@@ -301,7 +302,7 @@ public class CanSender extends Service {
             } catch (Exception e) {
 
             }
-            //MyDeviceManager.CanWrite(0, 160, 8, new byte[]{d0, 0, onGrade, 0, 0, (byte) 160, (byte) 168, 0});
+            //MyDeviceManager.CanWrite(true,0, 160, 8, new byte[]{d0, 0, onGrade, 0, 0, (byte) 160, (byte) 168, 0});
         }
 
 
@@ -314,7 +315,7 @@ public class CanSender extends Service {
             if(DataSaved.isWL>1) {
                 if (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0) {
                     if (!(MyApp.visibleActivity instanceof My3DActivity)) {
-                        MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
+                        MyDeviceManager.CanWrite(true,1, 0x18EEFF85, 8,
                                 new byte[]{(byte) 0xF4,
                                         (byte) 0xF0,
                                         (byte) 0x13,
@@ -329,7 +330,7 @@ public class CanSender extends Service {
 
             if (DataSaved.Interface_Type == 4) {
                 if (!(MyApp.visibleActivity instanceof My3DActivity)) {
-                    MyDeviceManager.CanWrite(1, 0x18EEFFE6, 8,
+                    MyDeviceManager.CanWrite(true,1, 0x18EEFFE6, 8,
                             new byte[]{(byte) 0xF4,
                                     (byte) 0xF0,
                                     (byte) 0xD3,
@@ -346,7 +347,7 @@ public class CanSender extends Service {
                 startCanopen++;
                 if (startCanopen == 2) {
                     if (isApollo) {
-                        MyDeviceManager.CanWrite(0, 0, 2, new byte[]{1, 0});
+                        MyDeviceManager.CanWrite(true,0, 0, 2, new byte[]{1, 0});
                     }
 
                 }
@@ -410,7 +411,17 @@ public class CanSender extends Service {
 
 
     private void AutoHandling() {
+      /*  long startTime = System.nanoTime(); // tempo iniziale
+        long now = System.nanoTime();
+        if (lastCall != 0) {
+            long deltaMs = (now - lastCall) / 1_000_000;
+            if (deltaMs != 25) {
+                Log.w("AutoHandling", "Time Between Calls: " + deltaMs + " ms");
+            }
+        }
+        lastCall = now;*/
 
+        long start = System.nanoTime();
         dirCAT_L = (byte) 0xF2;
         dirCAT_R = (byte) 0xF2;
         dirCAT_SS = (byte) 0xF2;
@@ -757,7 +768,13 @@ public class CanSender extends Service {
         }
 
         invioMessaggiDozer();
+       /* long endTime = System.nanoTime(); // tempo finale
+        long elapsedMicros = (endTime - startTime) / 1000; // microsecondi
+        long elapsedMillis = elapsedMicros / 1000;
 
+        //Log.d("AutoHandling", "Auto Routine Execution Time: " + elapsedMicros + " µs (" + elapsedMillis + " ms)");
+        long elapsed = (System.nanoTime() - start) / 1000;
+        Log.d("AutoHandling", "Excecution Time: " + elapsed + " µs");*/
 
     }
 
@@ -975,6 +992,7 @@ public class CanSender extends Service {
     }
 
     private void invioMessaggiDozer() {
+        sending=!sending;
         switch (DataSaved.Interface_Type) {
             case 255:
 
@@ -1038,7 +1056,7 @@ public class CanSender extends Service {
                     }
 
 
-                    MyDeviceManager.CanWrite(1, 0x812, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x812, 8,
                             new byte[]{
                                     left[0],
                                     left[1],
@@ -1053,7 +1071,7 @@ public class CanSender extends Service {
                     );
 
 
-                    MyDeviceManager.CanWrite(1, 0x814, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x814, 8,
                             new byte[]{
                                     dist[0],
                                     dist[1],
@@ -1069,7 +1087,7 @@ public class CanSender extends Service {
                     );
 
 
-                    MyDeviceManager.CanWrite(1, 0x816, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x816, 8,
                             new byte[]{
                                     sinistra[0], sinistra[1], sinistra[2], sinistra[3],
                                     centro[0], centro[1], centro[2], centro[3],
@@ -1077,28 +1095,28 @@ public class CanSender extends Service {
                             }
                     );
 
-                    MyDeviceManager.CanWrite(1, 0x818, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x818, 8,
                             new byte[]{
                                     destra[0], destra[1], destra[2], destra[3],
                                     dtmSx[0], dtmSx[1], dtmSx[2], dtmSx[3],
 
                             }
                     );
-                    MyDeviceManager.CanWrite(1, 0x820, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x820, 8,
                             new byte[]{
                                     dtmCx[0], dtmCx[1], dtmCx[2], dtmCx[3],
                                     dtmDx[0], dtmDx[1], dtmDx[2], dtmDx[3],
                             }
                     );
 
-                    MyDeviceManager.CanWrite(1, 0x822, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x822, 8,
                             new byte[]{
                                     dtmFW[0], dtmFW[1], dtmFW[2], dtmFW[3],
                                     dtmBW[0], dtmBW[1], dtmBW[2], dtmBW[3],
                             }
                     );
                 } catch (Exception e) {
-                    MyDeviceManager.CanWrite(1, 0x812, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x812, 8,
                             new byte[]{
                                     (byte) 0xFF,
                                     (byte) 0xFF,
@@ -1113,7 +1131,7 @@ public class CanSender extends Service {
                     );
 
 
-                    MyDeviceManager.CanWrite(1, 0x814, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x814, 8,
                             new byte[]{
                                     (byte) 0xFF,
                                     (byte) 0xFF,
@@ -1129,7 +1147,7 @@ public class CanSender extends Service {
                     );
 
 
-                    MyDeviceManager.CanWrite(1, 0x816, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x816, 8,
                             new byte[]{
                                     (byte) 0xFF,
                                     (byte) 0xFF,
@@ -1142,7 +1160,7 @@ public class CanSender extends Service {
                             }
                     );
 
-                    MyDeviceManager.CanWrite(1, 0x818, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x818, 8,
                             new byte[]{
                                     (byte) 0xFF,
                                     (byte) 0xFF,
@@ -1154,7 +1172,7 @@ public class CanSender extends Service {
                                     (byte) 0xFF
                             }
                     );
-                    MyDeviceManager.CanWrite(1, 0x820, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x820, 8,
                             new byte[]{
                                     (byte) 0xFF,
                                     (byte) 0xFF,
@@ -1167,7 +1185,7 @@ public class CanSender extends Service {
                             }
                     );
 
-                    MyDeviceManager.CanWrite(1, 0x822, 8,
+                    MyDeviceManager.CanWrite(sending,1, 0x822, 8,
                             new byte[]{
                                     (byte) 0xFF,
                                     (byte) 0xFF,
@@ -1210,7 +1228,7 @@ public class CanSender extends Service {
                 valoreSX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultL);
                 valoreDX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
                 valoreSS0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
-                MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
+                MyDeviceManager.CanWrite(sending,1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,
                                 (byte) 0x1A,
@@ -1226,7 +1244,7 @@ public class CanSender extends Service {
 
             case 1:
                 //CAT
-                MyDeviceManager.CanWrite(1, 0x18FE3185, 8,
+                MyDeviceManager.CanWrite(sending,1, 0x18FE3185, 8,
                         new byte[]{(byte) valueCATL,
                                 (byte) 0xFF,
                                 dirCAT_L,//F2=Up F1=Down
@@ -1236,7 +1254,7 @@ public class CanSender extends Service {
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(1, 0x18FE3285, 8,
+                MyDeviceManager.CanWrite(sending,1, 0x18FE3285, 8,
                         new byte[]{(byte) valueCATR,
                                 (byte) 0xFF,
                                 dirCAT_R,//F2=Up F1=Down
@@ -1246,7 +1264,7 @@ public class CanSender extends Service {
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(1, 0x18FE3385, 8,
+                MyDeviceManager.CanWrite(sending,1, 0x18FE3385, 8,
                         new byte[]{(byte) valueCATSS,
                                 (byte) 0xFF,
                                 dirCAT_SS,//F2=Right F1=Left
@@ -1285,7 +1303,7 @@ public class CanSender extends Service {
                 valoreSX = PLC_DataTypes_LittleEndian.U16_to_bytes(resultL2);
                 valoreDX = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR2);
                 valoreSS = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS2);
-                MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
+                MyDeviceManager.CanWrite(sending,1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,
                                 (byte) 0x1A,
@@ -1308,7 +1326,7 @@ public class CanSender extends Service {
                 valoreSXK = PLC_DataTypes_LittleEndian.U16_to_bytes(valueKomL);
                 valoreDXK = PLC_DataTypes_LittleEndian.U16_to_bytes(valueKomR);
 
-                MyDeviceManager.CanWrite(1, 0x0CFF3202, 8,
+                MyDeviceManager.CanWrite(sending,1, 0x0CFF3202, 8,
                         new byte[]{
 
                                 (byte) valoreSXK[0],
@@ -1325,7 +1343,7 @@ public class CanSender extends Service {
             case 4:
                 //CASE
 
-                MyDeviceManager.CanWrite(1, 0x18FE31E6, 8,
+                MyDeviceManager.CanWrite(sending,1, 0x18FE31E6, 8,
                         new byte[]{(byte) valueCASE_L,
                                 (byte) 0xFF,
                                 dirCase_L,//F2=Up F1=Down
@@ -1335,7 +1353,7 @@ public class CanSender extends Service {
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(1, 0x18FE32E6, 8,
+                MyDeviceManager.CanWrite(sending,1, 0x18FE32E6, 8,
                         new byte[]{(byte) valueCASE_R,
                                 (byte) 0xFF,
                                 dirCase_R,//F2=Up F1=Down
@@ -1348,6 +1366,8 @@ public class CanSender extends Service {
                 break;
         }
     }
+
+
 
 
 }

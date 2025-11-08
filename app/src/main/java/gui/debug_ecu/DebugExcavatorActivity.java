@@ -8,6 +8,11 @@ import static services.CanService.bucketDisc;
 import static services.CanService.frameDisc;
 import static services.CanService.stickDisc;
 import static services.CanService.tiltDisc;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
 
@@ -41,7 +46,6 @@ import services.CanService;
 import services.ReadProjectService;
 import utils.CPCanHelper;
 import utils.MyData;
-import utils.MyDeviceManager;
 
 
 public class DebugExcavatorActivity extends BaseClass {
@@ -225,15 +229,17 @@ public class DebugExcavatorActivity extends BaseClass {
 
     public void updateUI() {
         switch (DataSaved.isWL){
-            case 0:
+            case EXCAVATOR:
                 toDig.setImageResource(R.drawable.go_dig);
                 break;
 
-            case 1:
+            case WHEELLOADER:
                 toDig.setImageResource(R.drawable.go_dig);
                 break;
 
-            case 2:
+            case DOZER:
+            case DOZER_SIX:
+            case GRADER:
                 toDig.setImageResource(R.drawable.go_grade);
                 break;
 

@@ -690,7 +690,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
         sendRunnable = new Runnable() {
             @Override
             public void run() {
-                MyDeviceManager.CanWrite(1, 0x18FE3185, 8,
+                MyDeviceManager.CanWrite(true,1, 0x18FE3185, 8,
                         new byte[]{valueLEFT,
                                 (byte) 0xFF,
                                 leftDir,//F2=Up F1=Down
@@ -700,7 +700,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(1, 0x18FE3285, 8,
+                MyDeviceManager.CanWrite(true,1, 0x18FE3285, 8,
                         new byte[]{valueRIGHT,
                                 (byte) 0xFF,
                                 rightDir,//F2=Up F1=Down
@@ -710,7 +710,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(1, 0x18FE3385, 8,
+                MyDeviceManager.CanWrite(true,1, 0x18FE3385, 8,
                         new byte[]{valueSS,
                                 (byte) 0xFF,
                                 ssDir,//F2=Right F1=Left

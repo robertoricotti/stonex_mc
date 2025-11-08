@@ -218,7 +218,7 @@ public class MyDeviceManager {
 
 
 
-    public static void CanWrite(int channel, int id, int dlc, byte[] msg) {
+    public static void CanWrite(boolean send,int channel, int id, int dlc, byte[] msg) {
         ICPCanFrame.Channel channel1 = null;
         switch (channel) {
             case 0:
@@ -233,8 +233,9 @@ public class MyDeviceManager {
                 break;
 
         }
-
-        CPCanHelper.getInstance().canWrite(channel1, id, msg);
+        if(send) {
+            CPCanHelper.getInstance().canWrite(channel1, id, msg);
+        }
 
 
     }

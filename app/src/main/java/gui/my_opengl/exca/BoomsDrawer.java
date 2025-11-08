@@ -69,7 +69,8 @@ public class BoomsDrawer {
         gl.glEnable(GL10.GL_POLYGON_OFFSET_FILL);
         gl.glPolygonOffset(1.0f, 1.0f); // leggero offset per evitare z-fighting
 
-        gl.glEnable(GL10.GL_LINE_SMOOTH);
+
+
         gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
 
         //gl.glColor4f(0f, 0f, 0f, 0.95f);
@@ -79,7 +80,6 @@ public class BoomsDrawer {
         // Mantieni il depth test attivo
         gl.glDrawElements(GL10.GL_LINES, numEdgeIndices, GL10.GL_UNSIGNED_SHORT, edgeIndexBuffer);
 
-        gl.glDisable(GL10.GL_LINE_SMOOTH);
         gl.glDisable(GL10.GL_POLYGON_OFFSET_FILL);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }

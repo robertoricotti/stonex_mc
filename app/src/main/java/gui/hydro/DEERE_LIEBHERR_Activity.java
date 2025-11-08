@@ -61,7 +61,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deere_liebherr);
-        MyDeviceManager.CanWrite(1, 0x18EEFF85, 8,
+        MyDeviceManager.CanWrite(true,1, 0x18EEFF85, 8,
                 new byte[]{(byte) 0xF4,
                         (byte) 0xF0,
                         (byte) 0x13,
@@ -728,7 +728,7 @@ public class DEERE_LIEBHERR_Activity extends AppCompatActivity {
                 valoreSX= PLC_DataTypes_LittleEndian.U16_to_bytes(resultL);
                 valoreDX= PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
                 valoreSS= PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
-                MyDeviceManager.CanWrite(1, 0x00EFFF85, 8,
+                MyDeviceManager.CanWrite(true,1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,
                                 (byte) 0x1A,

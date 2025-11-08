@@ -653,7 +653,7 @@ public class Diaalog_Set_SP {
 
 
 
-        MyDeviceManager.CanWrite(0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+        MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
         if (crs.equals(_NONE)) {
             //setup LLQ
 

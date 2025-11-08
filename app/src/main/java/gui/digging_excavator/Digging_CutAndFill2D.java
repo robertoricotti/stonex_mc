@@ -392,7 +392,7 @@ public class Digging_CutAndFill2D extends BaseClass {
                     leftLed.setTextColor(Color.GREEN);
                     leftLed.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.distToSurf)));
                     textHeight.setText(leftLed.getText().toString());
-                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(false, ExcavatorLib.distToSurf, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(false, ExcavatorLib.distToSurf, DataSaved.deadbandH));
                     if (!hAlarm) {
                         panel.setBackgroundColor(Color.GREEN);
                         depthMode.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
@@ -413,7 +413,7 @@ public class Digging_CutAndFill2D extends BaseClass {
                     leftLed.setTextColor(Color.WHITE);
                     leftLed.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.distToSurf)));
                     textHeight.setText(leftLed.getText().toString());
-                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(false, ExcavatorLib.distToSurf, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(false, ExcavatorLib.distToSurf, DataSaved.deadbandH));
                     if (!hAlarm) {
                         panel.setBackgroundColor(Color.RED);
                         depthMode.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
@@ -433,7 +433,7 @@ public class Digging_CutAndFill2D extends BaseClass {
                     leftLed.setTextColor(Color.WHITE);
                     leftLed.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.distToSurf)));
                     textHeight.setText(leftLed.getText().toString());
-                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(false, ExcavatorLib.distToSurf, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(false, ExcavatorLib.distToSurf, DataSaved.deadbandH));
                     if (!hAlarm) {
                         panel.setBackgroundColor(Color.BLUE);
                         depthMode.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
@@ -454,7 +454,7 @@ public class Digging_CutAndFill2D extends BaseClass {
                     leftLed.setTextColor(Color.GREEN);
                     leftLed.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(real_height)));
                     textHeight.setText(leftLed.getText().toString());
-                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
                     if (!hAlarm) {
                         panel.setBackgroundColor(Color.GREEN);
                         depthMode.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
@@ -474,7 +474,7 @@ public class Digging_CutAndFill2D extends BaseClass {
                     leftLed.setTextColor(Color.WHITE);
                     leftLed.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(real_height)));
                     textHeight.setText(leftLed.getText().toString());
-                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
                     if (!hAlarm) {
                         if (DataSaved.colorMode == 0) {
                             panel.setBackgroundColor(Color.RED);
@@ -498,7 +498,7 @@ public class Digging_CutAndFill2D extends BaseClass {
                     leftLed.setTextColor(Color.WHITE);
                     leftLed.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(real_height)));
                     textHeight.setText(leftLed.getText().toString());
-                    MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(false, real_height, DataSaved.deadbandH));
                     if (!hAlarm) {
                         if (DataSaved.colorMode == 0) {
                             panel.setBackgroundColor(Color.BLUE);

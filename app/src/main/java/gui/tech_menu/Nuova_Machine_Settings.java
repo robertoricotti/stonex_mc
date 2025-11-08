@@ -1,7 +1,8 @@
 package gui.tech_menu;
 
 import static gui.MyApp.errorCode;
-import static gui.MyApp.folderPath;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -9,8 +10,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -21,13 +20,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.cp.cputils.Apollo2;
-import com.cp.cputils.ApolloPro;
 import com.example.stx_dig.R;
-import com.opencsv.CSVWriter;
-
-import java.io.File;
-import java.io.FileWriter;
 
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
@@ -35,9 +28,7 @@ import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_CanBaud;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_Wheel_Steer;
-import gui.gps.Nuovo_Gps;
 import packexcalib.exca.DataSaved;
-import serial.SerialPortManager;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -60,7 +51,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calibrazione_macchine);
+        setContentView(R.layout.nuova_machine_settings);
         if(Build.BRAND.equals("APOLLO2_7")){
             bigg=80;
             small=70;
@@ -261,7 +252,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         });
         tvBoom1.setOnClickListener(view -> {
 
-            if (DataSaved.isWL < 1) {
+            if (DataSaved.isWL < WHEELLOADER) {
                 en_dis(false);
                 startActivity(new Intent(this, Boom1Calib.class));
                 finish();
@@ -292,7 +283,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             finish();
         });
         tvLink.setOnClickListener(view -> {
-            if (DataSaved.isWL < 2) {
+            if (DataSaved.isWL < DOZER) {
                 en_dis(false);
                 startActivity(new Intent(this, LinkageCalib.class));
                 finish();
@@ -309,7 +300,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         });
         tvXYZ.setOnClickListener(view -> {
 
-            if (DataSaved.isWL < 2) {
+            if (DataSaved.isWL < DOZER) {
                 en_dis(false);
                 startActivity(new Intent(this, XYZ_Calib.class));
                 finish();
@@ -351,7 +342,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             }catch(Exception ignored){
 
             }
-            if(DataSaved.isWL==1){
+            if(DataSaved.isWL==WHEELLOADER){
                 for (int i=1;i<=20;i++){
                     MyData.push("M"+machineSel+"_Tilt_MountPos"+i,"0");
                 }

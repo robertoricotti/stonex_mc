@@ -633,7 +633,7 @@ public class KOMATSU_Activity extends AppCompatActivity {
                 valoreSX = PLC_DataTypes_LittleEndian.U16_to_bytes(valueLEFT);
                 valoreDX = PLC_DataTypes_LittleEndian.U16_to_bytes(valueRIGHT);
 
-                MyDeviceManager.CanWrite(1, 0x0CFF3202, 8,
+                MyDeviceManager.CanWrite(true,1, 0x0CFF3202, 8,
                         new byte[]{
 
                                 (byte) valoreSX[0],

@@ -2,6 +2,7 @@ package gui.grade_draw_class;
 
 import static packexcalib.exca.ExcavatorLib.correctPitch;
 import static services.TriangleService.tutteLinee;
+import static utils.MyTypes.EXCAVATOR;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,7 +12,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -74,7 +74,7 @@ public class Grade_DrawDXF_Layer1 extends View {
             PointF piombo = new PointF(origin.x, origin.y + (float) distance);
             float originAngle = getDegrees(origin.x, origin.y, piombo.x, piombo.y);
             PointF flat = new PointF();
-            if (DataSaved.isWL == 0) {
+            if (DataSaved.isWL == EXCAVATOR) {
                 flat.x = (float) (origin.x + distance * Math.cos(originAngle + Math.toRadians(DataSaved.flat * -1)));
                 flat.y = (float) (origin.y + distance * Math.sin(originAngle + Math.toRadians(DataSaved.flat * -1)));
             } else {

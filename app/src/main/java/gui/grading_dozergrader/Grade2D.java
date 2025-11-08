@@ -117,16 +117,16 @@ public class Grade2D extends AppCompatActivity {
 
             }else {
                 
-                MyDeviceManager.CanWrite(0, 0x65, 8, new byte[]{48, 0, 0, 0, 0, 0, 0, 0});
+                MyDeviceManager.CanWrite(true,0, 0x65, 8, new byte[]{48, 0, 0, 0, 0, 0, 0, 0});
             }
         });
         autoL.setOnClickListener(view -> {
             if(DataSaved.Interface_Type==0){}else {
-            MyDeviceManager.CanWrite(0, 0x65, 8, new byte[]{16, 0, 0, 0, 0, 0, 0, 0});}
+            MyDeviceManager.CanWrite(true,0, 0x65, 8, new byte[]{16, 0, 0, 0, 0, 0, 0, 0});}
         });
         autoR.setOnClickListener(view -> {
             if(DataSaved.Interface_Type==0){}else {
-            MyDeviceManager.CanWrite(0, 0x65, 8, new byte[]{32, 0, 0, 0, 0, 0, 0, 0});}
+            MyDeviceManager.CanWrite(true,0, 0x65, 8, new byte[]{32, 0, 0, 0, 0, 0, 0, 0});}
         });
         sensL.setOnClickListener(view -> {
             if (!dialogSensorsSetting.dialog.isShowing()) {

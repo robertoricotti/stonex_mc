@@ -1,6 +1,11 @@
 package packexcalib.exca;
 
 import static gui.gps.NmeaGenerator.HEADING;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -67,8 +72,8 @@ public class Sensors_Decoder {
 
 
             switch (DataSaved.isWL) {
-                case 0://escavatore
-                case 1://wheel loader
+                case EXCAVATOR:
+                case WHEELLOADER://wheel loader
                     switch (DataSaved.isCanOpen) {
                         case 1:
                             //MOBA TODO replace with newer sensors
@@ -760,9 +765,9 @@ public class Sensors_Decoder {
                     flagLaser = Math.max(-101, Math.min(flagLaser, 100));
                     flagLaserConnected = Math.max(-100, Math.min(flagLaserConnected, 100));
                     break;
-                case 2:
-                case 3:
-                case 4:
+                case DOZER:
+                case DOZER_SIX:
+                case GRADER:
                     //Dozer e grader
                     switch (id & 0x1FFFFFFF) {
                         case 0x386:

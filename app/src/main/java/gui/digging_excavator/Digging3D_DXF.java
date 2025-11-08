@@ -1181,15 +1181,15 @@ public class Digging3D_DXF extends BaseClass {
     private void setLightBar() {
         switch (DataSaved.bucketEdge) {
             case -1:
-                MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
                 setAudio(TriangleService.quota3D_SX, !TriangleService.ltOffGrid);
                 break;
             case 0:
-                MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.ctOffGrid, TriangleService.quota3D_CT, DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.ctOffGrid, TriangleService.quota3D_CT, DataSaved.deadbandH));
                 setAudio(TriangleService.quota3D_CT, !TriangleService.ctOffGrid);
                 break;
             case 1:
-                MyDeviceManager.CanWrite(0, 0xA0, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
+                MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
                 setAudio(TriangleService.quota3D_DX, !TriangleService.rtOffGrid);
                 break;
         }

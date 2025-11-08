@@ -8,6 +8,11 @@ import static gui.projects.Dialog_Trench.leftS_d;
 import static gui.projects.Dialog_Trench.leftW_d;
 import static gui.projects.Dialog_Trench.rightS_d;
 import static gui.projects.Dialog_Trench.rightW_d;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -108,7 +113,7 @@ public class Canvas_Crea_Superficie extends View {
         if (offsetY == 0) {
             offsetY = 150;
         }
-        if (DataSaved.isWL == 0) {
+        if (DataSaved.isWL == EXCAVATOR) {
             mRoll = (float) (DataSaved.L_Roll * scala);
         } else {
             mRoll = 0;
@@ -125,7 +130,7 @@ public class Canvas_Crea_Superficie extends View {
         try {
             rotationAngle = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
             switch (DataSaved.isWL) {
-                case 0:
+                case EXCAVATOR:
                     //exca
                     l_bucket = DataSaved.L_Bucket;
                     w_bucket = DataSaved.W_Bucket;
@@ -165,7 +170,7 @@ public class Canvas_Crea_Superficie extends View {
                     stopY = left_top_bucket.y;
                     stopXLeft = (float) (left_top_bucket.x + (mRoll));
                     stopXRight = (float) (right_bottom_bucket.x + (mRoll));
-                    if (DataSaved.isWL == 0) {
+                    if (DataSaved.isWL ==EXCAVATOR) {
                         drawStick(canvas);
 
                     }
@@ -251,8 +256,9 @@ public class Canvas_Crea_Superficie extends View {
                     }
                     canvas.restore();
                     break;
-                case 1:
-                case 2:
+                case WHEELLOADER:
+                case DOZER:
+                case DOZER_SIX:
                     l_bucket = DataSaved.W_Blade_TOT;
                     w_bucket = DataSaved.W_Blade_TOT;
                     d_stick = 0;
@@ -305,7 +311,7 @@ public class Canvas_Crea_Superficie extends View {
                     paint.setStyle(Paint.Style.STROKE);
 
                     drawLama(canvas);
-                    if (DataSaved.isWL == 1) {
+                    if (DataSaved.isWL == WHEELLOADER) {
                         drawGomme();
                         drawBracciW(canvas);
                         drawLama(canvas);
@@ -379,7 +385,7 @@ public class Canvas_Crea_Superficie extends View {
                     canvas.restore();
                     break;
 
-                case 4:
+                case GRADER:
 
                     //grader
 
@@ -629,10 +635,10 @@ public class Canvas_Crea_Superficie extends View {
         paint.setColor(getResources().getColor(R.color._____cancel_text));
         paint.setStyle(Paint.Style.FILL);
 
-        if (DataSaved.isWL == 0) {
+        if (DataSaved.isWL == EXCAVATOR) {
             canvas.drawRoundRect(leftCarroX - cingoliWidth, left_top_carro.y - (cingoliHeight * 5),
                     leftCarroX + cingoliWidth, right_bottom_carro.y - cingoliHeight, 10, 10, paint);
-        } else if (DataSaved.isWL == 1) {
+        } else if (DataSaved.isWL == WHEELLOADER) {
             //TODO whwwloader
         }
 
@@ -640,17 +646,17 @@ public class Canvas_Crea_Superficie extends View {
                 leftCarroX + cingoliWidth, right_bottom_carro.y - cingoliHeight);
 
         // Cingoli destri
-        if (DataSaved.isWL == 0) {
+        if (DataSaved.isWL == EXCAVATOR) {
             canvas.drawRoundRect(rightCarroX - cingoliWidth, left_top_carro.y - (cingoliHeight * 5),
                     rightCarroX + cingoliWidth, right_bottom_carro.y - cingoliHeight, 10, 10, paint);
-        } else if (DataSaved.isWL == 1) {
+        } else if (DataSaved.isWL == WHEELLOADER) {
             //TODO wheeloader
         }
 
         // Disegna le linee dei cingoli
         double tmpLine = cingoliLength / 15;
         int tmpDist = 0;
-        if (DataSaved.isWL == 0) {
+        if (DataSaved.isWL == EXCAVATOR) {
             for (int i = 0; i < 15 - 1; i++) {
                 paint.setStrokeWidth(3f);
                 paint.setColor(Color.rgb(27, 27, 27));
@@ -795,7 +801,7 @@ public class Canvas_Crea_Superficie extends View {
         paint.setColor(MyColorClass.colorBucket);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect((float) (left_top_bucket.x + mRoll), left_top_bucket.y, (float) (right_bottom_bucket.x + mRoll), right_bottom_bucket.y, paint);
-        if (DataSaved.isWL == 0) {
+        if (DataSaved.isWL == EXCAVATOR) {
             if (ExcavatorLib.correctBucket < -90 || ExcavatorLib.correctBucket > 90) {
                 paint.setColor(getResources().getColor(R.color.transparentgray));
                 paint.setStyle(Paint.Style.FILL);

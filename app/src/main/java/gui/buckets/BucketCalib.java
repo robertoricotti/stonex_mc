@@ -283,7 +283,7 @@ public class BucketCalib extends AppCompatActivity {
                 } else {
                     DataSaved.flat = Math.abs(DataSaved.offsetFlat) - 90;
                 }
-                Log.i("isWL",DataSaved.offsetFlat+"   "+DataSaved.flat);
+
 
             return true;
         });
