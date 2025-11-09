@@ -36,7 +36,8 @@
     <string name="color_bucket">COULEUR DU GODET - LAME</string>
     <string name="color_boom">COULEUR DE LA FLÈCHE - CHÂSSIS</string>
     <string name="ext_offset">PAS DE DÉCALAGE EXTERNE</string>
-    <string name="auto_z_db">BANDE MORTE D’ÉLÉVATION</string>
+    <string name="auto_z_db">ZONE MORTE D’INCLINAISON GAUCHE</string>
+    <string name="auto_z_dbR">ZONE MORTE D’INCLINAISON DROITE</string>
     <string name="hydro_window">FENÊTRE D’ENGAGEMENT HYDRAULIQUE</string>
     <string name="auto_slope_db">BANDE MORTE DE PENTE</string>
     <string name="xy_db">BANDE MORTE XY</string>

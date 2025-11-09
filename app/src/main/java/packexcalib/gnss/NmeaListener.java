@@ -6,6 +6,7 @@ import static packexcalib.gnss.CRS_Strings._UTM;
 import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
@@ -35,6 +36,7 @@ public class NmeaListener {
     public static double Nord1, Est1, Quota1, mch_Orientation, mch_Hdt, mch_Hdt_1, roof_Orientation;
     public static String ggaNord, ggaEast, ggaNoS, ggaWoE, ggaZ1, ggaZ2, ggaSat, ggaDop, ggaQuality, ggaRtk, fix1;//String data from  GPS1
     static boolean hdtError = false;
+
     /*
     NMEA STX Below
      */
@@ -255,6 +257,7 @@ public class NmeaListener {
     public static void NmeaSTX(int id, byte[] data) {
 
         switch (id) {
+
 
             case 0x18FF0110:
                 //UTM NORD

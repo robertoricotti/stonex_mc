@@ -23,7 +23,8 @@
     <string name="color_bucket">バケット - ブレードの色</string>
     <string name="color_boom">ブーム - フレームの色</string>
     <string name="ext_offset">外部オフセットステップ</string>
-    <string name="auto_z_db">高さデッドバンド</string>
+    <string name="auto_z_db">左の傾斜デッドバンド</string>
+    <string name="auto_z_dbR">右の傾斜デッドバンド</string>
     <string name="hydro_window">油圧エンゲージメントウィンドウ</string>
     <string name="auto_slope_db">傾斜デッドバンド</string>
     <string name="xy_db">XYデッドバンド</string>

@@ -34,7 +34,8 @@
     <string name="color_bucket">CULOARE CUPĂ - LAMĂ</string>
     <string name="color_boom">CULOARE BRAȚ - CADRU</string>
     <string name="ext_offset">PAS DECALAJ EXTERN</string>
-    <string name="auto_z_db">BANDĂ MOARTĂ ELEVAȚIE</string>
+    <string name="auto_z_db">ZONĂ MOARTĂ DE ÎNCLINARE STÂNGĂ</string>
+    <string name="auto_z_dbR">ZONĂ MOARTĂ DE ÎNCLINARE DREAPTĂ</string>
     <string name="hydro_window">FEREASTRĂ CUPLARE HIDRAULICĂ</string>
     <string name="auto_slope_db">BANDĂ MOARTĂ PANTĂ</string>
     <string name="xy_db">BANDĂ MOARTĂ XY</string>

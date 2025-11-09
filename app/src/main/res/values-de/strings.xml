@@ -26,7 +26,8 @@
     <string name="color_bucket">SCHAUFEL - SCHILD FARBE</string>
     <string name="color_boom">AUSLEGER - RAHMEN FARBE</string>
     <string name="ext_offset">EXTERNER OFFSET-SCHRITT</string>
-    <string name="auto_z_db">HÖHEN-TOTBAND</string>
+    <string name="auto_z_db">LINKS NEIGUNGS-TOTZONE</string>
+    <string name="auto_z_dbR">RECHTS NEIGUNGS-TOTZONE</string>
     <string name="hydro_window">HYDRAULISCHES EINGRIFFSFENSTER</string>
     <string name="auto_slope_db">NEIGUNGS-TOTBAND</string>
     <string name="xy_db">XY-TOTBAND</string>

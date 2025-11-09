@@ -36,7 +36,8 @@
     <string name="color_bucket">铲斗 - 刀片颜色</string>
     <string name="color_boom">动臂 - 机架颜色</string>
     <string name="ext_offset">外部偏移步长</string>
-    <string name="auto_z_db">高程死区</string>
+    <string name="auto_z_db">左侧倾斜死区</string>
+    <string name="auto_z_dbR">右侧倾斜死区</string>
     <string name="hydro_window">液压啮合窗口</string>
     <string name="auto_slope_db">坡度死区</string>
     <string name="xy_db">XY死区</string>

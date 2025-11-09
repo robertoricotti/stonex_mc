@@ -444,13 +444,7 @@ git push
                             try {
 
 
-                                if (My3DActivity.diaolgGainHydro == null) {
-                                    Log.d("TestCRSSS", "⚠️ diaolgGainHydro è null");
-                                } else if (My3DActivity.diaolgGainHydro.dialog == null) {
-                                    Log.d("TestCRSSS", "⚠️ il campo dialog è null");
-                                } else {
-                                    Log.d("TestCRSSS", "✅ dialog esiste, tutto ok");
-                                }
+
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {
                                     frameCounter += 1;

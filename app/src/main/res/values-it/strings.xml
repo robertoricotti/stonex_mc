@@ -31,7 +31,8 @@
     <string name="color_bucket">COLORE BENNA - LAMA</string>
     <string name="color_boom">COLORE BRACCIO - TELAIO</string>
     <string name="ext_offset">PASSO OFFSET ESTERNO</string>
-    <string name="auto_z_db">BANDA MORTA QUOTA</string>
+    <string name="auto_z_db">BANDA MORTA QUOTA SINISTRA</string>
+    <string name="auto_z_dbR">BANDA MORTA QUOTA DESTRA</string>
     <string name="hydro_window">FINESTRA INNESCO IDRAULICO</string>
     <string name="auto_slope_db">BANDA MORTA PENDENZA</string>
     <string name="xy_db">BANDA MORTA XY</string>

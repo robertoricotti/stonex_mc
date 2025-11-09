@@ -19,7 +19,6 @@ import gui.debug_ecu.Can_Msg_Debug;
 import gui.gps.Nuovo_Gps;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
-import packexcalib.exca.FMI_Decoder;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;

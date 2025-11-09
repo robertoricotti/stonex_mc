@@ -33,7 +33,8 @@
     <string name="color_bucket">ЦВЕТ КОВША - ЛЕЗВИЯ</string>
     <string name="color_boom">ЦВЕТ СТРЕЛЫ - РАМЫ</string>
     <string name="ext_offset">ШАГ ВНЕШНЕГО СМЕЩЕНИЯ</string>
-    <string name="auto_z_db">МЁРТВАЯ ЗОНА ВЫСОТЫ</string>
+    <string name="auto_z_db">МЁРТВАЯ ЗОНА ЛЕВОГО НАКЛОНА</string>
+    <string name="auto_z_dbR">МЁРТВАЯ ЗОНА ПРАВОГО НАКЛОНА</string>
     <string name="hydro_window">ОКНО ВКЛЮЧЕНИЯ ГИДРАВЛИКИ</string>
     <string name="auto_slope_db">МЁРТВАЯ ЗОНА НАКЛОНА</string>
     <string name="xy_db">МЁРТВАЯ ЗОНА XY</string>

@@ -24,7 +24,8 @@
     <string name="color_bucket">ΧΡΩΜΑ ΚΟΥΒΑ - ΛΕΠΙΔΑΣ</string>
     <string name="color_boom">ΧΡΩΜΑ ΒΡΑΧΙΟΝΑ - ΠΛΑΙΣΙΟΥ</string>
     <string name="ext_offset">ΒΗΜΑ ΕΞΩΤΕΡΙΚΗΣ ΜΕΤΑΤΟΠΙΣΗΣ</string>
-    <string name="auto_z_db">ΖΩΝΗ ΝΕΚΡΗΣ ΕΥΑΙΣΘΗΣΙΑΣ ΥΨΟΥΣ</string>
+    <string name="auto_z_db">ΝΕΚΡΗ ΖΩΝΗ ΑΡΙΣΤΕΡΗΣ ΚΛΙΣΗΣ</string>
+    <string name="auto_z_dbR">ΝΕΚΡΗ ΖΩΝΗ ΔΕΞΙΑΣ ΚΛΙΣΗΣ</string>
     <string name="hydro_window">ΠΑΡΑΘΥΡΟ ΥΔΡΑΥΛΙΚΗΣ ΕΜΠΛΟΚΗΣ</string>
     <string name="auto_slope_db">ΖΩΝΗ ΝΕΚΡΗΣ ΕΥΑΙΣΘΗΣΙΑΣ ΚΛΙΣΗΣ</string>
     <string name="xy_db">ΖΩΝΗ ΝΕΚΡΗΣ ΕΥΑΙΣΘΗΣΙΑΣ XY</string>

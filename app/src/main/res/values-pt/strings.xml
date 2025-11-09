@@ -33,7 +33,8 @@
     <string name="color_bucket">COR DO BALDE - LÂMINA</string>
     <string name="color_boom">COR DO BRAÇO - QUADRO</string>
     <string name="ext_offset">PASSO DE DESLOCAMENTO EXTERNO</string>
-    <string name="auto_z_db">FAIXA MORTA DE ELEVAÇÃO</string>
+    <string name="auto_z_db">ZONA MORTA DE INCLINAÇÃO ESQUERDA</string>
+    <string name="auto_z_dbR">ZONA MORTA DE INCLINAÇÃO DIREITA</string>
     <string name="hydro_window">JANELA DE ENGATE HIDRÁULICO</string>
     <string name="auto_slope_db">FAIXA MORTA DE INCLINAÇÃO</string>
     <string name="xy_db">FAIXA MORTA XY</string>

@@ -48,13 +48,13 @@ public class Nuova_User_Settings extends AppCompatActivity {
     Dialog_InfoApp dialogInfoApp;
     DialogColors dialogColors;
     TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue, tvVert, tvAng, stepValue, tvoffstep;
-    TextView tvVertValue;
+    TextView tvVertValue,tvZValueR;
     ImageView imgLocale, imgLse, imgCutFill, but_piu, but_meno, but_piu_db, but_meno_db, but_piu_an, but_meno_an;
     String intLang = "";
     int indexAudioSelected;
     double myStep, myStepAngle;
     TextView tvRotateMode, tvAXYValue, tvAngAutoValue, tvZValue, tvWINDOWValue;
-    ImageView but_meno_auto_z, but_piu_auto_z, but_meno_ang_auto, but_piu_ang_auto, but_meno_xy, but_piu_xy, but_meno_auto_window, but_piu_auto_window;
+    ImageView but_meno_auto_zR,but_piu_auto_zR,but_meno_auto_z, but_piu_auto_z, but_meno_ang_auto, but_piu_ang_auto, but_meno_xy, but_piu_xy, but_meno_auto_window, but_piu_auto_window;
 
     ImageView but_meno_bkc, but_piu_bkc, but_meno_boom, but_piu_boom;
     TextView coloreBenna, coloreBoom;
@@ -92,6 +92,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogInfoApp = new Dialog_InfoApp(this);
 
+        but_piu_auto_zR=findViewById(R.id.but_piu_auto_zR);
+        but_meno_auto_zR=findViewById(R.id.but_meno_auto_zR);
+        tvZValueR=findViewById(R.id.tvZValueR);
 
         tvAXYValue = findViewById(R.id.tvAXYValue);
         tvWINDOWValue = findViewById(R.id.tvWINDOWValue);
@@ -231,18 +234,32 @@ public class Nuova_User_Settings extends AppCompatActivity {
         /// //////////////////////////////////
         /// ////nuovi
         but_piu_auto_z.setOnClickListener(view -> {
-            DataSaved.tolleranza_Z += myStep;
-            MyData.push("tolleranza_Z", String.valueOf(DataSaved.tolleranza_Z));
+            DataSaved.tolleranza_ZL += myStep;
+            MyData.push("tolleranza_ZL", String.valueOf(DataSaved.tolleranza_ZL));
 
         });
 
         but_meno_auto_z.setOnClickListener(view -> {
 
-            if (DataSaved.tolleranza_Z > 0) {
-                DataSaved.tolleranza_Z -= myStep;
+            if (DataSaved.tolleranza_ZL > 0) {
+                DataSaved.tolleranza_ZL -= myStep;
             }
-            if (DataSaved.tolleranza_Z <= myStep) DataSaved.tolleranza_Z = myStep;
-            MyData.push("tolleranza_Z", String.valueOf(DataSaved.tolleranza_Z));
+            if (DataSaved.tolleranza_ZL <= myStep) DataSaved.tolleranza_ZL = myStep;
+            MyData.push("tolleranza_ZL", String.valueOf(DataSaved.tolleranza_ZL));
+        });
+        but_piu_auto_zR.setOnClickListener(view -> {
+            DataSaved.tolleranza_ZR += myStep;
+            MyData.push("tolleranza_ZR", String.valueOf(DataSaved.tolleranza_ZR));
+
+        });
+
+        but_meno_auto_zR.setOnClickListener(view -> {
+
+            if (DataSaved.tolleranza_ZR > 0) {
+                DataSaved.tolleranza_ZR -= myStep;
+            }
+            if (DataSaved.tolleranza_ZR <= myStep) DataSaved.tolleranza_ZR = myStep;
+            MyData.push("tolleranza_ZR", String.valueOf(DataSaved.tolleranza_ZR));
         });
 
 
@@ -498,7 +515,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
             switch (myInt) {
                 case 0:
                     myStepAngle = 0.1;
-                    tvZValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvZValueR.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_ZR)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
+                    tvZValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_ZL)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAXYValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -511,7 +530,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     break;
                 case 1:
                     myStepAngle = 0.055;
-                    tvZValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvZValueR.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_ZR)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
+                    tvZValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_ZL)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAXYValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -524,7 +545,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
                 case 2:
                     myStepAngle = 0.1;
-                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvZValueR.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZR)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZL)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -536,7 +559,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     break;
                 case 3:
                     myStepAngle = 0.055;
-                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvZValueR.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZR)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZL)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -549,7 +574,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
 
                 case 4:
                     myStepAngle = 0.1;
-                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvZValueR.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZR)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZL)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -561,7 +588,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     break;
                 case 5:
                     myStepAngle = 0.055;
-                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvZValueR.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZR)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZL)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -573,7 +602,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     break;
                 case 6:
                     myStepAngle = 0.1;
-                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvZValueR.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZR)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZL)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -585,7 +616,9 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     break;
                 case 7:
                     myStepAngle = 0.055;
-                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_Z)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvZValueR.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZR)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+
+                    tvZValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_ZL)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));

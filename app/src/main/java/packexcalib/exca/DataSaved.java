@@ -35,7 +35,8 @@ public class DataSaved {
 
     public static int Interface_Type;
     public static double HYDRAULIC_WINDOW;
-    public static double tolleranza_Z;
+    public static double tolleranza_ZL;
+    public static double tolleranza_ZR;
     public static double tolleranza_XY;
     public static double tolleranza_Slope;
 

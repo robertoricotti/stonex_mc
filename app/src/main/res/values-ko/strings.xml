@@ -34,7 +34,8 @@
     <string name="color_bucket">버킷 - 블레이드 색상</string>
     <string name="color_boom">붐 - 프레임 색상</string>
     <string name="ext_offset">외부 오프셋 단계</string>
-    <string name="auto_z_db">고도 데드밴드</string>
+    <string name="auto_z_db">왼쪽 기울기 데드밴드</string>
+    <string name="auto_z_dbR">오른쪽 기울기 데드밴드</string>
     <string name="hydro_window">유압 작동 윈도우</string>
     <string name="auto_slope_db">경사 데드밴드</string>
     <string name="xy_db">XY 데드밴드</string>

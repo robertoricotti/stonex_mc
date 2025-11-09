@@ -33,7 +33,8 @@
     <string name="color_bucket">COLOR DEL CUBO - HOJA</string>
     <string name="color_boom">COLOR DEL BRAZO - BASTIDOR</string>
     <string name="ext_offset">PASO DE DESPLAZAMIENTO EXTERNO</string>
-    <string name="auto_z_db">BANDA MUERTA DE ELEVACIÓN</string>
+    <string name="auto_z_db">ZONA MUERTA DE ELEVACIÓN IZQUIERDA</string>
+    <string name="auto_z_dbR">ZONA MUERTA DE ELEVACIÓN DERECHA</string>
     <string name="hydro_window">VENTANA DE ENGANCHE HIDRÁULICO</string>
     <string name="auto_slope_db">BANDA MUERTA DE PENDIENTE</string>
     <string name="xy_db">BANDA MUERTA XY</string>

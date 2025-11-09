@@ -684,7 +684,8 @@ public class UpdateValuesService extends Service {
                 String laser_height_Zero = MyData.get_String("Laser_Height_Zero");
                 String laser_reach_Zero = MyData.get_String("Laser_Reach_Zero");
                 String deadbandH = MyData.get_String("Deadband_H");
-                String tolleranza_Z = MyData.get_String("tolleranza_Z");
+                String tolleranza_Z = MyData.get_String("tolleranza_ZL");
+                String tolleranza_ZR = MyData.get_String("tolleranza_ZR");
                 String HYDRAULIC_WINDOW = MyData.get_String("HYDRAULIC_WINDOW");
                 String tolleranza_XY = MyData.get_String("tolleranza_XY");
                 String tolleranza_Slope = MyData.get_String("tolleranza_Slope");
@@ -794,7 +795,10 @@ public class UpdateValuesService extends Service {
                         MyData.push("Deadband_H", "0.02");
                     }
                     if (tolleranza_Z == null) {
-                        MyData.push("tolleranza_Z", "0.02");
+                        MyData.push("tolleranza_ZL", "0.02");
+                    }
+                    if (tolleranza_ZR == null) {
+                        MyData.push("tolleranza_ZR", "0.02");
                     }
                     if (HYDRAULIC_WINDOW == null) {
                         MyData.push("HYDRAULIC_WINDOW", "0.5");
@@ -1554,9 +1558,14 @@ public class UpdateValuesService extends Service {
                 }
                 /// dozer
                 try {
-                    DataSaved.tolleranza_Z = MyData.get_Double("tolleranza_Z");
+                    DataSaved.tolleranza_ZL = MyData.get_Double("tolleranza_ZL");
                 } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di tolleranza_Z: " + e.getMessage());
+                    Log.e("Error", "Errore nell'inizializzazione di tolleranza_ZL: " + e.getMessage());
+                }
+                try {
+                    DataSaved.tolleranza_ZR = MyData.get_Double("tolleranza_ZR");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di tolleranza_ZR: " + e.getMessage());
                 }
                 try {
                     DataSaved.HYDRAULIC_WINDOW = MyData.get_Double("HYDRAULIC_WINDOW");

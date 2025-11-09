@@ -35,7 +35,8 @@
     <string name="color_bucket">BAK - BLAD KLEUR</string>
     <string name="color_boom">GIEK - FRAME KLEUR</string>
     <string name="ext_offset">EXTERNE OFFSET-STAP</string>
-    <string name="auto_z_db">HOOGTE DODE BAND</string>
+    <string name="auto_z_db">DODE ZONE LINKER HELLING</string>
+    <string name="auto_z_dbR">DODE ZONE RECHTER HELLING</string>
     <string name="hydro_window">HYDRAULISCH INSCHAKELVENSTER</string>
     <string name="auto_slope_db">HELLING DODE BAND</string>
     <string name="xy_db">XY DODE BAND</string>
