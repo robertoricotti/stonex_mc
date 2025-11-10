@@ -37,6 +37,8 @@ import com.cp.cputils.Apollo2;
 import com.cp.cputils.ApolloPro;
 import com.example.stx_dig.R;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -54,12 +56,14 @@ import java.util.concurrent.TimeUnit;
 import cloud.S3ManagerSingleton;
 import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Ecu_Sensors_Activity;
+import event_bus.SerialEvent;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketCalib;
 import gui.buckets.BucketCalibTilt;
 import gui.buckets.BucketChooserActivity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.DebugExcavatorActivity;
+import gui.debug_ecu.Serial_Msg_Debug;
 import gui.dialogs_and_toast.SensorAlertDialog;
 import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.digging_excavator.Digging1D;
@@ -68,6 +72,7 @@ import gui.digging_excavator.Digging3D_DXF;
 import gui.digging_excavator.DiggingProfile;
 import gui.digging_excavator.Digging_CutAndFill1D;
 import gui.digging_excavator.Digging_CutAndFill2D;
+import gui.gps.NmeaGenerator;
 import gui.gps.Nuovo_Gps;
 import gui.grading_dozergrader.Grading3D_DXF;
 import gui.hydro.CASE_Activity;
@@ -101,6 +106,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.gnss.GridShiftTransformer;
+import packexcalib.gnss.NmeaListener;
 import services.CanSender;
 import services.CanService;
 import services.TriangleService;
@@ -443,7 +449,23 @@ git push
                         public void run() {
                             try {
 
+                                if (DataSaved.my_comPort == 4) {
 
+
+                                        new SerialEvent(NmeaGenerator.generateLLQ());
+                                        new SerialEvent(NmeaGenerator.generateGPHDT());
+                                        new SerialEvent(NmeaGenerator.generateGPGGA());
+                                        if (MyApp.visibleActivity instanceof Serial_Msg_Debug) {
+                                            EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
+                                            EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
+                                            EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
+                                        }
+                                        NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
+                                        NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
+                                        NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
+
+
+                                }
 
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {
