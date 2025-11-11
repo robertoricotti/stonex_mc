@@ -1,5 +1,6 @@
 package packexcalib.exca;
 
+import org.bouncycastle.pqc.crypto.newhope.NHSecretKeyProcessor;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class DataSaved {
 
 
     //settaggi idraulici
-
+    public static String OUTPUT_HYDRO="";
     public static int Interface_Type;
     public static double HYDRAULIC_WINDOW;
     public static double tolleranza_ZL;

@@ -24,7 +24,7 @@ import utils.Utils;
 
 public class Dialog_Trench {
     ImageView spiana, mantieni;
-    static boolean flat;
+    public static boolean flat;
     public Dialog dialog;
     Activity activity;
     Button ok, cancel, reload;

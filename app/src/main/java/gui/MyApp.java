@@ -117,6 +117,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
+
     public static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio
     public static boolean isAlto, isBasso, isCentro;
@@ -126,7 +127,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     private String currentState = "";
     private boolean isCheckerRunning = false;
     //license
-
     public static String deviceBuild = "";
     public static int errorCode;
     public static String activationCode = "none";
@@ -161,7 +161,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     @Override
     public void onCreate() {
         super.onCreate();
-
         UpdateValuesService.isUpodating = true;
         registerActivityLifecycleCallbacks(this);
 

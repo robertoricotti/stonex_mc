@@ -28,7 +28,7 @@ import packexcalib.exca.DataSaved;
  * communication protocols.
  */
 public class CPCanHelper {
-
+    private boolean started = false;
     public static String voltApollo2 = "0.0";
     /**
      * The singleton instance of the CPCanHelper class.
@@ -111,6 +111,13 @@ public class CPCanHelper {
      * @param action The action to be executed when a CAN frame is received.
      */
     public synchronized void start(Action action) {
+        if (started) {
+            //Log.w("CPCanHelper", "start() già eseguito, ignoro ulteriore inizializzazione");
+            return;
+        }
+
+        started = true;
+        //Log.d("CPCanHelper", "Avvio inizializzazione CAN...");
         try {
             if (CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
                 //APOLLO12
@@ -240,12 +247,13 @@ public class CPCanHelper {
 
         } else if (!CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
             //resto APOLLO10
-            if (mProxy.isConnected()) {
-                mProxy.disconnect();
-                mProxy.release();
-
-
+            if( mProxy != null) {
+                if (mProxy.isConnected()) {
+                    mProxy.disconnect();
+                    mProxy.release();
+                }
             }
+
 
         } else if (!CPCommConfig.isUseSocketCanService() && !CPCommConfig.isUseMcuCanService()) {
             //TANK2
@@ -254,7 +262,10 @@ public class CPCanHelper {
             if (mCPVxDataLink != null) mCPVxDataLink.release();
             if (mSpi != null) mSpi.release();
         }
-
+        started = false;
+        mProxy = null;
+        mSocketCanProxy = null;
+        mSocketCanProxy_2 = null;
 
     }
 

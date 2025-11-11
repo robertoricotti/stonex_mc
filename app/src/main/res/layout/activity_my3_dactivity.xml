@@ -131,7 +131,7 @@
         app:layout_constraintBottom_toTopOf="@id/generalInfo"
         android:background="@color/transparent"
         android:textStyle="normal"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textColor="@color/black"
         android:gravity="right"
         android:text="N:\nE:\nZ:"

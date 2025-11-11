@@ -56,9 +56,43 @@ public class MyMCUtils {
         return Math.max(min, Math.min(value, max));
     }
 
+
+
     public static double ledder(int Gain){
         return myscaleD((double)Gain,1,255,1,10);
     }
+    public static int limitIntJDL(double input, int value, int min, int max) {
+        double absInput = Math.abs(input);
+        double multiplier;
+
+        if (absInput <= 0.05) {
+            multiplier = 1.0;
+        } else if (absInput <= 0.07) {
+            multiplier = 1.3;
+        } else if (absInput <= 0.09) {
+            multiplier = 1.4;
+        } else if (absInput <= 0.11) {
+            multiplier = 1.5;
+        } else if (absInput <= 0.13) {
+            multiplier = 1.6;
+        } else if (absInput <= 0.15) {
+            multiplier = 1.7;
+        } else {
+            multiplier = 1.8;
+        }
+
+        int center = 20000;
+        double offset = value - center;
+
+        // Applichiamo il moltiplicatore in modo simmetrico
+        double result = center + offset * multiplier;
+
+        // Clamp tra min e max
+        int finalResult = (int) Math.round(Math.max(min, Math.min(result, max)));
+        return finalResult;
+    }
+
+
     public static double bladeSlope(double[] Pleft,double[] Pright){
 
         boolean isNegative=Pleft[2]<Pright[2];

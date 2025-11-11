@@ -4,6 +4,7 @@ package gui.my_opengl;
 import static gui.MyApp.errorCode;
 import static gui.MyApp.hAlarm;
 import static gui.MyApp.isOffgrid;
+import static packexcalib.exca.DataSaved.OUTPUT_HYDRO;
 import static services.CanSender.prepLeft;
 import static services.CanSender.prepRight;
 import static services.CanService.Dozer_Auto_Main;
@@ -84,7 +85,7 @@ public class My3DActivity extends BaseClass {
     TextView AUTO_SX, AUTO_SS, AUTO_DX;
     Dialog_Blade_Wear dialogBladeWear;
     public static boolean PNEZD_FUNCTION;
-    ImageView allarmeAlt,allarmeBound, gl_hydroP;
+    ImageView allarmeAlt, allarmeBound, gl_hydroP;
     String bucketName;
     int indexMachineSelected, indexBucketSelected;
     TextView generalnfo, generalCoord;
@@ -134,7 +135,7 @@ public class My3DActivity extends BaseClass {
         super.onCreate(savedInstanceState);
         checkBooleans();
         serviseStrarted = false;
-        Grader_Auto_SS=false;
+        Grader_Auto_SS = false;
         setContentView(R.layout.activity_my3_dactivity);
         progress = findViewById(R.id.progress);
         loading = findViewById(R.id.loading);
@@ -194,9 +195,9 @@ public class My3DActivity extends BaseClass {
             bucketName = "";
         }
 
-        if (DataSaved.Interface_Type == 2||DataSaved.Interface_Type==0) {
+        if (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0) {
 
-            MyDeviceManager.CanWrite(true,1, 0x18EEFF85, 8,
+            MyDeviceManager.CanWrite(true, 1, 0x18EEFF85, 8,
                     new byte[]{(byte) 0xF4,
                             (byte) 0xF0,
                             (byte) 0x13,
@@ -685,10 +686,10 @@ public class My3DActivity extends BaseClass {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-       Grader_Auto_SS=false;
+        Grader_Auto_SS = false;
         stopService(new Intent(this, TriangleService.class));
-        MyDeviceManager.OUT1(MyApp.visibleActivity,0);
-        MyDeviceManager.OUT2(MyApp.visibleActivity,0);
+        MyDeviceManager.OUT1(MyApp.visibleActivity, 0);
+        MyDeviceManager.OUT2(MyApp.visibleActivity, 0);
     }
 
     private void checkBooleans() {
@@ -765,13 +766,13 @@ public class My3DActivity extends BaseClass {
             } else {
                 allarmeAlt.setVisibility(View.GONE);
             }
-            if(DataSaved.enOUT==1){
+            if (DataSaved.enOUT == 1) {
                 if (isOffgrid) {
                     allarmeBound.setVisibility(View.VISIBLE);
                 } else {
                     allarmeBound.setVisibility(View.GONE);
                 }
-            }else {
+            } else {
                 allarmeBound.setVisibility(View.GONE);
             }
             generalCoord.setTextColor(MyColorClass.colorConstraint);
@@ -1437,25 +1438,25 @@ public class My3DActivity extends BaseClass {
 
 
     private void setLightBar() {
-        if(DataSaved.isWL==EXCAVATOR||DataSaved.isWL==WHEELLOADER) {
+        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
             switch (DataSaved.bucketEdge) {
                 case -1:
-                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true, 0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
                     //setAudio(TriangleService.quota3D_SX, !TriangleService.ltOffGrid);
                     break;
                 case 0:
-                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.ctOffGrid, TriangleService.quota3D_CT, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true, 0, 0xA0, 3, LeicaLB.mapping(TriangleService.ctOffGrid, TriangleService.quota3D_CT, DataSaved.deadbandH));
                     //setAudio(TriangleService.quota3D_CT, !TriangleService.ctOffGrid);
                     break;
                 case 1:
-                    MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
+                    MyDeviceManager.CanWrite(true, 0, 0xA0, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
                     //setAudio(TriangleService.quota3D_DX, !TriangleService.rtOffGrid);
                     break;
             }
-        }else {
-            MyDeviceManager.CanWrite(true,0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
+        } else {
+            MyDeviceManager.CanWrite(true, 0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
 
-            MyDeviceManager.CanWrite(true,0, 0xA8, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
+            MyDeviceManager.CanWrite(true, 0, 0xA8, 3, LeicaLB.mapping(TriangleService.rtOffGrid, TriangleService.quota3D_DX, DataSaved.deadbandH));
         }
     }
 
@@ -1502,17 +1503,13 @@ public class My3DActivity extends BaseClass {
                     }
 
 
-
-                        if (Grader_Auto_SS) {
-                            AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
-
-
-                        } else {
-                            AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_manuale));
-                        }
+                    if (Grader_Auto_SS) {
+                        AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_auto_enabled));
 
 
-
+                    } else {
+                        AUTO_SS.setBackground(getDrawable(R.drawable.sfondo_manuale));
+                    }
 
 
                     if (prepRight) {
@@ -1525,7 +1522,7 @@ public class My3DActivity extends BaseClass {
                     } else {
                         AUTO_DX.setBackground(getDrawable(R.drawable.sfondo_manuale));
                     }
-                } else if(DataSaved.isWL==DOZER||DataSaved.isWL==DOZER_SIX) {
+                } else if (DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX) {
                     //DOZER
                     AUTO_SX.setVisibility(View.VISIBLE);
                     AUTO_SS.setVisibility(View.INVISIBLE);
@@ -1592,7 +1589,7 @@ public class My3DActivity extends BaseClass {
                     NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                     DataSaved.demoEAST = DataSaved.points.get(0).getX();
                     NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
-                    DataSaved.demoZ = DataSaved.points.get(0).getZ()+3;
+                    DataSaved.demoZ = DataSaved.points.get(0).getZ() + 3;
                     NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                     MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                     MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
@@ -1604,13 +1601,13 @@ public class My3DActivity extends BaseClass {
                         NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                         DataSaved.demoEAST = DataSaved.polylines.get(0).getVertices().get(0).getX();
                         NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
-                        DataSaved.demoZ = DataSaved.polylines.get(0).getVertices().get(0).getZ()+3;
+                        DataSaved.demoZ = DataSaved.polylines.get(0).getVertices().get(0).getZ() + 3;
                         NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                         MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                         MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
                         MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
                     } catch (Exception exception) {
-                       new CustomToast(My3DActivity.this,"Impossible to Locate Machine").show_error();
+                        new CustomToast(My3DActivity.this, "Impossible to Locate Machine").show_error();
                     }
                 }
             }
@@ -1618,20 +1615,22 @@ public class My3DActivity extends BaseClass {
         }
     }
 
-    private static String[] coordShow(int mode){
-        String s0="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
-        String s1="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
-        String s2="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
+    private static String[] coordShow(int mode) {
+        String s = OUTPUT_HYDRO + "\n";
+
+        String s0 = s+"E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
+        String s1 =s+ "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
+        String s2 =s+ "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
 
 
-        String s4="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
-        String s5="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
-        String s6="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
+        String s4 = s+"N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
+        String s5 =s+ "N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
+        String s6 = s+"N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
 
-        if(mode==0){
-            return new String[]{s0,s1,s2};
-        }else {
-            return new String[]{s4,s5,s6};
+        if (mode == 0) {
+            return new String[]{s0, s1, s2};
+        } else {
+            return new String[]{s4, s5, s6};
         }
     }
 }

@@ -33,21 +33,19 @@ public class CanService extends Service {
     public CanService() {
     }
 
-    //TODO Grader_Auto_SS SU JD ED ECU
-    public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck,CASE_Joystick;
-    public static int SteerConnected, isAuto, errorEcu;
-    public static int altosx, centrosx, bassosx, altodx, centrodx, m, bassodx;
-    public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected,CASE_Connected;
+    public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck, CASE_Joystick;
+    public static int SteerConnected, isAuto;
+    public static int m;
+    public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
     public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK;
     CanFileReceiver receiver = new CanFileReceiver();
     public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc;
     public static boolean CanServiceState = false;
     int dlc;
-    static CPCanHelper cpCanHelper;
+
 
     @Override
     public void onCreate() {
-        cpCanHelper = CPCanHelper.getInstance();
 
         nmeaSTX_Disc = true;
         frameDisc = true;
@@ -66,7 +64,7 @@ public class CanService extends Service {
         CAT_Connected = false;
         JD_Connected = false;
         KOM_Connected = false;
-        CASE_Connected=false;
+        CASE_Connected = false;
 
         if (DataSaved.lrFrame != 0) {
             handler_frame.postDelayed(timeoutRunnable_frame, 3000);
@@ -353,7 +351,7 @@ public class CanService extends Service {
                 }
 
 
-                if (id == 0x7DF||id==0x560106A) {
+                if (id == 0x7DF || id == 0x560106A) {
                     receiver.receivePacket(msg);
                 }
             }
@@ -361,17 +359,17 @@ public class CanService extends Service {
             if (channel == 2) {
                 //FMI_Decoder.decode(id,msg);
                 //CAN2
-                if(id==0x18F00DE3&&DataSaved.Interface_Type==4){
-                    CASE_Connected=true;
+                if (id == 0x18F00DE3 && DataSaved.Interface_Type == 4) {
+                    CASE_Connected = true;
                     handler_CASE_Connected.removeCallbacks(timeoutRunnable_CASE_Connected);
                     handler_CASE_Connected.postDelayed(timeoutRunnable_CASE_Connected, 2000);
-                    CASE_Joystick="0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
+                    CASE_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
                     boolean[] booleansC = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
                     if (MyApp.visibleActivity instanceof My3DActivity) {
-                        Dozer_Auto_Main = booleansC[6]&&booleansC[7];
+                        Dozer_Auto_Main = booleansC[6] && booleansC[7];
                         OffsetAdjuster.update(booleansC[2], booleansC[3]);
-                    }else {
-                        Dozer_Auto_Main=false;
+                    } else {
+                        Dozer_Auto_Main = false;
                     }
 
                 }
@@ -520,19 +518,20 @@ public class CanService extends Service {
             byte msg = 0x01;
 
 
-            MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+            MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
             new OpenSerialPort(this);
         } catch (Exception e) {
             System.out.println(e);
         }
 
 
-        cpCanHelper.start(new CPCanHelper.Action() {
+        CPCanHelper.getInstance().start(new CPCanHelper.Action() {
             @Override
             public void execute(int channel, int id, byte[] data) {
                 if (data != null) {
                     dlc = data.length;
                     OnCan(channel, data, dlc, id);
+
                 }
 
             }
@@ -718,6 +717,8 @@ public class CanService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        stopSelf();
 
 
     }

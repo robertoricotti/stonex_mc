@@ -6,12 +6,6 @@ import static gui.projects.Canvas_Crea_Superficie.buildTrenchEntities;
 
 import android.graphics.Color;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,7 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
+
+import gui.projects.Dialog_Trench;
 
 public class ExportDXF_Trench {
     private List<double[]> coordinates;
@@ -28,9 +23,9 @@ public class ExportDXF_Trench {
     private double rightWidth;
     private double leftSlopeDeg;
     private double rightSlopeDeg;
-     int handle;
+    int handle;
 
-   static Layer trenchLayer,polylineLayer;
+    static Layer trenchLayer, polylineLayer;
     private String filename;
     private String path;
     private double conversionFactor;
@@ -51,13 +46,13 @@ public class ExportDXF_Trench {
         this.filename = filename;
         this.path = path;
         this.conversionFactor = conversionFactor;
-        trenchLayer=new Layer(filename,"TRENCH", Color.YELLOW,true);
-        polylineLayer=new Layer(filename,"CENTER LINE",Color.MAGENTA,true);
+        trenchLayer = new Layer(filename, "TRENCH", Color.YELLOW, true);
+        polylineLayer = new Layer(filename, "CENTER LINE", Color.MAGENTA, true);
     }
 
     public void generateDXF() throws IOException {
         METER_TO_FEET_CONVERSION = conversionFactor;
-        coordinates=new ArrayList<>();
+        coordinates = new ArrayList<>();
 
         List<Point3D> centerLineList = Arrays.asList(centerLinePoints);
         buildTrenchEntities(
@@ -65,7 +60,8 @@ public class ExportDXF_Trench {
                 leftWidth, rightWidth,
                 leftSlopeDeg, rightSlopeDeg,
                 Color.YELLOW, Color.MAGENTA,
-                trenchLayer,polylineLayer
+                trenchLayer, polylineLayer
+
 
         );
 
@@ -78,11 +74,10 @@ public class ExportDXF_Trench {
             DXFWriteMethods.beginEntities(writer);
 
 
-
-             handle=0;
+            handle = 0;
 
             for (Point3D point : centerLinePoints) {
-                coordinates.add(handle,new double[]{point.getX(), point.getY(), point.getZ()});
+                coordinates.add(handle, new double[]{point.getX(), point.getY(), point.getZ()});
                 label = centerLinePoints[handle].getId();
 
                 handle++;
@@ -92,33 +87,21 @@ public class ExportDXF_Trench {
 
                 // POINT
                 writer.write("0\nPOINT\n8\nLAYER_POINTS\n");
-                writer.write(String.format(Locale.US, "10\n%f\n20\n%f\n30\n%f\n", x, y, z ));
+                writer.write(String.format(Locale.US, "10\n%f\n20\n%f\n30\n%f\n", x, y, z));
 
                 // TEXT
                 // Aggiungi TEXT per il punto
                 writer.write("0\nTEXT\n");
-                writer.write("5\n"+Integer.toHexString(handle)+"\n");
+                writer.write("5\n" + Integer.toHexString(handle) + "\n");
                 writer.write("100\nAcDbEntity\n");
                 writer.write(String.format("8\n%s\n", "LAYER_POINTS"));
                 writer.write("100\nAcDbText\n");
-                writer.write(String.format(Locale.US,"10\n%f\n20\n%f\n30\n%f\n", x,y, z));
+                writer.write(String.format(Locale.US, "10\n%f\n20\n%f\n30\n%f\n", x, y, z));
                 writer.write("40\n0.400000\n41\n1\n");
                 writer.write("1\n" + label + "\n");
                 writer.write("50\n0\n");
-                label="";
+                label = "";
             }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             for (Face3D face : facceTrench) {
@@ -128,10 +111,10 @@ public class ExportDXF_Trench {
                 Point3D p4 = face.getP4();
 
                 writer.write("0\n3DFACE\n8\n" + face.getLayer().getLayerName() + "\n");
-                writer.write(String.format(Locale.US, "10\n%f\n20\n%f\n30\n%f\n", p1.x/METER_TO_FEET_CONVERSION, p1.y/METER_TO_FEET_CONVERSION, p1.z/METER_TO_FEET_CONVERSION));
-                writer.write(String.format(Locale.US, "11\n%f\n21\n%f\n31\n%f\n", p2.x/METER_TO_FEET_CONVERSION, p2.y/METER_TO_FEET_CONVERSION, p2.z/METER_TO_FEET_CONVERSION));
-                writer.write(String.format(Locale.US, "12\n%f\n22\n%f\n32\n%f\n", p3.x/METER_TO_FEET_CONVERSION, p3.y/METER_TO_FEET_CONVERSION, p3.z/METER_TO_FEET_CONVERSION));
-                writer.write(String.format(Locale.US, "13\n%f\n23\n%f\n33\n%f\n", p4.x/METER_TO_FEET_CONVERSION, p4.y/METER_TO_FEET_CONVERSION, p4.z/METER_TO_FEET_CONVERSION));
+                writer.write(String.format(Locale.US, "10\n%f\n20\n%f\n30\n%f\n", p1.x / METER_TO_FEET_CONVERSION, p1.y / METER_TO_FEET_CONVERSION, p1.z / METER_TO_FEET_CONVERSION));
+                writer.write(String.format(Locale.US, "11\n%f\n21\n%f\n31\n%f\n", p2.x / METER_TO_FEET_CONVERSION, p2.y / METER_TO_FEET_CONVERSION, p2.z / METER_TO_FEET_CONVERSION));
+                writer.write(String.format(Locale.US, "12\n%f\n22\n%f\n32\n%f\n", p3.x / METER_TO_FEET_CONVERSION, p3.y / METER_TO_FEET_CONVERSION, p3.z / METER_TO_FEET_CONVERSION));
+                writer.write(String.format(Locale.US, "13\n%f\n23\n%f\n33\n%f\n", p4.x / METER_TO_FEET_CONVERSION, p4.y / METER_TO_FEET_CONVERSION, p4.z / METER_TO_FEET_CONVERSION));
             }
 
             List<Point3D> vertices = polyTrench.getVertices();
@@ -139,7 +122,7 @@ public class ExportDXF_Trench {
                 writer.write("0\nPOLYLINE\n8\n" + polyTrench.getLayer().getLayerName() + "\n66\n1\n70\n8\n100\nAcDbEntity\n100\nAcDb3dPolyline\n");
                 for (Point3D pt : vertices) {
                     writer.write("0\nVERTEX\n8\n" + polyTrench.getLayer().getLayerName() + "\n100\nAcDbEntity\n100\nAcDbVertex\n100\nAcDb3dPolylineVertex\n70\n32\n");
-                    writer.write(String.format(Locale.US, "10\n%f\n20\n%f\n30\n%f\n", pt.x/METER_TO_FEET_CONVERSION, pt.y/METER_TO_FEET_CONVERSION, pt.z/METER_TO_FEET_CONVERSION));
+                    writer.write(String.format(Locale.US, "10\n%f\n20\n%f\n30\n%f\n", pt.x / METER_TO_FEET_CONVERSION, pt.y / METER_TO_FEET_CONVERSION, pt.z / METER_TO_FEET_CONVERSION));
                 }
                 writer.write("0\nSEQEND\n");
             }

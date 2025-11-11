@@ -10,6 +10,7 @@ import static packexcalib.exca.DataSaved.GAIN_LEFT;
 import static packexcalib.exca.DataSaved.GAIN_RIGHT;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_DOZER;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_GRADER;
+import static packexcalib.exca.DataSaved.OUTPUT_HYDRO;
 import static packexcalib.exca.DataSaved.maxSpeedRightDW;
 import static packexcalib.exca.DataSaved.maxSpeedRightUP;
 import static packexcalib.exca.DataSaved.minSpeedRightDW;
@@ -86,6 +87,7 @@ public class CanSender extends Service {
 
     @Override
     public void onCreate() {
+        OUTPUT_HYDRO="";
         payload = new HashMap<>();
 
         mExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
@@ -114,6 +116,7 @@ public class CanSender extends Service {
         senderExecutorGrade_50.scheduleAtFixedRate(new gradeSender(), 2000, 25, TimeUnit.MILLISECONDS);
         scheduledExecutorService1min.scheduleAtFixedRate(new AsyncSender1min(), 1000, 60000, TimeUnit.MILLISECONDS);
         return START_STICKY;
+
     }
 
     private class gradeSender implements Runnable {
@@ -443,6 +446,7 @@ public class CanSender extends Service {
             switch (DataSaved.isWL) {
                 case EXCAVATOR:
                 case WHEELLOADER:
+                    OUTPUT_HYDRO="";
                     QL = 0;
                     QC = 0;
                     QR = 0;
@@ -514,6 +518,7 @@ public class CanSender extends Service {
                             valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
                             valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
                             valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
+                            valueJDL=MyMCUtils.limitIntJDL(TriangleService.quota3D_CT,valueJDL,20000,30000);
 
 
                         } else if (QC > DataSaved.tolleranza_ZL) {
@@ -534,6 +539,7 @@ public class CanSender extends Service {
                             valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
 
                             valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
+                            valueJDL=MyMCUtils.limitIntJDL(TriangleService.quota3D_CT,valueJDL,10000,20000);
                         }
                     } else {
                         valueKomL = 0;
@@ -650,6 +656,7 @@ public class CanSender extends Service {
                                         valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, 0.5, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW);
                                         valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
                                         valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
+
                                         valueJDR = 40000 - valueJDR;
                                     }
                                 } else {
@@ -810,6 +817,7 @@ public class CanSender extends Service {
                 valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
                 valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
                 valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
+                valueJDL=MyMCUtils.limitIntJDL(TriangleService.quota3D_SX,valueJDL,20000,30000);
 
 
             } else if (LL > DataSaved.tolleranza_ZL) {
@@ -827,6 +835,7 @@ public class CanSender extends Service {
                 valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(LL), 0, 0.5, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
                 valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
                 valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
+                valueJDL=MyMCUtils.limitIntJDL(TriangleService.quota3D_SX,valueJDL,10000,20000);
             }
         } else {
             valueKomL = 0;
@@ -837,8 +846,6 @@ public class CanSender extends Service {
             dirCase_L = (byte) 0xF2;
 
         }
-
-
         if (!isInRange(DataSaved.tolleranza_ZR, RR) && Math.abs(TriangleService.quota3D_DX) < DataSaved.HYDRAULIC_WINDOW && !checkPointRight) {
             if (RR < -DataSaved.tolleranza_ZR) {
 
@@ -856,6 +863,8 @@ public class CanSender extends Service {
                 valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightUP, maxSpeedRightUP);
                 valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
                 valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
+                valueJDR = MyMCUtils.limitIntJDL(TriangleService.quota3D_DX,valueJDR, 20000, 30000);
+                valueJDR=MyMCUtils.limitIntJDL(TriangleService.quota3D_DX,valueJDR,20000,30000);
 
 
             } else if (RR > DataSaved.tolleranza_ZR) {
@@ -875,6 +884,7 @@ public class CanSender extends Service {
                 valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(RR), 0, 0.5, minSpeedRightDW, maxSpeedRightDW);
                 valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
                 valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
+                valueJDR=MyMCUtils.limitIntJDL(TriangleService.quota3D_DX,valueJDR,10000,20000);
             }
         } else {
             valueKomR = 0;
@@ -885,8 +895,6 @@ public class CanSender extends Service {
             dirCase_R = (byte) 0xF2;
 
         }
-
-
     }
 
     private void handleSideShift(int bladeEdge, double offset) {
@@ -987,7 +995,6 @@ public class CanSender extends Service {
         }
 
     }
-
     private void invioMessaggiDozer() {
         sending = !sending;
         switch (DataSaved.Interface_Type) {
@@ -1196,12 +1203,9 @@ public class CanSender extends Service {
                     );
                 }
 
-
                 break;
             case 0:
                 //ECU
-
-
                 byte[] valoreSX0 = new byte[]{0x4E, 0x20};
                 byte[] valoreDX0 = new byte[]{0x4E, 0x20};
                 byte[] valoreSS0 = new byte[]{0x4E, 0x20};
@@ -1225,6 +1229,7 @@ public class CanSender extends Service {
                 valoreSX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultL);
                 valoreDX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
                 valoreSS0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
+                OUTPUT_HYDRO="L:"+resultL+"\n"+"R:"+resultR;
                 MyDeviceManager.CanWrite(sending, 1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,
@@ -1242,6 +1247,7 @@ public class CanSender extends Service {
             case 1:
                 //CAT
               //  Log.d("JD_OUTPUT","SX:"+valueCATL+"  DX:"+valueCATR);
+                OUTPUT_HYDRO="L:"+valueCATL+"\n"+"R:"+valueCATR;
                 MyDeviceManager.CanWrite(sending, 1, 0x18FE3185, 8,
                         new byte[]{(byte) valueCATL,
                                 (byte) 0xFF,
@@ -1302,6 +1308,7 @@ public class CanSender extends Service {
                 valoreDX = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR2);
                 valoreSS = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS2);
                // Log.d("JD_OUTPUT",Math.abs(TriangleService.quota3D_CT) +"  "+ DataSaved.HYDRAULIC_WINDOW+"  SX:"+resultL2+"  DX:"+resultR2);
+                OUTPUT_HYDRO="L:"+resultL2+"\n"+"R:"+resultR2;
                 MyDeviceManager.CanWrite(sending, 1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,
@@ -1325,6 +1332,7 @@ public class CanSender extends Service {
                 valoreSXK = PLC_DataTypes_LittleEndian.U16_to_bytes(valueKomL);
                 valoreDXK = PLC_DataTypes_LittleEndian.U16_to_bytes(valueKomR);
                // Log.d("JD_OUTPUT","SX:"+valoreSXK+"  DX:"+valoreDXK);
+                OUTPUT_HYDRO="L:"+valueKomL+"\n"+"R:"+valueKomR;
                 MyDeviceManager.CanWrite(sending, 1, 0x0CFF3202, 8,
                         new byte[]{
 
@@ -1342,6 +1350,7 @@ public class CanSender extends Service {
             case 4:
                 //CASE
                // Log.d("JD_OUTPUT","SX:"+valueCASE_L+"  DX:"+valueCASE_R);
+                OUTPUT_HYDRO="L:"+valueCASE_L+"\n"+"R:"+valueCASE_R;
                 MyDeviceManager.CanWrite(sending, 1, 0x18FE31E6, 8,
                         new byte[]{(byte) valueCASE_L,
                                 (byte) 0xFF,
@@ -1368,7 +1377,6 @@ public class CanSender extends Service {
     private boolean isInRangeAng(double currentAngle, double setPoint, double tolerance) {
         return Math.abs(currentAngle - setPoint) <= tolerance;
     }
-
     private void controlloPendenza(){
         if (!isInRangeAng(correctRoll, GroundSlope, DataSaved.tolleranza_Slope)) {
             double deviation = deviationFromSetpoint(correctRoll, GroundSlope, DataSaved.tolleranza_Slope);

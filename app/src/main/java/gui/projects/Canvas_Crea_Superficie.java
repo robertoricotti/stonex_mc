@@ -1818,7 +1818,94 @@ public class Canvas_Crea_Superficie extends View {
 
 
     }
+    public static void buildTrenchEntities(
+            List<Point3D> polylinePoints,
+            double distSx, double distDx,
+            double slopeSxDeg, double slopeDxDeg,
+            int faceColor, int lineColor,
+            Layer faceLayer, Layer polylineLayer
+    ) {
+        facceTrench.clear();
 
+        List<Point3D> leftPoints  = new ArrayList<>();
+        List<Point3D> rightPoints = new ArrayList<>();
+
+        double slopeSxRad = Math.toRadians(slopeSxDeg);
+        double slopeDxRad = Math.toRadians(slopeDxDeg);
+
+        // 1) Calcola le tangenti smussate
+        List<Vector2D> tangents = new ArrayList<>();
+        for (int i = 0; i < polylinePoints.size(); i++) {
+            Vector2D dirPrev, dirNext;
+            if (i == 0) {
+                dirPrev = new Vector2D(polylinePoints.get(0), polylinePoints.get(1));
+                dirNext = dirPrev;
+            } else if (i == polylinePoints.size() - 1) {
+                dirPrev = new Vector2D(polylinePoints.get(i - 1), polylinePoints.get(i));
+                dirNext = dirPrev;
+            } else {
+                dirPrev = new Vector2D(polylinePoints.get(i - 1), polylinePoints.get(i));
+                dirNext = new Vector2D(polylinePoints.get(i), polylinePoints.get(i + 1));
+            }
+
+            // media direzioni con normalizzazione → transizione morbida nelle curve
+            Vector2D dir = dirPrev.add(dirNext).normalize();
+            tangents.add(dir);
+        }
+
+        // 2) Normali XY e punti offset + pendenza verticale
+        for (int i = 0; i < polylinePoints.size(); i++) {
+            Point3D c = polylinePoints.get(i);
+            Vector2D t = tangents.get(i);
+            Vector2D n = t.getNormal().normalize(); // normale media smussata
+
+            // ΔZ per pendenza laterale
+            double dzSx = Math.tan(slopeSxRad) * distSx;
+            double dzDx = Math.tan(slopeDxRad) * distDx;
+
+            // punto sinistro e destro rispetto al centro
+            Point3D pSx = new Point3D(
+                    c.getX() + n.x * distSx,
+                    c.getY() + n.y * distSx,
+                    c.getZ() - dzSx
+            );
+
+            Point3D pDx = new Point3D(
+                    c.getX() - n.x * distDx,
+                    c.getY() - n.y * distDx,
+                    c.getZ() - dzDx
+            );
+
+            leftPoints.add(pSx);
+            rightPoints.add(pDx);
+        }
+
+        // 3) Generazione superfici
+        for (int i = 0; i < polylinePoints.size() - 1; i++) {
+            Point3D c1 = polylinePoints.get(i);
+            Point3D c2 = polylinePoints.get(i + 1);
+
+            Point3D l1 = leftPoints.get(i);
+            Point3D l2 = leftPoints.get(i + 1);
+
+            Point3D r1 = rightPoints.get(i);
+            Point3D r2 = rightPoints.get(i + 1);
+
+            // sinistra
+            facceTrench.add(new Face3D(c1, c2, l2, l2, faceColor, faceLayer));
+            facceTrench.add(new Face3D(c1, l2, l1, l1, faceColor, faceLayer));
+            // destra
+            facceTrench.add(new Face3D(c1, r2, c2, c2, faceColor, faceLayer));
+            facceTrench.add(new Face3D(c1, r1, r2, r2, faceColor, faceLayer));
+        }
+
+        // 4) polyline centrale
+        Polyline centerPolyline = new Polyline(polylinePoints, polylineLayer);
+        centerPolyline.setLineColor(lineColor);
+        polyTrench = centerPolyline;
+    }
+
+/*
     public static void buildTrenchEntities(
             List<Point3D> polylinePoints,
             double distSx, double distDx,
@@ -1893,6 +1980,11 @@ public class Canvas_Crea_Superficie extends View {
         centerPolyline.setLineColor(lineColor);
         polyTrench=(centerPolyline);
     }
+*/
+
+
+
+
 
 
 
