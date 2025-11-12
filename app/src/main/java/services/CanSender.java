@@ -556,7 +556,7 @@ public class CanSender extends Service {
                             QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
                             QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
 
-                            if(Math.abs(TriangleService.quota3D_CT)>0.1){
+                            if(Math.abs(TriangleService.quota3D_CT)>0.09){
                                 controlloPendenza();
 
                             }else {
@@ -617,7 +617,7 @@ public class CanSender extends Service {
                             GroundSlope = MyMCUtils.bladeSlope(TriangleService.posL, TriangleService.posC);
                             QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
                             QL = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_SX;
-                            if(Math.abs(TriangleService.quota3D_CT)>0.1){
+                            if(Math.abs(TriangleService.quota3D_CT)>0.09){
                                 controlloPendenza();
                             }else {
                                 if (!isInRange(DataSaved.tolleranza_ZR, QL) && Math.abs(TriangleService.quota3D_SX) < DataSaved.HYDRAULIC_WINDOW) {
@@ -712,12 +712,6 @@ public class CanSender extends Service {
                         dirCAT_L = (byte) 0xF2;
                         dirCase_L = (byte) 0xF2;
 
-                        valueKomR = 0;
-                        valueCATR = 0;
-                        valueCASE_R = 0;
-                        valueJDR = 20000;
-                        dirCAT_R = (byte) 0xF2;
-                        dirCase_R = (byte) 0xF2;
                     }
 
 
@@ -1230,9 +1224,13 @@ public class CanSender extends Service {
                 valoreDX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
                 valoreSS0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
                 OUTPUT_HYDRO="L:"+resultL+"\n"+"R:"+resultR;
+                byte mD0=0;
+                if(DataSaved.gpsOk){
+                    mD0=1;
+                }
                 MyDeviceManager.CanWrite(sending, 1, 0x00EFFF85, 8,
                         new byte[]{
-                                (byte) 0xF2,
+                                mD0,
                                 (byte) 0x1A,
                                 (byte) valoreSX0[0],
                                 (byte) valoreSX0[1],
@@ -1248,7 +1246,7 @@ public class CanSender extends Service {
                 //CAT
               //  Log.d("JD_OUTPUT","SX:"+valueCATL+"  DX:"+valueCATR);
                 OUTPUT_HYDRO="L:"+valueCATL+"\n"+"R:"+valueCATR;
-                MyDeviceManager.CanWrite(sending, 1, 0x18FE3185, 8,
+                MyDeviceManager.CanWrite(sending&&DataSaved.gpsOk, 1, 0x18FE3185, 8,
                         new byte[]{(byte) valueCATL,
                                 (byte) 0xFF,
                                 dirCAT_L,//F2=Up F1=Down
@@ -1258,7 +1256,7 @@ public class CanSender extends Service {
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(sending, 1, 0x18FE3285, 8,
+                MyDeviceManager.CanWrite(sending&&DataSaved.gpsOk, 1, 0x18FE3285, 8,
                         new byte[]{(byte) valueCATR,
                                 (byte) 0xFF,
                                 dirCAT_R,//F2=Up F1=Down
@@ -1268,7 +1266,7 @@ public class CanSender extends Service {
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(sending, 1, 0x18FE3385, 8,
+                MyDeviceManager.CanWrite(sending&&DataSaved.gpsOk, 1, 0x18FE3385, 8,
                         new byte[]{(byte) valueCATSS,
                                 (byte) 0xFF,
                                 dirCAT_SS,//F2=Right F1=Left
@@ -1309,7 +1307,7 @@ public class CanSender extends Service {
                 valoreSS = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS2);
                // Log.d("JD_OUTPUT",Math.abs(TriangleService.quota3D_CT) +"  "+ DataSaved.HYDRAULIC_WINDOW+"  SX:"+resultL2+"  DX:"+resultR2);
                 OUTPUT_HYDRO="L:"+resultL2+"\n"+"R:"+resultR2;
-                MyDeviceManager.CanWrite(sending, 1, 0x00EFFF85, 8,
+                MyDeviceManager.CanWrite(sending&&DataSaved.gpsOk, 1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,
                                 (byte) 0x1A,
@@ -1333,7 +1331,7 @@ public class CanSender extends Service {
                 valoreDXK = PLC_DataTypes_LittleEndian.U16_to_bytes(valueKomR);
                // Log.d("JD_OUTPUT","SX:"+valoreSXK+"  DX:"+valoreDXK);
                 OUTPUT_HYDRO="L:"+valueKomL+"\n"+"R:"+valueKomR;
-                MyDeviceManager.CanWrite(sending, 1, 0x0CFF3202, 8,
+                MyDeviceManager.CanWrite(sending&&DataSaved.gpsOk, 1, 0x0CFF3202, 8,
                         new byte[]{
 
                                 (byte) valoreSXK[0],
@@ -1351,7 +1349,7 @@ public class CanSender extends Service {
                 //CASE
                // Log.d("JD_OUTPUT","SX:"+valueCASE_L+"  DX:"+valueCASE_R);
                 OUTPUT_HYDRO="L:"+valueCASE_L+"\n"+"R:"+valueCASE_R;
-                MyDeviceManager.CanWrite(sending, 1, 0x18FE31E6, 8,
+                MyDeviceManager.CanWrite(sending&&DataSaved.gpsOk, 1, 0x18FE31E6, 8,
                         new byte[]{(byte) valueCASE_L,
                                 (byte) 0xFF,
                                 dirCase_L,//F2=Up F1=Down
@@ -1361,7 +1359,7 @@ public class CanSender extends Service {
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(sending, 1, 0x18FE32E6, 8,
+                MyDeviceManager.CanWrite(sending&&DataSaved.gpsOk, 1, 0x18FE32E6, 8,
                         new byte[]{(byte) valueCASE_R,
                                 (byte) 0xFF,
                                 dirCase_R,//F2=Up F1=Down
