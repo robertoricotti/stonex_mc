@@ -137,12 +137,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.9 fix can glitch">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.9 pre release FW danfoss">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/dozer_grader.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/dozer_grader.p1m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -528,7 +524,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762951874577</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="4.0.9 pre release FW danfoss">
+      <option name="closed" value="true" />
+      <created>1762962338873</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1762962338873</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -550,7 +554,8 @@
     <MESSAGE value="4.0.8 RELEASE UFFICIALE" />
     <MESSAGE value="4.0.9 TEST" />
     <MESSAGE value="4.0.9 fix can glitch" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.0.9 fix can glitch" />
+    <MESSAGE value="4.0.9 pre release FW danfoss" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.0.9 pre release FW danfoss" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
