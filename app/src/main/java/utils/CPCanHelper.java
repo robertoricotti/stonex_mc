@@ -112,12 +112,12 @@ public class CPCanHelper {
      */
     public synchronized void start(Action action) {
         if (started) {
-            //Log.w("CPCanHelper", "start() già eseguito, ignoro ulteriore inizializzazione");
+            //Log.w("CPCanHelper", "start() già eseguito");
             return;
         }
 
         started = true;
-        //Log.d("CPCanHelper", "Avvio inizializzazione CAN...");
+        //Log.d("CPCanHelper", "Avvio  CAN...");
         try {
             if (CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
                 //APOLLO12

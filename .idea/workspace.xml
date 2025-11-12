@@ -137,24 +137,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.9 TEST">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/MyRoad_Model.java" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.9 fix can glitch">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/gen1/release/STX-MC_V_4.0.7 -GEN1-RELEASE.apk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/ExportDXF_Trench.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/ExportDXF_Trench.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/StartActivityOnBootReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/StartActivityOnBootReceiver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grade2D.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_Trench.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_Trench.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/CPCanHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/CPCanHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyMCUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyMCUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -524,7 +511,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762771562843</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="4.0.9 fix can glitch">
+      <option name="closed" value="true" />
+      <created>1762905366398</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1762905366398</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -545,7 +540,8 @@
     <MESSAGE value="4.0.8 output terze parti da testare" />
     <MESSAGE value="4.0.8 RELEASE UFFICIALE" />
     <MESSAGE value="4.0.9 TEST" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.0.9 TEST" />
+    <MESSAGE value="4.0.9 fix can glitch" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.0.9 fix can glitch" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
