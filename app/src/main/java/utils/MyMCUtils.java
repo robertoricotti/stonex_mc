@@ -32,10 +32,19 @@ public class MyMCUtils {
         double a=Double.parseDouble(str);
         return a*0.0254d;
     }
-    public static double myscaleD(double input,double inMin,double inMax,double outMin,double outMax){
-        return ((input-inMin)/(inMax-inMin)*(outMax-outMin))+outMin;
+    public static double myscaleD(double input, double inMin, double inMax,
+                                  double outMin, double outMax) {
+
+        if (input <= inMin) return outMin;
+        if (input >= inMax) return outMax;
+
+
+        return ((input - inMin) / (inMax - inMin)) * (outMax - outMin) + outMin;
     }
+
     public static float myscaleF(float input,float inMin,float inMax,float outMin,float outMax){
+        if (input <= inMin) return outMin;
+        if (input >= inMax) return outMax;
         return ((input-inMin)/(inMax-inMin)*(outMax-outMin))+outMin;
     }
     public static double limitD(double value,double min,double max) {
@@ -49,6 +58,8 @@ public class MyMCUtils {
     }
 
     public static int myscalIntD(int input,int inMin,int inMax,int outMin,int outMax){
+        if (input <= inMin) return outMin;
+        if (input >= inMax) return outMax;
         double a=(((double)input-(double)inMin)/((double)inMax-(double)inMin)*((double)outMax-(double)outMin))+(double)outMin;
         return (int) a;
     }

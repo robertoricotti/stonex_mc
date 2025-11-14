@@ -23,8 +23,6 @@
     <string name="color_bucket">BUCKET - BLADE COLOR</string>
     <string name="color_boom">BOOM - FRAME COLOR</string>
     <string name="ext_offset">EXTERNAL OFFSET STEP</string>
-    <string name="auto_z_db">LEFT ELEVATION DEADBAND</string>
-    <string name="auto_z_dbR">RIGHT LEFT ELEVATION DEADBAND</string>
     <string name="hydro_window">HYDRAULIC ENGAGEMENT WINDOW</string>
     <string name="auto_slope_db">SLOPE DEADBAND</string>
     <string name="xy_db">XY DEADBAND</string>
@@ -80,6 +78,8 @@
     <string name="tilt_calibration">TILT CALIBRATION</string>
     <string name="height_deadband">ELEVATION DB</string>
     <string name="language">LANGUAGE</string>
+    <string name="auto_z_db">LEFT ELEVATION DEADBAND</string>
+    <string name="auto_z_dbR">RIGHT ELEVATION DEADBAND</string>
     <string name="lasermode">EXCAVATOR 2D LASER MODE</string>
     <string name="copy_adding">COPY ADDING\nPROGRESSIVE NUMBER</string>
     <string name="rotate_m">ROTATE MACHINE</string>

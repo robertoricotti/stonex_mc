@@ -1,4 +1,36 @@
 {
     "FileFormat": "003A",
-    "Parameters": []
+    "Parameters": [
+        {
+            "GUID": "{09BAD37A-2FA5-19d7-178D-666C245E8DA4}",
+            "DataType": "U16",
+            "ParamName": "MyOut",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "0"
+        },
+        {
+            "GUID": "{09BAD387-2FDC-bbb5-4E6B-9D70FAD2A80B}",
+            "DataType": "U16",
+            "ParamName": "MyFreq",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "1"
+        },
+        {
+            "GUID": "{0AFA723F-2CAE-12cc-2082-2FB3C9210981}",
+            "DataType": "U8",
+            "ParamName": "Valve_Type",
+            "ReadAccess": "9",
+            "WriteAccess": "9"
+        },
+        {
+            "GUID": "{0AFB4AA1-7376-215e-E814-035E922619B1}",
+            "DataType": "U8",
+            "ParamName": "Valve_T",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "2"
+        }
+    ]
 }

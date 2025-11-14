@@ -137,9 +137,18 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.9 pre release FW solo danfoss ok">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.9 RELEASE UFFICIALE">
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/gen1/release/STX-MC_V_4.0.7 -GEN1-RELEASE.apk" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/ProjectParameters.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/ProjectParameters.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/dozer_grader.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/dozer_grader.p1m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyMCUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyMCUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,14 +203,14 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "com.google.services.firebase.aqiPopupShown": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Development/MC_V4/app/src/main/res/drawable",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
+    "settings.editor.selected.configurable": "experimental",
+    "settings.editor.splitter.proportion": "0.35707122"
   },
   "keyToStringList": {
     "ExportApk.BuildVariants": [
@@ -542,7 +551,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762963321483</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="4.0.9 RELEASE UFFICIALE">
+      <option name="closed" value="true" />
+      <created>1762965786261</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1762965786261</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -566,29 +583,30 @@
     <MESSAGE value="4.0.9 fix can glitch" />
     <MESSAGE value="4.0.9 pre release FW danfoss" />
     <MESSAGE value="4.0.9 pre release FW solo danfoss ok" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.0.9 pre release FW solo danfoss ok" />
+    <MESSAGE value="4.0.9 RELEASE UFFICIALE" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.0.9 RELEASE UFFICIALE" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1762894963630" />
+            <CheckInfo lastCheckTimestamp="1763048063613" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1762894963630" />
+            <CheckInfo lastCheckTimestamp="1763048063611" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1762894963629" />
+            <CheckInfo lastCheckTimestamp="1763048063603" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1762894963633" />
+            <CheckInfo lastCheckTimestamp="1763048063612" />
           </value>
         </entry>
       </map>
