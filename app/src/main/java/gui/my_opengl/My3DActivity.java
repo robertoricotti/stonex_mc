@@ -52,6 +52,7 @@ import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogOffset_3D;
 import gui.dialogs_and_toast.Dialog_Add_Pnezd;
 import gui.dialogs_and_toast.Dialog_Blade_Wear;
+import gui.dialogs_and_toast.Dialog_CutFill_3D;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_MapMode;
 import gui.dialogs_and_toast.Dialog_Point_Poly;
@@ -116,6 +117,7 @@ public class My3DActivity extends BaseClass {
     DialogColors dialogColors;
     DialogAudioSystem dialogAudioSystem;
     Dialog_Add_Pnezd dialogAddPnezd;
+    Dialog_CutFill_3D dialogCutFill3D;
     public static Dialog_Gain_Hydro diaolgGainHydro;
     private MyGLSurfaceView glSurfaceView;
 
@@ -279,6 +281,7 @@ public class My3DActivity extends BaseClass {
         dialogAddPnezd = new Dialog_Add_Pnezd(this, pathToPNEZD);
         dialogBladeWear = new Dialog_Blade_Wear(this);
         diaolgGainHydro = new Dialog_Gain_Hydro(this);
+        dialogCutFill3D = new Dialog_CutFill_3D(this);
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
@@ -380,6 +383,12 @@ public class My3DActivity extends BaseClass {
             DataSaved.typeView++;
             DataSaved.typeView = DataSaved.typeView % 5;
             updateMemories();
+        });
+        typeView.setOnLongClickListener(view -> {
+            if (!dialogCutFill3D.dialog.isShowing()) {
+                dialogCutFill3D.show();
+            }
+            return false;
         });
         btn_croce.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
@@ -743,155 +752,157 @@ public class My3DActivity extends BaseClass {
     }
 
     public void updateUI() {
+        if (!dialogCutFill3D.dialog.isShowing()) {
 
-        try {
-            if (sideBar.getVisibility() == View.GONE) {
-                btn_hide.setVisibility(View.GONE);
-                btn_show.setVisibility(View.VISIBLE);
+            try {
+                if (sideBar.getVisibility() == View.GONE) {
+                    btn_hide.setVisibility(View.GONE);
+                    btn_show.setVisibility(View.VISIBLE);
 
-            } else {
-                btn_hide.setVisibility(View.VISIBLE);
-                btn_show.setVisibility(View.GONE);
-            }
+                } else {
+                    btn_hide.setVisibility(View.VISIBLE);
+                    btn_show.setVisibility(View.GONE);
+                }
 
-            if (PNEZD_FUNCTION) {
-                btn_pnezd.setVisibility(View.VISIBLE);
-                gl_pnezd.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-            } else {
-                btn_pnezd.setVisibility(View.GONE);
-                gl_pnezd.setImageTintList(ColorStateList.valueOf(Color.WHITE));
-            }
-            if (hAlarm) {
-                allarmeAlt.setVisibility(View.VISIBLE);
-            } else {
-                allarmeAlt.setVisibility(View.GONE);
-            }
-            if (DataSaved.enOUT == 1) {
-                if (isOffgrid) {
-                    allarmeBound.setVisibility(View.VISIBLE);
+                if (PNEZD_FUNCTION) {
+                    btn_pnezd.setVisibility(View.VISIBLE);
+                    gl_pnezd.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+                } else {
+                    btn_pnezd.setVisibility(View.GONE);
+                    gl_pnezd.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+                }
+                if (hAlarm) {
+                    allarmeAlt.setVisibility(View.VISIBLE);
+                } else {
+                    allarmeAlt.setVisibility(View.GONE);
+                }
+                if (DataSaved.enOUT == 1) {
+                    if (isOffgrid) {
+                        allarmeBound.setVisibility(View.VISIBLE);
+                    } else {
+                        allarmeBound.setVisibility(View.GONE);
+                    }
                 } else {
                     allarmeBound.setVisibility(View.GONE);
                 }
-            } else {
-                allarmeBound.setVisibility(View.GONE);
-            }
-            generalCoord.setTextColor(MyColorClass.colorConstraint);
-            generalnfo.setTextColor(MyColorClass.colorConstraint);
-            generalnfo.setText(bucketName + "\n" + "Offset: " + Utils.readUnitOfMeasure(String.valueOf(-DataSaved.offsetH)));
-            switch (DataSaved.bucketEdge) {
-                case -1:
-                    generalCoord.setText(coordShow(DataSaved.coordOrder)[0]);
-                    break;
+                generalCoord.setTextColor(MyColorClass.colorConstraint);
+                generalnfo.setTextColor(MyColorClass.colorConstraint);
+                generalnfo.setText(bucketName + "\n" + "Offset: " + Utils.readUnitOfMeasure(String.valueOf(-DataSaved.offsetH)));
+                switch (DataSaved.bucketEdge) {
+                    case -1:
+                        generalCoord.setText(coordShow(DataSaved.coordOrder)[0]);
+                        break;
 
-                case 0:
-                    generalCoord.setText(coordShow(DataSaved.coordOrder)[1]);
+                    case 0:
+                        generalCoord.setText(coordShow(DataSaved.coordOrder)[1]);
 
-                    break;
+                        break;
 
-                case 1:
-                    generalCoord.setText(coordShow(DataSaved.coordOrder)[2]);
+                    case 1:
+                        generalCoord.setText(coordShow(DataSaved.coordOrder)[2]);
 
-                    break;
-            }
+                        break;
+                }
 
-            if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
-                progress.setVisibility(View.GONE);
-                loading.setVisibility(View.GONE);
-            }
-            setupBoxes();
-            btn_hide.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
-            btn_show.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
-            switch (DataSaved.bucketEdge) {
-                case 1:
-                    if (DataSaved.isWL == EXCAVATOR) {
-                        bucketEdge.setImageResource(R.drawable.benna_misura_destra);
-                    } else {
-                        bucketEdge.setImageResource(R.drawable.lama_misura_destra);
-                    }
-                    break;
-                case 0:
-                    if (DataSaved.isWL == EXCAVATOR) {
-                        bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
-                    } else {
-                        bucketEdge.setImageResource(R.drawable.lama_misura_cnt);
-                    }
-                    break;
-                case -1:
-                    if (DataSaved.isWL == EXCAVATOR) {
-                        bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
-                    } else {
-                        bucketEdge.setImageResource(R.drawable.lama_misura_sinistra);
-                    }
-                    break;
-            }
-            if (DataSaved.isLowerEdge) {
-                bucketEdge.setBackground(getDrawable(R.drawable.custom_background_test3d_box_giallo));
-            } else {
-                bucketEdge.setBackground(getDrawable(R.drawable.custom_background_test3d));
-            }
+                if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
+                    progress.setVisibility(View.GONE);
+                    loading.setVisibility(View.GONE);
+                }
+                setupBoxes();
+                btn_hide.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
+                btn_show.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
+                switch (DataSaved.bucketEdge) {
+                    case 1:
+                        if (DataSaved.isWL == EXCAVATOR) {
+                            bucketEdge.setImageResource(R.drawable.benna_misura_destra);
+                        } else {
+                            bucketEdge.setImageResource(R.drawable.lama_misura_destra);
+                        }
+                        break;
+                    case 0:
+                        if (DataSaved.isWL == EXCAVATOR) {
+                            bucketEdge.setImageResource(R.drawable.benna_misura_cnt);
+                        } else {
+                            bucketEdge.setImageResource(R.drawable.lama_misura_cnt);
+                        }
+                        break;
+                    case -1:
+                        if (DataSaved.isWL == EXCAVATOR) {
+                            bucketEdge.setImageResource(R.drawable.benna_misura_sinistra);
+                        } else {
+                            bucketEdge.setImageResource(R.drawable.lama_misura_sinistra);
+                        }
+                        break;
+                }
+                if (DataSaved.isLowerEdge) {
+                    bucketEdge.setBackground(getDrawable(R.drawable.custom_background_test3d_box_giallo));
+                } else {
+                    bucketEdge.setBackground(getDrawable(R.drawable.custom_background_test3d));
+                }
 
 
-            gl_vista.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+                gl_vista.setImageTintList(ColorStateList.valueOf(Color.WHITE));
 
-            if (DataSaved.gpsOk && errorCode == 0) {
-                gl_gps.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-            } else {
-                gl_gps.setImageTintList(ColorStateList.valueOf(Color.RED));
-            }
+                if (DataSaved.gpsOk && errorCode == 0) {
+                    gl_gps.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+                } else {
+                    gl_gps.setImageTintList(ColorStateList.valueOf(Color.RED));
+                }
 
-            if (isPan) {
-                gl_pan_pinch.setImageResource(R.drawable.gl_pan);
-            } else {
-                gl_pan_pinch.setImageResource(R.drawable.baseline_swipe_96);
-            }
+                if (isPan) {
+                    gl_pan_pinch.setImageResource(R.drawable.gl_pan);
+                } else {
+                    gl_pan_pinch.setImageResource(R.drawable.baseline_swipe_96);
+                }
 
-            if (DataSaved.showAlign > 0) {
-                btn_croce.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-            } else {
-                btn_croce.setImageTintList(ColorStateList.valueOf(Color.WHITE));
-            }
-            if (glFace) {
-                gl_facce.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-            } else {
-                gl_facce.setImageTintList(ColorStateList.valueOf(Color.GRAY));
-            }
-            if (glPoly) {
-                gl_poly.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-            } else {
-                gl_poly.setImageTintList(ColorStateList.valueOf(Color.GRAY));
-            }
-            if (glPoint) {
-                gl_punti.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-            } else {
-                gl_punti.setImageTintList(ColorStateList.valueOf(Color.GRAY));
-            }
-            if (glText) {
-                gl_testi.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-            } else {
-                gl_testi.setImageTintList(ColorStateList.valueOf(Color.GRAY));
-            }
-            if (glGradient) {
-                gl_gradient.setImageResource(R.drawable.gradient);
-            } else {
-                gl_gradient.setImageResource(R.drawable.gradient_off);
-            }
-            if (glFill) {
-                gl_fill.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-            } else {
-                gl_fill.setImageTintList(ColorStateList.valueOf(Color.GRAY));
-            }
-            if (glFilter) {
-                gl_filter.setImageTintList(ColorStateList.valueOf(Color.GREEN));
-                gl_filter.setImageResource(R.drawable.filter_96);
-            } else {
-                gl_filter.setImageTintList(ColorStateList.valueOf(Color.GRAY));
-                gl_filter.setImageResource(R.drawable.filter_off96);
-            }
+                if (DataSaved.showAlign > 0) {
+                    btn_croce.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+                } else {
+                    btn_croce.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+                }
+                if (glFace) {
+                    gl_facce.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+                } else {
+                    gl_facce.setImageTintList(ColorStateList.valueOf(Color.GRAY));
+                }
+                if (glPoly) {
+                    gl_poly.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+                } else {
+                    gl_poly.setImageTintList(ColorStateList.valueOf(Color.GRAY));
+                }
+                if (glPoint) {
+                    gl_punti.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+                } else {
+                    gl_punti.setImageTintList(ColorStateList.valueOf(Color.GRAY));
+                }
+                if (glText) {
+                    gl_testi.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+                } else {
+                    gl_testi.setImageTintList(ColorStateList.valueOf(Color.GRAY));
+                }
+                if (glGradient) {
+                    gl_gradient.setImageResource(R.drawable.gradient);
+                } else {
+                    gl_gradient.setImageResource(R.drawable.gradient_off);
+                }
+                if (glFill) {
+                    gl_fill.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+                } else {
+                    gl_fill.setImageTintList(ColorStateList.valueOf(Color.GRAY));
+                }
+                if (glFilter) {
+                    gl_filter.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+                    gl_filter.setImageResource(R.drawable.filter_96);
+                } else {
+                    gl_filter.setImageTintList(ColorStateList.valueOf(Color.GRAY));
+                    gl_filter.setImageResource(R.drawable.filter_off96);
+                }
 
-            setLightBar();
-            AutoHandling();
-        } catch (Exception e) {
-            Log.e("ErrorUI", Log.getStackTraceString(e));
+                setLightBar();
+                AutoHandling();
+            } catch (Exception e) {
+                Log.e("ErrorUI", Log.getStackTraceString(e));
+            }
         }
 
     }
@@ -1617,15 +1628,18 @@ public class My3DActivity extends BaseClass {
 
     private static String[] coordShow(int mode) {
         String s = OUTPUT_HYDRO + "\n";
+        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
+            s = "";
+        }
 
-        String s0 = s+"E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
-        String s1 =s+ "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
-        String s2 =s+ "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
+        String s0 = s + "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
+        String s1 = s + "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
+        String s2 = s + "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nN: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
 
 
-        String s4 = s+"N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
-        String s5 =s+ "N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
-        String s6 = s+"N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
+        String s4 = s + "N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2]));
+        String s5 = s + "N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2]));
+        String s6 = s + "N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "\nE: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "\nZ: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2]));
 
         if (mode == 0) {
             return new String[]{s0, s1, s2};
