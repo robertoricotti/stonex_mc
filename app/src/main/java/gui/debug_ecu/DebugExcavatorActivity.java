@@ -351,7 +351,7 @@ public class DebugExcavatorActivity extends BaseClass {
                     }
                     compassOffset.setText(String.format("%.1f", DataSaved.offsetHDT).replace(",", "."));
 
-                    if (!(Sensors_Decoder.flagLaser > -101)) {
+                    if (!(CanService.flagLaser)) {
                         statStickLaser.setText("OFF");
                         statStickLaser.setTextColor(getColor(R.color.white));
                     } else {

@@ -102,8 +102,36 @@ public class MyMCUtils {
         int finalResult = (int) Math.round(Math.max(min, Math.min(result, max)));
         return finalResult;
     }
+    public static double bladeSlope(double[] Pleft, double[] Pright) {
+
+        // --- VALIDAZIONI ---
+        if (Pleft == null || Pright == null) {
+            return 0;   // oppure Double.NaN
+        }
+
+        if (Pleft.length < 3 || Pright.length < 3) {
+            return 0;   // oppure Double.NaN
+        }
+
+        // --- CALCOLO ---
+        boolean isNegative = Pleft[2] < Pright[2];
+
+        double dist2D = DistToPoint.dist2D(Pleft, Pright);
+        double dist3D = DistToPoint.dist3D(Pleft, Pright);
+
+        // protezione matematica per evitare NaN
+        double d = (dist3D * dist3D) - (dist2D * dist2D);
+        if (d <= 0) return 0;
+
+        double slope = Math.toDegrees(Math.sqrt(d));
+
+        if (isNegative) slope *= -1;
+
+        return slope;
+    }
 
 
+    /*
     public static double bladeSlope(double[] Pleft,double[] Pright){
 
         boolean isNegative=Pleft[2]<Pright[2];
@@ -118,7 +146,7 @@ public class MyMCUtils {
         return slope;
 
     }
-
+*/
     public static double profile_3pt(double input, double min, double cent, double max, double maxSteerAngle) {
         double halfAngle = maxSteerAngle / 2.0;
 

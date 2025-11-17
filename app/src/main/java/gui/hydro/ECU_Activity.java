@@ -132,75 +132,75 @@ public class ECU_Activity extends AppCompatActivity {
                     testValve.setAlpha(0.1f);
                     switch (voceMenu) {
                         case 1:
-                            valueLEFT = MyMCUtils.myscalIntD(minSpeedLeftUP, 0, 255, 20000, 35000);
+                            valueLEFT = MyMCUtils.myscalIntD(minSpeedLeftUP, 0, 255, 20000, 30000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 0:
-                            valueLEFT = MyMCUtils.myscalIntD(maxSpeedLeftUP, 0, 255, 20000, 35000);
+                            valueLEFT = MyMCUtils.myscalIntD(maxSpeedLeftUP, 0, 255, 20000, 30000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 3:
-                            valueLEFT = MyMCUtils.myscalIntD(minSpeedLeftDW, 0, 255, 20000, 5000);
+                            valueLEFT = MyMCUtils.myscalIntD(minSpeedLeftDW, 0, 255, 20000, 10000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 2:
-                            valueLEFT = MyMCUtils.myscalIntD(maxSpeedLeftDW, 0, 255, 20000, 5000);
+                            valueLEFT = MyMCUtils.myscalIntD(maxSpeedLeftDW, 0, 255, 20000, 10000);
                             valueRIGHT = 20000;
                             valueSS = 20000;
 
                             break;
 
                         case 5:
-                            valueRIGHT = MyMCUtils.myscalIntD(minSpeedRightUP, 0, 255, 20000, 35000);
+                            valueRIGHT = MyMCUtils.myscalIntD(minSpeedRightUP, 0, 255, 20000, 30000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 4:
-                            valueRIGHT = MyMCUtils.myscalIntD(maxSpeedRightUP, 0, 255, 20000, 35000);
+                            valueRIGHT = MyMCUtils.myscalIntD(maxSpeedRightUP, 0, 255, 20000, 30000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 7:
-                            valueRIGHT = MyMCUtils.myscalIntD(minSpeedRightDW, 0, 255, 20000, 5000);
+                            valueRIGHT = MyMCUtils.myscalIntD(minSpeedRightDW, 0, 255, 20000, 10000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
                         case 6:
-                            valueRIGHT = MyMCUtils.myscalIntD(maxSpeedRightDW, 0, 255, 20000, 5000);
+                            valueRIGHT = MyMCUtils.myscalIntD(maxSpeedRightDW, 0, 255, 20000, 10000);
                             valueLEFT = 20000;
                             valueSS = 20000;
 
                             break;
 
                         case 9:
-                            valueSS = MyMCUtils.myscalIntD(minSpeedSS_A, 0, 255, 20000, 5000);
+                            valueSS = MyMCUtils.myscalIntD(minSpeedSS_A, 0, 255, 20000, 10000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 
                             break;
                         case 8:
-                            valueSS = MyMCUtils.myscalIntD(maxSpeedSS_A, 0, 255, 20000, 5000);
+                            valueSS = MyMCUtils.myscalIntD(maxSpeedSS_A, 0, 255, 20000, 10000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 
                             break;
                         case 11:
-                            valueSS = MyMCUtils.myscalIntD(minSpeedSS_B, 0, 255, 20000, 35000);
+                            valueSS = MyMCUtils.myscalIntD(minSpeedSS_B, 0, 255, 20000, 30000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 
                             break;
                         case 10:
-                            valueSS = MyMCUtils.myscalIntD(maxSpeedSS_B, 0, 255, 20000, 35000);
+                            valueSS = MyMCUtils.myscalIntD(maxSpeedSS_B, 0, 255, 20000, 30000);
                             valueLEFT = 20000;
                             valueRIGHT = 20000;
 

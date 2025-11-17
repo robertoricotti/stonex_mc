@@ -540,16 +540,16 @@ public class Digging_CutAndFill2D extends BaseClass {
 
             if (DataSaved.laserOn == 1) {
                 try {
-                    if (Excavator_RealValues.realLaser() <= -10 && Sensors_Decoder.flagLaser > -101) {
+                    if (Excavator_RealValues.realLaser() <= -10 && CanService.flagLaser) {
                         laser.setImageResource(R.drawable.down_btn);
                         laser.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color._____cancel_text));
-                    } else if (Excavator_RealValues.realLaser() == 0 && Sensors_Decoder.flagLaser > -101) {
+                    } else if (Excavator_RealValues.realLaser() == 0 && CanService.flagLaser) {
                         laser.setImageResource(R.drawable.equals_btn);
                         laser.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
-                    } else if (Excavator_RealValues.realLaser() >= 10 && Sensors_Decoder.flagLaser > -101) {
+                    } else if (Excavator_RealValues.realLaser() >= 10 && CanService.flagLaser) {
                         laser.setImageResource(R.drawable.up_btn);
                         laser.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color._____cancel_text));
-                    } else if (Sensors_Decoder.flagLaser == -101) {
+                    } else if (!CanService.flagLaser) {
                         laser.setImageResource(R.drawable.laser_btn);
                         laser.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.nav_gray_color));
                     }

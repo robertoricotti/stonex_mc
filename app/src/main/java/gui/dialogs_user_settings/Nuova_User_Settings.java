@@ -26,6 +26,7 @@ import gui.dialogs_and_toast.Dialog_InfoApp;
 import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Sensors_Decoder;
+import services.CanService;
 import services.UpdateValuesService;
 import utils.LanguageSetter;
 import utils.MyData;
@@ -441,8 +442,8 @@ public class Nuova_User_Settings extends AppCompatActivity {
             switch (DataSaved.laserOn) {
                 case 0:
                     imgLse.setImageResource(R.drawable.laser_off_btn);
-                    Sensors_Decoder.flagLaser = -100;
-                    Sensors_Decoder.flagLaserConnected = -100;
+                    CanService.flagLaser = false;
+
                     break;
                 case 1:
                     imgLse.setImageResource(R.drawable.laser_on_btn);

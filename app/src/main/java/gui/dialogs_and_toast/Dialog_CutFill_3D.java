@@ -129,18 +129,22 @@ public class Dialog_CutFill_3D {
                             if (TriangleService.ltOffGrid) {
                                 txtCutFill.setText("-.---");
                                 txtCutFill.setTextColor(Color.WHITE);
+                                close.setImageTintList(activity.getColorStateList(R.color.white));
                                 layoutt.setBackground(activity.getDrawable(R.drawable.custom_background_test3d_box));
                             } else {
                                 if (TriangleService.quota3D_SX > DataSaved.deadbandH) {
                                     layoutt.setBackground(activity.getResources().getDrawable(colorUpCF));
                                     txtCutFill.setTextColor(Color.WHITE);
+                                    close.setImageTintList(activity.getColorStateList(R.color.white));
                                     txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
                                 } else if (TriangleService.quota3D_SX < -DataSaved.deadbandH) {
                                     txtCutFill.setTextColor(Color.WHITE);
+                                    close.setImageTintList(activity.getColorStateList(R.color.white));
                                     layoutt.setBackground(activity.getResources().getDrawable(colorDownCF));
                                     txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
                                 } else if (TriangleService.quota3D_SX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
                                     txtCutFill.setTextColor(Color.DKGRAY);
+                                    close.setImageTintList(activity.getColorStateList(R.color._____cancel_text));
                                     layoutt.setBackground(activity.getDrawable(colorGreenCF));
                                     txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
                                 }
@@ -151,18 +155,22 @@ public class Dialog_CutFill_3D {
                             if (TriangleService.ctOffGrid) {
                                 txtCutFill.setText("-.---");
                                 txtCutFill.setTextColor(Color.WHITE);
+                                close.setImageTintList(activity.getColorStateList(R.color.white));
                                 layoutt.setBackground(activity.getDrawable(R.drawable.custom_background_test3d_box));
                             } else {
                                 if (TriangleService.quota3D_CT > DataSaved.deadbandH) {
                                     txtCutFill.setTextColor(Color.WHITE);
+                                    close.setImageTintList(activity.getColorStateList(R.color.white));
                                     layoutt.setBackground(activity.getResources().getDrawable(colorUpCF));
                                     txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
                                 } else if (TriangleService.quota3D_CT < -DataSaved.deadbandH) {
                                     txtCutFill.setTextColor(Color.WHITE);
+                                    close.setImageTintList(activity.getColorStateList(R.color.white));
                                     layoutt.setBackground(activity.getResources().getDrawable(colorDownCF));
                                     txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
                                 } else if (TriangleService.quota3D_CT >= -DataSaved.deadbandH && TriangleService.quota3D_CT <= DataSaved.deadbandH) {
                                     txtCutFill.setTextColor(Color.DKGRAY);
+                                    close.setImageTintList(activity.getColorStateList(R.color._____cancel_text));
                                     layoutt.setBackground(activity.getDrawable(colorGreenCF));
                                     txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
                                 }
@@ -173,18 +181,22 @@ public class Dialog_CutFill_3D {
                             if (TriangleService.rtOffGrid) {
                                 txtCutFill.setText("-.---");
                                 txtCutFill.setTextColor(Color.WHITE);
+                                close.setImageTintList(activity.getColorStateList(R.color.white));
                                 layoutt.setBackground(activity.getDrawable(R.drawable.custom_background_test3d_box));
                             } else {
                                 if (TriangleService.quota3D_DX > DataSaved.deadbandH) {
                                     txtCutFill.setTextColor(Color.WHITE);
+                                    close.setImageTintList(activity.getColorStateList(R.color.white));
                                     layoutt.setBackground(activity.getResources().getDrawable(colorUpCF));
                                     txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
                                 } else if (TriangleService.quota3D_DX < -DataSaved.deadbandH) {
                                     txtCutFill.setTextColor(Color.WHITE);
+                                    close.setImageTintList(activity.getColorStateList(R.color.white));
                                     layoutt.setBackground(activity.getResources().getDrawable(colorDownCF));
                                     txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
                                 } else if (TriangleService.quota3D_DX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
                                     txtCutFill.setTextColor(Color.DKGRAY);
+                                    close.setImageTintList(activity.getColorStateList(R.color._____cancel_text));
                                     layoutt.setBackground(activity.getDrawable(colorGreenCF));
                                     txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
                                 }

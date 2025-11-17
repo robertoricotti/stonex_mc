@@ -7,6 +7,7 @@ import static services.CanService.boom2Disc;
 import static services.CanService.boom2OK;
 import static services.CanService.bucketDisc;
 import static services.CanService.bucketOK;
+import static services.CanService.flagLaser;
 import static services.CanService.frameDisc;
 import static services.CanService.frameOK;
 import static services.CanService.stickDisc;
@@ -704,6 +705,7 @@ git push
     }
 
     private void checkDialogs() {
+
         if (DataSaved.isWL < DOZER) {
             canError = tiltDisc && DataSaved.lrTilt != 0 ||
                     bucketDisc && DataSaved.lrBucket != 0 ||

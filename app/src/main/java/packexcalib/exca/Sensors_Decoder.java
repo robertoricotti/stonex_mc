@@ -7,10 +7,13 @@ import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.WHEELLOADER;
 
+import android.util.Log;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
 import gui.gps.NmeaGenerator;
+import packexcalib.gnss.NmeaListener;
 import utils.MyMCUtils;
 
 
@@ -21,7 +24,7 @@ public class Sensors_Decoder {
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
     public static double Deg_roll, Deg_pitch, Deg_boom1, Deg_boom2, Deg_stick, Deg_bucket, Deg_tilt, Deg_Benna_W_Tilt, Deg_bucket_DEMO,
             Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom;
-    public static int V_Laser = 255, flagLaserConnected, flagDefault, flagLaser, WheelSteer;
+    public static int V_Laser = 255, flagDefault, WheelSteer;
 
     static double norm, ax_norm, ay_norm, az_norm;
     static double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ, _x486, _y486, _z486;
@@ -424,24 +427,11 @@ public class Sensors_Decoder {
 
                                     flagDefault += 100;
                                     break;
-                                case 204301://verificare id laser 29bit
-                                    V_Laser = (int) data[2] & 0xFF;
-                                    flagLaser += 100;
-                                    break;
+                                case 0x204301://verificare id laser 29bit
 
-                                case 417:
-                                    flagLaserConnected += 100;
+
                                     if (DataSaved.laserOn == 1) {
-
-                                        V_Laser = (int) data[0] & 0xFF;
-                                        if (data[3] == 0) {
-                                            flagLaser += 100;
-                                        } else {
-                                            flagLaser -= 1;
-                                        }
-                                    } else {
-
-                                        flagLaser -= 20;
+                                        V_Laser = (int) data[2] & 0xFF;
                                     }
                                     break;
 
@@ -723,47 +713,21 @@ public class Sensors_Decoder {
                                     break;
 
 
-                                case 204301://verificare id laser 29bit
+                                case 0x204301://verificare id laser 29bit
 
-                                    switch (DataSaved.laserOn) {
-                                        case 1:
-                                            V_Laser = (int) data[2] & 0xFF;
-                                            flagLaser += 100;
-                                            break;
-                                        default:
-                                            flagLaser -= 100;
-                                            break;
+                                    if (DataSaved.laserOn == 1) {
+                                        V_Laser = (int) data[2] & 0xFF;
                                     }
                                     break;
-                                case 0x1A1:
-                                    flagLaserConnected += 100;
-                                    switch (DataSaved.laserOn) {
-                                        case 1:
 
-                                            V_Laser = (int) data[0] & 0xFF;
-                                            if (data[3] == 0) {
-                                                flagLaser += 100;
-                                            } else {
-                                                flagLaser -= 1;
-                                            }
-                                            break;
-                                        default:
-
-                                            flagLaser -= 20;
-                                            break;
-                                    }
-                                    break;
                             }
                             ExcavatorLib.Excavator();
                             break;
 
                     }
                     flagDefault--;
-                    flagLaser -= 1;
-                    flagLaserConnected--;
                     flagDefault = Math.max(-100, Math.min(flagDefault, 100));
-                    flagLaser = Math.max(-101, Math.min(flagLaser, 100));
-                    flagLaserConnected = Math.max(-100, Math.min(flagLaserConnected, 100));
+
                     break;
                 case DOZER:
                 case DOZER_SIX:
@@ -915,6 +879,9 @@ public class Sensors_Decoder {
                     HEADING = normalizeAngle(HEADING);
 
                 }
+                if(DataSaved.portView==1){
+                    NmeaListener.roof_Orientation=HEADING;
+                }
 
                 if (keyEvents[2]) {
                     // lat+
@@ -1059,6 +1026,12 @@ public class Sensors_Decoder {
                                 break;
                         }
                         break;
+                    case 0x204301://verificare id laser 29bit
+
+                        if (DataSaved.laserOn == 1) {
+                            V_Laser = (int) data[2] & 0xFF;
+                        }
+                        break;
 
                 }
 
@@ -1088,7 +1061,6 @@ public class Sensors_Decoder {
             }
 
         } catch (Exception e) {
-            flagLaser--;
             flagDefault--;
         }
 
@@ -1165,13 +1137,14 @@ public class Sensors_Decoder {
 
         return new double[]{w, x, y, z};
     }
+
     /**
      * Filtro complementare per fusione tra yaw IMU e heading GNSS.
      *
-     * @param yawImu        Yaw calcolata dal sensore IMU (in gradi, 0–360)
-     * @param headingGnss   Heading GNSS assoluto (in gradi, 0–360)
-     * @param prevYawFused  Ultimo valore filtrato (in gradi)
-     * @param alpha         Peso dell’IMU (0.95–0.99)
+     * @param yawImu       Yaw calcolata dal sensore IMU (in gradi, 0–360)
+     * @param headingGnss  Heading GNSS assoluto (in gradi, 0–360)
+     * @param prevYawFused Ultimo valore filtrato (in gradi)
+     * @param alpha        Peso dell’IMU (0.95–0.99)
      * @return Nuovo valore di yaw fuso e filtrato
      */
     public static double complementaryYawFilter(double yawImu, double headingGnss, double prevYawFused, double alpha) {

@@ -225,48 +225,62 @@ public class Excavator_RealValues {
             case 150:
                 a = -70;
                 break;
+            case 145:
             case 140:
                 a = -60;
                 break;
+            case 135:
             case 130:
                 a = -50;
                 break;
+            case 125:
             case 120:
                 a = -40;
                 break;
+            case 115:
             case 110:
                 a = -30;
                 break;
+            case 105:
             case 100:
                 a = -20;
                 break;
+            case 95:
             case 90:
                 a = -10;
                 break;
+            case 85:
             case 80:
             case 75:
-            case 85:
+
                 a = 0;
                 break;
             case 70:
+            case 65:
                 a = 10;
                 break;
             case 60:
+            case 55:
                 a = 20;
                 break;
             case 50:
+            case 45:
                 a = 30;
                 break;
             case 40:
+            case 35:
                 a = 40;
                 break;
             case 30:
+            case 25:
                 a = 50;
                 break;
             case 20:
+            case 15:
                 a = 60;
                 break;
             case 10:
+            case 5:
                 a = 70;
                 break;
             case 0:

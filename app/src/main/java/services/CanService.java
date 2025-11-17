@@ -37,7 +37,7 @@ public class CanService extends Service {
     public static int SteerConnected, isAuto;
     public static int m;
     public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
-    public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK;
+    public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK,flagLaser;
     CanFileReceiver receiver = new CanFileReceiver();
     public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc;
     public static boolean CanServiceState = false;
@@ -59,6 +59,7 @@ public class CanService extends Service {
         boom2OK = false;
         stickOK = false;
         bucketOK = false;
+        flagLaser=false;
         tiltOK = false;
         ECU_Connected = false;
         CAT_Connected = false;
@@ -193,6 +194,11 @@ public class CanService extends Service {
                 } else {
                     SteerConnected = 0;
                 }
+                if (id == 0x204301) {
+                    flagLaser = true;
+                    handler_flagLaser.removeCallbacks(timeoutRunnable_flagLaser);
+                    handler_flagLaser.postDelayed(timeoutRunnable_flagLaser, 800);
+                }
                 switch (DataSaved.isCanOpen) {
                     case 1:
                     case 3:
@@ -277,6 +283,7 @@ public class CanService extends Service {
                     case 2:
                     case 4:
                         //tsm angolari o demo bag
+
 
                         if (id == 385 && DataSaved.lrFrame != 0) {
                             frameDisc = false;
@@ -561,6 +568,7 @@ public class CanService extends Service {
             nmeaSTX_Disc = true;
         }
     };
+
     private final Handler handler_frame = new Handler();
     private final Runnable timeoutRunnable_frame = new Runnable() {
         @Override
@@ -610,7 +618,14 @@ public class CanService extends Service {
 
         }
     };
+    private final Handler handler_flagLaser = new Handler();
+    private final Runnable timeoutRunnable_flagLaser = new Runnable() {
+        @Override
+        public void run() {
+            flagLaser = false;
 
+        }
+    };
     private final Handler handler_frameOK = new Handler();
     private final Runnable timeoutRunnable_frameOK = new Runnable() {
         @Override
