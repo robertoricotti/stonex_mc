@@ -186,6 +186,14 @@ public class PLC_DataTypes_BigEndian {
 
 
 
+    public static long fiveBytesToLong(byte[] bytes) {
+        if (bytes.length != 5) throw new IllegalArgumentException("Servono 5 byte");
+        return ((long)(bytes[0] & 0xFF) << 32) |
+                ((long)(bytes[1] & 0xFF) << 24) |
+                ((long)(bytes[2] & 0xFF) << 16) |
+                ((long)(bytes[3] & 0xFF) << 8)  |
+                ((long)(bytes[4] & 0xFF));
+    }
 
 
 

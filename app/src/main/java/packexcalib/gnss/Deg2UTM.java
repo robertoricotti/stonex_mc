@@ -34,22 +34,22 @@ public class Deg2UTM {
     // ====== lettori geoide (cache condivisa per tutte le istanze) ======
     private static GeoideInterpolation UGF_READER;
     private static String UGF_PATH_LOADED;
-    public  static boolean ugfReady;
+    public static boolean ugfReady;
 
     private static GeoidBinLite BIN_READER;
     private static String BIN_PATH_LOADED;
-    public  static boolean binReady;
+    public static boolean binReady;
 
     private static GGFGeoide GGF_READER;
     private static String GGF_PATH_LOADED;
-    public  static boolean ggfReady;
+    public static boolean ggfReady;
 
     // ====== risultati (di istanza) ======
     private static double Easting;
     private static double Northing;
     private static double Quota;
-    private static int    Zone;
-    private static char   Letter;
+    private static int Zone;
+    private static char Letter;
 
 
     public static boolean geoidError;
@@ -58,14 +58,16 @@ public class Deg2UTM {
     private static final double[] quotaBuf = new double[1];
 
     public static CoordinateXYZ trasform(double Lat, double Lon, double Z, String crs) {
-       // Lat=36.917902;Lon=14.710202;Z=520;
-        if(DataSaved.my_comPort==4) {
+
+        if (DataSaved.my_comPort == 4) {
 
             Northing = Lat;
             Easting = Lon;
-            Quota=Z;
+            Quota = Z;
 
-        }else {
+        } else {
+            Zone = computeUtmZone(Lon);
+            Letter=computeUtmLetter(Lat);
             switch (crs) {
                 case _NONE:
 
@@ -73,6 +75,7 @@ public class Deg2UTM {
                     ReadProjectService.model.toLocalFast(Lat, Lon, Z, out);
                     Easting = out[0];
                     Northing = out[1];
+
 
                     try {
                         double q = out[2];
@@ -182,8 +185,6 @@ public class Deg2UTM {
                     break;
                 case _UTM:
 
-                    Zone = computeUtmZone(Lon);
-                    Letter=computeUtmLetter(Lat);
 
                     Easting = 0.5 * Math.log((1 + Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)) / (1 - Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) * 0.9996 * 6399593.625 / Math.pow((1 + Math.pow(0.0820944379, 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)), 0.5) * (1 + Math.pow(0.0820944379, 2) / 2 * Math.pow((0.5 * Math.log((1 + Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)) / (1 - Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)))), 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2) / 3) + 500000;
                     Northing = (Math.atan(Math.tan(Lat * Math.PI / 180) / Math.cos((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) - Lat * Math.PI / 180) * 0.9996 * 6399593.625 / Math.sqrt(1 + 0.006739496742 * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) * (1 + 0.006739496742 / 2 * Math.pow(0.5 * Math.log((1 + Math.cos(Lat * Math.PI / 180) * Math.sin((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) / (1 - Math.cos(Lat * Math.PI / 180) * Math.sin((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)))), 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) + 0.9996 * 6399593.625 * (Lat * Math.PI / 180 - 0.005054622556 * (Lat * Math.PI / 180 + Math.sin(2 * Lat * Math.PI / 180) / 2) + 4.258201531e-05 * (3 * (Lat * Math.PI / 180 + Math.sin(2 * Lat * Math.PI / 180) / 2) + Math.sin(2 * Lat * Math.PI / 180) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) / 4 - 1.674057895e-07 * (5 * (3 * (Lat * Math.PI / 180 + Math.sin(2 * Lat * Math.PI / 180) / 2) + Math.sin(2 * Lat * Math.PI / 180) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) / 4 + Math.sin(2 * Lat * Math.PI / 180) * Math.pow(Math.cos(Lat * Math.PI / 180), 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) / 3);
@@ -297,6 +298,7 @@ public class Deg2UTM {
 
                     // ====== ramo con geoide + trasformazione ======
                     try {
+
                         double q = Z;
 
                         final String path = MyApp.GEOIDE_PATH;
@@ -399,8 +401,7 @@ public class Deg2UTM {
                                 Easting = shifted.x;
                                 Northing = shifted.y + 2000000;
                                 Quota = shifted.z;
-                                Zone = computeUtmZone(Lon);
-                                Letter = computeUtmLetter(Lat);
+
                             }
                         } else {
                             if (wgsToUtm != null && result != null) {
@@ -408,8 +409,7 @@ public class Deg2UTM {
                                 Easting = result.x;
                                 Northing = result.y;
                                 Quota = q;
-                                Zone = computeUtmZone(Lon);
-                                Letter = computeUtmLetter(Lat);
+
                             }
                         }
                     } catch (Exception e) {
@@ -420,8 +420,7 @@ public class Deg2UTM {
                             Easting = result.x;
                             Northing = result.y;
                             Quota = Z;
-                            Zone = computeUtmZone(Lon);
-                            Letter = computeUtmLetter(Lat);
+
                         }
                     }
                     break;
@@ -430,8 +429,9 @@ public class Deg2UTM {
         }
 
 
-        return new CoordinateXYZ(Easting,Northing,Quota,Zone,Letter);
+        return new CoordinateXYZ(Easting, Northing, Quota, Zone, Letter);
     }
+
     private static char computeUtmLetter(double Lat) {
         char Letter;
        /* char[] bands = {'C','D','E','F','G','H','J','K','L','M','N','P','Q','R','S','T','U','V','W','X'};
@@ -482,11 +482,9 @@ public class Deg2UTM {
 
         return Letter;
     }
-    private static int computeUtmZone(double Lon){
+
+    private static int computeUtmZone(double Lon) {
         return (int) Math.floor(Lon / 6 + 31);
     }
-
-
-
 
 }

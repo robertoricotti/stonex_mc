@@ -198,7 +198,14 @@ public class PLC_DataTypes_LittleEndian {
         return (byte) (result & 0xFF);
     }
 
-
+    public static long fiveBytesToLongLE(byte[] bytes) {
+        if (bytes.length != 5) throw new IllegalArgumentException("Servono 5 byte");
+        return ((long)(bytes[4] & 0xFF) << 32) |
+                ((long)(bytes[3] & 0xFF) << 24) |
+                ((long)(bytes[2] & 0xFF) << 16) |
+                ((long)(bytes[1] & 0xFF) << 8)  |
+                ((long)(bytes[0] & 0xFF));
+    }
 
 
     }

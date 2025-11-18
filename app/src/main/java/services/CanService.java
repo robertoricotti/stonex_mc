@@ -21,6 +21,7 @@ import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
+import packexcalib.gnss.Can318PositionDecoder;
 import packexcalib.gnss.NmeaListener;
 import serial.OpenSerialPort;
 import utils.AutoManToggle;
@@ -42,7 +43,6 @@ public class CanService extends Service {
     public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc;
     public static boolean CanServiceState = false;
     int dlc;
-
 
     @Override
     public void onCreate() {
@@ -105,6 +105,7 @@ public class CanService extends Service {
             }
 
             if (channel == 1) {
+
                 if (DataSaved.isCanOpen == 1) {
                     if (id == 1409) {
                         DataSaved.damp_Fr = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
@@ -145,7 +146,7 @@ public class CanService extends Service {
                     }
 
                 }
-                if (MyDeviceManager.serialCom(DataSaved.my_comPort).equals("CAN")) {
+                if (DataSaved.my_comPort==0&&DataSaved.gpsType==0) {
                     NmeaListener.NmeaSTX(id, msg);
                     if (id == 0x18FF0510) {
                         nmeaSTX_Disc = false;
@@ -155,6 +156,20 @@ public class CanService extends Service {
                         } catch (Exception e) {
                         }
                         handler_nmeaSTX.postDelayed(timeoutRunnable_nmea2k, 5000);
+                    }
+                }
+                if(DataSaved.my_comPort==0&&DataSaved.gpsType==3){
+                    //ICG82
+                    if(id==0x318) {
+                        NmeaListener.NmeaLeica(id,msg,dlc);
+                        nmeaSTX_Disc = false;
+                        try {
+                            handler_nmeaSTX.removeCallbacks(timeoutRunnable_nmea2k);
+
+                        } catch (Exception e) {
+                        }
+                        handler_nmeaSTX.postDelayed(timeoutRunnable_nmea2k, 5000);
+
                     }
                 }
                 if (id == 0x18FFA110) {
@@ -737,4 +752,6 @@ public class CanService extends Service {
 
 
     }
+
+
 }

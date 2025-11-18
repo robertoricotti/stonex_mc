@@ -40,6 +40,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -243,7 +244,9 @@ public class CanSender extends Service {
                                     connections = 0;
                                 }
                             }else if(DataSaved.gpsType==3){
-                                MyDeviceManager.CanWrite(true,0,0x718,8,new byte[]{0x0,0x4,0x58,0x0,0x0,0x0,0x5C});//Leica frame request
+
+                                MyDeviceManager.CanWrite(true,0,0x718,8,new byte[]{0x0,0x4,(byte)0x58,0x0,0x0,0x0,(byte)0x5C});//Leica frame request
+
                             }
                             break;
                         case 1:
