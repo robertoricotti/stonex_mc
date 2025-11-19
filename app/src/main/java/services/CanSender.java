@@ -40,7 +40,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -128,11 +127,10 @@ public class CanSender extends Service {
         handler.post(task); // o postDelayed...
 
 
-
-
         return START_STICKY;
 
     }
+
     private final Runnable task = new Runnable() {
         @Override
         public void run() {
@@ -145,9 +143,6 @@ public class CanSender extends Service {
             handler.postDelayed(this, 25); // esempio
         }
     };
-
-
-
 
 
     private class AsyncSender1min implements Runnable {
@@ -201,7 +196,7 @@ public class CanSender extends Service {
                 if (licenseType > 1) {
                     switch (DataSaved.my_comPort) {
                         case 0:
-                            if(DataSaved.gpsType==0) {
+                            if (DataSaved.gpsType == 0) {
                                 double vrms = 0;
                                 try {
                                     vrms = Double.parseDouble(NmeaListener.VRMS_);
@@ -243,9 +238,26 @@ public class CanSender extends Service {
                                     MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
                                     connections = 0;
                                 }
-                            }else if(DataSaved.gpsType==3){
+                            } else if (DataSaved.gpsType == 3) {
+                                try {
+                                    double vrms = 0;
+                                    try {
+                                        vrms = Double.parseDouble(NmeaListener.VRMS_);
+                                    } catch (NumberFormatException e) {
+                                        vrms = 0.002;
+                                    }
+                                    if (!nmeaSTX_Disc) {
+                                        DataSaved.gpsOk = NmeaListener.ggaQuality.equals("4") && vrms < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt_1 != 999.999;
+                                    } else {
+                                        DataSaved.gpsOk = false;
 
-                                MyDeviceManager.CanWrite(true,0,0x718,8,new byte[]{0x0,0x4,(byte)0x58,0x0,0x0,0x0,(byte)0x5C});//Leica frame request
+                                    }
+                                } catch (Exception ignored) {
+
+                                }
+
+
+                                MyDeviceManager.CanWrite(true, 0, 0x718, 8, new byte[]{0x0, 0x4, (byte) 0x58, 0x0, 0x0, 0x0, (byte) 0x5C});//Leica frame request
 
                             }
                             break;
@@ -1023,15 +1035,18 @@ public class CanSender extends Service {
                         Cq = new byte[2];
                     }
 
-                    dist = switch (DataSaved.bucketEdge) {
-                        case -1 ->
-                                PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
-                        case 0 ->
-                                PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
-                        case 1 ->
-                                PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
-                        default -> dist;
-                    };
+                    switch (DataSaved.bucketEdge) {
+                        case -1:
+                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
+                            break;
+                        case 0:
+                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
+                            break;
+                        case 1:
+                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
+                            break;
+                    }
+                    ;
                     left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_SX * 1000), (short) -32768, (short) 32767));
                     cent = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_CT * 1000), (short) -32768, (short) 32767));
                     right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_DX * 1000), (short) -32768, (short) 32767));

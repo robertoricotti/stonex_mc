@@ -752,7 +752,7 @@ public class My3DActivity extends BaseClass {
     }
 
     public void updateUI() {
-        if (!dialogCutFill3D.dialog.isShowing()) {
+        if (!dialogCutFill3D.dialog.isShowing()&&!dialogGnssCoordinates.alertDialog.isShowing()) {
 
             try {
                 if (sideBar.getVisibility() == View.GONE) {

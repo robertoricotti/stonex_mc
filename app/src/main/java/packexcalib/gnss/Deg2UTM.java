@@ -66,8 +66,7 @@ public class Deg2UTM {
             Quota = Z;
 
         } else {
-            Zone = computeUtmZone(Lon);
-            Letter=computeUtmLetter(Lat);
+
             switch (crs) {
                 case _NONE:
 
@@ -426,6 +425,13 @@ public class Deg2UTM {
                     break;
 
             }
+            try {
+                Zone = computeUtmZone(Lon);
+                Letter=computeUtmLetter(Lat);
+            } catch (Exception ignored) {
+
+            }
+
         }
 
 

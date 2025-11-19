@@ -618,36 +618,29 @@ public class Dialog_Add_Pnezd {
 
 
     private int setColor(String color) {
-        return switch (color) {
-            case "red" -> {
+         switch (color) {
+             case "red" :
                 pnezd_color.setTextColor(Color.WHITE);
-                yield Color.RED;
-            }
-            case "yellow" -> {
+                return Color.RED;
+             case "yellow":
                 pnezd_color.setTextColor(Color.DKGRAY);
-                yield Color.YELLOW;
-            }
-            case "blue" -> {
+                return Color.YELLOW;
+             case "blue" :
                 pnezd_color.setTextColor(Color.WHITE);
-                yield Color.BLUE;
-            }
-            case "green" -> {
+                return Color.BLUE;
+             case "green":
                 pnezd_color.setTextColor(Color.DKGRAY);
-                yield Color.GREEN;
-            }
-            case "cyan" -> {
+                return Color.GREEN;
+             case "cyan":
                 pnezd_color.setTextColor(Color.DKGRAY);
-                yield Color.CYAN;
-            }
-            case "magenta" -> {
+                return Color.CYAN;
+             case "magenta" :
                 pnezd_color.setTextColor(Color.WHITE);
-                yield Color.MAGENTA;
-            }
-            default -> {
+                return Color.MAGENTA;
+             default :
                 pnezd_color.setTextColor(Color.WHITE);
-                yield Color.RED;
-            }
-        };
+                return Color.RED;
+        }
     }
 
 

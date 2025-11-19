@@ -35,7 +35,7 @@ public class NmeaListener {
     public static double Nord1, Est1, Quota1, mch_Orientation, mch_Hdt, mch_Hdt_1, roof_Orientation;
     public static String ggaNord, ggaEast, ggaNoS, ggaWoE, ggaZ1, ggaZ2, ggaSat, ggaDop, ggaQuality, ggaRtk, fix1;//String data from  GPS1
     static boolean hdtError = false;
-    static final Can318PositionDecoder posDecoder = new Can318PositionDecoder();
+    static  Can318PositionDecoder posDecoder = new Can318PositionDecoder();
     /*
     NMEA STX Below
      */
@@ -365,7 +365,7 @@ public class NmeaListener {
             mLon_1 = o.lonDeg;
             tmpQuotaUTM = o.alt;
             mch_Orientation = o.headingDeg;
-            if (mch_Orientation == 655.35) {
+            if (Double.isNaN(mch_Orientation)) {
                 mch_Hdt_1 = 999.999;
             } else {
                 mch_Hdt_1 = mch_Orientation;

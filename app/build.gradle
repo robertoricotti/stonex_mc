@@ -69,16 +69,17 @@ android {
             //  Flavor = GEN1 (Apollo8, Tank2) e GEN2 (il resto)
             flavorDimensions "generation"
             productFlavors {
-                gen1 {
-                    dimension "generation"
-                    applicationIdSuffix ".gen1"
-                    versionNameSuffix " -GEN1"
-                }
                 gen2 {
                     dimension "generation"
                     applicationIdSuffix ".gen2"
                     versionNameSuffix " -GEN2"
                 }
+                gen1 {
+                    dimension "generation"
+                    applicationIdSuffix ".gen1"
+                    versionNameSuffix " -GEN1"
+                }
+
             }
         }
 
@@ -100,7 +101,7 @@ android {
     }
     dependencies {
 
-        implementation 'androidx.core:core:1.16.0'
+        implementation 'androidx.core:core:1.17.0'
 
         /*
        GEN2= APOLLO7, APOLLO10 APOLLO12
@@ -125,13 +126,13 @@ android {
         //noinspection GradleCompatible
         implementation 'com.android.support:recyclerview-v7:28.0.0'
         //noinspection GradleCompatible
-        implementation 'com.google.android.material:material:1.12.0'
-        implementation "androidx.navigation:navigation-fragment:2.9.2"
-        implementation "androidx.navigation:navigation-ui:2.9.2"
+        implementation 'com.google.android.material:material:1.13.0'
+        implementation "androidx.navigation:navigation-fragment:2.9.6"
+        implementation "androidx.navigation:navigation-ui:2.9.6"
         //noinspection GradleCompatible
         implementation 'com.android.support:support-v4:28.0.0'
 
-        implementation 'androidx.fragment:fragment:1.8.8'
+        implementation 'androidx.fragment:fragment:1.8.9'
         implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
         //noinspection GradleCompatible
         androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -140,7 +141,7 @@ android {
 
         //serialport
         implementation 'com.github.licheedev.CommonSize:common_size_w1080_n1920:1.3.1'
-        implementation 'com.licheedev:android-serialport:2.1.3'
+        implementation 'com.licheedev:android-serialport:2.1.5'
         implementation 'com.licheedev:hardwareutils:1.0.0'
         implementation 'com.licheedev:logplus:1.0.2'
         implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
@@ -149,7 +150,7 @@ android {
         implementation 'org.greenrobot:eventbus:3.3.1'
 
         //csv
-        implementation 'com.opencsv:opencsv:5.11.2'
+        implementation 'com.opencsv:opencsv:5.12.0'
         implementation 'org.apache.commons:commons-math3:3.6.1'
 
         //proj
@@ -165,26 +166,26 @@ android {
         //arcoda
 
         //  implementation 'net.lingala.zip4j:zip4j:2.11.5'
-        implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-        implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.11.0'
+        implementation 'com.squareup.okhttp3:okhttp:5.3.0'
+        implementation 'com.squareup.okhttp3:okhttp-urlconnection:5.3.0'
         // https://mvnrepository.com/artifact/commons-io/commons-io
-        implementation 'commons-io:commons-io:2.15.0'
+        implementation 'commons-io:commons-io:2.21.0'
 
 
         //YModem
         //implementation 'com.github.aesirot:ymodem:'
-        implementation 'androidx.activity:activity:1.10.1'
+        implementation 'androidx.activity:activity:1.11.0'
         implementation 'com.github.chrisbanes:PhotoView:2.3.0'
         //server stx
-        implementation("com.amazonaws:aws-android-sdk-s3:2.57.0")
+        implementation("com.amazonaws:aws-android-sdk-s3:2.81.1")
         //rajawali
-        implementation 'org.rajawali3d:rajawali:1.1.970'
+        implementation 'org.rajawali3d:rajawali:1.2.1970'
         // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on
-        implementation("org.bouncycastle:bcpkix-jdk18on:1.81")
+        implementation("org.bouncycastle:bcpkix-jdk18on:1.82")
 
         implementation 'androidx.appcompat:appcompat:1.7.1'
-        implementation 'com.google.android.material:material:1.12.0'
-        implementation 'androidx.activity:activity:1.10.1'
+        implementation 'com.google.android.material:material:1.13.0'
+        implementation 'androidx.activity:activity:1.11.0'
         implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 
     }
@@ -196,10 +197,7 @@ android {
     buildFeatures {
         viewBinding true
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
+
 
 
 

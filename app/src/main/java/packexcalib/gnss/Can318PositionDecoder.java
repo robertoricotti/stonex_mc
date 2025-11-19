@@ -141,6 +141,8 @@ public class Can318PositionDecoder {
         double headingDeg = Math.toDegrees(headingRad);
         if (headingDeg < 0) headingDeg += 360.0;
         out.headingDeg = headingDeg;
+
+
     }
 
     // ==================================================================

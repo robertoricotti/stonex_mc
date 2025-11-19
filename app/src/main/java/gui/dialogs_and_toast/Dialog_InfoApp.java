@@ -110,15 +110,15 @@ public class Dialog_InfoApp {
     }
 
     private String licenzaStringa() {
-        return switch (MyApp.licenseType) {
-            case -1 -> "No License";
-            case 0 -> "Dig 1D License No AUTO ";
-            case 1 -> "Dig 1D / 2D License No AUTO";
-            case 2 -> "MC 1D / 2D / 3DPRO License No AUTO";
-            case 3 -> "MC 1D License AUTO ENABLED";
-            case 4 -> "MC 1D / 2D License AUTO ENABLED";
-            case 5 -> "MC 1D / 2D / 3DPRO License AUTO ENABLED";
-            default -> "";
-        };
+         switch (MyApp.licenseType) {
+            case -1 :return "No License";
+            case 0 :return  "Dig 1D License No AUTO ";
+            case 1 :return  "Dig 1D / 2D License No AUTO";
+            case 2 :return  "MC 1D / 2D / 3DPRO License No AUTO";
+            case 3 :return  "MC 1D License AUTO ENABLED";
+            case 4 :return  "MC 1D / 2D License AUTO ENABLED";
+            case 5 :return  "MC 1D / 2D / 3DPRO License AUTO ENABLED";
+            default :return  "";
+        }
     }
 }
