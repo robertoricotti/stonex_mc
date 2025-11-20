@@ -37,7 +37,6 @@ import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Excavator_RealValues;
-import packexcalib.exca.Sensors_Decoder;
 import services.CanService;
 import utils.DistToPoint;
 import services.CanSender;
@@ -74,7 +73,7 @@ public class Digging1D extends BaseClass {
 
 
     public static boolean flagLaser_D1D = false;
-    public int counterZero = 0;
+    public static int counterZero = 0;
     ImageView allarmeAlt;
     DialogOffset dialogOffset;
     DialogSlope dialogSlope;
@@ -296,9 +295,8 @@ public class Digging1D extends BaseClass {
                 MyData.push("start2DZ", String.valueOf(DataSaved.start2DZ));
                 MyData.push("Offset_Zero", String.valueOf(DataSaved.offsetZH));
 
-
                 if (flagLaser_D1D) {
-                    if (!laserDialog.alertDialog.isShowing()) {
+                    if (!laserDialog.dialog.isShowing()) {
                         laserDialog.show();
                     }
                 } else {

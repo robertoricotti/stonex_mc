@@ -31,7 +31,6 @@ import gui.draw_class.FlatAngleBar;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Excavator_RealValues;
-import packexcalib.exca.Sensors_Decoder;
 import services.CanService;
 import utils.LeicaLB;
 import utils.MyData;
@@ -57,7 +56,7 @@ public class Digging_CutAndFill1D extends BaseClass {
     boolean[] audioFlags = new boolean[]{true, true, true, true};
 
     public static boolean flagLaser_C1D = false;
-    public int counterZero = 0;
+    public static int counterZero = 0;
     ImageView allarmeAlt;
     Dialog_TouchGo dialogTouchGo;
     DialogOffset dialogOffset;
@@ -202,7 +201,7 @@ public class Digging_CutAndFill1D extends BaseClass {
 
 
             if (flagLaser_C1D) {
-                if (!laserDialog.alertDialog.isShowing()) {
+                if (!laserDialog.dialog.isShowing()) {
                     laserDialog.show();
                 }
 

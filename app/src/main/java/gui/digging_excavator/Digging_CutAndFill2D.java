@@ -58,7 +58,7 @@ public class Digging_CutAndFill2D extends BaseClass {
     boolean[] audioFlags = new boolean[]{true, true, true, true};
 
     public static boolean flagLaser_C2D = false;
-    public int counterZero = 0;
+    public static int counterZero = 0;
     ImageView allarmeAlt;
     Dialog_TouchGo dialogTouchGo;
     DialogOffset dialogOffset;
@@ -242,7 +242,7 @@ public class Digging_CutAndFill2D extends BaseClass {
 
 
             if (flagLaser_C2D) {
-                if (!laserDialog.alertDialog.isShowing()) {
+                if (!laserDialog.dialog.isShowing()) {
                     laserDialog.show();
                 }
             } else {

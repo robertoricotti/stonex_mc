@@ -85,7 +85,7 @@ public class Digging2D extends BaseClass {
 
 
     public static boolean flagLaser_D2D = false;
-    public int counterZero = 0;
+    public static int counterZero = 0;
 
     ConstraintLayout.LayoutParams params;
     ImageView allarmeAlt;
@@ -392,7 +392,7 @@ public class Digging2D extends BaseClass {
 
 
                 if (flagLaser_D2D) {
-                    if (!laserDialog.alertDialog.isShowing()) {
+                    if (!laserDialog.dialog.isShowing()) {
                         laserDialog.show();
                     }
                 } else {
