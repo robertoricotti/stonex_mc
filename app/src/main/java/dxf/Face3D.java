@@ -206,5 +206,15 @@ public class Face3D implements Serializable {
         isDirty = false; // Reset stato dirty dopo l'upload
     }
 
-
+    @Override
+    public Face3D clone() {
+        return new Face3D(
+                p1 != null ? p1.clone() : null,
+                p2 != null ? p2.clone() : null,
+                p3 != null ? p3.clone() : null,
+                p4 != null ? p4.clone() : null,
+                color,
+                layer
+        );
+    }
 }

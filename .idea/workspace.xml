@@ -172,15 +172,24 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.12 RELEASE">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.13 RELEASE">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DXFParser_20.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DxfBlock.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DxfCloneable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DxfInsert.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/gen1/release/STX-MC_V_4.0.7 -GEN1-RELEASE.apk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/LaserDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/LaserDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging1D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging1D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging2D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill1D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill1D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging_CutAndFill2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Arc.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Arc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Circle.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Circle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DXFData.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DXFData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DxfText.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DxfText.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Face3D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Face3D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Line.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Line.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Point3D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Point3D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline_2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline_2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -199,10 +208,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="valueResourceFile" />
         <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -640,11 +649,18 @@
       <option name="project" value="LOCAL" />
       <updated>1763578695996</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="4.0.13 RELEASE">
+      <option name="closed" value="true" />
+      <created>1763655817224</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1763655817224</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="RELEASE 4.0.0 ufficiale" />
     <MESSAGE value="RELEASE 4.0.1 ufficiale" />
     <MESSAGE value="pre release 4.0.2 da testare automatico" />
     <MESSAGE value="TODO listener per autoconnettersi al cloud se non  connesso" />
@@ -669,7 +685,8 @@
     <MESSAGE value="4.0.11 RELEASE" />
     <MESSAGE value="4.0.12 Test implementazione icg82" />
     <MESSAGE value="4.0.12 RELEASE" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.0.12 RELEASE" />
+    <MESSAGE value="4.0.13 RELEASE" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.0.13 RELEASE" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

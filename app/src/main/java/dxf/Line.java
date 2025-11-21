@@ -47,4 +47,15 @@ public class Line implements Serializable {
     public Layer getLayer() {
         return layer;
     }
+
+    @Override
+    public Line clone() {
+        Line l = new Line(
+                start.clone(),
+                end.clone(),
+                color,
+                layer   // shallow copy OK
+        );
+        return l;
+    }
 }

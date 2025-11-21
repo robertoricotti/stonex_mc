@@ -86,4 +86,17 @@ public class Polyline implements Serializable {
     public String getFilename() {
         return filename;
     }
+
+    @Override
+    public Polyline clone() {
+        Polyline p = new Polyline();
+        p.lineColor = this.lineColor;
+        p.layer = this.layer;
+        p.filename = this.filename;
+
+        for (Point3D v : vertices) {
+            p.vertices.add(v.clone());
+        }
+        return p;
+    }
 }

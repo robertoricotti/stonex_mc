@@ -265,4 +265,11 @@ public class Point3D implements Serializable {
         return Objects.hash(x, y, z, layer);
     }
 
+
+    public Point3D clone() {
+        Point3D p = new Point3D(x, y, z);
+        p.bulge = this.bulge;
+        p.layer = this.layer; // SHALLOW by design (layer is shared)
+        return p;
+    }
 }

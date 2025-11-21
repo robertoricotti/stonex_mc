@@ -62,4 +62,18 @@ public class Polyline_2D implements Serializable {
     public Layer getLayer() {
         return layer;
     }
+
+    @Override
+    public Polyline_2D clone() {
+        Polyline_2D p = new Polyline_2D();
+        p.lineColor = this.lineColor;
+        p.layer = this.layer;
+
+        for (Point3D v : vertices) {
+            Point3D c = v.clone();
+            c.setBulge(v.getBulge());
+            p.vertices.add(c);
+        }
+        return p;
+    }
 }

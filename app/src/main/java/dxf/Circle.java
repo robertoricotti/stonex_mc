@@ -58,5 +58,16 @@ public class Circle implements Serializable {
                 ", color=" + color +
                 '}';
     }
+
+    @Override
+    public Circle clone() {
+        Circle c = new Circle(
+                center.clone(),
+                radius,
+                color,
+                layer
+        );
+        return c;
+    }
 }
 

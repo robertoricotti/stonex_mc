@@ -25,6 +25,8 @@ public class DXFData implements Serializable {
     private List<Circle> circles;//CIRCLE
     private List<Line> lines;//LINE
     private List<Layer> layers;
+    private List<DxfBlock> blocks;
+    private List<DxfInsert> inserts;
 
     public DXFData() {
         faces = new ArrayList<>();
@@ -36,6 +38,8 @@ public class DXFData implements Serializable {
         circles = new ArrayList<>();
         lines = new ArrayList<>();
         layers = new ArrayList<>();
+        blocks = new ArrayList<>();
+        inserts = new ArrayList<>();
     }
 
     // Getter per Face3D
@@ -139,6 +143,21 @@ public class DXFData implements Serializable {
         }
 
         return data;
+    }
+    public void addBlock(DxfBlock block) {
+        blocks.add(block);
+    }
+
+    public List<DxfBlock> getBlocks() {
+        return blocks;
+    }
+
+    public void addInsert(DxfInsert insert) {
+        inserts.add(insert);
+    }
+
+    public List<DxfInsert> getInserts() {
+        return inserts;
     }
 
 }

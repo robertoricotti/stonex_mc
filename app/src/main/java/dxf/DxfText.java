@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class DxfText implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    private double rotation = 0;
     String text;
     double x, y, z;
     int colore;
@@ -74,4 +74,20 @@ public class DxfText implements Serializable {
     public Layer getLayer() {
         return layer;
     }
+    @Override
+    public DxfText clone() {
+        DxfText t = new DxfText(
+                text,
+                x, y, z,
+                colore,
+                layer
+        );
+        t.rotation = this.rotation;
+        return t;
+    }
+
+
+    public double getRotation() { return rotation; }
+
+    public void setRotation(double r) { this.rotation = r; }
 }

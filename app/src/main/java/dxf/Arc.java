@@ -80,4 +80,16 @@ public class Arc implements Serializable {
                 ", color=" + color +
                 '}';
     }
+    @Override
+    public Arc clone() {
+        Arc a = new Arc(
+                center.clone(),
+                radius,
+                startAngle,
+                endAngle,
+                color,
+                layer
+        );
+        return a;
+    }
 }

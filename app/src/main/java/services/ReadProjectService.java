@@ -38,7 +38,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import dxf.DXFData;
-import dxf.DXFParser;
+import dxf.DXFParser_20;
 import dxf.Face3D;
 import dxf.Point3D;
 import dxf.Polyline;
@@ -208,9 +208,9 @@ public class ReadProjectService extends Service {
                                 if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
                                     DataSaved.filteredFaces = new ArrayList<>();
                                     DataSaved.dxfFaces = new ArrayList<>();
-                                    dxfData = DXFParser.parseDXF(nomeProgettoTRM, conversionFactor);
+                                    dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
 
-                                    dxfData = DXFParser.parseDXF(nomeProgettoTRM, conversionFactor);
+                                    dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
                                     DataSaved.dxfFaces = dxfData.getFaces();
                                     DataSaved.dxfLayers_DTM = dxfData.getLayers();
                                     copiaFacce();
@@ -231,9 +231,9 @@ public class ReadProjectService extends Service {
                                             case "pstx":
 
                                                 parserStatus = "Reading Polylines...";
-                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                                dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
 
-                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                                dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                                 DataSaved.polylines = dxfDataPoly.getPolylines();
                                                 DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
                                                 DataSaved.arcs = dxfDataPoly.getArcs();
@@ -270,9 +270,9 @@ public class ReadProjectService extends Service {
                                             case "dxf":
                                             case "pstx":
                                                 parserStatus = "Reading Points...";
-                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                                dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
 
-                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                                dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                                 DataSaved.points = dxfDataPoint.getPoints();
                                                 DataSaved.dxfTexts = dxfDataPoint.getTexts();
                                                 DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
@@ -374,9 +374,9 @@ public class ReadProjectService extends Service {
                                             case "dxf":
                                             case "pstx":
                                                 parserStatus = "Reading Polylines...";
-                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                                dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
 
-                                                dxfDataPoly = DXFParser.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                                dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                                 DataSaved.polylines = dxfDataPoly.getPolylines();
                                                 DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
                                                 DataSaved.arcs = dxfDataPoly.getArcs();
@@ -412,8 +412,8 @@ public class ReadProjectService extends Service {
                                             case "dxf":
                                             case "pstx":
                                                 parserStatus = "Reading Points...";
-                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
-                                                dxfDataPoint = DXFParser.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                                dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                                dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                                 DataSaved.points = dxfDataPoint.getPoints();
                                                 DataSaved.dxfTexts = dxfDataPoint.getTexts();
                                                 DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
