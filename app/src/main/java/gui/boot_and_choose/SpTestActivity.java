@@ -50,11 +50,11 @@ public class SpTestActivity extends Activity {
     boolean ggfReady;
     private static GeoideInterpolation UGF_READER;
     private static String UGF_PATH_LOADED;
-    public  static boolean ugfReady;
+    public static boolean ugfReady;
 
     private static GeoidBinLite BIN_READER;
     private static String BIN_PATH_LOADED;
-    public  static boolean binReady;
+    public static boolean binReady;
 
     private static GGFGeoide GGF_READER;
     private static String GGF_PATH_LOADED;
@@ -81,6 +81,7 @@ public class SpTestActivity extends Activity {
         myshifted = new ProjCoordinate();
         myresultWgs = new ProjCoordinate();
 
+        updateLLQ();
 
         etLat = findViewById(R.id.etLat);
         etLon = findViewById(R.id.etLon);
@@ -94,6 +95,19 @@ public class SpTestActivity extends Activity {
         btnToLocal = findViewById(R.id.btnTransform);
         btnToGeo = findViewById(R.id.btnInverse);
         btnToGeo.setVisibility(TextView.INVISIBLE);
+        etEst.setText("");
+        etNord.setText("");
+        etZ.setText("");
+
+        try {
+
+            etLat.setText(sLat.replace(",","."));
+            etLon.setText(sLon.replace(",","."));
+            etH.setText(sHll.replace(",","."));
+
+        } catch (Exception ignored) {
+
+        }
 
 
         btn_Exit.setOnClickListener(view -> {
@@ -118,7 +132,7 @@ public class SpTestActivity extends Activity {
                     double h = Double.parseDouble(etH.getText().toString().replace(",", "."));
                     double[] out = new double[3];
                     localizationFactory.toLocalFast(lat, lon, h, out);
-                    double Hq=ramoGeoide(lat,lon,out[2]);
+                    double Hq = ramoGeoide(lat, lon, out[2]);
                     sE = String.format("%.3f", out[0]).replace(",", ".");
                     sN = String.format("%.3f", out[1]).replace(",", ".");
                     sH = String.format("%.3f", Hq).replace(",", ".");
@@ -126,12 +140,16 @@ public class SpTestActivity extends Activity {
                     etNord.setText(sN);
                     etZ.setText(sH);
                     log(String.format("→ Locale: E=%.3f  N=%.3f  Z=%.3f", out[0], out[1], Hq).replaceAll(",", "."));
+                    MyData.push("Test_sLat",String.format("%.9f", lat));
+                    MyData.push("Test_sLon",String.format("%.9f", lon));
+                    MyData.push("Test_sHll",String.format("%.3f", h));
+                    updateLLQ();
                 } catch (Exception e) {
                     log("Error: " + e.getMessage());
                 }
             } else {
                 try {
-                    Log.d("EPGS",DataSaved.S_CRS);
+                    Log.d("EPGS", DataSaved.S_CRS);
                     setEPSGLocal();
                     double lat = Double.parseDouble(etLat.getText().toString().replace(",", "."));
                     double lon = Double.parseDouble(etLon.getText().toString().replace(",", "."));
@@ -151,19 +169,27 @@ public class SpTestActivity extends Activity {
                             etEst.setText(sE);
                             etNord.setText(sN);
                             etZ.setText(sH);
+                            MyData.push("Test_sLat",String.format("%.9f", lat));
+                            MyData.push("Test_sLon",String.format("%.9f", lon));
+                            MyData.push("Test_sHll",String.format("%.3f", h));
+                            updateLLQ();
                         }
                     } else {
                         if (mywgsToUtm != null && myresult != null) {
                             mywgsToUtm.transform(new ProjCoordinate(lon, lat, h), myresult);
                             Easting = myresult.x;
                             Northing = myresult.y;
-                            Quota =ramoGeoide(lat,lon,h);
+                            Quota = ramoGeoide(lat, lon, h);
                             sE = String.format("%.3f", Easting).replace(",", ".");
                             sN = String.format("%.3f", Northing).replace(",", ".");
                             sH = String.format("%.3f", Quota).replace(",", ".");
                             etEst.setText(sE);
                             etNord.setText(sN);
                             etZ.setText(sH);
+                            MyData.push("Test_sLat",String.format("%.9f", lat));
+                            MyData.push("Test_sLon",String.format("%.9f", lon));
+                            MyData.push("Test_sHll",String.format("%.3f", h));
+                            updateLLQ();
 
                         }
                     }
@@ -187,9 +213,9 @@ public class SpTestActivity extends Activity {
                 sLat = String.format("%.9f", out[0]).replace(",", ".");
                 sLon = String.format("%.9f", out[1]).replace(",", ".");
                 sHll = String.format("%.3f", out[2]).replace(",", ".");
-                etLat.setText(sLat);
-                etLon.setText(sLon);
-                etH.setText(sHll);
+                etLat.setText(sLat.replace(",","."));
+                etLon.setText(sLon.replace(",","."));
+                etH.setText(sHll.replace(",","."));
                 log(String.format("→ Geo: Lat=%.8f  Lon=%.8f  H=%.3f", out[0], out[1], out[2]).replaceAll(",", "."));
             } catch (Exception e) {
                 log("Error: " + e.getMessage());
@@ -202,9 +228,7 @@ public class SpTestActivity extends Activity {
             etEst.setText(sE);
             etNord.setText(sN);
             etZ.setText(sH);
-            etLat.setText(sLat);
-            etLon.setText(sLon);
-            etH.setText(sHll);
+
 
         } catch (Exception ignored) {
 
@@ -221,7 +245,6 @@ public class SpTestActivity extends Activity {
 
     private void init() {
         try {
-
 
             File file = new File(MyData.get_String("CRS_ESTERNO"));
             localizationFactory = LocalizationFactory.fromFile(file);
@@ -294,8 +317,8 @@ public class SpTestActivity extends Activity {
 
     }
 
-    private double ramoGeoide(double Lat,double Lon,double Z){
-        double outQ=0;
+    private double ramoGeoide(double Lat, double Lon, double Z) {
+        double outQ = 0;
         try {
 
             double q = Z;
@@ -305,7 +328,7 @@ public class SpTestActivity extends Activity {
                 int dot = path.lastIndexOf('.');
                 String ext = (dot > 0) ? path.substring(dot + 1).toLowerCase(Locale.ROOT) : "";
 
-                switch (ext) {
+                switch (ext.toLowerCase()) {
                     case "bin":
                         try {
                             if (BIN_READER == null || !Objects.equals(BIN_PATH_LOADED, path)) {
@@ -334,13 +357,16 @@ public class SpTestActivity extends Activity {
                             if (GGF_READER == null || !Objects.equals(GGF_PATH_LOADED, path)) {
                                 GGF_READER = new GGFGeoide();
                                 GGF_READER.load(path);
-                                //Log.d("Deg2UTM", "GGF letto");
+
                                 GGF_PATH_LOADED = path;
                                 ggfReady = true;
+                                Log.d("Deg2UTM", "GGF letto "+GGF_PATH_LOADED+" "+ggfReady);
                             }
+                            Log.d("Deg2UTM", GGF_READER.isInGrid(Lat, Lon)+"");
                             if (ggfReady && GGF_READER.isInGrid(Lat, Lon)) {
                                 double und = GGF_READER.getUndulation(Lat, Lon);
                                 q = Double.isNaN(und) ? Z : (Z - und);
+                                Log.d("Deg2UTM", "GGF trasformato");
 
                             } else {
 
@@ -359,7 +385,7 @@ public class SpTestActivity extends Activity {
                             if (UGF_READER == null || !Objects.equals(UGF_PATH_LOADED, path)) {
                                 UGF_READER = new GeoideInterpolation(path);
                                 UGF_READER.readHeader();            // una sola volta per path
-                                // Log.d("Deg2UTM", "UGF letto");
+                                 Log.d("Deg2UTM", "UGF letto");
                                 UGF_PATH_LOADED = path;
                                 ugfReady = true;
                             }
@@ -392,14 +418,40 @@ public class SpTestActivity extends Activity {
 
             }
 
-            outQ= q;
+            outQ = q;
 
         } catch (Exception e) {
             //Log.e("Deg2UTM", "Transform error", e);
-            outQ= 0;
+            outQ = 0;
 
         }
         return outQ;
+    }
+
+    private void updateLLQ() {
+
+        sLat = MyData.get_String("Test_sLat");
+        sLon = MyData.get_String("Test_sLon");
+        sHll = MyData.get_String("Test_sHll");
+        if (sLat == null) {
+            sLat = "43.012345601";
+            MyData.push("Test_sLat", sLat);
+        } else {
+            MyData.push("Test_sLat", sLat);
+        }
+        if (sLon == null) {
+            sLon = "10.012345601";
+            MyData.push("Test_sLon", sLon);
+        } else {
+            MyData.push("Test_sLon", sLon);
+        }
+        if (sHll == null) {
+            sHll = "100.012";
+            MyData.push("Test_sHll", sHll);
+        } else {
+            MyData.push("Test_sHll", sHll);
+        }
+
     }
 
     @Override

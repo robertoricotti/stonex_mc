@@ -126,6 +126,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_slide_boom.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_sp_test.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -156,6 +161,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_map_mode.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_swing_boom.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -172,24 +182,19 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.13 RELEASE">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DXFParser_20.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DxfBlock.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DxfCloneable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DxfInsert.java" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.14 NFR">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/gen1/release/STX-MC_V_4.0.7 -GEN1-RELEASE.apk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Arc.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Arc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Circle.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Circle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DXFData.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DXFData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DxfText.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DxfText.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Face3D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Face3D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Line.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Line.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Point3D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Point3D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline_2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Polyline_2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DXFParser_20.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DXFParser_20.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Layer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Layer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/LayerAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/LayerAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/LinkageCalib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/LinkageCalib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLData.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_sp_test.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_sp_test.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -199,7 +204,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -657,11 +662,18 @@
       <option name="project" value="LOCAL" />
       <updated>1763655817224</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="4.0.14 NFR">
+      <option name="closed" value="true" />
+      <created>1763765344115</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1763765344115</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="RELEASE 4.0.1 ufficiale" />
     <MESSAGE value="pre release 4.0.2 da testare automatico" />
     <MESSAGE value="TODO listener per autoconnettersi al cloud se non  connesso" />
     <MESSAGE value="4.0.2 RELEASE UFFICIALE" />
@@ -686,29 +698,30 @@
     <MESSAGE value="4.0.12 Test implementazione icg82" />
     <MESSAGE value="4.0.12 RELEASE" />
     <MESSAGE value="4.0.13 RELEASE" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.0.13 RELEASE" />
+    <MESSAGE value="4.0.14 NFR" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.0.14 NFR" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1763153278223" />
+            <CheckInfo lastCheckTimestamp="1763982343409" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1763153278224" />
+            <CheckInfo lastCheckTimestamp="1763982343409" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1763153278223" />
+            <CheckInfo lastCheckTimestamp="1763982343409" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1763153278223" />
+            <CheckInfo lastCheckTimestamp="1763982343408" />
           </value>
         </entry>
       </map>

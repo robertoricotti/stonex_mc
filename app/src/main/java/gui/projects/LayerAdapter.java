@@ -66,6 +66,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                     if (layer.getLayerName() != null) {
                         if (layer.getLayerName().equals(item.getLayerName())) {
                             item.setEnable(layer.isEnable());
+                            break;
                         }
                     }
                 }
@@ -73,6 +74,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                     if (layer.getLayerName() != null) {
                         if (layer.getLayerName().equals(item.getLayerName())) {
                             item.setEnable(layer.isEnable());
+                            break;
                         }
                     }
                 }
@@ -80,6 +82,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                     if (layer.getLayerName() != null) {
                         if (layer.getLayerName().equals(item.getLayerName())) {
                             item.setEnable(layer.isEnable());
+                            break;
                         }
                     }
                 }
@@ -573,28 +576,29 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         List<Face3D> filteredFaces = new ArrayList<>();
         try {
             filteredFaces = DataSaved.dxfFaces.stream()
-                    .filter(face -> face.getLayer() != null && face.getLayer().getLayerName().equals(layerName))
+                    .filter(face -> face.getLayer() != null && face.getLayer().getLayerName().equals(layerName)&&
+                            face.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
 
         }
         try {
             filteredPolylines = DataSaved.polylines.stream()
-                    .filter(polyline -> polyline.getLayer() != null && polyline.getLayer().getLayerName().equals(layerName))
+                    .filter(polyline -> polyline.getLayer() != null && polyline.getLayer().getLayerName().equals(layerName)&&polyline.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
 
         }
         try {
             filteredPolylines2D = DataSaved.polylines_2D.stream()
-                    .filter(polyline2D -> polyline2D.getLayer() != null && polyline2D.getLayer().getLayerName().equals(layerName))
+                    .filter(polyline2D -> polyline2D.getLayer() != null && polyline2D.getLayer().getLayerName().equals(layerName)&& polyline2D.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
 
         }
         try {
             filteredPoints = DataSaved.points.stream()
-                    .filter(point -> point.getLayer() != null && point.getLayer().getLayerName().equals(layerName))
+                    .filter(point -> point.getLayer() != null && point.getLayer().getLayerName().equals(layerName)&&point.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
 
@@ -614,7 +618,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         try {
             filteredPoints = DataSaved.points.stream()
-                    .filter(point -> point.getLayer() != null && point.getLayer().getLayerName().equals(layerName))
+                    .filter(point -> point.getLayer() != null && point.getLayer().getLayerName().equals(layerName)&&point.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
 
@@ -622,7 +626,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         try {
             filteredPolylines = DataSaved.polylines.stream()
-                    .filter(polyline -> polyline.getLayer() != null && polyline.getLayer().getLayerName().equals(layerName))
+                    .filter(polyline -> polyline.getLayer() != null && polyline.getLayer().getLayerName().equals(layerName)&&polyline.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
 
@@ -631,7 +635,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         try {
             filteredPolylines2D = DataSaved.polylines_2D.stream()
-                    .filter(polyline2D -> polyline2D.getLayer() != null && polyline2D.getLayer().getLayerName().equals(layerName))
+                    .filter(polyline2D -> polyline2D.getLayer() != null && polyline2D.getLayer().getLayerName().equals(layerName)&&polyline2D.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
 
@@ -639,14 +643,14 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         try {
             filteredFaces = DataSaved.dxfFaces.stream()
-                    .filter(face -> face.getLayer() != null && face.getLayer().getLayerName().equals(layerName))
+                    .filter(face -> face.getLayer() != null && face.getLayer().getLayerName().equals(layerName)&&face.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
 
         }
         try {
             filteredArcs = DataSaved.arcs.stream()
-                    .filter(arcs -> arcs.getLayer() != null && arcs.getLayer().getLayerName().equals(layerName))
+                    .filter(arcs -> arcs.getLayer() != null && arcs.getLayer().getLayerName().equals(layerName)&&arcs.getLayer().isEnable())
                     .collect(Collectors.toList());
 
         } catch (Exception ignored) {
@@ -654,7 +658,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         }
         try {
             filteredCircles = DataSaved.circles.stream()
-                    .filter(circle -> circle.getLayer() != null && circle.getLayer().getLayerName().equals(layerName))
+                    .filter(circle -> circle.getLayer() != null && circle.getLayer().getLayerName().equals(layerName)&&circle.getLayer().isEnable())
                     .collect(Collectors.toList());
 
         } catch (Exception ignored) {

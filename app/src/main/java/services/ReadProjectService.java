@@ -32,16 +32,22 @@ import org.locationtech.proj4j.UnsupportedParameterException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import dxf.Arc;
+import dxf.Circle;
 import dxf.DXFData;
 import dxf.DXFParser_20;
 import dxf.Face3D;
+import dxf.Layer;
 import dxf.Point3D;
 import dxf.Polyline;
+import dxf.Polyline_2D;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.my_opengl.My3DActivity;
@@ -417,6 +423,8 @@ public class ReadProjectService extends Service {
                                                 DataSaved.points = dxfDataPoint.getPoints();
                                                 DataSaved.dxfTexts = dxfDataPoint.getTexts();
                                                 DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
+
+
                                                 break;
                                             case "xml":
                                                 parserStatus = "Reading Points...";
@@ -514,6 +522,7 @@ public class ReadProjectService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        reconnectLayers();
         ((ExecutorService) mExecutor).shutdown();
     }
 
@@ -687,6 +696,96 @@ public class ReadProjectService extends Service {
             byte msg = 0x01;
 
             MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+        }
+    }
+    private static String normalizeLayerName(String s) {
+        if (s == null) return null;
+        return s
+                .trim()
+                .replace("\u00A0", "")  // no-break space
+                .replace("\u2007", "")  // figura space
+                .replace("\u202F", "")  // narrow no-break space
+                .replace("\u2009", "")  // thin space
+                .replace("\t", "")
+                .replace("\r", "")
+                .replace("\n", "");
+    }
+    public static void reconnectLayers() {
+
+        // Costruisci mappa per avere un solo oggetto Layer per nome normalizzato
+        Map<String, Layer> unified = new HashMap<>();
+
+        // Unifica i layer da tutte le liste
+        List<Layer> all = new ArrayList<>();
+        all.addAll(DataSaved.dxfLayers_DTM);
+        all.addAll(DataSaved.dxfLayers_POLY);
+        all.addAll(DataSaved.dxfLayers_POINT);
+
+        for (Layer l : all) {
+            String key = normalizeLayerName(l.getLayerName());
+            if (!unified.containsKey(key)) {
+                unified.put(key, l); // il primo diventa quello “ufficiale”
+            }
+        }
+
+        //  Per debug:
+        // System.out.println("Unified Layers: " + unified.keySet());
+
+
+        // Ricollega i layer reali a TUTTE le entità -------------------------
+
+        // Faces (DTM)
+        for (Face3D f : DataSaved.dxfFaces) {
+            if (f.getLayer() != null) {
+                String key = normalizeLayerName(f.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) f.setLayer(real);
+            }
+        }
+
+        // Polilinee 3D
+        for (Polyline p : DataSaved.polylines) {
+            if (p.getLayer() != null) {
+                String key = normalizeLayerName(p.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) p.setLayer(real);
+            }
+        }
+
+        // Polilinee 2D
+        for (Polyline_2D p : DataSaved.polylines_2D) {
+            if (p.getLayer() != null) {
+                String key = normalizeLayerName(p.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) p.setLayer(real);
+            }
+        }
+
+        // Punti
+        for (Point3D p : DataSaved.points) {
+            if (p.getLayer() != null) {
+                String key = normalizeLayerName(p.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) p.setLayer(real);
+            }
+        }
+
+        // Arcs
+        for (Arc a : DataSaved.arcs) {
+            if (a.getLayer() != null) {
+                String key = normalizeLayerName(a.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) a.setLayer(real);
+            }
+        }
+
+        // Circles
+        for (Circle c : DataSaved.circles) {
+            if (c.getLayer() != null) {
+                String key = normalizeLayerName(c.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) c.setLayer(real);
+            }
         }
     }
 }

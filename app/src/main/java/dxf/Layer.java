@@ -62,14 +62,28 @@ public class Layer implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        Layer layer = (Layer) obj;
-        return Objects.equals(projName, layer.projName) &&
-                Objects.equals(layerName, layer.layerName);
+
+        Layer other = (Layer) obj;
+
+        String thisProj = projName == null ? "" : projName.trim().toLowerCase();
+        String otherProj = other.projName == null ? "" : other.projName.trim().toLowerCase();
+
+        String thisLayer = layerName == null ? "" : layerName.trim().toLowerCase();
+        String otherLayer = other.layerName == null ? "" : other.layerName.trim().toLowerCase();
+
+        // Rimuove spazi multipli e caratteri invisibili
+        thisLayer = thisLayer.replaceAll("\\s+", " ");
+        otherLayer = otherLayer.replaceAll("\\s+", " ");
+
+        return thisProj.equals(otherProj) && thisLayer.equals(otherLayer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(projName, layerName);
+        String normProj = projName == null ? "" : projName.trim().toLowerCase().replaceAll("\\s+", " ");
+        String normLayer = layerName == null ? "" : layerName.trim().toLowerCase().replaceAll("\\s+", " ");
+        return Objects.hash(normProj, normLayer);
     }
+
 
 }

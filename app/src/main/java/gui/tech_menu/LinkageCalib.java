@@ -179,11 +179,20 @@ public class LinkageCalib extends AppCompatActivity {
             lengthL2.setVisibility(View.VISIBLE);
             lengthL3.setVisibility(View.VISIBLE);
             dogBoneOffsetAngle.setVisibility(View.VISIBLE);
+            dogBoneAngle.setVisibility(View.VISIBLE);
+            minusOffset.setVisibility(View.VISIBLE);
+            plusOffset.setVisibility(View.VISIBLE);
+            setOffset.setVisibility(View.VISIBLE);
+
         } else {
             lengthL1.setVisibility(View.VISIBLE);
             lengthL2.setVisibility(View.INVISIBLE);
             lengthL3.setVisibility(View.INVISIBLE);
             dogBoneOffsetAngle.setVisibility(View.INVISIBLE);
+            dogBoneAngle.setVisibility(View.INVISIBLE);
+            minusOffset.setVisibility(View.INVISIBLE);
+            plusOffset.setVisibility(View.INVISIBLE);
+            setOffset.setVisibility(View.INVISIBLE);
         }
 
 

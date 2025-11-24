@@ -81,5 +81,14 @@ public class LandXMLData implements Serializable {
     public void addLayer(Layer layer) {
         layers.add(layer);
     }
+    public boolean layerExists(String name) {
+        for (Layer l : layers) {   // oppure dxfLayers_DTM, dipende da dove li metti
+            if (l.getLayerName().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
