@@ -2,6 +2,12 @@ package services;
 
 import static packexcalib.exca.DataSaved.offsetH;
 import static packexcalib.exca.Sensors_Decoder.isMobaTilt;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DRILL;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
 import android.content.Intent;
@@ -515,6 +521,10 @@ public class CanService extends Service {
         }
     }
 
+    public void OnCan_Drill(int channel,byte[] msg,int dlc,int id){
+        //TODO OnCAN Drill
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         CanServiceState = true;
@@ -536,10 +546,7 @@ public class CanService extends Service {
                     break;
 
             }
-
             byte msg = 0x01;
-
-
             MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
             new OpenSerialPort(this);
         } catch (Exception e) {
@@ -552,7 +559,19 @@ public class CanService extends Service {
             public void execute(int channel, int id, byte[] data) {
                 if (data != null) {
                     dlc = data.length;
-                    OnCan(channel, data, dlc, id);
+                    switch (DataSaved.isWL){
+                        case EXCAVATOR:
+                        case DOZER:
+                        case DOZER_SIX:
+                        case WHEELLOADER:
+                        case GRADER:
+                            OnCan(channel, data, dlc, id);
+                            break;
+                        case DRILL:
+                            OnCan_Drill(channel,data,dlc,id);
+                            break;
+                    }
+
 
                 }
 

@@ -1,5 +1,6 @@
 package gui.tech_menu;
 
+import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 
 import android.annotation.SuppressLint;
@@ -49,7 +50,7 @@ public class XYZ_Calib extends AppCompatActivity {
         tv_btw = findViewById(R.id.tv_betw);
         dist = findViewById(R.id.distBetween);
 
-        if (DataSaved.isWL == EXCAVATOR) {
+        if (DataSaved.isWL == EXCAVATOR||DataSaved.isWL==DRILL) {
             imgdwdx.setVisibility(View.VISIBLE);
             imgupsx.setVisibility(View.VISIBLE);
             imgupdx.setVisibility(View.VISIBLE);

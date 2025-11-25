@@ -6,7 +6,6 @@ import static packexcalib.gnss.CRS_Strings._150580;
 import static packexcalib.gnss.CRS_Strings._28992;
 import static packexcalib.gnss.CRS_Strings._31370;
 import static packexcalib.gnss.CRS_Strings._UTM;
-import static services.Bluetooth_GNSS_Service.GNSSServiceState;
 import static services.CanService.nmeaSTX_Disc;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
@@ -38,7 +37,6 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.NmeaListener;
-import services.Bluetooth_GNSS_Service;
 import utils.CPCanHelper;
 import utils.FullscreenActivity;
 import utils.LanguageSetter;
@@ -313,13 +311,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         });
         BTConnect.setOnClickListener(view -> {
 
-            if (MyDeviceManager.serialCom(DataSaved.my_comPort).equals("BT")) {
-                if (!GNSSServiceState) {
-                    activity.startService(new Intent(activity.getApplicationContext(), Bluetooth_GNSS_Service.class));
-                } else {
-                    activity.stopService(new Intent(activity.getApplicationContext(), Bluetooth_GNSS_Service.class));
-                }
-            }
+
         });
 
         cqpiu.setOnClickListener(view -> {
@@ -512,28 +504,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                     }
 
-                    if (MyDeviceManager.serialCom(DataSaved.my_comPort).equals("BT")) {
-                        BTConnect.setVisibility(View.VISIBLE);
-                        serialCon.setVisibility(View.INVISIBLE);
-                    } else {
-                        BTConnect.setVisibility(View.INVISIBLE);
-                        serialCon.setVisibility(View.VISIBLE);
-                    }
-                    if (GNSSServiceState) {
 
-
-                        BTConnect.setImageResource(R.drawable.bluetooth_connetti);
-                        BTConnect.setAlpha(1f);
-                        BTConnect.setBackgroundResource(R.drawable.custom_background_ok);
-
-
-                    } else {
-                        BTConnect.setImageResource(R.drawable.bluetooth_disconnetti);
-                        BTConnect.setAlpha(1f);
-                        BTConnect.setBackgroundResource(R.drawable.custom_background_transp);
-
-
-                    }
 
                     if (DataSaved.radioMode == 0) {
                         rtkMode.setImageResource(R.drawable.base_mode);
@@ -591,15 +562,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                             title.setImageResource(R.drawable.gps_no);
                         }
-                    } else if (DataSaved.my_comPort == 5) {
-                        if (GNSSServiceState) {
-                            txCon.setText("BT\nCONNECTED");
-                            txCon.setTextColor(Color.BLACK);
-                        } else {
-                            txCon.setText("BT\nDISCONNECTED");
-                            txCon.setTextColor(Color.BLACK);
-                        }
-                    } else {
+                    }  else {
                         if (DataSaved.gpsOk) {
                             title.setImageResource(R.drawable.gps_si);
                             txCon.setText("NMEA OK");

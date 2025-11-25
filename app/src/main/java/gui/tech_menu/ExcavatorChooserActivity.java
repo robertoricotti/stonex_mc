@@ -5,8 +5,10 @@ import static gui.boot_and_choose.LaunchScreenActivity.hasAuto;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -176,6 +178,12 @@ public class ExcavatorChooserActivity extends BaseClass {
         } else if (isWL1 == GRADER) {
             machine1.setImageResource(R.drawable.grader_btn);
             bucketM1.setImageResource(R.drawable.ecu_96);
+        }else if(isWL1==DRILL){
+            machine1.setImageResource(R.drawable.drill_btn);
+            bucketM1.setImageResource(R.drawable.ecu_96);
+        }else if(isWL1==SOLARDRILL){
+            machine1.setImageResource(R.drawable.drill_btn);
+            bucketM1.setImageResource(R.drawable.ecu_96);
         }
         if (isWL2 == WHEELLOADER) {
             machine2.setImageResource(R.drawable.wheel_machines_btn);
@@ -184,6 +192,12 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM2.setImageResource(R.drawable.ecu_96);
         } else if (isWL2 == GRADER) {
             machine2.setImageResource(R.drawable.grader_btn);
+            bucketM2.setImageResource(R.drawable.ecu_96);
+        }else if(isWL2==DRILL){
+            machine2.setImageResource(R.drawable.drill_btn);
+            bucketM2.setImageResource(R.drawable.ecu_96);
+        }else if(isWL2==SOLARDRILL){
+            machine2.setImageResource(R.drawable.drill_btn);
             bucketM2.setImageResource(R.drawable.ecu_96);
         }
         if (isWL3 == WHEELLOADER) {
@@ -194,6 +208,12 @@ public class ExcavatorChooserActivity extends BaseClass {
         } else if (isWL3 == GRADER) {
             machine3.setImageResource(R.drawable.grader_btn);
             bucketM3.setImageResource(R.drawable.ecu_96);
+        }else if(isWL3==DRILL){
+            machine3.setImageResource(R.drawable.drill_btn);
+            bucketM3.setImageResource(R.drawable.ecu_96);
+        }else if(isWL3==SOLARDRILL){
+            machine3.setImageResource(R.drawable.drill_btn);
+            bucketM3.setImageResource(R.drawable.ecu_96);
         }
         if (isWL4 == WHEELLOADER) {
             machine4.setImageResource(R.drawable.wheel_machines_btn);
@@ -202,6 +222,12 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM4.setImageResource(R.drawable.ecu_96);
         } else if (isWL4 == GRADER) {
             machine4.setImageResource(R.drawable.grader_btn);
+            bucketM4.setImageResource(R.drawable.ecu_96);
+        }else if(isWL4==DRILL){
+            machine4.setImageResource(R.drawable.drill_btn);
+            bucketM4.setImageResource(R.drawable.ecu_96);
+        }else if(isWL4==SOLARDRILL){
+            machine4.setImageResource(R.drawable.drill_btn);
             bucketM4.setImageResource(R.drawable.ecu_96);
         }
         m1.setBackground(indexMachineSelected == 1 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
@@ -372,15 +398,21 @@ public class ExcavatorChooserActivity extends BaseClass {
                     startActivity(i);
                     finish();
                 } else {
+
                     if (hasAuto) {
-                        if (isTech) {
-                            disableAll();
-                            startActivity(new Intent(this, Hydro_Activity_Entering.class));
-                            finish();
-                        } else {
-                            if (!dialogPassword.dialog.isShowing()) {
-                                dialogPassword.show(3);
+                        if(isWL1==DOZER||isWL1==DOZER_SIX||isWL1==GRADER) {
+                            if (isTech) {
+                                disableAll();
+                                startActivity(new Intent(this, Hydro_Activity_Entering.class));
+                                finish();
+                            } else {
+                                if (!dialogPassword.dialog.isShowing()) {
+                                    dialogPassword.show(3);
+                                }
                             }
+                        } else if (isWL1==DRILL||isWL1==SOLARDRILL) {
+                            new CustomToast(this, "No AUTO Implemented").show_alert();
+
                         }
                     } else {
                         new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
@@ -398,15 +430,21 @@ public class ExcavatorChooserActivity extends BaseClass {
                     startActivity(i);
                     finish();
                 } else {
+
                     if (hasAuto) {
-                        if (isTech) {
-                            disableAll();
-                            startActivity(new Intent(this, Hydro_Activity_Entering.class));
-                            finish();
-                        } else {
-                            if (!dialogPassword.dialog.isShowing()) {
-                                dialogPassword.show(3);
+                        if(isWL2==DOZER||isWL2==DOZER_SIX||isWL2==GRADER) {
+                            if (isTech) {
+                                disableAll();
+                                startActivity(new Intent(this, Hydro_Activity_Entering.class));
+                                finish();
+                            } else {
+                                if (!dialogPassword.dialog.isShowing()) {
+                                    dialogPassword.show(3);
+                                }
                             }
+                        } else if (isWL2==DRILL||isWL2==SOLARDRILL) {
+                            new CustomToast(this, "No AUTO Implemented").show_alert();
+
                         }
                     } else {
                         new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
@@ -424,15 +462,21 @@ public class ExcavatorChooserActivity extends BaseClass {
                     startActivity(i);
                     finish();
                 } else {
+
                     if (hasAuto) {
-                        if (isTech) {
-                            disableAll();
-                            startActivity(new Intent(this, Hydro_Activity_Entering.class));
-                            finish();
-                        } else {
-                            if (!dialogPassword.dialog.isShowing()) {
-                                dialogPassword.show(3);
+                        if(isWL3==DOZER||isWL3==DOZER_SIX||isWL3==GRADER) {
+                            if (isTech) {
+                                disableAll();
+                                startActivity(new Intent(this, Hydro_Activity_Entering.class));
+                                finish();
+                            } else {
+                                if (!dialogPassword.dialog.isShowing()) {
+                                    dialogPassword.show(3);
+                                }
                             }
+                        } else if (isWL3==DRILL||isWL3==SOLARDRILL) {
+                            new CustomToast(this, "No AUTO Implemented").show_alert();
+
                         }
                     } else {
                         new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
@@ -450,15 +494,21 @@ public class ExcavatorChooserActivity extends BaseClass {
                     startActivity(i);
                     finish();
                 } else {
+
                     if (hasAuto) {
-                        if (isTech) {
-                            disableAll();
-                            startActivity(new Intent(this, Hydro_Activity_Entering.class));
-                            finish();
-                        } else {
-                            if (!dialogPassword.dialog.isShowing()) {
-                                dialogPassword.show(3);
+                        if(isWL4==DOZER||isWL4==DOZER_SIX||isWL4==GRADER) {
+                            if (isTech) {
+                                disableAll();
+                                startActivity(new Intent(this, Hydro_Activity_Entering.class));
+                                finish();
+                            } else {
+                                if (!dialogPassword.dialog.isShowing()) {
+                                    dialogPassword.show(3);
+                                }
                             }
+                        } else if (isWL4==DRILL||isWL4==SOLARDRILL) {
+                            new CustomToast(this, "No AUTO Implemented").show_alert();
+
                         }
                     } else {
                         new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();

@@ -1,6 +1,8 @@
 package gui.tech_menu;
 
 import static packexcalib.exca.ExcavatorLib.swing_boom_angle;
+import static utils.MyTypes.DRILL;
+import static utils.MyTypes.EXCAVATOR;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -92,7 +94,7 @@ public class Dialog_Swing_Boom {
         editText.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.miniPitch_L)));
         valuedeg.setText(String.format("%.2f", DataSaved.offsetSwingExca));
         unita.setText(Utils.getMetriSimbol().replace("[", " ").replace("]", " "));
-        if (DataSaved.isWL == 0) {
+        if (DataSaved.isWL == EXCAVATOR||DataSaved.isWL==DRILL) {
             immagine.setImageResource(R.drawable.swingboom);
             immagine2.setVisibility(View.VISIBLE);
             valuedeg.setVisibility(View.VISIBLE);

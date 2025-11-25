@@ -1,6 +1,7 @@
 package gui.tech_menu;
 
 
+import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 
 import android.annotation.SuppressLint;
@@ -82,7 +83,7 @@ public class Boom1Calib extends AppCompatActivity {
         boom1OffsetAngle = findViewById(R.id.boom1OffsetAngle_tv);
         textBoom1 = findViewById(R.id.b1l);
         img_hiddenpin = findViewById(R.id.img_hiddenpin);
-        if(DataSaved.isWL==EXCAVATOR){
+        if(DataSaved.isWL==EXCAVATOR||DataSaved.isWL==DRILL){
             img_hiddenpin.setVisibility(View.VISIBLE);
         }else {
             img_hiddenpin.setVisibility(View.INVISIBLE);

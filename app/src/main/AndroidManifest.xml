@@ -30,7 +30,6 @@
     <uses-permission
         android:name="android.permission.STATUS_BAR"
         tools:ignore="ProtectedPermissions" />
-
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -47,7 +46,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -62,6 +60,7 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
     <application
         android:name="gui.MyApp"
         android:allowBackup="true"
@@ -78,24 +77,25 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
+
         <activity
             android:name="gui.boot_and_choose.SpTestActivity"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="utils.TestAxio"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="gui.hydro.ECU_Activity"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="gui.hydro.DOOSAN_Activity"
             android:autoRemoveFromRecents="true"
@@ -168,7 +168,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="drill_pile.gui.Ecu_Sensors_Activity"
             android:autoRemoveFromRecents="true"
@@ -199,14 +198,9 @@
         <service
             android:name="services.CanService"
             android:enabled="true"
-            android:exported="false"
-             />
-        <service
-            android:name="services.TriangleService"
-            android:enabled="true"
             android:exported="false" />
         <service
-            android:name="services.Bluetooth_GNSS_Service"
+            android:name="services.TriangleService"
             android:enabled="true"
             android:exported="false" />
         <service
@@ -218,7 +212,11 @@
             android:name="services.UpdateValuesService"
             android:enabled="true"
             android:exported="false" />
-
+        <service
+            android:name="services.DrillService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="TODO" />
         <activity
             android:name="gui.projects.Remote_Activity"
             android:autoRemoveFromRecents="true"
@@ -249,7 +247,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name="gui.grading_dozergrader.Grading3D_DXF"
             android:autoRemoveFromRecents="true"

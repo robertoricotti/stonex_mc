@@ -14,6 +14,12 @@ import static services.UpdateValuesService.result;
 import static services.UpdateValuesService.resultWgs;
 import static services.UpdateValuesService.utmToWgs;
 import static services.UpdateValuesService.wgsToUtm;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DRILL;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
 import android.content.Context;
@@ -123,8 +129,301 @@ public class ReadProjectService extends Service {
     private class MyAsync_Excecutor implements Runnable {
         @Override
         public void run() {
-            startCRS();
+            switch (DataSaved.isWL) {
+                case EXCAVATOR:
+                case DOZER:
+                case DOZER_SIX:
+                case WHEELLOADER:
+                case GRADER:
+                    Execute_MC();
+                    break;
+                case DRILL:
+                    Excecute_DRILL();
+                    break;
+            }
+        }
+    }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        stopSelf();
+        return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        reconnectLayers();
+        ((ExecutorService) mExecutor).shutdown();
+    }
+
+    private void copiaFacce() {
+        DataSaved.dxfFacesGL_2D = new ArrayList<>();
+
+        for (Face3D face : DataSaved.dxfFaces) {
+            // Copia i 3 o 4 punti della faccia, azzerando la Z
+            Point3D p1 = new Point3D(face.getP1().getX(), face.getP1().getY(), 0);
+            Point3D p2 = new Point3D(face.getP2().getX(), face.getP2().getY(), 0);
+            Point3D p3 = new Point3D(face.getP3().getX(), face.getP3().getY(), 0);
+            Point3D p4 = face.getP4(); // può essere uguale a p3 (triangolo) o diverso (quadrilatero)
+            Point3D p4New = p4.equals(face.getP3()) ? p3 : new Point3D(p4.getX(), p4.getY(), 0);
+
+            // Crea nuova Face3D con layer e colore uguali
+            Face3D face2D = new Face3D(p1, p2, p3, p4New, face.getColor(), face.getLayer());
+            face2D.setLayer(face.getLayer());
+
+            DataSaved.dxfFacesGL_2D.add(face2D);
+        }
+    }
+
+    private void copiaPoly() {
+        DataSaved.polylinesGL_2D = new ArrayList<>();
+        for (Polyline poly : DataSaved.polylines) {
+            List<Point3D> newVertices = new ArrayList<>();
+            for (Point3D pt : poly.getVertices()) {
+                newVertices.add(new Point3D(pt.getX(), pt.getY(), 0)); // Z azzerata
+            }
+
+            Polyline poly2D = new Polyline(newVertices, poly.getLayer());
+            poly2D.setLineColor(poly.getLineColor());
+
+            DataSaved.polylinesGL_2D.add(poly2D);
+        }
+    }
+
+    private void goToLicense() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                DataSaved.isAutoSnap = 0;
+                Intent intent = new Intent(MyApp.visibleActivity, Activity_Home_Page.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                MyApp.visibleActivity.finish();
+            }
+        };
+        handler.post(runnable);
+    }
+
+    private void waitForWLThenStartActivity() {
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        Runnable checkWL = new Runnable() {
+            @Override
+            public void run() {
+                if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
+                    startCorrectActivity();
+                } else {
+                    handler.postDelayed(this, 200); // Riprova ogni 200ms
+                }
+            }
+        };
+
+        handler.post(checkWL);
+    }
+
+    private void startCorrectActivity() {
+        if (MyApp.visibleActivity == null) return;
+
+        if (!(MyApp.visibleActivity instanceof My3DActivity)) {
+            Intent intent;
+
+            intent = new Intent(MyApp.visibleActivity, My3DActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("whats", "whats");
+            startActivity(intent);
+
+            MyApp.visibleActivity.finish();
+        } else {
+            MyApp.visibleActivity.recreate();
+        }
+    }
+
+    public static void clearCache(Context context, String projectName) {
+        File file = new File(context.getFilesDir(), projectName + ".ser");
+        if (file.exists()) file.delete();
+    }
+
+    public static void startCRS() {
+        String s = MyData.get_String("crs");
+
+        if (s != null) {
+            if (!s.equals("UTM") && !s.equals(_NONE)) {
+                if (s.equals("150580")) {
+                    try {
+                        crsFactory = new CRSFactory();
+                        ctFactory = new CoordinateTransformFactory();
+                        WGS84 = crsFactory.createFromName("epsg:4326");
+
+                        // >>> Non usare Proj4J per EGSA87 con griglia!
+                        // Inizializza il nostro trasformatore
+                        if (heposTransformer == null) {
+                            try {
+                                File dEfile = new File(gridFile_GR_dE);
+                                File dNfile = new File(gridFile_GR_dN);
+
+                                heposTransformer = new GridShiftTransformer(dEfile, dNfile);
+                            } catch (Exception e) {
+                                Log.e("GridShift", Log.getStackTraceString(e));
+                                heposTransformer = null;
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    ////////
+                    try {
+                        result = new ProjCoordinate();
+                        resultWgs = new ProjCoordinate();
+                        crsFactory = new CRSFactory();
+                        ctFactory = new CoordinateTransformFactory();
+                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
+                        try {
+                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
+                        } catch (UnsupportedParameterException e) {
+                            throw new RuntimeException(e);
+                        } catch (InvalidValueException e) {
+                        } catch (UnknownAuthorityCodeException e) {
+                        }
+                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
+                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
+                    } catch (Exception e) {
+                    }
+
+                    ///////////
+                }
+            } else if (s.equals(_NONE)) {
+                String CRS_ESTERNO = MyData.get_String("CRS_ESTERNO");
+                if (CRS_ESTERNO != null) {
+                    try {
+                        model = LocalizationFactory.fromFile(new File(CRS_ESTERNO));
+                    } catch (Exception e) {
+                        Log.e("CRS_ESTERNO", Log.getStackTraceString(e));
+                    }
+                }
+            }
+            byte speed = 0;
+            switch (DataSaved.reqSpeed) {
+                case 0:
+                    speed = 5;
+                    break;
+                case 1:
+                    speed = 4;
+                    break;
+                case 2:
+                    speed = 3;
+                    break;
+                case 3:
+                    speed = 0;
+                    break;
+
+            }
+            DataSaved.gpsOk = false;
+            byte msg = 0x01;
+
+            MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+        }
+    }
+
+    private static String normalizeLayerName(String s) {
+        if (s == null) return null;
+        return s
+                .trim()
+                .replace("\u00A0", "")  // no-break space
+                .replace("\u2007", "")  // figura space
+                .replace("\u202F", "")  // narrow no-break space
+                .replace("\u2009", "")  // thin space
+                .replace("\t", "")
+                .replace("\r", "")
+                .replace("\n", "");
+    }
+
+    public static void reconnectLayers() {
+
+        // Costruisci mappa per avere un solo oggetto Layer per nome normalizzato
+        Map<String, Layer> unified = new HashMap<>();
+
+        // Unifica i layer da tutte le liste
+        List<Layer> all = new ArrayList<>();
+        all.addAll(DataSaved.dxfLayers_DTM);
+        all.addAll(DataSaved.dxfLayers_POLY);
+        all.addAll(DataSaved.dxfLayers_POINT);
+
+        for (Layer l : all) {
+            String key = normalizeLayerName(l.getLayerName());
+            if (!unified.containsKey(key)) {
+                unified.put(key, l); // il primo diventa quello “ufficiale”
+            }
+        }
+
+        //  Per debug:
+        // System.out.println("Unified Layers: " + unified.keySet());
+
+
+        // Ricollega i layer reali a TUTTE le entità -------------------------
+
+        // Faces (DTM)
+        for (Face3D f : DataSaved.dxfFaces) {
+            if (f.getLayer() != null) {
+                String key = normalizeLayerName(f.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) f.setLayer(real);
+            }
+        }
+
+        // Polilinee 3D
+        for (Polyline p : DataSaved.polylines) {
+            if (p.getLayer() != null) {
+                String key = normalizeLayerName(p.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) p.setLayer(real);
+            }
+        }
+
+        // Polilinee 2D
+        for (Polyline_2D p : DataSaved.polylines_2D) {
+            if (p.getLayer() != null) {
+                String key = normalizeLayerName(p.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) p.setLayer(real);
+            }
+        }
+
+        // Punti
+        for (Point3D p : DataSaved.points) {
+            if (p.getLayer() != null) {
+                String key = normalizeLayerName(p.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) p.setLayer(real);
+            }
+        }
+
+        // Arcs
+        for (Arc a : DataSaved.arcs) {
+            if (a.getLayer() != null) {
+                String key = normalizeLayerName(a.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) a.setLayer(real);
+            }
+        }
+
+        // Circles
+        for (Circle c : DataSaved.circles) {
+            if (c.getLayer() != null) {
+                String key = normalizeLayerName(c.getLayer().getLayerName());
+                Layer real = unified.get(key);
+                if (real != null) c.setLayer(real);
+            }
+        }
+    }
+
+    private void Execute_MC() {
+        {
+            startCRS();
             if (DataSaved.dxfLayers_DTM == null) {
                 DataSaved.dxfLayers_DTM = new ArrayList<>();
             }
@@ -296,7 +595,7 @@ public class ReadProjectService extends Service {
                                                 //parsare pnezd
                                                 scanPNEZD(conversionFactor);
                                                 isFinishedPOINT = true;
-                                                My3DActivity.PNEZD_FUNCTION=true;
+                                                My3DActivity.PNEZD_FUNCTION = true;
                                                 break;
                                         }
                                     }
@@ -437,7 +736,7 @@ public class ReadProjectService extends Service {
                                                 //parsare pnezd
                                                 scanPNEZD(conversionFactor);
                                                 isFinishedPOINT = true;
-                                                My3DActivity.PNEZD_FUNCTION=true;
+                                                My3DActivity.PNEZD_FUNCTION = true;
                                                 break;
                                         }
                                     }
@@ -513,279 +812,7 @@ public class ReadProjectService extends Service {
         }
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        stopSelf();
-        return START_NOT_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        reconnectLayers();
-        ((ExecutorService) mExecutor).shutdown();
-    }
-
-    private void copiaFacce() {
-        DataSaved.dxfFacesGL_2D = new ArrayList<>();
-
-        for (Face3D face : DataSaved.dxfFaces) {
-            // Copia i 3 o 4 punti della faccia, azzerando la Z
-            Point3D p1 = new Point3D(face.getP1().getX(), face.getP1().getY(), 0);
-            Point3D p2 = new Point3D(face.getP2().getX(), face.getP2().getY(), 0);
-            Point3D p3 = new Point3D(face.getP3().getX(), face.getP3().getY(), 0);
-            Point3D p4 = face.getP4(); // può essere uguale a p3 (triangolo) o diverso (quadrilatero)
-            Point3D p4New = p4.equals(face.getP3()) ? p3 : new Point3D(p4.getX(), p4.getY(), 0);
-
-            // Crea nuova Face3D con layer e colore uguali
-            Face3D face2D = new Face3D(p1, p2, p3, p4New, face.getColor(), face.getLayer());
-            face2D.setLayer(face.getLayer());
-
-            DataSaved.dxfFacesGL_2D.add(face2D);
-        }
-    }
-
-    private void copiaPoly() {
-        DataSaved.polylinesGL_2D = new ArrayList<>();
-        for (Polyline poly : DataSaved.polylines) {
-            List<Point3D> newVertices = new ArrayList<>();
-            for (Point3D pt : poly.getVertices()) {
-                newVertices.add(new Point3D(pt.getX(), pt.getY(), 0)); // Z azzerata
-            }
-
-            Polyline poly2D = new Polyline(newVertices, poly.getLayer());
-            poly2D.setLineColor(poly.getLineColor());
-
-            DataSaved.polylinesGL_2D.add(poly2D);
-        }
-    }
-
-    private void goToLicense() {
-        Handler handler = new Handler(Looper.getMainLooper());
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                DataSaved.isAutoSnap = 0;
-                Intent intent = new Intent(MyApp.visibleActivity, Activity_Home_Page.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                MyApp.visibleActivity.finish();
-            }
-        };
-        handler.post(runnable);
-    }
-
-    private void waitForWLThenStartActivity() {
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        Runnable checkWL = new Runnable() {
-            @Override
-            public void run() {
-                if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
-                    startCorrectActivity();
-                } else {
-                    handler.postDelayed(this, 200); // Riprova ogni 200ms
-                }
-            }
-        };
-
-        handler.post(checkWL);
-    }
-
-    private void startCorrectActivity() {
-        if (MyApp.visibleActivity == null) return;
-
-        if (!(MyApp.visibleActivity instanceof My3DActivity)) {
-            Intent intent;
-
-            intent = new Intent(MyApp.visibleActivity, My3DActivity.class);
-
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("whats", "whats");
-            startActivity(intent);
-
-            MyApp.visibleActivity.finish();
-        } else {
-            MyApp.visibleActivity.recreate();
-        }
-    }
-
-    public static void clearCache(Context context, String projectName) {
-        File file = new File(context.getFilesDir(), projectName + ".ser");
-        if (file.exists()) file.delete();
-    }
-
-    public static void startCRS() {
-        String s = MyData.get_String("crs");
-
-        if (s != null) {
-            if (!s.equals("UTM") && !s.equals(_NONE)) {
-                if (s.equals("150580")) {
-                    try {
-                        crsFactory = new CRSFactory();
-                        ctFactory = new CoordinateTransformFactory();
-                        WGS84 = crsFactory.createFromName("epsg:4326");
-
-                        // >>> Non usare Proj4J per EGSA87 con griglia!
-                        // Inizializza il nostro trasformatore
-                        if (heposTransformer == null) {
-                            try {
-                                File dEfile = new File(gridFile_GR_dE);
-                                File dNfile = new File(gridFile_GR_dN);
-
-                                heposTransformer = new GridShiftTransformer(dEfile, dNfile);
-                            } catch (Exception e) {
-                                Log.e("GridShift",Log.getStackTraceString(e));
-                                heposTransformer = null;
-                            }
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                else {
-                    ////////
-                    try {
-                        result = new ProjCoordinate();
-                        resultWgs = new ProjCoordinate();
-                        crsFactory = new CRSFactory();
-                        ctFactory = new CoordinateTransformFactory();
-                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
-                        try {
-                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
-                        } catch (UnsupportedParameterException e) {
-                            throw new RuntimeException(e);
-                        } catch (InvalidValueException e) {
-                        } catch (UnknownAuthorityCodeException e) {
-                        }
-                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
-                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
-                    } catch (Exception e) {
-                    }
-
-                    ///////////
-                }
-            }else if(s.equals(_NONE)){
-                String CRS_ESTERNO=MyData.get_String("CRS_ESTERNO");
-                if(CRS_ESTERNO!=null){
-                    try {
-                        model= LocalizationFactory.fromFile(new File(CRS_ESTERNO));
-                    } catch (Exception e) {
-                        Log.e("CRS_ESTERNO",Log.getStackTraceString(e));
-                    }
-                }
-            }
-            byte speed = 0;
-            switch (DataSaved.reqSpeed) {
-                case 0:
-                    speed = 5;
-                    break;
-                case 1:
-                    speed = 4;
-                    break;
-                case 2:
-                    speed = 3;
-                    break;
-                case 3:
-                    speed = 0;
-                    break;
-
-            }
-            DataSaved.gpsOk = false;
-            byte msg = 0x01;
-
-            MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
-        }
-    }
-    private static String normalizeLayerName(String s) {
-        if (s == null) return null;
-        return s
-                .trim()
-                .replace("\u00A0", "")  // no-break space
-                .replace("\u2007", "")  // figura space
-                .replace("\u202F", "")  // narrow no-break space
-                .replace("\u2009", "")  // thin space
-                .replace("\t", "")
-                .replace("\r", "")
-                .replace("\n", "");
-    }
-    public static void reconnectLayers() {
-
-        // Costruisci mappa per avere un solo oggetto Layer per nome normalizzato
-        Map<String, Layer> unified = new HashMap<>();
-
-        // Unifica i layer da tutte le liste
-        List<Layer> all = new ArrayList<>();
-        all.addAll(DataSaved.dxfLayers_DTM);
-        all.addAll(DataSaved.dxfLayers_POLY);
-        all.addAll(DataSaved.dxfLayers_POINT);
-
-        for (Layer l : all) {
-            String key = normalizeLayerName(l.getLayerName());
-            if (!unified.containsKey(key)) {
-                unified.put(key, l); // il primo diventa quello “ufficiale”
-            }
-        }
-
-        //  Per debug:
-        // System.out.println("Unified Layers: " + unified.keySet());
-
-
-        // Ricollega i layer reali a TUTTE le entità -------------------------
-
-        // Faces (DTM)
-        for (Face3D f : DataSaved.dxfFaces) {
-            if (f.getLayer() != null) {
-                String key = normalizeLayerName(f.getLayer().getLayerName());
-                Layer real = unified.get(key);
-                if (real != null) f.setLayer(real);
-            }
-        }
-
-        // Polilinee 3D
-        for (Polyline p : DataSaved.polylines) {
-            if (p.getLayer() != null) {
-                String key = normalizeLayerName(p.getLayer().getLayerName());
-                Layer real = unified.get(key);
-                if (real != null) p.setLayer(real);
-            }
-        }
-
-        // Polilinee 2D
-        for (Polyline_2D p : DataSaved.polylines_2D) {
-            if (p.getLayer() != null) {
-                String key = normalizeLayerName(p.getLayer().getLayerName());
-                Layer real = unified.get(key);
-                if (real != null) p.setLayer(real);
-            }
-        }
-
-        // Punti
-        for (Point3D p : DataSaved.points) {
-            if (p.getLayer() != null) {
-                String key = normalizeLayerName(p.getLayer().getLayerName());
-                Layer real = unified.get(key);
-                if (real != null) p.setLayer(real);
-            }
-        }
-
-        // Arcs
-        for (Arc a : DataSaved.arcs) {
-            if (a.getLayer() != null) {
-                String key = normalizeLayerName(a.getLayer().getLayerName());
-                Layer real = unified.get(key);
-                if (real != null) a.setLayer(real);
-            }
-        }
-
-        // Circles
-        for (Circle c : DataSaved.circles) {
-            if (c.getLayer() != null) {
-                String key = normalizeLayerName(c.getLayer().getLayerName());
-                Layer real = unified.get(key);
-                if (real != null) c.setLayer(real);
-            }
-        }
+    private void Excecute_DRILL() {
+        //TODO Read DRrill
     }
 }

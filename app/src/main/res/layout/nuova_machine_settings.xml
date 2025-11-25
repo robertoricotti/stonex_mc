@@ -217,7 +217,6 @@
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/grader_btn" />
                 <ImageView
-                    android:visibility="gone"
                     android:id="@+id/sel_drill"
                     android:layout_width="60dp"
                     android:layout_height="60dp"

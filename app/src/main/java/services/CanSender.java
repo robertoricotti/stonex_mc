@@ -30,6 +30,7 @@ import static services.TriangleService.ltOffGrid;
 import static services.TriangleService.rtOffGrid;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.WHEELLOADER;
@@ -135,9 +136,19 @@ public class CanSender extends Service {
         @Override
         public void run() {
             if (MyApp.licenseType == 5) {
-                if (MyApp.visibleActivity instanceof My3DActivity) {
-                    AutoHandling();
+                switch (DataSaved.isWL){
+                    case DOZER:
+                    case DOZER_SIX:
+                    case GRADER:
+                        if (MyApp.visibleActivity instanceof My3DActivity) {
+                            AutoHandling();
+                        }
+                        break;
+                    case DRILL:
+                        //TODO a 25mS
+                        break;
                 }
+
             }
 
             handler.postDelayed(this, 25); // esempio
@@ -329,7 +340,7 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
-            if (DataSaved.isWL > 1) {
+            if (DataSaved.isWL ==DOZER||DataSaved.isWL==DOZER_SIX||DataSaved.isWL==GRADER) {
                 if (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0) {
                     if (!(MyApp.visibleActivity instanceof My3DActivity)) {
                         MyDeviceManager.CanWrite(true, 1, 0x18EEFF85, 8,

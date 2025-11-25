@@ -2,6 +2,10 @@ package gui.tech_menu;
 
 import static gui.MyApp.errorCode;
 import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DRILL;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.AlertDialog;
@@ -36,7 +40,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO,ckSchermo,ckMach,ck22,ckVecchia;
     CustomQwertyDialog customQwertyDialog;
-    ImageView back, exca, wheel, grader, dozer, menu_1, menu_2, saveToFile, readFromFile, status,bt_canopen;
+    ImageView back, exca, wheel, grader, dozer,drill, menu_1, menu_2, saveToFile, readFromFile, status,bt_canopen;
     ConstraintLayout constraintLayout, constraintLayout_2,constraintLayout_3;
     TextView toExtraSensor, tvSwing,tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ,toCanopen,toDamping,can1bd,can2bd;
     EditText mchName,techInfo;
@@ -79,6 +83,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         wheel = findViewById(R.id.sel_wheel);
         grader = findViewById(R.id.sel_grader);
         dozer = findViewById(R.id.sel_dozer);
+        drill = findViewById(R.id.sel_drill);
         menu_1 = findViewById(R.id.bt_menu1);
         menu_2 = findViewById(R.id.bt_sens_set);
         techInfo = findViewById(R.id.techInfo);
@@ -252,7 +257,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         });
         tvBoom1.setOnClickListener(view -> {
 
-            if (DataSaved.isWL < WHEELLOADER) {
+            if (DataSaved.isWL ==WHEELLOADER||DataSaved.isWL==EXCAVATOR||DataSaved.isWL==DRILL) {
                 en_dis(false);
                 startActivity(new Intent(this, Boom1Calib.class));
                 finish();
@@ -283,7 +288,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             finish();
         });
         tvLink.setOnClickListener(view -> {
-            if (DataSaved.isWL < DOZER) {
+            if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
                 en_dis(false);
                 startActivity(new Intent(this, LinkageCalib.class));
                 finish();
@@ -300,11 +305,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         });
         tvXYZ.setOnClickListener(view -> {
 
-            if (DataSaved.isWL < DOZER) {
+            if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
                 en_dis(false);
                 startActivity(new Intent(this, XYZ_Calib.class));
                 finish();
-            } else {
+            } else if(DataSaved.isWL==DOZER||DataSaved.isWL==DOZER_SIX||DataSaved.isWL==GRADER) {
                 en_dis(false);
                 startActivity(new Intent(this, Nuova_Blade_Calib.class));
                 finish();
@@ -420,6 +425,26 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             // Aggiungi il pulsante "Sì"
             builder.setPositiveButton("YES", (dialog, which) -> {
                 MyData.push("M" + machineSel + "_isWL", "4");
+                DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
+                mode = DataSaved.isWL;
+                updateCK();
+            });
+            // Aggiungi il pulsante "No"
+            builder.setNegativeButton("NO", (dialog, which) -> {
+                //do nothing
+            });
+            // Mostra il dialog
+            builder.show();
+
+        });
+        drill.setOnClickListener(view -> {
+            // Crea un nuovo AlertDialog.Builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
+            builder.setTitle(getString(R.string.change_machine));
+            builder.setMessage(getString(R.string.procedi));
+            // Aggiungi il pulsante "Sì"
+            builder.setPositiveButton("YES", (dialog, which) -> {
+                MyData.push("M" + machineSel + "_isWL", "10");
                 DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
                 mode = DataSaved.isWL;
                 updateCK();
@@ -549,6 +574,30 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                     tvBoom1.setTextColor(getColor(R.color._____cancel_text));
                 }
                 break;
+            case 10:
+                //DRILL
+                toExtraSensor.setVisibility(View.GONE);
+                tvFrame.setVisibility(View.VISIBLE);
+                if(DataSaved.Extra_Heading>0) {
+                    tvSwing.setVisibility(View.VISIBLE);
+                    tvSwing.setText("SWING BOOM");
+                }else {
+                    tvSwing.setVisibility(View.GONE);
+                    tvSwing.setText("SWING BOOM");
+                }
+                tvBoom1.setVisibility(View.VISIBLE);
+                tvBoom1.setText("BOOM 1");
+                tvBoom2.setVisibility(View.VISIBLE);
+                tvStick.setVisibility(View.VISIBLE);
+                tvStick.setText("STICK");
+                tvLink.setVisibility(View.VISIBLE);
+                tvLink.setText("TOOL");
+                tvTilt.setVisibility(View.INVISIBLE);
+                tvXYZ.setVisibility(View.VISIBLE);
+                tvBoom1.setBackgroundTintList(getColorStateList(R.color.bg_stonex_blue));
+                tvBoom1.setTextColor(getColor(R.color.white));
+                break;
+
 
         }
     }
@@ -579,6 +628,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ViewGroup.LayoutParams wheelP = wheel.getLayoutParams();
         ViewGroup.LayoutParams dozerP=dozer.getLayoutParams();
         ViewGroup.LayoutParams graderP=grader.getLayoutParams();
+        ViewGroup.LayoutParams drillP=drill.getLayoutParams();
 
         switch (DataSaved.isWL) {
             case 0:
@@ -590,18 +640,23 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 graderP.height=small;
                 dozerP.width=small;
                 dozerP.height=small;
+                drillP.width=small;
+                drillP.height=small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
                 grader.setLayoutParams(graderP);
+                drill.setLayoutParams(drillP);
                 exca.setAlpha(1.0f);
                 wheel.setAlpha(0.2f);
                 dozer.setAlpha(0.2f);
                 grader.setAlpha(0.2f);
+                drill.setAlpha(0.2f);
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 break;
             case 1:
                 excaP.width = small;
@@ -612,19 +667,23 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 graderP.height=small;
                 dozerP.width=small;
                 dozerP.height=small;
+                drillP.width=small;
+                drillP.height=small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
                 grader.setLayoutParams(graderP);
+                drill.setLayoutParams(drillP);
                 exca.setAlpha(0.2f);
                 wheel.setAlpha(1f);
                 dozer.setAlpha(0.2f);
                 grader.setAlpha(0.2f);
+                drill.setAlpha(0.2f);
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
-
+                drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 break;
             case 2:
             case 3:
@@ -636,18 +695,23 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 graderP.height=small;
                 dozerP.width=bigg;
                 dozerP.height=bigg;
+                drillP.width=small;
+                drillP.height=small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
                 grader.setLayoutParams(graderP);
+                drill.setLayoutParams(drillP);
                 exca.setAlpha(0.2f);
                 wheel.setAlpha(0.2f);
                 dozer.setAlpha(1f);
                 grader.setAlpha(0.2f);
+                drill.setAlpha(0.2f);
                 dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 break;
             case 4:
                 excaP.width = small;
@@ -658,18 +722,50 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 graderP.height=bigg;
                 dozerP.width=small;
                 dozerP.height=small;
+                drillP.width=small;
+                drillP.height=small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
                 grader.setLayoutParams(graderP);
+                drill.setLayoutParams(drillP);
                 exca.setAlpha(0.2f);
                 wheel.setAlpha(0.2f);
                 dozer.setAlpha(0.2f);
-                grader.setAlpha(1f);
+                drill.setAlpha(0.2f);
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                break;
+            case 10:
+
+                excaP.width = small;
+                excaP.height = small;
+                wheelP.width=small;
+                wheelP.height=small;
+                graderP.width=small;
+                graderP.height=small;
+                dozerP.width=small;
+                dozerP.height=small;
+                drillP.width=bigg;
+                drillP.height=bigg;
+                exca.setLayoutParams(excaP);
+                wheel.setLayoutParams(wheelP);
+                dozer.setLayoutParams(dozerP);
+                grader.setLayoutParams(graderP);
+                drill.setLayoutParams(drillP);
+                exca.setAlpha(0.2f);
+                wheel.setAlpha(0.2f);
+                dozer.setAlpha(0.2f);
+                grader.setAlpha(0.2f);
+                drill.setAlpha(1.0f);
+                exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 break;
         }
 
@@ -698,6 +794,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         toDamping.setEnabled(b);
         toCanopen.setEnabled(b);
         bt_canopen.setEnabled(b);
+        exca.setEnabled(b);
+        wheel.setEnabled(b);
+        dozer.setEnabled(b);
+        grader.setEnabled(b);
+        drill.setEnabled(b);
     }
 
     public void saveName() {

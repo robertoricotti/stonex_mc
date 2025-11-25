@@ -69,6 +69,7 @@ public class DataSaved {
     public static int REVERSE_LEFT;
     public static int REVERSE_RIGHT;
     public static int REVERSE_SS;
+    public static int ANTENNA_MOUNTING;
 
 
 
