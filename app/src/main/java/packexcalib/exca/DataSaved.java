@@ -1,6 +1,5 @@
 package packexcalib.exca;
 
-import org.bouncycastle.pqc.crypto.newhope.NHSecretKeyProcessor;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
@@ -19,6 +18,8 @@ import dxf.Polyline;
 import dxf.Polyline_2D;
 import dxf.Segment;
 import gui.my_opengl.Point3DF;
+import iredes.DrillHole_IR;
+import iredes.Point3D_IR;
 
 public class DataSaved {
     //Dragaggio
@@ -29,11 +30,8 @@ public class DataSaved {
     public static int EnableMapping;
 
 
-
-
-
     //settaggi idraulici
-    public static String OUTPUT_HYDRO="";
+    public static String OUTPUT_HYDRO = "";
     public static int Interface_Type;
     public static double HYDRAULIC_WINDOW;
     public static double tolleranza_ZL;
@@ -70,7 +68,6 @@ public class DataSaved {
     public static int REVERSE_RIGHT;
     public static int REVERSE_SS;
     public static int ANTENNA_MOUNTING;
-
 
 
     public static int Wheel_Steer_Rev;
@@ -125,7 +122,7 @@ public class DataSaved {
 
     public static double offsetZH;
 
-     public static double offsetSwingExca;
+    public static double offsetSwingExca;
 
     public static double offsetHDT;
 
@@ -255,7 +252,15 @@ public class DataSaved {
 
     public static int hasQuick;
 
+    //IREDES
+    public static List<Point3D_IR> IR_points = new ArrayList<>();
+    public static List<Point3D_IR> IR_filteredPoints = new ArrayList<>();
 
+    public static List<DrillHole_IR> IR_Drill_points = new ArrayList<>();
+    public static List<DrillHole_IR> IR_filtered_Drill_points = new ArrayList<>();
+
+
+    //MC
     public static int useLowResolution;
     public static String projectTAG;
     public static String progettoSelected;
@@ -264,7 +269,7 @@ public class DataSaved {
     public static double offset_Z_antenna;
     public static int isWL;
     public static int Extra_Heading;
-    public static float myBrightness=1.0f;
+    public static float myBrightness = 1.0f;
     public static double larghezzaBoom = 0.4;
     public static double larghezzaFrame = 2.2;
     public static double lunghezzaFrame = 3.5;
@@ -322,7 +327,7 @@ public class DataSaved {
     public static double gradientDB;
     public static double distBetween;
     public static double distG1_G2;
-    ////
+    /// /
     public static int leftSensorType;
 
     public static int rightSensorType;
@@ -335,7 +340,7 @@ public class DataSaved {
     public static int isExtensionBoom;
     public static int showAlign;
 
-    ///////////canvas data
+    /// ////////canvas data
     public static List<CanvasSegment> canvasSegment = new ArrayList<>();
 
     public static double larghezza_Carro;
@@ -361,7 +366,7 @@ public class DataSaved {
      * PNEZD
      */
     public static List<PNEZDPoint> pnezdPoints = new ArrayList<>();
-    public static String PNEZDPath="/storage/emulated/0/StonexMC_V4/Projects/Ex/Ex.csv";
+    public static String PNEZDPath = "/storage/emulated/0/StonexMC_V4/Projects/Ex/Ex.csv";
 
 
 }

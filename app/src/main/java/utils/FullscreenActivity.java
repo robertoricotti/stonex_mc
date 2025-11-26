@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AlertDialog;
 
 import gui.boot_and_choose.LaunchScreenActivity;
+import gui.dialogs_and_toast.Dialog_CutFill_3D;
 import packexcalib.exca.DataSaved;
 
 public class FullscreenActivity {
@@ -72,22 +73,11 @@ public class FullscreenActivity {
 
     }
 
-    public static void setFullScreen(Dialog dialog) {
-        WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
-        layoutParams.screenBrightness = DataSaved.myBrightness; // Imposta il valore desiderato compreso tra 0.0f e 1.0f
-        dialog.getWindow().setAttributes(layoutParams);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            dialog.getWindow().setDecorFitsSystemWindows(false);
-            WindowInsetsController controller = dialog.getWindow().getInsetsController();
-            if (controller != null) {
-                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-            }
-        } else {
+    public static void setFullScreen(Dialog alertDialog) {
+ {
             //noinspection deprecation
 
-            dialog.getWindow().getDecorView().setSystemUiVisibility(
+            alertDialog.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_IMMERSIVE
@@ -95,7 +85,7 @@ public class FullscreenActivity {
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
-        dialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+        alertDialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
             @Override
             public void onSystemUiVisibilityChange(int visibility) {
 
@@ -104,15 +94,15 @@ public class FullscreenActivity {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 
 
-                        dialog.getWindow().setDecorFitsSystemWindows(false);
-                        WindowInsetsController controller = dialog.getWindow().getInsetsController();
+                        alertDialog.getWindow().setDecorFitsSystemWindows(false);
+                        WindowInsetsController controller = alertDialog.getWindow().getInsetsController();
                         if (controller != null) {
                             controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
                             controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
                         }
                     } else {
                         //noinspection deprecation
-                        dialog.getWindow().getDecorView().setSystemUiVisibility(
+                        alertDialog.getWindow().getDecorView().setSystemUiVisibility(
                                 View.SYSTEM_UI_FLAG_FULLSCREEN
                                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                                         | View.SYSTEM_UI_FLAG_IMMERSIVE
