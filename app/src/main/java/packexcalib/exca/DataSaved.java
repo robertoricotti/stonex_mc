@@ -19,7 +19,11 @@ import dxf.Polyline_2D;
 import dxf.Segment;
 import gui.my_opengl.Point3DF;
 import iredes.DrillHole_IR;
+import iredes.DrillPlan_IR;
+import iredes.NavData_IR;
+import iredes.Pattern_IR;
 import iredes.Point3D_IR;
+import iredes.RigStatus_IR;
 
 public class DataSaved {
     //Dragaggio
@@ -99,7 +103,11 @@ public class DataSaved {
 
     public static int lrTilt;
 
-
+    public static double drill_Bit_Len;
+    public static double drill_Rod_Len;
+    public static double offset_Tool_Orient;
+    public static double offset_Tool_Dist;
+    public static double offset_Tool_Roll;
     public static double offsetRoll;
 
     public static double offsetPitch;
@@ -253,11 +261,35 @@ public class DataSaved {
     public static int hasQuick;
 
     //IREDES
-    public static List<Point3D_IR> IR_points = new ArrayList<>();
-    public static List<Point3D_IR> IR_filteredPoints = new ArrayList<>();
+    // ---- DRILL PLAN ----
+    public static DrillPlan_IR drillPlan;
 
-    public static List<DrillHole_IR> IR_Drill_points = new ArrayList<>();
-    public static List<DrillHole_IR> IR_filtered_Drill_points = new ArrayList<>();
+    public static List<DrillHole_IR> holes = new ArrayList<>();
+    public static List<DrillHole_IR> filteredHoles = new ArrayList<>();
+
+    public static List<Pattern_IR> patterns = new ArrayList<>();
+
+
+    // ---- NAVIGATION DATA ----
+    public static NavData_IR navData;
+    public static List<NavData_IR> navHistory = new ArrayList<>();
+
+
+    // ---- RIG STATUS ----
+    public static RigStatus_IR rigStatus;
+
+
+
+    // ---- RAW POINT CLOUD / ASSIST ----
+    public static List<Point3D_IR> rawPoints = new ArrayList<>();
+    public static List<Point3D_IR> filteredRawPoints = new ArrayList<>();
+
+    //--COORDINATE BIT -FRESA
+    public static double[]coordBIT=new double[3];
+    public static double[]coordDrillHEAD=new double[3];
+
+    //Progetto
+    public static String progettoSelected_POINT_IREDES;
 
 
     //MC

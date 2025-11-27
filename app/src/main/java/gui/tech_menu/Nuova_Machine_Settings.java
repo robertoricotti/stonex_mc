@@ -118,6 +118,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         can1bd=findViewById(R.id.toCan1);
         can2bd=findViewById(R.id.toCan2);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
+        drill.setVisibility(View.GONE);
 
 
 

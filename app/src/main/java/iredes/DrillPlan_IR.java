@@ -1,8 +1,10 @@
 package iredes;
 
+import java.util.Collections;
 import java.util.List;
 
 public final class DrillPlan_IR {
+
     private final String planId;
     private final String planName;
     private final String project;
@@ -11,43 +13,33 @@ public final class DrillPlan_IR {
     private final List<DrillHole_IR> holes;
     private final List<Pattern_IR> patterns;
 
-    public DrillPlan_IR(String id, String name, String project,
+    public DrillPlan_IR(String planId,
+                        String planName,
+                        String project,
                         String workOrder,
                         List<DrillHole_IR> holes,
                         List<Pattern_IR> patterns) {
-        this.planId = id;
-        this.planName = name;
+        this.planId = planId;
+        this.planName = planName;
         this.project = project;
         this.workOrder = workOrder;
-        this.holes = holes;
-        this.patterns = patterns;
+        this.holes = holes == null
+                ? Collections.<DrillHole_IR>emptyList()
+                : Collections.unmodifiableList(holes);
+        this.patterns = patterns == null
+                ? Collections.<Pattern_IR>emptyList()
+                : Collections.unmodifiableList(patterns);
     }
 
-    // getters...
+    public String getPlanId() { return planId; }
 
+    public String getPlanName() { return planName; }
 
-    public List<DrillHole_IR> getHoles() {
-        return holes;
-    }
+    public String getProject() { return project; }
 
-    public List<Pattern_IR> getPatterns() {
-        return patterns;
-    }
+    public String getWorkOrder() { return workOrder; }
 
-    public String getPlanId() {
-        return planId;
-    }
+    public List<DrillHole_IR> getHoles() { return holes; }
 
-    public String getPlanName() {
-        return planName;
-    }
-
-    public String getProject() {
-        return project;
-    }
-
-    public String getWorkOrder() {
-        return workOrder;
-    }
-
+    public List<Pattern_IR> getPatterns() { return patterns; }
 }

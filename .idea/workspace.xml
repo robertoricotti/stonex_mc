@@ -186,22 +186,27 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 inizio DRILL">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/DrillHole_IR.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/DrillPlanParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/DrillPlan_IR.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/IredesParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/IredesUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/NavDataParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/NavData_IR.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/Pattern_IR.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/Point3D_IR.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/RigOperationMode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/RigStatus_IR.java" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 inizio DRILL iredes">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DrillLib.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CustomQwertyDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CustomQwertyDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/DrillHole_IR.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/DrillHole_IR.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/DrillPlanParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/DrillPlanParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/DrillPlan_IR.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/DrillPlan_IR.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/NavDataParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/NavDataParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/NavData_IR.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/NavData_IR.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/Pattern_IR.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/Pattern_IR.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/RigStatus_IR.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/RigStatus_IR.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/FullscreenActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/FullscreenActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Excavator_RealValues.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Excavator_RealValues.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyTypes.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyTypes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -212,7 +217,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -712,11 +717,18 @@
       <option name="project" value="LOCAL" />
       <updated>1764066043049</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="4.1.0 inizio DRILL iredes">
+      <option name="closed" value="true" />
+      <created>1764172761636</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1764172761636</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="4.0.2 RELEASE UFFICIALE" />
     <MESSAGE value="4.0.3 RELEASE UFFICIALE" />
     <MESSAGE value="4.0.5 RELEASE UFFICIALE" />
     <MESSAGE value="4.0.6 in progress" />
@@ -741,29 +753,30 @@
     <MESSAGE value="4.0.14 NFR" />
     <MESSAGE value="4.0.14 RELEASE" />
     <MESSAGE value="4.1.0 inizio DRILL" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 inizio DRILL" />
+    <MESSAGE value="4.1.0 inizio DRILL iredes" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 inizio DRILL iredes" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1764106129317" />
+            <CheckInfo lastCheckTimestamp="1764281145780" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1764106129316" />
+            <CheckInfo lastCheckTimestamp="1764281145777" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1764106129319" />
+            <CheckInfo lastCheckTimestamp="1764281145780" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1764106129317" />
+            <CheckInfo lastCheckTimestamp="1764281145777" />
           </value>
         </entry>
       </map>

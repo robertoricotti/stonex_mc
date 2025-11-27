@@ -36,7 +36,7 @@ public final class NavDataParser {
     private NavData_IR readNavSample(XmlPullParser parser) throws Exception {
         parser.require(XmlPullParser.START_TAG, NS, parser.getName());
 
-        Instant timestamp = null;
+        String timestampIso =null;
         String machineId = null;
         Point3D_IR pos = null;
         double heading = Double.NaN;
@@ -52,7 +52,7 @@ public final class NavDataParser {
 
             switch (tag) {
                 case "Timestamp":
-                    timestamp = Instant.parse(readSimpleText(parser));
+                    timestampIso = readSimpleText(parser);
                     break;
                 case "MachineId":
                     machineId = readSimpleText(parser);
@@ -77,7 +77,7 @@ public final class NavDataParser {
             }
         }
 
-        return new NavData_IR(timestamp, machineId, pos, heading, pitch, roll, activeHoleId);
+        return new NavData_IR(timestampIso, machineId, pos, heading, pitch, roll, activeHoleId);
     }
 
     private Point3D_IR readPoint(XmlPullParser parser) throws Exception {

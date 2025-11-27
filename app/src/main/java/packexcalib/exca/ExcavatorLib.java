@@ -11,6 +11,8 @@ import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.WHEELLOADER;
 
+import android.util.Log;
+
 import java.util.Arrays;
 
 import gui.MyApp;
@@ -35,10 +37,14 @@ public class ExcavatorLib {
     static double[] arrLower = new double[3];
     static double[] arr = new double[6];
     public static double quota2D, quotaLASER_2D, actualX2D, actualY2D, distToSurf, distToSurfX, quotaSx, quotaDx, distanza_inclinata;
-    public static double msideC, msideCX, correctStick, correctPitch, correctDBStickAngle, quotaCentro, correctRoll, correctBucket, correctFlat, correctTilt, correctDeltaAngle, bennaSimulata, correctBoom1, correctBoom2, highestPoint, deg_Roll, Len_Roll, larghezzabenna, correctWTilt, correctEbubbleX, correctEbubbleY, startRX, startRY, startRZ;
-    public static double[] coordinateDZ, coordinateDX, coordinateDY, coordMiniPitch, coordB1, coordB2, coordST, coordiLSV, coordLSH, coordPivoTilt;
+    public static double msideC, msideCX, correctStick, correctPitch, correctToolRoll, correctToolPitch, correctDBStickAngle, quotaCentro, correctRoll, correctBucket, correctFlat, correctTilt, correctDeltaAngle, bennaSimulata, correctBoom1, correctBoom2, highestPoint, deg_Roll, Len_Roll, larghezzabenna, correctWTilt, correctEbubbleX, correctEbubbleY, startRX, startRY, startRZ;
+    public static double[] coordinateDZ, coordinateDX, coordinateDY, coordMiniPitch, coordB1, coordB2, coordST, coordiLSV, coordLSH, coordPivoTilt, coordTool;
+    public static double[] toolBitCoord = new double[]{0, 0, 0};
+    public static double[] toolEndCoord = new double[]{0, 0, 0};
+
     public static double[] bucketCoord = new double[]{0, 0, 0};//centro benna
     public static double[] bucketLeftCoord = new double[]{0, 0, 0};
+
     //sinistra benna
     public static double[] bucketRightCoord = new double[]{0, 0, 0};
     public static double[] coordBuckProf = new double[]{0, 0, 0};
@@ -160,14 +166,13 @@ public class ExcavatorLib {
 
                             if (Sensors_Decoder.isMobaTilt) {
                                 // --- Reset automatico yaw quando la benna è dritta
-                                if (Math.abs(correctTilt) < 3 && Math.abs(correctWTilt + 90) < 15) {
+                                if (Math.abs(correctTilt) < 5 && Math.abs(correctWTilt + 90) < 40) {
                                     DataSaved.offsetYaw = Deg_Yaw_Tilt;
                                     yawSensor = 0;
                                 } else {
                                     yawSensor = (Deg_Yaw_Tilt - DataSaved.offsetYaw);
+                                    yawSensor=0.98*yawSensor;
                                 }
-                                // --- Filtro anti-drift (facoltativo)
-                                yawSensor = 0.98 * yawSensor;
 
                                 // --- Rototilt aggiuntivo (se presente)
                                 yawSensor += Sensors_Decoder.Deg_Roto;
@@ -175,6 +180,7 @@ public class ExcavatorLib {
                                 // --- Limita range
                                 if (yawSensor < -180) yawSensor += 360;
                                 if (yawSensor > 180) yawSensor -= 360;
+
 
                             } else {
                                 yawSensor = Sensors_Decoder.Deg_Roto;

@@ -3,6 +3,7 @@ package packexcalib.exca;
 
 import static packexcalib.exca.ExcavatorLib.correctBucket;
 import static packexcalib.exca.Sensors_Decoder.Deg_Benna_W_Tilt;
+import static packexcalib.exca.Sensors_Decoder.Deg_Tool_Roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_boom1;
 import static packexcalib.exca.Sensors_Decoder.Deg_boom2;
 import static packexcalib.exca.Sensors_Decoder.Deg_bucket;
@@ -97,7 +98,13 @@ public class Excavator_RealValues {
         }
         return a;
     }
+    public static double real_Tool_Roll(double offset) {
+        double a;
+        double d = Deg_Tool_Roll;
+        a = (d - offset);
 
+        return a;
+    }
     public static double realRoll(double offset) {
         double a;
         double d = Deg_roll;

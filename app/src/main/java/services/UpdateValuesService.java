@@ -140,6 +140,11 @@ public class UpdateValuesService extends Service {
                     String mountPosFrame = MyData.get_String("M" + i + "_Frame_MountPos");
                     String offsetPitch = MyData.get_String("M" + i + "_OffsetFrameY");
                     String offsetRoll = MyData.get_String("M" + i + "_OffsetFrameX");
+                    String offset_Tool_Roll = MyData.get_String("M" + i + "offset_Tool_Roll");
+                    String offset_Tool_Orient = MyData.get_String("M" + i + "offset_Tool_Orient");
+                    String offset_Tool_Dist = MyData.get_String("M" + i + "offset_Tool_Dist");
+                    String drill_Bit_Len = MyData.get_String("M" + i + "drill_Bit_Len");
+                    String drill_Rod_Len = MyData.get_String("M" + i + "drill_Rod_Len");
                     String gpsdeltaX = MyData.get_String("M" + i + "_OffsetGPSX");
                     String gpsdeltaY = MyData.get_String("M" + i + "_OffsetGPSY");
                     String gpsdeltaZ = MyData.get_String("M" + i + "_OffsetGPSZ");
@@ -298,6 +303,21 @@ public class UpdateValuesService extends Service {
                     }
                     if (offsetRoll == null) {
                         MyData.push("M" + i + "_OffsetFrameX", "0.00");
+                    }
+                    if (offset_Tool_Roll == null) {
+                        MyData.push("M" + i + "offset_Tool_Roll", "0.00");
+                    }
+                    if (offset_Tool_Orient == null) {
+                        MyData.push("M" + i + "offset_Tool_Orient", "0.00");
+                    }
+                    if (offset_Tool_Dist == null) {
+                        MyData.push("M" + i + "offset_Tool_Dist", "0.00");
+                    }
+                    if (drill_Bit_Len == null) {
+                        MyData.push("M" + i + "drill_Bit_Len", "0.00");
+                    }
+                    if (drill_Rod_Len == null) {
+                        MyData.push("M" + i + "drill_Rod_Len", "0.00");
                     }
 
                     if (gpsdeltaX == null) {
@@ -1024,6 +1044,17 @@ public class UpdateValuesService extends Service {
                     MyData.push("progettoSelected_POINT", "");
                 }
 
+                //IREDES
+                String progettoselectedPOINT_IREDES = MyData.get_String("progettoSelected_POINT_IREDES");
+
+                if (progettoselectedPOINT_IREDES == null) {
+                    MyData.push("progettoSelected_POINT_IREDES", "");
+                }
+
+
+
+                /// End IREDES
+
 
                 try {
                     DataSaved.screenOr = MyData.get_Int("screenOr");
@@ -1292,6 +1323,32 @@ public class UpdateValuesService extends Service {
                     DataSaved.offsetRoll = MyData.get_Double("M" + indexMach + "_OffsetFrameX");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di offsetRoll: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.offset_Tool_Roll = MyData.get_Double("M" + indexMach + "offset_Tool_Roll");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di offset_Tool_Roll: " + e.getMessage());
+                }
+                try {
+                    DataSaved.offset_Tool_Orient = MyData.get_Double("M" + indexMach + "offset_Tool_Orient");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di offset_Tool_Orient: " + e.getMessage());
+                }
+                try {
+                    DataSaved.offset_Tool_Dist = MyData.get_Double("M" + indexMach + "offset_Tool_Dist");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di offset_Tool_Dist: " + e.getMessage());
+                }
+                try {
+                    DataSaved.drill_Bit_Len = MyData.get_Double("M" + indexMach + "drill_Bit_Len");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di drill_Bit_Len: " + e.getMessage());
+                }
+                try {
+                    DataSaved.drill_Rod_Len = MyData.get_Double("M" + indexMach + "drill_Rod_Len");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di drill_Rod_Len: " + e.getMessage());
                 }
 
                 try {
@@ -1747,6 +1804,8 @@ public class UpdateValuesService extends Service {
                 DataSaved.progettoSelected = MyData.get_String("progettoSelected");
                 DataSaved.progettoSelected_POLY = MyData.get_String("progettoSelected_POLY");
                 DataSaved.progettoSelected_POINT = MyData.get_String("progettoSelected_POINT");
+
+                DataSaved.progettoSelected_POINT_IREDES = MyData.get_String("progettoSelected_POINT_IREDES");
 
 
                 try {

@@ -5,9 +5,10 @@ import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.MOBA_SENS;
+import static utils.MyTypes.TSM_ACC;
+import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
-
-import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -23,7 +24,7 @@ public class Sensors_Decoder {
     public static boolean isMobaTilt;
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
     public static double Deg_roll, Deg_pitch, Deg_boom1, Deg_boom2, Deg_stick, Deg_bucket, Deg_tilt, Deg_Benna_W_Tilt, Deg_bucket_DEMO,
-            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom;
+            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom, Deg_Tool_Roll;
     public static int V_Laser = 255, flagDefault, WheelSteer;
 
     static double norm, ax_norm, ay_norm, az_norm;
@@ -78,8 +79,8 @@ public class Sensors_Decoder {
                 case EXCAVATOR:
                 case WHEELLOADER://wheel loader
                     switch (DataSaved.isCanOpen) {
-                        case 1:
-                            //MOBA TODO replace with newer sensors
+                        case MOBA_SENS:
+
 
                             countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
@@ -320,7 +321,7 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
-                                    Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
+                                    //Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
                                     break;
 
                                 case 0x385:
@@ -439,8 +440,8 @@ public class Sensors_Decoder {
                             }
                             ExcavatorLib.Excavator();
                             break;
-                        case 2:
-                        case 3://TSM
+                        case TSM_ANGOLARI:
+                        case TSM_ACC://TSM
                             countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
                                 countTiltRot = 0;
@@ -578,7 +579,7 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
-                                    Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
+                                   // Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
                                     break;
 
                                 case 0x385:
@@ -879,8 +880,8 @@ public class Sensors_Decoder {
                     HEADING = normalizeAngle(HEADING);
 
                 }
-                if(DataSaved.portView==1){
-                    NmeaListener.roof_Orientation=HEADING;
+                if (DataSaved.portView == 1) {
+                    NmeaListener.roof_Orientation = HEADING;
                 }
 
                 if (keyEvents[2]) {

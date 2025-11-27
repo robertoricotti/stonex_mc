@@ -49,6 +49,7 @@ import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.projects.PickProject;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.ExcavatorLib;
 import services.ReadProjectService;
 import services.UpdateValuesService;
 import utils.LanguageSetter;
@@ -150,8 +151,9 @@ public class Activity_Home_Page extends BaseClass {
             s = s.replace("/storage/emulated/0/StonexMC_V4", "");
             s = s.substring(0, s.lastIndexOf("/"));
             titolo.setText(s);
+
         } catch (Exception e) {
-            titolo.setText(" ");
+            titolo.setText("");
         }
 
 
@@ -267,6 +269,7 @@ public class Activity_Home_Page extends BaseClass {
 
     public void updateUI() {
         try {
+
             if(isTech){
                 testSP.setVisibility(View.VISIBLE);
             }else {

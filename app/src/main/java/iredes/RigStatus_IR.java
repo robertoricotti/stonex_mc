@@ -3,7 +3,7 @@ package iredes;
 public final class RigStatus_IR {
 
     private final RigOperationMode mode;
-    private final double currentDepth;   // m
+    private final double currentDepth;    // m
     private final boolean bitActive;
     private final boolean mwdEnabled;
 
@@ -18,7 +18,10 @@ public final class RigStatus_IR {
     }
 
     public RigOperationMode getMode() { return mode; }
+
     public double getCurrentDepth() { return currentDepth; }
+
     public boolean isBitActive() { return bitActive; }
+
     public boolean isMwdEnabled() { return mwdEnabled; }
 }

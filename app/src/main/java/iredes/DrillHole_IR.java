@@ -2,12 +2,12 @@ package iredes;
 
 public final class DrillHole_IR {
 
-    private final String holeId;      // da <HoleId>
-    private final String holeName;    // da <HoleName>
-    private final String patternId;   // opzionale, se hai Pattern o BoomSeq
+    private final String holeId;       // <HoleId>
+    private final String holeName;     // <HoleName>
+    private final String patternId;    // opzionale (BoomSeq / Pattern)
 
-    private final Point3D_IR collar;  // StartPoint
-    private final Point3D_IR toe;     // EndPoint
+    private final Point3D_IR collar;   // StartPoint
+    private final Point3D_IR toe;      // EndPoint
 
     public DrillHole_IR(String holeId,
                         String holeName,
@@ -22,8 +22,12 @@ public final class DrillHole_IR {
     }
 
     public String getHoleId() { return holeId; }
+
     public String getHoleName() { return holeName; }
+
     public String getPatternId() { return patternId; }
+
     public Point3D_IR getCollar() { return collar; }
+
     public Point3D_IR getToe() { return toe; }
 }

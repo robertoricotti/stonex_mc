@@ -3,12 +3,13 @@ package iredes;
 import static iredes.IredesUtils.localName;
 
 import android.util.Xml;
-
-
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 
@@ -34,13 +35,13 @@ public final class DrillPlanParser {
                 String tag = localName(parser);
 
                 if ("PlanId".equals(tag)) {
-                    planId = readSimpleText(parser, "PlanId");
+                    planId = readSimpleText(parser);
                 } else if ("PlanName".equals(tag)) {
-                    planName = readSimpleText(parser, "PlanName");
+                    planName = readSimpleText(parser);
                 } else if ("Project".equals(tag)) {
-                    project = readSimpleText(parser, "Project");
+                    project = readSimpleText(parser);
                 } else if ("WorkOrder".equals(tag)) {
-                    workOrder = readSimpleText(parser, "WorkOrder");
+                    workOrder = readSimpleText(parser);
                 } else if ("DrillPlan".equals(tag)) {
                     readDrillPlan(parser, holes, boomSequences);
                 } else {
@@ -50,7 +51,7 @@ public final class DrillPlanParser {
             event = parser.next();
         }
 
-        // Costruisco Pattern_IR a partire da BoomSeq (se presente)
+        // Costruisco i Pattern a partire da BoomSeq (se presenti)
         List<Pattern_IR> patterns = new ArrayList<>();
         for (Map.Entry<String, List<String>> e : boomSequences.entrySet()) {
             String boomId = e.getKey();
@@ -59,7 +60,7 @@ public final class DrillPlanParser {
             List<DrillHole_IR> orderedHoles = new ArrayList<>();
             for (String hid : seqHoleIds) {
                 for (DrillHole_IR h : holes) {
-                    if (hid.equals(h.getHoleId())) {
+                    if (hid != null && hid.equals(h.getHoleId())) {
                         orderedHoles.add(h);
                         break;
                     }
@@ -78,18 +79,18 @@ public final class DrillPlanParser {
         );
     }
 
-    // ----------------------------------------------------------
-    // Lettura DrillPlan / Hole / BoomSeq
-    // ----------------------------------------------------------
-
     private void readDrillPlan(XmlPullParser parser,
                                List<DrillHole_IR> holes,
                                Map<String, List<String>> boomSequences) throws Exception {
 
         parser.require(XmlPullParser.START_TAG, NS, parser.getName());
 
-        while (!(parser.next() == XmlPullParser.END_TAG &&
-                "DrillPlan".equals(localName(parser)))) {
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+
+            if (parser.getEventType() == XmlPullParser.END_TAG &&
+                    "DrillPlan".equals(localName(parser))) {
+                break;
+            }
 
             if (parser.getEventType() != XmlPullParser.START_TAG) continue;
             String tag = localName(parser);
@@ -102,8 +103,8 @@ public final class DrillPlanParser {
                     readBoomSeq(parser, boomSequences);
                     break;
                 case "NumberOfHoles":
-                    // possiamo leggerlo o ignorarlo (non critico)
-                    readSimpleText(parser, "NumberOfHoles");
+                    // non ci serve, ma consumiamo il tag
+                    readSimpleText(parser);
                     break;
                 default:
                     skip(parser);
@@ -119,18 +120,22 @@ public final class DrillPlanParser {
         Point3D_IR start = null;
         Point3D_IR end = null;
 
-        while (!(parser.next() == XmlPullParser.END_TAG &&
-                "Hole".equals(localName(parser)))) {
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+
+            if (parser.getEventType() == XmlPullParser.END_TAG &&
+                    "Hole".equals(localName(parser))) {
+                break;
+            }
 
             if (parser.getEventType() != XmlPullParser.START_TAG) continue;
             String tag = localName(parser);
 
             switch (tag) {
                 case "HoleId":
-                    holeId = readSimpleText(parser, "HoleId");
+                    holeId = readSimpleText(parser);
                     break;
                 case "HoleName":
-                    holeName = readSimpleText(parser, "HoleName");
+                    holeName = readSimpleText(parser);
                     break;
                 case "StartPoint":
                     start = readPoint(parser);
@@ -146,7 +151,7 @@ public final class DrillPlanParser {
         return new DrillHole_IR(
                 holeId,
                 holeName,
-                null,   // patternId per ora non lo deduciamo qui
+                null,   // patternId per ora non usato direttamente
                 start,
                 end
         );
@@ -156,27 +161,32 @@ public final class DrillPlanParser {
                              Map<String, List<String>> boomSequences) throws Exception {
 
         parser.require(XmlPullParser.START_TAG, NS, parser.getName());
-        String boomId = null;
-        List<String> sequenceHoleIds = new ArrayList<>();
 
-        while (!(parser.next() == XmlPullParser.END_TAG &&
-                "BoomSeq".equals(localName(parser)))) {
+        String boomId = null;
+        List<String> holeIds = new ArrayList<>();
+
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+
+            if (parser.getEventType() == XmlPullParser.END_TAG &&
+                    "BoomSeq".equals(localName(parser))) {
+                break;
+            }
 
             if (parser.getEventType() != XmlPullParser.START_TAG) continue;
             String tag = localName(parser);
 
             if ("BoomId".equals(tag)) {
-                boomId = readSimpleText(parser, "BoomId");
+                boomId = readSimpleText(parser);
             } else if ("Sequence".equals(tag)) {
                 String hid = readSequence(parser);
-                if (hid != null) sequenceHoleIds.add(hid);
+                if (hid != null) holeIds.add(hid);
             } else {
                 skip(parser);
             }
         }
 
         if (boomId != null) {
-            boomSequences.put(boomId, sequenceHoleIds);
+            boomSequences.put(boomId, holeIds);
         }
     }
 
@@ -184,46 +194,51 @@ public final class DrillPlanParser {
         parser.require(XmlPullParser.START_TAG, NS, parser.getName());
         String holeId = null;
 
-        while (!(parser.next() == XmlPullParser.END_TAG &&
-                "Sequence".equals(localName(parser)))) {
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+
+            if (parser.getEventType() == XmlPullParser.END_TAG &&
+                    "Sequence".equals(localName(parser))) {
+                break;
+            }
 
             if (parser.getEventType() != XmlPullParser.START_TAG) continue;
             String tag = localName(parser);
 
             if ("HoleId".equals(tag)) {
-                holeId = readSimpleText(parser, "HoleId");
+                holeId = readSimpleText(parser);
             } else {
-                // SeqNum o altro -> ignoriamo, non critico
+                // es: SeqNum, ecc. → ignoriamo
                 skip(parser);
             }
         }
         return holeId;
     }
 
-    // ----------------------------------------------------------
-    // Lettura PointX/Y/Z
-    // ----------------------------------------------------------
-
     private Point3D_IR readPoint(XmlPullParser parser) throws Exception {
         parser.require(XmlPullParser.START_TAG, NS, parser.getName());
 
         Double x = null, y = null, z = null;
 
-        while (!(parser.next() == XmlPullParser.END_TAG &&
-                ("StartPoint".equals(localName(parser)) || "EndPoint".equals(localName(parser))))) {
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+
+            if (parser.getEventType() == XmlPullParser.END_TAG &&
+                    ("StartPoint".equals(localName(parser)) ||
+                            "EndPoint".equals(localName(parser)))) {
+                break;
+            }
 
             if (parser.getEventType() != XmlPullParser.START_TAG) continue;
             String tag = localName(parser);
 
             switch (tag) {
                 case "PointX":
-                    x = Double.parseDouble(readSimpleText(parser, parser.getName()));
+                    x = Double.parseDouble(readSimpleText(parser));
                     break;
                 case "PointY":
-                    y = Double.parseDouble(readSimpleText(parser, parser.getName()));
+                    y = Double.parseDouble(readSimpleText(parser));
                     break;
                 case "PointZ":
-                    z = Double.parseDouble(readSimpleText(parser, parser.getName()));
+                    z = Double.parseDouble(readSimpleText(parser));
                     break;
                 default:
                     skip(parser);
@@ -233,11 +248,9 @@ public final class DrillPlanParser {
         return new Point3D_IR(x, y, z);
     }
 
-    // ----------------------------------------------------------
-    // Utility lettura/skip
-    // ----------------------------------------------------------
+    // ----------- utilità di lettura / skip -------------
 
-    private String readSimpleText(XmlPullParser parser, String expectedLocalName) throws Exception {
+    private String readSimpleText(XmlPullParser parser) throws Exception {
         parser.require(XmlPullParser.START_TAG, NS, parser.getName());
         String text = "";
         if (parser.next() == XmlPullParser.TEXT) {

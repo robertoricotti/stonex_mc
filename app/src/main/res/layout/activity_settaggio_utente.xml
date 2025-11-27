@@ -791,11 +791,23 @@
 
 
             <!-- HYDRAULIC SOTTO!-->
-
             <View
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
+                android:layout_height="2dp"
+                android:background="@color/_____cancel_text" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AUTO GRADING PARAMS"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="24sp"
                 android:background="@color/bg_sfsred" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/_____cancel_text" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

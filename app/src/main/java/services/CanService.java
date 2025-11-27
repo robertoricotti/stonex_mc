@@ -2,11 +2,15 @@ package services;
 
 import static packexcalib.exca.DataSaved.offsetH;
 import static packexcalib.exca.Sensors_Decoder.isMobaTilt;
+import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.MOBA_SENS;
+import static utils.MyTypes.NO_SENSORS;
+import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
@@ -27,7 +31,7 @@ import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
-import packexcalib.gnss.Can318PositionDecoder;
+import packexcalib.exca.Sensors_Decoder_Drill;
 import packexcalib.gnss.NmeaListener;
 import serial.OpenSerialPort;
 import utils.AutoManToggle;
@@ -44,7 +48,7 @@ public class CanService extends Service {
     public static int SteerConnected, isAuto;
     public static int m;
     public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
-    public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK,flagLaser;
+    public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser;
     CanFileReceiver receiver = new CanFileReceiver();
     public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc;
     public static boolean CanServiceState = false;
@@ -65,7 +69,7 @@ public class CanService extends Service {
         boom2OK = false;
         stickOK = false;
         bucketOK = false;
-        flagLaser=false;
+        flagLaser = false;
         tiltOK = false;
         ECU_Connected = false;
         CAT_Connected = false;
@@ -152,7 +156,7 @@ public class CanService extends Service {
                     }
 
                 }
-                if (DataSaved.my_comPort==0&&DataSaved.gpsType==0) {
+                if (DataSaved.my_comPort == 0 && DataSaved.gpsType == 0) {
                     NmeaListener.NmeaSTX(id, msg);
                     if (id == 0x18FF0510) {
                         nmeaSTX_Disc = false;
@@ -164,10 +168,10 @@ public class CanService extends Service {
                         handler_nmeaSTX.postDelayed(timeoutRunnable_nmea2k, 5000);
                     }
                 }
-                if(DataSaved.my_comPort==0&&DataSaved.gpsType==3){
+                if (DataSaved.my_comPort == 0 && DataSaved.gpsType == 3) {
                     //ICG82
-                    if(id==0x318) {
-                        NmeaListener.NmeaLeica(id,msg,dlc);
+                    if (id == 0x318) {
+                        NmeaListener.NmeaLeica(id, msg, dlc);
                         nmeaSTX_Disc = false;
                         try {
                             handler_nmeaSTX.removeCallbacks(timeoutRunnable_nmea2k);
@@ -221,8 +225,8 @@ public class CanService extends Service {
                     handler_flagLaser.postDelayed(timeoutRunnable_flagLaser, 800);
                 }
                 switch (DataSaved.isCanOpen) {
-                    case 1:
-                    case 3:
+                    case MOBA_SENS:
+                    case TSM_ACC:
                         //moba o tsm
                         if (DataSaved.isWL < 2) {
                             if (id == 897) {
@@ -301,45 +305,8 @@ public class CanService extends Service {
                         }
 
                         break;
-                    case 2:
-                    case 4:
-                        //tsm angolari o demo bag
 
-
-                        if (id == 385 && DataSaved.lrFrame != 0) {
-                            frameDisc = false;
-                            handler_frame.removeCallbacks(timeoutRunnable_frame);
-                            handler_frame.postDelayed(timeoutRunnable_frame, 3000);
-                        }
-                        if (id == 386 && DataSaved.lrBoom1 != 0) {
-                            boom1Disc = false;
-                            handler_b1.removeCallbacks(timeoutRunnable_b1);
-                            handler_b1.postDelayed(timeoutRunnable_b1, 3000);
-                        }
-                        if (id == 391 && DataSaved.lrBoom2 != 0) {
-                            boom2Disc = false;
-                            handler_b2.removeCallbacks(timeoutRunnable_b2);
-                            handler_b2.postDelayed(timeoutRunnable_b2, 3000);
-                        }
-                        if (id == 388 && DataSaved.lrStick != 0) {
-                            stickDisc = false;
-                            handler_st.removeCallbacks(timeoutRunnable_st);
-                            handler_st.postDelayed(timeoutRunnable_st, 3000);
-                        }
-                        if (id == 389 && DataSaved.lrBucket != 0) {
-                            bucketDisc = false;
-                            handler_bk.removeCallbacks(timeoutRunnable_bk);
-                            handler_bk.postDelayed(timeoutRunnable_bk, 3000);
-                        }
-                        if (id == 902 && DataSaved.lrTilt != 0) {
-                            tiltDisc = false;
-                            handler_tl.removeCallbacks(timeoutRunnable_tl);
-                            handler_tl.postDelayed(timeoutRunnable_tl, 3000);
-                        }
-                        break;
-
-
-                    case 5:
+                    case DEMO_BAG:
                         if (id == 0X195) {
                             frameOK = true;
                             handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
@@ -521,8 +488,180 @@ public class CanService extends Service {
         }
     }
 
-    public void OnCan_Drill(int channel,byte[] msg,int dlc,int id){
+    public void OnCan_Drill(int channel, byte[] msg, int dlc, int id) {
         //TODO OnCAN Drill
+        try {
+            if (MyApp.visibleActivity instanceof Nuovo_Gps || MyApp.visibleActivity instanceof Can_Msg_Debug) {
+
+                EventBus.getDefault().post(new CanEvents(channel, null, id, dlc, msg));
+            }
+        } catch (Exception e) {
+            Log.e("Can_Error", Log.getStackTraceString(e));
+        }
+        if (channel == 1) {
+            if (DataSaved.my_comPort == 0 && DataSaved.gpsType == 0) {
+                NmeaListener.NmeaSTX(id, msg);
+                if (id == 0x18FF0510) {
+                    nmeaSTX_Disc = false;
+                    try {
+                        handler_nmeaSTX.removeCallbacks(timeoutRunnable_nmea2k);
+
+                    } catch (Exception e) {
+                    }
+                    handler_nmeaSTX.postDelayed(timeoutRunnable_nmea2k, 5000);
+                }
+            }
+            if (DataSaved.my_comPort == 0 && DataSaved.gpsType == 3) {
+                //ICG82
+                if (id == 0x318) {
+                    NmeaListener.NmeaLeica(id, msg, dlc);
+                    nmeaSTX_Disc = false;
+                    try {
+                        handler_nmeaSTX.removeCallbacks(timeoutRunnable_nmea2k);
+
+                    } catch (Exception e) {
+                    }
+                    handler_nmeaSTX.postDelayed(timeoutRunnable_nmea2k, 5000);
+
+                }
+            }
+            if (id == 0x18FFA110) {
+                if (msg[1] == 0x11) {
+                    switch (msg[2]) {
+
+                        case 0:
+
+                            DataSaved.radioMode = 1;
+
+                            break;
+                        case 1:
+
+                            DataSaved.radioMode = 0;
+
+                            break;
+                    }
+                }
+            }
+            Sensors_Decoder_Drill.decode(id, msg);
+            switch (DataSaved.isCanOpen) {
+                case NO_SENSORS:
+
+                    break;
+                case MOBA_SENS:
+                case TSM_ACC:
+
+                    if (id == 897) {
+                        frameOK = true;
+                        handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
+                        handler_frameOK.postDelayed(timeoutRunnable_frameOK, 3000);
+                    }
+                    if (id == 898) {
+                        boom1OK = true;
+                        handler_boom1OK.removeCallbacks(timeoutRunnable_boom1OK);
+                        handler_boom1OK.postDelayed(timeoutRunnable_boom1OK, 3000);
+                    }
+                    if (id == 903) {
+                        boom2OK = true;
+                        handler_boom2OK.removeCallbacks(timeoutRunnable_boom2OK);
+                        handler_boom2OK.postDelayed(timeoutRunnable_boom2OK, 3000);
+                    }
+                    if (id == 900) {
+                        stickOK = true;
+                        handler_stickOK.removeCallbacks(timeoutRunnable_stickOK);
+                        handler_stickOK.postDelayed(timeoutRunnable_stickOK, 3000);
+                    }
+                    if (id == 901) {
+                        bucketOK = true;
+                        handler_bucketOK.removeCallbacks(timeoutRunnable_bucketOK);
+                        handler_bucketOK.postDelayed(timeoutRunnable_bucketOK, 3000);
+                    }
+                    if (id == 902) {
+                        tiltOK = true;
+                        handler_tiltOK.removeCallbacks(timeoutRunnable_tiltOK);
+                        handler_tiltOK.postDelayed(timeoutRunnable_tiltOK, 3000);
+                    }
+                    /*
+
+
+                     */
+                    if ((id == 897 || id == 90181733) && DataSaved.lrFrame != 0) {
+                        frameDisc = false;
+                        handler_frame.removeCallbacks(timeoutRunnable_frame);
+                        handler_frame.postDelayed(timeoutRunnable_frame, 3000);
+                    }
+                    if ((id == 898) && DataSaved.lrBoom1 != 0) {
+                        boom1Disc = false;
+                        handler_b1.removeCallbacks(timeoutRunnable_b1);
+                        handler_b1.postDelayed(timeoutRunnable_b1, 3000);
+                    }
+                    if ((id == 903) && DataSaved.lrBoom2 != 0) {
+
+                        boom2Disc = false;
+                        handler_b2.removeCallbacks(timeoutRunnable_b2);
+                        handler_b2.postDelayed(timeoutRunnable_b2, 3000);
+                    }
+                    if ((id == 900) && DataSaved.lrStick != 0) {
+                        stickDisc = false;
+                        handler_st.removeCallbacks(timeoutRunnable_st);
+                        handler_st.postDelayed(timeoutRunnable_st, 3000);
+                    }
+                    if ((id == 901) && DataSaved.lrBucket != 0) {
+                        bucketDisc = false;
+                        handler_bk.removeCallbacks(timeoutRunnable_bk);
+                        handler_bk.postDelayed(timeoutRunnable_bk, 3000);
+                    }
+                    if ((id == 902 || id == 90181738) && DataSaved.lrTilt != 0) {
+                        tiltOK = true;
+                        tiltDisc = false;
+                        handler_tl.removeCallbacks(timeoutRunnable_tl);
+                        handler_tl.postDelayed(timeoutRunnable_tl, 3000);
+                    }
+
+
+                    break;
+                case DEMO_BAG:
+                    if (id == 0X195) {
+                        frameOK = true;
+                        handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
+                        handler_frameOK.postDelayed(timeoutRunnable_frameOK, 3000);
+                    }
+                    if (id == 0X195) {
+                        boom1OK = true;
+                        handler_boom1OK.removeCallbacks(timeoutRunnable_boom1OK);
+                        handler_boom1OK.postDelayed(timeoutRunnable_boom1OK, 3000);
+                    }
+
+                    if (id == 0X1F0) {
+                        stickOK = true;
+                        handler_stickOK.removeCallbacks(timeoutRunnable_stickOK);
+                        handler_stickOK.postDelayed(timeoutRunnable_stickOK, 3000);
+                    }
+                    if (id == 0X195) {
+                        bucketOK = true;
+                        handler_bucketOK.removeCallbacks(timeoutRunnable_bucketOK);
+                        handler_bucketOK.postDelayed(timeoutRunnable_bucketOK, 3000);
+                    }
+                    if (id == 0X195) {
+                        tiltOK = true;
+                        handler_tiltOK.removeCallbacks(timeoutRunnable_tiltOK);
+                        handler_tiltOK.postDelayed(timeoutRunnable_tiltOK, 3000);
+                    }
+                    if (id == 917) {
+                        boom1Disc = false;
+                        bucketDisc = false;
+                        tiltDisc = false;
+                    }
+                    if (id == 1008) {
+                        frameDisc = false;
+                        stickDisc = false;
+                    }
+                    break;
+            }
+        }
+
+        if (channel == 2) {
+
+        }
     }
 
     @Override
@@ -559,7 +698,7 @@ public class CanService extends Service {
             public void execute(int channel, int id, byte[] data) {
                 if (data != null) {
                     dlc = data.length;
-                    switch (DataSaved.isWL){
+                    switch (DataSaved.isWL) {
                         case EXCAVATOR:
                         case DOZER:
                         case DOZER_SIX:
@@ -568,7 +707,7 @@ public class CanService extends Service {
                             OnCan(channel, data, dlc, id);
                             break;
                         case DRILL:
-                            OnCan_Drill(channel,data,dlc,id);
+                            OnCan_Drill(channel, data, dlc, id);
                             break;
                     }
 
