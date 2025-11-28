@@ -166,7 +166,7 @@ public class ExcavatorLib {
 
                             if (Sensors_Decoder.isMobaTilt) {
                                 // --- Reset automatico yaw quando la benna è dritta
-                                if (Math.abs(correctTilt) < 5 && Math.abs(correctWTilt + 90) < 40) {
+                                if (Math.abs(correctTilt) < 5) {
                                     DataSaved.offsetYaw = Deg_Yaw_Tilt;
                                     yawSensor = 0;
                                 } else {
