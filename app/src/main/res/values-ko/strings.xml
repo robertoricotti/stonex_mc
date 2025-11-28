@@ -7,6 +7,7 @@
     <string name="general_set">일반 설정</string>
     <string name="mac_setup">기계 설정</string>
     <string name="sens_config">CAN 센서 구성</string>
+    <string name="tit_hydro_set">자동 도저/그레이더 매개변수</string>
     <string name="downloading">다운로드 진행 중...</string>
     <string name="uploading">업로드 진행 중...</string>
     <string name="change_machine">기기 모델 변경</string>

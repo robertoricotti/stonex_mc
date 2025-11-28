@@ -6,6 +6,7 @@
     <string name="general_set">GENERAL SETTINGS</string>
     <string name="downloading">Download in Progress...</string>
     <string name="uploading">Upload in Progress...</string>
+    <string name="tit_hydro_set">AUTO DOZER/GRADER PARAMETERS</string>
     <string name="mch_schema">DRAW 3D MACHINE SCHEMA</string>
     <string name="enable_but">ENABLE ANDROID NAVIGATION BUTTONS</string>
     <string name="extra_hdt">ENABLE EXTRA HEADING SENSOR</string>

@@ -8,6 +8,7 @@
     <string name="sens_config">CONFIGURATION CAPTEUR CAN</string>
     <string name="downloading">Téléchargement en cours...</string>
     <string name="uploading">Téléversement en cours...</string>
+    <string name="tit_hydro_set">PARAMÈTRES AUTOMATIQUES DOZER/GRADER</string>
     <string name="change_machine">Changer le modèle de la machine</string>
     <string name="procedi">Voulez-vous continuer ?</string>
     <string name="mch_schema">DESSINER SCHÉMA DE MACHINE 3D</string>

@@ -12,6 +12,7 @@
     <string name="rotate_m">ROTATE MACHINE</string>
     <string name="rotate_w">ROTATE WORLD</string>
     <string name="tred_scene">3D SCENE</string>
+    <string name="tit_hydro_set">AUTO DOZER/GRADER PARAMETERS</string>
     <string name="savepara">SAVE ALL PARAMETERS TO EXTERNAL MEMORY</string>
     <string name="savepara_pro">Do You Want to Proceed ?</string>
     <string name="write_para">OVERWRITE ALL APPLICATION PARAMETERS</string>

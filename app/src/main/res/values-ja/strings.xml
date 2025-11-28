@@ -11,6 +11,7 @@
     <string name="extra_hdt">追加ヘディングセンサーを有効にする</string>
     <string name="en_out">デジタル出力12Vを有効にする</string>
     <string name="en_uhf_ntrip">UHF/NTRIPを切り替え</string>
+    <string name="tit_hydro_set">自動ドーザー／グレーダー パラメータ</string>
     <string name="uppaer_bar">作業画面で上部バーを常に表示</string>
     <string name="interface_type">油圧インターフェースタイプ</string>
     <string name="change_machine">マシンモデルを変更</string>

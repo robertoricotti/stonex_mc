@@ -10,6 +10,7 @@
     <string name="sens_config">ΡΥΘΜΙΣΗ ΑΙΣΘΗΤΗΡΑ CAN</string>
     <string name="downloading">Λήψη σε εξέλιξη...</string>
     <string name="uploading">Μεταφόρτωση σε εξέλιξη...</string>
+    <string name="tit_hydro_set">ΠΑΡΑΜΕΤΡΟΙ ΑΥΤΟΜΑΤΟΥ DOZER/GRADER</string>
     <string name="change_machine">Αλλαγή μοντέλου μηχανής</string>
     <string name="procedi">Θέλετε να προχωρήσετε;</string>
     <string name="mch_schema">ΣΧΕΔΙΑΣΗ ΣΧΗΜΑΤΟΣ ΜΗΧΑΝΗΣ 3D</string>

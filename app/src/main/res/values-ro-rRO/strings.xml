@@ -9,6 +9,7 @@
     <string name="sens_config">CONFIGURARE SENZOR CAN</string>
     <string name="downloading">Descărcare în curs...</string>
     <string name="uploading">Încărcare în curs...</string>
+    <string name="tit_hydro_set">PARAMETRI AUTOMATICI DOZER/GRADER</string>
     <string name="change_machine">Schimbă modelul aparatului</string>
     <string name="procedi">Doriți să continuați?</string>
     <string name="mch_schema">DESEN SCHEMĂ MAȘINĂ 3D</string>

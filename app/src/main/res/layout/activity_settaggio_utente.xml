@@ -798,7 +798,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="AUTO GRADING PARAMS"
+                android:text="@string/tit_hydro_set"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:textColor="@color/white"

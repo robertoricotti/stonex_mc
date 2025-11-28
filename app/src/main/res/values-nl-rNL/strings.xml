@@ -8,6 +8,7 @@
     <string name="sens_config">CAN-SENSORCONFIGURATIE</string>
     <string name="downloading">Download bezig...</string>
     <string name="uploading">Upload bezig...</string>
+    <string name="tit_hydro_set">AUTOMATISCHE DOZER/GRADER-PARAMETERS</string>
     <string name="change_machine">Wijzig machinemodel</string>
     <string name="procedi">Wilt u doorgaan?</string>
     <string name="mch_schema">3D-MACHINESCHEMA TEKENEN</string>

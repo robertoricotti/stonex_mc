@@ -8,6 +8,7 @@
     <string name="sens_config">CAN-SENSOR-KONFIGURATION</string>
     <string name="downloading">Download läuft...</string>
     <string name="uploading">Upload läuft...</string>
+    <string name="tit_hydro_set">AUTOMATISCHE DOZER/GRADER-PARAMETER</string>
     <string name="change_machine">Maschinenmodell ändern</string>
     <string name="procedi">Möchten Sie fortfahren?</string>
     <string name="mch_schema">3D-MASCHINENSCHEMA ZEICHNEN</string>

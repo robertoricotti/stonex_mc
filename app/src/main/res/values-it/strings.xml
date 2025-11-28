@@ -10,6 +10,7 @@
     <string name="uploading">Upload in corso...</string>
     <string name="change_machine">Cambia modello della macchina</string>
     <string name="procedi">Vuoi procedere?</string>
+    <string name="tit_hydro_set">PARAMETRI AUTOMATICI DOZER/GRADER</string>
     <string name="mch_schema">DISEGNA SCHEMA MACCHINA 3D</string>
     <string name="enable_but">ABILITA PULSANTI DI NAVIGAZIONE ANDROID</string>
     <string name="extra_hdt">ABILITA SENSORE DI DIREZIONE EXTRA</string>
