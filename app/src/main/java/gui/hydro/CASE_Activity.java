@@ -105,43 +105,43 @@ public class CASE_Activity extends AppCompatActivity {
                     testValve.setAlpha(0.1f);
                     switch (voceMenu) {
                         case 1:
-                            valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftUP, 0, 255);
+                            valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftUP, 0, 250);
                             valueRIGHT = 0;
                             leftDir = (byte) 0xF2;
                             break;
                         case 0:
-                            valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftUP, 0, 255);
+                            valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftUP, 0, 250);
                             valueRIGHT = 0;
                             leftDir = (byte) 0xF2;
                             break;
                         case 3:
-                            valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftDW, 0, 255);
+                            valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftDW, 0, 250);
                             valueRIGHT = 0;
                             leftDir = (byte) 0xF1;
                             break;
                         case 2:
-                            valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftDW, 0, 255);
+                            valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftDW, 0, 250);
                             valueRIGHT = 0;
                             leftDir = (byte) 0xF1;
                             break;
 
                         case 5:
-                            valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightUP, 0, 255);
+                            valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightUP, 0, 250);
                             valueLEFT = 0;
                             rightDir = (byte) 0xF2;
                             break;
                         case 4:
-                            valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightUP, 0, 255);
+                            valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightUP, 0, 250);
                             valueLEFT = 0;
                             rightDir = (byte) 0xF2;
                             break;
                         case 7:
-                            valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightDW, 0, 255);
+                            valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightDW, 0, 250);
                             valueLEFT = 0;
                             rightDir = (byte) 0xF1;
                             break;
                         case 6:
-                            valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightDW, 0, 255);
+                            valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightDW, 0, 250);
                             valueLEFT = 0;
                             rightDir = (byte) 0xF1;
                             break;
@@ -288,51 +288,51 @@ public class CASE_Activity extends AppCompatActivity {
         valP.setOnClickListener(view -> {
             switch (voceMenu) {
                 case 1:
-                    if (minSpeedLeftUP < 255)
+                    if (minSpeedLeftUP < 250)
                         minSpeedLeftUP++;
                     break;
                 case 0:
-                    if (maxSpeedLeftUP < 255)
+                    if (maxSpeedLeftUP < 250)
                         maxSpeedLeftUP++;
                     break;
                 case 3:
-                    if (minSpeedLeftDW < 255)
+                    if (minSpeedLeftDW < 250)
                         minSpeedLeftDW++;
                     break;
                 case 2:
-                    if (maxSpeedLeftDW < 255)
+                    if (maxSpeedLeftDW < 250)
                         maxSpeedLeftDW++;
                     break;
                 case 5:
-                    if (minSpeedRightUP < 255)
+                    if (minSpeedRightUP < 250)
                         minSpeedRightUP++;
                     break;
                 case 4:
-                    if (maxSpeedRightUP < 255)
+                    if (maxSpeedRightUP < 250)
                         maxSpeedRightUP++;
                     break;
                 case 7:
-                    if (minSpeedRightDW < 255)
+                    if (minSpeedRightDW < 250)
                         minSpeedRightDW++;
                     break;
                 case 6:
-                    if (maxSpeedRightDW < 255)
+                    if (maxSpeedRightDW < 250)
                         maxSpeedRightDW++;
                     break;
                 case 8:
-                    if (minSpeedSS_A < 255)
+                    if (minSpeedSS_A < 250)
                         minSpeedSS_A++;
                     break;
                 case 9:
-                    if (maxSpeedSS_A < 255)
+                    if (maxSpeedSS_A < 250)
                         maxSpeedSS_A++;
                     break;
                 case 10:
-                    if (minSpeedSS_B < 255)
+                    if (minSpeedSS_B < 250)
                         minSpeedSS_B++;
                     break;
                 case 11:
-                    if (maxSpeedSS_B < 255)
+                    if (maxSpeedSS_B < 250)
                         maxSpeedSS_B++;
                     break;
 
@@ -597,40 +597,40 @@ public class CASE_Activity extends AppCompatActivity {
     private void executeMenuAction_P() {
         switch (voceMenu) {
             case 1:
-                if (minSpeedLeftUP < 255) minSpeedLeftUP++;
+                if (minSpeedLeftUP < 250) minSpeedLeftUP++;
                 break;
             case 0:
-                if (maxSpeedLeftUP < 255) maxSpeedLeftUP++;
+                if (maxSpeedLeftUP < 250) maxSpeedLeftUP++;
                 break;
             case 3:
-                if (minSpeedLeftDW < 255) minSpeedLeftDW++;
+                if (minSpeedLeftDW < 250) minSpeedLeftDW++;
                 break;
             case 2:
-                if (maxSpeedLeftDW < 255) maxSpeedLeftDW++;
+                if (maxSpeedLeftDW < 250) maxSpeedLeftDW++;
                 break;
             case 5:
-                if (minSpeedRightUP < 255) minSpeedRightUP++;
+                if (minSpeedRightUP < 250) minSpeedRightUP++;
                 break;
             case 4:
-                if (maxSpeedRightUP < 255) maxSpeedRightUP++;
+                if (maxSpeedRightUP < 250) maxSpeedRightUP++;
                 break;
             case 7:
-                if (minSpeedRightDW < 255) minSpeedRightDW++;
+                if (minSpeedRightDW < 250) minSpeedRightDW++;
                 break;
             case 6:
-                if (maxSpeedRightDW < 255) maxSpeedRightDW++;
+                if (maxSpeedRightDW < 250) maxSpeedRightDW++;
                 break;
             case 8:
-                if (minSpeedSS_A < 255) minSpeedSS_A++;
+                if (minSpeedSS_A < 250) minSpeedSS_A++;
                 break;
             case 9:
-                if (maxSpeedSS_A < 255) maxSpeedSS_A++;
+                if (maxSpeedSS_A < 250) maxSpeedSS_A++;
                 break;
             case 10:
-                if (minSpeedSS_B < 255) minSpeedSS_B++;
+                if (minSpeedSS_B < 250) minSpeedSS_B++;
                 break;
             case 11:
-                if (maxSpeedSS_B < 255) maxSpeedSS_B++;
+                if (maxSpeedSS_B < 250) maxSpeedSS_B++;
                 break;
 
             default:

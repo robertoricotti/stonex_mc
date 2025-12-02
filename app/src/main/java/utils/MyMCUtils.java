@@ -79,17 +79,17 @@ public class MyMCUtils {
         if (absInput <= 0.05) {
             multiplier = 1.0;
         } else if (absInput <= 0.07) {
-            multiplier = 1.3;
+            multiplier = 1.1;
         } else if (absInput <= 0.09) {
-            multiplier = 1.4;
+            multiplier = 1.2;
         } else if (absInput <= 0.11) {
-            multiplier = 1.5;
+            multiplier = 1.3;
         } else if (absInput <= 0.13) {
-            multiplier = 1.6;
+            multiplier = 1.4;
         } else if (absInput <= 0.15) {
-            multiplier = 1.7;
+            multiplier = 1.5;
         } else {
-            multiplier = 1.8;
+            multiplier = 1.6;
         }
 
         int center = 20000;
@@ -169,7 +169,102 @@ public class MyMCUtils {
         }
     }
 
+    public static double wrap(double angleDeg) {
 
+        // Usa la funzione IEEE remainder (più stabile del %)
+        angleDeg = Math.IEEEremainder(angleDeg, 360.0);
+
+        // Forziamo comunque l'intervallo corretto
+        if (angleDeg <= -180.0) angleDeg += 360.0;
+        if (angleDeg >   180.0) angleDeg -= 360.0;
+
+        return angleDeg;
+    }
+    public static double computeDeltaYawFromTiltAndCurl(
+            double tiltDeg,        // Roll reale: >0 scende DX | <0 scende SX
+            double curlDeg         // correctBucket: -180 .. +180
+    ) {
+
+        // -------------------------------
+        // 1) DEAD ZONE SUL TILT
+        // -------------------------------
+        double deadTilt = 1.0; // gradi
+        if (Math.abs(tiltDeg) < deadTilt) return 0.0;
+
+        // -------------------------------
+        // 2) NORMALIZZA CURL in [-180, +180]
+        // -------------------------------
+        double curl = curlDeg;
+        if (curl > 180)  curl -= 360;
+        if (curl < -180) curl += 360;
+
+        // -------------------------------
+        // 3) FATTORE GEOMETRICO CORRETTO
+        //   yaw MAX a 0° e -180°
+        //   yaw ZERO a -90°
+        // -------------------------------
+        double curlFactor;
+
+        if (curl <= 0 && curl >= -180) {
+            // Triangolare con minimo a -90
+            curlFactor = Math.abs(Math.abs(curl) - 90.0) / 90.0;
+            // 0   → 1
+            // -90 → 0
+            // -180→ 1
+        }
+        else if (curl > 0 && curl <= 180) {
+            // zona teorica: simmetrica
+            curlFactor = Math.abs(Math.abs(curl) - 90.0) / 90.0;
+        }
+        else {
+            curlFactor = 0.0;
+        }
+
+        // Clamp sicurezza
+        if (curlFactor < 0) curlFactor = 0;
+        if (curlFactor > 1) curlFactor = 1;
+
+        // -------------------------------
+        // 4) SEGNO FISICO DELLA ROTAZIONE
+        //
+        // REGOLA:
+        //   0 → -90     : segno diretto
+        //  -90 → -180   : segno invertito
+        // -------------------------------
+        int sign = 0;
+
+        boolean frontRange = (curl <= 0  && curl > -90);
+        boolean backRange  = (curl <= -90 && curl >= -180);
+
+        if (frontRange) {
+            sign = (tiltDeg > 0) ? +1 : -1;
+        }
+        else if (backRange) {
+            sign = (tiltDeg > 0) ? -1 : +1;
+        }
+        else {
+            sign = 0;
+        }
+
+        // -------------------------------
+        // 5) GUADAGNO DI TARATURA
+        // -------------------------------
+        double K = 1.0;   // lo regoli sul campo
+
+        // -------------------------------
+        // 6) DELTA YAW CINEMATICO
+        // -------------------------------
+        double deltaYaw = sign * K * Math.abs(tiltDeg) * curlFactor;
+
+        // -------------------------------
+        // 7) SATURAZIONE FISICA
+        // -------------------------------
+        double maxYaw = 45.0;   // gradi realistici
+        if (deltaYaw >  maxYaw) deltaYaw =  maxYaw;
+        if (deltaYaw < -maxYaw) deltaYaw = -maxYaw;
+
+        return deltaYaw;
+    }
 
 
 

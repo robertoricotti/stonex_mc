@@ -42,6 +42,7 @@ public class DataSaved {
     public static double tolleranza_ZR;
     public static double tolleranza_XY;
     public static double tolleranza_Slope;
+    public static int Use_Blade_Pitch;
 
 
     public static int minSpeedLeftUP;

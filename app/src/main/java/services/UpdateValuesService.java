@@ -38,7 +38,7 @@ public class UpdateValuesService extends Service {
     public static CoordinateReferenceSystem WGS84, UTM;
     public static CoordinateTransformFactory ctFactory;
     public static CoordinateTransform wgsToUtm, utmToWgs;
-    public static ProjCoordinate shifted,result, resultWgs;
+    public static ProjCoordinate shifted, result, resultWgs;
     long startTime, stopTime;
     public static boolean startedService;
     public static boolean isUpodating;
@@ -163,10 +163,10 @@ public class UpdateValuesService extends Service {
 
                     String iswl = MyData.get_String("M" + i + "_isWL");
                     String enOUT = MyData.get_String("M" + i + "_enOUT");
-                    String HighThreshold=MyData.get_String("M"+i+"HighThreshold");
-                    String LowThreshold=MyData.get_String("M"+i+"LowThreshold");
-                    String PassoGriglia=MyData.get_String("M"+i+"PassoGriglia");
-                    String EnableMapping=MyData.get_String("M"+i+"EnableMapping");
+                    String HighThreshold = MyData.get_String("M" + i + "HighThreshold");
+                    String LowThreshold = MyData.get_String("M" + i + "LowThreshold");
+                    String PassoGriglia = MyData.get_String("M" + i + "PassoGriglia");
+                    String EnableMapping = MyData.get_String("M" + i + "EnableMapping");
                     String comPort = MyData.get_String("M" + i + "_comPort");
                     String sc600 = MyData.get_String("M" + i + "_sc600");
                     String reqSpeed = MyData.get_String("M" + i + "reqSpeed");
@@ -210,7 +210,7 @@ public class UpdateValuesService extends Service {
                     String REVERSE_LEFT = MyData.get_String("M" + i + "REVERSE_LEFT");
                     String REVERSE_RIGHT = MyData.get_String("M" + i + "REVERSE_RIGHT");
                     String REVERSE_SS = MyData.get_String("M" + i + "REVERSE_SS");
-
+                    String Use_Blade_Pitch = MyData.get_String("M" + i + "Use_Blade_Pitch");
 
 
                     String minSpeedRightUP = MyData.get_String("M" + i + "minSpeedRightUP");
@@ -343,20 +343,20 @@ public class UpdateValuesService extends Service {
                     if (useQuickSwitch == null) {
                         MyData.push("M" + i + "useQuickSwitch", "0");
                     }
-                    if(Wheel_Steer_Rev== null){
-                        MyData.push("M"+i+"Wheel_Steer_Rev","1");
+                    if (Wheel_Steer_Rev == null) {
+                        MyData.push("M" + i + "Wheel_Steer_Rev", "1");
                     }
-                    if(Wheel_Steer_Min== null){
-                        MyData.push("M"+i+"Wheel_Steer_Min","0");
+                    if (Wheel_Steer_Min == null) {
+                        MyData.push("M" + i + "Wheel_Steer_Min", "0");
                     }
-                    if(Wheel_Steer_Med== null){
-                        MyData.push("M"+i+"Wheel_Steer_Med","2500");
+                    if (Wheel_Steer_Med == null) {
+                        MyData.push("M" + i + "Wheel_Steer_Med", "2500");
                     }
-                    if(Wheel_Steer_Max== null){
-                        MyData.push("M"+i+"Wheel_Steer_Max","5000");
+                    if (Wheel_Steer_Max == null) {
+                        MyData.push("M" + i + "Wheel_Steer_Max", "5000");
                     }
-                    if(Wheel_Steer_Range== null){
-                        MyData.push("M"+i+"Wheel_Steer_Range","70.0");
+                    if (Wheel_Steer_Range == null) {
+                        MyData.push("M" + i + "Wheel_Steer_Range", "70.0");
                     }
 
                     if (swingLen == null) {
@@ -533,18 +533,21 @@ public class UpdateValuesService extends Service {
                     if (REVERSE_SS == null) {
                         MyData.push("M" + i + "REVERSE_SS", "0");
                     }
+                    if (Use_Blade_Pitch == null) {
+                        MyData.push("M" + i + "Use_Blade_Pitch", "1");
+                    }
 
                     if (minSpeedLeftUP == null) {
                         MyData.push("M" + i + "minSpeedLeftUP", "0");
                     }
                     if (maxSpeedLeftUP == null) {
-                        MyData.push("M" + i + "maxSpeedLeftUP", "255");
+                        MyData.push("M" + i + "maxSpeedLeftUP", "250");
                     }
                     if (minSpeedLeftDW == null) {
                         MyData.push("M" + i + "minSpeedLeftDW", "0");
                     }
                     if (maxSpeedLeftDW == null) {
-                        MyData.push("M" + i + "maxSpeedLeftDW", "255");
+                        MyData.push("M" + i + "maxSpeedLeftDW", "250");
                     }
 
 
@@ -552,13 +555,13 @@ public class UpdateValuesService extends Service {
                         MyData.push("M" + i + "minSpeedRightUP", "0");
                     }
                     if (maxSpeedRightUP == null) {
-                        MyData.push("M" + i + "maxSpeedRightUP", "255");
+                        MyData.push("M" + i + "maxSpeedRightUP", "250");
                     }
                     if (minSpeedRightDW == null) {
                         MyData.push("M" + i + "minSpeedRightDW", "0");
                     }
                     if (maxSpeedRightDW == null) {
-                        MyData.push("M" + i + "maxSpeedRightDW", "255");
+                        MyData.push("M" + i + "maxSpeedRightDW", "250");
                     }
 
 
@@ -566,13 +569,13 @@ public class UpdateValuesService extends Service {
                         MyData.push("M" + i + "minSpeedSS_A", "0");
                     }
                     if (maxSpeedSS_A == null) {
-                        MyData.push("M" + i + "maxSpeedSS_A", "255");
+                        MyData.push("M" + i + "maxSpeedSS_A", "250");
                     }
                     if (minSpeedSS_B == null) {
                         MyData.push("M" + i + "minSpeedSS_B", "0");
                     }
                     if (maxSpeedSS_B == null) {
-                        MyData.push("M" + i + "maxSpeedSS_B", "255");
+                        MyData.push("M" + i + "maxSpeedSS_B", "250");
                     }
 
                     if (CAT_Type == null) {
@@ -1052,7 +1055,6 @@ public class UpdateValuesService extends Service {
                 }
 
 
-
                 /// End IREDES
 
 
@@ -1430,16 +1432,14 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di REVERSE_SS: " + e.getMessage());
                 }
+                try {
+                    DataSaved.Use_Blade_Pitch = MyData.get_Int("M" + indexMach + "Use_Blade_Pitch");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Use_Blade_Pitch: " + e.getMessage());
+                }
 
 
-
-
-            /// ///////
-
-
-
-
-
+                /// ///////
 
 
                 try {
@@ -1779,10 +1779,6 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di EnableMapping: " + e.getMessage());
                 }
-
-
-
-
 
 
                 try {
