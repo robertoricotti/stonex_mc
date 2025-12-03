@@ -1,5 +1,7 @@
 package gui.hydro;
 
+import static utils.MyTypes.GRADER;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -22,6 +24,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import utils.FullscreenActivity;
 import utils.MyData;
+import utils.MyTypes;
 
 public class Dialog_Gain_Hydro {
     Activity activity;
@@ -94,7 +97,7 @@ public class Dialog_Gain_Hydro {
         machineSelected = MyData.get_Int("MachineSelected");
         gainL.setText(String.valueOf(MyData.get_Int("M" + machineSelected + "GAIN_LEFT")));
         gainR.setText(String.valueOf(MyData.get_Int("M" + machineSelected + "GAIN_RIGHT")));
-        if (DataSaved.isWL == 4) {
+        if (DataSaved.isWL == GRADER) {
             switch (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER) {
                 case 0:
                     lamaCP.setImageResource((R.drawable.cent_right));
@@ -256,7 +259,7 @@ public class Dialog_Gain_Hydro {
 
 
         lamaDX.setOnClickListener(view -> {
-            if(DataSaved.isWL==4) {
+            if(DataSaved.isWL==GRADER) {
 
                     DataSaved.HYDRAULIC_CONTROL_POINT_GRADER += 1;
                     DataSaved.HYDRAULIC_CONTROL_POINT_GRADER=DataSaved.HYDRAULIC_CONTROL_POINT_GRADER%3;
@@ -270,29 +273,12 @@ public class Dialog_Gain_Hydro {
         });
 
         save.setOnClickListener(view -> {
-            //creare la dialog con pulsanti sì o no
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle(R.string.hydro_apply);
-            builder.setIcon(R.drawable.cylinder);
-            builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-                MyData.push("M" + machineSelected + "GAIN_LEFT", String.valueOf(DataSaved.GAIN_LEFT));
-                MyData.push("M" + machineSelected + "GAIN_RIGHT", String.valueOf(DataSaved.GAIN_RIGHT));
-                MyData.push("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_GRADER", String.valueOf(DataSaved.HYDRAULIC_CONTROL_POINT_GRADER));
-                MyData.push("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_DOZER", String.valueOf(DataSaved.HYDRAULIC_CONTROL_POINT_DOZER));
-                dialog.dismiss();
-                this.dialog.dismiss();
-
-            });
-            builder.setNegativeButton(R.string.no, (dialog, which) -> {
-                DataSaved.GAIN_LEFT = MyData.get_Int("M" + machineSelected + "GAIN_LEFT");
-                DataSaved.GAIN_RIGHT = MyData.get_Int("M" + machineSelected + "GAIN_RIGHT");
-                DataSaved.HYDRAULIC_CONTROL_POINT_GRADER = MyData.get_Int("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_GRADER");
-                DataSaved.HYDRAULIC_CONTROL_POINT_DOZER = MyData.get_Int("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_DOZER");
-                dialog.dismiss();
-                this.dialog.dismiss();
-
-            });
-            builder.show();
+            MyData.push("M" + machineSelected + "GAIN_LEFT", String.valueOf(DataSaved.GAIN_LEFT));
+            MyData.push("M" + machineSelected + "GAIN_RIGHT", String.valueOf(DataSaved.GAIN_RIGHT));
+            MyData.push("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_GRADER", String.valueOf(DataSaved.HYDRAULIC_CONTROL_POINT_GRADER));
+            MyData.push("M" + machineSelected + "HYDRAULIC_CONTROL_POINT_DOZER", String.valueOf(DataSaved.HYDRAULIC_CONTROL_POINT_DOZER));
+            dialog.dismiss();
+            this.dialog.dismiss();
 
         });
     }

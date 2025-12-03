@@ -15,7 +15,6 @@ import static packexcalib.exca.Sensors_Decoder.Deg_stick;
 import static packexcalib.exca.Sensors_Decoder.Deg_tilt;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 import static packexcalib.exca.Sensors_Decoder.isMobaTilt;
-import static packexcalib.exca.Sensors_Decoder.movingAverage_boomroll;
 import static packexcalib.exca.Sensors_Decoder.quaternionToEuler;
 import static utils.MyTypes.MOBA_SENS;
 import static utils.MyTypes.TSM_ACC;
@@ -429,7 +428,7 @@ public class Sensors_Decoder_Drill {
                             if (DataSaved.lrFrame == 0) {
                                 Deg_Boom_Roll = 0;
                             }
-                            Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
+                           
                             break;
 
                         case 0x385:

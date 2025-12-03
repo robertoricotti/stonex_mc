@@ -124,7 +124,7 @@ public class My3DActivity extends BaseClass {
     TextView boxLeft, boxCent, boxRight, txtCutFill, txtDist;
     LinearLayout sideBar, frameCent;
     ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto, gl_benne;
-    ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce, btn_pnezd;
+    ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce, btn_pnezd,hydroPoint;
     ImageView gl_sound, gl_pnezd, gl_bright, gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
     public static boolean isPan, glFace, glPoint, glText, glVista3d, glPoly, glFilter, glGradient, glFill;
     DialogOffset_3D dialogOffset;
@@ -270,6 +270,7 @@ public class My3DActivity extends BaseClass {
         allarmeBound = findViewById(R.id.allarmeBound);
         gl_sound = findViewById(R.id.gl_sound);
         gl_hydroP = findViewById(R.id.gl_hydroP);
+        hydroPoint=findViewById(R.id.hydroPoint);
         allarmeAlt.setVisibility(View.GONE);
         dialogMapMode = new Dialog_MapMode(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
@@ -310,6 +311,54 @@ public class My3DActivity extends BaseClass {
     }
 
     private void onClick() {
+        hydroPoint.setOnClickListener(view -> {
+            //TODO 315
+            if(DataSaved.isWL==GRADER) {
+
+                DataSaved.HYDRAULIC_CONTROL_POINT_GRADER += 1;
+                DataSaved.HYDRAULIC_CONTROL_POINT_GRADER=DataSaved.HYDRAULIC_CONTROL_POINT_GRADER%3;
+
+            }else {
+
+                DataSaved.HYDRAULIC_CONTROL_POINT_DOZER += 1;
+                DataSaved.HYDRAULIC_CONTROL_POINT_DOZER=DataSaved.HYDRAULIC_CONTROL_POINT_DOZER%2;
+            }
+            if (DataSaved.isWL == GRADER) {
+                switch (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER) {
+                    case 0:
+                        hydroPoint.setImageResource((R.drawable.cent_right_pg));
+
+                        break;
+
+                    case 1:
+                        hydroPoint.setImageResource((R.drawable.cent_left_pg));
+
+                        break;
+
+                    case 2:
+                        hydroPoint.setImageResource((R.drawable.left_right_pg));
+
+                        break;
+                }
+            } else {
+                switch (DataSaved.HYDRAULIC_CONTROL_POINT_DOZER) {
+                    case 0:
+                        hydroPoint.setImageResource((R.drawable.cent_right_pg));
+
+                        break;
+
+                    case 1:
+                        hydroPoint.setImageResource((R.drawable.cent_left_pg));
+
+                        break;
+
+
+                }
+            }
+            MyData.push("M" + indexMachineSelected + "HYDRAULIC_CONTROL_POINT_GRADER", String.valueOf(DataSaved.HYDRAULIC_CONTROL_POINT_GRADER));
+            MyData.push("M" + indexMachineSelected + "HYDRAULIC_CONTROL_POINT_DOZER", String.valueOf(DataSaved.HYDRAULIC_CONTROL_POINT_DOZER));
+
+        });
         navigatorHDT.setOnLongClickListener(view -> {
             locateMachine();
             return false;
@@ -752,6 +801,15 @@ public class My3DActivity extends BaseClass {
     }
 
     public void updateUI() {
+        if(DataSaved.isWL==DOZER||DataSaved.isWL==DOZER_SIX||DataSaved.isWL==GRADER){
+            if(prepLeft||prepRight){
+                hydroPoint.setVisibility(View.VISIBLE);
+            }else {
+                hydroPoint.setVisibility(View.GONE);
+            }
+        }else {
+            hydroPoint.setVisibility(View.GONE);
+        }
         if (!dialogCutFill3D.dialog.isShowing()&&!dialogGnssCoordinates.alertDialog.isShowing()) {
 
             try {

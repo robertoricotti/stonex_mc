@@ -10,9 +10,6 @@ import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import gui.gps.NmeaGenerator;
 import packexcalib.gnss.NmeaListener;
 import utils.MyMCUtils;
@@ -37,14 +34,11 @@ public class Sensors_Decoder {
     static short Gy;
     static short Gz;
 
-    final static int PGN_Tiltrotator = 61460;//TODO VALIDO PER GRADER JOHN DEERE
+    final static int PGN_Tiltrotator = 61460;//TODO VALIDO ANCHE PER GRADER JOHN DEERE
     final static int PGN_TiltrotatorEPS = 65488;
     final static int PGN_TiltRotator_EngCon = 131024;
     static int countTiltRot;
 
-
-    private static final Queue<Double> boomRollBuffer = new LinkedList<>();
-    private static final Queue<Double> tiltBuffer = new LinkedList<>();
 
     public static void Moba_G2_Decoder_Update(int id, byte[] data) {
         try {
@@ -86,7 +80,6 @@ public class Sensors_Decoder {
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
                                 countTiltRot = 0;
                                 DataSaved.isTiltRotator = true;
-
                                 if (PGNExtractor.extractPGN(id) == PGN_Tiltrotator) {
                                     double cost = (PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]}) * 100d) * 0.01d;
 
@@ -104,7 +97,6 @@ public class Sensors_Decoder {
                                 if (DataSaved.reverseRotator == 1) {
                                     Deg_Roto = Deg_Roto * -1;
                                 }
-
 
                             }
                             if (countTiltRot > 500) {
@@ -305,12 +297,16 @@ public class Sensors_Decoder {
                                     switch (DataSaved.lrStick) {
                                         case 1:
                                             Deg_stick = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            Deg_Boom_Roll = Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI;
-
+                                            if (DataSaved.Extra_Heading > 0) {
+                                                Deg_Boom_Roll = Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI;
+                                            }
                                             break;
                                         case -1:
                                             Deg_stick = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            Deg_Boom_Roll = -Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI;
+                                            if (DataSaved.Extra_Heading > 0) {
+                                                Deg_Boom_Roll = -Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI;
+
+                                            }
                                             break;
                                         default:
                                             Deg_stick = 0d;
@@ -321,7 +317,8 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
-                                    //Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
+
+
                                     break;
 
                                 case 0x385:
@@ -438,6 +435,7 @@ public class Sensors_Decoder {
 
 
                             }
+                            if(DataSaved.Extra_Heading==0){ Deg_Boom_Roll=Deg_roll;}
                             ExcavatorLib.Excavator();
                             break;
                         case TSM_ANGOLARI:
@@ -564,11 +562,15 @@ public class Sensors_Decoder {
                                     switch (DataSaved.lrStick) {
                                         case 1:
                                             Deg_stick = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            Deg_Boom_Roll = (-Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
+                                            if (DataSaved.Extra_Heading > 0) {
+                                                Deg_Boom_Roll = (-Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
+                                            }
                                             break;
                                         case -1:
                                             Deg_stick = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            Deg_Boom_Roll = (Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
+                                            if (DataSaved.Extra_Heading > 0) {
+                                                Deg_Boom_Roll = (Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
+                                            }
                                             break;
                                         default:
                                             Deg_stick = 0d;
@@ -579,7 +581,7 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
-                                   // Deg_Boom_Roll = movingAverage_boomroll(Deg_Boom_Roll, 10);
+
                                     break;
 
                                 case 0x385:
@@ -722,6 +724,7 @@ public class Sensors_Decoder {
                                     break;
 
                             }
+                            if(DataSaved.Extra_Heading==0){ Deg_Boom_Roll=Deg_roll;}
                             ExcavatorLib.Excavator();
                             break;
 
@@ -836,7 +839,7 @@ public class Sensors_Decoder {
                             break;
 
                     }
-
+                    if(DataSaved.Extra_Heading==0){ Deg_Boom_Roll=Deg_roll;}
                     ExcavatorLib.Excavator();
                     break;
 
@@ -1057,7 +1060,7 @@ public class Sensors_Decoder {
                     Deg_bucket -= 0.05;
                 }
 
-
+                if(DataSaved.Extra_Heading==0){ Deg_Boom_Roll=Deg_roll;}
                 ExcavatorLib.Excavator();
             }
 
@@ -1107,25 +1110,6 @@ public class Sensors_Decoder {
         return new double[]{roll, pitch, yaw};
     }
 
-    public static double movingAverage_boomroll(double newVal, int WINDOW) {
-        if (boomRollBuffer.size() >= WINDOW) {
-            boomRollBuffer.poll(); // rimuove il più vecchio
-        }
-        boomRollBuffer.add(newVal);
-        double sum = 0;
-        for (double v : boomRollBuffer) sum += v;
-        return sum / boomRollBuffer.size();
-    }
-
-    public static double movingAverage_tilt(double newVal, int WINDOW) {
-        if (tiltBuffer.size() >= WINDOW) {
-            tiltBuffer.poll(); // rimuove il più vecchio
-        }
-        tiltBuffer.add(newVal);
-        double sum = 0;
-        for (double v : tiltBuffer) sum += v;
-        return sum / tiltBuffer.size();
-    }
 
     public static double[] multiplyQuaternion(double[] q1, double[] q2) {
         double w1 = q1[0], x1 = q1[1], y1 = q1[2], z1 = q1[3];

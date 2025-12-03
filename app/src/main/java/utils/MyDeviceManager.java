@@ -15,9 +15,12 @@ import com.cp.cputils.Apollo2;
 import com.cp.cputils.ApolloPro;
 import com.cp.cputils.shellcommand.CpCmd;
 
+import com.cpdevice.cpcomm.boards.CPDEVICE;
 import com.cpdevice.cpcomm.frame.ICPCanFrame;
 
 import com.van.jni.VanCmd;
+
+import java.lang.reflect.Method;
 
 import packexcalib.exca.DataSaved;
 
@@ -40,6 +43,7 @@ public class MyDeviceManager {
             case "APOLLO2_12_PRO":
             case "APOLLO2_12_PLUS":
             case "TANK2_7_10":
+            case "MEGA_1":
                 Intent intent = new Intent(ACTION_HIDE_NAVIGATION);
                 context.sendBroadcast(intent);
 
@@ -60,6 +64,7 @@ public class MyDeviceManager {
             case "APOLLO2_12_PRO":
             case "APOLLO2_12_PLUS":
             case "TANK2_7_10":
+            case "MEGA_1":
                 Intent intent = new Intent(ACTION_SHOW_NAVIGATION);
                 context.sendBroadcast(intent);
                 break;
@@ -281,12 +286,30 @@ public class MyDeviceManager {
         return "";
     }
     public static String getDeviceSN(Activity activity){
+
         if (GEN1) {
             return ApolloPro.getInstance(activity).getDeviceSN().toUpperCase();
         } else if (GEN2) {
+
             return Apollo2.getInstance(activity).getDeviceSN().toUpperCase();
+
         }
         return "";
+    }
+
+    public static String getSerial() {//android 6 ,9 getsn
+        String serial = null;
+        try {
+            Class<?> c = Class.forName("android.os.SystemProperties");
+            Method get = c.getMethod("get", String.class);
+            serial = (String) get.invoke(c, "ro.serialno");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("getSN",Log.getStackTraceString(e));
+
+        }
+        // Log.d(TAG, "++sdk+" + Build.VERSION.SDK_INT + "--sn--" + serial);
+        return serial;//Build.SERIAL
     }
 
 

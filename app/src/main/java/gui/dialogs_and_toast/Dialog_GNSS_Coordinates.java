@@ -3,8 +3,7 @@ package gui.dialogs_and_toast;
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static packexcalib.gnss.CRS_Strings._150580;
-import static packexcalib.gnss.CRS_Strings._28992;
-import static packexcalib.gnss.CRS_Strings._31370;
+
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.CanService.nmeaSTX_Disc;
 import static utils.MyTypes.DOZER;
@@ -50,7 +49,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     ProgressBar progressBar;
     Activity activity;
     public Dialog alertDialog;
-    ImageView save, title, BTConnect, serialCon, editZ, rtkMode;
+    ImageView save, title, serialCon, editZ, rtkMode;
     TextView txmchdt,latlon, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon, extraAng;
     TextView framA, boomA, boom2A, stickA, bucketA, tiltA;
     TextView framO, boomO, boom2O, stickO, bucketO, tiltO;
@@ -106,7 +105,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         cqmeno = alertDialog.findViewById(R.id.cqmeno);//
         tvCq = alertDialog.findViewById(R.id.tvcq);//
         txCon = alertDialog.findViewById(R.id.txconnected);//
-        BTConnect = alertDialog.findViewById(R.id.btBTconnect);
+
         serialCon = alertDialog.findViewById(R.id.serialCon);
         txtbennasx = alertDialog.findViewById(R.id.txtbennasx);
         txtbennacx = alertDialog.findViewById(R.id.txtbennacx);
@@ -309,10 +308,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                 dialogEditZetaDxf.show();
             }
         });
-        BTConnect.setOnClickListener(view -> {
 
-
-        });
 
         cqpiu.setOnClickListener(view -> {
             DataSaved.Max_CQ3D += 0.01;
@@ -527,14 +523,8 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     switch (DataSaved.S_CRS) {
                         case _UTM:
                             txCrs.setText(_UTM);
+                            break;
 
-                            break;
-                        case "28992":
-                            txCrs.setText(_28992);
-                            break;
-                        case "31370":
-                            txCrs.setText(_31370);
-                            break;
                         case "150580":
                             txCrs.setText(_150580);
                             break;
