@@ -1,6 +1,8 @@
 package utils;
 
 
+import static gui.MyApp.isApollo;
+
 import android.os.Build;
 import android.util.Log;
 
@@ -118,154 +120,158 @@ public class CPCanHelper {
 
         started = true;
         //Log.d("CPCanHelper", "Avvio  CAN...");
-        try {
-            if (CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
-                //APOLLO12
-                try {
-                    if (DataSaved.boudrateCAN1 == 0) {
-                        DataSaved.boudrateCAN1 = 250000;
-                    }
-                    if (DataSaved.boudrateCAN2 == 0) {
-                        DataSaved.boudrateCAN2 = 250000;
-                    }
-                    mProxy = new CPVxProtocolProxy();
-                    mProxy.connect(null, null);
-                    if (mProxy != null && mProxy.isConnected()) {
-                        mProxy.setOnVoltageChanged(new VoltageChangedListener() {
-                            @Override
-                            public void onVoltageChanged(float v) {
-
-                                voltApollo2 = String.valueOf(v);
-                            }
-                        });
-                    }
-                    mSocketCanProxy = new SocketCanProxy(1);
-                    mSocketCanProxy.setCANBaudrate(DataSaved.boudrateCAN1, Protocol.CAN_BAUD_2M);
-                    mSocketCanProxy.clearFilters();
-                    mSocketCanProxy.setCanFrameRxCallback(new SocketCanFrameRxListener() {
-                        @Override
-                        public void onCanReceive(int i, int i1, byte[] bytes) {
-                            action.execute(1, i & 0x1FFFFFFF, bytes);
+        if(isApollo) {
+            try {
+                if (CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
+                    //APOLLO12
+                    try {
+                        if (DataSaved.boudrateCAN1 == 0) {
+                            DataSaved.boudrateCAN1 = 250000;
                         }
-
-                        @Override
-                        public void onCanFdReceive(int i, int i1, int i2, byte[] bytes) {
-                            //Log.d("MainActivity" ,"CANFD i:" + i + " i1:" + i1);
+                        if (DataSaved.boudrateCAN2 == 0) {
+                            DataSaved.boudrateCAN2 = 250000;
                         }
-                    });
-                    mSocketCanProxy.connect(null, null);
-
-                    //can2
-                    mSocketCanProxy_2 = new SocketCanProxy(2);
-                    mSocketCanProxy_2.setCANBaudrate(DataSaved.boudrateCAN2, Protocol.CAN_BAUD_2M);
-                    mSocketCanProxy_2.setCanFrameRxCallback(new SocketCanFrameRxListener() {
-                        @Override
-                        public void onCanReceive(int i, int i1, byte[] bytes) {
-                            action.execute(2, i & 0x1FFFFFFF, bytes);
-
-                        }
-
-                        @Override
-                        public void onCanFdReceive(int i, int i1, int i2, byte[] bytes) {
-                            //
-                        }
-                    });
-                    mSocketCanProxy_2.connect(null, null);
-
-
-                } catch (CPBusException e) {
-                    Log.e("CPCanHelper", e.toString() + "  APOLLO2_12_PRO");
-                }
-            } else if (!CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
-                //resto APOLLO10
-                try {
-                    mProxy = new CPVxProtocolProxy();
-                    mProxy.setCANBaudrate(DataSaved.boudrateCAN1, DataSaved.boudrateCAN2);
-                    mProxy.setCanFrameRxListener((i, i1, b, b1, i2, bytes) -> {
-                        action.execute(i, i1, bytes);
-                    });
-                    mProxy.connect(null, null);
-
-                    if (mProxy != null && mProxy.isConnected()) {
-                        mProxy.setOnVoltageChanged(new VoltageChangedListener() {
-                            @Override
-                            public void onVoltageChanged(float v) {
-                                voltApollo2 = String.valueOf(v);
-
-                            }
-                        });
-                    }
-
-                } catch (CPBusException e) {
-                    Log.e("CPCanHelper", e.toString() + "  mProxy");
-                }
-
-            } else if (!CPCommConfig.isUseSocketCanService() && !CPCommConfig.isUseMcuCanService()) {
-                //TANK2
-                try {
-                    mSpi = new SpiPort(CPDEVICE.APOLLO2.SPI2_0, CPDEVICE.APOLLO2.SPI_DATA_IND, true);
-                    mCPVxDataLink = new CPV3DataLink();
-                    mCPVxProtocol = new CPV3Protocol();
-                    ((CPV3Protocol) mCPVxProtocol).config(DataSaved.boudrateCAN1, DataSaved.boudrateCAN2);
-                    ((CPV3Protocol) mCPVxProtocol).clearFilters(ICPCanFrame.Channel.CHN_1);
-                    ((CPV3Protocol) mCPVxProtocol).clearFilters(ICPCanFrame.Channel.CHN_2);
-
-                    ((ICPCanFrame) mCPVxProtocol).setCanFrameRxListener((channel, id, idType, remote, dlc, canpack) -> {
-                        action.execute(channel, id, canpack);
-                    });
-                    mCPVxProtocol.connect(mCPVxDataLink, mSpi);
-                    if (mCPVxProtocol != null) {
-                        if (mCPVxProtocol.isConnected()) {
-                            mCPVxProtocol.setOnVoltageChanged(new VoltageChangedListener() {
+                        mProxy = new CPVxProtocolProxy();
+                        mProxy.connect(null, null);
+                        if (mProxy != null && mProxy.isConnected()) {
+                            mProxy.setOnVoltageChanged(new VoltageChangedListener() {
                                 @Override
                                 public void onVoltageChanged(float v) {
+
                                     voltApollo2 = String.valueOf(v);
                                 }
                             });
                         }
+                        mSocketCanProxy = new SocketCanProxy(1);
+                        mSocketCanProxy.setCANBaudrate(DataSaved.boudrateCAN1, Protocol.CAN_BAUD_2M);
+                        mSocketCanProxy.clearFilters();
+                        mSocketCanProxy.setCanFrameRxCallback(new SocketCanFrameRxListener() {
+                            @Override
+                            public void onCanReceive(int i, int i1, byte[] bytes) {
+                                action.execute(1, i & 0x1FFFFFFF, bytes);
+                            }
+
+                            @Override
+                            public void onCanFdReceive(int i, int i1, int i2, byte[] bytes) {
+                                //Log.d("MainActivity" ,"CANFD i:" + i + " i1:" + i1);
+                            }
+                        });
+                        mSocketCanProxy.connect(null, null);
+
+                        //can2
+                        mSocketCanProxy_2 = new SocketCanProxy(2);
+                        mSocketCanProxy_2.setCANBaudrate(DataSaved.boudrateCAN2, Protocol.CAN_BAUD_2M);
+                        mSocketCanProxy_2.setCanFrameRxCallback(new SocketCanFrameRxListener() {
+                            @Override
+                            public void onCanReceive(int i, int i1, byte[] bytes) {
+                                action.execute(2, i & 0x1FFFFFFF, bytes);
+
+                            }
+
+                            @Override
+                            public void onCanFdReceive(int i, int i1, int i2, byte[] bytes) {
+                                //
+                            }
+                        });
+                        mSocketCanProxy_2.connect(null, null);
+
+
+                    } catch (CPBusException e) {
+                        Log.e("CPCanHelper", e.toString() + "  APOLLO2_12_PRO");
                     }
-                } catch (CPBusException e) {
-                    Log.e("CPCanHelper", Log.getStackTraceString(e));
+                } else if (!CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
+                    //resto APOLLO10
+                    try {
+                        mProxy = new CPVxProtocolProxy();
+                        mProxy.setCANBaudrate(DataSaved.boudrateCAN1, DataSaved.boudrateCAN2);
+                        mProxy.setCanFrameRxListener((i, i1, b, b1, i2, bytes) -> {
+                            action.execute(i, i1, bytes);
+                        });
+                        mProxy.connect(null, null);
+
+                        if (mProxy != null && mProxy.isConnected()) {
+                            mProxy.setOnVoltageChanged(new VoltageChangedListener() {
+                                @Override
+                                public void onVoltageChanged(float v) {
+                                    voltApollo2 = String.valueOf(v);
+
+                                }
+                            });
+                        }
+
+                    } catch (CPBusException e) {
+                        Log.e("CPCanHelper", e.toString() + "  mProxy");
+                    }
+
+                } else if (!CPCommConfig.isUseSocketCanService() && !CPCommConfig.isUseMcuCanService()) {
+                    //TANK2
+                    try {
+                        mSpi = new SpiPort(CPDEVICE.APOLLO2.SPI2_0, CPDEVICE.APOLLO2.SPI_DATA_IND, true);
+                        mCPVxDataLink = new CPV3DataLink();
+                        mCPVxProtocol = new CPV3Protocol();
+                        ((CPV3Protocol) mCPVxProtocol).config(DataSaved.boudrateCAN1, DataSaved.boudrateCAN2);
+                        ((CPV3Protocol) mCPVxProtocol).clearFilters(ICPCanFrame.Channel.CHN_1);
+                        ((CPV3Protocol) mCPVxProtocol).clearFilters(ICPCanFrame.Channel.CHN_2);
+
+                        ((ICPCanFrame) mCPVxProtocol).setCanFrameRxListener((channel, id, idType, remote, dlc, canpack) -> {
+                            action.execute(channel, id, canpack);
+                        });
+                        mCPVxProtocol.connect(mCPVxDataLink, mSpi);
+                        if (mCPVxProtocol != null) {
+                            if (mCPVxProtocol.isConnected()) {
+                                mCPVxProtocol.setOnVoltageChanged(new VoltageChangedListener() {
+                                    @Override
+                                    public void onVoltageChanged(float v) {
+                                        voltApollo2 = String.valueOf(v);
+                                    }
+                                });
+                            }
+                        }
+                    } catch (CPBusException e) {
+                        Log.e("CPCanHelper", Log.getStackTraceString(e));
+                    }
                 }
+            } catch (Exception e) {
+                //new CustomToast(MyApp.visibleActivity,e.toString()).show_error();
             }
-        } catch (Exception e) {
-            //new CustomToast(MyApp.visibleActivity,e.toString()).show_error();
         }
 
     }
 
     public void disconnectAll() {
+        if(isApollo) {
 
-        if (CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
-            //APOLLO12
-            if (mSocketCanProxy != null) {
-                mSocketCanProxy.release();
-            }
-            if (mSocketCanProxy_2 != null) {
-                mSocketCanProxy_2.release();
-            }
-
-        } else if (!CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
-            //resto APOLLO10
-            if( mProxy != null) {
-                if (mProxy.isConnected()) {
-                    mProxy.disconnect();
-                    mProxy.release();
+            if (CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
+                //APOLLO12
+                if (mSocketCanProxy != null) {
+                    mSocketCanProxy.release();
                 }
+                if (mSocketCanProxy_2 != null) {
+                    mSocketCanProxy_2.release();
+                }
+
+            } else if (!CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
+                //resto APOLLO10
+                if (mProxy != null) {
+                    if (mProxy.isConnected()) {
+                        mProxy.disconnect();
+                        mProxy.release();
+                    }
+                }
+
+
+            } else if (!CPCommConfig.isUseSocketCanService() && !CPCommConfig.isUseMcuCanService()) {
+                //TANK2
+                if (mCPVxProtocol != null) mCPVxProtocol.disconnect();
+                if (mCPVxProtocol != null) mCPVxProtocol.release();
+                if (mCPVxDataLink != null) mCPVxDataLink.release();
+                if (mSpi != null) mSpi.release();
             }
-
-
-        } else if (!CPCommConfig.isUseSocketCanService() && !CPCommConfig.isUseMcuCanService()) {
-            //TANK2
-            if (mCPVxProtocol != null) mCPVxProtocol.disconnect();
-            if (mCPVxProtocol != null) mCPVxProtocol.release();
-            if (mCPVxDataLink != null) mCPVxDataLink.release();
-            if (mSpi != null) mSpi.release();
+            started = false;
+            mProxy = null;
+            mSocketCanProxy = null;
+            mSocketCanProxy_2 = null;
         }
-        started = false;
-        mProxy = null;
-        mSocketCanProxy = null;
-        mSocketCanProxy_2 = null;
 
     }
 
@@ -279,61 +285,63 @@ public class CPCanHelper {
      */
     public synchronized void canWrite(ICPCanFrame.Channel channel, int id, @NonNull byte[] data) {
 
-        try {
-            if (CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
-                //APOLLO12
-                switch (channel.ordinal()) {
-                    case 1:
-                        if (mSocketCanProxy != null) {
+        if (isApollo) {
+            try {
+                if (CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
+                    //APOLLO12
+                    switch (channel.ordinal()) {
+                        case 1:
+                            if (mSocketCanProxy != null) {
 
-                            if (id > 2047) {
-                                mSocketCanProxy.sendCanFrame(id | ISocketCanFrame.CAN_EFF_FLAG, data.length, data);
-                            } else {
-                                mSocketCanProxy.sendCanFrame(id, data.length, data);
+                                if (id > 2047) {
+                                    mSocketCanProxy.sendCanFrame(id | ISocketCanFrame.CAN_EFF_FLAG, data.length, data);
+                                } else {
+                                    mSocketCanProxy.sendCanFrame(id, data.length, data);
+                                }
+
+
                             }
+                            break;
+                        case 2:
+                            if (mSocketCanProxy_2 != null) {
+
+                                if (id > 2047) {
+                                    mSocketCanProxy_2.sendCanFrame(id | ISocketCanFrame.CAN_EFF_FLAG, data.length, data);
+                                } else {
+                                    mSocketCanProxy_2.sendCanFrame(id, data.length, data);
+                                }
 
 
-                        }
-                        break;
-                    case 2:
-                        if (mSocketCanProxy_2 != null) {
-
-                            if (id > 2047) {
-                                mSocketCanProxy_2.sendCanFrame(id | ISocketCanFrame.CAN_EFF_FLAG, data.length, data);
-                            } else {
-                                mSocketCanProxy_2.sendCanFrame(id, data.length, data);
                             }
+                            break;
 
+                    }
 
+                } else if (!CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
+                    //resto APOLLO10
+                    if (mProxy != null) {
+                        if (mProxy.isConnected()) {
+                            boolean t = id > 2047;
+                            mProxy.sendCanFrame(channel.ordinal(), id, t, false, data.length, data);
                         }
-                        break;
+                    }
 
-                }
+                } else if (!CPCommConfig.isUseSocketCanService() && !CPCommConfig.isUseMcuCanService()) {
+                    try {
+                        if (mCPVxProtocol != null) {
+                            if (mCPVxProtocol.isConnected()) {
+                                boolean b = id > 2047;
+                                ((ICPCanFrame) mCPVxProtocol).sendCanFrame(channel.ordinal(), id, b, false, data.length, data);
+                            }
+                        }
+                    } catch (Exception ignored) {
 
-            } else if (!CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
-                //resto APOLLO10
-                if (mProxy != null) {
-                    if (mProxy.isConnected()) {
-                        boolean t = id > 2047;
-                        mProxy.sendCanFrame(channel.ordinal(), id, t, false, data.length, data);
                     }
                 }
 
-            } else if (!CPCommConfig.isUseSocketCanService() && !CPCommConfig.isUseMcuCanService()) {
-                try {
-                    if (mCPVxProtocol != null) {
-                        if (mCPVxProtocol.isConnected()) {
-                            boolean b = id > 2047;
-                            ((ICPCanFrame) mCPVxProtocol).sendCanFrame(channel.ordinal(), id, b, false, data.length, data);
-                        }
-                    }
-                } catch (Exception ignored) {
-
-                }
+            } catch (Exception e) {
+                //new CustomToast(MyApp.visibleActivity,e.toString()).show_error();
             }
-
-        } catch (Exception e) {
-            //new CustomToast(MyApp.visibleActivity,e.toString()).show_error();
         }
     }
 }

@@ -79,6 +79,12 @@ android {
                     applicationIdSuffix ".gen1"
                     versionNameSuffix " -GEN1"
                 }
+                other {
+                    dimension "generation"
+                    applicationIdSuffix ".other"
+                    versionNameSuffix " -OTHER"
+                }
+
 
             }
         }
@@ -116,6 +122,10 @@ android {
         gen1Implementation files('libs/cpsdk.cpbase.v2.0.2.aar')
         gen1Implementation files('libs/cpsdk.cpcomm.v2.0.2.1.aar')
         gen1Implementation files('libs/cputils.v1.0.1.aar')
+        //OTHER
+        otherImplementation files('libs/cpsdk.cpbase.v2.0.2.aar')
+        otherImplementation files('libs/cpsdk.cpcomm.v2.0.2.1.aar')
+        otherImplementation files('libs/cputils.v1.0.1.aar')
 
         implementation fileTree(dir: 'libs', include: ['*.jar'])
         //noinspection GradleCompatible

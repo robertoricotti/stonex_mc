@@ -299,7 +299,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialsymbolsoutlined/link/outline_link_24.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio2/plugins/android/lib/android.jar!/images/material/icons/materialicons/close/baseline_close_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -309,7 +309,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="outline_link_96" />
+                            <entry key="outputName" value="close_web" />
                             <entry key="sourceFile" value="D:\Development\MC_V4" />
                           </map>
                         </option>

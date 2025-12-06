@@ -10,6 +10,8 @@ import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
 
+import android.util.Log;
+
 import gui.gps.NmeaGenerator;
 import packexcalib.gnss.NmeaListener;
 import utils.MyMCUtils;

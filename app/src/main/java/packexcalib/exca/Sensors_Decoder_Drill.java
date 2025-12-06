@@ -40,6 +40,11 @@ public class Sensors_Decoder_Drill {
 
     public static void decode(int id, byte[] data) {
         try {
+            if(id==0x18F||id==0x190){
+                //TODO Encoder connesso 8192 count per revolution = 0x2000
+                long revolution=PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0],data[1],data[3],data[4]});
+            Log.w("Encoder Revolutions",String.valueOf(revolution));
+            }
             if (DataSaved.isExtensionBoom > 0) {
                 if (id == 0x188) {
                     int v = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});

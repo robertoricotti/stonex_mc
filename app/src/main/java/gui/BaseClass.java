@@ -4,7 +4,9 @@ import static gui.MyApp.hAlarm;
 import static gui.MyApp.isApollo;
 import static gui.MyApp.isOffgrid;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +20,7 @@ public class BaseClass extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //Log.d("KeyEve", String.valueOf(event.getKeyCode()));
 
 
         if (event.getKeyCode() == KeyEvent.KEYCODE_F1) {
@@ -95,5 +98,6 @@ public class BaseClass extends AppCompatActivity {
             }
         }
     }
+
 
 }

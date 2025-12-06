@@ -172,12 +172,12 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="0.5"
-            android:background="@drawable/custom_background_test3d"
+            android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:rotation="180"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/menu_btn"
-            app:tint="@color/white" />
+            app:tint="@color/black" />
 
 
 
@@ -188,11 +188,11 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="0.5"
-            android:background="@drawable/custom_background_test3d"
+            android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/benna_misura_cnt"
-            app:tint="@color/white" />
+             />
 
         <ImageView
             android:id="@+id/settingOffset"
@@ -201,19 +201,20 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="0.5"
-            android:background="@drawable/custom_background_test3d"
+            android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/offset_btn"
-            app:tint="@color/white" />
+            app:tint="@color/black" />
         <ImageView
             android:id="@+id/hydroPoint"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
             android:layout_weight="0.5"
-            android:visibility="gone"
             android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:visibility="gone"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/cent_right_pg"
             />
@@ -224,12 +225,12 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="0.5"
-            android:background="@drawable/custom_background_test3d"
+            android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:rotationY="180"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/view_btn"
-            app:tint="@color/white" />
+            app:tint="@color/black" />
 
 
 
@@ -241,11 +242,11 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="0.5"
-            android:background="@drawable/custom_background_test3d"
+            android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/btn_pt_lines"
-            app:tint="@color/white" />
+     />
         <ImageView
             android:id="@+id/btn_pnezd"
             android:layout_width="wrap_content"
@@ -265,7 +266,7 @@
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="0.5"
-            android:background="@drawable/custom_background_test3d"
+            android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/gnss_setup_btn"

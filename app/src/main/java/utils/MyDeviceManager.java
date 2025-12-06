@@ -10,16 +10,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-
 import com.cp.cputils.Apollo2;
 import com.cp.cputils.ApolloPro;
 import com.cp.cputils.shellcommand.CpCmd;
-
-import com.cpdevice.cpcomm.boards.CPDEVICE;
 import com.cpdevice.cpcomm.frame.ICPCanFrame;
-
 import com.van.jni.VanCmd;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 
 import packexcalib.exca.DataSaved;
@@ -35,6 +33,7 @@ public class MyDeviceManager {
 
     }
 
+
     public static void hideBar(Context context) {
 
         switch (Build.BRAND) {
@@ -43,7 +42,7 @@ public class MyDeviceManager {
             case "APOLLO2_12_PRO":
             case "APOLLO2_12_PLUS":
             case "TANK2_7_10":
-            case "MEGA_1":
+
                 Intent intent = new Intent(ACTION_HIDE_NAVIGATION);
                 context.sendBroadcast(intent);
 
@@ -52,6 +51,21 @@ public class MyDeviceManager {
             case "SRT7PROS":
             case "qti":
                 VanCmd.exec("wm overscan 0,-60,0,-60", 10);
+                break;
+            case "MEGA_1":
+                try {
+                    Process su = Runtime.getRuntime().exec("su");
+                    DataOutputStream os = new DataOutputStream(su.getOutputStream());
+                    // 🔴 DISABILITA SYSTEMUI (barra di stato + nav bar)
+                    os.writeBytes("pm disable-user --user 0 com.android.systemui\n");
+                    os.writeBytes("sync\n");
+                    os.writeBytes("exit\n");
+                    os.flush();
+                    su.waitFor();
+
+                } catch (Exception e) {
+                    Log.e("CPCMDKK", Log.getStackTraceString(e));
+                }
                 break;
         }
 
@@ -64,7 +78,6 @@ public class MyDeviceManager {
             case "APOLLO2_12_PRO":
             case "APOLLO2_12_PLUS":
             case "TANK2_7_10":
-            case "MEGA_1":
                 Intent intent = new Intent(ACTION_SHOW_NAVIGATION);
                 context.sendBroadcast(intent);
                 break;
@@ -72,6 +85,21 @@ public class MyDeviceManager {
             case "SRT7PROS":
             case "qti":
                 VanCmd.exec("wm overscan 0,0,0,0", 10);
+                break;
+            case "MEGA_1":
+                try {
+                    Process su = Runtime.getRuntime().exec("su");
+                    DataOutputStream os = new DataOutputStream(su.getOutputStream());
+                    // 🔴 ABILITA SYSTEMUI (barra di stato + nav bar)
+                    os.writeBytes("pm enable com.android.systemui\n");
+                    os.writeBytes("sync\n");
+                    os.writeBytes("exit\n");
+                    os.flush();
+                    su.waitFor();
+
+                } catch (Exception e) {
+                    Log.e("CPCMDKK", Log.getStackTraceString(e));
+                }
                 break;
 
 
@@ -117,34 +145,72 @@ public class MyDeviceManager {
         }
         return s;
     }
-    public static void setSize(Activity activity){
-        String s="";
-        String s2="";
-        if(Build.BRAND.equals("APOLLO2_10")){
-            s="wm density 204";
-            s2="settings put system font_scale 0.85";
 
-            Apollo2 apollo2 = Apollo2.getInstance(activity);
-            apollo2.exec(s);
-            apollo2.exec(s2);
-            try {
-                new CpCmd().exceCmd("settings put system font_scale 0.85");
-                new CpCmd().exceCmd("wm density 204");
-            } catch (Exception ignored) {
+    public static void setSize(Activity activity) {
+        String s0 = "";
+        String s1 = "";
+        String s2 = "";
+        switch (Build.BRAND) {
+            case "APOLLO2_10":
+                try {
+                    Process su = Runtime.getRuntime().exec("su");
+                    DataOutputStream os = new DataOutputStream(su.getOutputStream());
 
-            }
+                    // ✅ DENSITY SMALL
+                    os.writeBytes("wm density 204\n");
+
+                    // ✅ FONT SMALL
+                    os.writeBytes("settings put system font_scale 0.85\n");
+
+                    os.writeBytes("sync\n");
+                    os.writeBytes("exit\n");
+
+                    os.flush();
+                    su.waitFor();
+
+                } catch (Exception e) {
+                    Log.e("CPCMDKK", Log.getStackTraceString(e));
+                }
+
+                break;
+            case "SRT8PROS":
+                s1 = "wm density 200";
+                s2 = "settings put system font_scale 1.0";
+                VanCmd.exec(s1, 0);
+                VanCmd.exec(s2, 0);
+                break;
+            case "MEGA_1":
+                try {
+                    Process su = Runtime.getRuntime().exec("su");
+                    DataOutputStream os = new DataOutputStream(su.getOutputStream());
+
+                    // ✅ USB HOST
+                    //os.writeBytes("echo host > /sys/devices/platform/fd5d0000.syscon/fd5d0000.syscon:usb2-phy@0/otg_mode\n");
+
+                    // ✅ DISABILITA ADC-KEYS (Volume, Back, Menu, F21)
+                    os.writeBytes("echo 1 > /sys/devices/platform/adc-keys/input/input7/inhibited\n");
+
+                    // ✅ DENSITY SMALL
+                    os.writeBytes("wm density 170\n");
+
+                    // ✅ FONT SMALL
+                    os.writeBytes("settings put system font_scale 0.85\n");
+
+                    os.writeBytes("sync\n");
+                    os.writeBytes("exit\n");
+
+                    os.flush();
+                    su.waitFor();
+
+                } catch (Exception e) {
+                    Log.e("CPCMDKK", Log.getStackTraceString(e));
+                }
 
 
-        }else if(Build.BRAND.equals("SRT8PROS")){
-            s="wm density 200";
-            s2="settings put system font_scale 1.0";
-            VanCmd.exec(s, 0);
-            VanCmd.exec(s2, 0);
+                break;
         }
 
     }
-
-
 
 
     public static void OUT1(Activity activity, int out) {
@@ -161,7 +227,7 @@ public class MyDeviceManager {
                 break;
 
             case 1:
-                if(DataSaved.enOUT==1) {
+                if (DataSaved.enOUT == 1) {
                     if (GEN1) {
                         VanCmd.exec("echo \"100007\" >/dev/gpio_dev", 0);//out 2 =OFF
 
@@ -187,7 +253,7 @@ public class MyDeviceManager {
                 break;
 
             case 1:
-                if(DataSaved.enOUT==1) {
+                if (DataSaved.enOUT == 1) {
                     if (GEN1) {
                         VanCmd.exec("echo \"100009\" >/dev/gpio_dev", 0);
                     } else if (GEN2) {
@@ -200,13 +266,27 @@ public class MyDeviceManager {
     }
 
     public static void host(Activity activity) {
-/*
-        if (GEN1) {
-            ApolloPro.getInstance(activity).setUsbHost(1);
-        } else if (GEN2) {
-            Apollo2.getInstance(activity).setUsbHost(1);
+
+        Apollo2 apollo2 = Apollo2.getInstance(activity);
+        apollo2.setUsbHost(1);
+
+        if(Build.BRAND.equals("MEGA_1")){
+            try {
+                Process su = Runtime.getRuntime().exec("su");
+                DataOutputStream os = new DataOutputStream(su.getOutputStream());
+
+                // ✅ USB HOST
+                os.writeBytes("echo host > /sys/devices/platform/fd5d0000.syscon/fd5d0000.syscon:usb2-phy@0/otg_mode\n");
+                os.writeBytes("sync\n");
+                os.writeBytes("exit\n");
+
+                os.flush();
+                su.waitFor();
+            } catch (Exception e){
+                Log.e("setHost",Log.getStackTraceString(e));
+            }
         }
-*/
+
 
     }
 
@@ -222,8 +302,7 @@ public class MyDeviceManager {
     }
 
 
-
-    public static void CanWrite(boolean send,int channel, int id, int dlc, byte[] msg) {
+    public static void CanWrite(boolean send, int channel, int id, int dlc, byte[] msg) {
         ICPCanFrame.Channel channel1 = null;
         switch (channel) {
             case 0:
@@ -238,7 +317,7 @@ public class MyDeviceManager {
                 break;
 
         }
-        if(send) {
+        if (send) {
             CPCanHelper.getInstance().canWrite(channel1, id, msg);
         }
 
@@ -262,7 +341,8 @@ public class MyDeviceManager {
             activity.sendBroadcast(intent2);
         }
     }
-    public static String getBuildVersion(Activity activity){
+
+    public static String getBuildVersion(Activity activity) {
         if (GEN1) {
 
             return ApolloPro.getInstance(activity).getDeviceSystemVersion();
@@ -274,7 +354,7 @@ public class MyDeviceManager {
         return "";
     }
 
-    public static String getMacAddress(Activity activity){
+    public static String getMacAddress(Activity activity) {
         if (GEN1) {
 
             return ApolloPro.getInstance(activity).getDeviceMacAddress();
@@ -283,9 +363,10 @@ public class MyDeviceManager {
             return Apollo2.getInstance(activity).getDeviceMacAddress();
 
         }
-        return "";
+        return "20:00:00:00:00:FF";
     }
-    public static String getDeviceSN(Activity activity){
+
+    public static String getDeviceSN(Activity activity) {
 
         if (GEN1) {
             return ApolloPro.getInstance(activity).getDeviceSN().toUpperCase();
@@ -294,7 +375,7 @@ public class MyDeviceManager {
             return Apollo2.getInstance(activity).getDeviceSN().toUpperCase();
 
         }
-        return "";
+        return "STX_UNKNOWN";
     }
 
     public static String getSerial() {//android 6 ,9 getsn
@@ -305,7 +386,7 @@ public class MyDeviceManager {
             serial = (String) get.invoke(c, "ro.serialno");
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("getSN",Log.getStackTraceString(e));
+            Log.e("getSN", Log.getStackTraceString(e));
 
         }
         // Log.d(TAG, "++sdk+" + Build.VERSION.SDK_INT + "--sn--" + serial);

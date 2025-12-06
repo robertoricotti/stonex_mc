@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -32,7 +33,8 @@ import utils.Utils;
 public class DialogOffset {
     Activity activity;
     public Dialog dialog;
-    Button canc, save, zero, set, reverse;
+    ImageView canc, save;
+    Button zero, set, reverse;
     EditText value, value_ft, value_in, value_fraction;
     TextView title, measure;
     Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bdot, bcanc, bdel;

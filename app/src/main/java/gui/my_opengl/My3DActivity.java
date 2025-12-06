@@ -80,6 +80,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
+    int flip=0;
 
     ImageView navigatorHDT;
 
@@ -895,16 +896,22 @@ public class My3DActivity extends BaseClass {
                 if (DataSaved.isLowerEdge) {
                     bucketEdge.setBackground(getDrawable(R.drawable.custom_background_test3d_box_giallo));
                 } else {
-                    bucketEdge.setBackground(getDrawable(R.drawable.custom_background_test3d));
+                    bucketEdge.setBackground(getDrawable(R.drawable.custom_background_test3d_box_grigino));
                 }
 
 
                 gl_vista.setImageTintList(ColorStateList.valueOf(Color.WHITE));
 
                 if (DataSaved.gpsOk && errorCode == 0) {
-                    gl_gps.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+
+                    gl_gps.setImageTintList(ColorStateList.valueOf(Color.DKGRAY));
+                    gl_gps.setBackground(getDrawable(R.drawable.custom_background_test3d_box_gpsok));
+                    flip=0;
                 } else {
-                    gl_gps.setImageTintList(ColorStateList.valueOf(Color.RED));
+
+                   flipFlop();
+                   flip+=1;
+                   flip=flip%20;
                 }
 
                 if (isPan) {
@@ -1703,6 +1710,17 @@ public class My3DActivity extends BaseClass {
             return new String[]{s0, s1, s2};
         } else {
             return new String[]{s4, s5, s6};
+        }
+    }
+    private  void flipFlop(){
+
+        if(flip==0) {
+            gl_gps.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            gl_gps.setBackground(getDrawable(R.drawable.custom_background_test3d_box_gpsko));
+        }
+        if(flip==10) {
+            gl_gps.setImageTintList(ColorStateList.valueOf(Color.RED));
+            gl_gps.setBackground(getDrawable(R.drawable.custom_background_test3d_box_grigino));
         }
     }
 }

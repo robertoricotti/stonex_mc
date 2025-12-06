@@ -117,6 +117,7 @@ import services.CanService;
 import services.TriangleService;
 import services.UpdateValuesService;
 import utils.FullscreenActivity;
+import utils.HomeKeyLocker;
 import utils.LanguageSetter;
 import utils.MyData;
 import utils.MyDeviceManager;
@@ -155,7 +156,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     int frameCounter;
     int showConnCounter, checkCounter;
     boolean soundOn, soundOn2;
-    int accCount = 0;
     ApolloPro apolloPro;
     Apollo2 apollo2;
     private volatile boolean mRunning = false;
@@ -174,17 +174,20 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             folderPath = "/StonexMC_V4";
             if (Build.BRAND.equals("MEGA_1") ||Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS") || Build.BRAND.equals("APOLLO2_10")) {
                 apollo2 = Apollo2.getInstance(this);
-
                 MyApp.DEVICE_SN = apollo2.getDeviceSN();
             } else {
                 apolloPro = ApolloPro.getInstance(this);
                 MyApp.DEVICE_SN = apolloPro.getDeviceSN();
             }
 
-        } else {
+        }
+        else {
+
             isApollo = false;
             folderPath = "/StonexMC_V4";
             showConnCounter = 0;
+            MyApp.DEVICE_SN="STX_UNKNOWN";
+
         }
         if (MyData.get_String("machinestate") != null) {
             if (MyData.get_String("machinestate").equals("0")) {
@@ -249,6 +252,8 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
     }
 
+
+
     public void myCrash() {
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
 
@@ -269,6 +274,8 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         });
     }
 
+
+
     @Override
     public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
 
@@ -283,6 +290,7 @@ git push
     @Override
     public void onActivityStarted(Activity activity) {
         if (activity != null) {
+       
             if (activity instanceof My3DActivity) {
                 startConditionChecker(activity);
             } else {

@@ -33,8 +33,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.stx_dig.R;
+
+import java.time.Duration;
 
 import cloud.S3ManagerSingleton;
 import gui.BaseClass;
@@ -48,6 +51,7 @@ import gui.dialogs_and_toast.Dialog_To_DueDi;
 import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.projects.PickProject;
 import gui.tech_menu.ExcavatorChooserActivity;
+import kotlinx.serialization.descriptors.PrimitiveKind;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import services.ReadProjectService;

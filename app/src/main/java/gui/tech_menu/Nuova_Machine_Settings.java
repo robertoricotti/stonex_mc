@@ -56,7 +56,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nuova_machine_settings);
-        if(Build.BRAND.equals("APOLLO2_7")){
+        if(Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("MEGA_1")){
             bigg=80;
             small=70;
         }else {

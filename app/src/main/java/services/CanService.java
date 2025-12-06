@@ -21,6 +21,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.cp.cputils.Apollo2;
+
 import org.greenrobot.eventbus.EventBus;
 
 import event_bus.CanEvents;
@@ -108,7 +110,9 @@ public class CanService extends Service {
 
     public void OnCan(int channel, byte[] msg, int dlc, int id) {
 
+
         try {
+
             if (MyApp.visibleActivity instanceof Nuovo_Gps || MyApp.visibleActivity instanceof Can_Msg_Debug) {
 
                 EventBus.getDefault().post(new CanEvents(channel, null, id, dlc, msg));
@@ -692,32 +696,33 @@ public class CanService extends Service {
             System.out.println(e);
         }
 
+        if(MyApp.isApollo) {
 
-        CPCanHelper.getInstance().start(new CPCanHelper.Action() {
-            @Override
-            public void execute(int channel, int id, byte[] data) {
-                if (data != null) {
-                    dlc = data.length;
-                    switch (DataSaved.isWL) {
-                        case EXCAVATOR:
-                        case DOZER:
-                        case DOZER_SIX:
-                        case WHEELLOADER:
-                        case GRADER:
-                            OnCan(channel, data, dlc, id);
-                            break;
-                        case DRILL:
-                            OnCan_Drill(channel, data, dlc, id);
-                            break;
+            CPCanHelper.getInstance().start(new CPCanHelper.Action() {
+                @Override
+                public void execute(int channel, int id, byte[] data) {
+                    if (data != null) {
+                        dlc = data.length;
+                        switch (DataSaved.isWL) {
+                            case EXCAVATOR:
+                            case DOZER:
+                            case DOZER_SIX:
+                            case WHEELLOADER:
+                            case GRADER:
+                                OnCan(channel, data, dlc, id);
+                                break;
+                            case DRILL:
+                                OnCan_Drill(channel, data, dlc, id);
+                                break;
+                        }
+
+
                     }
 
-
                 }
+            });
 
-            }
-        });
-
-
+        }
         return START_NOT_STICKY;
     }
 

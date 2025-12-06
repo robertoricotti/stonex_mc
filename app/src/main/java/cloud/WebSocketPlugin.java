@@ -2,6 +2,7 @@ package cloud;
 
 import static gui.MyApp.activationCode;
 import static gui.MyApp.folderPath;
+import static gui.MyApp.isApollo;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.restoreCode;
 
@@ -44,6 +45,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class WebSocketPlugin {
+
     private WebSocket webSocket;
 
     private static final String WS_URL = "wss://licensemc.stonexpositioning.com/api/v1/ws";
@@ -80,6 +82,7 @@ public class WebSocketPlugin {
     }
 
     public void start() {
+        if(isApollo){
 
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).build();
 
@@ -88,14 +91,14 @@ public class WebSocketPlugin {
         client.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(WebSocket ws, Response response) {
-                webSocket=ws;
+                webSocket = ws;
                 currentTry = 0;
                 try {
 
                     JSONObject payload = new JSONObject();
                     payload.put("serial_number", DEVICE_SN);
                     payload.put("mac_address", MAC_ADDRESS);
-                    payload.put("firmware",FIRMWARE_VERSION);
+                    payload.put("firmware", FIRMWARE_VERSION);
                     payload.put("timeStamp", System.currentTimeMillis());
 
                     JSONObject encryptedMessage = encryptAndSign(payload);
@@ -174,7 +177,7 @@ public class WebSocketPlugin {
 
             @Override
             public void onFailure(WebSocket ws, Throwable t, Response response) {
-                webSocket=null;
+                webSocket = null;
                 s3ManagerSingleton.shutdown();
                 //Log.d("TestM", "WebSocket error: " + t.getMessage());
 
@@ -191,6 +194,7 @@ public class WebSocketPlugin {
                 }
             }
         });
+    }else {parseCode("");}
     }
 
     public void sendCommand(String command, Map<String, Object> payload) {
@@ -329,44 +333,51 @@ public class WebSocketPlugin {
     }
 
     public void parseCode(String jsonString) {
-        try {
-            // Crea oggetto JSON
-            JSONObject jsonObject = new JSONObject(jsonString);
+        if(isApollo) {
+            try {
+                // Crea oggetto JSON
+                JSONObject jsonObject = new JSONObject(jsonString);
 
-            // Estrae e popola i campi
-            activationCode = jsonObject.getString("activationCode");
-            MyData.push("licenza", activationCode);
-            restoreCode = jsonObject.getString("restoreCode");
-            String deviceSN = jsonObject.getString("deviceSN");
-            licenseType = jsonObject.getInt("licenseType");
-            String userID = jsonObject.getString("userID");
-            String category = jsonObject.getString("category");
-            long timestamp = jsonObject.getLong("timestamp");
-            MyApp.expiry = jsonObject.getString("expiry");
+                // Estrae e popola i campi
+                activationCode = jsonObject.getString("activationCode");
+                MyData.push("licenza", activationCode);
+                restoreCode = jsonObject.getString("restoreCode");
+                String deviceSN = jsonObject.getString("deviceSN");
+                licenseType = jsonObject.getInt("licenseType");
+                String userID = jsonObject.getString("userID");
+                String category = jsonObject.getString("category");
+                long timestamp = jsonObject.getLong("timestamp");
+                MyApp.expiry = jsonObject.getString("expiry");
 
-            // Percorso della cartella
-            String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Config";
+                // Percorso della cartella
+                String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Config";
 
-            // Crea la cartella se non esiste
-            File directory = new File(pathL);
-            if (!directory.exists()) {
-                directory.mkdirs();
+                // Crea la cartella se non esiste
+                File directory = new File(pathL);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                // File di output JSON
+                File outputFile = new File(directory, "License.json");
+
+                // Scrive direttamente il JSON nel file
+                FileWriter writer = new FileWriter(outputFile);
+                writer.write(jsonObject.toString()); // salva il JSON intero
+                writer.close();
+
+            } catch (JSONException e) {
+                activationCode = "none";
+                restoreCode = "none";
+                licenseType = -1;
+            } catch (IOException e) {
+                Log.e("MyPath", "1+ " + e.getMessage());
             }
-
-            // File di output JSON
-            File outputFile = new File(directory, "License.json");
-
-            // Scrive direttamente il JSON nel file
-            FileWriter writer = new FileWriter(outputFile);
-            writer.write(jsonObject.toString()); // salva il JSON intero
-            writer.close();
-
-        } catch (JSONException e) {
-            activationCode = "none";
-            restoreCode = "none";
-            licenseType = -1;
-        } catch (IOException e) {
-            Log.e("MyPath","1+ " +e.getMessage());
+        }else {
+            activationCode="0123456789";
+            licenseType=5;
+            MyData.push("licenza", activationCode);
+            Log.d("AcT",licenseType+"  "+activationCode);
         }
     }
 

@@ -52,6 +52,7 @@ import java.util.List;
 
 import event_bus.CMD_Event;
 import event_bus.CanEvents;
+import gui.BaseClass;
 import gui.MyApp;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.Serial_Msg_Debug;
@@ -69,7 +70,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 import utils.WifiHelper;
 
-public class Nuovo_Gps extends AppCompatActivity {
+public class Nuovo_Gps extends BaseClass {
     ConstraintLayout allerta;
     LinearLayout lowerView, upper;
     LinearLayout lay1, lay2, lay3, lay4, lay5, lay6, lay7, lay8, lay9, lay10, lay11, lay12, lay13, lay14, lay15, lay16;

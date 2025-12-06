@@ -335,34 +335,26 @@
         app:layout_constraintStart_toStartOf="@+id/guideline79"
         app:layout_constraintTop_toTopOf="@+id/guideline97" />
 
-    <Button
+    <ImageView
         android:id="@+id/save"
         android:layout_width="150dp"
         android:layout_height="70dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
-        android:text="@string/save"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        android:textStyle="bold"
+        android:src="@drawable/save_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exit"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/guideline79"
         app:layout_constraintTop_toTopOf="@+id/guideline76" />
 
-    <Button
+    <ImageView
         android:id="@+id/exit"
         android:layout_width="150dp"
         android:layout_height="70dp"
         android:backgroundTint="@color/dark_gray"
         android:gravity="center"
-        android:text="@string/exit"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        android:textStyle="bold"
+        android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
