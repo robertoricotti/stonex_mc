@@ -115,7 +115,8 @@ android {
         */
         // GEN2 (librerie più nuove)
         gen2Implementation files('libs/cpsdk.cpbase.v2.0.4.6.aar')
-        gen2Implementation files('libs/cpsdk.cpcomm.v2.0.4.6.aar')
+        gen2Implementation files('libs/cpsdk.cpmedia.v2.0.5.4.aar')
+        gen2Implementation files('libs/cpsdk.cpcomm.v2.0.5.3.aar')
         gen2Implementation files('libs/cputils.v1.0.1.aar')
 
         // GEN1 (Apollo8, Tank2: librerie compatibili)

@@ -1,5 +1,6 @@
 package packexcalib.gnss;
 
+import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
 
@@ -331,9 +332,14 @@ public class NmeaListener {
                 Est1 = coord.getEasting();
                 Quota1 = DataSaved.offset_Z_antenna + coord.getQuota() + tmpGeoidSeparator;
 
-
-
                 break;
+            case _LOCAL_COORDINATES_FROM_GNSS:
+                coord = Deg2UTM.trasform(tmpNordLOC, tmpEstLOC, tmpQuotaLOC, _LOCAL_COORDINATES_FROM_GNSS);
+                Nord1 = coord.getNorthing();
+                Est1 = coord.getEasting();
+                Quota1 = DataSaved.offset_Z_antenna + coord.getQuota() ;
+                break;
+
             case _UTM:
 
                 coordUTM = Deg2UTM.trasform(mLat_1, mLon_1, tmpQuotaUTM, _UTM);
@@ -435,6 +441,7 @@ public class NmeaListener {
                     mZone=coord.getZone();
 
                     break;
+
                 case _UTM:
 
                     coordUTM = Deg2UTM.trasform(mLat_1, mLon_1, tmpQuotaUTM, _UTM);

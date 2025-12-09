@@ -1,6 +1,7 @@
 package gui.gps;
 
 import static packexcalib.gnss.CRS_Strings._NONE;
+import static services.CanSender.GNSS_MSG;
 import static utils.MyTypes.S980;
 import static utils.MyTypes.SC600;
 import static utils.MyTypes.SMC;
@@ -66,6 +67,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import serial.OpenSerialPort;
 import serial.SerialPortManager;
+import services.CanService;
 import utils.MyData;
 import utils.MyDeviceManager;
 import utils.WifiHelper;
@@ -672,7 +674,7 @@ public class Nuovo_Gps extends BaseClass {
                                 break;
 
                         }
-                        MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{WRITE, (byte) 0x01, (byte) speed, (byte) 0x03});
+                        MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{WRITE, GNSS_MSG, (byte) speed, (byte) 0x03});
                         break;
                     case 1:
                         //s980

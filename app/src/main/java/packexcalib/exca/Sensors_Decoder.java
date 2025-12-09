@@ -10,8 +10,6 @@ import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
 
-import android.util.Log;
-
 import gui.gps.NmeaGenerator;
 import packexcalib.gnss.NmeaListener;
 import utils.MyMCUtils;
@@ -27,7 +25,7 @@ public class Sensors_Decoder {
     public static int V_Laser = 255, flagDefault, WheelSteer;
 
     static double norm, ax_norm, ay_norm, az_norm;
-    static double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ, _x486, _y486, _z486;
+    static double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
     static double[] eulerAngles;
     static short acc_x;
     static short acc_y;
@@ -76,8 +74,6 @@ public class Sensors_Decoder {
                 case WHEELLOADER://wheel loader
                     switch (DataSaved.isCanOpen) {
                         case MOBA_SENS:
-
-
                             countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
                                 countTiltRot = 0;
@@ -104,344 +100,12 @@ public class Sensors_Decoder {
                             if (countTiltRot > 500) {
                                 DataSaved.isTiltRotator = false;
                             }
-                            switch (id & 0x1FFFFFFF) {
-                                case 90181733:
-                                    //0x5601065
-                                    //Frame MOBA
-                                    mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                                    qW = mqW / 23768.0d;
-                                    qX = mqX / 23768.0d;
-                                    qY = mqY / 23768.0d;
-                                    qZ = mqZ / 23768.0d;
-                                    qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                                    qW /= qnorm;
-                                    qX /= qnorm;
-                                    qY /= qnorm;
-                                    qZ /= qnorm;
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-
-                                    switch (DataSaved.lrFrame) {
-                                        case 0:
-                                            Deg_pitch = 0;
-                                            Deg_roll = 0;
-                                            Deg_Yaw_Frame = 0;
-                                            break;
-                                        case 1:
-                                            //Avanti
-                                            Deg_pitch = -eulerAngles[1];
-                                            Deg_roll = -eulerAngles[0];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        case 2:
-                                            //Destra
-                                            Deg_pitch = -eulerAngles[0];
-                                            Deg_roll = eulerAngles[1];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        case 3:
-                                            //Dietro
-                                            Deg_pitch = eulerAngles[1];
-                                            Deg_roll = eulerAngles[0];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-                                        case 4:
-                                            //Sinistra
-                                            Deg_pitch = eulerAngles[0];
-                                            Deg_roll = -eulerAngles[1];
-                                            Deg_Yaw_Frame = eulerAngles[2];
-                                            break;
-
-                                    }
-                                    break;
-                                case 0x381:
-                                    //frame CobID=1
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_x / norm;
-                                    ay_norm = (double) acc_y / norm;
-                                    az_norm = (double) acc_z / norm;
-
-                                    if (DataSaved.lrFrame == 1) {
-                                        Deg_roll = -((Math.atan2(ay_norm, az_norm) * 180 / Math.PI));
-                                        Deg_pitch = (Math.atan2(ax_norm, az_norm) * 180 / Math.PI);
-                                        Deg_roll += 180;
-                                        if (Deg_roll < -180) {
-                                            Deg_roll += 360;
-                                        } else if (Deg_roll > 180) {
-                                            Deg_roll -= 360;
-                                        }
-                                        Deg_pitch += 180;
-                                        if (Deg_pitch < -180) {
-                                            Deg_pitch += 360;
-                                        } else if (Deg_pitch > 180) {
-                                            Deg_pitch -= 360;
-                                        }
-
-                                    } else if (DataSaved.lrFrame == 2) {
-                                        //right
-                                        Deg_roll = -(Math.atan2(ax_norm, az_norm) * 180 / Math.PI);
-                                        Deg_pitch = -(Math.atan2(ay_norm, az_norm) * 180 / Math.PI);
-                                        Deg_roll += 180;
-                                        if (Deg_roll < -180) {
-                                            Deg_roll += 360;
-                                        } else if (Deg_roll > 180) {
-                                            Deg_roll -= 360;
-                                        }
-                                        Deg_pitch += 180;
-                                        if (Deg_pitch < -180) {
-                                            Deg_pitch += 360;
-                                        } else if (Deg_pitch > 180) {
-                                            Deg_pitch -= 360;
-                                        }
-
-                                    } else if (DataSaved.lrFrame == 3) {
-                                        Deg_roll = Math.atan2(ay_norm, az_norm) * 180 / Math.PI;
-                                        Deg_pitch = -(Math.atan2(ax_norm, az_norm) * 180 / Math.PI);
-                                        Deg_roll += 180;
-                                        if (Deg_roll < -180) {
-                                            Deg_roll += 360;
-                                        } else if (Deg_roll > 180) {
-                                            Deg_roll -= 360;
-                                        }
-                                        Deg_pitch += 180;
-                                        if (Deg_pitch < -180) {
-                                            Deg_pitch += 360;
-                                        } else if (Deg_pitch > 180) {
-                                            Deg_pitch -= 360;
-                                        }
-
-                                    } else if (DataSaved.lrFrame == 4) {
-                                        //left
-                                        Deg_roll = Math.atan2(ax_norm, az_norm) * 180 / Math.PI;
-                                        Deg_pitch = Math.atan2(ay_norm, az_norm) * 180 / Math.PI;
-                                        Deg_roll += 180;
-                                        if (Deg_roll < -180) {
-                                            Deg_roll += 360;
-                                        } else if (Deg_roll > 180) {
-                                            Deg_roll -= 360;
-                                        }
-                                        Deg_pitch += 180;
-                                        if (Deg_pitch < -180) {
-                                            Deg_pitch += 360;
-                                        } else if (Deg_pitch > 180) {
-                                            Deg_pitch -= 360;
-                                        }
-
-                                    } else {
-                                        Deg_pitch = 0d;
-                                        Deg_roll = 0d;
-                                    }
-
-
-                                    break;
-
-                                case 0x382:
-                                    //boom1 CobID=2
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_x / norm;
-                                    ay_norm = (double) acc_y / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    if (DataSaved.lrBoom1 == 1) {
-                                        Deg_boom1 = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                    } else if (DataSaved.lrBoom1 == -1) {
-                                        Deg_boom1 = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                    } else {
-                                        Deg_boom1 = 0d;
-                                    }
-
-
-                                    break;
-
-                                case 0x387:
-                                    //boom2 CobID=3
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_x / norm;
-                                    ay_norm = (double) acc_y / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrBoom2) {
-                                        case 1:
-                                            Deg_boom2 = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            break;
-                                        case -1:
-                                            Deg_boom2 = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            break;
-                                        default:
-                                            Deg_boom2 = 0d;
-                                            break;
-                                    }
-
-
-                                    break;
-
-                                case 0x384:
-                                    //stick CobID=4
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_x / norm;
-                                    ay_norm = (double) acc_y / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrStick) {
-                                        case 1:
-                                            Deg_stick = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            if (DataSaved.Extra_Heading > 0) {
-                                                Deg_Boom_Roll = Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI;
-                                            }
-                                            break;
-                                        case -1:
-                                            Deg_stick = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            if (DataSaved.Extra_Heading > 0) {
-                                                Deg_Boom_Roll = -Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI;
-
-                                            }
-                                            break;
-                                        default:
-                                            Deg_stick = 0d;
-                                            Deg_Boom_Roll = Deg_roll;
-                                            break;
-                                    }
-
-                                    if (DataSaved.lrFrame == 0) {
-                                        Deg_Boom_Roll = 0;
-                                    }
-
-
-                                    break;
-
-                                case 0x385:
-                                    //bucket CobID=5
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_x / norm;
-                                    ay_norm = (double) acc_y / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrBucket) {
-                                        case 1:
-                                            Deg_bucket = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            break;
-                                        case -1:
-                                            Deg_bucket = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            break;
-                                        case 2:
-                                            Deg_bucket = (Math.atan2(ax_norm, az_norm) * 180 / Math.PI);
-                                            break;
-                                        case 3:
-                                            Deg_bucket = -((Math.atan2(ax_norm, az_norm) * 180 / Math.PI));
-                                            break;
-                                        default:
-                                            Deg_bucket = 0d;
-                                            break;
-                                    }
-
-
-                                    break;
-
-                                case 0x386:
-                                    //tilt CobID=6
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_x / norm;
-                                    ay_norm = (double) acc_y / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrTilt) {
-                                        case 1:
-                                            Deg_Benna_W_Tilt = Math.atan2(ay_norm, az_norm) * 180 / Math.PI;
-                                            Deg_tilt = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-
-                                            break;
-                                        case -1:
-                                            Deg_Benna_W_Tilt = -(Math.atan2(ay_norm, az_norm) * 180 / Math.PI);
-                                            Deg_tilt = Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI;
-
-                                            break;
-                                        default:
-                                            Deg_Benna_W_Tilt = 0;
-                                            Deg_tilt = 0;
-                                            break;
-                                    }
-
-
-                                    break;
-
-                                case 0x560106A:
-                                    //0x560106A
-                                    //Tilt MOBA
-
-                                    isMobaTilt = true;
-                                    mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                                    qW = mqW / 23768.0d;
-                                    qX = mqX / 23768.0d;
-                                    qY = mqY / 23768.0d;
-                                    qZ = mqZ / 23768.0d;
-                                    qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                                    qW /= qnorm;
-                                    qX /= qnorm;
-                                    qY /= qnorm;
-                                    qZ /= qnorm;
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-
-                                    switch (DataSaved.lrTilt) {
-                                        case 1:
-                                            //Left
-                                            Deg_Benna_W_Tilt = eulerAngles[0];
-                                            Deg_tilt = -eulerAngles[1];
-                                            Deg_Yaw_Tilt = eulerAngles[2];
-
-                                            break;
-                                        case -1:
-                                            //Right
-                                            Deg_Benna_W_Tilt = -eulerAngles[0];
-                                            Deg_tilt = eulerAngles[1];
-                                            Deg_Yaw_Tilt = eulerAngles[2];
-
-                                            break;
-                                    }
-
-                                    break;
-
-                                case 928:
-                                    //default sensor CobID=20
-
-                                    flagDefault += 100;
-                                    break;
-                                case 0x204301://verificare id laser 29bit
-
-
-                                    if (DataSaved.laserOn == 1) {
-                                        V_Laser = (int) data[2] & 0xFF;
-                                    }
-                                    break;
-
-
-                            }
-                            if(DataSaved.Extra_Heading==0){ Deg_Boom_Roll=Deg_roll;}
-                            ExcavatorLib.Excavator();
+                            //TODO FMI
                             break;
+
                         case TSM_ANGOLARI:
-                        case TSM_ACC://TSM
+                        case TSM_ACC:
+
                             countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
                                 countTiltRot = 0;
@@ -473,111 +137,28 @@ public class Sensors_Decoder {
                             //TSM gravity vector
                             switch (id & 0x1FFFFFFF) {
 
-
                                 case 0x381:
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_y / norm;
-                                    ay_norm = (double) acc_x / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrFrame) {
-                                        case 0:
-                                            Deg_pitch = 0d;
-                                            Deg_roll = 0d;
-                                            break;
-                                        case 1:
-                                            Deg_pitch = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            Deg_roll = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            break;
-                                        case 2:
-                                            //right
-                                            Deg_roll = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            Deg_pitch = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            break;
-                                        case 3:
-                                            Deg_pitch = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            Deg_roll = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            break;
-                                        case 4:
-                                            Deg_roll = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            Deg_pitch = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            break;
-                                    }
-
+                                    double[] out = TiltEncript.encriptTSM_Frame(data, DataSaved.lrFrame);
+                                    Deg_pitch = out[0];
+                                    Deg_roll = out[1];
                                     break;
 
                                 case 0x382:
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_y / norm;
-                                    ay_norm = (double) acc_x / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrBoom1) {
-                                        case 1:
-                                            Deg_boom1 = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            break;
-                                        case -1:
-                                            Deg_boom1 = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            break;
-                                        default:
-                                            Deg_boom1 = 0d;
-                                            break;
-                                    }
+                                    Deg_boom1 = TiltEncript.encriptTSM_Boom(data, DataSaved.lrBoom1)[0];
                                     break;
 
                                 case 0x387:
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_y / norm;
-                                    ay_norm = (double) acc_x / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrBoom2) {
-                                        case 1:
-                                            Deg_boom2 = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            break;
-                                        case -1:
-                                            Deg_boom2 = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            break;
-                                        default:
-                                            Deg_boom2 = 0d;
-                                            break;
-                                    }
+                                    Deg_boom2 = TiltEncript.encriptTSM_Boom(data, DataSaved.lrBoom2)[0];
 
                                     break;
 
                                 case 0x384:
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_y / norm;
-                                    ay_norm = (double) acc_x / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrStick) {
-                                        case 1:
-                                            Deg_stick = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            if (DataSaved.Extra_Heading > 0) {
-                                                Deg_Boom_Roll = (-Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
-                                            }
-                                            break;
-                                        case -1:
-                                            Deg_stick = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            if (DataSaved.Extra_Heading > 0) {
-                                                Deg_Boom_Roll = (Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
-                                            }
-                                            break;
-                                        default:
-                                            Deg_stick = 0d;
-                                            Deg_Boom_Roll = 0;
-                                            break;
+                                    double[] out1 = TiltEncript.encriptTSM_Boom(data, DataSaved.lrStick);
+                                    Deg_stick = out1[0];
+                                    if (DataSaved.Extra_Heading > 0) {
+                                        Deg_Boom_Roll = out1[1];
+                                    } else {
+                                        Deg_Boom_Roll = 0d;
                                     }
 
                                     if (DataSaved.lrFrame == 0) {
@@ -588,30 +169,7 @@ public class Sensors_Decoder {
 
                                 case 0x385:
                                     //bucket TSM
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_y / norm;
-                                    ay_norm = (double) acc_x / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrBucket) {
-                                        case 1:
-                                            Deg_bucket = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                                            break;
-                                        case -1:
-                                            Deg_bucket = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;
-                                            break;
-                                        case 2:
-                                            Deg_bucket = (Math.atan2(ax_norm, -az_norm) * 180 / Math.PI);
-                                            break;
-                                        case 3:
-                                            Deg_bucket = -((Math.atan2(ax_norm, -az_norm) * 180 / Math.PI));
-                                            break;
-                                        default:
-                                            Deg_bucket = 0d;
-                                            break;
-                                    }
+                                    Deg_bucket = TiltEncript.encriptTSM_Bucket(data, DataSaved.lrBucket)[0];
                                     break;
                                 case 0x383:
                                     flagDefault += 100;
@@ -622,98 +180,18 @@ public class Sensors_Decoder {
                                     //0x560106A
                                     //Tilt MOBA
                                     isMobaTilt = true;
-                                    mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                                    qW = mqW / 23768.0d;
-                                    qX = mqX / 23768.0d;
-                                    qY = mqY / 23768.0d;
-                                    qZ = mqZ / 23768.0d;
-                                    qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                                    qW /= qnorm;
-                                    qX /= qnorm;
-                                    qY /= qnorm;
-                                    qZ /= qnorm;
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    eulerAngles[2] = (eulerAngles[2]);
-                                    switch (DataSaved.lrTilt) {
-                                        case 1:
-                                            //Left
-                                            Deg_Benna_W_Tilt = eulerAngles[0];
-                                            Deg_tilt = -eulerAngles[1];
-                                            Deg_Yaw_Tilt = eulerAngles[2];
-
-                                            break;
-                                        case -1:
-                                            //Right
-                                            Deg_Benna_W_Tilt = -eulerAngles[0];
-                                            Deg_tilt = eulerAngles[1];
-                                            Deg_Yaw_Tilt = eulerAngles[2];
-
-                                            break;
-                                    }
+                                    double[] eulrs = TiltEncript.encriptNOVATRON_Tilt(data, DataSaved.lrTilt);
+                                    Deg_Benna_W_Tilt = eulrs[0];
+                                    Deg_tilt = eulrs[1];
+                                    Deg_Yaw_Tilt = eulrs[2];
                                     break;
                                 case 0x386:
                                     //tilt TSM
                                     isMobaTilt = false;
-                                    acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                                    ax_norm = (double) acc_x / norm;
-                                    ay_norm = (double) acc_y / norm;
-                                    az_norm = (double) acc_z / norm;
-                                    switch (DataSaved.lrTilt) {
-                                        case 1:
-                                            Deg_Benna_W_Tilt = Math.atan2(ay_norm, -az_norm) * 180 / Math.PI;
-                                            Deg_tilt = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                            Deg_Yaw_Tilt = 0;
-                                            break;
-                                        case -1:
-                                            Deg_Benna_W_Tilt = -(Math.atan2(ay_norm, -az_norm) * 180 / Math.PI);
-                                            Deg_tilt = Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI;
-                                            break;
-                                        default:
-                                            Deg_Benna_W_Tilt = 0;
-                                            Deg_tilt = 0;
-                                            Deg_Yaw_Tilt = 0;
-                                            break;
-                                    }
-
-                                    break;
-                                case 0x486:
-                                    isMobaTilt = false;
-                                    // Dati del giroscopio
-                                    Gx = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                                    Gy = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                                    Gz = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                                    // Converti i dati grezzi del giroscopio in gradi/secondo o radianti/secondo
-                                    double gyroScaleFactor = 1000.0 / 32768.0; // Scala in base al range del giroscopio
-                                    double gz_dps = Gz * gyroScaleFactor; // Gz in gradi al secondo
-                                    // Converti in radianti al secondo (opzionale, puoi anche lavorare con gradi)
-                                    double gz_rad = gz_dps * (Math.PI / 180.0); // Gz in radianti al secondo
-                                    // Calcola il delta di tempo (in secondi) dall'ultimo aggiornamento
-                                    double currentTimestamp = System.currentTimeMillis();
-                                    double deltaTime = (currentTimestamp - previousTimestamp) / 1000.0; // Secondi
-                                    previousTimestamp = currentTimestamp;
-                                    // Integra la velocità angolare sull'asse Z (Gz) per ottenere lo yaw
-                                    yaw += gz_rad * deltaTime; // Aggiorna lo yaw integrando Gz nel tempo
-
-                                    // Converti lo yaw da radianti a gradi per una lettura più familiare
-                                    double yawDegrees = yaw * (180.0 / Math.PI);
-
-                                    // Assicurati che lo yaw sia compreso tra -180° e 180°
-                                    if (yawDegrees > 180) {
-                                        yawDegrees -= 360;
-                                    } else if (yawDegrees < -180) {
-                                        yawDegrees += 360;
-                                    }
-
-
-                                    // Visualizza il valore dello yaw
-                                    Deg_Yaw_Tilt = (yawDegrees);
-
+                                    double[] out2 = TiltEncript.encriptTSM_Tilt(data, DataSaved.lrTilt);
+                                    Deg_Benna_W_Tilt = out2[0];
+                                    Deg_tilt = out2[1];
+                                    Deg_Yaw_Tilt = out2[2];
 
                                     break;
 
@@ -726,7 +204,9 @@ public class Sensors_Decoder {
                                     break;
 
                             }
-                            if(DataSaved.Extra_Heading==0){ Deg_Boom_Roll=Deg_roll;}
+                            if (DataSaved.Extra_Heading == 0) {
+                                Deg_Boom_Roll = Deg_roll;
+                            }
                             ExcavatorLib.Excavator();
                             break;
 
@@ -742,109 +222,26 @@ public class Sensors_Decoder {
                     switch (id & 0x1FFFFFFF) {
                         case 0x386:
                         case 0x385:
-                            acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                            acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                            acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                            norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-                            ax_norm = (double) acc_y / norm;
-                            ay_norm = (double) acc_x / norm;
-                            az_norm = (double) acc_z / norm;
-                            switch (DataSaved.lrBucket) {
-                                case 0:
-                                    Deg_pitch = 0d;
-                                    Deg_roll = 0d;
-                                    break;
-                                case 1:
-                                    Deg_pitch = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                    Deg_roll = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                    break;
-                                case -1:
-                                    Deg_pitch = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                    Deg_roll = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                    break;
-                                case 2://vert_up-DESTRA
-                                    Deg_pitch = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                    Deg_roll = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                            double[] outGrad = TiltEncript.encriptTSM_Frame(data, DataSaved.lrBucket);
+                            Deg_pitch = outGrad[0];
+                            Deg_roll = outGrad[1];
 
-
-                                    break;
-                                case 3://vert_dw-SINISTRA
-                                    Deg_pitch = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-                                    Deg_roll = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
-
-                                    break;
-                                default:
-                                    Deg_roll = 0d;
-                                    Deg_pitch = 0d;
-                                    break;
-                            }
                             break;
                         //
                         case 90181738:
                         case 90181733:
-                            mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                            mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                            mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                            mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                            qW = mqW / 23768.0d;
-                            qX = mqX / 23768.0d;
-                            qY = mqY / 23768.0d;
-                            qZ = mqZ / 23768.0d;
-                            qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                            qW /= qnorm;
-                            qX /= qnorm;
-                            qY /= qnorm;
-                            qZ /= qnorm;
+                            double[] eulers = TiltEncript.encriptNOVATRON_Frame(data, DataSaved.lrBucket);
+                            Deg_pitch = eulers[0];
+                            Deg_roll = eulers[1];
+                            Deg_Yaw_Frame = eulers[2];
 
-
-                            switch (DataSaved.lrBucket) {
-                                case 0:
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    Deg_pitch = 0;
-                                    Deg_roll = 0;
-                                    Deg_Yaw_Frame = 0;
-                                    break;
-                                case 1:
-                                    //Avanti
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    Deg_pitch = -eulerAngles[1];
-                                    Deg_roll = -eulerAngles[0];
-                                    Deg_Yaw_Frame = eulerAngles[2];
-                                    break;
-                                case -1:
-                                    //Dietro
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    Deg_pitch = eulerAngles[1];
-                                    Deg_roll = eulerAngles[0];
-                                    Deg_Yaw_Frame = eulerAngles[2];
-                                    break;
-                                case 2:
-                                    //vert_up DESTRA
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    Deg_pitch = -eulerAngles[0];
-                                    Deg_roll = eulerAngles[1];
-                                    Deg_Yaw_Frame = eulerAngles[2];
-                                    break;
-                                case 3:
-                                    //vert_dw-SINISTRA
-                                    eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                                    Deg_pitch = eulerAngles[0];
-                                    Deg_roll = -eulerAngles[1];
-                                    Deg_Yaw_Frame = eulerAngles[2];
-                                    break;
-                                default:
-                                    Deg_pitch = 0;
-                                    Deg_roll = 0;
-                                    Deg_Yaw_Frame = 0;
-                                    break;
+                            if (DataSaved.Extra_Heading == 0) {
+                                Deg_Boom_Roll = Deg_roll;
                             }
+                            ExcavatorLib.Excavator();
                             break;
 
                     }
-                    if(DataSaved.Extra_Heading==0){ Deg_Boom_Roll=Deg_roll;}
-                    ExcavatorLib.Excavator();
-                    break;
-
             }
             if (DataSaved.my_comPort == 4) {
                 //demo ROLLER
@@ -1062,7 +459,9 @@ public class Sensors_Decoder {
                     Deg_bucket -= 0.05;
                 }
 
-                if(DataSaved.Extra_Heading==0){ Deg_Boom_Roll=Deg_roll;}
+                if (DataSaved.Extra_Heading == 0) {
+                    Deg_Boom_Roll = Deg_roll;
+                }
                 ExcavatorLib.Excavator();
             }
 

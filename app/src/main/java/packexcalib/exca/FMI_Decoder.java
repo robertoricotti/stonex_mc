@@ -14,22 +14,6 @@ public class FMI_Decoder {
         switch (id ) {
             case 0x3FF:
                 //FMI
-                mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                qW = mqW / 32000.0d;
-                qX = mqX / 32000.0d;
-                qY = mqY / 32000.0d;
-                qZ = mqZ / 32000.0d;
-                //Log.d("FMI_Out_RAW",String.format("%.6f",qW)+"   "+String.format("%.6f",qX)+"   "+String.format("%.6f",qY)+"   "+String.format("%.6f",qZ));
-                qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                qW /= qnorm;
-                qX /= qnorm;
-                qY /= qnorm;
-                qZ /= qnorm;
-                eulerAngles = quaternionToEuler_YXZ(qW, qX, qY, qZ);
-                Log.d("FMI_Out","Roll:"+String.format("%.2f",eulerAngles[0])+"   Pitch:"+String.format("%.2f",eulerAngles[1])+"   Yaw:"+String.format("%.2f",eulerAngles[2]));
                 break;
             case 0x560106A:
                 //NOVATRON

@@ -16,6 +16,7 @@ import static packexcalib.exca.DataSaved.maxSpeedRightUP;
 import static packexcalib.exca.DataSaved.minSpeedRightDW;
 import static packexcalib.exca.DataSaved.minSpeedRightUP;
 import static packexcalib.exca.ExcavatorLib.correctRoll;
+import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.NmeaListener.Est1;
 import static packexcalib.gnss.NmeaListener.Nord1;
 import static packexcalib.gnss.NmeaListener.Quota1;
@@ -62,6 +63,7 @@ import utils.MyMCUtils;
 
 
 public class CanSender extends Service {
+    public static byte GNSS_MSG=0x01;
 
     //private long lastCall = 0;
     public final static double MAX_SCALE=0.3;
@@ -244,10 +246,14 @@ public class CanSender extends Service {
                                             break;
 
                                     }
-                                    byte msg = 0x01;
+                                    if(DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)){
+                                        GNSS_MSG=0x03;
+                                    }else {
+                                        GNSS_MSG=0x01;
+                                    }
 
 
-                                    MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+                                    MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
                                     connections = 0;
                                 }
                             } else if (DataSaved.gpsType == 3) {
@@ -308,10 +314,14 @@ public class CanSender extends Service {
 
                     }
                     DataSaved.gpsOk = false;
-                    byte msg = 0x01;
+                    if(DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)){
+                        GNSS_MSG=0x03;
+                    }else {
+                        GNSS_MSG=0x01;
+                    }
 
 
-                    MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+                    MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
                     connections = 0;
                 }
             }

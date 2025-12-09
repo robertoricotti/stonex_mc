@@ -1,7 +1,8 @@
 package gui.dialogs_and_toast;
 
 
-import static packexcalib.surfcreator.TriangleHelper.MAX_NUMERO_FACCE;
+
+import static gui.MyApp.MAX_NUMERO_FACCE;
 
 import android.app.Activity;
 import android.app.Dialog;

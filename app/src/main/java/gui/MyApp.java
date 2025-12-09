@@ -7,7 +7,6 @@ import static services.CanService.boom2Disc;
 import static services.CanService.boom2OK;
 import static services.CanService.bucketDisc;
 import static services.CanService.bucketOK;
-import static services.CanService.flagLaser;
 import static services.CanService.frameDisc;
 import static services.CanService.frameOK;
 import static services.CanService.stickDisc;
@@ -36,14 +35,11 @@ import androidx.annotation.NonNull;
 
 import com.cp.cputils.Apollo2;
 import com.cp.cputils.ApolloPro;
-import com.cpdevice.cpbase.CPDeviceInfo;
-import com.cpdevice.cpcomm.boards.CPDEVICE;
-import com.cpdevice.cpcomm.common.CPCommConfig;
 import com.example.stx_dig.R;
 
-import org.apache.commons.lang3.ClassPathUtils;
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -117,13 +113,12 @@ import services.CanService;
 import services.TriangleService;
 import services.UpdateValuesService;
 import utils.FullscreenActivity;
-import utils.HomeKeyLocker;
 import utils.LanguageSetter;
 import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
-
+    public static  int MAX_NUMERO_FACCE=5000;
     public static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio
     public static boolean isAlto, isBasso, isCentro;
@@ -161,32 +156,29 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     private volatile boolean mRunning = false;
     private ScheduledExecutorService executorService;
     public static final boolean GEN1 = Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("qti");
-    public static final boolean GEN2 =Build.BRAND.equals("MEGA_1") || Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS");
+    public static final boolean GEN2 = Build.BRAND.equals("MEGA_1") || Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS");
 
     @Override
     public void onCreate() {
         super.onCreate();
+        if(Build.BRAND.equals("MEGA_1")){
+            MAX_NUMERO_FACCE=10000;
+        }
         UpdateValuesService.isUpodating = true;
         registerActivityLifecycleCallbacks(this);
-        Log.d("trt",Build.BRAND);
+        Log.d("trt", Build.BRAND);
         if (Build.BRAND.equals("MEGA_1") || Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             isApollo = true;
             folderPath = "/StonexMC_V4";
-            if (Build.BRAND.equals("MEGA_1") ||Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS") || Build.BRAND.equals("APOLLO2_10")) {
-                apollo2 = Apollo2.getInstance(this);
-                MyApp.DEVICE_SN = apollo2.getDeviceSN();
-            } else {
-                apolloPro = ApolloPro.getInstance(this);
-                MyApp.DEVICE_SN = apolloPro.getDeviceSN();
-            }
+            MyApp.DEVICE_SN=MyDeviceManager.getDeviceSN(this);
 
-        }
-        else {
+
+        } else {
 
             isApollo = false;
             folderPath = "/StonexMC_V4";
             showConnCounter = 0;
-            MyApp.DEVICE_SN="STX_UNKNOWN";
+            MyApp.DEVICE_SN = "STX_UNKNOWN";
 
         }
         if (MyData.get_String("machinestate") != null) {
@@ -253,7 +245,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     }
 
 
-
     public void myCrash() {
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
 
@@ -261,7 +252,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
                 MyDeviceManager.showBar(visibleActivity);
                 MyDeviceManager.OUT1(visibleActivity, 0);
                 MyDeviceManager.OUT2(visibleActivity, 0);
-                MyDeviceManager.host(visibleActivity);
+
 
             }
             MyData.push("progettoSelected", "");
@@ -273,7 +264,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             System.exit(10); // Codice di uscita 10 per indicare un crash
         });
     }
-
 
 
     @Override
@@ -290,7 +280,7 @@ git push
     @Override
     public void onActivityStarted(Activity activity) {
         if (activity != null) {
-       
+
             if (activity instanceof My3DActivity) {
                 startConditionChecker(activity);
             } else {
@@ -465,17 +455,17 @@ git push
                                 if (DataSaved.my_comPort == 4) {
 
 
-                                        new SerialEvent(NmeaGenerator.generateLLQ());
-                                        new SerialEvent(NmeaGenerator.generateGPHDT());
-                                        new SerialEvent(NmeaGenerator.generateGPGGA());
-                                        if (MyApp.visibleActivity instanceof Serial_Msg_Debug) {
-                                            EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
-                                            EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
-                                            EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
-                                        }
-                                        NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
-                                        NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
-                                        NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
+                                    new SerialEvent(NmeaGenerator.generateLLQ());
+                                    new SerialEvent(NmeaGenerator.generateGPHDT());
+                                    new SerialEvent(NmeaGenerator.generateGPGGA());
+                                    if (MyApp.visibleActivity instanceof Serial_Msg_Debug) {
+                                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPGGA()));
+                                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateGPHDT()));
+                                        EventBus.getDefault().post(new SerialEvent(NmeaGenerator.generateLLQ()));
+                                    }
+                                    NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
+                                    NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
+                                    NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
 
 
                                 }
@@ -541,7 +531,6 @@ git push
                                         }
 
 
-
                                         switch (DataSaved.bucketEdge) {
                                             case -1:
                                                 isOffgrid = TriangleService.ltOffGrid;
@@ -590,7 +579,7 @@ git push
                                 }
 
                             } catch (Exception e) {
-                                Log.e("TestCRSSS",Log.getStackTraceString(e));
+                                Log.e("TestCRSSS", Log.getStackTraceString(e));
                                 hAlarm = false;
                                 isOffgrid = false;
                             }
@@ -731,7 +720,7 @@ git push
 
 
         if (visibleActivity instanceof Grading3D_DXF ||
-                (visibleActivity instanceof Activity_Crea_Superficie && DataSaved.isWL ==DOZER) || (visibleActivity instanceof Activity_Crea_Superficie && DataSaved.isWL == DOZER_SIX)) {
+                (visibleActivity instanceof Activity_Crea_Superficie && DataSaved.isWL == DOZER) || (visibleActivity instanceof Activity_Crea_Superficie && DataSaved.isWL == DOZER_SIX)) {
             if (!sensorAlertDialog6.alertDialog.isShowing() &&
                     !sensorAlertDialogBLADE.alertDialog.isShowing() &&
                     !sensorAlertDialog5.alertDialog.isShowing() &&
@@ -965,6 +954,9 @@ git push
             }
         });
     }
+
+
+
 
 
 }

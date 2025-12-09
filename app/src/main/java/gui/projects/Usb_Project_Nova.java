@@ -86,7 +86,6 @@ public class Usb_Project_Nova extends AppCompatActivity {
         init();
         onClick();
         updateUI();
-        MyDeviceManager.host(this);
         unmount = false;
 
     }
@@ -521,7 +520,6 @@ public class Usb_Project_Nova extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyDeviceManager.periph(this);
     }
 
     private void deleteRecursive(File fileOrDirectory) {

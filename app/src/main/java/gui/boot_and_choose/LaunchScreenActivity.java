@@ -78,7 +78,7 @@ public class LaunchScreenActivity extends BaseClass {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen_dig);
         readCode();
-        MyDeviceManager.setSize(this);
+        MyDeviceManager.setSize();
         WebSocketPlugin.getWebSocketPluginInstance(this).start();
         images = new int[]{R.drawable.img_step_1, R.drawable.img_step_2, R.drawable.img_step_3};
         isAutoStart = 0;

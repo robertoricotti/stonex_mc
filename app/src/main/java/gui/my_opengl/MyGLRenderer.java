@@ -2,6 +2,7 @@ package gui.my_opengl;
 
 
 import static gui.my_opengl.My3DActivity.PNEZD_FUNCTION;
+import static gui.my_opengl.My3DActivity.glGradient;
 import static gui.my_opengl.My3DActivity.glPoint;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
@@ -174,7 +175,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     } else {
 
                         gl11.glTranslatef(panX, panY, -5f);  // Pan in 3D
-                        gl11.glScalef(scale, scale, 0);   // non scala Z
+                        gl11.glScalef(scale, scale, 0f);   // non scala Z
                         //in 2D ruota il terreno e non la macchina
                         gl11.glRotatef(0, 1f, 0f, 0f);
                         gl11.glRotatef(angleTest, 0f, 0f, 1f);
@@ -185,11 +186,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         //dati non filtrati
                         if (My3DActivity.glVista3d) {
                             //tutto in 3D
-                            if (My3DActivity.glFace || My3DActivity.glFill) {
+                            if ((My3DActivity.glFace || My3DActivity.glFill)) {
                                 GLDrawer.drawFaces(gl11, DataSaved.dxfFaces, 0.8f, scale, isXML);//disegna le 3DFaces
                             }
                             if (My3DActivity.glGradient) {
-                                GLDrawer.drawFacesGradient(gl11, DataSaved.dxfFaces, scale, TriangleService.minZ, TriangleService.maxZ);
+                                GLDrawer.drawFacesGradientPRO(gl11, DataSaved.dxfFaces, scale, TriangleService.minZ, TriangleService.maxZ);
                             }
                             gl.glDisable(GL10.GL_DEPTH_TEST);
                             if (My3DActivity.glPoly) {
@@ -208,9 +209,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             gl.glEnable(GL11.GL_DEPTH_TEST);
 
 
-                        } else {
-                            //tutto Z a 0 2D
-                            if (My3DActivity.glFace || My3DActivity.glFill) {
+                        }
+                        else {
+                            //tutto 2D
+                            if ((My3DActivity.glFace || My3DActivity.glFill)) {
                                 GLDrawer.drawFaces(gl11, DataSaved.dxfFacesGL_2D, 0.8f, scale, isXML);//disegna le 3DFaces
                             }
                             if (My3DActivity.glGradient) {
@@ -238,15 +240,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             gl.glEnable(GL11.GL_DEPTH_TEST);
 
                         }
-                    } else {
+                    }
+                    else {
                         //filtro di distanza applicato
                         if (My3DActivity.glVista3d) {
                             //tutto in 3D
-                            if (My3DActivity.glFace || My3DActivity.glFill) {
+                            if ((My3DActivity.glFace || My3DActivity.glFill)) {
                                 GLDrawer.drawFaces(gl11, DataSaved.filteredFaces, 0.8f, scale, isXML);//disegna le 3DFaces
                             }
                             if (My3DActivity.glGradient) {
-                                GLDrawer.drawFacesGradient(gl11, DataSaved.filteredFaces, scale, TriangleService.minZ, TriangleService.maxZ);
+                                GLDrawer.drawFacesGradientPRO(gl11, DataSaved.filteredFaces, scale, TriangleService.minZ, TriangleService.maxZ);
                             }
                             gl11.glDisable(GL10.GL_DEPTH_TEST);
                             if (My3DActivity.glPoly) {
@@ -265,9 +268,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             gl11.glEnable(GL10.GL_DEPTH_TEST);
 
 
-                        } else {
+                        }
+                        else {
                             //tutto Z a 0
-                            if (My3DActivity.glFace || My3DActivity.glFill) {
+
+                            if ((My3DActivity.glFace || My3DActivity.glFill)) {
                                 GLDrawer.drawFaces(gl11, DataSaved.filteredFacesGL_2D, 0.8f, scale, isXML);//disegna le 3DFaces
                             }
                             if (My3DActivity.glGradient) {

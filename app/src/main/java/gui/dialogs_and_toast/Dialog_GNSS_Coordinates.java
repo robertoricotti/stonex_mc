@@ -4,7 +4,9 @@ import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static packexcalib.gnss.CRS_Strings._150580;
 
+import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._UTM;
+import static services.CanSender.GNSS_MSG;
 import static services.CanService.nmeaSTX_Disc;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
@@ -210,10 +212,10 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     break;
 
             }
-            byte msg = 0x01;
 
 
-            MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+
+            MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
         });
         imbl.setOnClickListener(view -> {
             DataSaved.bucketEdge = -1;
@@ -520,6 +522,9 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     switch (DataSaved.S_CRS) {
                         case _UTM:
                             txCrs.setText(_UTM);
+                            break;
+                        case _LOCAL_COORDINATES_FROM_GNSS:
+                            txCrs.setText(_LOCAL_COORDINATES_FROM_GNSS);
                             break;
 
                         case "150580":

@@ -695,7 +695,7 @@
 
     <ImageView
         android:id="@+id/allarmeAlt"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitCenter"
@@ -706,7 +706,7 @@
         android:src="@drawable/height_alarm"/>
     <ImageView
         android:id="@+id/allarmeBound"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitCenter"
@@ -715,7 +715,6 @@
         app:layout_constraintBottom_toTopOf="@id/guidLo"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/allarmeAlt"
-
         android:src="@drawable/outside_boundary"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/diviAuto"

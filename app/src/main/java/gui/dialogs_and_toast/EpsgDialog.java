@@ -29,6 +29,7 @@ import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.CRS_Strings;
 import serial.SerialPortManager;
+import services.CanSender;
 import services.UpdateValuesService;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -240,11 +241,11 @@ public class EpsgDialog {
                 break;
 
         }
-        byte msg=0x01;
 
 
 
-        MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+
+        MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, CanSender.GNSS_MSG, speed, (byte) 0x03});
         if(crs.equals(_NONE)){
             //setup LLQ
 

@@ -108,6 +108,99 @@ public class GLDrawer {
             }
         }
     }
+    public static void drawFacesGradientPRO(GL11 gl, List<Face3D> faces, float scale, double zMax, double zMin) {
+        try {
+            double[] bucketCenter = DataSaved.glL_AnchorView;
+            List<Face3D> sortedFaces = new ArrayList<>(faces);
+
+            // Ordina le facce per profondità
+            sortedFaces.sort((f1, f2) ->
+                    Double.compare(
+                            GL_Methods.averageZ(f2, bucketCenter),
+                            GL_Methods.averageZ(f1, bucketCenter)
+                    )
+            );
+
+            // ✅ Abilita blending per facce trasparenti
+            gl.glEnable(GL10.GL_BLEND);
+            gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+            for (Face3D face : sortedFaces) {
+                if (!isLayerEnabled(face.getLayer().getLayerName())) continue;
+
+                face.prepareVertexBuffer(bucketCenter, scale);
+                FloatBuffer vertexBuffer = face.getVertexBuffer();
+                if (vertexBuffer == null) continue;
+
+                List<Point3D> points = face.getVertices();
+                int vertexCount = points.size();
+
+                // === COLORI GRADIENTE (FACCE) ===
+                float[] colorArray = new float[vertexCount * 4];
+                for (int i = 0; i < vertexCount; i++) {
+                    float[] color = getJetColor(points.get(i).getZ(), zMin, zMax);
+                    colorArray[i * 4]     = color[0];
+                    colorArray[i * 4 + 1] = color[1];
+                    colorArray[i * 4 + 2] = color[2];
+                    colorArray[i * 4 + 3] = 0.75f;   // ✅ Trasparenza
+                }
+                FloatBuffer colorBuffer = createFloatBuffer(colorArray);
+
+                // === DISEGNO FACCIA ===
+                gl.glPushMatrix();
+                gl.glTranslatef(0f, 0f, (float) (-DataSaved.offsetH * scale));
+
+                gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+                gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+
+                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+                gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
+
+                int drawMode = face.getP4().equals(face.getP3())
+                        ? GL10.GL_TRIANGLES
+                        : GL10.GL_TRIANGLE_FAN;
+
+                gl.glDrawArrays(drawMode, 0, vertexCount);
+
+                gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+
+                // ============================
+                // ✅ BORDO SEMPRE VISIBILE
+                // ✅ COLORE DERIVATO DALLA FACCIA
+                // ✅ PIÙ MARCATO
+                // ============================
+
+                float[] baseColor = getJetColor(points.get(0).getZ(), zMin, zMax);
+
+                float edgeR = Math.max(baseColor[0] * 0.5f, 0.05f);
+                float edgeG = Math.max(baseColor[1] * 0.5f, 0.05f);
+                float edgeB = Math.max(baseColor[2] * 0.5f, 0.05f);
+
+                // ✅ Stato corretto per il bordo
+                gl.glDisable(GL10.GL_BLEND);
+                gl.glDisable(GL10.GL_DEPTH_TEST);
+
+
+                gl.glLineWidth(1f);
+                gl.glColor4f(edgeR, edgeG, edgeB, 0.85f);
+
+                vertexBuffer.position(0);
+                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+                gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, vertexCount);
+
+                // ✅ Ripristino stato
+                gl.glEnable(GL10.GL_DEPTH_TEST);
+                gl.glEnable(GL10.GL_BLEND);
+
+
+                gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+                gl.glPopMatrix();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public static void drawFacesGradient(GL11 gl, List<Face3D> faces, float scale, double zMax, double zMin) {
@@ -122,7 +215,8 @@ public class GLDrawer {
                             GL_Methods.averageZ(f1, bucketCenter)
                     )
             );
-
+            gl.glEnable(GL10.GL_BLEND);
+            gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
             for (Face3D face : sortedFaces) {
                 if (!isLayerEnabled(face.getLayer().getLayerName())) continue;
 
@@ -140,7 +234,7 @@ public class GLDrawer {
                     colorArray[i * 4] = color[0];
                     colorArray[i * 4 + 1] = color[1];
                     colorArray[i * 4 + 2] = color[2];
-                    colorArray[i * 4 + 3] = 1f; // Opacità piena
+                    colorArray[i * 4 + 3] = 0.65f; // Opacità piena
                 }
                 FloatBuffer colorBuffer = createFloatBuffer(colorArray);
 
@@ -195,7 +289,8 @@ public class GLDrawer {
             gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
             gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
             gl.glLineWidth(1f);
-
+            gl.glEnable(GL10.GL_BLEND);
+            gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
             for (Face3D face : sortedFaces) {
                 if (!isLayerEnabled(face.getLayer().getLayerName())) continue;
 
@@ -214,7 +309,7 @@ public class GLDrawer {
                     colorArray[i * 4] = color[0];     // R
                     colorArray[i * 4 + 1] = color[1]; // G
                     colorArray[i * 4 + 2] = color[2]; // B
-                    colorArray[i * 4 + 3] = 1f;       // A
+                    colorArray[i * 4 + 3] = 0.75f;       // A
                 }
 
                 FloatBuffer colorBuffer = GL_Methods.createFloatBuffer(colorArray);

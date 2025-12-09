@@ -5,6 +5,7 @@ import static gui.MyApp.gridFile_GR_dE;
 import static gui.MyApp.gridFile_GR_dN;
 import static gui.MyApp.heposTransformer;
 import static packexcalib.gnss.CRS_Strings._NONE;
+import static services.CanSender.GNSS_MSG;
 import static services.TriangleService.scanPNEZD;
 import static services.UpdateValuesService.UTM;
 import static services.UpdateValuesService.WGS84;
@@ -323,9 +324,9 @@ public class ReadProjectService extends Service {
 
             }
             DataSaved.gpsOk = false;
-            byte msg = 0x01;
 
-            MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+
+            MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
         }
     }
 

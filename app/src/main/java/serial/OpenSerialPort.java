@@ -10,6 +10,8 @@ import android.serialport.SerialPortFinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.Arrays;
+
 import packexcalib.exca.DataSaved;
 import utils.MyDeviceManager;
 
@@ -27,6 +29,7 @@ public class OpenSerialPort {
                 SerialPortFinder serialPortFinder = new SerialPortFinder();
                 mBaudrate = "115200";
                 mDevices = serialPortFinder.getAllDevicesPath();
+                Log.e("SERIALIMIA", Arrays.toString(mDevices));
                String stringa="";
                if(DataSaved.my_comPort==0){
                    if (GEN1) {

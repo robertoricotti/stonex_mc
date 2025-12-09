@@ -1,6 +1,8 @@
 package packexcalib.surfcreator;
 
 
+import static gui.MyApp.MAX_NUMERO_FACCE;
+
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import dxf.Polyline;
 import packexcalib.exca.DataSaved;
 
 public class TriangleHelper {
-    public static final int MAX_NUMERO_FACCE=5000;
+
 
 
     public TriangleHelper() {
@@ -44,7 +46,7 @@ public class TriangleHelper {
             return Double.compare(dist1, dist2);
         });
 
-        // Limita il numero massimo di facce a 5000
+        // Limita il numero massimo di facce a 5000 o 10000 se MEGA_1
         if (filteredTriangles.size() > MAX_NUMERO_FACCE) {
             filteredTriangles = filteredTriangles.subList(0, MAX_NUMERO_FACCE);
         }

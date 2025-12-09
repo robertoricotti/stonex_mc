@@ -74,14 +74,7 @@ public class Dialog_InfoApp {
             s = "";
         }
 
-        String s2 = "";
-        if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
-            Apollo2 apollo2 = Apollo2.getInstance(activity);
-            s2 = apollo2.getDeviceSN();
-        } else {
-            ApolloPro apolloPro = ApolloPro.getInstance(activity);
-            s2 = apolloPro.getDeviceSN();
-        }
+
         String espir="No Limit";
         if(MyApp.expiry.contains("9999-12-31")){
             espir="No Limit";
@@ -91,7 +84,7 @@ public class Dialog_InfoApp {
 
         textView.setText(
                 "STX MC v " + BuildConfig.VERSION_NAME + "\n\n" +
-                        "Device: " + Build.BRAND + "  S/N: " + s2 + "\n\n" +
+                        "Device: " + Build.BRAND + "  S/N: " + MyApp.DEVICE_SN + "\n\n" +
                         "Support: " + MyData.get_String("techInfo") + "\n\n" +
                         "License Type: " + licenzaStringa() + "\n\n" +
                         "Expiry Date: "+espir+"\n\n"+

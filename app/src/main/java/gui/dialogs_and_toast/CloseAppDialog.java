@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.example.stx_dig.R;
+
+import java.io.DataOutputStream;
 
 import serial.OpenSerialPort;
 import serial.SerialPortManager;
@@ -102,7 +105,10 @@ public class CloseAppDialog {
             MyDeviceManager.showBar(activity);
             MyDeviceManager.OUT1(activity, 0);
             MyDeviceManager.OUT2(activity, 0);
-            MyDeviceManager.host(activity);
+            if(Build.BRAND.equals("MEGA_1")) {
+                enableAdcKeys();
+            }
+
             MyData.push("machinestate", "1");
             alertDialog.dismiss();
             activity.finishAndRemoveTask();
@@ -117,5 +123,28 @@ public class CloseAppDialog {
         });
     }
 
+
+    private void enableAdcKeys() {
+        new Thread(() -> {
+            try {
+                Process su = Runtime.getRuntime().exec("su");
+                DataOutputStream os = new DataOutputStream(su.getOutputStream());
+
+                //  Riabilita TUTTI gli adc-keys dinamicamente
+                os.writeBytes(
+                        "sh -c 'for f in /sys/devices/platform/adc-keys/input/*/inhibited; do echo 0 > $f; done'\n"
+                );
+
+                os.writeBytes("sync\n");
+                os.writeBytes("exit\n");
+                os.flush();
+
+                su.waitFor();
+
+            } catch (Exception e) {
+                Log.e("ADC_KEYS", Log.getStackTraceString(e));
+            }
+        }).start();
+    }
 
 }

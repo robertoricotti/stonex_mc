@@ -13,6 +13,8 @@ import android.util.Log;
 import com.cp.cputils.Apollo2;
 import com.cp.cputils.ApolloPro;
 import com.cp.cputils.shellcommand.CpCmd;
+import com.cpdevice.cpcomm.boards.CPDEVICE;
+import com.cpdevice.cpcomm.common.CPCommConfig;
 import com.cpdevice.cpcomm.frame.ICPCanFrame;
 import com.van.jni.VanCmd;
 
@@ -20,6 +22,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+import kotlin.ExposedCopyVisibility;
 import packexcalib.exca.DataSaved;
 
 
@@ -33,6 +36,33 @@ public class MyDeviceManager {
 
     }
 
+    public static void setLumen(float value){
+        if (value < 0.0f) value = 0.0f;
+        if (value > 1.0f) value = 1.0f;
+        int androidValue = (int) (value * 1023f);
+        new Thread(() -> {
+            try {
+                Process su = Runtime.getRuntime().exec("su");
+                DataOutputStream os = new DataOutputStream(su.getOutputStream());
+                // Disattiva luminosità automatica
+                os.writeBytes("settings put system screen_brightness_mode 0\n");
+
+                // Imposta luminosità in base al float
+                os.writeBytes("settings put system screen_brightness " + androidValue + "\n");
+
+                os.writeBytes("sync\n");
+                os.writeBytes("exit\n");
+
+                os.flush();
+                su.waitFor();
+
+            } catch (Exception e) {
+                Log.e("BRIGHTNESS", Log.getStackTraceString(e));
+            }
+        }).start();
+
+
+    }
 
     public static void hideBar(Context context) {
 
@@ -53,19 +83,7 @@ public class MyDeviceManager {
                 VanCmd.exec("wm overscan 0,-60,0,-60", 10);
                 break;
             case "MEGA_1":
-                try {
-                    Process su = Runtime.getRuntime().exec("su");
-                    DataOutputStream os = new DataOutputStream(su.getOutputStream());
-                    // 🔴 DISABILITA SYSTEMUI (barra di stato + nav bar)
-                    os.writeBytes("pm disable-user --user 0 com.android.systemui\n");
-                    os.writeBytes("sync\n");
-                    os.writeBytes("exit\n");
-                    os.flush();
-                    su.waitFor();
 
-                } catch (Exception e) {
-                    Log.e("CPCMDKK", Log.getStackTraceString(e));
-                }
                 break;
         }
 
@@ -87,19 +105,7 @@ public class MyDeviceManager {
                 VanCmd.exec("wm overscan 0,0,0,0", 10);
                 break;
             case "MEGA_1":
-                try {
-                    Process su = Runtime.getRuntime().exec("su");
-                    DataOutputStream os = new DataOutputStream(su.getOutputStream());
-                    // 🔴 ABILITA SYSTEMUI (barra di stato + nav bar)
-                    os.writeBytes("pm enable com.android.systemui\n");
-                    os.writeBytes("sync\n");
-                    os.writeBytes("exit\n");
-                    os.flush();
-                    su.waitFor();
 
-                } catch (Exception e) {
-                    Log.e("CPCMDKK", Log.getStackTraceString(e));
-                }
                 break;
 
 
@@ -146,7 +152,7 @@ public class MyDeviceManager {
         return s;
     }
 
-    public static void setSize(Activity activity) {
+    public static void setSize() {
         String s0 = "";
         String s1 = "";
         String s2 = "";
@@ -156,10 +162,10 @@ public class MyDeviceManager {
                     Process su = Runtime.getRuntime().exec("su");
                     DataOutputStream os = new DataOutputStream(su.getOutputStream());
 
-                    // ✅ DENSITY SMALL
+                    //  DENSITY SMALL
                     os.writeBytes("wm density 204\n");
 
-                    // ✅ FONT SMALL
+                    //  FONT SMALL
                     os.writeBytes("settings put system font_scale 0.85\n");
 
                     os.writeBytes("sync\n");
@@ -184,17 +190,24 @@ public class MyDeviceManager {
                     Process su = Runtime.getRuntime().exec("su");
                     DataOutputStream os = new DataOutputStream(su.getOutputStream());
 
-                    // ✅ USB HOST
-                    //os.writeBytes("echo host > /sys/devices/platform/fd5d0000.syscon/fd5d0000.syscon:usb2-phy@0/otg_mode\n");
+                    // Temp disable SELinux (serve per scrivere in /sys)
+                    os.writeBytes("setenforce 0\n");
 
-                    // ✅ DISABILITA ADC-KEYS (Volume, Back, Menu, F21)
-                    os.writeBytes("echo 1 > /sys/devices/platform/adc-keys/input/input7/inhibited\n");
+                    //Physical Buttons DISABLED
+                    os.writeBytes(
+                            "sh -c 'for f in /sys/devices/platform/adc-keys/input/*/inhibited; do echo 1 > $f; done'\n"
+                    );
 
-                    // ✅ DENSITY SMALL
+                    //  USB HOST
+                    os.writeBytes("echo host > /sys/devices/platform/fd5d0000.syscon/fd5d0000.syscon:usb2-phy@0/otg_mode\n");
+
+                    //  DENSITY SMALL
                     os.writeBytes("wm density 170\n");
 
-                    // ✅ FONT SMALL
-                    os.writeBytes("settings put system font_scale 0.85\n");
+                    //  FONT SMALL
+                    os.writeBytes("settings put system font_scale 1.0\n");
+
+
 
                     os.writeBytes("sync\n");
                     os.writeBytes("exit\n");
@@ -205,8 +218,6 @@ public class MyDeviceManager {
                 } catch (Exception e) {
                     Log.e("CPCMDKK", Log.getStackTraceString(e));
                 }
-
-
                 break;
         }
 
@@ -221,7 +232,16 @@ public class MyDeviceManager {
                     VanCmd.exec("echo \"100006\" >/dev/gpio_dev", 0);//out 2 =OFF
 
                 } else if (GEN2) {
-                    Apollo2.getInstance(activity).setOutput1(0);
+                    if(Build.BRAND.equals("MEGA_1")){
+                        try {
+                            new CpCmd().exceCmd("echo 0 > /sys/class/gpio/gpio61/value");
+                            Log.d("SetOUT","Basso");
+                        } catch (Exception e) {
+                            Log.e("CPCMDKK", Log.getStackTraceString(e));
+                        }
+                    }else {
+                        Apollo2.getInstance(activity).setOutput1(0);
+                    }
 
                 }
                 break;
@@ -232,7 +252,17 @@ public class MyDeviceManager {
                         VanCmd.exec("echo \"100007\" >/dev/gpio_dev", 0);//out 2 =OFF
 
                     } else if (GEN2) {
-                        Apollo2.getInstance(activity).setOutput1(1);
+                        if(Build.BRAND.equals("MEGA_1")){
+                            try {
+                                new CpCmd().exceCmd("echo 1 > /sys/class/gpio/gpio61/value");
+                                Log.d("SetOUT","Alto");
+
+                            } catch (Exception e) {
+                                Log.e("CPCMDKK", Log.getStackTraceString(e));
+                            }
+                        }else {
+                            Apollo2.getInstance(activity).setOutput1(1);
+                        }
                     }
                 }
                 break;
@@ -247,7 +277,17 @@ public class MyDeviceManager {
                 if (GEN1) {
                     VanCmd.exec("echo \"100008\" >/dev/gpio_dev", 0);
                 } else if (GEN2) {
-                    Apollo2.getInstance(activity).setOutput2(0);
+                    if(Build.BRAND.equals("MEGA_1")){
+                        try {
+
+                            new CpCmd().exceCmd("echo 0 > /sys/class/gpio/gpio52/value");
+
+                        } catch (Exception e) {
+                            Log.e("CPCMDKK", Log.getStackTraceString(e));
+                        }
+                    }else {
+                        Apollo2.getInstance(activity).setOutput2(0);
+                    }
 
                 }
                 break;
@@ -257,7 +297,16 @@ public class MyDeviceManager {
                     if (GEN1) {
                         VanCmd.exec("echo \"100009\" >/dev/gpio_dev", 0);
                     } else if (GEN2) {
-                        Apollo2.getInstance(activity).setOutput2(1);
+                        if(Build.BRAND.equals("MEGA_1")){
+                            try {
+                                new CpCmd().exceCmd("echo 1 > /sys/class/gpio/gpio52/value");
+
+                            } catch (Exception e) {
+                                Log.e("CPCMDKK", Log.getStackTraceString(e));
+                            }
+                        }else {
+                            Apollo2.getInstance(activity).setOutput2(1);
+                        }
                     }
                 }
                 break;
@@ -265,41 +314,7 @@ public class MyDeviceManager {
         }
     }
 
-    public static void host(Activity activity) {
 
-        Apollo2 apollo2 = Apollo2.getInstance(activity);
-        apollo2.setUsbHost(1);
-
-        if(Build.BRAND.equals("MEGA_1")){
-            try {
-                Process su = Runtime.getRuntime().exec("su");
-                DataOutputStream os = new DataOutputStream(su.getOutputStream());
-
-                // ✅ USB HOST
-                os.writeBytes("echo host > /sys/devices/platform/fd5d0000.syscon/fd5d0000.syscon:usb2-phy@0/otg_mode\n");
-                os.writeBytes("sync\n");
-                os.writeBytes("exit\n");
-
-                os.flush();
-                su.waitFor();
-            } catch (Exception e){
-                Log.e("setHost",Log.getStackTraceString(e));
-            }
-        }
-
-
-    }
-
-    public static void periph(Activity activity) {
-/*
-        if (GEN1) {
-            ApolloPro.getInstance(activity).setUsbHost(0);
-        } else if (GEN2) {
-            Apollo2.getInstance(activity).setUsbHost(0);
-        }
-
-*/
-    }
 
 
     public static void CanWrite(boolean send, int channel, int id, int dlc, byte[] msg) {
@@ -332,15 +347,6 @@ public class MyDeviceManager {
         }
     }
 
-    public static void changOR(Activity activity, int i) {
-        if (i > 0) {
-            Intent intent1 = new Intent(GO_PORTRAIT);
-            activity.sendBroadcast(intent1);
-        } else {
-            Intent intent2 = new Intent(GO_LANSCAPE);
-            activity.sendBroadcast(intent2);
-        }
-    }
 
     public static String getBuildVersion(Activity activity) {
         if (GEN1) {
@@ -366,13 +372,13 @@ public class MyDeviceManager {
         return "20:00:00:00:00:FF";
     }
 
-    public static String getDeviceSN(Activity activity) {
+    public static String getDeviceSN(Context context) {
 
         if (GEN1) {
-            return ApolloPro.getInstance(activity).getDeviceSN().toUpperCase();
+            return ApolloPro.getInstance(context).getDeviceSN().toUpperCase();
         } else if (GEN2) {
 
-            return Apollo2.getInstance(activity).getDeviceSN().toUpperCase();
+            return Apollo2.getInstance(context).getDeviceSN().toUpperCase();
 
         }
         return "STX_UNKNOWN";
@@ -384,6 +390,9 @@ public class MyDeviceManager {
             Class<?> c = Class.forName("android.os.SystemProperties");
             Method get = c.getMethod("get", String.class);
             serial = (String) get.invoke(c, "ro.serialno");
+            if(serial!=null) {
+                serial=serial.toUpperCase();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("getSN", Log.getStackTraceString(e));

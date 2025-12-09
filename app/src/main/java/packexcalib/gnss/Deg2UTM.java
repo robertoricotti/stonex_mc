@@ -2,6 +2,7 @@ package packexcalib.gnss;
 
 
 import static gui.MyApp.heposTransformer;
+import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.UpdateValuesService.result;
@@ -68,6 +69,11 @@ public class Deg2UTM {
         } else {
 
             switch (crs) {
+                case _LOCAL_COORDINATES_FROM_GNSS:
+                    Northing = Lat;
+                    Easting = Lon;
+                    Quota = Z;
+                    break;
                 case _NONE:
 
                     double[] out = new double[3];

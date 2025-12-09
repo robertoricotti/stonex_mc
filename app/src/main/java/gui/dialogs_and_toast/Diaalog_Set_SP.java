@@ -2,6 +2,7 @@ package gui.dialogs_and_toast;
 
 import static gui.MyApp.geoidAll;
 import static packexcalib.gnss.CRS_Strings._NONE;
+import static services.CanSender.GNSS_MSG;
 import static utils.CanFileTransfer.sendFileViaCAN;
 import static utils.CanFileTransfer.sendFileViaSerial;
 
@@ -37,6 +38,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import gui.MyApp;
@@ -177,6 +179,7 @@ public class Diaalog_Set_SP {
         nazioni = getNomiCartelleDaAssets();
         adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, nazioni);
         adapter.setDropDownViewResource(R.layout.layout_custom_spinner_3);
+
         String s = "";
         s = MyData.get_String("LastNation");
 
@@ -278,18 +281,59 @@ public class Diaalog_Set_SP {
                                 }
 
                                 dialog.dismiss();
-                            }else {
+                            }else if(match.equals("LOCAL")){
+                                //LOCAL
 
-                                MyData.push("crs", match);
+                                MyData.push("crs", "LOCAL");
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 try {
                                     copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
                                 } catch (Exception e) {
                                     Log.e("testSP",Log.getStackTraceString(e));
                                 }
+                               /* switch (DataSaved.my_comPort) {
+                                    case 0:
+                                        // Copia il file da assets a una directory accessibile
+                                        String filePath = copyAssetFileToTemp(folderPath, selectedFileName);
+                                        sendFileViaCAN(filePath, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
+                                            @Override
+                                            public void onProgressUpdate(int percentage) {
+                                                perc = percentage;
+                                            }
+                                        });
+                                        break;
+                                    case 1:
+                                    case 2:
+                                        //send via serial
+                                        String filePathS = copyAssetFileToTemp(folderPath, selectedFileName);
+                                        SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
+                                        Thread.sleep(500);
+                                        sendFileViaSerial(filePathS, new CanFileTransfer.ProgressCallback() {
+                                            @Override
+                                            public void onProgressUpdate(int percentage) {
+                                                perc = percentage;
+                                            }
+                                        });
+                                        break;
+                                    default:
+                                        Thread.sleep(500);
 
+                                        dialog.dismiss();
+                                        break;
+
+
+                                }*/
+                                dialog.dismiss();
+                            } else {
+
+                                MyData.push("crs", match);
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                try {
+                                    copyFromAssetsToFile(activity, selectedFolder + "/" + selectedFileName, new File(mPath, selectedFileName));
+                                } catch (Exception e) {
+                                    Log.e("testSP", Log.getStackTraceString(e));
+                                }
                                 ReadProjectService.startCRS();
-
                                 dialog.dismiss();
                             }
                         }else {
@@ -308,42 +352,6 @@ public class Diaalog_Set_SP {
                                 Log.e("testSP",Log.getStackTraceString(e));
                             }
 
-                            //TODO USARE .SP O .LOC RIPRISTINARE LO SWITCH PER TORNARE AD INVIO FILE SP
-
-                            /*
-                            switch (DataSaved.my_comPort) {
-                                case 0:
-                                    // Copia il file da assets a una directory accessibile
-                                    String filePath = copyAssetFileToTemp(folderPath, selectedFileName);
-                                    sendFileViaCAN(filePath, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
-                                        @Override
-                                        public void onProgressUpdate(int percentage) {
-                                            perc = percentage;
-                                        }
-                                    });
-                                    break;
-                                case 1:
-                                case 2:
-                                    //send via serial
-                                    String filePathS = copyAssetFileToTemp(folderPath, selectedFileName);
-                                    SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
-                                    Thread.sleep(500);
-                                    sendFileViaSerial(filePathS, new CanFileTransfer.ProgressCallback() {
-                                        @Override
-                                        public void onProgressUpdate(int percentage) {
-                                            perc = percentage;
-                                        }
-                                    });
-                                    break;
-                                default:
-                                    Thread.sleep(500);
-
-                                    dialog.dismiss();
-                                    break;
-
-
-                            }
-                            */
                             ReadProjectService.model = LocalizationFactory.fromFile(new File(selectedFolder+"/"+selectedFileName));
                             usaSP.setEnabled(true);
                         }
@@ -471,7 +479,8 @@ public class Diaalog_Set_SP {
         } catch (IOException e) {
             Log.e("MainActivity", "Errore durante la lettura delle cartelle da assets", e);
         }
-
+        // ✅ ORDINA IN ORDINE ALFABETICO
+        Collections.sort(cartelle);
         return cartelle;
     }
 
@@ -649,11 +658,11 @@ public class Diaalog_Set_SP {
                 break;
 
         }
-        byte msg = 0x01;
 
 
 
-        MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, msg, speed, (byte) 0x03});
+
+        MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
         if (crs.equals(_NONE)) {
             //setup LLQ
 
@@ -687,7 +696,9 @@ public class Diaalog_Set_SP {
             return null;
         }else if (fileName.equals("UTM_AUTO_ZONE.SP")) {
             return "UTM";
-        }else {
+        }else if (fileName.equals("LOCAL_COORDINATES_FROM_GNSS.SP")) {
+            return "LOCAL";
+        } {
 
             // Rimuove l'estensione .SP
             String methodName = fileName.substring(0, fileName.length() - 3);
