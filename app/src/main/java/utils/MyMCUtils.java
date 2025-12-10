@@ -2,6 +2,8 @@ package utils;
 
 import android.util.Log;
 
+import packexcalib.exca.DataSaved;
+
 public class MyMCUtils {
 
     public static double DegToPercent(String str) {
@@ -182,7 +184,9 @@ public class MyMCUtils {
     }
     public static double computeDeltaYawFromTiltAndCurl(
             double tiltDeg,        // Roll reale: >0 scende DX | <0 scende SX
-            double curlDeg         // correctBucket: -180 .. +180
+            double curlDeg ,        // correctBucket: -180 .. +180
+            double piccolaBuck,     //distanza pivot centro benna
+            double bucketlen        //ampiezza benna
     ) {
 
         // -------------------------------
@@ -249,8 +253,8 @@ public class MyMCUtils {
         // -------------------------------
         // 5) GUADAGNO DI TARATURA
         // -------------------------------
-        double K = 1.0;   // lo regoli sul campo
-
+       // double K = 1.8;   // lo regoli sul campo
+        double K = bucketlen/piccolaBuck;
         // -------------------------------
         // 6) DELTA YAW CINEMATICO
         // -------------------------------
@@ -263,7 +267,7 @@ public class MyMCUtils {
         if (deltaYaw >  maxYaw) deltaYaw =  maxYaw;
         if (deltaYaw < -maxYaw) deltaYaw = -maxYaw;
 
-        return deltaYaw;
+        return -deltaYaw;
     }
 
 

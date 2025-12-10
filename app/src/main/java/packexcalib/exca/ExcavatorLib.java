@@ -1,6 +1,8 @@
 package packexcalib.exca;
 
 
+import static packexcalib.exca.DataSaved.L_Bucket;
+import static packexcalib.exca.DataSaved.piccolaBucket;
 import static packexcalib.exca.DataSaved.puntiProfilo;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_Yaw_Tilt;
@@ -165,27 +167,27 @@ public class ExcavatorLib {
                         } else {
                             yawSensor = 0;
 
-                            if (Sensors_Decoder.isMobaTilt) {
+                            if (false) {//isMobaTilt escluso
                                 // --- Reset automatico yaw quando la benna è dritta
-                                if (Math.abs(correctTilt) < 15) {//TODO 28-11-2025 aumentato da +/-5° a +/-15°
-                                    DataSaved.offsetYaw = Deg_Yaw_Tilt;
-                                    yawSensor = 0;
-                                } else {
+                                boolean condOpen=Math.abs(correctWTilt)<15;
+                                boolean condClose=Math.abs(correctWTilt)>165;
+                                if (condOpen||condClose) {//benna aperta o tutta chiusa
                                     yawSensor = (Deg_Yaw_Tilt - DataSaved.offsetYaw);
-                                    yawSensor=0.98*yawSensor;
+
+
+                                } else {
+                                    DataSaved.offsetYaw = Deg_Yaw_Tilt;
+                                    yawSensor= MyMCUtils.computeDeltaYawFromTiltAndCurl(correctTilt-Deg_Boom_Roll,correctBucket,piccolaBucket,L_Bucket);
+
+
                                 }
 
-                                // --- Rototilt aggiuntivo (se presente)
                                 yawSensor += Sensors_Decoder.Deg_Roto;
-
-                                // --- Limita range
-                                if (yawSensor < -180) yawSensor += 360;
-                                if (yawSensor > 180) yawSensor -= 360;
+                                yawSensor=MyMCUtils.wrap(yawSensor);
 
 
-                            }
-                            else {
-                                yawSensor= MyMCUtils.computeDeltaYawFromTiltAndCurl(correctTilt-Deg_Boom_Roll,correctBucket);
+                            } else {
+                                yawSensor= MyMCUtils.computeDeltaYawFromTiltAndCurl(correctTilt-Deg_Boom_Roll,correctBucket,piccolaBucket,L_Bucket);
                                 yawSensor += Sensors_Decoder.Deg_Roto;
                                 yawSensor=MyMCUtils.wrap(yawSensor);
                             }

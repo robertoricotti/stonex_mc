@@ -52,7 +52,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     Activity activity;
     public Dialog alertDialog;
     ImageView save, title, serialCon, editZ, rtkMode;
-    TextView txmchdt,latlon, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon, extraAng;
+    TextView txmchdt,latlon, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon, extraAng,hdtoffset;
     TextView framA, boomA, boom2A, stickA, bucketA, tiltA;
     TextView framO, boomO, boom2O, stickO, bucketO, tiltO;
     Button cqpiu, cqmeno;
@@ -141,6 +141,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         bucket = alertDialog.findViewById(R.id.idbucket);
         tilt = alertDialog.findViewById(R.id.idTilt);
         extraAng = alertDialog.findViewById(R.id.idExtraAng);
+        hdtoffset = alertDialog.findViewById(R.id.hdtoffset);
 
 
     }
@@ -366,6 +367,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     }
                     if (DataSaved.Extra_Heading != 0) {
                         try {
+                            hdtoffset.setText(String.format("%.2f",DataSaved.offsetSwingExca)+" °");
                             double valore= NmeaListener.roof_Orientation+DataSaved.offsetSwingExca;
                             if(NmeaListener.roof_Orientation==999.999) {
                                 extraAng.setText("Error");
@@ -379,6 +381,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                     } else {
                         extraAng.setText("NOT USED");
+                        hdtoffset.setText(String.format("%.2f",DataSaved.offsetSwingExca)+" °");
                     }
                     if (DataSaved.isWL < 2) {
                         boolean[] b = PLC_DataTypes_BigEndian.U8_to_bitmask_be((byte) errorCode);

@@ -34,6 +34,7 @@ import java.util.Set;
 
 import cloud.S3ManagerSingleton;
 import cloud.WebSocketPlugin;
+import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import utils.MyDeviceManager;
@@ -74,17 +75,8 @@ public class Remote_Activity extends AppCompatActivity {
     private void findView() {
         recyclerProj = findViewById(R.id.recycler_view_proj);
         recyclerIn = findViewById(R.id.recycler_view_in);
-
-        serialNumber = "";
-        if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
-            Apollo2 apollo2 = Apollo2.getInstance(this);
-            serialNumber = apollo2.getDeviceSN();
-        } else {
-            ApolloPro apolloPro = ApolloPro.getInstance(this);
-            serialNumber = apolloPro.getDeviceSN();
-        }
+        serialNumber = MyApp.DEVICE_SN;
         serials = List.of(serialNumber);
-
         download = findViewById(R.id.download);
         upload = findViewById(R.id.upload);
         refresh = findViewById(R.id.refresh);
