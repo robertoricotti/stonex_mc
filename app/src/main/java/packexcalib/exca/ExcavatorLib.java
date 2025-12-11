@@ -5,15 +5,12 @@ import static packexcalib.exca.DataSaved.L_Bucket;
 import static packexcalib.exca.DataSaved.piccolaBucket;
 import static packexcalib.exca.DataSaved.puntiProfilo;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
-import static packexcalib.exca.Sensors_Decoder.Deg_Yaw_Tilt;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.WHEELLOADER;
-
-import android.util.Log;
 
 import java.util.Arrays;
 
@@ -82,18 +79,20 @@ public class ExcavatorLib {
             Len_Roll = DataSaved.L_Roll;
             larghezzabenna = DataSaved.W_Bucket;
 
-
+            double hdt0 = ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
             if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
                 if (DataSaved.Extra_Heading != 0) {
 
                     if (NmeaListener.roof_Orientation != 999.999) {
-                        swing_boom_angle = NmeaListener.roof_Orientation - (NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+                        swing_boom_angle = ((NmeaListener.roof_Orientation + DataSaved.offsetSwingExca) % 360 + 360) % 360;
 
                     } else {
-                        swing_boom_angle = 0;
+                        swing_boom_angle = hdt0;
                     }
+                    hdt_BOOM = ((swing_boom_angle) % 360 + 360) % 360;
                 } else {
                     swing_boom_angle = 0;
+                    hdt_BOOM = ((hdt0 + swing_boom_angle) % 360 + 360) % 360;
                 }
             }
             if (DataSaved.isWL == WHEELLOADER) {
@@ -106,16 +105,13 @@ public class ExcavatorLib {
             }
 
             if (GPS_Enabled) {
-                double offsetSwing = 0;
-                if (DataSaved.isWL == EXCAVATOR && DataSaved.Extra_Heading == 1) {
-                    offsetSwing = DataSaved.offsetSwingExca;
-                }
+
 
                 myPitchLen = 0;
                 myRollLen = 0;
-                double hdt0 = ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
+
                 ////////
-                hdt_BOOM = ((hdt0 + swing_boom_angle + offsetSwing) % 360 + 360) % 360;
+
 
                 double hdtR = ((hdt0 + 90) % 360 + 360) % 360;
 
@@ -129,6 +125,10 @@ public class ExcavatorLib {
                 switch (DataSaved.isWL) {
                     case EXCAVATOR:
                     case WHEELLOADER:
+                        double deltaYY = DataSaved.deltaY;
+                        if (DataSaved.Extra_Heading != 0) {
+                            deltaYY = DataSaved.deltaY - DataSaved.miniPitch_L;
+                        }
                         coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ, hdt0);
                         if (DataSaved.deltaX < 0) {
                             coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, DataSaved.deltaX, hdtL);
@@ -144,7 +144,6 @@ public class ExcavatorLib {
                         if (DataSaved.Extra_Heading != 0) {
                             coordMiniPitch = Exca_Quaternion.endPoint(coordinateDY, correctPitch, Deg_Boom_Roll, DataSaved.miniPitch_L, hdt_BOOM);
                         } else {
-
                             coordMiniPitch = coordinateDY;
                         }
                         overturn = Math.abs(correctRoll) > 85.0d || Math.abs(correctPitch) > 85.0d;
@@ -165,38 +164,16 @@ public class ExcavatorLib {
                             bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90);
                             bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270);
                         } else {
-                            yawSensor = 0;
 
-                            if (false) {//isMobaTilt escluso
-                                // --- Reset automatico yaw quando la benna è dritta
-                                boolean condOpen=Math.abs(correctWTilt)<15;
-                                boolean condClose=Math.abs(correctWTilt)>165;
-                                if (condOpen||condClose) {//benna aperta o tutta chiusa
-                                    yawSensor = (Deg_Yaw_Tilt - DataSaved.offsetYaw);
-
-
-                                } else {
-                                    DataSaved.offsetYaw = Deg_Yaw_Tilt;
-                                    yawSensor= MyMCUtils.computeDeltaYawFromTiltAndCurl(correctTilt-Deg_Boom_Roll,correctBucket,piccolaBucket,L_Bucket);
-
-
-                                }
-
-                                yawSensor += Sensors_Decoder.Deg_Roto;
-                                yawSensor=MyMCUtils.wrap(yawSensor);
-
-
-                            } else {
-                                yawSensor= MyMCUtils.computeDeltaYawFromTiltAndCurl(correctTilt-Deg_Boom_Roll,correctBucket,piccolaBucket,L_Bucket);
-                                yawSensor += Sensors_Decoder.Deg_Roto;
-                                yawSensor=MyMCUtils.wrap(yawSensor);
-                            }
-                            coordPivoTilt = Exca_Quaternion.endPoint(coordST, correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, hdt_BOOM);
-                            bucketCoord = Exca_Quaternion.endPoint(coordPivoTilt, correctWTilt, correctTilt, DataSaved.piccolaBucket, hdt_BOOM + yawSensor);
-                            bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90 + yawSensor);
-                            bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270 + yawSensor);
-
+                            yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(correctTilt - Deg_Boom_Roll, correctBucket, piccolaBucket, L_Bucket);
+                            yawSensor += Sensors_Decoder.Deg_Roto;
+                            yawSensor = MyMCUtils.wrap(yawSensor);
                         }
+                        coordPivoTilt = Exca_Quaternion.endPoint(coordST, correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, hdt_BOOM);
+                        bucketCoord = Exca_Quaternion.endPoint(coordPivoTilt, correctWTilt, correctTilt, DataSaved.piccolaBucket, hdt_BOOM + yawSensor);
+                        bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90 + yawSensor);
+                        bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270 + yawSensor);
+
 
                         //qui abbiamo le coordinate GPS della benna UTM nostre
                         arr = new double[]{coordB1[2], coordB2[2], coordST[2], bucketCoord[2], bucketLeftCoord[2], bucketRightCoord[2]};

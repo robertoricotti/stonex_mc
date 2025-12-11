@@ -12,6 +12,7 @@ import dxf.Point3D;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
+import packexcalib.gnss.NmeaListener;
 import utils.DistToPoint;
 
 
@@ -38,7 +39,7 @@ public class My_Frame {
     public static double R_Cingolo, H_Ralla, W_Cingolo;
 
     public static Point3DF[] puntiFrame() {
-        mHdt_Boom= hdt_BOOM-swing_boom_angle;
+        mHdt_Boom= ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
 
         double[] rallabassa, rallaalta;
         double[] p2_c, p2_alto, p2_basso, p2_i_c,ai_2, bi_2;

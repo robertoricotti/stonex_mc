@@ -15,6 +15,8 @@ import static services.CanService.tiltDisc;
 import static services.CanService.tiltOK;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -799,7 +801,7 @@ git push
     }
 
     private void errori() {
-        if (DataSaved.isWL < DOZER) {
+        if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER) {
             errorCode = PLC_DataTypes_BigEndian.Encode_8_bool_be(new boolean[]{
                     (!frameOK) && DataSaved.lrFrame != 0,
                     (!boom1OK) && DataSaved.lrBoom1 != 0,

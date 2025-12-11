@@ -21,8 +21,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.cp.cputils.Apollo2;
-
 import org.greenrobot.eventbus.EventBus;
 
 import event_bus.CanEvents;
@@ -31,7 +29,6 @@ import gui.debug_ecu.Can_Msg_Debug;
 import gui.gps.Nuovo_Gps;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
-import packexcalib.exca.FMI_Decoder;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.exca.Sensors_Decoder_Drill;
@@ -140,8 +137,7 @@ public class CanService extends Service {
                     if (id == 1414) {
                         DataSaved.damp_Tl = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
                     }
-                }
-                else if (DataSaved.isCanOpen == 3) {
+                } else if (DataSaved.isCanOpen == 3) {
                     if (id == 1409) {
                         DataSaved.damp_Fr = msg[4];
                     }
@@ -260,8 +256,9 @@ public class CanService extends Service {
                                 handler_bucketOK.removeCallbacks(timeoutRunnable_bucketOK);
                                 handler_bucketOK.postDelayed(timeoutRunnable_bucketOK, 3000);
                             }
-                            if (id == 902||id ==0x3FF) {
+                            if (id == 902 || id == 0x3FF) {
                                 tiltOK = true;
+                                tiltDisc = false;
                                 handler_tiltOK.removeCallbacks(timeoutRunnable_tiltOK);
                                 handler_tiltOK.postDelayed(timeoutRunnable_tiltOK, 3000);
                             }
@@ -336,6 +333,7 @@ public class CanService extends Service {
                         }
                         if (id == 0X195) {
                             tiltOK = true;
+                            tiltDisc=false;
                             handler_tiltOK.removeCallbacks(timeoutRunnable_tiltOK);
                             handler_tiltOK.postDelayed(timeoutRunnable_tiltOK, 3000);
                         }
@@ -583,6 +581,7 @@ public class CanService extends Service {
                     }
                     if (id == 902) {
                         tiltOK = true;
+                        tiltDisc=false;
                         handler_tiltOK.removeCallbacks(timeoutRunnable_tiltOK);
                         handler_tiltOK.postDelayed(timeoutRunnable_tiltOK, 3000);
                     }
@@ -649,6 +648,7 @@ public class CanService extends Service {
                     }
                     if (id == 0X195) {
                         tiltOK = true;
+                        tiltDisc=false;
                         handler_tiltOK.removeCallbacks(timeoutRunnable_tiltOK);
                         handler_tiltOK.postDelayed(timeoutRunnable_tiltOK, 3000);
                     }
@@ -698,7 +698,7 @@ public class CanService extends Service {
             System.out.println(e);
         }
 
-        if(MyApp.isApollo) {
+        if (MyApp.isApollo) {
 
             CPCanHelper.getInstance().start(new CPCanHelper.Action() {
                 @Override

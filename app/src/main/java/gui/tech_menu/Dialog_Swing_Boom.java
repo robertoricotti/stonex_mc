@@ -1,5 +1,6 @@
 package gui.tech_menu;
 
+import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.swing_boom_angle;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
@@ -183,7 +184,8 @@ public class Dialog_Swing_Boom {
             @Override
             public void run() {
                 try {
-                    double valore= NmeaListener.roof_Orientation+DataSaved.offsetSwingExca;
+                    double valore= hdt_BOOM;
+                    valore=valore % 360;
                     if(NmeaListener.roof_Orientation==999.999) {
                         valoreReal.setText("Error" + " °\n\n\n");
                     }else{
