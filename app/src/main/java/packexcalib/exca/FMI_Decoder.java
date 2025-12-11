@@ -9,34 +9,38 @@ public class FMI_Decoder {
     private static double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
     private static double[] eulerAngles;
 
-    public static void decode(int id, byte[] data) {
+    public static double[] decodeTILT(byte[] data, int lr) {
+        mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
+        mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+        mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
+        mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
+        qW = mqW / 32000.0d;
+        qX = mqX / 32000.0d;
+        qY = mqY / 32000.0d;
+        qZ = mqZ / 32000.0d;
+        qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
+        qW /= qnorm;
+        qX /= qnorm;
+        qY /= qnorm;
+        qZ /= qnorm;
+        eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
 
-        switch (id ) {
-            case 0x3FF:
-                //FMI
+        double[] out = new double[3];
+        switch (lr) {
+            case 1:
+                //left
+                out = new double[]{-eulerAngles[1], -eulerAngles[0], eulerAngles[2]};
                 break;
-            case 0x560106A:
-                //NOVATRON
-                mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                qW = mqW / 23768.0d;
-                qX = mqX / 23768.0d;
-                qY = mqY / 23768.0d;
-                qZ = mqZ / 23768.0d;
-                //Log.w("NOVA_Out_RAW",String.format("%.6f",qW)+"   "+String.format("%.6f",qX)+"   "+String.format("%.6f",qY)+"   "+String.format("%.6f",qZ));
-                qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                qW /= qnorm;
-                qX /= qnorm;
-                qY /= qnorm;
-                qZ /= qnorm;
-                eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                Log.w("NOVA_Out","Roll:"+String.format("%.2f",eulerAngles[0])+"   Pitch:"+String.format("%.2f",eulerAngles[1])+"   Yaw:"+String.format("%.2f",eulerAngles[2]));
+
+            case -1:
+                //right
+                out = new double[]{eulerAngles[1], eulerAngles[0], eulerAngles[2]};
                 break;
 
         }
 
+        Log.w("FMI_Out", "Roll:" + String.format("%.2f", out[0]) + "   Pitch:" + String.format("%.2f", out[1]) + "   Yaw:" + String.format("%.2f", out[2]));
+        return out;
     }
 
     private static double[] quaternionToEulerFMI(double w, double x, double y, double z) {
@@ -57,14 +61,15 @@ public class FMI_Decoder {
         double cosy_cosp = 1.0 - 2.0 * (y * y + z * z);
         yaw = Math.atan2(siny_cosp, cosy_cosp);
 
-        roll  = Math.toDegrees(roll);
+        roll = Math.toDegrees(roll);
         pitch = Math.toDegrees(pitch);
-        yaw   = Math.toDegrees(yaw);
+        yaw = Math.toDegrees(yaw);
         if (yaw < 0) yaw += 360.0;
         if (roll < 0) roll += 360.0;
 
         return new double[]{roll, pitch, yaw};
     }
+
     private static double[] multiplyQuaternion(double[] q1, double[] q2) {
         double w1 = q1[0], x1 = q1[1], y1 = q1[2], z1 = q1[3];
         double w2 = q2[0], x2 = q2[1], y2 = q2[2], z2 = q2[3];
@@ -76,6 +81,7 @@ public class FMI_Decoder {
 
         return new double[]{w, x, y, z};
     }
+
     private static double[] quaternionToEuler_YXZ(double w, double x, double y, double z) {
         double roll, pitch, yaw;
 

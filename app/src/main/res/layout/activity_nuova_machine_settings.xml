@@ -236,6 +236,7 @@
                 android:background="@color/_____cancel_text" />
 
             <LinearLayout
+                android:id="@+id/linear_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
@@ -408,10 +409,11 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="5dp"
                 android:background="@color/_____cancel_text" />
 
             <LinearLayout
+                android:id="@+id/linear_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
@@ -575,10 +577,11 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="5dp"
                 android:background="@color/_____cancel_text" />
 
             <LinearLayout
+                android:id="@+id/linear_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
@@ -586,7 +589,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/bt_canopen"
+                    android:id="@+id/bt_menu3"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:src="@drawable/keyboard_arrow_down_96" />
@@ -679,7 +682,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="5dp"
                 android:background="@color/_____cancel_text" />
         </LinearLayout>
 

@@ -31,6 +31,7 @@ import gui.debug_ecu.Can_Msg_Debug;
 import gui.gps.Nuovo_Gps;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.FMI_Decoder;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.exca.Sensors_Decoder_Drill;
@@ -139,7 +140,8 @@ public class CanService extends Service {
                     if (id == 1414) {
                         DataSaved.damp_Tl = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
                     }
-                } else if (DataSaved.isCanOpen == 3) {
+                }
+                else if (DataSaved.isCanOpen == 3) {
                     if (id == 1409) {
                         DataSaved.damp_Fr = msg[4];
                     }
@@ -205,7 +207,7 @@ public class CanService extends Service {
                 }
 
 
-                if (DataSaved.isWL == 2 || DataSaved.isWL == 3 || DataSaved.isWL == 4) {
+                if (DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
                     DataSaved.deltaZ = DataSaved.altezzaLama + DataSaved.altezzaPali;
                 }
                 Sensors_Decoder.Moba_G2_Decoder_Update(id, msg);
@@ -258,7 +260,7 @@ public class CanService extends Service {
                                 handler_bucketOK.removeCallbacks(timeoutRunnable_bucketOK);
                                 handler_bucketOK.postDelayed(timeoutRunnable_bucketOK, 3000);
                             }
-                            if (id == 902) {
+                            if (id == 902||id ==0x3FF) {
                                 tiltOK = true;
                                 handler_tiltOK.removeCallbacks(timeoutRunnable_tiltOK);
                                 handler_tiltOK.postDelayed(timeoutRunnable_tiltOK, 3000);

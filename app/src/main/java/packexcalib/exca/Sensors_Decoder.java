@@ -195,6 +195,14 @@ public class Sensors_Decoder {
 
                                     break;
 
+                                case 0x3FF:
+                                    isMobaTilt = false;
+                                    double[] outfmi = FMI_Decoder.decodeTILT(data,DataSaved.lrTilt);
+                                    Deg_Benna_W_Tilt = outfmi[0];
+                                    Deg_tilt = outfmi[1];
+                                    Deg_Yaw_Tilt = outfmi[2];
+                                    break;
+
 
                                 case 0x204301://verificare id laser 29bit
 

@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,30 +39,31 @@ import utils.MyDeviceManager;
 
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
-    CheckBox  ckDO, ckUHF, ckUpper, ckIMU, ckDEMO,ckSchermo,ckMach,ck22,ckVecchia;
+    CheckBox ckDO, ckUHF, ckUpper, ckIMU, ckDEMO, ckSchermo, ckMach, ck22, ckVecchia;
     CustomQwertyDialog customQwertyDialog;
-    ImageView back, exca, wheel, grader, dozer,drill, menu_1, menu_2, saveToFile, readFromFile, status,bt_canopen;
-    ConstraintLayout constraintLayout, constraintLayout_2,constraintLayout_3;
-    TextView toExtraSensor, tvSwing,tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ,toCanopen,toDamping,can1bd,can2bd;
-    EditText mchName,techInfo;
+    ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
+    ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
+    TextView toExtraSensor, tvSwing, tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ, toCanopen, toDamping, can1bd, can2bd;
+    EditText mchName, techInfo;
     int mode, machineSel;
-    public static boolean menu1_visible, menu2_visible,menu3_visible;
+    public static boolean menu1_visible, menu2_visible, menu3_visible;
     DialogPassword dialogPassword;
     Dialog_CanBaud dialogCanBaud;
     Dialog_Swing_Boom dialogSwingBoom;
     Dialog_Wheel_Steer dialogWheelSteer;
-    int small,bigg;
+    LinearLayout linear_1, linear_2, linear_3;
+    int small, bigg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.nuova_machine_settings);
-        if(Build.BRAND.equals("APOLLO2_7")||Build.BRAND.equals("MEGA_1")){
-            bigg=80;
-            small=70;
-        }else {
-            bigg=110;
-            small=90;
+        setContentView(R.layout.activity_nuova_machine_settings);
+        if (Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("MEGA_1")) {
+            bigg = 80;
+            small = 70;
+        } else {
+            bigg = 110;
+            small = 90;
         }
         findView();
         onClick();
@@ -70,12 +72,15 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     }
 
     private void findView() {
-        dialogCanBaud=new Dialog_CanBaud(this);
+        dialogCanBaud = new Dialog_CanBaud(this);
         dialogPassword = new DialogPassword(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
-        customQwertyDialog = new CustomQwertyDialog(this,null);
-        dialogSwingBoom=new Dialog_Swing_Boom(this);
-        dialogWheelSteer=new Dialog_Wheel_Steer(this);
+        customQwertyDialog = new CustomQwertyDialog(this, null);
+        dialogSwingBoom = new Dialog_Swing_Boom(this);
+        dialogWheelSteer = new Dialog_Wheel_Steer(this);
+        linear_1 = findViewById(R.id.linear_1);
+        linear_2 = findViewById(R.id.linear_2);
+        linear_3 = findViewById(R.id.linear_3);
         machineSel = MyData.get_Int("MachineSelected");
         mode = MyData.get_Int("M" + machineSel + "_isWL");
         back = findViewById(R.id.btn_1);
@@ -90,8 +95,8 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         constraintLayout = findViewById(R.id.constraint_general);
         constraintLayout_2 = findViewById(R.id.constr_2);
         constraintLayout_3 = findViewById(R.id.constr_3);
-        tvSwing=findViewById(R.id.tvSwing);
-        toExtraSensor=findViewById(R.id.toExtraSensor);
+        tvSwing = findViewById(R.id.tvSwing);
+        toExtraSensor = findViewById(R.id.toExtraSensor);
         tvFrame = findViewById(R.id.toFrame);
         tvBoom1 = findViewById(R.id.toBoom1);
         tvBoom2 = findViewById(R.id.toBoom2);
@@ -100,26 +105,25 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         tvTilt = findViewById(R.id.toTilt);
         tvXYZ = findViewById(R.id.toxyz);
         mchName = findViewById(R.id.mch_name);
-        ckSchermo=findViewById(R.id.ckSchermo);
-        ckMach=findViewById(R.id.ckMach);
+        ckSchermo = findViewById(R.id.ckSchermo);
+        ckMach = findViewById(R.id.ckMach);
         ckDO = findViewById(R.id.ck2);
-        ck22=findViewById(R.id.ck22);
+        ck22 = findViewById(R.id.ck22);
         ckUHF = findViewById(R.id.ck3);
         ckUpper = findViewById(R.id.ck4);
-        ckVecchia=findViewById(R.id.ckVecchia);
+        ckVecchia = findViewById(R.id.ckVecchia);
         ckIMU = findViewById(R.id.ck5);
         ckDEMO = findViewById(R.id.ck6);
         saveToFile = findViewById(R.id.img01);
         readFromFile = findViewById(R.id.img11);
         status = findViewById(R.id.img00);
-        bt_canopen=findViewById(R.id.bt_canopen);
-        toCanopen=findViewById(R.id.toCanOpen);
-        toDamping=findViewById(R.id.toDamping);
-        can1bd=findViewById(R.id.toCan1);
-        can2bd=findViewById(R.id.toCan2);
+        menu_3 = findViewById(R.id.bt_menu3);
+        toCanopen = findViewById(R.id.toCanOpen);
+        toDamping = findViewById(R.id.toDamping);
+        can1bd = findViewById(R.id.toCan1);
+        can2bd = findViewById(R.id.toCan2);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
         drill.setVisibility(View.GONE);
-
 
 
     }
@@ -168,11 +172,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             if (ck22.isChecked()) {
                 ck22.setChecked(false);
                 MyData.push("M" + machineSel + "Extra_Heading", "0");
-                DataSaved.Extra_Heading=0;
+                DataSaved.Extra_Heading = 0;
             } else if (!ck22.isChecked()) {
                 ck22.setChecked(true);
                 MyData.push("M" + machineSel + "Extra_Heading", "1");
-                DataSaved.Extra_Heading=1;
+                DataSaved.Extra_Heading = 1;
             }
         });
         ckDO.setOnClickListener(view -> {
@@ -180,11 +184,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             if (ckDO.isChecked()) {
                 ckDO.setChecked(false);
                 MyData.push("M" + machineSel + "_enOUT", "0");
-                DataSaved.enOUT=0;
+                DataSaved.enOUT = 0;
             } else if (!ckDO.isChecked()) {
                 ckDO.setChecked(true);
                 MyData.push("M" + machineSel + "_enOUT", "1");
-                DataSaved.enOUT=1;
+                DataSaved.enOUT = 1;
             }
         });
         ckUpper.setOnClickListener(view -> {
@@ -216,12 +220,12 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             if (ckMach.isChecked()) {
                 ckMach.setChecked(false);
                 MyData.push("drwaMachieSchema", "0");
-                DataSaved.drwaMachieSchema=0;
+                DataSaved.drwaMachieSchema = 0;
 
             } else if (!ckMach.isChecked()) {
                 ckMach.setChecked(true);
                 MyData.push("drwaMachieSchema", "1");
-                DataSaved.drwaMachieSchema=1;
+                DataSaved.drwaMachieSchema = 1;
 
             }
         });
@@ -242,12 +246,12 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             }
         });
         tvSwing.setOnClickListener(view -> {
-            if(!dialogSwingBoom.dialog.isShowing()){
+            if (!dialogSwingBoom.dialog.isShowing()) {
                 dialogSwingBoom.show();
             }
         });
         toExtraSensor.setOnClickListener(view -> {
-            if(!dialogWheelSteer.dialog.isShowing()){
+            if (!dialogWheelSteer.dialog.isShowing()) {
                 dialogWheelSteer.show();
             }
         });
@@ -258,7 +262,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         });
         tvBoom1.setOnClickListener(view -> {
 
-            if (DataSaved.isWL ==WHEELLOADER||DataSaved.isWL==EXCAVATOR||DataSaved.isWL==DRILL) {
+            if (DataSaved.isWL == WHEELLOADER || DataSaved.isWL == EXCAVATOR || DataSaved.isWL == DRILL) {
                 en_dis(false);
                 startActivity(new Intent(this, Boom1Calib.class));
                 finish();
@@ -289,7 +293,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             finish();
         });
         tvLink.setOnClickListener(view -> {
-            if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
+            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL) {
                 en_dis(false);
                 startActivity(new Intent(this, LinkageCalib.class));
                 finish();
@@ -306,11 +310,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         });
         tvXYZ.setOnClickListener(view -> {
 
-            if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
+            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL) {
                 en_dis(false);
                 startActivity(new Intent(this, XYZ_Calib.class));
                 finish();
-            } else if(DataSaved.isWL==DOZER||DataSaved.isWL==DOZER_SIX||DataSaved.isWL==GRADER) {
+            } else if (DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
                 en_dis(false);
                 startActivity(new Intent(this, Nuova_Blade_Calib.class));
                 finish();
@@ -320,39 +324,48 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         });
         menu_1.setOnClickListener(view -> {
             menu1_visible = !menu1_visible;
-            menu2_visible=false;
-            menu3_visible=false;
+            menu2_visible = false;
+            menu3_visible = false;
             updateCK();
         });
         menu_2.setOnClickListener(view -> {
             menu2_visible = !menu2_visible;
-            menu1_visible=false;
-            menu3_visible=false;
+            menu1_visible = false;
+            menu3_visible = false;
             updateCK();
         });
-        bt_canopen.setOnClickListener(view -> {
+        menu_3.setOnClickListener(view -> {
             menu3_visible = !menu3_visible;
-            menu2_visible=false;
-            menu1_visible=false;
+            menu2_visible = false;
+            menu1_visible = false;
             updateCK();
+        });
+        linear_1.setOnClickListener(view -> {
+            menu_1.callOnClick();
+        });
+        linear_2.setOnClickListener(view -> {
+            menu_2.callOnClick();
+        });
+        linear_3.setOnClickListener(view -> {
+            menu_3.callOnClick();
         });
         back.setOnClickListener(view -> {
             saveName();
             try {
                 MyData.push("techInfo", techInfo.getText().toString());
-                if(MyData.get_Int("ckSchermo") == 1){
+                if (MyData.get_Int("ckSchermo") == 1) {
                     MyDeviceManager.showBar(Nuova_Machine_Settings.this);
-                }else {
+                } else {
                     MyDeviceManager.hideBar(Nuova_Machine_Settings.this);
                 }
-            }catch(Exception ignored){
+            } catch (Exception ignored) {
 
             }
-            if(DataSaved.isWL==WHEELLOADER){
-                for (int i=1;i<=20;i++){
-                    MyData.push("M"+machineSel+"_Tilt_MountPos"+i,"0");
+            if (DataSaved.isWL == WHEELLOADER) {
+                for (int i = 1; i <= 20; i++) {
+                    MyData.push("M" + machineSel + "_Tilt_MountPos" + i, "0");
                 }
-                DataSaved.lrTilt=0;
+                DataSaved.lrTilt = 0;
             }
             en_dis(false);
             startActivity(new Intent(this, ExcavatorChooserActivity.class));
@@ -482,10 +495,10 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 //Excavatore
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.VISIBLE);
-                if(DataSaved.Extra_Heading>0) {
+                if (DataSaved.Extra_Heading > 0) {
                     tvSwing.setVisibility(View.VISIBLE);
                     tvSwing.setText("SWING BOOM");
-                }else {
+                } else {
                     tvSwing.setVisibility(View.GONE);
                     tvSwing.setText("SWING BOOM");
                 }
@@ -503,11 +516,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 1:
                 //Wheel
-                if(DataSaved.Extra_Heading>0) {
+                if (DataSaved.Extra_Heading > 0) {
                     toExtraSensor.setVisibility(View.VISIBLE);
                     tvSwing.setVisibility(View.VISIBLE);
                     tvSwing.setText("STEERING PIVOT");
-                }else {
+                } else {
                     toExtraSensor.setVisibility(View.GONE);
                     tvSwing.setVisibility(View.GONE);
                     tvSwing.setText("STEERING PIVOT");
@@ -579,10 +592,10 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 //DRILL
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.VISIBLE);
-                if(DataSaved.Extra_Heading>0) {
+                if (DataSaved.Extra_Heading > 0) {
                     tvSwing.setVisibility(View.VISIBLE);
                     tvSwing.setText("SWING BOOM");
-                }else {
+                } else {
                     tvSwing.setVisibility(View.GONE);
                     tvSwing.setText("SWING BOOM");
                 }
@@ -619,30 +632,30 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             menu_2.setImageResource(R.drawable.key_arrow_right);
         }
         if (menu3_visible) {
-            bt_canopen.setImageResource(R.drawable.keyboard_arrow_down_96);
+            menu_3.setImageResource(R.drawable.keyboard_arrow_down_96);
             constraintLayout_3.setVisibility(View.VISIBLE);
         } else {
             constraintLayout_3.setVisibility(View.GONE);
-            bt_canopen.setImageResource(R.drawable.key_arrow_right);
+            menu_3.setImageResource(R.drawable.key_arrow_right);
         }
         ViewGroup.LayoutParams excaP = exca.getLayoutParams();
         ViewGroup.LayoutParams wheelP = wheel.getLayoutParams();
-        ViewGroup.LayoutParams dozerP=dozer.getLayoutParams();
-        ViewGroup.LayoutParams graderP=grader.getLayoutParams();
-        ViewGroup.LayoutParams drillP=drill.getLayoutParams();
+        ViewGroup.LayoutParams dozerP = dozer.getLayoutParams();
+        ViewGroup.LayoutParams graderP = grader.getLayoutParams();
+        ViewGroup.LayoutParams drillP = drill.getLayoutParams();
 
         switch (DataSaved.isWL) {
             case 0:
                 excaP.width = bigg;
                 excaP.height = bigg;
-                wheelP.width=small;
-                wheelP.height=small;
-                graderP.width=small;
-                graderP.height=small;
-                dozerP.width=small;
-                dozerP.height=small;
-                drillP.width=small;
-                drillP.height=small;
+                wheelP.width = small;
+                wheelP.height = small;
+                graderP.width = small;
+                graderP.height = small;
+                dozerP.width = small;
+                dozerP.height = small;
+                drillP.width = small;
+                drillP.height = small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
@@ -662,14 +675,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             case 1:
                 excaP.width = small;
                 excaP.height = small;
-                wheelP.width=bigg;
-                wheelP.height=bigg;
-                graderP.width=small;
-                graderP.height=small;
-                dozerP.width=small;
-                dozerP.height=small;
-                drillP.width=small;
-                drillP.height=small;
+                wheelP.width = bigg;
+                wheelP.height = bigg;
+                graderP.width = small;
+                graderP.height = small;
+                dozerP.width = small;
+                dozerP.height = small;
+                drillP.width = small;
+                drillP.height = small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
@@ -690,14 +703,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             case 3:
                 excaP.width = small;
                 excaP.height = small;
-                wheelP.width=small;
-                wheelP.height=small;
-                graderP.width=small;
-                graderP.height=small;
-                dozerP.width=bigg;
-                dozerP.height=bigg;
-                drillP.width=small;
-                drillP.height=small;
+                wheelP.width = small;
+                wheelP.height = small;
+                graderP.width = small;
+                graderP.height = small;
+                dozerP.width = bigg;
+                dozerP.height = bigg;
+                drillP.width = small;
+                drillP.height = small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
@@ -717,14 +730,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             case 4:
                 excaP.width = small;
                 excaP.height = small;
-                wheelP.width=small;
-                wheelP.height=small;
-                graderP.width=bigg;
-                graderP.height=bigg;
-                dozerP.width=small;
-                dozerP.height=small;
-                drillP.width=small;
-                drillP.height=small;
+                wheelP.width = small;
+                wheelP.height = small;
+                graderP.width = bigg;
+                graderP.height = bigg;
+                dozerP.width = small;
+                dozerP.height = small;
+                drillP.width = small;
+                drillP.height = small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
@@ -744,14 +757,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
 
                 excaP.width = small;
                 excaP.height = small;
-                wheelP.width=small;
-                wheelP.height=small;
-                graderP.width=small;
-                graderP.height=small;
-                dozerP.width=small;
-                dozerP.height=small;
-                drillP.width=bigg;
-                drillP.height=bigg;
+                wheelP.width = small;
+                wheelP.height = small;
+                graderP.width = small;
+                graderP.height = small;
+                dozerP.width = small;
+                dozerP.height = small;
+                drillP.width = bigg;
+                drillP.height = bigg;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
                 dozer.setLayoutParams(dozerP);
@@ -771,14 +784,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         }
 
         ckUHF.setChecked(MyData.get_Int("M" + machineSel + "useQuickSwitch") == 1);
-        ck22.setChecked(MyData.get_Int("M"+machineSel+"Extra_Heading")!=0);
+        ck22.setChecked(MyData.get_Int("M" + machineSel + "Extra_Heading") != 0);
         ckDO.setChecked(MyData.get_Int("M" + machineSel + "_enOUT") != 0);
         ckIMU.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 3);//TSM
         ckVecchia.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 1);//G2
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag
         ckUpper.setChecked(MyData.get_Int("UpperBar_Visible") == 1);
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);
-        ckMach.setChecked(MyData.get_Int("drwaMachieSchema")==1);
+        ckMach.setChecked(MyData.get_Int("drwaMachieSchema") == 1);
         techInfo.setText(MyData.get_String("techInfo"));
 
     }
@@ -794,7 +807,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         tvXYZ.setEnabled(b);
         toDamping.setEnabled(b);
         toCanopen.setEnabled(b);
-        bt_canopen.setEnabled(b);
+        menu_3.setEnabled(b);
         exca.setEnabled(b);
         wheel.setEnabled(b);
         dozer.setEnabled(b);

@@ -5,14 +5,11 @@ import android.util.Log;
 
 public class TiltEncript {
     static double norm, ax_norm, ay_norm, az_norm;
-    static double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ, _x486, _y486, _z486;
+    static double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
 
     static short acc_x;
     static short acc_y;
     static short acc_z;
-    static short Gx;
-    static short Gy;
-    static short Gz;
 
 
     public static double[] encriptTSM_Frame(byte[] data, int mount) {

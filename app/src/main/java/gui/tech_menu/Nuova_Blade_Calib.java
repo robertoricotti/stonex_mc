@@ -39,7 +39,7 @@ public class Nuova_Blade_Calib extends BaseClass {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.nuova_grade_calib);
+        setContentView(R.layout.activity_nuova_grade_calib);
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
         indexMachineSelected = MyData.get_Int("MachineSelected");
         findView();
