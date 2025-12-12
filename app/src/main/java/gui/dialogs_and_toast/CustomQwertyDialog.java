@@ -66,7 +66,6 @@ public class CustomQwertyDialog {
     public void show(EditText realValue) {
         this.realValue = realValue;
         dialog.setCancelable(true);
-        //dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));//necessario per mostrare il layout di sfondo
@@ -78,7 +77,7 @@ public class CustomQwertyDialog {
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
-       // FullscreenActivity.setFullScreen(dialog);
+        FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
         onClick();
@@ -102,7 +101,7 @@ public class CustomQwertyDialog {
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
-       // FullscreenActivity.setFullScreen(dialog);
+        FullscreenActivity.setFullScreen(dialog);
         findView();
         init();
         onClick();
@@ -126,7 +125,7 @@ public class CustomQwertyDialog {
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
-       // FullscreenActivity.setFullScreen(dialog);
+        FullscreenActivity.setFullScreen(dialog);
         findView();
         initTV();
         onClick();
@@ -151,7 +150,7 @@ public class CustomQwertyDialog {
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
-       // FullscreenActivity.setFullScreen(dialog);
+        FullscreenActivity.setFullScreen(dialog);
         findView();
         init2(name);
         onClick();
@@ -176,7 +175,7 @@ public class CustomQwertyDialog {
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, height);
-       // FullscreenActivity.setFullScreen(dialog);
+        FullscreenActivity.setFullScreen(dialog);
         findView();
         onClick();
         onLongClick();

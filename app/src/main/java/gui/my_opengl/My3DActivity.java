@@ -20,6 +20,7 @@ import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.WHEELLOADER;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -972,6 +973,7 @@ public class My3DActivity extends BaseClass {
 
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void setupBoxes() {
         view1.setBackgroundColor(MyColorClass.colorConstraint);
         view2.setBackgroundColor(MyColorClass.colorConstraint);

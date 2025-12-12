@@ -14,7 +14,7 @@
     <string name="mch_schema">DESENHAR ESQUEMA DE MÁQUINA 3D</string>
     <string name="enable_but">ATIVAR BOTÕES DE NAVEGAÇÃO ANDROID</string>
     <string name="extra_hdt">ATIVAR SENSOR DE DIREÇÃO EXTRA</string>
-    <string name="en_out">ATIVAR SAÍDA DIGITAL 12V</string>
+    <string name="en_out">ATIVAR SAÍDA DIGITAL 12V ALARME PERIMETRAL</string>
     <string name="en_uhf_ntrip">ALTERAR UHF/NTRIP</string>
     <string name="uppaer_bar">BARRA SUPERIOR SEMPRE VISÍVEL NA PÁGINA DE TRABALHO</string>
     <string name="interface_type">TIPO DE INTERFACE HIDRÁULICA</string>

@@ -14,7 +14,7 @@
     <string name="mch_schema">DISEGNA SCHEMA MACCHINA 3D</string>
     <string name="enable_but">ABILITA PULSANTI DI NAVIGAZIONE ANDROID</string>
     <string name="extra_hdt">ABILITA SENSORE DI DIREZIONE EXTRA</string>
-    <string name="en_out">ABILITA USCITA DIGITALE 12V</string>
+    <string name="en_out">ABILITA USCITA DIGITALE 12V ALLARME PERIMETRALE</string>
     <string name="en_uhf_ntrip">COMMUTA UHF/NTRIP</string>
     <string name="uppaer_bar">BARRA SUPERIORE SEMPRE VISIBILE NELLA PAGINA DI LAVORO</string>
     <string name="interface_type">TIPO DI INTERFACCIA IDRAULICA</string>

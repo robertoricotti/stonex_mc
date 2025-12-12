@@ -6,6 +6,7 @@ import static gui.MyApp.gridFile_GR_dN;
 import static gui.MyApp.heposTransformer;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static services.CanSender.GNSS_MSG;
+import static services.CanSender.tryingBTCAN;
 import static services.TriangleService.scanPNEZD;
 import static services.UpdateValuesService.UTM;
 import static services.UpdateValuesService.WGS84;
@@ -154,7 +155,15 @@ public class ReadProjectService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        reconnectLayers();
+        try {
+            String nomeProgettoTRM = MyData.get_String("progettoSelected");
+            if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
+                reconnectLayers();
+            }
+        } catch (Exception e) {
+            ((ExecutorService) mExecutor).shutdown();
+        }
+
         ((ExecutorService) mExecutor).shutdown();
     }
 

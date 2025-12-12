@@ -93,7 +93,7 @@ public class Dialog_Swing_Boom {
         immagine2 = dialog.findViewById(R.id.immagine2);
         valoreReal = dialog.findViewById(R.id.angoloreal);
         editText.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.miniPitch_L)));
-        valuedeg.setText(String.format("%.2f", DataSaved.offsetSwingExca));
+        valuedeg.setText(String.format("%.2f", DataSaved.offsetSwingExca).replace(",","."));
         unita.setText(Utils.getMetriSimbol().replace("[", " ").replace("]", " "));
         if (DataSaved.isWL == EXCAVATOR||DataSaved.isWL==DRILL) {
             immagine.setImageResource(R.drawable.swingboom);
@@ -189,7 +189,7 @@ public class Dialog_Swing_Boom {
                     if(NmeaListener.roof_Orientation==999.999) {
                         valoreReal.setText("Error" + " °\n\n\n");
                     }else{
-                        valoreReal.setText(String.format("%.2f", valore) + " °\n\n\n");
+                        valoreReal.setText(String.format("%.2f", valore).replace(",",".") + " °\n\n\n");
                     }
                     if (isUpdating) {
                         updateUI();

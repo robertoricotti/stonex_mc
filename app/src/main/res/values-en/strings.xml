@@ -10,7 +10,7 @@
     <string name="mch_schema">DRAW 3D MACHINE SCHEMA</string>
     <string name="enable_but">ENABLE ANDROID NAVIGATION BUTTONS</string>
     <string name="extra_hdt">ENABLE EXTRA HEADING SENSOR</string>
-    <string name="en_out">ENABLE DIGITAL OUTPUT 12V</string>
+    <string name="en_out">ENABLE DIGITAL OUTPUT 12V BOUNDARY ALARM</string>
     <string name="en_uhf_ntrip">SWITCH UHF/NTRIP</string>
     <string name="uppaer_bar">UPPER BAR ALWAYS VISIBLE IN WORKING PAGE</string>
     <string name="interface_type">HYDRAULIC INTERFACE TYPE</string>

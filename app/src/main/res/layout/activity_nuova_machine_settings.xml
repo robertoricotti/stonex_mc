@@ -232,8 +232,8 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/_____cancel_text" />
+                android:layout_height="5dp"
+                android:background="@color/bg_gray" />
 
             <LinearLayout
                 android:id="@+id/linear_1"
@@ -410,7 +410,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
-                android:background="@color/_____cancel_text" />
+                android:background="@color/bg_gray" />
 
             <LinearLayout
                 android:id="@+id/linear_2"
@@ -578,7 +578,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
-                android:background="@color/_____cancel_text" />
+                android:background="@color/bg_gray" />
 
             <LinearLayout
                 android:id="@+id/linear_3"
@@ -683,7 +683,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
-                android:background="@color/_____cancel_text" />
+                android:background="@color/bg_gray" />
         </LinearLayout>
 
     </ScrollView>

@@ -127,7 +127,11 @@ public class ExcavatorLib {
                     case WHEELLOADER:
                         double deltaYY = DataSaved.deltaY;
                         if (DataSaved.Extra_Heading != 0) {
-                            deltaYY = DataSaved.deltaY - DataSaved.miniPitch_L;
+                            if(DataSaved.deltaY<0){
+                                deltaYY = DataSaved.deltaY + DataSaved.miniPitch_L;
+                            }else {
+                                deltaYY = DataSaved.deltaY - DataSaved.miniPitch_L;
+                            }
                         }
                         coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ, hdt0);
                         if (DataSaved.deltaX < 0) {
@@ -135,10 +139,10 @@ public class ExcavatorLib {
                         } else {
                             coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, DataSaved.deltaX, hdtR);
                         }
-                        if (DataSaved.deltaY < 0) {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(DataSaved.deltaY) + DataSaved.miniPitch_L, hdtReverse);
+                        if (deltaYY < 0) {
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(deltaYY) , hdtReverse);
                         } else {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, DataSaved.deltaY - DataSaved.miniPitch_L, hdt0);
+                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, deltaYY, hdt0);
                         }//DY = Centro perno boom1
 
                         if (DataSaved.Extra_Heading != 0) {
@@ -266,7 +270,8 @@ public class ExcavatorLib {
                 }
 
 
-            } else {
+            }
+            else {
                 startXYZ = new double[]{0, 0, 0};
                 //To Do 2D
                 coordinateDZ = new double[]{0, 0, 0};
@@ -280,7 +285,7 @@ public class ExcavatorLib {
                 } else {
                     hdt_DRITTO = (NmeaListener.roof_Orientation - DataSaved.offsetHDT) + 0;//no rotaz
                 }
-                double hdt_BOOM = ((hdt_DRITTO + swing_boom_angle) % 360 + 360) % 360;
+                double hdt_BOOM = ((hdt_DRITTO + 0) % 360 + 360) % 360;
 
 
                 hdt_DESTRA = ((hdt_DRITTO + 90) % 360 + 360) % 360;
@@ -319,7 +324,9 @@ public class ExcavatorLib {
                     //to do Tilt
                     coordPivoTilt = RodLocation.rodloc(coordST, correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, hdt_BOOM);
                     yawSensor = 0;
-
+                    yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(correctTilt - Deg_Boom_Roll, correctBucket, piccolaBucket, L_Bucket);
+                    yawSensor += Sensors_Decoder.Deg_Roto;
+                    yawSensor = MyMCUtils.wrap(yawSensor);
                     bucketCoord = RodLocation.rodloc(coordPivoTilt, correctWTilt, correctTilt, DataSaved.piccolaBucket, hdt_BOOM + yawSensor);
                     bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90 + yawSensor);
                     bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270 + yawSensor);
@@ -365,8 +372,8 @@ public class ExcavatorLib {
                     quotaSx = surface4pts.getAltitudeDifference(bucketLeftCoord[0], bucketLeftCoord[1], bucketLeftCoord[2]);
                     quotaDx = surface4pts.getAltitudeDifference(bucketRightCoord[0], bucketRightCoord[1], bucketRightCoord[2]);
                     quotaLASER_2D = surface4pts.getAltitudeDifference(coordinateLASER[0], coordinateLASER[1], coordinateLASER[2]);
-                    actualX2D = surface4pts.getSlopesXY(ActualX, ActualY, hdt_BOOM)[0];
-                    actualY2D = surface4pts.getSlopesXY(ActualX, ActualY, hdt_BOOM)[1];
+                    actualX2D = surface4pts.getSlopesXY(ActualX, ActualY, hdt_BOOM+yawSensor)[0];
+                    actualY2D = surface4pts.getSlopesXY(ActualX, ActualY, hdt_BOOM+yawSensor)[1];
 
 
                     double[] pC = new double[]{startRX, startRY, startRZ};

@@ -14,7 +14,7 @@
     <string name="mch_schema">绘制3D机器示意图</string>
     <string name="enable_but">启用ANDROID导航按钮</string>
     <string name="extra_hdt">启用额外航向传感器</string>
-    <string name="en_out">启用数字输出12V</string>
+    <string name="en_out">启用 12V 数字输出 周界报警</string>
     <string name="en_uhf_ntrip">切换UHF/NTRIP</string>
     <string name="uppaer_bar">工作页面始终显示顶部栏</string>
     <string name="interface_type">液压接口类型</string>

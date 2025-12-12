@@ -15,7 +15,7 @@
     <string name="mch_schema">DESEN SCHEMĂ MAȘINĂ 3D</string>
     <string name="enable_but">ACTIVARE BUTOANE NAVIGAȚIE ANDROID</string>
     <string name="extra_hdt">ACTIVARE SENZOR SUPLIMENTAR DE ORIENTARE</string>
-    <string name="en_out">ACTIVARE IEȘIRE DIGITALĂ 12V</string>
+    <string name="en_out">ACTIVARE IEȘIRE DIGITALĂ 12V ALARMĂ PERIMETRALĂ</string>
     <string name="en_uhf_ntrip">COMMUTARE UHF/NTRIP</string>
     <string name="uppaer_bar">BARE SUPERIOARĂ ÎNTOTDEAUNA VIZIBILĂ ÎN PAGINA DE LUCRU</string>
     <string name="interface_type">TIP INTERFAȚĂ HIDRAULICĂ</string>

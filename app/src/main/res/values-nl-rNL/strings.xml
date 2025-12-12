@@ -14,7 +14,7 @@
     <string name="mch_schema">3D-MACHINESCHEMA TEKENEN</string>
     <string name="enable_but">ANDROID-NAVIGATIEKNOPPEN INSCHAKELEN</string>
     <string name="extra_hdt">EXTRA RICHTINGSSENSOR INSCHAKELEN</string>
-    <string name="en_out">12V DIGITALE UITGANG INSCHAKELEN</string>
+    <string name="en_out">DIGITALE 12V-UITGANG VOOR PERIMETERALARM INSCHAKELEN</string>
     <string name="en_uhf_ntrip">UHF/NTRIP SCHAKELEN</string>
     <string name="uppaer_bar">BOVENBALK ALTIJD ZICHTBAAR OP WERKPAGINA</string>
     <string name="interface_type">TYPE HYDRAULISCHE INTERFACE</string>
