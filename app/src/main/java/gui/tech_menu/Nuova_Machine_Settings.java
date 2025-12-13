@@ -1,11 +1,15 @@
 package gui.tech_menu;
 
 import static gui.MyApp.errorCode;
+import static packexcalib.exca.DataSaved.isCanOpen;
+import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.AlertDialog;
@@ -39,7 +43,7 @@ import utils.MyDeviceManager;
 
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
-    CheckBox ckDO, ckUHF, ckUpper, ckIMU, ckDEMO, ckSchermo, ckMach, ck22, ckVecchia;
+    CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
@@ -111,8 +115,8 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ck22 = findViewById(R.id.ck22);
         ckUHF = findViewById(R.id.ck3);
         ckUpper = findViewById(R.id.ck4);
-        ckVecchia = findViewById(R.id.ckVecchia);
-        ckIMU = findViewById(R.id.ck5);
+        ck_stxGen2 = findViewById(R.id.ckVecchia);
+        ck_stxGen1 = findViewById(R.id.ck5);
         ckDEMO = findViewById(R.id.ck6);
         saveToFile = findViewById(R.id.img01);
         readFromFile = findViewById(R.id.img11);
@@ -146,25 +150,28 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         });
 
 
-        ckIMU.setOnClickListener(view -> {
+        ck_stxGen1.setOnClickListener(view -> {
             ckDEMO.setChecked(false);
-            ckIMU.setChecked(true);
-            ckVecchia.setChecked(false);
+            ck_stxGen1.setChecked(true);
+            ck_stxGen2.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "3");
+            isCanOpen=TSM_ACC;
 
         });
-        ckVecchia.setOnClickListener(view -> {
+        ck_stxGen2.setOnClickListener(view -> {
             ckDEMO.setChecked(false);
-            ckVecchia.setChecked(true);
-            ckIMU.setChecked(false);
+            ck_stxGen2.setChecked(true);
+            ck_stxGen1.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "1");
+            isCanOpen=FMI_SENS;
 
         });
         ckDEMO.setOnClickListener(view -> {
             ckDEMO.setChecked(true);
-            ckIMU.setChecked(false);
-            ckVecchia.setChecked(false);
+            ck_stxGen1.setChecked(false);
+            ck_stxGen2.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "5");
+            isCanOpen=DEMO_BAG;
         });
 
         ck22.setOnClickListener(view -> {
@@ -786,8 +793,8 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ckUHF.setChecked(MyData.get_Int("M" + machineSel + "useQuickSwitch") == 1);
         ck22.setChecked(MyData.get_Int("M" + machineSel + "Extra_Heading") != 0);
         ckDO.setChecked(MyData.get_Int("M" + machineSel + "_enOUT") != 0);
-        ckIMU.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 3);//TSM
-        ckVecchia.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 1);//G2
+        ck_stxGen1.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 3);//TSM
+        ck_stxGen2.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 1);//G2
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag
         ckUpper.setChecked(MyData.get_Int("UpperBar_Visible") == 1);
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);

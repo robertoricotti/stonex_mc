@@ -366,7 +366,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="@color/_____cancel_text"
-                    android:text="SENSOR TYPE G2"
+                    android:text="SENSOR TYPE STX IMU GEN2"
                     android:textColor="@color/_____cancel_text"
                     android:textSize="18sp"
                     android:textStyle="bold|italic"

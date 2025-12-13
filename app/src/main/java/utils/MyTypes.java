@@ -21,7 +21,7 @@ public class MyTypes {
     public static final int STANDARD_NMEA=3;
 
     public static final int NO_SENSORS=0;
-    public static final int MOBA_SENS=1;
+    public static final int FMI_SENS =1;
     public static final int TSM_ANGOLARI=2;
     public static final int TSM_ACC=3;
     public static final int DEMO_BAG=5;

@@ -66,6 +66,7 @@ android {
             debug {
 
             }
+
             //  Flavor = GEN1 (Apollo8, Tank2) e GEN2 (il resto)
             flavorDimensions "generation"
             productFlavors {

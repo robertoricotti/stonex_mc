@@ -3,7 +3,6 @@ package gui.tech_menu;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -11,12 +10,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.stx_dig.R;
 
@@ -28,13 +23,13 @@ import packexcalib.exca.Sensors_Decoder;
 import services.CanService;
 import services.UpdateValuesService;
 import utils.MyData;
-import utils.Utils;
+import utils.MyMCUtils;
 
 public class Tilt_Blade extends AppCompatActivity {
     Button setPitch,setRoll;
     ImageView save,cancex;
     int indexMachineSelected, bucketMountPos;
-    CheckBox off,fw,bw,vert_up,vert_dw;
+    CheckBox off,fw,bw, rightt, leftt;
     CustomNumberDialog numberDialog;
     CustomNumberDialogFtIn numberDialogFtIn;
     TextView pitch,roll,offsetPitch,offsetRoll;
@@ -62,8 +57,8 @@ public class Tilt_Blade extends AppCompatActivity {
         offsetPlus=findViewById(R.id.offsetPlus);
         offsetMinusPitch=findViewById(R.id.offsetMinusPitch);
         offsetPlusPitch=findViewById(R.id.offsetPlusPitch);
-        vert_up=findViewById(R.id.vert_up);
-        vert_dw=findViewById(R.id.vert_dw);
+        rightt =findViewById(R.id.vert_up);
+        leftt =findViewById(R.id.vert_dw);
         init();
         onClick();
         updateUI();
@@ -89,44 +84,44 @@ public class Tilt_Blade extends AppCompatActivity {
                 off.setChecked(true);
                 fw.setChecked(false);
                 bw.setChecked(false);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(false);
+                rightt.setChecked(false);
+                leftt.setChecked(false);
                 break;
             case 1:
                 off.setChecked(false);
                 fw.setChecked(true);
                 bw.setChecked(false);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(false);
+                rightt.setChecked(false);
+                leftt.setChecked(false);
                 break;
             case -1:
                 off.setChecked(false);
                 fw.setChecked(false);
                 bw.setChecked(true);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(false);
+                rightt.setChecked(false);
+                leftt.setChecked(false);
                 break;
-            case 2://vert_up
+            case 2://rightt
                 off.setChecked(false);
                 fw.setChecked(false);
                 bw.setChecked(false);
-                vert_up.setChecked(true);
-                vert_dw.setChecked(false);
+                rightt.setChecked(true);
+                leftt.setChecked(false);
 
                 break;
-            case 3://vert_dw
+            case 3://left
                 off.setChecked(false);
                 fw.setChecked(false);
                 bw.setChecked(false);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(true);
+                rightt.setChecked(false);
+                leftt.setChecked(true);
                 break;
             default:
                 off.setChecked(true);
                 fw.setChecked(false);
                 bw.setChecked(false);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(false);
+                rightt.setChecked(false);
+                leftt.setChecked(false);
                 break;
 
         }
@@ -139,44 +134,44 @@ public class Tilt_Blade extends AppCompatActivity {
                 off.setChecked(true);
                 fw.setChecked(false);
                 bw.setChecked(false);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(false);
+                rightt.setChecked(false);
+                leftt.setChecked(false);
                 break;
             case 1:
                 off.setChecked(false);
                 fw.setChecked(true);
                 bw.setChecked(false);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(false);
+                rightt.setChecked(false);
+                leftt.setChecked(false);
                 break;
             case -1:
                 off.setChecked(false);
                 fw.setChecked(false);
                 bw.setChecked(true);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(false);
+                rightt.setChecked(false);
+                leftt.setChecked(false);
                 break;
-            case 2://vert_up
+            case 2://rightt
                 off.setChecked(false);
                 fw.setChecked(false);
                 bw.setChecked(false);
-                vert_up.setChecked(true);
-                vert_dw.setChecked(false);
+                rightt.setChecked(true);
+                leftt.setChecked(false);
 
                 break;
-            case 3://vert_dw
+            case 3://leftt
                 off.setChecked(false);
                 fw.setChecked(false);
                 bw.setChecked(false);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(true);
+                rightt.setChecked(false);
+                leftt.setChecked(true);
                 break;
             default:
                 off.setChecked(true);
                 fw.setChecked(false);
                 bw.setChecked(false);
-                vert_up.setChecked(false);
-                vert_dw.setChecked(false);
+                rightt.setChecked(false);
+                leftt.setChecked(false);
                 break;
 
         }
@@ -207,11 +202,11 @@ public class Tilt_Blade extends AppCompatActivity {
 
             ckInit();
         });
-        vert_up.setOnClickListener(view -> {
+        rightt.setOnClickListener(view -> {
             bucketMountPos=2;
             ckInit();
         });
-        vert_dw.setOnClickListener(view -> {
+        leftt.setOnClickListener(view -> {
             bucketMountPos=3;
             ckInit();
         });
@@ -298,8 +293,8 @@ public class Tilt_Blade extends AppCompatActivity {
     }
     @SuppressLint("DefaultLocale")
     public void updateUI(){
-        pitch.setText(String.format("%.02f", ExcavatorLib.correctPitch).replace(",", "."));
-        roll.setText(String.format("%.02f",ExcavatorLib.correctRoll).replace(",", "."));
+        pitch.setText(String.format("%.02f", MyMCUtils.wrap(ExcavatorLib.correctPitch)).replace(",", "."));
+        roll.setText(String.format("%.02f", MyMCUtils.wrap(ExcavatorLib.correctRoll)).replace(",", "."));
         offsetPitch.setText(String.format("%.02f",DataSaved.offsetPitch).replace(",", "."));
         offsetRoll.setText(String.format("%.02f",DataSaved.offsetRoll).replace(",", "."));
         if(!CanService.tiltDisc){

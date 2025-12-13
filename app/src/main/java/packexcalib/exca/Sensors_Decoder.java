@@ -1,14 +1,17 @@
 package packexcalib.exca;
 
 import static gui.gps.NmeaGenerator.HEADING;
+import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
-import static utils.MyTypes.MOBA_SENS;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
+
+import android.util.Log;
 
 import gui.gps.NmeaGenerator;
 import packexcalib.gnss.NmeaListener;
@@ -16,31 +19,25 @@ import utils.MyMCUtils;
 
 
 public class Sensors_Decoder {
-    static double yaw;
-    static double previousTimestamp = System.currentTimeMillis(); // Per tenere traccia del tempo
-    public static boolean isMobaTilt;
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
     public static double Deg_roll, Deg_pitch, Deg_boom1, Deg_boom2, Deg_stick, Deg_bucket, Deg_tilt, Deg_Benna_W_Tilt, Deg_bucket_DEMO,
             Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom, Deg_Tool_Roll;
-    public static int V_Laser = 255, flagDefault, WheelSteer;
-
+    public static int V_Laser = 255, WheelSteer;
     static double norm, ax_norm, ay_norm, az_norm;
-    static double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
-    static double[] eulerAngles;
     static short acc_x;
     static short acc_y;
     static short acc_z;
-    static short Gx;
-    static short Gy;
-    static short Gz;
 
-    final static int PGN_Tiltrotator = 61460;//TODO VALIDO ANCHE PER GRADER JOHN DEERE
+    final static int PGN_Tiltrotator = 61460;
     final static int PGN_TiltrotatorEPS = 65488;
     final static int PGN_TiltRotator_EngCon = 131024;
     static int countTiltRot;
 
+    public static void Sensors_Decoder() {
 
-    public static void Moba_G2_Decoder_Update(int id, byte[] data) {
+    }
+
+    public static void decode(int id, byte[] data) {
         try {
 
             if (DataSaved.isExtensionBoom > 0) {
@@ -73,7 +70,7 @@ public class Sensors_Decoder {
                 case EXCAVATOR:
                 case WHEELLOADER://wheel loader
                     switch (DataSaved.isCanOpen) {
-                        case MOBA_SENS:
+                        case FMI_SENS:
                             countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
                                 countTiltRot = 0;
@@ -100,7 +97,66 @@ public class Sensors_Decoder {
                             if (countTiltRot > 500) {
                                 DataSaved.isTiltRotator = false;
                             }
-                            //TODO FMI
+
+                            switch (id & 0x1FFFFFFF) {
+                                case 0x181:
+                                    //Frame
+                                    double[] out = TiltEncript.encriptFMI_Frame(data, DataSaved.lrFrame);
+                                    Deg_pitch = out[0];
+                                    Deg_roll = out[1];
+
+                                    break;
+                                case 0x182:
+                                    //boom1
+                                    Deg_boom1 = TiltEncript.encriptFMI_Boom(data, DataSaved.lrBoom1)[0];
+                                    //Log.d("FEYMAN",String.format("%.2f",Deg_boom1));
+                                    break;
+                                case 0x187:
+                                    //boom2
+                                    Deg_boom2 = TiltEncript.encriptFMI_Boom(data, DataSaved.lrBoom2)[0];
+                                    break;
+                                case 0x184:
+                                    //stick
+                                    double[] out1 = TiltEncript.encriptFMI_Boom(data, DataSaved.lrStick);
+                                    Deg_stick = out1[0];
+                                    if (DataSaved.Extra_Heading > 0) {
+                                        Deg_Boom_Roll = out1[1];
+                                    } else {
+                                        Deg_Boom_Roll = 0d;
+                                    }
+                                    //Log.d("FEYMAN",String.format("%.2f",Deg_stick)+"  "+String.format("%.2f",Deg_Boom_Roll));
+                                    if (DataSaved.lrFrame == 0) {
+                                        Deg_Boom_Roll = 0;
+                                    }
+                                    break;
+                                case 0x185:
+                                    //benna
+                                    Deg_bucket = TiltEncript.encriptFMI_Bucket(data, DataSaved.lrBucket)[0];
+                                    //Log.d("FEYMAN",String.format("%.2f",Deg_bucket));
+                                    break;
+                                case 0x186:
+                                    //tilt
+                                    double[] out2 = TiltEncript.encriptFMI_Tilt(data, DataSaved.lrTilt);
+                                    Deg_Benna_W_Tilt = out2[0];
+                                    Deg_tilt = out2[1];
+                                    Deg_Yaw_Tilt = out2[2];
+                                    //Log.d("FEYMAN",String.format("%.2f",Deg_Benna_W_Tilt)+"  "+String.format("%.2f",Deg_tilt));
+                                    break;
+                                case 0x560106A:
+
+                                    //Tilt MOBA
+                                    double[] eulrs = TiltEncript.encriptNOVATRON_Tilt(data, DataSaved.lrTilt);
+                                    Deg_Benna_W_Tilt = eulrs[0];
+                                    Deg_tilt = eulrs[1];
+                                    Deg_Yaw_Tilt = eulrs[2];
+                                    break;
+                                case 0x204301:
+                                    if (DataSaved.laserOn == 1) {
+                                        V_Laser = (int) data[2] & 0xFF;
+                                    }
+                                    break;
+                            }
+                            ExcavatorLib.Excavator();
                             break;
 
                         case TSM_ANGOLARI:
@@ -171,15 +227,11 @@ public class Sensors_Decoder {
                                     //bucket TSM
                                     Deg_bucket = TiltEncript.encriptTSM_Bucket(data, DataSaved.lrBucket)[0];
                                     break;
-                                case 0x383:
-                                    flagDefault += 100;
-                                    break;
 
 
-                                case 90181738:
-                                    //0x560106A
+                                case 0x560106A:
+                                    //
                                     //Tilt MOBA
-                                    isMobaTilt = true;
                                     double[] eulrs = TiltEncript.encriptNOVATRON_Tilt(data, DataSaved.lrTilt);
                                     Deg_Benna_W_Tilt = eulrs[0];
                                     Deg_tilt = eulrs[1];
@@ -187,20 +239,11 @@ public class Sensors_Decoder {
                                     break;
                                 case 0x386:
                                     //tilt TSM
-                                    isMobaTilt = false;
                                     double[] out2 = TiltEncript.encriptTSM_Tilt(data, DataSaved.lrTilt);
                                     Deg_Benna_W_Tilt = out2[0];
                                     Deg_tilt = out2[1];
                                     Deg_Yaw_Tilt = out2[2];
 
-                                    break;
-
-                                case 0x3FF:
-                                    isMobaTilt = false;
-                                    double[] outfmi = FMI_Decoder.decodeTILT(data,DataSaved.lrTilt);
-                                    Deg_Benna_W_Tilt = outfmi[0];
-                                    Deg_tilt = outfmi[1];
-                                    Deg_Yaw_Tilt = outfmi[2];
                                     break;
 
 
@@ -219,8 +262,7 @@ public class Sensors_Decoder {
                             break;
 
                     }
-                    flagDefault--;
-                    flagDefault = Math.max(-100, Math.min(flagDefault, 100));
+
 
                     break;
                 case DOZER:
@@ -230,26 +272,30 @@ public class Sensors_Decoder {
                     switch (id & 0x1FFFFFFF) {
                         case 0x386:
                         case 0x385:
-                            double[] outGrad = TiltEncript.encriptTSM_Frame(data, DataSaved.lrBucket);
+                            double[] outGrad = TiltEncript.encriptTSM_Blade(data, DataSaved.lrBucket);
                             Deg_pitch = outGrad[0];
                             Deg_roll = outGrad[1];
 
                             break;
                         //
-                        case 90181738:
-                        case 90181733:
+                        case 0x185:
+                        case 0x186:
+                            double[] outGradF = TiltEncript.encriptFMI_Blade(data, DataSaved.lrBucket);
+                            Deg_pitch = outGradF[0];
+                            Deg_roll = outGradF[1];
+                            break;
+                        case 0x560106A:
                             double[] eulers = TiltEncript.encriptNOVATRON_Frame(data, DataSaved.lrBucket);
                             Deg_pitch = eulers[0];
                             Deg_roll = eulers[1];
                             Deg_Yaw_Frame = eulers[2];
-
-                            if (DataSaved.Extra_Heading == 0) {
-                                Deg_Boom_Roll = Deg_roll;
-                            }
-                            ExcavatorLib.Excavator();
                             break;
-
                     }
+
+                    ExcavatorLib.Excavator();
+                    break;
+
+
             }
             if (DataSaved.my_comPort == 4) {
                 //demo ROLLER
@@ -323,7 +369,7 @@ public class Sensors_Decoder {
                     NmeaGenerator.ALTITUDE -= 0.001;
                 }
             }
-            if (DataSaved.isCanOpen == 5) {
+            if (DataSaved.isCanOpen == DEMO_BAG) {
                 switch (id) {
                     case 0x385:
 
@@ -357,11 +403,10 @@ public class Sensors_Decoder {
                         break;
 
                     case 0x295:
-                        if (!isMobaTilt) {
-                            int mTilt = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
 
-                            Deg_tilt = mTilt * 1d;
-                        }
+                        int mTilt = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
+                        Deg_tilt = mTilt * 1d;
+
                         break;
                     case 234868978:
                         if (DataSaved.lrTilt != 0) {
@@ -402,40 +447,27 @@ public class Sensors_Decoder {
                         break;
 
 
-                    case 90181738:
-                        //0x560106A
+                    case 0x560106A:
+                        //
                         //Tilt MOBA
-                        isMobaTilt = true;
-                        mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
-                        mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
-                        mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
-                        mqZ = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[6], data[7]});
-                        qW = mqW / 23768.0d;
-                        qX = mqX / 23768.0d;
-                        qY = mqY / 23768.0d;
-                        qZ = mqZ / 23768.0d;
-                        qnorm = Math.sqrt(qW * qW + qX * qX + qY * qY + qZ * qZ);
-                        qW /= qnorm;
-                        qX /= qnorm;
-                        qY /= qnorm;
-                        qZ /= qnorm;
-                        eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-                        switch (DataSaved.lrTilt) {
-                            case 1:
-                                //Left
-                                Deg_Benna_W_Tilt = eulerAngles[0];
-                                Deg_tilt = -eulerAngles[1];
-                                Deg_Yaw_Tilt = eulerAngles[2];
-
-                                break;
-                            case -1:
-                                //Right
-                                Deg_Benna_W_Tilt = -eulerAngles[0];
-                                Deg_tilt = eulerAngles[1];
-                                Deg_Yaw_Tilt = eulerAngles[2];
-
-                                break;
-                        }
+                        double[] eulrs = TiltEncript.encriptNOVATRON_Tilt(data, DataSaved.lrTilt);
+                        Deg_Benna_W_Tilt = eulrs[0];
+                        Deg_tilt = eulrs[1];
+                        Deg_Yaw_Tilt = eulrs[2];
+                        break;
+                    case 0x186:
+                        //tilt
+                        double[] out2 = TiltEncript.encriptFMI_Tilt(data, DataSaved.lrTilt);
+                        Deg_Benna_W_Tilt = out2[0];
+                        Deg_tilt = out2[1];
+                        Deg_Yaw_Tilt = out2[2];
+                        break;
+                    case 0x386:
+                        //tilt
+                        double[] outt = TiltEncript.encriptTSM_Tilt(data, DataSaved.lrTilt);
+                        Deg_Benna_W_Tilt = outt[0];
+                        Deg_tilt = outt[1];
+                        Deg_Yaw_Tilt = outt[2];
                         break;
                     case 0x204301://verificare id laser 29bit
 
@@ -473,8 +505,9 @@ public class Sensors_Decoder {
                 ExcavatorLib.Excavator();
             }
 
-        } catch (Exception e) {
-            flagDefault--;
+        } catch (
+                Exception ignored) {
+
         }
 
 
@@ -487,81 +520,5 @@ public class Sensors_Decoder {
         return a;
     }
 
-
-    public static double[] quaternionToEuler(double w, double x, double y, double z) {
-
-        double roll, pitch, yaw;
-        // Roll (X-axis rotation)
-        double sinr_cosp = 2 * (w * x + y * z);
-        double cosr_cosp = 1 - 2 * (x * x + y * y);
-        roll = Math.atan2(sinr_cosp, cosr_cosp);
-
-        // Pitch (Y-axis rotation)
-        double sinp = 2 * (w * y - z * x);
-        if (Math.abs(sinp) >= 1)
-            pitch = Math.copySign(Math.PI / 2, sinp); // Use 90 degrees if out of range
-        else
-            pitch = Math.asin(sinp);
-
-        // Yaw (Z-axis rotation)
-        double siny_cosp = 2 * (w * z + x * y);
-        double cosy_cosp = 1 - 2 * (y * y + z * z);
-        yaw = Math.atan2(siny_cosp, cosy_cosp);
-
-        // Converti da radianti a gradi
-        roll = Math.toDegrees(roll);
-        pitch = Math.toDegrees(pitch);
-        yaw = Math.toDegrees(yaw);
-        if (yaw < 0) {
-            yaw += 360;
-        }
-
-        return new double[]{roll, pitch, yaw};
-    }
-
-
-    public static double[] multiplyQuaternion(double[] q1, double[] q2) {
-        double w1 = q1[0], x1 = q1[1], y1 = q1[2], z1 = q1[3];
-        double w2 = q2[0], x2 = q2[1], y2 = q2[2], z2 = q2[3];
-
-        double w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2;
-        double x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2;
-        double y = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2;
-        double z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2;
-
-        return new double[]{w, x, y, z};
-    }
-
-    /**
-     * Filtro complementare per fusione tra yaw IMU e heading GNSS.
-     *
-     * @param yawImu       Yaw calcolata dal sensore IMU (in gradi, 0–360)
-     * @param headingGnss  Heading GNSS assoluto (in gradi, 0–360)
-     * @param prevYawFused Ultimo valore filtrato (in gradi)
-     * @param alpha        Peso dell’IMU (0.95–0.99)
-     * @return Nuovo valore di yaw fuso e filtrato
-     */
-    public static double complementaryYawFilter(double yawImu, double headingGnss, double prevYawFused, double alpha) {
-        // Correggi eventuali discontinuità (es. salto da 359° a 0°)
-        double diff = yawImu - prevYawFused;
-        if (diff > 180) diff -= 360;
-        if (diff < -180) diff += 360;
-
-        double imuContribution = prevYawFused + diff; // continuità IMU
-
-        // Fai lo stesso per heading GNSS
-        double diffGnss = headingGnss - imuContribution;
-        if (diffGnss > 180) diffGnss -= 360;
-        if (diffGnss < -180) diffGnss += 360;
-
-        // Filtro complementare
-        double fusedYaw = imuContribution + (1 - alpha) * diffGnss;
-
-        // Mantieni 0–360°
-        if (fusedYaw < 0) fusedYaw += 360;
-        if (fusedYaw >= 360) fusedYaw -= 360;
-
-        return fusedYaw;
-    }
 
 }

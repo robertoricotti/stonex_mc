@@ -1,5 +1,7 @@
 package gui.tech_menu;
 
+import static services.CanService.flagDefault;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -312,7 +314,7 @@ public class CanOpenTSM extends AppCompatActivity {
             cbST.setChecked(CanService.stickOK);
             cbBK.setChecked(CanService.bucketOK);
             cbTL.setChecked(CanService.tiltOK);
-            cbDEF.setChecked(Sensors_Decoder.flagDefault != -100);
+            cbDEF.setChecked(flagDefault);
             if (isSend) {
                 gotoCanOpen.setVisibility(View.INVISIBLE);
                 backToNova.setVisibility(View.INVISIBLE);
