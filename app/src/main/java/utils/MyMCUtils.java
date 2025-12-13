@@ -133,22 +133,6 @@ public class MyMCUtils {
     }
 
 
-    /*
-    public static double bladeSlope(double[] Pleft,double[] Pright){
-
-        boolean isNegative=Pleft[2]<Pright[2];
-
-        double dist2D= DistToPoint.dist2D(Pleft,Pright);
-        double dist3D=DistToPoint.dist3D(Pleft,Pright);
-
-        double slope=Math.toDegrees(Math.sqrt((dist3D*dist3D)-(dist2D*dist2D)));
-        if(isNegative){
-            slope=slope*-1;
-        }
-        return slope;
-
-    }
-*/
     public static double profile_3pt(double input, double min, double cent, double max, double maxSteerAngle) {
         double halfAngle = maxSteerAngle / 2.0;
 
@@ -270,57 +254,7 @@ public class MyMCUtils {
         return -deltaYaw;
     }
 
-    public static double computeDeltaYawTiltBucket(
-            double tiltDeg,         // tilt reale: >0 scende DX | <0 scende SX
-            double curlDeg,         // curl reale: -180 .. +180
-            double piccolaBucket,    // leva laterale (rossa)
-            double L_Bucket       // leva longitudinale (blu)
-    ) {
 
-        // -------------------------------
-        // 1) DEAD ZONE SUL TILT
-        // -------------------------------
-        if (Math.abs(tiltDeg) < 0.5)   // 0.5° di rumore
-            return 0.0;
-
-        // -------------------------------
-        // 2) NORMALIZZA CURL in [-180, +180]
-        // -------------------------------
-        double curl = curlDeg;
-        if (curl > 180)  curl -= 360;
-        if (curl < -180) curl += 360;
-
-        // -------------------------------
-        // 3) RADIANTI
-        // -------------------------------
-        double tilt = Math.toRadians(tiltDeg);
-        double curlRad = Math.toRadians(curl);
-
-        // -------------------------------
-        // 4) COMPONENTI GEOMETRICHE REALI
-        //
-        // Leva laterale  = quanto si sposta la punta mentre tilti
-        // Leva longitudinale = quanto "sporge" la benna in avanti
-        //
-        // Questi due determinano la rotazione in pianta
-        // -------------------------------
-        double levaLaterale = piccolaBucket * Math.sin(tilt);
-        double levaLongitudinale = L_Bucket * Math.cos(curlRad);
-
-        // -------------------------------
-        // 5) YAW GEOMETRICO con ATAN2
-        // -------------------------------
-        double yawRad = Math.atan2(levaLaterale, levaLongitudinale);
-        double yawDeg = Math.toDegrees(yawRad);
-
-        // -------------------------------
-        // 6) NORMALIZZAZIONE [-180, +180]
-        // -------------------------------
-        if (yawDeg > 180)  yawDeg -= 360;
-        if (yawDeg < -180) yawDeg += 360;
-
-        return yawDeg;
-    }
 
 
 

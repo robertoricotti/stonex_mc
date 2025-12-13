@@ -5,7 +5,7 @@ package packexcalib.exca;
 public class TiltEncript {
 
 
-
+    //TSM
     public static double[] encriptTSM_Frame(byte[] data, int mount) {
          double norm, ax_norm, ay_norm, az_norm;
          double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
@@ -46,7 +46,6 @@ public class TiltEncript {
         return new double[]{pitch, roll};
 
     }
-
     public static double[] encriptTSM_Boom(byte[] data, int mount) {
         double norm, ax_norm, ay_norm, az_norm;
         double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
@@ -189,15 +188,11 @@ public class TiltEncript {
 
     }
 
-
+    //NOVATRON
     public static double[] encriptNOVATRON_Tilt(byte[]data,int mount) {
-        double norm, ax_norm, ay_norm, az_norm;
         double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
-        short acc_x;
-        short acc_y;
-        short acc_z;
-         double[] eulerAngles;
-         double pitch=0,roll=0,yaw=0;
+        double[] eulerAngles;
+        double pitch=0,roll=0,yaw=0;
         mqW = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
         mqX = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
         mqY = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
@@ -212,7 +207,6 @@ public class TiltEncript {
         qY /= qnorm;
         qZ /= qnorm;
         eulerAngles = quaternionToEuler(qW, qX, qY, qZ);
-        eulerAngles[2] = (eulerAngles[2]);
         switch (mount) {
             case 1:
                 //Left
@@ -407,8 +401,6 @@ public class TiltEncript {
         }
         return new double[]{pitch,-roll};
     }
-
-
     public static double[] encriptFMI_Tilt(byte[]data,int mount){
         double norm, ax_norm, ay_norm, az_norm;
         short acc_x;
@@ -441,7 +433,6 @@ public class TiltEncript {
         }
         return new double[]{pitch,roll,yaw};
     }
-
     public static double[] encriptFMI_Blade(byte[] data, int mount) {
         double norm, ax_norm, ay_norm, az_norm;
         short acc_x;
@@ -485,8 +476,6 @@ public class TiltEncript {
         return new double[]{pitch, -roll};
 
     }
-
-
     public static double[] encriptFMI_Quaternion(byte [] data, int mount){
         double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
         double[] eulerAngles;

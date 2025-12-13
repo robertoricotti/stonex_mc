@@ -235,7 +235,7 @@ public class CanService extends Service {
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
                             handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
                         }
-                        if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER) {
+                        if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
                             if (id == 0x181) {
                                 frameOK = true;
                                 handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
@@ -320,7 +320,7 @@ public class CanService extends Service {
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
                             handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
                         }
-                        if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER) {
+                        if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
                             if (id == 897) {
                                 frameOK = true;
                                 handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);

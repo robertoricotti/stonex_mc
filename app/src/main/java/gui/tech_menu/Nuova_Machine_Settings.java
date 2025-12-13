@@ -130,6 +130,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         drill.setVisibility(View.GONE);
 
 
+
     }
 
     private void onClick() {
@@ -491,6 +492,13 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     }
 
     public void updateUI() {
+        if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
+            toCanopen.setVisibility(View.VISIBLE);
+            toDamping.setVisibility(View.VISIBLE);
+        }else {
+            toCanopen.setVisibility(View.INVISIBLE);
+            toDamping.setVisibility(View.INVISIBLE);
+        }
         if (DataSaved.gpsOk && errorCode == 0) {
             status.setImageTintList(ColorStateList.valueOf(Color.GREEN));
         } else {

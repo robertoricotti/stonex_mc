@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Bg_yellow"
+    android:background="@color/bg_gray"
     android:keepScreenOn="true"
     tools:context="gui.tech_menu.CanOpenTSM">
 
@@ -49,6 +49,7 @@
         app:layout_constraintGuide_percent="0.1" />
 
     <TextView
+        android:id="@+id/titolo"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"

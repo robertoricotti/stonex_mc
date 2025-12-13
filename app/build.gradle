@@ -43,7 +43,11 @@ android {
         exclude 'lib/armeabi-v7a/libsysmcu.so'
     }
 
-
+    variantFilter { variant ->
+        if (variant.buildType.name == "debug") {
+            setIgnore(true)
+        }
+    }
     signingConfigs {
         release {
             storeFile file("platform.keystore")
@@ -67,13 +71,15 @@ android {
 
             }
 
-            //  Flavor = GEN1 (Apollo8, Tank2) e GEN2 (il resto)
+
             flavorDimensions "generation"
             productFlavors {
                 gen2 {
+                    getIsDefault().set(true)
                     dimension "generation"
                     applicationIdSuffix ".gen2"
                     versionNameSuffix " -GEN2"
+
                 }
                 gen1 {
                     dimension "generation"
