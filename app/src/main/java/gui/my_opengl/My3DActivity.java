@@ -64,6 +64,7 @@ import gui.draw_class.DrawDXF_Layer1_Tilt;
 import gui.draw_class.DrawDXF_Layer2;
 import gui.draw_class.DrawDXF_Layer2_Tilt;
 import gui.draw_class.MyColorClass;
+import gui.draw_class.Top_View_DXF;
 import gui.gps.NmeaGenerator;
 import gui.grade_draw_class.Grade_DrawDXF_Layer1;
 import gui.grade_draw_class.Grade_DrawDXF_Layer2;
@@ -99,8 +100,8 @@ public class My3DActivity extends BaseClass {
     SeekBar seekRed;
     SeekBar seekGreen;
     SeekBar seekBlue;
-    ConstraintLayout panel1, panel2;
-    View layer1Canvas, layer2Canvas;
+    ConstraintLayout panel1, panel2,panel3;
+    View layer1Canvas, layer2Canvas,layer3Canvas;
     View colorPreview;
     ImageView loading;
     ProgressBar progress;
@@ -128,7 +129,8 @@ public class My3DActivity extends BaseClass {
     ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto, gl_benne;
     ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce, btn_pnezd,hydroPoint;
     ImageView gl_sound, gl_pnezd, gl_bright, gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
-    public static boolean isPan, glFace, glPoint, glText, glVista3d, glPoly, glFilter, glGradient, glFill;
+    public static boolean isPan, glFace, glPoint, glText, glPoly, glFilter, glGradient, glFill;
+    public static int glVista3d;
     DialogOffset_3D dialogOffset;
     Dialog_Point_Poly dialogPointPoly;
     boolean serviseStrarted;
@@ -219,6 +221,7 @@ public class My3DActivity extends BaseClass {
         navigatorHDT.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
         panel1 = findViewById(R.id.panel1D);
         panel2 = findViewById(R.id.panel2D);
+        panel3=findViewById(R.id.panel3D);
         generalnfo = findViewById(R.id.generalInfo);
         generalCoord = findViewById(R.id.generaCoord);
         exit = findViewById(R.id.digMenu);
@@ -288,6 +291,7 @@ public class My3DActivity extends BaseClass {
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
+        layer3Canvas=new Top_View_DXF(this);
         if (DataSaved.isWL < DOZER) {
             layer1Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer1_Tilt(this) : new DrawDXF_Layer1(this);
             layer2Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer2_Tilt(this) : new DrawDXF_Layer2(this);
@@ -297,8 +301,11 @@ public class My3DActivity extends BaseClass {
         }
         panel1.addView(layer1Canvas);
         panel2.addView(layer2Canvas);
+        panel3.addView(layer3Canvas);
         panel1.setBackgroundColor(MyColorClass.colorSfondo);
         panel2.setBackgroundColor(MyColorClass.colorSfondo);
+        panel3.setBackgroundColor(MyColorClass.colorSfondo);
+
         if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
             gl_benne.setImageResource((R.drawable.benna_vuota1));
             gl_hydroP.setVisibility(View.GONE);
@@ -314,7 +321,7 @@ public class My3DActivity extends BaseClass {
 
     private void onClick() {
         hydroPoint.setOnClickListener(view -> {
-            //TODO 315
+
             if(DataSaved.isWL==GRADER) {
 
                 DataSaved.HYDRAULIC_CONTROL_POINT_GRADER += 1;
@@ -661,11 +668,20 @@ public class My3DActivity extends BaseClass {
         gl_vista.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
-            glVista3d = !glVista3d;
-            if (isPan && glVista3d) {
+            glVista3d +=1;
+            glVista3d=glVista3d%2;
+            if (isPan && glVista3d==1) {
                 isPan = false;
             }
             updateMemories();
+        });
+        gl_vista.setOnLongClickListener(view -> {
+            if(glVista3d!=2){
+                glVista3d=2;
+            }else {
+                glVista3d=MyData.get_Int("vista3D");
+            }
+            return true;
         });
 
         bucketEdge.setOnLongClickListener(view -> {
@@ -754,10 +770,10 @@ public class My3DActivity extends BaseClass {
 
     private void checkBooleans() {
         try {
-            glVista3d = Boolean.parseBoolean(MyData.get_String("vista3D"));
+            glVista3d = Integer.parseInt(MyData.get_String("vista3D"));
         } catch (Exception e) {
-            glVista3d = true;
-            MyData.push("vista3D", String.valueOf(true));
+            glVista3d = 1;
+            MyData.push("vista3D", String.valueOf(1));
         }
         try {
             glFace = Boolean.parseBoolean(MyData.get_String("glFace"));
@@ -803,6 +819,17 @@ public class My3DActivity extends BaseClass {
     }
 
     public void updateUI() {
+        if(glVista3d==2){
+            btn_zoomP.setVisibility(View.INVISIBLE);
+            btn_zoomM.setVisibility(View.INVISIBLE);
+            btn_zoomC.setVisibility(View.INVISIBLE);
+            gl_pan_pinch.setVisibility(View.INVISIBLE);
+        }else {
+            btn_zoomP.setVisibility(View.VISIBLE);
+            btn_zoomM.setVisibility(View.VISIBLE);
+            btn_zoomC.setVisibility(View.VISIBLE);
+            gl_pan_pinch.setVisibility(View.VISIBLE);
+        }
         if(DataSaved.isWL==DOZER||DataSaved.isWL==DOZER_SIX||DataSaved.isWL==GRADER){
             if(prepLeft||prepRight){
                 hydroPoint.setVisibility(View.VISIBLE);
@@ -977,25 +1004,30 @@ public class My3DActivity extends BaseClass {
     private void setupBoxes() {
         view1.setBackgroundColor(MyColorClass.colorConstraint);
         view2.setBackgroundColor(MyColorClass.colorConstraint);
-        if (glVista3d) {
+        if (glVista3d==1) {
             //navigatorHDT.setVisibility(View.INVISIBLE);
             navigatorHDT.setVisibility(View.VISIBLE);
             float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
             rotBus = rotBus % 360;
-
             navigatorHDT.setRotation(rotBus);
-            //
             freccia.setVisibility(View.INVISIBLE);
             gl_vista.setImageResource(R.drawable.tredi_vista);
-        } else {
+        } else if(glVista3d==0) {
             navigatorHDT.setVisibility(View.VISIBLE);
             float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
             rotBus = rotBus % 360;
-
             navigatorHDT.setRotation(rotBus);
             freccia.setVisibility(View.VISIBLE);
             isPan = true;
             gl_vista.setImageResource(R.drawable.duedi_vista);
+        }else {
+            navigatorHDT.setVisibility(View.VISIBLE);
+            float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
+            rotBus = rotBus % 360;
+            navigatorHDT.setRotation(rotBus);
+            freccia.setVisibility(View.VISIBLE);
+            isPan = true;
+            gl_vista.setImageResource(R.drawable.baseline_panorama_96);
         }
         int colorUp = 0, colorDown = 0, colorGreen = 0;
         int colorUpCF, colorDownCF, colorGreenCF;
@@ -1141,7 +1173,6 @@ public class My3DActivity extends BaseClass {
 
 
         switch (DataSaved.typeView) {
-
             case 0:
                 if (isCutFill) {
                     paramsV1.guidePercent = 0f + inizioValue;
@@ -1153,26 +1184,38 @@ public class My3DActivity extends BaseClass {
                 fine.guidePercent = 1.0f;
                 view1.setVisibility(View.INVISIBLE);
                 view2.setVisibility(View.INVISIBLE);
-                glSurfaceView.setVisibility(View.VISIBLE);
                 panel1.setVisibility(View.GONE);
                 panel2.setVisibility(View.GONE);
+                if(glVista3d==2) {
+                    glSurfaceView.setVisibility(View.GONE);
+                    panel3.setVisibility(View.VISIBLE);
+                    layer3Canvas.invalidate();
+                }else {
+                    glSurfaceView.setVisibility(View.VISIBLE);
+                    panel3.setVisibility(View.GONE);
+                }
                 break;
             case 1:
-
                 paramsV1.guidePercent = 0.4f + inizioValue;
                 paramsV2.guidePercent = 0.5f;
                 inizio.guidePercent = 0 + inizioValue;
                 fine.guidePercent = 1.0f;
                 view1.setVisibility(View.VISIBLE);
                 view2.setVisibility(View.VISIBLE);
-                glSurfaceView.setVisibility(View.VISIBLE);
                 panel1.setVisibility(View.VISIBLE);
                 panel2.setVisibility(View.VISIBLE);
                 layer1Canvas.invalidate();
                 layer2Canvas.invalidate();
+                if(glVista3d==2) {
+                    glSurfaceView.setVisibility(View.GONE);
+                    panel3.setVisibility(View.VISIBLE);
+                    layer3Canvas.invalidate();
+                }else {
+                    glSurfaceView.setVisibility(View.VISIBLE);
+                    panel3.setVisibility(View.GONE);
+                }
                 break;
             case 2:
-
                 paramsV1.guidePercent = 1.02f;
                 paramsV2.guidePercent = 0.5f;
                 inizio.guidePercent = 0.0f + inizioValue;
@@ -1184,9 +1227,9 @@ public class My3DActivity extends BaseClass {
                 panel2.setVisibility(View.VISIBLE);
                 layer1Canvas.invalidate();
                 layer2Canvas.invalidate();
+                panel3.setVisibility(View.GONE);
                 break;
             case 3:
-
                 paramsV1.guidePercent = 1.02f;
                 paramsV2.guidePercent = 1.02f;
                 inizio.guidePercent = 0.0f + inizioValue;
@@ -1197,7 +1240,7 @@ public class My3DActivity extends BaseClass {
                 panel1.setVisibility(View.VISIBLE);
                 panel2.setVisibility(View.GONE);
                 layer1Canvas.invalidate();
-
+                panel3.setVisibility(View.GONE);
                 break;
             case 4:
                 paramsV1.guidePercent = 1.02f;
@@ -1210,6 +1253,7 @@ public class My3DActivity extends BaseClass {
                 panel1.setVisibility(View.GONE);
                 panel2.setVisibility(View.VISIBLE);
                 layer2Canvas.invalidate();
+                panel3.setVisibility(View.GONE);
                 break;
 
 

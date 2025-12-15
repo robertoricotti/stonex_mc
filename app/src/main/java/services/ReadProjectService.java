@@ -238,9 +238,7 @@ public class ReadProjectService extends Service {
 
         if (!(MyApp.visibleActivity instanceof My3DActivity)) {
             Intent intent;
-
             intent = new Intent(MyApp.visibleActivity, My3DActivity.class);
-
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("whats", "whats");
             startActivity(intent);

@@ -15,6 +15,7 @@ public class DrawDXFText {
         float rotatedYV1 = (float) (bucketY - diffX * Math.sin(rotationAngle) - diffY * Math.cos(rotationAngle));
         paint.setTextSize(30);
         paint.setColor(color);
+        paint.setStyle(Paint.Style.FILL);
         canvas.drawText(testo, rotatedXV1 + offX, rotatedYV1 - offY, paint);
 
 

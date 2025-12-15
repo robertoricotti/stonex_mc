@@ -42,6 +42,23 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
+        android:id="@+id/panel3D"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="0.5dp"
+        android:layout_marginEnd="0.5dp"
+        android:background="@color/application_table_line_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/view1"
+        app:layout_constraintRight_toLeftOf="@id/fine"
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/fine"

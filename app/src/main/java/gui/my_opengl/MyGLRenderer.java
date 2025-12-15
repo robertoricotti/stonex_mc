@@ -28,7 +28,7 @@ import utils.MyData;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
-    boolean is2D, is3D;
+    boolean is2D, is3D,isFlat;
     public static float scale;
     public static float angleX;
     public static float angleY, angleY_extra;
@@ -154,27 +154,29 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         if (gl instanceof GL11) {
             GL11 gl11 = (GL11) gl;
-            is2D = !My3DActivity.glVista3d;
-            is3D = My3DActivity.glVista3d;
+            is2D = My3DActivity.glVista3d==0;
+            is3D = My3DActivity.glVista3d==1;
+            isFlat = My3DActivity.glVista3d==2;
+            if(!isFlat) {
+                if (DataSaved.typeView == 0 || DataSaved.typeView == 1) {
 
-            if (DataSaved.typeView == 0 || DataSaved.typeView == 1) {
-                try {
+                    try {
 
-                    float angleTest = (float) ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360);
+                        float angleTest = (float) ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360);
 
-                    gl11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-                    gl11.glLoadIdentity();
-                    if (is3D) {
-                        gl11.glTranslatef(panX, panY, -5.0f);  // Pan in 3D
-                        gl11.glScalef(scale, scale, scale);   // Scala in tutte le direzioni
-                        //in 3D ruota la scena benna ancorata a 0,0
-                        gl11.glRotatef(angleX, 1f, 0f, 0f);
-                        if (DataSaved.lock3dRotation > 0) {
-                            gl11.glRotatef(angleTest + angleY_extra, 0f, 0f, 1f);
-                        } else {
-                            gl11.glRotatef(angleY, 0f, 0f, 1f);
-                        }
-                        if (!My3DActivity.glFilter) {
+                        gl11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+                        gl11.glLoadIdentity();
+                        if (is3D) {
+                            gl11.glTranslatef(panX, panY, -5.0f);  // Pan in 3D
+                            gl11.glScalef(scale, scale, scale);   // Scala in tutte le direzioni
+                            //in 3D ruota la scena benna ancorata a 0,0
+                            gl11.glRotatef(angleX, 1f, 0f, 0f);
+                            if (DataSaved.lock3dRotation > 0) {
+                                gl11.glRotatef(angleTest + angleY_extra, 0f, 0f, 1f);
+                            } else {
+                                gl11.glRotatef(angleY, 0f, 0f, 1f);
+                            }
+                            if (!My3DActivity.glFilter) {
 
                                 //tutto in 3D
                                 if ((My3DActivity.glFace || My3DActivity.glFill)) {
@@ -200,45 +202,43 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                                 gl.glEnable(GL11.GL_DEPTH_TEST);
 
 
+                            }
+                            if (My3DActivity.glFilter) {
+                                //tutto in 3D
+                                if ((My3DActivity.glFace || My3DActivity.glFill)) {
+                                    GLDrawer.drawFaces(gl11, DataSaved.filteredFaces, 0.8f, scale, isXML);//disegna le 3DFaces
+                                }
+                                if (My3DActivity.glGradient) {
+                                    GLDrawer.drawFacesGradientPRO(gl11, DataSaved.filteredFaces, scale, TriangleService.minZ, TriangleService.maxZ);
+                                }
+                                gl11.glDisable(GL10.GL_DEPTH_TEST);
+                                if (My3DActivity.glPoly) {
+                                    GLDrawer.drawPolylines(gl11, DataSaved.polylines, 3f, scale);
+                                }
+                                if (My3DActivity.glPoint) {
+                                    GLDrawer.drawPoints(gl11, DataSaved.filteredPoints, 10f, scale, isXMLPoint);
+                                }
+                                if (My3DActivity.glText) {
+                                    GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
+                                }
+                                if (PNEZD_FUNCTION || glPoint) {
+                                    GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
+                                    GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                                }
+                                gl11.glEnable(GL10.GL_DEPTH_TEST);
 
+
+                            }
 
                         }
-                        if(My3DActivity.glFilter){
-                            //tutto in 3D
-                            if ((My3DActivity.glFace || My3DActivity.glFill)) {
-                                GLDrawer.drawFaces(gl11, DataSaved.filteredFaces, 0.8f, scale, isXML);//disegna le 3DFaces
-                            }
-                            if (My3DActivity.glGradient) {
-                                GLDrawer.drawFacesGradientPRO(gl11, DataSaved.filteredFaces, scale, TriangleService.minZ, TriangleService.maxZ);
-                            }
-                            gl11.glDisable(GL10.GL_DEPTH_TEST);
-                            if (My3DActivity.glPoly) {
-                                GLDrawer.drawPolylines(gl11, DataSaved.polylines, 3f, scale);
-                            }
-                            if (My3DActivity.glPoint) {
-                                GLDrawer.drawPoints(gl11, DataSaved.filteredPoints, 10f, scale, isXMLPoint);
-                            }
-                            if (My3DActivity.glText) {
-                                GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
-                            }
-                            if (PNEZD_FUNCTION || glPoint) {
-                                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
-                                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
-                            }
-                            gl11.glEnable(GL10.GL_DEPTH_TEST);
+                        if (is2D) {
 
-
-                        }
-
-                    }
-                    if(is2D) {
-
-                        gl11.glTranslatef(panX, panY, -5f);  // Pan in 3D
-                        gl11.glScalef(scale, scale, 0f);   // non scala Z
-                        //in 2D ruota il terreno e non la macchina
-                        gl11.glRotatef(0, 1f, 0f, 0f);
-                        gl11.glRotatef(angleTest, 0f, 0f, 1f);
-                        if (!My3DActivity.glFilter) {
+                            gl11.glTranslatef(panX, panY, -5f);  // Pan in 3D
+                            gl11.glScalef(scale, scale, 0f);   // non scala Z
+                            //in 2D ruota il terreno e non la macchina
+                            gl11.glRotatef(0, 1f, 0f, 0f);
+                            gl11.glRotatef(angleTest, 0f, 0f, 1f);
+                            if (!My3DActivity.glFilter) {
 
 
                                 //tutto 2D
@@ -270,61 +270,62 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                                 gl.glEnable(GL11.GL_DEPTH_TEST);
 
 
+                            }
+                            if (My3DActivity.glFilter) {
+                                //tutto Z a 0
+
+                                if ((My3DActivity.glFace || My3DActivity.glFill)) {
+                                    GLDrawer.drawFaces(gl11, DataSaved.filteredFacesGL_2D, 0.8f, scale, isXML);//disegna le 3DFaces
+                                }
+                                if (My3DActivity.glGradient) {
+                                    GLDrawer.drawFacesGradient2D(gl11, DataSaved.filteredFaces, scale, TriangleService.minZ, TriangleService.maxZ);
+                                }
+                                gl11.glDisable(GL10.GL_DEPTH_TEST);
+                                if (My3DActivity.glPoly) {
+                                    GLDrawer.drawPolylines(gl11, DataSaved.polylinesGL_2D, 3f, scale);
+                                    //altre entità 2D dxf
+                                    GLDrawer.drawLines2D(gl11, DataSaved.lines_2D, 3f, scale);
+                                    GLDrawer.drawArcs2D(gl11, DataSaved.arcs, 2f, scale);
+                                    GLDrawer.drawPolylines2D(gl11, DataSaved.polylines_2D, 3f, scale);
+                                    GLDrawer.drawCircles2D(gl11, DataSaved.circles, 2f, scale);
+
+                                }
+                                if (glPoint) {
+                                    GLDrawer.drawPoints(gl11, DataSaved.filteredPoints, 10f, scale, isXMLPoint);
+                                }
+                                if (My3DActivity.glText) {
+                                    GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
+                                }
+                                if (PNEZD_FUNCTION || glPoint) {
+                                    GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
+                                    GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                                }
+                                gl11.glEnable(GL10.GL_DEPTH_TEST);
+
+
+                            }
+
                         }
-                        if(My3DActivity.glFilter){
-                            //tutto Z a 0
 
-                            if ((My3DActivity.glFace || My3DActivity.glFill)) {
-                                GLDrawer.drawFaces(gl11, DataSaved.filteredFacesGL_2D, 0.8f, scale, isXML);//disegna le 3DFaces
-                            }
-                            if (My3DActivity.glGradient) {
-                                GLDrawer.drawFacesGradient2D(gl11, DataSaved.filteredFaces, scale, TriangleService.minZ, TriangleService.maxZ);
-                            }
-                            gl11.glDisable(GL10.GL_DEPTH_TEST);
-                            if (My3DActivity.glPoly) {
-                                GLDrawer.drawPolylines(gl11, DataSaved.polylinesGL_2D, 3f, scale);
-                                //altre entità 2D dxf
-                                GLDrawer.drawLines2D(gl11, DataSaved.lines_2D, 3f, scale);
-                                GLDrawer.drawArcs2D(gl11, DataSaved.arcs, 2f, scale);
-                                GLDrawer.drawPolylines2D(gl11, DataSaved.polylines_2D, 3f, scale);
-                                GLDrawer.drawCircles2D(gl11, DataSaved.circles, 2f, scale);
-
-                            }
-                            if (glPoint) {
-                                GLDrawer.drawPoints(gl11, DataSaved.filteredPoints, 10f, scale, isXMLPoint);
-                            }
-                            if (My3DActivity.glText) {
-                                GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
-                            }
-                            if (PNEZD_FUNCTION || glPoint) {
-                                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
-                                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
-                            }
-                            gl11.glEnable(GL10.GL_DEPTH_TEST);
+                        switch (DataSaved.isWL) {
+                            case EXCAVATOR:
+                                GL_DrawExca.draw(gl11);
+                                break;
+                            case WHEELLOADER:
+                                GL_DrawWheel.draw(gl11);
+                                break;
+                            case DOZER:
+                            case DOZER_SIX:
+                            case GRADER:
+                                GL_DrawDozer.draw(gl11);
+                                break;
 
 
                         }
 
+
+                    } catch (Exception e) {
                     }
-
-                    switch (DataSaved.isWL) {
-                        case EXCAVATOR:
-                            GL_DrawExca.draw(gl11);
-                            break;
-                        case WHEELLOADER:
-                            GL_DrawWheel.draw(gl11);
-                            break;
-                        case DOZER:
-                        case DOZER_SIX:
-                        case GRADER:
-                            GL_DrawDozer.draw(gl11);
-                            break;
-
-
-                    }
-
-
-                } catch (Exception e) {
                 }
             }
         }

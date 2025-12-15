@@ -35,7 +35,7 @@ import packexcalib.exca.DataSaved;
 public class GL_DrawDozer {
 
     public static void draw(GL11 gl11) {
-        if(My3DActivity.glVista3d) {
+        if(My3DActivity.glVista3d==1) {
             BoomsDrawer Lama = new BoomsDrawer(GL_LAMA, My_Lama.lamaChiara(), new float[]{coloreEsterno[0], coloreEsterno[1], coloreEsterno[2], 1f}
                     , My_Lama.lamaScura(), coloreInterno,
                     My_Lama.lamaContour());

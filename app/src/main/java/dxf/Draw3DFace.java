@@ -1,5 +1,7 @@
 package dxf;
 
+import static gui.my_opengl.GL_Methods.getJetColorInt;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -70,6 +72,54 @@ public class Draw3DFace {
 
         }
     }
+    public static void drawFaceGradientCanvas(
+            Paint paint,
+            Canvas canvas,
+            double[][] vertices,
+            float bucketX,
+            float bucketY,
+            double buckEst,
+            double buckNord,
+            float scala,
+            double rotationAngle,
+            double zMin,
+            double zMax
+    ) {
+        if (vertices == null || vertices.length < 3) return;
+
+        // Z media
+        double zAvg =
+                (vertices[0][2] +
+                        vertices[1][2] +
+                        vertices[2][2]) / 3.0;
+
+        int color = getJetColorInt(zAvg, zMin, zMax, 0.75f);
+
+        Path path = new Path();
+
+        for (int i = 0; i < 3; i++) {
+            double diffX = (vertices[i][0] - buckEst) * scala;
+            double diffY = (vertices[i][1] - buckNord) * scala;
+
+            float x = (float) (bucketX + diffX * Math.cos(rotationAngle) - diffY * Math.sin(rotationAngle));
+            float y = (float) (bucketY - diffX * Math.sin(rotationAngle) - diffY * Math.cos(rotationAngle));
+
+            if (i == 0) path.moveTo(x, y);
+            else path.lineTo(x, y);
+        }
+
+        path.close();
+
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(color);
+        canvas.drawPath(path, paint);
+    }
+
+
+
+
+
+
     private static int applyAlphaToColor(int color, float alpha) {
         // Estrai i componenti RGB dal colore (in formato ARGB)
         float red = ((color >> 16) & 0xFF) / 255.0f;  // Estrai il componente rosso (dal bit 16 al bit 23)

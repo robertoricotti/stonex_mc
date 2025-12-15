@@ -172,6 +172,21 @@ public class GL_Methods {
         return new float[]{r, g, b, 1f};
     }
 
+    public static int getJetColorInt(double value, double min, double max, float alpha) {
+        float t = (float) ((value - min) / (max - min));
+        t = Math.max(0f, Math.min(1f, t));
+
+        float r = Math.min(1f, Math.max(0f, 1.5f - Math.abs(4 * t - 3)));
+        float g = Math.min(1f, Math.max(0f, 1.5f - Math.abs(4 * t - 2)));
+        float b = Math.min(1f, Math.max(0f, 1.5f - Math.abs(4 * t - 1)));
+
+        return Color.argb(
+                (int) (alpha * 255),
+                (int) (r * 255),
+                (int) (g * 255),
+                (int) (b * 255)
+        );
+    }
 
 
     public static double findMinZ(List<Face3D> faces) {
