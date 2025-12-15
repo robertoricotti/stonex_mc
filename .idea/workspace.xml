@@ -226,15 +226,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.16 FMI_IMPLEMENT">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.16 FMI_IMPLEMENT changeID">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/CanOpenTSM.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/CanOpenTSM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/TiltEncript.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/TiltEncript.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyMCUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyMCUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_can_open_tsm.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_can_open_tsm.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GLDrawer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GLDrawer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,7 +239,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=a9faae769bdf7e1a)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Pixel_XL_API_33.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -431,14 +426,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00006" summary="pre release 4.0.2 da testare automatico">
-      <option name="closed" value="true" />
-      <created>1760743747680</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1760743747680</updated>
     </task>
     <task id="LOCAL-00007" summary="TODO listener per autoconnettersi al cloud se non  connesso">
       <option name="closed" value="true" />
@@ -824,11 +811,18 @@
       <option name="project" value="LOCAL" />
       <updated>1765630801178</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="4.0.16 FMI_IMPLEMENT changeID">
+      <option name="closed" value="true" />
+      <created>1765647650228</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1765647650228</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="4.0.8 RELEASE UFFICIALE" />
     <MESSAGE value="4.0.9 TEST" />
     <MESSAGE value="4.0.9 fix can glitch" />
     <MESSAGE value="4.0.9 pre release FW danfoss" />
@@ -853,7 +847,8 @@
     <MESSAGE value="4.0.16 NFR USA TEST before release" />
     <MESSAGE value="4.0.16 BEFORE RELEASE" />
     <MESSAGE value="4.0.16 FMI_IMPLEMENT" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.0.16 FMI_IMPLEMENT" />
+    <MESSAGE value="4.0.16 FMI_IMPLEMENT changeID" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.0.16 FMI_IMPLEMENT changeID" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

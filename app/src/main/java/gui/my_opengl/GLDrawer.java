@@ -1111,4 +1111,3 @@ public class GLDrawer {
     }
 
 }
-
