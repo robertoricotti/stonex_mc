@@ -1,6 +1,9 @@
 package gui.draw_class;
 
 
+import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static packexcalib.exca.ExcavatorLib.swing_boom_angle;
+import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static services.TriangleService.tutteLinee;
 import static utils.MyTypes.EXCAVATOR;
 
@@ -8,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -24,6 +28,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import dxf.Point2D;
+import dxf.Point3D;
+import dxf.Segment;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import services.TriangleService;
@@ -33,7 +39,7 @@ public class DrawDXF_Layer1_Tilt extends View {
     final float PIVOT_X = 0.50f;
     final float PIVOT_Y = 0.75f;
 
-    Paint paint;
+    Paint paint,dashedPaint;
 
     int scala;
     private GestureDetector gestureDetector;
@@ -47,6 +53,7 @@ public class DrawDXF_Layer1_Tilt extends View {
     public DrawDXF_Layer1_Tilt(Context context) {
         super(context);
         paint = new Paint();
+        dashedPaint=new Paint();
 
         if (DataSaved.scale_FactorVista1D == 0) {
             DataSaved.scale_FactorVista1D = 1f;
@@ -461,10 +468,70 @@ public class DrawDXF_Layer1_Tilt extends View {
                 } catch (Exception e) {
                 }
             }
+            if (DataSaved.isAutoSnap == 2) {
+
+                float mfixedX = getWidth() * PIVOT_X;
+
+                float x = worldToFrontX(
+                        mfixedX,
+                        scala,
+                        DataSaved.cutWorldX_1, // E
+                        DataSaved.cutWorldY_1  // N
+                );
+
+                dashedPaint.setAntiAlias(true);
+                dashedPaint.setStyle(Paint.Style.STROKE);
+                dashedPaint.setColor(MyColorClass.colorConstraint);
+                dashedPaint.setStrokeWidth((float) (3f / DataSaved.scale_FactorVista1D));
+                dashedPaint.setPathEffect(
+                        new DashPathEffect(new float[]{20f, 15f}, 0)
+                );
+
+                canvas.drawLine(x, -10000f, x, 10000f, dashedPaint);
+                dashedPaint.setPathEffect(null);
+            }
+
         } catch (Exception e) {
             System.out.println(e.toString());
         }
 
+    }
+    private float worldToFrontX(
+            float fixedX,
+            int scala,
+            double worldE,
+            double worldN
+    ) {
+        // riferimento: centro benna in coordinate mondo
+        double refE = ExcavatorLib.bucketCoord[0];
+        double refN = ExcavatorLib.bucketCoord[1];
+        switch (DataSaved.bucketEdge){
+            case -1:
+                refE = ExcavatorLib.bucketLeftCoord[0];
+                 refN = ExcavatorLib.bucketLeftCoord[1];
+                break;
+
+            case 0:
+                refE = ExcavatorLib.bucketCoord[0];
+                refN = ExcavatorLib.bucketCoord[1];
+                break;
+
+            case 1:
+                refE = ExcavatorLib.bucketRightCoord[0];
+                refN = ExcavatorLib.bucketRightCoord[1];
+                break;
+        }
+
+        double dE = worldE - refE;
+        double dN = worldN - refN;
+
+        double yawRad = Math.toRadians(hdt_BOOM + yawSensor);
+
+        // componente laterale macchina (DX/SX)
+        double lateral = dE * Math.sin(yawRad) + dN * Math.cos(yawRad);
+
+        // NOTA: nella frontale il lato destro macchina è a destra schermo
+        return fixedX - (float) (lateral * scala);
     }
 
     private void setPoints(float distance, float angle, double value, ArrayList<PointF> array) {
@@ -486,7 +553,6 @@ public class DrawDXF_Layer1_Tilt extends View {
         float dX = x2 - x1;
         return (float) Math.atan2(dY, dX); // * 180 / Math.PI;
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     @Override

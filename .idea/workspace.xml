@@ -227,15 +227,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.16 FMI_IMPLEMENT changeID">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Geometry2D.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Draw3DFace.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Draw3DFace.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXFText.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXFText.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Segment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Segment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer1.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer1_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer1_Tilt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2_Tilt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GL_Methods.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GL_Methods.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/dozer/GL_DrawDozer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/dozer/GL_DrawDozer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -433,14 +438,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00008" summary="4.0.2 RELEASE UFFICIALE">
-      <option name="closed" value="true" />
-      <created>1760973523604</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1760973523604</updated>
     </task>
     <task id="LOCAL-00009" summary="4.0.3 RELEASE UFFICIALE">
       <option name="closed" value="true" />
@@ -826,7 +823,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765795811997</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="4.0.16 FMI_IMPLEMENT changeID">
+      <option name="closed" value="true" />
+      <created>1765818526302</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1765818526302</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

@@ -7,6 +7,7 @@ import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
 import static packexcalib.exca.ExcavatorLib.correctPitch;
 import static packexcalib.exca.ExcavatorLib.correctRoll;
 import static packexcalib.exca.ExcavatorLib.hdt_LAMA;
+import static packexcalib.exca.ExcavatorLib.yawSensor;
 
 import android.app.Service;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import dxf.Point3D;
 import dxf.Polyline;
 import dxf.Segment;
 import gui.MyApp;
+import gui.draw_class.Geometry2D;
 import gui.my_opengl.GLDrawer;
 import gui.my_opengl.My3DActivity;
 import gui.my_opengl.Point3DF;
@@ -53,6 +55,7 @@ import utils.DistToPoint;
 import utils.MyData;
 
 public class TriangleService extends Service {
+    public static int segnoLinea=1;
     public static double[] quoteDTM;
     public static double orientamentoFreccia;
     static boolean startSort;
@@ -235,14 +238,14 @@ public class TriangleService extends Service {
 
                             case 2:
 
-
+                                Point3D referencePoint=new Point3D(bucketCoord[0], bucketCoord[1], 0);
 
                                 if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
 
                                     // Genera segmenti offset a partire dalle polilinee filtrate
                                     List<Segment> allOffsetSegments = buildOffsetForSnap(DataSaved.filteredPolylines, DataSaved.line_Offset);
 
-                                    Point3D referencePoint;
+
                                     switch (DataSaved.bucketEdge) {
                                         case -1:
                                             referencePoint = new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], 0);
@@ -259,6 +262,7 @@ public class TriangleService extends Service {
                                     }
 
                                     Segment closestSegment;
+
 
                                     if (DataSaved.lockUnlock == 0) {
                                         // comportamento normale: trova il segmento più vicino tra tutti
@@ -280,6 +284,7 @@ public class TriangleService extends Service {
                                         closestSegment = findClosestSegment(referencePoint, lockedSegments);
                                     }
 
+                                    double refE = 0,refN=0;
                                     // salva i risultati
                                     DataSaved.nearestSegment = closestSegment;
                                     DataSaved.selectedPoly_OFFSET = closestSegment != null ? closestSegment.getPolyline() : null;
@@ -289,17 +294,59 @@ public class TriangleService extends Service {
                                         dist3D_SX = Math.abs(new DistToLine(bucketLeftCoord[0], bucketLeftCoord[1],
                                                 closestSegment.getStart().getX(), closestSegment.getStart().getY(),
                                                 closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
+                                        refE=bucketLeftCoord[0];
+                                        refN=bucketLeftCoord[1];
+
                                     } else if (DataSaved.bucketEdge == 0 && closestSegment != null) {
                                         dist3D_CT = Math.abs(new DistToLine(bucketCoord[0], bucketCoord[1],
                                                 closestSegment.getStart().getX(), closestSegment.getStart().getY(),
                                                 closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
+                                        refE=bucketCoord[0];
+                                        refN=bucketCoord[1];
                                     } else if (DataSaved.bucketEdge == 1 && closestSegment != null) {
                                         dist3D_DX = Math.abs(new DistToLine(bucketRightCoord[0], bucketRightCoord[1],
                                                 closestSegment.getStart().getX(), closestSegment.getStart().getY(),
                                                 closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
+                                        refE=bucketRightCoord[0];
+                                        refN=bucketRightCoord[1];
                                     }
 
-                                } else {
+                                    Point3D p = closestSegment.getClosestPoint(bucketLeftCoord[0], bucketLeftCoord[1]);
+                                    double dE = p.getX() - refE;
+                                    double dN = p.getY() - refN;
+                                    double yawRad = Math.toRadians(ExcavatorLib.hdt_BOOM+yawSensor);
+                                    double latX = Math.cos(yawRad);
+                                    double latY = -Math.sin(yawRad);
+                                    double lateral = dE * latX + dN * latY;
+                                    if(lateral>0){
+                                        segnoLinea=-1;
+                                    }else {
+                                        segnoLinea=1;
+                                    }
+
+                                    Segment seg = DataSaved.nearestSegment;
+                                    Point2D cut1 =
+                                            Geometry2D.projectPointOnSegment(
+                                                    referencePoint.getX(),
+                                                    referencePoint.getY(),
+                                                    seg.getStart(),
+                                                    seg.getEnd()
+                                            );
+                                    DataSaved.cutWorldX_1 = cut1.getX();
+                                    DataSaved.cutWorldY_1 = cut1.getY();
+
+
+                                    Point2D cut2 =
+                                            Geometry2D.projectPointOnSegment(
+                                                    bucketCoord[0],
+                                                    bucketCoord[1],
+                                                    seg.getStart(),
+                                                    seg.getEnd()
+                                            );
+                                    DataSaved.cutWorldX_2 = cut2.getX();
+                                    DataSaved.cutWorldY_2 = cut2.getY();
+                                }
+                                else {
                                     DataSaved.isAutoSnap = 0;
                                 }
 

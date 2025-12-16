@@ -93,7 +93,7 @@ public class Draw3DFace {
                         vertices[1][2] +
                         vertices[2][2]) / 3.0;
 
-        int color = getJetColorInt(zAvg, zMin, zMax, 0.75f);
+        int color = getJetColorInt(zAvg, zMin, zMax);
 
         Path path = new Path();
 
@@ -111,7 +111,7 @@ public class Draw3DFace {
         path.close();
 
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(color);
+        paint.setColor(applyAlphaToColor(color,0.5f));
         canvas.drawPath(path, paint);
     }
 

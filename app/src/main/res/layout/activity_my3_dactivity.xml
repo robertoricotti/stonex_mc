@@ -498,6 +498,7 @@
                 android:background="@drawable/custom_background_test3d"
                 android:clickable="true"
                 android:padding="4dp"
+                android:alpha="1"
                 android:src="@drawable/vertical_center_btn"
                 app:tint="@color/white" />
 
@@ -509,6 +510,7 @@
                 android:background="@drawable/custom_background_test3d"
                 android:clickable="true"
                 android:padding="4dp"
+                android:alpha="1"
                 android:src="@drawable/zoomout"
                 app:tint="@color/white" />
 
@@ -520,6 +522,7 @@
                 android:background="@drawable/custom_background_test3d"
                 android:clickable="true"
                 android:padding="4dp"
+                android:alpha="1"
                 android:src="@drawable/zoomin"
                 app:tint="@color/white" />
             <ImageView
@@ -530,6 +533,7 @@
                 android:background="@drawable/custom_background_test3d"
                 android:clickable="true"
                 android:padding="3dp"
+                android:alpha="1"
                 android:src="@drawable/baseline_swipe_96"
                 app:tint="@color/white" />
 

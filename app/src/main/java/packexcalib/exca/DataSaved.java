@@ -402,4 +402,11 @@ public class DataSaved {
     public static String PNEZDPath = "/storage/emulated/0/StonexMC_V4/Projects/Ex/Ex.csv";
 
 
+    //to test canvas
+    public static double cutWorldX_1 ;
+    public static double cutWorldY_1 ;
+
+    public static double cutWorldX_2 ;
+    public static double cutWorldY_2 ;
+
 }

@@ -163,6 +163,7 @@ public class ExcavatorLib {
                         coordinateLASER = coordLSH;
                         coordST = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.L_Stick + ExtensionBoom, hdt_BOOM);
                         if (DataSaved.lrTilt == 0) {
+                            yawSensor = 0;
                             coordPivoTilt = coordST;
                             bucketCoord = Exca_Quaternion.endPoint(coordST, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket, hdt_BOOM);
                             bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90);

@@ -1,5 +1,7 @@
 package gui.draw_class;
 
+import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static services.TriangleService.tutteLinee;
 import static utils.MyTypes.EXCAVATOR;
@@ -8,10 +10,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -25,6 +29,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import dxf.Point2D;
+import dxf.Point3D;
+import dxf.Segment;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import services.TriangleService;
@@ -32,12 +38,12 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class DrawDXF_Layer2_Tilt  extends View {
-
+float mFixedXX;
     final float PIVOT_X = 0.50f;
     final float PIVOT_Y = 0.65f;
     double height;
 
-    Paint paint;
+    Paint paint,dashedPaint;
 
     int scala;
     private GestureDetector gestureDetector;
@@ -51,6 +57,7 @@ public class DrawDXF_Layer2_Tilt  extends View {
     public DrawDXF_Layer2_Tilt(Context context) {
         super(context);
         paint = new Paint();
+        dashedPaint=new Paint();
         if (DataSaved.scale_FactorVista2D == 0) {
             DataSaved.scale_FactorVista2D = 1f;
         }
@@ -243,12 +250,15 @@ public class DrawDXF_Layer2_Tilt  extends View {
 
             switch (edge) {
                 case -1:
+                    mFixedXX=bucket.get(4).x;
                     canvas.drawCircle(bucket.get(4).x, bucket.get(4).y, (float) (8f), paint);
                     break;
                 case 0:
+                    mFixedXX=(bucket.get(3).x + bucket.get(4).x) / 2f;
                     canvas.drawCircle((bucket.get(3).x + bucket.get(4).x) / 2f, (bucket.get(3).y + bucket.get(4).y) / 2f, (float) (8f), paint);
                     break;
                 case 1:
+                    mFixedXX=bucket.get(3).x;
                     canvas.drawCircle(bucket.get(3).x, bucket.get(3).y, (float) (8f), paint);
                     break;
             }
@@ -462,10 +472,42 @@ public class DrawDXF_Layer2_Tilt  extends View {
                 } catch (Exception e) {
                 }
             }
+            if (DataSaved.isAutoSnap == 2) {
+
+
+
+                float dist = 0;
+                switch (DataSaved.bucketEdge) {
+                    case -1:
+                        dist = (float) (TriangleService.dist3D_SX * scala);
+                        break;
+                    case 0:
+                        dist = (float) (TriangleService.dist3D_CT * scala);
+                        break;
+                    case 1:
+                        dist = (float) (TriangleService.dist3D_DX * scala);
+                        break;
+
+                }
+
+                float x = mFixedXX - (dist*TriangleService.segnoLinea);
+                dashedPaint.setAntiAlias(true);
+                dashedPaint.setStyle(Paint.Style.STROKE);
+                dashedPaint.setColor(MyColorClass.colorConstraint);
+                dashedPaint.setStrokeWidth((float) (3f / DataSaved.scale_FactorVista2D));
+                dashedPaint.setPathEffect(new DashPathEffect(new float[]{20f, 15f}, 0));
+
+                canvas.drawLine(x, -10000f, x, 10000f, dashedPaint);
+                // opzionale: pulisci l’effetto per non sporcare altro
+                dashedPaint.setPathEffect(null);
+            }
+
+
         } catch (Exception e) {
             System.out.println(e.toString());
         }
     }
+
 
     private void setPoints(float distance, float angle, double value, ArrayList<PointF> array) {
         array.add(

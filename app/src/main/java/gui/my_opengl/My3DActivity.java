@@ -82,7 +82,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
-    int flip=0;
+    int flip = 0;
 
     ImageView navigatorHDT;
 
@@ -100,8 +100,8 @@ public class My3DActivity extends BaseClass {
     SeekBar seekRed;
     SeekBar seekGreen;
     SeekBar seekBlue;
-    ConstraintLayout panel1, panel2,panel3;
-    View layer1Canvas, layer2Canvas,layer3Canvas;
+    ConstraintLayout panel1, panel2, panel3;
+    View layer1Canvas, layer2Canvas, layer3Canvas;
     View colorPreview;
     ImageView loading;
     ProgressBar progress;
@@ -127,7 +127,7 @@ public class My3DActivity extends BaseClass {
     TextView boxLeft, boxCent, boxRight, txtCutFill, txtDist;
     LinearLayout sideBar, frameCent;
     ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto, gl_benne;
-    ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce, btn_pnezd,hydroPoint;
+    ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce, btn_pnezd, hydroPoint;
     ImageView gl_sound, gl_pnezd, gl_bright, gl_pan_pinch, gl_facce, gl_poly, gl_punti, gl_testi, gl_vista, gl_fill, gl_gradient, gl_folder, gl_gps, gl_filter, gl_layers;
     public static boolean isPan, glFace, glPoint, glText, glPoly, glFilter, glGradient, glFill;
     public static int glVista3d;
@@ -221,7 +221,7 @@ public class My3DActivity extends BaseClass {
         navigatorHDT.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
         panel1 = findViewById(R.id.panel1D);
         panel2 = findViewById(R.id.panel2D);
-        panel3=findViewById(R.id.panel3D);
+        panel3 = findViewById(R.id.panel3D);
         generalnfo = findViewById(R.id.generalInfo);
         generalCoord = findViewById(R.id.generaCoord);
         exit = findViewById(R.id.digMenu);
@@ -275,7 +275,7 @@ public class My3DActivity extends BaseClass {
         allarmeBound = findViewById(R.id.allarmeBound);
         gl_sound = findViewById(R.id.gl_sound);
         gl_hydroP = findViewById(R.id.gl_hydroP);
-        hydroPoint=findViewById(R.id.hydroPoint);
+        hydroPoint = findViewById(R.id.hydroPoint);
         allarmeAlt.setVisibility(View.GONE);
         dialogMapMode = new Dialog_MapMode(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
@@ -291,7 +291,7 @@ public class My3DActivity extends BaseClass {
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
-        layer3Canvas=new Top_View_DXF(this);
+        layer3Canvas = new Top_View_DXF(this);
         if (DataSaved.isWL < DOZER) {
             layer1Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer1_Tilt(this) : new DrawDXF_Layer1(this);
             layer2Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer2_Tilt(this) : new DrawDXF_Layer2(this);
@@ -322,15 +322,15 @@ public class My3DActivity extends BaseClass {
     private void onClick() {
         hydroPoint.setOnClickListener(view -> {
 
-            if(DataSaved.isWL==GRADER) {
+            if (DataSaved.isWL == GRADER) {
 
                 DataSaved.HYDRAULIC_CONTROL_POINT_GRADER += 1;
-                DataSaved.HYDRAULIC_CONTROL_POINT_GRADER=DataSaved.HYDRAULIC_CONTROL_POINT_GRADER%3;
+                DataSaved.HYDRAULIC_CONTROL_POINT_GRADER = DataSaved.HYDRAULIC_CONTROL_POINT_GRADER % 3;
 
-            }else {
+            } else {
 
                 DataSaved.HYDRAULIC_CONTROL_POINT_DOZER += 1;
-                DataSaved.HYDRAULIC_CONTROL_POINT_DOZER=DataSaved.HYDRAULIC_CONTROL_POINT_DOZER%2;
+                DataSaved.HYDRAULIC_CONTROL_POINT_DOZER = DataSaved.HYDRAULIC_CONTROL_POINT_DOZER % 2;
             }
             if (DataSaved.isWL == GRADER) {
                 switch (DataSaved.HYDRAULIC_CONTROL_POINT_GRADER) {
@@ -459,26 +459,28 @@ public class My3DActivity extends BaseClass {
             updateMemories();
         });
         btn_zoomC.setOnClickListener(view -> {
-            no_touch_menu.removeCallbacks(timeOutTouch);
-            no_touch_menu.postDelayed(timeOutTouch, delay);
-            /*if (!My3DActivity.isPan) {
-               MyGLRenderer.angleX = -90f;
-                MyGLRenderer.angleY = 0f;
-            }*/
-            MyGLRenderer.panX = 0;
-            MyGLRenderer.panY = -0.3f;
+            if(btn_zoomC.getAlpha()==1f) {
+                no_touch_menu.removeCallbacks(timeOutTouch);
+                no_touch_menu.postDelayed(timeOutTouch, delay);
+                MyGLRenderer.panX = 0;
+                MyGLRenderer.panY = -0.3f;
+            }
         });
         btn_zoomP.setOnClickListener(view -> {
-            no_touch_menu.removeCallbacks(timeOutTouch);
-            no_touch_menu.postDelayed(timeOutTouch, delay);
-            MyGLRenderer.scale += 0.05f;
-            MyGLRenderer.scale = Math.max(0.09f, Math.min(MyGLRenderer.scale, 1.5f));
+            if(btn_zoomP.getAlpha()==1f) {
+                no_touch_menu.removeCallbacks(timeOutTouch);
+                no_touch_menu.postDelayed(timeOutTouch, delay);
+                MyGLRenderer.scale += 0.05f;
+                MyGLRenderer.scale = Math.max(0.09f, Math.min(MyGLRenderer.scale, 1.5f));
+            }
         });
         btn_zoomM.setOnClickListener(view -> {
-            no_touch_menu.removeCallbacks(timeOutTouch);
-            no_touch_menu.postDelayed(timeOutTouch, delay);
-            MyGLRenderer.scale -= 0.05f;
-            MyGLRenderer.scale = Math.max(0.09f, Math.min(MyGLRenderer.scale, 1.5f));
+            if(btn_zoomM.getAlpha()==1f) {
+                no_touch_menu.removeCallbacks(timeOutTouch);
+                no_touch_menu.postDelayed(timeOutTouch, delay);
+                MyGLRenderer.scale -= 0.05f;
+                MyGLRenderer.scale = Math.max(0.09f, Math.min(MyGLRenderer.scale, 1.5f));
+            }
         });
 
         btn_color.setOnClickListener(view -> {
@@ -580,9 +582,11 @@ public class My3DActivity extends BaseClass {
         });
 
         gl_pan_pinch.setOnClickListener(view -> {
-            no_touch_menu.removeCallbacks(timeOutTouch);
-            no_touch_menu.postDelayed(timeOutTouch, delay);
-            isPan = !isPan;
+            if(gl_pan_pinch.getAlpha()==1f) {
+                no_touch_menu.removeCallbacks(timeOutTouch);
+                no_touch_menu.postDelayed(timeOutTouch, delay);
+                isPan = !isPan;
+            }
         });
         exit.setOnClickListener(view -> {
             try {
@@ -668,18 +672,18 @@ public class My3DActivity extends BaseClass {
         gl_vista.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
-            glVista3d +=1;
-            glVista3d=glVista3d%2;
-            if (isPan && glVista3d==1) {
+            glVista3d += 1;
+            glVista3d = glVista3d % 2;
+            if (isPan && glVista3d == 1) {
                 isPan = false;
             }
             updateMemories();
         });
         gl_vista.setOnLongClickListener(view -> {
-            if(glVista3d!=2){
-                glVista3d=2;
-            }else {
-                glVista3d=MyData.get_Int("vista3D");
+            if (glVista3d != 2) {
+                glVista3d = 2;
+            } else {
+                glVista3d = MyData.get_Int("vista3D");
             }
             return true;
         });
@@ -819,27 +823,34 @@ public class My3DActivity extends BaseClass {
     }
 
     public void updateUI() {
-        if(glVista3d==2){
-            btn_zoomP.setVisibility(View.INVISIBLE);
-            btn_zoomM.setVisibility(View.INVISIBLE);
-            btn_zoomC.setVisibility(View.INVISIBLE);
-            gl_pan_pinch.setVisibility(View.INVISIBLE);
-        }else {
-            btn_zoomP.setVisibility(View.VISIBLE);
-            btn_zoomM.setVisibility(View.VISIBLE);
-            btn_zoomC.setVisibility(View.VISIBLE);
-            gl_pan_pinch.setVisibility(View.VISIBLE);
-        }
-        if(DataSaved.isWL==DOZER||DataSaved.isWL==DOZER_SIX||DataSaved.isWL==GRADER){
-            if(prepLeft||prepRight){
-                hydroPoint.setVisibility(View.VISIBLE);
+        if (glVista3d == 2) {
+            btn_zoomP.setAlpha(0.3f);
+            btn_zoomM.setAlpha(0.3f);
+            btn_zoomC.setAlpha(0.3f);
+            gl_pan_pinch.setAlpha(0.3f);
+        } else {
+            if (DataSaved.typeView == 0 || DataSaved.typeView == 1) {
+                btn_zoomP.setAlpha(1f);
+                btn_zoomM.setAlpha(1f);
+                btn_zoomC.setAlpha(1f);
+                gl_pan_pinch.setAlpha(1f);
             }else {
+                btn_zoomP.setAlpha(0.3f);
+                btn_zoomM.setAlpha(0.3f);
+                btn_zoomC.setAlpha(1f);
+                gl_pan_pinch.setAlpha(0.3f);
+            }
+        }
+        if (DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
+            if (prepLeft || prepRight) {
+                hydroPoint.setVisibility(View.VISIBLE);
+            } else {
                 hydroPoint.setVisibility(View.GONE);
             }
-        }else {
+        } else {
             hydroPoint.setVisibility(View.GONE);
         }
-        if (!dialogCutFill3D.dialog.isShowing()&&!dialogGnssCoordinates.alertDialog.isShowing()) {
+        if (!dialogCutFill3D.dialog.isShowing() && !dialogGnssCoordinates.alertDialog.isShowing()) {
 
             try {
                 if (sideBar.getVisibility() == View.GONE) {
@@ -934,12 +945,12 @@ public class My3DActivity extends BaseClass {
 
                     gl_gps.setImageTintList(ColorStateList.valueOf(Color.DKGRAY));
                     gl_gps.setBackground(getDrawable(R.drawable.custom_background_test3d_box_gpsok));
-                    flip=0;
+                    flip = 0;
                 } else {
 
-                   flipFlop();
-                   flip+=1;
-                   flip=flip%20;
+                    flipFlop();
+                    flip += 1;
+                    flip = flip % 20;
                 }
 
                 if (isPan) {
@@ -1004,7 +1015,7 @@ public class My3DActivity extends BaseClass {
     private void setupBoxes() {
         view1.setBackgroundColor(MyColorClass.colorConstraint);
         view2.setBackgroundColor(MyColorClass.colorConstraint);
-        if (glVista3d==1) {
+        if (glVista3d == 1) {
             //navigatorHDT.setVisibility(View.INVISIBLE);
             navigatorHDT.setVisibility(View.VISIBLE);
             float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
@@ -1012,7 +1023,7 @@ public class My3DActivity extends BaseClass {
             navigatorHDT.setRotation(rotBus);
             freccia.setVisibility(View.INVISIBLE);
             gl_vista.setImageResource(R.drawable.tredi_vista);
-        } else if(glVista3d==0) {
+        } else if (glVista3d == 0) {
             navigatorHDT.setVisibility(View.VISIBLE);
             float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
             rotBus = rotBus % 360;
@@ -1020,7 +1031,7 @@ public class My3DActivity extends BaseClass {
             freccia.setVisibility(View.VISIBLE);
             isPan = true;
             gl_vista.setImageResource(R.drawable.duedi_vista);
-        }else {
+        } else {
             navigatorHDT.setVisibility(View.VISIBLE);
             float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
             rotBus = rotBus % 360;
@@ -1186,11 +1197,11 @@ public class My3DActivity extends BaseClass {
                 view2.setVisibility(View.INVISIBLE);
                 panel1.setVisibility(View.GONE);
                 panel2.setVisibility(View.GONE);
-                if(glVista3d==2) {
+                if (glVista3d == 2) {
                     glSurfaceView.setVisibility(View.GONE);
                     panel3.setVisibility(View.VISIBLE);
                     layer3Canvas.invalidate();
-                }else {
+                } else {
                     glSurfaceView.setVisibility(View.VISIBLE);
                     panel3.setVisibility(View.GONE);
                 }
@@ -1206,11 +1217,11 @@ public class My3DActivity extends BaseClass {
                 panel2.setVisibility(View.VISIBLE);
                 layer1Canvas.invalidate();
                 layer2Canvas.invalidate();
-                if(glVista3d==2) {
+                if (glVista3d == 2) {
                     glSurfaceView.setVisibility(View.GONE);
                     panel3.setVisibility(View.VISIBLE);
                     layer3Canvas.invalidate();
-                }else {
+                } else {
                     glSurfaceView.setVisibility(View.VISIBLE);
                     panel3.setVisibility(View.GONE);
                 }
@@ -1758,13 +1769,14 @@ public class My3DActivity extends BaseClass {
             return new String[]{s4, s5, s6};
         }
     }
-    private  void flipFlop(){
 
-        if(flip==0) {
+    private void flipFlop() {
+
+        if (flip == 0) {
             gl_gps.setImageTintList(ColorStateList.valueOf(Color.WHITE));
             gl_gps.setBackground(getDrawable(R.drawable.custom_background_test3d_box_gpsko));
         }
-        if(flip==10) {
+        if (flip == 10) {
             gl_gps.setImageTintList(ColorStateList.valueOf(Color.RED));
             gl_gps.setBackground(getDrawable(R.drawable.custom_background_test3d_box_grigino));
         }

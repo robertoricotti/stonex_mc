@@ -172,19 +172,36 @@ public class GL_Methods {
         return new float[]{r, g, b, 1f};
     }
 
-    public static int getJetColorInt(double value, double min, double max, float alpha) {
-        float t = (float) ((value - min) / (max - min));
-        t = Math.max(0f, Math.min(1f, t));
+    public static int getJetColorInt(double z, double zMin, double zMax) {
+        double normalized = (z - zMin) / (zMax - zMin);
+        normalized = Math.max(0, Math.min(1, normalized)); // clamp tra 0 e 1
 
-        float r = Math.min(1f, Math.max(0f, 1.5f - Math.abs(4 * t - 3)));
-        float g = Math.min(1f, Math.max(0f, 1.5f - Math.abs(4 * t - 2)));
-        float b = Math.min(1f, Math.max(0f, 1.5f - Math.abs(4 * t - 1)));
+        float r, g, b;
+
+        if (normalized < 0.125) { // Blu scuro
+            r = 0f; g = 0f; b = 0.5f + (float)(normalized / 0.125) * 0.5f;
+        } else if (normalized < 0.375) { // Blu → Ciano
+            double t = (normalized - 0.125) / 0.25;
+            r = 0f; g = (float)t; b = 1f;
+        } else if (normalized < 0.625) { // Ciano → Verde → Giallo
+            double t = (normalized - 0.375) / 0.25;
+            r = (float)t; g = 1f; b = 1f - (float)t;
+        } else if (normalized < 0.875) { // Giallo → Arancione
+            double t = (normalized - 0.625) / 0.25;
+            r = 1f; g = 1f - (float)(t * 0.5f); b = 0f;
+        } else { // Arancione → Rosso
+            double t = (normalized - 0.875) / 0.125;
+            r = 1f; g = 0.5f * (1f - (float)t); b = 0f;
+        }
+
+        float[] ff= new float[]{r, g, b, 1f};
+
 
         return Color.argb(
-                (int) (alpha * 255),
-                (int) (r * 255),
-                (int) (g * 255),
-                (int) (b * 255)
+                (int) (1f * 255),
+                (int) (ff[0] * 255),
+                (int) (ff[1] * 255),
+                (int) (ff[2] * 255)
         );
     }
 

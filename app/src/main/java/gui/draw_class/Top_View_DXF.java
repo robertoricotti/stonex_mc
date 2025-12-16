@@ -61,6 +61,7 @@ import utils.DistToPoint;
 
 public class Top_View_DXF extends View {
     private Matrix canvasMatrix = new Matrix();
+    public static Point3D lineCoord=new Point3D(0,0,0);
 
     List<PointF> arcPoints;
     List<List<PointF>> arcSegments;
@@ -88,6 +89,7 @@ public class Top_View_DXF extends View {
     double bennaNord;
     double bennaEst;
     double rotationAngle;
+    double rotationAngleBoom;
     float bucketX;
     float bucketY;
     Canvas canvas;
@@ -114,10 +116,6 @@ public class Top_View_DXF extends View {
         if (offsetY == 0) {
             offsetY = 100;
         }
-
-
-
-
 
 
         try {
@@ -167,9 +165,15 @@ public class Top_View_DXF extends View {
             double dist = 0;
             double bucketHeight = 0;
             double bucketHeightFake = 0;
+            double extraHeading=NmeaListener.roof_Orientation+DataSaved.offsetSwingExca;
+            if(DataSaved.Extra_Heading == 0){
+                extraHeading=0;
+            }
+            rotationAngle = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+            rotationAngleBoom=Math.toRadians(rotationAngle+extraHeading);
             if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
                 bucketWidth = DataSaved.W_Bucket * scala;
-                rotationAngle = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+
                 l_bucket = DataSaved.L_Bucket;
                 w_bucket = DataSaved.W_Bucket;
                 originPointBucket = new PointF(getWidth() * 0.5f, getHeight() * 0.75f);
@@ -193,11 +197,12 @@ public class Top_View_DXF extends View {
                 bucketY = left_top_bucket.y;
                 drawDXFElements(bennaEst, bennaNord);
                 drawBenna(canvas);
-            } else if (DataSaved.isWL == GRADER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == DOZER) {
+            }
+            else if (DataSaved.isWL == GRADER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == DOZER) {
                 PointF center = new PointF(getWidth() / 2f, getHeight() / 2f);
                 canvas.rotate(45, center.x, center.y);
                 canvas.rotate(-45, center.x, center.y);
-                rotationAngle = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+
                 if (DataSaved.isWL == WHEELLOADER) {
                     bucketWidth = DataSaved.W_Bucket * scala;
                     l_bucket = DataSaved.W_Bucket;
@@ -734,8 +739,8 @@ public class Top_View_DXF extends View {
             switch (DataSaved.bucketEdge) {
                 case -1:
                     canvas.rotate((float) ExcavatorLib.yawSensor, ancorPX, ancorPY);
-                     ux = dx / length;
-                     uy = dy / length;
+                    ux = dx / length;
+                    uy = dy / length;
                     for (int i = 1; i <= count; i++) {   // 👈 parte da 1, NON da 0
                         float dist = i * step;
 
@@ -761,12 +766,12 @@ public class Top_View_DXF extends View {
                     break;
 
                 case 0:
-                     x0 = stopX;
-                     y0 = stopY;
-                     x1 = stopX;
-                     y1 = stopY - 1000f;
-                     dx = x1 - x0;
-                     dy = y1 - y0;
+                    x0 = stopX;
+                    y0 = stopY;
+                    x1 = stopX;
+                    y1 = stopY - 1000f;
+                    dx = x1 - x0;
+                    dy = y1 - y0;
                     ux = dx / length;
                     uy = dy / length;
                     canvas.rotate((float) ExcavatorLib.yawSensor, ancorPX, ancorPY);
@@ -1153,6 +1158,7 @@ public class Top_View_DXF extends View {
 
         return new PointF(pts[0], pts[1]);
     }
+
     private void drawArrowTriangle(
             Canvas canvas,
             float cx, float cy,

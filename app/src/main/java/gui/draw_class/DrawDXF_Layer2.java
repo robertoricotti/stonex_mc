@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -33,11 +34,12 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class DrawDXF_Layer2 extends View {
+    float mFixedXX;
     final float PIVOT_X = 0.50f;
     final float PIVOT_Y = 0.65f;
     double height;
 
-    Paint paint;
+    Paint paint, dashedPaint;
 
     int scala;
     private GestureDetector gestureDetector;
@@ -48,9 +50,11 @@ public class DrawDXF_Layer2 extends View {
     private int activePointerId = INVALID_POINTER_ID;
     public static float offsetX;
     public static float offsetY;
+
     public DrawDXF_Layer2(Context context) {
         super(context);
         paint = new Paint();
+        dashedPaint = new Paint();
 
         if (DataSaved.scale_FactorVista2D == 0) {
             DataSaved.scale_FactorVista2D = 1f;
@@ -73,12 +77,12 @@ public class DrawDXF_Layer2 extends View {
 
             //-------------------------------- INIT BUCKET --------------------------------
             double bucketWidth = DataSaved.W_Bucket * scala;
-            double mDist = DataSaved.L_Bucket*Math.sin(Math.toRadians(Math.abs(ExcavatorLib.correctBucket))) ;
+            double mDist = DataSaved.L_Bucket * Math.sin(Math.toRadians(Math.abs(ExcavatorLib.correctBucket)));
 
-            mDist= MyMCUtils.limitD(mDist,0.3,Double.MAX_VALUE);
-            double bucketHeight= mDist*scala;
-            if(DataSaved.isWL==WHEELLOADER){
-                bucketHeight= DataSaved.L_Bucket*0.8*scala;
+            mDist = MyMCUtils.limitD(mDist, 0.3, Double.MAX_VALUE);
+            double bucketHeight = mDist * scala;
+            if (DataSaved.isWL == WHEELLOADER) {
+                bucketHeight = DataSaved.L_Bucket * 0.8 * scala;
             }
 
             PointF left_top_bucket = new PointF();
@@ -148,7 +152,7 @@ public class DrawDXF_Layer2 extends View {
             setPoints(getDistance(rotation_point_stick.x, rotation_point_stick.y, left_top_stick.x, right_bottom_stick.y), getDegrees(rotation_point_stick.x, rotation_point_stick.y, left_top_stick.x, right_bottom_stick.y), stick_angle, stick);
 
             //--------------------------------- DRAW STICK --------------------------------
-            if(DataSaved.isWL==EXCAVATOR) {
+            if (DataSaved.isWL == EXCAVATOR) {
                 paint.setColor(MyColorClass.colorStick);
                 path.moveTo(stick.get(1).x, stick.get(1).y);
                 path.lineTo(stick.get(2).x, stick.get(2).y);
@@ -164,7 +168,7 @@ public class DrawDXF_Layer2 extends View {
 
 
             //--------------------------------- DRAW BUCKET --------------------------------
-            if(DataSaved.isWL==EXCAVATOR) {
+            if (DataSaved.isWL == EXCAVATOR) {
                 if ((ExcavatorLib.bucketCoord[2]) < (ExcavatorLib.coordST[2])) {
                     paint.setColor(MyColorClass.colorBucket);
                     path.moveTo(bucket.get(1).x, bucket.get(1).y);
@@ -206,7 +210,7 @@ public class DrawDXF_Layer2 extends View {
                     canvas.drawPath(path, paint);
                     path.reset();
                 }
-            }else {
+            } else {
                 paint.setColor(MyColorClass.colorBucket);
                 path.moveTo(bucket.get(1).x, bucket.get(1).y);
                 path.lineTo(bucket.get(2).x, bucket.get(2).y);
@@ -229,15 +233,16 @@ public class DrawDXF_Layer2 extends View {
                     float startX_ = bucket.get(4).x;
                     float startY_ = bucket.get(4).y;
                     float stopY_ = bucket.get(4).y + (float) TriangleService.quota3D_SX * scala;
-                    if(!TriangleService.ltOffGrid){
-                        canvas.drawLine(startX_, startY_, startX_, stopY_, paint);}
+                    if (!TriangleService.ltOffGrid) {
+                        canvas.drawLine(startX_, startY_, startX_, stopY_, paint);
+                    }
                     break;
                 case 0:
                     float startX = (bucket.get(3).x + bucket.get(4).x) / 2f;
                     float startY = (bucket.get(3).y + bucket.get(4).y) / 2f;
                     float stopY = startY + (float) TriangleService.quota3D_CT * scala;
-                    if(!TriangleService.ctOffGrid) {
-                        canvas.drawLine(startX, startY+1f, startX, stopY+1f, paint);
+                    if (!TriangleService.ctOffGrid) {
+                        canvas.drawLine(startX, startY + 1f, startX, stopY + 1f, paint);
                     }
 
                     break;
@@ -245,8 +250,8 @@ public class DrawDXF_Layer2 extends View {
                     float startX__ = bucket.get(3).x;
                     float startY__ = bucket.get(3).y;
                     float stopY__ = startY__ + (float) TriangleService.quota3D_DX * scala;
-                    if(!TriangleService.rtOffGrid) {
-                        canvas.drawLine(startX__, startY__+1f, startX__, stopY__+1f, paint);
+                    if (!TriangleService.rtOffGrid) {
+                        canvas.drawLine(startX__, startY__ + 1f, startX__, stopY__ + 1f, paint);
                     }
 
                     break;
@@ -255,9 +260,9 @@ public class DrawDXF_Layer2 extends View {
 
 
             //--------------------------------- DRAW SPIGOLO RIFERIMENTO --------------------------------
-            if(DataSaved.isLowerEdge){
+            if (DataSaved.isLowerEdge) {
                 paint.setColor(Color.RED);
-            }else {
+            } else {
                 paint.setColor(Color.BLUE);
             }
 
@@ -266,12 +271,15 @@ public class DrawDXF_Layer2 extends View {
 
             switch (edge) {
                 case -1:
+                    mFixedXX=bucket.get(4).x;
                     canvas.drawCircle(bucket.get(4).x, bucket.get(4).y, (float) (8f), paint);
                     break;
                 case 0:
+                    mFixedXX=(bucket.get(3).x + bucket.get(4).x) / 2f;
                     canvas.drawCircle((bucket.get(3).x + bucket.get(4).x) / 2f, (bucket.get(3).y + bucket.get(4).y) / 2f, (float) (8f), paint);
                     break;
                 case 1:
+                    mFixedXX=bucket.get(3).x;
                     canvas.drawCircle(bucket.get(3).x, bucket.get(3).y, (float) (8f), paint);
                     break;
             }
@@ -280,7 +288,7 @@ public class DrawDXF_Layer2 extends View {
 
             //--------------------------------- DRAW TEXT ANGOLO --------------------------------
             paint.setColor(MyColorClass.colorConstraint);
-            if(DataSaved.isWL==WHEELLOADER){
+            if (DataSaved.isWL == WHEELLOADER) {
                 paint.setColor(Color.WHITE);
             }
             paint.setTextAlign(Paint.Align.CENTER);
@@ -295,7 +303,6 @@ public class DrawDXF_Layer2 extends View {
             //-----------------------------------------------------------------------------
 
             //capire come fare con il terreno, quali punti visualizzare e come farli scorrere ???
-
 
 
             //--------------------------------- DRAW GROUND --------------------------------
@@ -313,12 +320,12 @@ public class DrawDXF_Layer2 extends View {
 
                 try {
                     paint.setColor(MyColorClass.colorGroundY);
-                    float x = fixedX - (float) sortedPoints0.get(i).getX()*scala;
-                    float y = fixedY - (float) sortedPoints0.get(i).getY()*scala;
+                    float x = fixedX - (float) sortedPoints0.get(i).getX() * scala;
+                    float y = fixedY - (float) sortedPoints0.get(i).getY() * scala;
 
                     if (i < sortedPoints0.size() - 1) {
-                        float xNext = fixedX - (float) sortedPoints0.get(i + 1).getX()*scala;
-                        float yNext = fixedY - (float) sortedPoints0.get(i + 1).getY()*scala;
+                        float xNext = fixedX - (float) sortedPoints0.get(i + 1).getX() * scala;
+                        float yNext = fixedY - (float) sortedPoints0.get(i + 1).getY() * scala;
                         canvas.drawLine(x, y, xNext, yNext, paint);
 
                     }
@@ -326,8 +333,8 @@ public class DrawDXF_Layer2 extends View {
                     if (DataSaved.offsetH != 0) {
                         paint.setColor(MyColorClass.colorOffsetLine);
                         if (i < sortedPoints0.size() - 1) {
-                            float xNext = fixedX - (float) sortedPoints0.get(i + 1).getX()*scala;
-                            float yNext = fixedY - (float) sortedPoints0.get(i + 1).getY()*scala;
+                            float xNext = fixedX - (float) sortedPoints0.get(i + 1).getX() * scala;
+                            float yNext = fixedY - (float) sortedPoints0.get(i + 1).getY() * scala;
                             canvas.drawLine(x, (float) (y + DataSaved.offsetH * scala), xNext, (float) (yNext + DataSaved.offsetH * scala), paint);
 
                         }
@@ -340,20 +347,20 @@ public class DrawDXF_Layer2 extends View {
                 //dietro
                 try {
                     paint.setColor(MyColorClass.colorGroundY);
-                    float x = fixedX + (float) sortedPoints1.get(i).getX()*scala;
-                    float y = fixedY - (float) sortedPoints1.get(i).getY()*scala;
+                    float x = fixedX + (float) sortedPoints1.get(i).getX() * scala;
+                    float y = fixedY - (float) sortedPoints1.get(i).getY() * scala;
 
-                    if (i < sortedPoints1.size() -1) {
-                        float xNext = fixedX + (float) sortedPoints1.get(i + 1).getX()*scala;
-                        float yNext = fixedY - (float) sortedPoints1.get(i + 1).getY()*scala;
+                    if (i < sortedPoints1.size() - 1) {
+                        float xNext = fixedX + (float) sortedPoints1.get(i + 1).getX() * scala;
+                        float yNext = fixedY - (float) sortedPoints1.get(i + 1).getY() * scala;
                         canvas.drawLine(x, y, xNext, yNext, paint);
                     }
 
                     if (DataSaved.offsetH != 0) {
                         paint.setColor(MyColorClass.colorOffsetLine);
                         if (i < sortedPoints1.size() - 1) {
-                            float xNext = fixedX + (float) sortedPoints1.get(i + 1).getX()*scala;
-                            float yNext = fixedY - (float) sortedPoints1.get(i + 1).getY()*scala;
+                            float xNext = fixedX + (float) sortedPoints1.get(i + 1).getX() * scala;
+                            float yNext = fixedY - (float) sortedPoints1.get(i + 1).getY() * scala;
                             canvas.drawLine(x, (float) (y + DataSaved.offsetH * scala), xNext, (float) (yNext + DataSaved.offsetH * scala), paint);
                         }
                     }
@@ -363,15 +370,15 @@ public class DrawDXF_Layer2 extends View {
             if (!sortedPoints0.isEmpty() && !sortedPoints1.isEmpty()) {
                 Point2D lastPoint0 = sortedPoints0.get(0);
                 Point2D firstPoint1 = sortedPoints1.get(0);
-                float xLast0 = fixedX - (float) lastPoint0.getX()*scala;
-                float yLast0 = fixedY - (float) lastPoint0.getY()*scala;
-                float xFirst1 = fixedX + (float) firstPoint1.getX()*scala;
-                float yFirst1 = fixedY - (float) firstPoint1.getY()*scala;
+                float xLast0 = fixedX - (float) lastPoint0.getX() * scala;
+                float yLast0 = fixedY - (float) lastPoint0.getY() * scala;
+                float xFirst1 = fixedX + (float) firstPoint1.getX() * scala;
+                float yFirst1 = fixedY - (float) firstPoint1.getY() * scala;
                 paint.setColor(MyColorClass.colorGroundY);
                 canvas.drawLine(xLast0, yLast0, xFirst1, yFirst1, paint);
-                if(DataSaved.offsetH != 0){
+                if (DataSaved.offsetH != 0) {
                     paint.setColor(MyColorClass.colorOffsetLine);
-                    canvas.drawLine(xLast0, (float) (yLast0+DataSaved.offsetH*scala), xFirst1, (float) (yFirst1+DataSaved.offsetH*scala), paint);
+                    canvas.drawLine(xLast0, (float) (yLast0 + DataSaved.offsetH * scala), xFirst1, (float) (yFirst1 + DataSaved.offsetH * scala), paint);
                 }
             }
             float mLevel = 10000f;
@@ -458,15 +465,43 @@ public class DrawDXF_Layer2 extends View {
                 } catch (Exception e) {
                 }
             }
+
+            if (DataSaved.isAutoSnap == 2) {
+
+
+
+                float dist = 0;
+                switch (DataSaved.bucketEdge) {
+                    case -1:
+                        dist = (float) (TriangleService.dist3D_SX * scala);
+                        break;
+                    case 0:
+                        dist = (float) (TriangleService.dist3D_CT * scala);
+                        break;
+                    case 1:
+                        dist = (float) (TriangleService.dist3D_DX * scala);
+                        break;
+
+                }
+                float x = mFixedXX - (dist*TriangleService.segnoLinea);
+                dashedPaint.setAntiAlias(true);
+                dashedPaint.setStyle(Paint.Style.STROKE);
+                dashedPaint.setColor(MyColorClass.colorConstraint);
+                dashedPaint.setStrokeWidth((float) (3f / DataSaved.scale_FactorVista2D));
+                dashedPaint.setPathEffect(new DashPathEffect(new float[]{20f, 15f}, 0));
+
+                canvas.drawLine(x, -10000f, x, 10000f, dashedPaint);
+                // opzionale: pulisci l’effetto per non sporcare altro
+                dashedPaint.setPathEffect(null);
+            }
+
         } catch (Exception e) {
             System.out.println(e.toString());
         }
     }
 
 
-
-    private void setPoints ( float distance, float angle, double value, ArrayList<PointF > array)
-    {
+    private void setPoints(float distance, float angle, double value, ArrayList<PointF> array) {
         array.add(
                 new PointF(
                         (float) (array.get(0).x + distance * Math.cos(angle + Math.toRadians(value * -1))),
@@ -475,12 +510,12 @@ public class DrawDXF_Layer2 extends View {
         );
     }
 
-    private float getDistance ( float x1, float y1, float x2, float y2){
+    private float getDistance(float x1, float y1, float x2, float y2) {
         final double sqrt = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
         return (float) sqrt;
     }
 
-    private float getDegrees ( float x1, float y1, float x2, float y2){
+    private float getDegrees(float x1, float y1, float x2, float y2) {
         float dY = y2 - y1;
         float dX = x2 - x1;
         return (float) Math.atan2(dY, dX); // * 180 / Math.PI;
@@ -563,15 +598,17 @@ public class DrawDXF_Layer2 extends View {
             invalidate();
             return true;
         }
+
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             // Ripristina il pan al doppio tap e lo zoom
-            offsetX=0;
-            offsetY=0;
+            offsetX = 0;
+            offsetY = 0;
             invalidate();
             return true;
         }
     }
+
     // Gestione dello zoom
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
