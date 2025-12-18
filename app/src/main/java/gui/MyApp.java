@@ -85,6 +85,7 @@ import gui.hydro.ECU_Activity;
 import gui.hydro.Hydro_Activity_Entering;
 import gui.hydro.KOMATSU_Activity;
 import gui.my_opengl.My3DActivity;
+import gui.my_opengl.MyGLRenderer;
 import gui.profiles.ProfileCalibAuto;
 import gui.profiles.ProfileCalibManual;
 import gui.profiles.ProfilesMenuActivity;

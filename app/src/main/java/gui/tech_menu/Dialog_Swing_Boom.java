@@ -11,10 +11,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,8 +37,9 @@ public class Dialog_Swing_Boom {
     private boolean isUpdating = false;
     int indexMeasure, indexMachineSelected;
     Activity activity;
+    Button sett;
     public Dialog dialog;
-    TextView valoreReal;
+    TextView valoreReal,anglolomch;
     ImageView save, cancel, immagine, immagine2,reload;
     EditText editText, valuedeg;
     EditText unita, unitadeg;
@@ -92,6 +95,8 @@ public class Dialog_Swing_Boom {
         immagine = dialog.findViewById(R.id.immagine);
         immagine2 = dialog.findViewById(R.id.immagine2);
         valoreReal = dialog.findViewById(R.id.angoloreal);
+        anglolomch=dialog.findViewById(R.id.anglolomch);
+        sett=dialog.findViewById(R.id.sett);
         editText.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.miniPitch_L)));
         valuedeg.setText(String.format("%.2f", DataSaved.offsetSwingExca).replace(",","."));
         unita.setText(Utils.getMetriSimbol().replace("[", " ").replace("]", " "));
@@ -111,6 +116,30 @@ public class Dialog_Swing_Boom {
     }
 
     private void onClick() {
+        sett.setOnLongClickListener(view -> {
+            boolean err=false;
+            if(DataSaved.my_comPort==0) {
+                err= NmeaListener.mch_Hdt_1 == 999.999;
+            }else {
+                err= NmeaListener.mch_Hdt == 999.999;
+            }
+
+            if(!err) {
+                double valoreFinale = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+                double valoreIniziale = normalizeAngle(NmeaListener.roof_Orientation);
+                DataSaved.offsetSwingExca = valoreFinale-valoreIniziale  ;
+
+                try {
+                    valuedeg.setText(String.format("%.2f", DataSaved.offsetSwingExca).replace(",","."));
+                    MyData.push("M" + indexMachineSelected + "offsetSwingExca", Utils.writeMetri(valuedeg.getText().toString()));
+                } catch (NumberFormatException ignored) {
+
+                }
+            }else {
+                new CustomToast(activity,"HDT Err").show_error();
+            }
+            return true;
+        });
         reload.setOnClickListener(view -> {
             DataSaved.miniPitch_L = Double.parseDouble(Utils.writeMetri(editText.getText().toString()));
             MyData.push("M" + indexMachineSelected + "_Swing_Len", Utils.writeMetri(editText.getText().toString()));
@@ -184,6 +213,8 @@ public class Dialog_Swing_Boom {
             @Override
             public void run() {
                 try {
+                    Log.d("Dioo",NmeaListener.mch_Hdt+"");
+                    double hdt = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
                     double valore= hdt_BOOM;
                     valore=valore % 360;
                     if(NmeaListener.roof_Orientation==999.999) {
@@ -191,6 +222,24 @@ public class Dialog_Swing_Boom {
                     }else{
                         valoreReal.setText(String.format("%.2f", valore).replace(",",".") + " °\n\n\n");
                     }
+                    if(DataSaved.my_comPort==0) {
+                        if (NmeaListener.mch_Hdt_1 == 999.999) {
+                            anglolomch.setText("HDT Error");
+
+                        } else {
+                            anglolomch.setText(String.format("%.2f", hdt).replace(",", ".") + " °");
+
+                        }
+                    }else {
+                        if (NmeaListener.mch_Hdt== 999.999) {
+                            anglolomch.setText("HDT Error");
+
+                        } else {
+                            anglolomch.setText(String.format("%.2f", hdt).replace(",", ".") + " °");
+
+                        }
+                    }
+
                     if (isUpdating) {
                         updateUI();
                     }
@@ -201,5 +250,9 @@ public class Dialog_Swing_Boom {
             }
         }, 100);
     }
-
+    private static double normalizeAngle(double a) {
+        a = a % 360.0;
+        if (a < 0) a += 360.0;
+        return a;
+    }
 }

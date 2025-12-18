@@ -66,19 +66,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
                 }
 
-                scale = MyData.get_Float("glScale");
-                angleX = MyData.get_Float("glAngleX");
-                angleY = MyData.get_Float("glAngleY");
-                panX = 0;
-                panY = -0.3f;
-                angleY_extra = MyData.get_Float("glAngleY_Extra");
+
             } catch (Exception e) {
-                scale = 0.5f;
-                angleX = -90f;
-                angleY = 0f;
-                panX = 0f;
-                panY = -0.3f;
-                angleY_extra = 0.0f;
+
 
             }
             try {

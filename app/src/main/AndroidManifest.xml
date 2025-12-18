@@ -20,6 +20,7 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
     <uses-permission
         android:name="android.permission.SHUTDOWN"
@@ -30,7 +31,6 @@
     <uses-permission
         android:name="android.permission.STATUS_BAR"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -78,7 +78,12 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
-
+        <activity
+            android:name="gui.tech_menu.Nuova_XYZ_Calib"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="gui.boot_and_choose.SpTestActivity"
             android:autoRemoveFromRecents="true"
@@ -218,6 +223,7 @@
             android:enabled="true"
             android:exported="false"
             android:permission="TODO" />
+
         <activity
             android:name="gui.projects.Remote_Activity"
             android:autoRemoveFromRecents="true"

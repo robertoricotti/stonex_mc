@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.75" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline124"
@@ -108,7 +108,7 @@
         android:id="@+id/imgdwdx"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
 
         app:layout_constraintBottom_toTopOf="@+id/h5"
         app:layout_constraintHorizontal_bias="0.0"
@@ -276,7 +276,16 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline125"
         app:layout_constraintStart_toStartOf="@+id/guideline123"
         app:layout_constraintTop_toTopOf="@+id/h6" />
-
+    <ImageView
+        android:id="@+id/but_meno_x"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toLeftOf="@+id/deltaX"
+        app:layout_constraintTop_toTopOf="@id/deltaX"
+        app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintBottom_toBottomOf="@id/deltaX"
+        android:src="@drawable/bottone_meno" />
     <EditText
         android:id="@+id/deltaX"
         android:layout_width="0dp"
@@ -292,9 +301,33 @@
         android:textStyle="bold"
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/h2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline125"
+        app:layout_constraintRight_toLeftOf="@id/but_piu_x"
+        app:layout_constraintLeft_toRightOf="@id/but_meno_x"
         app:layout_constraintTop_toTopOf="@+id/h1" />
+
+    <ImageView
+        android:id="@+id/but_piu_x"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/deltaX"
+        app:layout_constraintTop_toTopOf="@id/deltaX"
+        android:layout_marginRight="5dp"
+        app:layout_constraintBottom_toBottomOf="@id/deltaX"
+        android:src="@drawable/bottone_piu" />
+
+
+    <ImageView
+        android:id="@+id/but_meno_y"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toLeftOf="@+id/deltaY"
+        app:layout_constraintTop_toTopOf="@id/deltaY"
+        app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintBottom_toBottomOf="@id/deltaY"
+        android:src="@drawable/bottone_meno" />
 
     <EditText
         android:id="@+id/deltaY"
@@ -311,10 +344,31 @@
         android:textStyle="bold"
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/h3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline125"
+        app:layout_constraintRight_toLeftOf="@id/but_piu_y"
+        app:layout_constraintLeft_toRightOf="@id/but_meno_y"
         app:layout_constraintTop_toTopOf="@+id/h2" />
+    <ImageView
+        android:id="@+id/but_piu_y"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/deltaY"
+        app:layout_constraintTop_toTopOf="@id/deltaY"
+        app:layout_constraintBottom_toBottomOf="@id/deltaY"
+        android:src="@drawable/bottone_piu" />
 
+    <ImageView
+        android:id="@+id/but_meno_h"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toLeftOf="@+id/deltaHDT"
+        app:layout_constraintTop_toTopOf="@id/deltaHDT"
+        app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintBottom_toBottomOf="@id/deltaHDT"
+        android:src="@drawable/bottone_meno" />
 
     <EditText
         android:id="@+id/deltaHDT"
@@ -331,9 +385,20 @@
         android:textStyle="bold"
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/h6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline125"
+        app:layout_constraintRight_toLeftOf="@id/but_piu_h"
+        app:layout_constraintLeft_toRightOf="@id/but_meno_h"
         app:layout_constraintTop_toTopOf="@+id/h4" />
+    <ImageView
+        android:id="@+id/but_piu_h"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/deltaHDT"
+        app:layout_constraintTop_toTopOf="@id/deltaHDT"
+        app:layout_constraintBottom_toBottomOf="@id/deltaHDT"
+        android:src="@drawable/bottone_piu" />
     <EditText
         android:id="@+id/distBetween"
         android:layout_width="0dp"
@@ -353,6 +418,19 @@
         app:layout_constraintStart_toStartOf="@+id/guideline125"
         app:layout_constraintTop_toTopOf="@+id/h6" />
 
+
+
+
+    <ImageView
+        android:id="@+id/but_meno_z"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toLeftOf="@+id/deltaZ"
+        app:layout_constraintTop_toTopOf="@id/deltaZ"
+        app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintBottom_toBottomOf="@id/deltaZ"
+        android:src="@drawable/bottone_meno" />
     <EditText
         android:id="@+id/deltaZ"
         android:layout_width="0dp"
@@ -368,7 +446,18 @@
         android:textStyle="bold"
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/h4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline125"
+        app:layout_constraintRight_toLeftOf="@+id/but_piu_z"
+        app:layout_constraintLeft_toRightOf="@id/but_meno_z"
         app:layout_constraintTop_toTopOf="@+id/h3" />
+    <ImageView
+        android:id="@+id/but_piu_z"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/deltaZ"
+        app:layout_constraintTop_toTopOf="@id/deltaZ"
+        app:layout_constraintBottom_toBottomOf="@id/deltaZ"
+        android:src="@drawable/bottone_piu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

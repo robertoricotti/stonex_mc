@@ -133,8 +133,22 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/hc"
         app:layout_constraintLeft_toRightOf="@id/hv"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/sett"
         app:layout_constraintTop_toBottomOf="@id/immagine" />
+    <Button
+        android:id="@+id/sett"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:text="SET"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:backgroundTint="@color/_____cancel_text"
+        app:layout_constraintBottom_toBottomOf="@id/valdeg"
+        app:layout_constraintLeft_toRightOf="@id/valdeg"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/valdeg"
+      />
 
     <EditText
         android:id="@+id/unitadeg"
@@ -149,6 +163,18 @@
         app:layout_constraintBottom_toTopOf="@id/hc"
         app:layout_constraintLeft_toRightOf="@id/valdeg"
         app:layout_constraintTop_toBottomOf="@id/immagine" />
-
+    <TextView
+        android:id="@+id/anglolomch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/_____cancel_text"
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/valdeg"
+        app:layout_constraintRight_toRightOf="@id/valdeg"
+        android:text="0.00°"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

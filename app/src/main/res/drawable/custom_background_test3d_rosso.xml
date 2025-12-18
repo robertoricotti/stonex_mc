@@ -10,7 +10,7 @@
     <!-- View border color and width -->
     <stroke
         android:width="1dp"
-        android:color="@color/white" >
+        android:color="@color/transparent" >
     </stroke>
 
     <!-- The radius makes the corners rounded -->
@@ -24,7 +24,7 @@
     <gradient
         android:startColor="@color/red"
         android:centerColor="@color/red"
-        android:endColor="@color/red"
+        android:endColor="@color/red_dark"
         android:angle="90">
     </gradient>
 

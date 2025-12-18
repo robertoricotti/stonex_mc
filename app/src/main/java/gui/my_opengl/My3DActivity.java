@@ -139,6 +139,7 @@ public class My3DActivity extends BaseClass {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         checkBooleans();
         serviseStrarted = false;
         Grader_Auto_SS = false;
@@ -317,6 +318,27 @@ public class My3DActivity extends BaseClass {
         AUTO_SX = findViewById(R.id.AM_SX);
         AUTO_SS = findViewById(R.id.AM_SS);
         AUTO_DX = findViewById(R.id.AM_DX);
+
+        try {
+            MyGLRenderer.scale = MyData.get_Float("glScale");
+            MyGLRenderer.angleX = MyData.get_Float("glAngleX");
+            MyGLRenderer.angleY = MyData.get_Float("glAngleY");
+            MyGLRenderer.panX = 0;
+            MyGLRenderer.panY = -0.3f;
+            MyGLRenderer.angleY_extra = MyData.get_Float("glAngleY_Extra");
+        }catch (Exception e){
+            MyGLRenderer.scale = 0.5f;
+            MyGLRenderer.angleX = -90f;
+            MyGLRenderer.angleY = 0f;
+            MyGLRenderer.panX = 0f;
+            MyGLRenderer.panY = -0.3f;
+            MyGLRenderer.angleY_extra = 0.0f;
+        }
+
+
+        if(MyGLRenderer.scale<0.09f){
+            MyGLRenderer.scale=0.09f;
+        }
     }
 
     private void onClick() {

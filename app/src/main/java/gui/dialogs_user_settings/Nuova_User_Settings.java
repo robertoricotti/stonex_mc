@@ -219,19 +219,20 @@ public class Nuova_User_Settings extends AppCompatActivity {
             MyData.push("Off_Incr_Step", String.valueOf(DataSaved.Off_Incr_Step));
         });
         /// //////////////////////////////////
-        but_piu_db.setOnClickListener(view -> {
+
+        setupAutoRepeat(but_piu_db,()->{
             DataSaved.deadbandH += myStep;
             MyData.push("Deadband_H", String.valueOf(DataSaved.deadbandH));
-
         });
-        but_meno_db.setOnClickListener(view -> {
-
+        setupAutoRepeat(but_meno_db,()->{
             if (DataSaved.deadbandH > 0) {
                 DataSaved.deadbandH -= myStep;
             }
             if (DataSaved.deadbandH <= myStep) DataSaved.deadbandH = myStep;
             MyData.push("Deadband_H", String.valueOf(DataSaved.deadbandH));
         });
+
+
         /// //////////////////////////////////
         /// ////nuovi
         but_piu_auto_z.setOnClickListener(view -> {
@@ -296,22 +297,19 @@ public class Nuova_User_Settings extends AppCompatActivity {
         });
 
 
-        but_piu_xy.setOnClickListener(view -> {
+        setupAutoRepeat(but_piu_xy,()->{
             DataSaved.tolleranza_XY += myStep;
             MyData.push("tolleranza_XY", String.valueOf(DataSaved.tolleranza_XY));
-
         });
-
-        but_meno_xy.setOnClickListener(view -> {
-
+        setupAutoRepeat(but_meno_xy,()->{
             if (DataSaved.tolleranza_XY > 0) {
                 DataSaved.tolleranza_XY -= myStep;
             }
             if (DataSaved.tolleranza_XY <= myStep) DataSaved.tolleranza_XY = myStep;
             MyData.push("tolleranza_XY", String.valueOf(DataSaved.tolleranza_XY));
+
         });
 
-        /// /////nuovi
 
         but_piu_an.setOnClickListener(view -> {
             DataSaved.deadbandFlatAngle += myStepAngle;
@@ -556,7 +554,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
-                    myStep = 0.0033;
+                    myStep = 0.003048;
                     break;
                 case 3:
                     myStepAngle = 0.055;
@@ -570,7 +568,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
-                    myStep = 0.0033;
+                    myStep = 0.003048;
                     break;
 
                 case 4:
@@ -585,7 +583,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
-                    myStep = 0.0033;
+                    myStep = 0.003048;
                     break;
                 case 5:
                     myStepAngle = 0.055;
@@ -599,7 +597,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
-                    myStep = 0.0033;
+                    myStep = 0.003048;
                     break;
                 case 6:
                     myStepAngle = 0.1;
@@ -613,7 +611,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
-                    myStep = 0.0033;
+                    myStep = 0.003048;
                     break;
                 case 7:
                     myStepAngle = 0.055;
@@ -627,7 +625,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     stepValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Off_Incr_Step)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
-                    myStep = 0.0033;
+                    myStep = 0.003048;
                     break;
             }
 

@@ -8,6 +8,10 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,6 +31,9 @@ import utils.MyData;
 import utils.Utils;
 
 public class XYZ_Calib extends AppCompatActivity {
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean isRepeating = false;
+
     ImageView gpsDebug;
     ImageView save, exit, update;
     EditText dx, dY, dZ, dHdt, dist;
@@ -36,6 +43,8 @@ public class XYZ_Calib extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     ImageView wlwl, imgupsx, imgupdx, imgdwdx, aaaa;
     TextView tvX, tvY, tvZ, titolo, tv_btw;
+    ImageView xp, xm, yp, ym, zp, zm, hp, hm;
+    double myStep = 0.001;
 
 
     @Override
@@ -49,8 +58,17 @@ public class XYZ_Calib extends AppCompatActivity {
         aaaa = findViewById(R.id.aaaa);
         tv_btw = findViewById(R.id.tv_betw);
         dist = findViewById(R.id.distBetween);
+        xm = findViewById(R.id.but_meno_x);
+        xp = findViewById(R.id.but_piu_x);
+        ym = findViewById(R.id.but_meno_y);
+        yp = findViewById(R.id.but_piu_y);
+        zm = findViewById(R.id.but_meno_z);
+        zp = findViewById(R.id.but_piu_z);
+        hm = findViewById(R.id.but_meno_h);
+        hp = findViewById(R.id.but_piu_h);
 
-        if (DataSaved.isWL == EXCAVATOR||DataSaved.isWL==DRILL) {
+
+        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == DRILL) {
             imgdwdx.setVisibility(View.VISIBLE);
             imgupsx.setVisibility(View.VISIBLE);
             imgupdx.setVisibility(View.VISIBLE);
@@ -93,22 +111,23 @@ public class XYZ_Calib extends AppCompatActivity {
             }
         });
         update.setOnClickListener(view -> {
-            MyData.push("M" + indexMachineSelected + "_OffsetGPSX", Utils.writeMetri(dx.getText().toString()));
-            MyData.push("M" + indexMachineSelected + "_OffsetGPSY", Utils.writeMetri(dY.getText().toString()));
-            MyData.push("M" + indexMachineSelected + "_OffsetGPSZ", Utils.writeMetri(dZ.getText().toString()));
-            MyData.push("M" + indexMachineSelected + "_OffsetGPS2", dHdt.getText().toString());
-            MyData.push("M" + indexMachineSelected + "_distG1_G2", Utils.writeMetri(dist.getText().toString()));
-            startService(new Intent(this, UpdateValuesService.class));
+            Log.d("CalledUPF", "Called");
+            MyData.push("M" + indexMachineSelected + "_OffsetGPSX", Utils.writeMetri(dx.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "_OffsetGPSY", Utils.writeMetri(dY.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "_OffsetGPSZ", Utils.writeMetri(dZ.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "_OffsetGPS2", dHdt.getText().toString().replace(",", "."));
+            MyData.push("M" + indexMachineSelected + "_distG1_G2", Utils.writeMetri(dist.getText().toString().replace(",", ".")));
+
         });
 
         save.setOnClickListener(view -> {
             exit.setEnabled(false);
             save.setEnabled(false);
-            MyData.push("M" + indexMachineSelected + "_OffsetGPSX", Utils.writeMetri(dx.getText().toString()));
-            MyData.push("M" + indexMachineSelected + "_OffsetGPSY", Utils.writeMetri(dY.getText().toString()));
-            MyData.push("M" + indexMachineSelected + "_OffsetGPSZ", Utils.writeMetri(dZ.getText().toString()));
-            MyData.push("M" + indexMachineSelected + "_OffsetGPS2", dHdt.getText().toString());
-            MyData.push("M" + indexMachineSelected + "_distG1_G2", Utils.writeMetri(dist.getText().toString()));
+            MyData.push("M" + indexMachineSelected + "_OffsetGPSX", Utils.writeMetri(dx.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "_OffsetGPSY", Utils.writeMetri(dY.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "_OffsetGPSZ", Utils.writeMetri(dZ.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "_OffsetGPS2", dHdt.getText().toString().replace(",", "."));
+            MyData.push("M" + indexMachineSelected + "_distG1_G2", Utils.writeMetri(dist.getText().toString().replace(",", ".")));
             startService(new Intent(this, UpdateValuesService.class));
             startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
@@ -121,6 +140,41 @@ public class XYZ_Calib extends AppCompatActivity {
             startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
+
+        setupAutoRepeat(xp, () -> {
+            DataSaved.deltaX += myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(xm, () -> {
+            DataSaved.deltaX -= myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(yp, () -> {
+            DataSaved.deltaY += myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(ym, () -> {
+            DataSaved.deltaY -= myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(zp, () -> {
+            DataSaved.deltaZ += myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(zm, () -> {
+            DataSaved.deltaZ -= myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(hp, () -> {
+            DataSaved.deltaGPS2 += 0.01;
+            updateTxt();
+        });
+        setupAutoRepeat(hm, () -> {
+            DataSaved.deltaGPS2 -= 0.01;
+            updateTxt();
+        });
+
+
         dx.setOnClickListener(view -> {
             if (!numberDialog.dialog.isShowing())
                 numberDialog.show(dx);
@@ -151,17 +205,49 @@ public class XYZ_Calib extends AppCompatActivity {
                 numberDialog.show(dist);
 
         });
+        numberDialog.dialog.setOnDismissListener(dialog -> {
+            Log.d("NumberDialog", "Dialog chiusa");
+            updateOnClose();
+            updateTxt();
 
+
+        });
 
     }
 
+    private void updateOnClose() {
+        DataSaved.deltaX = Double.parseDouble(Utils.writeMetri((dx.getText().toString())));
+        DataSaved.deltaY = Double.parseDouble(Utils.writeMetri((dY.getText().toString())));
+        DataSaved.deltaZ = Double.parseDouble(Utils.writeMetri((dZ.getText().toString())));
+        DataSaved.deltaGPS2 = Double.parseDouble(((dHdt.getText().toString())));
+        DataSaved.distG1_G2=Double.parseDouble(Utils.writeMetri((dist.getText().toString())));
+    }
+
     public void updateUI() {
+        switch (indexMeasure) {
+            case 0:
+            case 1:
+                myStep = 0.001;
+                break;
+
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                myStep = 0.0003048;
+                break;
+            default:
+                myStep = 0.0003048;
+                break;
+        }
         DataSaved.offset_Z_antenna = 0;
         double hdt = 0;
         hdt = NmeaListener.mch_Orientation + DataSaved.deltaGPS2;
         hdt = hdt % 360;
 
-        titolo.setText("     E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[0])) + "    N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[2])) + "   HDT: " + String.format("%.2f", hdt).replace(",",".") + " °");
+        titolo.setText("     E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[0])) + "    N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[2])) + "   HDT: " + String.format("%.2f", hdt).replace(",", ".") + " °");
 
         if (DataSaved.gpsOk) {
             gpsDebug.setImageTintList(ColorStateList.valueOf(Color.GREEN));
@@ -169,12 +255,14 @@ public class XYZ_Calib extends AppCompatActivity {
             gpsDebug.setImageTintList(ColorStateList.valueOf(Color.RED));
         }
 
+
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
     }
 
     private void updateTxt() {
@@ -183,6 +271,44 @@ public class XYZ_Calib extends AppCompatActivity {
         dZ.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deltaZ)));
         dHdt.setText(String.format("%.3f", DataSaved.deltaGPS2).replace(",", "."));
         dist.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.distG1_G2)));
+    }
+
+    private void setupAutoRepeat(ImageView button, Runnable action) {
+        button.setOnClickListener(v -> action.run());
+
+        button.setOnLongClickListener(v -> {
+            isRepeating = true;
+
+
+            // Primo ritardo di 500ms prima di iniziare la ripetizione
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isRepeating) {
+                        action.run();
+                        handler.postDelayed(this, 50); // ripeti ogni 50ms
+                    }
+                }
+            }, 500);
+
+            return true; // segnala che il long click è gestito
+        });
+
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    if (isRepeating) {
+                        updateOnClose();
+                        updateTxt();
+
+                    }
+                    isRepeating = false; // stop
+
+                    break;
+            }
+            return false;
+        });
     }
 
     @SuppressLint("MissingSuperCall")
