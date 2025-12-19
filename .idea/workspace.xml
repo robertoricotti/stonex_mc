@@ -246,26 +246,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.16 FMI_IMPLEMENT linea tratt">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_XYZ_Calib.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/nuova_xyzh.xml" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.0.16 pre-release">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Dialog_Swing_Boom.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Dialog_Swing_Boom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/XYZ_Calib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/XYZ_Calib.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/custom_background_test3d_box_blu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/custom_background_test3d_box_blu.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/custom_background_test3d_rosso.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/custom_background_test3d_rosso.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/custom_background_test3d_verde.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/custom_background_test3d_verde.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/delta_hdt_blue.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/delta_hdt_blue.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_compass_calib.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_compass_calib.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_swing_boom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_swing_boom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -275,7 +257,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412300088)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Pixel_XL_API_33.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -327,34 +309,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
-    &quot;ApkExportedModule&quot;: &quot;STX_MC.app&quot;,
-    &quot;ExportApk.ApkPathForSTX_MC.app&quot;: &quot;D:\\Development\\MC_V4\\app&quot;,
-    &quot;Gradle.MC_V4:app [:app:packexcalib.gnss.ExampleUsage.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Logcat.SavePath&quot;: &quot;D:\\Development\\MC_V4&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Development/MC_V4/app/src/main/res/drawable&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;settings.editor.splitter.proportion&quot;: &quot;0.35707122&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Android App.app.executor": "Run",
+    "ApkExportedModule": "STX_MC.app",
+    "ExportApk.ApkPathForSTX_MC.app": "D:\\Development\\MC_V4\\app",
+    "Gradle.MC_V4:app [:app:packexcalib.gnss.ExampleUsage.main()].executor": "Run",
+    "Logcat.SavePath": "D:\\Development\\MC_V4",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Development/MC_V4/app/src/main/res/drawable",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "settings.editor.splitter.proportion": "0.35707122"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;ExportApk.BuildVariants&quot;: [
-      &quot;gen2Release&quot;
+  "keyToStringList": {
+    "ExportApk.BuildVariants": [
+      "gen1Release",
+      "gen2Release"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="packexcalib.gnss" />
@@ -465,14 +448,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00010" summary="4.0.5 RELEASE UFFICIALE">
-      <option name="closed" value="true" />
-      <created>1761060125038</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1761060125038</updated>
     </task>
     <task id="LOCAL-00011" summary="4.0.6 in progress">
       <option name="closed" value="true" />
@@ -858,11 +833,18 @@
       <option name="project" value="LOCAL" />
       <updated>1765898793545</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="4.0.16 pre-release">
+      <option name="closed" value="true" />
+      <created>1766073413130</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1766073413132</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="4.0.9 fix can glitch" />
     <MESSAGE value="4.0.9 pre release FW danfoss" />
     <MESSAGE value="4.0.9 pre release FW solo danfoss ok" />
     <MESSAGE value="4.0.9 RELEASE UFFICIALE" />
@@ -887,7 +869,8 @@
     <MESSAGE value="4.0.16 FMI_IMPLEMENT" />
     <MESSAGE value="4.0.16 FMI_IMPLEMENT changeID" />
     <MESSAGE value="4.0.16 FMI_IMPLEMENT linea tratt" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.0.16 FMI_IMPLEMENT linea tratt" />
+    <MESSAGE value="4.0.16 pre-release" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.0.16 pre-release" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
