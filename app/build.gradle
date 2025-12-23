@@ -11,8 +11,8 @@ android {
         applicationId "com.example.stx_mc"
         minSdk 26
         targetSdk 34
-        versionCode 4016
-        versionName "4.0.16"
+        versionCode 4017
+        versionName "4.0.17"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildFeatures.buildConfig = true
@@ -96,10 +96,7 @@ android {
             }
         }
 
-        compileOptions {
-            JavaVersion.VERSION_17
-            JavaVersion.VERSION_17
-        }
+
 
     }
 
@@ -230,6 +227,11 @@ android {
             outputFileName = "STX-MC_V_${versionName}-${buildType.toUpperCase()}.apk"
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
 }
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.1'

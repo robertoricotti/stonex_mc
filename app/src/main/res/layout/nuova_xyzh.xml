@@ -109,9 +109,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/h5"
-        app:layout_constraintRight_toLeftOf="@id/updateGps"/>
+        app:layout_constraintRight_toLeftOf="@id/updateTool"/>
     <ImageView
-        android:id="@+id/updateGps"
+        android:id="@+id/updateTool"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:padding="5dp"
@@ -132,7 +132,7 @@
         android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/updateGps"
+        app:layout_constraintLeft_toRightOf="@id/updateTool"
         app:layout_constraintTop_toTopOf="@+id/h5" />
 
     <ImageView

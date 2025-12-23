@@ -104,11 +104,15 @@ public class DataSaved {
 
     public static int lrTilt;
 
+    public static int lrRotary;
+
+    public static double Rotary_Diam;
     public static double drill_Bit_Len;
     public static double drill_Rod_Len;
     public static double offset_Tool_Orient;
     public static double offset_Tool_Dist;
     public static double offset_Tool_Roll;
+    public static double offset_Boom_Tool;
     public static double offsetRoll;
 
     public static double offsetPitch;
@@ -146,6 +150,8 @@ public class DataSaved {
     public static double L_Boom2;
 
     public static double L_Stick;
+
+
 
     public static double L1;
 

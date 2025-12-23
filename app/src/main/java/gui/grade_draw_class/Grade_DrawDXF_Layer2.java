@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -30,9 +31,11 @@ import services.TriangleService;
 import utils.Utils;
 
 public class Grade_DrawDXF_Layer2 extends View {
+    float mFixedXX;
+
     final float PIVOT_X = 0.50f;
     final float PIVOT_Y = 0.65f;
-    Paint paint;
+    Paint paint,dashedPaint;
     int scala;
     PointF basePalo;
     PointF testaPalo;
@@ -52,6 +55,7 @@ public class Grade_DrawDXF_Layer2 extends View {
     public Grade_DrawDXF_Layer2(Context context) {
         super(context);
         paint = new Paint();
+        dashedPaint = new Paint();
         basePalo = new PointF();
         testaPalo = new PointF();
         basePalo2 = new PointF();
@@ -68,6 +72,7 @@ public class Grade_DrawDXF_Layer2 extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         paint.setAntiAlias(true);
+
         try {
 
             Path path = new Path();
@@ -233,12 +238,15 @@ public class Grade_DrawDXF_Layer2 extends View {
 
             switch (edge) {
                 case -1:
+                    mFixedXX=bucket.get(4).x;
                     canvas.drawCircle(bucket.get(4).x, bucket.get(4).y, (float) (8f), paint);
                     break;
                 case 0:
+                    mFixedXX=(bucket.get(3).x + bucket.get(4).x) / 2f;
                     canvas.drawCircle((bucket.get(3).x + bucket.get(4).x) / 2f, (bucket.get(3).y + bucket.get(4).y) / 2f, (float) (8f), paint);
                     break;
                 case 1:
+                    mFixedXX=bucket.get(3).x;
                     canvas.drawCircle(bucket.get(3).x, bucket.get(3).y, (float) (8f), paint);
                     break;
             }
@@ -420,6 +428,31 @@ public class Grade_DrawDXF_Layer2 extends View {
                     canvas.drawPath(pathm, paint);
                 } catch (Exception e) {
                 }
+            }
+            if (DataSaved.isAutoSnap == 2) {
+                float dist = 0;
+                switch (DataSaved.bucketEdge) {
+                    case -1:
+                        dist = (float) (TriangleService.dist3D_SX * scala);
+                        break;
+                    case 0:
+                        dist = (float) (TriangleService.dist3D_CT * scala);
+                        break;
+                    case 1:
+                        dist = (float) (TriangleService.dist3D_DX * scala);
+                        break;
+
+                }
+                float x = mFixedXX - (dist*TriangleService.segnoLinea);
+                dashedPaint.setAntiAlias(true);
+                dashedPaint.setStyle(Paint.Style.STROKE);
+                dashedPaint.setColor(MyColorClass.colorConstraint);
+                dashedPaint.setStrokeWidth((float) (3f / DataSaved.scale_FactorVista2D));
+                dashedPaint.setPathEffect(new DashPathEffect(new float[]{20f, 15f}, 0));
+
+                canvas.drawLine(x, -10000f, x, 10000f, dashedPaint);
+                // opzionale: pulisci l’effetto per non sporcare altro
+                dashedPaint.setPathEffect(null);
             }
         } catch (Exception e) {
             System.out.println(e.toString());

@@ -79,6 +79,24 @@
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
         <activity
+            android:name="gui.tech_menu.DrillToolCalib"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name="gui.tech_menu.DrillEncoder"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name="gui.tech_menu.MastLinkCalib"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
             android:name="gui.tech_menu.Nuova_XYZ_Calib"
             android:autoRemoveFromRecents="true"
             android:exported="false"

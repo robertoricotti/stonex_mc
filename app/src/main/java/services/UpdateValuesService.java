@@ -82,12 +82,14 @@ public class UpdateValuesService extends Service {
         ((ExecutorService) mExecutor).shutdown();
         stopTime = System.currentTimeMillis();
         long result = Math.abs(stopTime - startTime);
+        Log.d("Servizzio","TRerminato");
     }
 
     private class MyAsync_Excecutor implements Runnable {
         @Override
         public void run() {
             try {
+                Log.d("Servizzio","iniziato");
                 isUpodating = true;
                 String m = MyData.get_String("MachineSelected");
                 if (m == null) {
@@ -143,6 +145,7 @@ public class UpdateValuesService extends Service {
                     String offset_Tool_Roll = MyData.get_String("M" + i + "offset_Tool_Roll");
                     String offset_Tool_Orient = MyData.get_String("M" + i + "offset_Tool_Orient");
                     String offset_Tool_Dist = MyData.get_String("M" + i + "offset_Tool_Dist");
+                    String offset_Boom_Tool=MyData.get_String("M" + i + "offset_Boom_Tool");
                     String drill_Bit_Len = MyData.get_String("M" + i + "drill_Bit_Len");
                     String drill_Rod_Len = MyData.get_String("M" + i + "drill_Rod_Len");
                     String gpsdeltaX = MyData.get_String("M" + i + "_OffsetGPSX");
@@ -232,6 +235,9 @@ public class UpdateValuesService extends Service {
                     String colorBenna = MyData.get_String("M" + i + "coloreBenna");
                     String colorStick = MyData.get_String("M" + i + "coloreStick");
 
+                    String Rotary_Mount = MyData.get_String("M" + i + "Rotary_Mount");
+                    String Rotary_Diam = MyData.get_String("M" + i + "Rotary_Diam");
+
                     if (nameM == null) {
                         MyData.push("M" + i + "_Name", ("DEFAULT " + i).toUpperCase());
                     }
@@ -312,6 +318,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (offset_Tool_Dist == null) {
                         MyData.push("M" + i + "offset_Tool_Dist", "0.00");
+                    }
+                    if (offset_Boom_Tool == null) {
+                        MyData.push("M" + i + "offset_Boom_Tool", "0.00");
                     }
                     if (drill_Bit_Len == null) {
                         MyData.push("M" + i + "drill_Bit_Len", "0.00");
@@ -594,6 +603,14 @@ public class UpdateValuesService extends Service {
                     if (HYDRAULIC_CONTROL_POINT_DOZER == null) {
                         MyData.push("M" + i + "HYDRAULIC_CONTROL_POINT_DOZER", "0");
                     }
+                    if (Rotary_Mount == null) {
+                        MyData.push("M" + i + "Rotary_Mount", "0");
+                    }
+
+                    if (Rotary_Diam == null) {
+                        MyData.push("M" + i + "Rotary_Diam", "0.3");
+                    }
+
 
 
                     ///
@@ -1343,6 +1360,11 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di offset_Tool_Dist: " + e.getMessage());
                 }
                 try {
+                    DataSaved.offset_Boom_Tool = MyData.get_Double("M" + indexMach + "offset_Boom_Tool");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di offset_Boom_Tool: " + e.getMessage());
+                }
+                try {
                     DataSaved.drill_Bit_Len = MyData.get_Double("M" + indexMach + "drill_Bit_Len");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di drill_Bit_Len: " + e.getMessage());
@@ -1534,7 +1556,16 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di HYDRAULIC_CONTROL_POINT_DOZER: " + e.getMessage());
                 }
 
-                ////end draw
+                try {
+                    DataSaved.lrRotary = MyData.get_Int("M" + indexMach + "Rotary_Mount");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Rotary_Mount: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Rotary_Diam = MyData.get_Double("M" + indexMach + "Rotary_Diam");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Rotary_Diam: " + e.getMessage());
+                }
 
                 try {
                     DataSaved.offsetH = MyData.get_Double("shortcutOffset_" + DataSaved.shortcutIndex) * -1;
@@ -2094,8 +2125,9 @@ public class UpdateValuesService extends Service {
                 }
 
                 isUpodating = false;
+                Log.w("Servizzio","TRerminato");
             } catch (Exception e) {
-                Log.e("Error", "Exception non gestita");
+                Log.e("Servizzio", "Exception non gestita");
             }
         }
     }

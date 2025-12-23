@@ -15,15 +15,15 @@ import static packexcalib.exca.Sensors_Decoder.Deg_stick;
 import static packexcalib.exca.Sensors_Decoder.Deg_tilt;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 
-import static utils.MyTypes.FMI_SENS;
-import static utils.MyTypes.TSM_ACC;
+
 
 import android.util.Log;
 
-import gui.gps.NmeaGenerator;
-import packexcalib.gnss.NmeaListener;
+
 
 public class Sensors_Decoder_Drill {
+    public static long EncRevolution;
+    public static double RopeLen;
     static double yaw;
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
     static double norm, ax_norm, ay_norm, az_norm;
@@ -35,6 +35,7 @@ public class Sensors_Decoder_Drill {
     static short Gx;
     static short Gy;
     static short Gz;
+    static long K=(long) Math.pow(2,32);
 
 
     public static void decode(int id, byte[] data) {
@@ -42,7 +43,15 @@ public class Sensors_Decoder_Drill {
             if(id==0x18F||id==0x190){
                 //TODO Encoder connesso 8192 count per revolution = 0x2000
                 long revolution=PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0],data[1],data[3],data[4]});
-            Log.w("Encoder Revolutions",String.valueOf(revolution));
+                if(DataSaved.lrRotary==-1){
+                    K=(long) Math.pow(2,32);
+                    EncRevolution=K-revolution;
+                }else {
+                    EncRevolution=revolution;
+                }
+                RopeLen=calculateRopeLength(EncRevolution,DataSaved.Rotary_Diam);
+
+               // Log.w("Encoder Revolutions",String.valueOf(revolution));
             }
             if (DataSaved.isExtensionBoom > 0) {
                 if (id == 0x188) {
@@ -66,6 +75,14 @@ public class Sensors_Decoder_Drill {
         if (a > 180) a -= 360;
         if (a < -180) a += 360;
         return a;
+    }
+    public static double calculateRopeLength(long encoderCounts, double pulleyDiameter) {
+        final double COUNTS_PER_REV = 8192.0;
+
+        double revolutions = encoderCounts / COUNTS_PER_REV;
+        double circumference = Math.PI * pulleyDiameter;
+
+        return revolutions * circumference;
     }
 
 }

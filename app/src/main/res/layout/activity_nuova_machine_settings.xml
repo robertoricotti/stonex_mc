@@ -453,7 +453,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:visibility="gone">
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -536,6 +536,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
+
                     <TextView
                         android:id="@+id/toDogBone"
                         android:layout_width="wrap_content"
@@ -571,6 +572,18 @@
                         android:ems="15"
                         android:gravity="center"
                         android:text="ΔX ΔY ΔZ"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/drillEnc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="ROTARY ENCODER"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -620,7 +633,8 @@
                 android:id="@+id/constr_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp">
+                android:padding="5dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"

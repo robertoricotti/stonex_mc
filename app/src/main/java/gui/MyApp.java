@@ -96,10 +96,13 @@ import gui.projects.Usb_Project_Nova;
 import gui.tech_menu.Boom1Calib;
 import gui.tech_menu.Boom2Calib;
 import gui.tech_menu.CanOpenTSM;
+import gui.tech_menu.DrillEncoder;
+import gui.tech_menu.DrillToolCalib;
 import gui.tech_menu.ExcavatorChooserActivity;
 import gui.tech_menu.FrameCalib;
 import gui.tech_menu.GPS_Autocalib;
 import gui.tech_menu.LinkageCalib;
+import gui.tech_menu.MastLinkCalib;
 import gui.tech_menu.Nuova_Blade_Calib;
 import gui.tech_menu.Nuova_Machine_Settings;
 import gui.tech_menu.StickCalib;
@@ -119,6 +122,7 @@ import utils.FullscreenActivity;
 import utils.LanguageSetter;
 import utils.MyData;
 import utils.MyDeviceManager;
+import utils.Utils;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
     public static  int MAX_NUMERO_FACCE=5000;
@@ -701,6 +705,12 @@ git push
             ((KOMATSU_Activity) activity).updateUI();
         } else if (activity instanceof CASE_Activity) {
             ((CASE_Activity) activity).updateUI();
+        }else if (activity instanceof MastLinkCalib) {
+            ((MastLinkCalib) activity).updateUI();
+        }else if (activity instanceof DrillEncoder) {
+            ((DrillEncoder) activity).updateUI();
+        }else if (activity instanceof DrillToolCalib) {
+            ((DrillToolCalib) activity).updateUI();
         }
 
     }

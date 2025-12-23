@@ -365,6 +365,8 @@ public class CanSender extends Service {
                                         (byte) 0xB0});
                     }
                 }
+            }else {
+                MyDeviceManager.CanWrite(true,0,0,2,new byte[]{1,0});
             }
 
             if (DataSaved.Interface_Type == 4) {

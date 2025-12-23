@@ -52,10 +52,10 @@ public class XYZ_Calib extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass_calib);
         wlwl = findViewById(R.id.wlwl);
-        imgdwdx = findViewById(R.id.imgdwdx);
-        imgupsx = findViewById(R.id.imgupsx);
-        imgupdx = findViewById(R.id.imgupdx);
-        aaaa = findViewById(R.id.aaaa);
+        imgdwdx = findViewById(R.id.img104);
+        imgupsx = findViewById(R.id.img101);
+        imgupdx = findViewById(R.id.img102);
+        aaaa = findViewById(R.id.img103);
         tv_btw = findViewById(R.id.tv_betw);
         dist = findViewById(R.id.distBetween);
         xm = findViewById(R.id.but_meno_x);
@@ -84,7 +84,7 @@ public class XYZ_Calib extends AppCompatActivity {
 
 
         titolo = findViewById(R.id.titolo);
-        update = findViewById(R.id.updateGps);
+        update = findViewById(R.id.updateTool);
         save = findViewById(R.id.save);
         exit = findViewById(R.id.exit);
         dx = findViewById(R.id.deltaX);
@@ -92,8 +92,8 @@ public class XYZ_Calib extends AppCompatActivity {
         dZ = findViewById(R.id.deltaZ);
         dHdt = findViewById(R.id.deltaHDT);
         tvX = findViewById(R.id.txtDeltaX);
-        tvY = findViewById(R.id.textView49);
-        tvZ = findViewById(R.id.textView52);
+        tvY = findViewById(R.id.txtDeltaYt);
+        tvZ = findViewById(R.id.txtDeltaZt);
         gpsDebug = findViewById(R.id.gpsdebugg);
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
         indexMachineSelected = MyData.get_Int("MachineSelected");

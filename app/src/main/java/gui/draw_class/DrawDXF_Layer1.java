@@ -449,7 +449,7 @@ public class DrawDXF_Layer1 extends View {
                 }
             }
 
-            if (DataSaved.isAutoSnap == 2) {
+         /*   if (DataSaved.isAutoSnap == 2) {
 
                 float mfixedX = getWidth() * PIVOT_X;
 
@@ -470,7 +470,7 @@ public class DrawDXF_Layer1 extends View {
 
                 canvas.drawLine(x, -10000f, x, 10000f, dashedPaint);
                 dashedPaint.setPathEffect(null);
-            }
+            }*/
 
         } catch (Exception e) {
             System.out.println(e.toString());

@@ -72,7 +72,7 @@ public class GL_DrawDozer {
         }
         switch (DataSaved.bucketEdge) {
             case -1:
-                spigolo = new Cylinder(p3tof(GL_LAMA[26]), p3tof(GL_LAMA[29]), 0.05f * scale, 0.02f * scale,
+                spigolo = new Cylinder(p3tof(GL_LAMA[26]), p3tof(GL_LAMA[29]), 0.05f * scale, 0.01f * scale,
                         GL_Methods.parseColorToGL(colore), 8, false);
                 spigolo.draw(gl11);
                 break;

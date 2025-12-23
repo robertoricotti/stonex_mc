@@ -4,7 +4,7 @@ import android.util.Log;
 import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
-import static utils.MyTypes.EXCAVATOR;
+
 
 import java.util.Arrays;
 
@@ -20,7 +20,7 @@ public class DrillLib {
             correctRoll = Excavator_RealValues.realRoll(DataSaved.offsetRoll);
             correctBoom1 = Excavator_RealValues.realBoom1(DataSaved.offsetBoom1);
             correctBoom2 = Excavator_RealValues.realBoom2(DataSaved.offsetBoom2);
-            correctStick = Excavator_RealValues.realStick(DataSaved.offsetStick);
+            correctMastLink = Excavator_RealValues.realMastLink(DataSaved.offsetStick);
             correctDBStickAngle = Excavator_RealValues.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[2];
             correctBucket = Excavator_RealValues.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[0];
             correctToolRoll=Excavator_RealValues.real_Tool_Roll(DataSaved.offset_Tool_Roll);

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_gray">
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/h1"
@@ -108,15 +108,15 @@
         android:id="@+id/img104"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="fitCenter"
-
+        android:scaleType="centerInside"
+        android:padding="20dp"
         app:layout_constraintBottom_toTopOf="@+id/h5"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@id/img101"
         app:layout_constraintRight_toLeftOf="@id/txtDeltaX"
         app:layout_constraintTop_toTopOf="@+id/h3"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/delta_hdt_blue" />
+        app:srcCompat="@drawable/drill_img_1" />
 
     <ImageView
         android:id="@+id/img103"
@@ -213,7 +213,7 @@
         android:id="@+id/txtDeltaX"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="ΔX (m)"
+        android:text="Tool ΔX (m)"
         android:textSize="24sp"
         android:textColor="@color/black"
         android:textStyle="bold"
@@ -227,7 +227,7 @@
         android:id="@+id/txtDeltaYt"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="ΔY (m)"
+        android:text="Tool ΔY (m)"
         android:textSize="24sp"
         android:textColor="@color/black"
         android:textStyle="bold"
@@ -241,7 +241,7 @@
         android:id="@+id/txtDeltaZt"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="ΔZ (m)"
+        android:text="Tool ΔZ (m)"
         android:textSize="24sp"
         android:textColor="@color/black"
         android:textStyle="bold"
@@ -251,31 +251,8 @@
         app:layout_constraintStart_toStartOf="@+id/guideline123"
         app:layout_constraintTop_toTopOf="@+id/h3" />
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="ΔHDT (°)"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h6"
-        app:layout_constraintEnd_toStartOf="@+id/guideline125"
-        app:layout_constraintStart_toStartOf="@+id/guideline123"
-        app:layout_constraintTop_toTopOf="@+id/h4" />
-    <TextView
-        android:id="@+id/tv_betw"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="G1>>G2 (m)"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h5"
-        app:layout_constraintEnd_toStartOf="@+id/guideline125"
-        app:layout_constraintStart_toStartOf="@+id/guideline123"
-        app:layout_constraintTop_toTopOf="@+id/h6" />
+
+
     <ImageView
         android:id="@+id/but_meno_x"
         android:layout_width="40dp"
@@ -358,68 +335,6 @@
         app:layout_constraintTop_toTopOf="@id/deltaY"
         app:layout_constraintBottom_toBottomOf="@id/deltaY"
         android:src="@drawable/bottone_piu" />
-
-    <ImageView
-        android:id="@+id/but_meno_h"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/sfondo_bottone_trasparente"
-        app:layout_constraintRight_toLeftOf="@+id/deltaHDT"
-        app:layout_constraintTop_toTopOf="@id/deltaHDT"
-        app:layout_constraintLeft_toRightOf="@id/guideline125"
-        app:layout_constraintBottom_toBottomOf="@id/deltaHDT"
-        android:src="@drawable/bottone_meno" />
-
-    <EditText
-        android:id="@+id/deltaHDT"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:digits="0123456789."
-        android:focusableInTouchMode="false"
-        android:imeOptions="flagNoExtractUi|actionDone"
-        android:inputType="numberSigned"
-        android:maxLines="1"
-        android:paddingHorizontal="30dp"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h6"
-        app:layout_constraintRight_toLeftOf="@id/but_piu_h"
-        app:layout_constraintLeft_toRightOf="@id/but_meno_h"
-        app:layout_constraintTop_toTopOf="@+id/h4" />
-    <ImageView
-        android:id="@+id/but_piu_h"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/sfondo_bottone_trasparente"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/deltaHDT"
-        app:layout_constraintTop_toTopOf="@id/deltaHDT"
-        app:layout_constraintBottom_toBottomOf="@id/deltaHDT"
-        android:src="@drawable/bottone_piu" />
-    <EditText
-        android:id="@+id/distBetween"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:digits="0123456789."
-        android:focusableInTouchMode="false"
-        android:imeOptions="flagNoExtractUi|actionDone"
-        android:inputType="numberSigned"
-        android:maxLines="1"
-        android:paddingHorizontal="30dp"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline125"
-        app:layout_constraintTop_toTopOf="@+id/h6" />
-
-
-
 
     <ImageView
         android:id="@+id/but_meno_z"

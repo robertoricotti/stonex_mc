@@ -47,32 +47,37 @@ public class Utils {
 
     @SuppressLint("DefaultLocale")
     public static String readSensorCalibration(String str) {
-        double v = Double.parseDouble(str);
-        int index = MyData.get_Int("Unit_Of_Measure");
-        if (index == 2 || index == 3) {
-            return String.format("%.4f", v / 0.3048006096).replace(",", ".");
-        } else if (index == 4 || index == 5) {
-            double inches = v / 0.0254;
-            int feet = (int) (inches / 12);
-            double leftover = inches % 12;
+        if(str!=null) {
+            double v = Double.parseDouble(str);
+            int index = MyData.get_Int("Unit_Of_Measure");
+            if (index == 2 || index == 3) {
+                return String.format("%.4f", v / 0.3048006096).replace(",", ".");
+            } else if (index == 4 || index == 5) {
+                double inches = v / 0.0254;
+                int feet = (int) (inches / 12);
+                double leftover = inches % 12;
 
-            String fractionInches = decimalToCommonFraction(Math.abs(leftover));
-            if (v < 0) {
+                String fractionInches = decimalToCommonFraction(Math.abs(leftover));
+                if (v < 0) {
 
-                return "-" + Math.abs(feet) + "' " + fractionInches + "\"";
+                    return "-" + Math.abs(feet) + "' " + fractionInches + "\"";
+                } else {
+                    return Math.abs(feet) + "' " + fractionInches + "\"";
+                }
+
+            } else if (index == 6 || index == 7) {
+                return String.format("%.4f", v / 0.3048).replace(",", ".");
             } else {
-                return Math.abs(feet) + "' " + fractionInches + "\"";
+                return String.format("%.3f", v).replace(",", ".");
             }
-
-        } else if (index == 6 || index == 7) {
-            return String.format("%.4f", v / 0.3048).replace(",", ".");
-        } else {
-            return String.format("%.3f", v).replace(",", ".");
+        }else {
+            return "0.000";
         }
     }
 
     @SuppressLint("DefaultLocale")
     public static String writeMetri(String str) {
+
         int index = MyData.get_Int("Unit_Of_Measure");
 
         if (index == 2 || index == 3) {
@@ -114,6 +119,7 @@ public class Utils {
 
     @SuppressLint("DefaultLocale")
     public static String readUnitOfMeasure(String str) {
+
         double v = Double.parseDouble(str);
         int index = MyData.get_Int("Unit_Of_Measure");
         if (index == 2 || index == 3) {

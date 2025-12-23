@@ -467,9 +467,6 @@ public class DrawDXF_Layer2 extends View {
             }
 
             if (DataSaved.isAutoSnap == 2) {
-
-
-
                 float dist = 0;
                 switch (DataSaved.bucketEdge) {
                     case -1:

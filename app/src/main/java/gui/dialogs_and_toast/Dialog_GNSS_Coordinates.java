@@ -8,6 +8,7 @@ import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.CanSender.GNSS_MSG;
 import static services.CanService.nmeaSTX_Disc;
+import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.GRADER;

@@ -30,6 +30,7 @@ import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
+import packexcalib.exca.Sensors_Decoder_Drill;
 import packexcalib.gnss.NmeaListener;
 import serial.OpenSerialPort;
 import utils.AutoManToggle;
@@ -157,6 +158,8 @@ public class CanService extends Service {
                         DataSaved.damp_Tl = msg[4];
                     }
 
+                }else if (DataSaved.isCanOpen==DEMO_BAG){
+                    nmeaSTX_Disc = false;
                 }
                 if (DataSaved.my_comPort == 0 && DataSaved.gpsType == 0) {
                     NmeaListener.NmeaSTX(id, msg);
@@ -202,11 +205,9 @@ public class CanService extends Service {
                     }
                 }
 
-
                 if (DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
                     DataSaved.deltaZ = DataSaved.altezzaLama + DataSaved.altezzaPali;
                 }
-
 
                 if (DataSaved.isWL == WHEELLOADER) {
                     if (DataSaved.Extra_Heading > 0) {
@@ -445,7 +446,20 @@ public class CanService extends Service {
                 if (id == 0x7DF || id == 0x560106A) {
                     receiver.receivePacket(msg);
                 }
-                Sensors_Decoder.decode(id,msg);
+                switch (DataSaved.isWL){
+                    case EXCAVATOR:
+                    case WHEELLOADER:
+                    case DOZER:
+                    case DOZER_SIX:
+                    case GRADER:
+                        Sensors_Decoder.decode(id,msg);
+                        break;
+
+                    case DRILL:
+                        Sensors_Decoder_Drill.decode(id,msg);
+                        break;
+                }
+
             }
 
             if (channel == 2) {

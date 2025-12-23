@@ -39,6 +39,15 @@ public class Excavator_RealValues {
                         a;
         return a;
     }
+    public static double realMastLink(double offset) {
+        double a;
+        double d = Deg_stick;
+        a = d - offset;
+        a = (a < -179.99) ? a + 360.00 :
+                (a > 179.99) ? a - 360.00 :
+                        a;
+        return a;
+    }
 
     public static double realStick(double offset) {
         double a;

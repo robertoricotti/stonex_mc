@@ -37,7 +37,7 @@ public class ExcavatorLib {
     static double[] arrLower = new double[3];
     static double[] arr = new double[6];
     public static double quota2D, quotaLASER_2D, actualX2D, actualY2D, distToSurf, distToSurfX, quotaSx, quotaDx, distanza_inclinata;
-    public static double msideC, msideCX, correctStick, correctPitch, correctToolRoll, correctToolPitch, correctDBStickAngle, quotaCentro, correctRoll, correctBucket, correctFlat, correctTilt, correctDeltaAngle, bennaSimulata, correctBoom1, correctBoom2, highestPoint, deg_Roll, Len_Roll, larghezzabenna, correctWTilt, correctEbubbleX, correctEbubbleY, startRX, startRY, startRZ;
+    public static double msideC, msideCX, correctStick, correctPitch, correctToolRoll, correctToolPitch, correctDBStickAngle, quotaCentro, correctRoll, correctBucket, correctFlat, correctTilt, correctDeltaAngle, bennaSimulata, correctBoom1, correctBoom2, highestPoint, deg_Roll, Len_Roll, larghezzabenna, correctWTilt, correctEbubbleX, correctEbubbleY, startRX, startRY, startRZ,correctMastLink;
     public static double[] coordinateDZ, coordinateDX, coordinateDY, coordMiniPitch, coordB1, coordB2, coordST, coordiLSV, coordLSH, coordPivoTilt, coordTool;
     public static double[] toolBitCoord = new double[]{0, 0, 0};
     public static double[] toolEndCoord = new double[]{0, 0, 0};
@@ -173,11 +173,12 @@ public class ExcavatorLib {
                             yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(correctTilt - Deg_Boom_Roll, correctBucket, piccolaBucket, L_Bucket);
                             yawSensor += Sensors_Decoder.Deg_Roto;
                             yawSensor = MyMCUtils.wrap(yawSensor);
+                            coordPivoTilt = Exca_Quaternion.endPoint(coordST, correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, hdt_BOOM);
+                            bucketCoord = Exca_Quaternion.endPoint(coordPivoTilt, correctWTilt, correctTilt, DataSaved.piccolaBucket, hdt_BOOM + yawSensor);
+                            bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90 + yawSensor);
+                            bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270 + yawSensor);
                         }
-                        coordPivoTilt = Exca_Quaternion.endPoint(coordST, correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, hdt_BOOM);
-                        bucketCoord = Exca_Quaternion.endPoint(coordPivoTilt, correctWTilt, correctTilt, DataSaved.piccolaBucket, hdt_BOOM + yawSensor);
-                        bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90 + yawSensor);
-                        bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270 + yawSensor);
+
 
 
                         //qui abbiamo le coordinate GPS della benna UTM nostre

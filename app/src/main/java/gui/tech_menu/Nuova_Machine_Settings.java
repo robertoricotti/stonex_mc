@@ -9,6 +9,7 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
 
@@ -31,6 +32,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.stx_dig.R;
 
+import gui.MyApp;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
@@ -47,7 +49,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
-    TextView toExtraSensor, tvSwing, tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ, toCanopen, toDamping, can1bd, can2bd;
+    TextView toExtraSensor, tvSwing, tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ,drillEnc, toCanopen, toDamping, can1bd, can2bd;
     EditText mchName, techInfo;
     int mode, machineSel;
     public static boolean menu1_visible, menu2_visible, menu3_visible;
@@ -101,6 +103,8 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         constraintLayout_3 = findViewById(R.id.constr_3);
         tvSwing = findViewById(R.id.tvSwing);
         toExtraSensor = findViewById(R.id.toExtraSensor);
+        drillEnc = findViewById(R.id.drillEnc);
+        drill.setVisibility(View.GONE);//TODO REMOVE FOR DRILL
         tvFrame = findViewById(R.id.toFrame);
         tvBoom1 = findViewById(R.id.toBoom1);
         tvBoom2 = findViewById(R.id.toBoom2);
@@ -127,7 +131,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         can1bd = findViewById(R.id.toCan1);
         can2bd = findViewById(R.id.toCan2);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
-        drill.setVisibility(View.GONE);
+
 
 
 
@@ -268,6 +272,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             startActivity(new Intent(this, FrameCalib.class));
             finish();
         });
+        drillEnc.setOnClickListener(view -> {
+            en_dis(false);
+            startActivity(new Intent(this, DrillEncoder.class));
+            finish();
+        });
         tvBoom1.setOnClickListener(view -> {
 
             if (DataSaved.isWL == WHEELLOADER || DataSaved.isWL == EXCAVATOR || DataSaved.isWL == DRILL) {
@@ -296,16 +305,26 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             }
         });
         tvStick.setOnClickListener(view -> {
-            en_dis(false);
-            startActivity(new Intent(this, StickCalib.class));
-            finish();
+            if(DataSaved.isWL==DRILL){
+                en_dis(false);
+                startActivity(new Intent(this, MastLinkCalib.class));
+                finish();
+            }else {
+                en_dis(false);
+                startActivity(new Intent(this, StickCalib.class));
+                finish();
+            }
         });
         tvLink.setOnClickListener(view -> {
-            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL) {
+            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER ) {
                 en_dis(false);
                 startActivity(new Intent(this, LinkageCalib.class));
                 finish();
-            } else {
+            } else if(DataSaved.isWL==DRILL){
+                en_dis(false);
+                startActivity(new Intent(this, DrillToolCalib.class));
+                finish();
+            }else {
                 en_dis(false);
                 startActivity(new Intent(this, Tilt_Blade.class));
                 finish();
@@ -508,6 +527,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         switch (mode) {
             case 0:
                 //Excavatore
+                drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.VISIBLE);
                 if (DataSaved.Extra_Heading > 0) {
@@ -531,6 +551,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 1:
                 //Wheel
+                drillEnc.setVisibility(View.GONE);
                 if (DataSaved.Extra_Heading > 0) {
                     toExtraSensor.setVisibility(View.VISIBLE);
                     tvSwing.setVisibility(View.VISIBLE);
@@ -561,6 +582,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             case 2:
             case 3:
                 //Dozer
+                drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.GONE);
                 tvSwing.setVisibility(View.GONE);
@@ -583,6 +605,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 4:
                 //Grader
+                drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.GONE);
                 tvSwing.setVisibility(View.GONE);
@@ -605,6 +628,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 10:
                 //DRILL
+                drillEnc.setVisibility(View.VISIBLE);
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.VISIBLE);
                 if (DataSaved.Extra_Heading > 0) {
@@ -618,10 +642,11 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 tvBoom1.setText("BOOM 1");
                 tvBoom2.setVisibility(View.VISIBLE);
                 tvStick.setVisibility(View.VISIBLE);
-                tvStick.setText("STICK");
+                tvStick.setText("MAST LINK");
+
                 tvLink.setVisibility(View.VISIBLE);
                 tvLink.setText("TOOL");
-                tvTilt.setVisibility(View.INVISIBLE);
+                tvTilt.setVisibility(View.GONE);
                 tvXYZ.setVisibility(View.VISIBLE);
                 tvBoom1.setBackgroundTintList(getColorStateList(R.color.bg_stonex_blue));
                 tvBoom1.setTextColor(getColor(R.color.white));

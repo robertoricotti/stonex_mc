@@ -3,6 +3,7 @@ package packexcalib.exca;
 import android.util.Log;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 public class PLC_DataTypes_LittleEndian {
 
@@ -53,6 +54,7 @@ public class PLC_DataTypes_LittleEndian {
 
 
     public static long byte_to_U32(byte[] bytes) {
+
         if (bytes.length != 4) {
             Log.e("DIG_Err","Il byte array deve avere esattamente 4 elementi.");
         }
