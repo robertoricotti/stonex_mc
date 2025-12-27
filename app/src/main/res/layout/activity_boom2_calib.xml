@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/sfondo_bottone_trasparente">
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline94"
@@ -188,8 +187,8 @@
             android:layout_marginHorizontal="10dp"
             android:backgroundTint="@color/dark_gray"
             android:text="-"
-            android:textSize="25sp"
             android:textColor="@color/white"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <TextView
@@ -210,8 +209,8 @@
             android:layout_marginHorizontal="10dp"
             android:backgroundTint="@color/dark_gray"
             android:text="+"
-            android:textSize="25sp"
             android:textColor="@color/white"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <Button
@@ -221,8 +220,8 @@
             android:layout_marginHorizontal="10dp"
             android:backgroundTint="@color/dark_gray"
             android:text="SET"
-            android:textSize="20sp"
             android:textColor="@color/white"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -230,6 +229,7 @@
         android:id="@+id/boom2Length"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
         android:digits="0123456789."
         android:focusableInTouchMode="false"
         android:maxLines="1"
@@ -237,7 +237,6 @@
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:layout_marginHorizontal="50dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline99"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline102"
@@ -250,16 +249,16 @@
         android:layout_height="50dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
+        android:src="@drawable/save_btn"
         android:text="@string/save"
         android:textAllCaps="true"
+        android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/centV"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline100"
-        android:src="@drawable/save_btn"/>
+        app:layout_constraintTop_toTopOf="@+id/guideline100" />
 
     <ImageView
         android:id="@+id/exit"
@@ -267,24 +266,24 @@
         android:layout_height="50dp"
         android:backgroundTint="@color/dark_gray"
         android:gravity="center"
+        android:src="@drawable/btn_close_web"
         android:text="@string/exit"
         android:textAllCaps="true"
+        android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
-        app:tint="@color/_____cancel_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/centV"
         app:layout_constraintTop_toTopOf="@+id/guideline100"
-        android:src="@drawable/btn_close_web"/>
+        app:tint="@color/_____cancel_text" />
 
     <ImageButton
         android:id="@+id/infoMount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:backgroundTint="@color/light_gray"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/guideline111"
         app:layout_constraintEnd_toStartOf="@+id/guideline102"
         app:layout_constraintTop_toTopOf="@+id/guideline94"
@@ -292,10 +291,10 @@
 
     <ImageButton
         android:id="@+id/infoAngle"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/light_gray"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/guideline100"
         app:layout_constraintEnd_toStartOf="@+id/guideline102"
         app:layout_constraintTop_toTopOf="@+id/guideline99"

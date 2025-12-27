@@ -73,8 +73,9 @@ public class MyDeviceManager {
             case "APOLLO2_12_PLUS":
             case "TANK2_7_10":
 
-                Intent intent = new Intent(ACTION_HIDE_NAVIGATION);
-                context.sendBroadcast(intent);
+
+                Intent i = new Intent(ACTION_HIDE_NAVIGATION);
+                context.sendBroadcast(i);
 
                 break;
             case "SRT8PROS":
@@ -82,9 +83,11 @@ public class MyDeviceManager {
             case "qti":
                 VanCmd.exec("wm overscan 0,-60,0,-60", 10);
                 break;
-            case "MEGA_1":
 
+            case "MEGA_1":
+                setSystemBarsVisible(context,false);
                 break;
+
         }
 
     }
@@ -96,18 +99,19 @@ public class MyDeviceManager {
             case "APOLLO2_12_PRO":
             case "APOLLO2_12_PLUS":
             case "TANK2_7_10":
-                Intent intent = new Intent(ACTION_SHOW_NAVIGATION);
-                context.sendBroadcast(intent);
+
+                Intent i = new Intent(ACTION_SHOW_NAVIGATION);
+                context.sendBroadcast(i);
                 break;
             case "SRT8PROS":
             case "SRT7PROS":
             case "qti":
                 VanCmd.exec("wm overscan 0,0,0,0", 10);
                 break;
+
             case "MEGA_1":
-
+                setSystemBarsVisible(context,true);
                 break;
-
 
         }
     }
@@ -194,12 +198,12 @@ public class MyDeviceManager {
                     os.writeBytes("setenforce 0\n");
 
                     //Physical Buttons DISABLED
-                    os.writeBytes(
-                            "sh -c 'for f in /sys/devices/platform/adc-keys/input/*/inhibited; do echo 1 > $f; done'\n"
-                    );
+                   // os.writeBytes(
+                       //     "sh -c 'for f in /sys/devices/platform/adc-keys/input/*/inhibited; do echo 1 > $f; done'\n"
+                   // );
 
                     //  USB HOST
-                    os.writeBytes("echo host > /sys/devices/platform/fd5d0000.syscon/fd5d0000.syscon:usb2-phy@0/otg_mode\n");
+                   // os.writeBytes("echo host > /sys/devices/platform/fd5d0000.syscon/fd5d0000.syscon:usb2-phy@0/otg_mode\n");
 
                     //  DENSITY SMALL
                     os.writeBytes("wm density 170\n");
@@ -401,6 +405,43 @@ public class MyDeviceManager {
         // Log.d(TAG, "++sdk+" + Build.VERSION.SDK_INT + "--sn--" + serial);
         return serial;//Build.SERIAL
     }
+    public static void setSystemBarsVisible(Context context, boolean visible) {
+        try {
+            // ===== STATUS BAR =====
+            String[] statusBarActions = {
+                    "com.android.action.STATUSBAR_SWITCH_STATE",
+                    "com.android.systemui.action.STATUSBAR_SWITCH_STATE"
+            };
+
+            for (String action : statusBarActions) {
+                Intent intent = new Intent();
+                intent.setClassName(
+                        "com.android.systemui",
+                        "com.android.systemui.SystemUIControllerReceiver"
+                );
+                intent.setAction(action);
+                intent.putExtra("enable", visible);
+                context.sendBroadcast(intent);
+            }
+
+            // ===== NAVIGATION BAR =====
+            String navAction = visible
+                    ? "com.android.systemui.action.SHOW_NAVIGATION"
+                    : "com.android.systemui.action.HIDE_NAVIGATION";
+
+            Intent navIntent = new Intent();
+            navIntent.setClassName(
+                    "com.android.systemui",
+                    "com.android.systemui.SystemUIControllerReceiver"
+            );
+            navIntent.setAction(navAction);
+            context.sendBroadcast(navIntent);
+
+        } catch (Exception e) {
+            Log.e("SYSTEM_BARS", Log.getStackTraceString(e));
+        }
+    }
+
 
 
 }

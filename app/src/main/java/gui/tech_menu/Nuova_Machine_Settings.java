@@ -104,7 +104,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         tvSwing = findViewById(R.id.tvSwing);
         toExtraSensor = findViewById(R.id.toExtraSensor);
         drillEnc = findViewById(R.id.drillEnc);
-        drill.setVisibility(View.GONE);//TODO REMOVE FOR DRILL
+        //drill.setVisibility(View.GONE);
         tvFrame = findViewById(R.id.toFrame);
         tvBoom1 = findViewById(R.id.toBoom1);
         tvBoom2 = findViewById(R.id.toBoom2);
@@ -645,7 +645,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 tvStick.setText("MAST LINK");
 
                 tvLink.setVisibility(View.VISIBLE);
-                tvLink.setText("TOOL");
+                tvLink.setText("TOOL ΔX ΔY ΔZ");
                 tvTilt.setVisibility(View.GONE);
                 tvXYZ.setVisibility(View.VISIBLE);
                 tvBoom1.setBackgroundTintList(getColorStateList(R.color.bg_stonex_blue));

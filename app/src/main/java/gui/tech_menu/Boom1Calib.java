@@ -31,15 +31,17 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Sensors_Decoder;
 import services.UpdateValuesService;
 import utils.MyData;
+import utils.MyDeviceManager;
 import utils.Utils;
 
 public class Boom1Calib extends AppCompatActivity {
-    EditText lengthBoom1;
-    CheckBox off, left, right;
-    TextView boom1Angle, boom1OffsetAngle, textBoom1;
-    Button minusOffset, plusOffset, setOffset;
+    EditText lengthBoom1,extTxt;
+    CheckBox off, left, right,isExt;
+    TextView boom1Angle, boom1OffsetAngle, textBoom1,border,extValue;
+    Button minusOffset, plusOffset, setOffset,setExt;
     ImageView save, esc;
     ImageView img_hiddenpin;
+    boolean isPresse;
 
     int indexMachineSelected, count = 0;
     private boolean minusPressed, plusPressed;
@@ -83,16 +85,31 @@ public class Boom1Calib extends AppCompatActivity {
         boom1OffsetAngle = findViewById(R.id.boom1OffsetAngle_tv);
         textBoom1 = findViewById(R.id.b1l);
         img_hiddenpin = findViewById(R.id.img_hiddenpin);
+        border=findViewById(R.id.border);
+        isExt = findViewById(R.id.isExt);
+        extValue = findViewById(R.id.extTxt);
+        setExt = findViewById(R.id.setExt);
         if(DataSaved.isWL==EXCAVATOR||DataSaved.isWL==DRILL){
             img_hiddenpin.setVisibility(View.VISIBLE);
         }else {
             img_hiddenpin.setVisibility(View.INVISIBLE);
         }
+        if(DataSaved.isWL==DRILL){
+            border.setVisibility(View.VISIBLE);
+            isExt.setVisibility(View.VISIBLE);
+            extValue.setVisibility(View.VISIBLE);
+            setExt.setVisibility(View.VISIBLE);
+        }else {
+            border.setVisibility(View.GONE);
+            isExt.setVisibility(View.GONE);
+            extValue.setVisibility(View.GONE);
+            setExt.setVisibility(View.GONE);
+        }
     }
 
     @SuppressLint("SetTextI18n")
     private void init() {
-
+        isPresse = false;
         dialogHiddenPinCalc = new Dialog_HiddenPin_Calc(this);
         indexMachineSelected = MyData.get_Int( "MachineSelected");
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
@@ -117,10 +134,21 @@ public class Boom1Calib extends AppCompatActivity {
             case -1:
                 right.setChecked(true);
         }
+        isExt.setChecked(DataSaved.isExtensionBoom > 0);
 
     }
 
     private void onClick() {
+        setExt.setOnLongClickListener(view -> {
+            MyDeviceManager.CanWrite(true,0, 0x608, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
+            isPresse=true;
+            return false;
+        });
+        isExt.setOnClickListener(view -> {
+            DataSaved.isExtensionBoom += 1;
+            DataSaved.isExtensionBoom = DataSaved.isExtensionBoom % 2;
+            isExt.setChecked(DataSaved.isExtensionBoom > 0);
+        });
         img_hiddenpin.setOnClickListener(view -> {
             if (!dialogHiddenPinCalc.dialog.isShowing()) {
                 dialogHiddenPinCalc.show();
@@ -277,6 +305,7 @@ public class Boom1Calib extends AppCompatActivity {
 
         }
         boom1OffsetAngle.setText(String.format("%.02f", DataSaved.offsetBoom1).replace(",", "."));
+        extValue.setText(Utils.readSensorCalibration(String.valueOf(Sensors_Decoder.ExtensionBoom)));
 
 
     }
@@ -294,6 +323,11 @@ public class Boom1Calib extends AppCompatActivity {
         MyData.push("M" + indexMachineSelected + "_Boom1_MountPos", String.valueOf(mounPos));
         MyData.push("M" + indexMachineSelected + "_OffsetBoom1", String.valueOf(DataSaved.offsetBoom1));
         MyData.push("M" + indexMachineSelected + "_LengthBoom1", Utils.writeMetri(lengthBoom1.getText().toString()));
+        MyData.push("M" + indexMachineSelected + "_isExt", String.valueOf(DataSaved.isExtensionBoom));
+
+        if(isPresse){
+            MyDeviceManager.CanWrite(true,0,0x608,8,new byte[]{0x23,0x10,0x10,0x01,0x73,0x61,0x76,0x65});
+        }
     }
 
     @Override

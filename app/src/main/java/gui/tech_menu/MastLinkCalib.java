@@ -100,7 +100,7 @@ public class MastLinkCalib extends BaseClass {
 
 
             textLength.setText(getResources().getString(R.string.units) + Utils.getMetriSimbol());
-            toolBoomDelta.setText("TOOL-BOOM\nDELTA "+Utils.getMetriSimbol());
+            toolBoomDelta.setText(getResources().getString(R.string.units) + Utils.getMetriSimbol());
 
 
             int mountPos = MyData.get_Int("M" + indexMachineSelected + "_Stick_MountPos");

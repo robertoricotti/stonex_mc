@@ -20,7 +20,7 @@ public class BaseClass extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //Log.d("KeyEve", String.valueOf(event.getKeyCode()));
+        Log.d("KeyEve", String.valueOf(event.getKeyCode()));
 
 
         if (event.getKeyCode() == KeyEvent.KEYCODE_F1) {

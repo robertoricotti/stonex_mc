@@ -225,7 +225,6 @@ public class StickCalib extends AppCompatActivity {
         esc.setOnClickListener((View v) -> {
             save.setEnabled(false);
             esc.setEnabled(false);
-            startService(new Intent(this, UpdateValuesService.class));
             startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });

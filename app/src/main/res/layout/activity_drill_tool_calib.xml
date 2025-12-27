@@ -11,45 +11,54 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.09" />
+        app:layout_constraintGuide_percent="0.1" />
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/h2"
+        android:id="@+id/h30"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.25" />
-
+        app:layout_constraintGuide_percent="0.355" />
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/h5"
+        android:id="@+id/h60"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.89" />
+        app:layout_constraintGuide_percent="0.635" />
+
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/h6"
+        android:id="@+id/h90"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7" />
+        app:layout_constraintGuide_percent="0.9" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/h60"
+        app:layout_constraintBottom_toTopOf="@id/h60"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/h30"
+        app:layout_constraintBottom_toTopOf="@id/h30"
+        />
+
+
+
+
+
+
+
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/h4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/h3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4" />
-
-
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline123"
+        android:id="@+id/v60"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -69,66 +78,40 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
     <ImageView
-        android:visibility="gone"
-        android:id="@+id/wlwl"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/wlwl_2"
-        app:layout_constraintRight_toLeftOf="@id/guideline123"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/h1"
-        app:layout_constraintBottom_toTopOf="@id/h5"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@id/h30"
+        app:layout_constraintRight_toLeftOf="@id/v60"
+        android:src="@drawable/tool_delta_x"
 
+
+        />
     <ImageView
-        android:id="@+id/img101"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerInside"
-        android:padding="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/h3"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/img102"
-        app:layout_constraintTop_toTopOf="@+id/h1"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/dx" />
-
+        app:layout_constraintTop_toBottomOf="@id/h30"
+        app:layout_constraintBottom_toTopOf="@id/h60"
+        app:layout_constraintRight_toLeftOf="@id/v60"
+        android:paddingVertical="5dp"
+        android:src="@drawable/tool_delta_y"
+        />
     <ImageView
-        android:id="@+id/img102"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerInside"
-        android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/h3"
-        app:layout_constraintRight_toLeftOf="@id/txtDeltaX"
-        app:layout_constraintTop_toTopOf="@+id/h1"
-        app:layout_constraintLeft_toRightOf="@id/img101"
-        app:srcCompat="@drawable/dy" />
-
-    <ImageView
-        android:id="@+id/img104"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerInside"
-        android:padding="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/h5"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toRightOf="@id/img101"
-        app:layout_constraintRight_toLeftOf="@id/txtDeltaX"
-        app:layout_constraintTop_toTopOf="@+id/h3"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/drill_img_1" />
-
-    <ImageView
-        android:id="@+id/img103"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerInside"
-        android:padding="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/h5"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/h3"
-        app:layout_constraintRight_toLeftOf="@id/img104"
-        app:srcCompat="@drawable/delta_z_blue"/>
+        app:layout_constraintTop_toBottomOf="@id/h60"
+        app:layout_constraintBottom_toTopOf="@id/h90"
+        app:layout_constraintRight_toLeftOf="@id/v60"
+        android:src="@drawable/tool_delta_y"
+        android:paddingVertical="5dp"
+        />
+
+
+
+
 
 
     <LinearLayout
@@ -181,7 +164,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/guideline124"
         app:layout_constraintLeft_toLeftOf="@id/guideline124"
-        app:layout_constraintTop_toTopOf="@+id/h5" />
+        app:layout_constraintTop_toTopOf="@+id/h90" />
 
     <ImageView
         android:id="@+id/save"
@@ -193,7 +176,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline124"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/h5" />
+        app:layout_constraintTop_toTopOf="@+id/h90" />
 
     <ImageView
         android:id="@+id/exit"
@@ -207,7 +190,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline124"
-        app:layout_constraintTop_toTopOf="@+id/h5" />
+        app:layout_constraintTop_toTopOf="@+id/h90" />
 
     <TextView
         android:id="@+id/txtDeltaX"
@@ -218,9 +201,9 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h2"
+        app:layout_constraintBottom_toTopOf="@+id/h30"
         app:layout_constraintEnd_toStartOf="@+id/guideline125"
-        app:layout_constraintStart_toStartOf="@+id/guideline123"
+        app:layout_constraintStart_toStartOf="@+id/v60"
         app:layout_constraintTop_toTopOf="@+id/h1" />
 
     <TextView
@@ -232,10 +215,10 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h3"
+        app:layout_constraintBottom_toTopOf="@+id/h60"
         app:layout_constraintEnd_toStartOf="@+id/guideline125"
-        app:layout_constraintStart_toStartOf="@+id/guideline123"
-        app:layout_constraintTop_toTopOf="@+id/h2" />
+        app:layout_constraintStart_toStartOf="@+id/v60"
+        app:layout_constraintTop_toTopOf="@+id/h30" />
 
     <TextView
         android:id="@+id/txtDeltaZt"
@@ -246,10 +229,10 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h4"
+        app:layout_constraintBottom_toTopOf="@+id/h90"
         app:layout_constraintEnd_toStartOf="@+id/guideline125"
-        app:layout_constraintStart_toStartOf="@+id/guideline123"
-        app:layout_constraintTop_toTopOf="@+id/h3" />
+        app:layout_constraintStart_toStartOf="@+id/v60"
+        app:layout_constraintTop_toTopOf="@+id/h60" />
 
 
 
@@ -277,7 +260,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h2"
+        app:layout_constraintBottom_toTopOf="@+id/h30"
         app:layout_constraintRight_toLeftOf="@id/but_piu_x"
         app:layout_constraintLeft_toRightOf="@id/but_meno_x"
         app:layout_constraintTop_toTopOf="@+id/h1" />
@@ -320,10 +303,10 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h3"
+        app:layout_constraintBottom_toTopOf="@+id/h60"
         app:layout_constraintRight_toLeftOf="@id/but_piu_y"
         app:layout_constraintLeft_toRightOf="@id/but_meno_y"
-        app:layout_constraintTop_toTopOf="@+id/h2" />
+        app:layout_constraintTop_toTopOf="@+id/h30" />
     <ImageView
         android:id="@+id/but_piu_y"
         android:layout_width="40dp"
@@ -360,10 +343,10 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h4"
+        app:layout_constraintBottom_toTopOf="@+id/h90"
         app:layout_constraintRight_toLeftOf="@+id/but_piu_z"
         app:layout_constraintLeft_toRightOf="@id/but_meno_z"
-        app:layout_constraintTop_toTopOf="@+id/h3" />
+        app:layout_constraintTop_toTopOf="@+id/h60" />
     <ImageView
         android:id="@+id/but_piu_z"
         android:layout_width="40dp"

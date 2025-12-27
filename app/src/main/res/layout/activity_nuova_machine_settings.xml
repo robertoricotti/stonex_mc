@@ -461,6 +461,18 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <TextView
+                        android:id="@+id/toxyz"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="BODY ΔX ΔY ΔZ"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <TextView
                         android:id="@+id/toExtraSensor"
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
@@ -563,18 +575,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/toxyz"
-                        android:layout_width="wrap_content"
-                        android:layout_height="50dp"
-                        android:layout_marginVertical="5dp"
-                        android:background="@color/bg_stonex_blue"
-                        android:ems="15"
-                        android:gravity="center"
-                        android:text="ΔX ΔY ΔZ"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/drillEnc"
                         android:layout_width="wrap_content"
