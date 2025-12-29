@@ -21,10 +21,8 @@ public class DrillLib {
             correctBoom1 = Excavator_RealValues.realBoom1(DataSaved.offsetBoom1);
             correctBoom2 = Excavator_RealValues.realBoom2(DataSaved.offsetBoom2);
             correctMastLink = Excavator_RealValues.realMastLink(DataSaved.offsetStick);
-            correctDBStickAngle = Excavator_RealValues.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[2];
-            correctBucket = Excavator_RealValues.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[0];
             correctToolRoll=Excavator_RealValues.real_Tool_Roll(DataSaved.offset_Tool_Roll);
-            correctToolPitch=correctBucket;
+            correctToolPitch=Excavator_RealValues.real_Tool_Pitch(DataSaved.offset_Tool_Pitch);;
             if (DataSaved.Extra_Heading != 0) {
                 if (NmeaListener.roof_Orientation != 999.999) {
                     swing_boom_angle = NmeaListener.roof_Orientation - (NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
@@ -75,9 +73,6 @@ public class DrillLib {
             }
             coordST = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.L_Stick + ExtensionBoom, hdt_BOOM);
 
-            coordTool=Exca_Quaternion.endPoint(coordST,correctToolPitch,correctToolRoll,DataSaved.offset_Tool_Dist,hdt_BOOM+DataSaved.offset_Tool_Orient);
-            toolBitCoord=Exca_Quaternion.endPoint(coordTool,correctToolPitch,correctToolRoll,DataSaved.drill_Bit_Len,hdt_BOOM);
-            toolEndCoord=Exca_Quaternion.endPoint(toolBitCoord,correctToolPitch,correctToolRoll,DataSaved.drill_Rod_Len,hdt_BOOM);
 
             Log.d("coordTool", Arrays.toString(coordTool));
             Log.d("toolBitCoord", Arrays.toString(toolBitCoord));

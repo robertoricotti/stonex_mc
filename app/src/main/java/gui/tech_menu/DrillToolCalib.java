@@ -1,9 +1,14 @@
 package gui.tech_menu;
 
+import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.MotionEvent;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +25,8 @@ import utils.MyData;
 import utils.Utils;
 
 public class DrillToolCalib extends BaseClass {
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean isRepeating = false;
     ImageView but_meno_x, but_piu_x, but_meno_y, but_piu_y, but_meno_z, but_piu_z,
             save, updateTool, exit,
             gpsdebugg;
@@ -64,6 +71,7 @@ public class DrillToolCalib extends BaseClass {
         txtDeltaX=findViewById(R.id.txtDeltaX);
         txtDeltaYt=findViewById(R.id.txtDeltaYt);
         txtDeltaZt=findViewById(R.id.txtDeltaZt);
+        updateTxt();
         txtDeltaX.setText("Tool ΔX " + Utils.getMetriSimbol());
         txtDeltaYt.setText("Tool ΔY " + Utils.getMetriSimbol());
         txtDeltaZt.setText("Tool ΔZ " + Utils.getMetriSimbol());
@@ -75,7 +83,13 @@ public class DrillToolCalib extends BaseClass {
 
     private void onClick() {
         save.setOnClickListener(view -> {
+            exit.setEnabled(false);
+            save.setEnabled(false);
             disableAll();
+            MyData.push("M" + indexMachineSelected + "Tool_Delta_X", Utils.writeMetri(deltaX.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "Tool_Delta_Y", Utils.writeMetri(deltaY.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "Tool_Delta_Z", Utils.writeMetri(deltaZ.getText().toString().replace(",", ".")));
+
             startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
         });
@@ -86,7 +100,34 @@ public class DrillToolCalib extends BaseClass {
 
         });
         updateTool.setOnClickListener(view -> {
+            MyData.push("M" + indexMachineSelected + "Tool_Delta_X", Utils.writeMetri(deltaX.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "Tool_Delta_Y", Utils.writeMetri(deltaY.getText().toString().replace(",", ".")));
+            MyData.push("M" + indexMachineSelected + "Tool_Delta_Z", Utils.writeMetri(deltaZ.getText().toString().replace(",", ".")));
+        });
 
+        setupAutoRepeat(but_piu_x, () -> {
+            DataSaved.Tool_Delta_X += myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(but_meno_x, () -> {
+            DataSaved.Tool_Delta_X -= myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(but_piu_y, () -> {
+            DataSaved.Tool_Delta_Y += myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(but_meno_y, () -> {
+            DataSaved.Tool_Delta_Y -= myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(but_piu_z, () -> {
+            DataSaved.Tool_Delta_Z += myStep;
+            updateTxt();
+        });
+        setupAutoRepeat(but_meno_z, () -> {
+            DataSaved.Tool_Delta_Z -= myStep;
+            updateTxt();
         });
 
     }
@@ -111,7 +152,7 @@ public class DrillToolCalib extends BaseClass {
                 break;
         }
         double hdt = 0;
-        hdt = NmeaListener.mch_Orientation + DataSaved.deltaGPS2;
+        hdt = hdt_BOOM;
         hdt = hdt % 360;
 
         titolo.setText("     E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[0])) + "    N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[1])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[2])) + "   HDT: " + String.format("%.2f", hdt).replace(",", ".") + " °");
@@ -129,5 +170,57 @@ public class DrillToolCalib extends BaseClass {
         exit.setEnabled(false);
         updateTool.setEnabled(false);
 
+    }
+
+    private void updateOnClose() {
+        DataSaved.Tool_Delta_X = Double.parseDouble(Utils.writeMetri((deltaX.getText().toString())));
+        DataSaved.Tool_Delta_Y = Double.parseDouble(Utils.writeMetri((deltaY.getText().toString())));
+        DataSaved.Tool_Delta_Z = Double.parseDouble(Utils.writeMetri((deltaZ.getText().toString())));
+
+    }
+
+    private void updateTxt() {
+        deltaX.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_X)));
+        deltaY.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Y)));
+        deltaZ.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Z)));
+
+    }
+
+    private void setupAutoRepeat(ImageView button, Runnable action) {
+        button.setOnClickListener(v -> action.run());
+
+        button.setOnLongClickListener(v -> {
+            isRepeating = true;
+
+
+            // Primo ritardo di 500ms prima di iniziare la ripetizione
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isRepeating) {
+                        action.run();
+                        handler.postDelayed(this, 50); // ripeti ogni 50ms
+                    }
+                }
+            }, 500);
+
+            return true; // segnala che il long click è gestito
+        });
+
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    if (isRepeating) {
+                        updateOnClose();
+                        updateTxt();
+
+                    }
+                    isRepeating = false; // stop
+
+                    break;
+            }
+            return false;
+        });
     }
 }

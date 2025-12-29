@@ -108,6 +108,7 @@ import gui.tech_menu.Nuova_Machine_Settings;
 import gui.tech_menu.StickCalib;
 import gui.tech_menu.TiltCalib;
 import gui.tech_menu.Tilt_Blade;
+import gui.tech_menu.ToolSensor;
 import gui.tech_menu.XYZ_Calib;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
@@ -711,6 +712,8 @@ git push
             ((DrillEncoder) activity).updateUI();
         }else if (activity instanceof DrillToolCalib) {
             ((DrillToolCalib) activity).updateUI();
+        }else if (activity instanceof ToolSensor) {
+            ((ToolSensor) activity).updateUI();
         }
 
     }

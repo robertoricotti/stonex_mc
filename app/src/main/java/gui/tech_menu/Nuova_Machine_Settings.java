@@ -49,7 +49,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
-    TextView toExtraSensor, tvSwing, tvFrame, tvBoom1, tvBoom2, tvStick, tvLink, tvTilt, tvXYZ,drillEnc, toCanopen, toDamping, can1bd, can2bd;
+    TextView toExtraSensor, tvSwing, tvFrame, tvBoom1, tvBoom2, tvStick, tvLink,tvMast, tvTilt, tvXYZ,drillEnc, toCanopen, toDamping, can1bd, can2bd;
     EditText mchName, techInfo;
     int mode, machineSel;
     public static boolean menu1_visible, menu2_visible, menu3_visible;
@@ -110,6 +110,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         tvBoom2 = findViewById(R.id.toBoom2);
         tvStick = findViewById(R.id.toStick);
         tvLink = findViewById(R.id.toDogBone);
+        tvMast=findViewById(R.id.toTool);
         tvTilt = findViewById(R.id.toTilt);
         tvXYZ = findViewById(R.id.toxyz);
         mchName = findViewById(R.id.mch_name);
@@ -312,6 +313,13 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             }else {
                 en_dis(false);
                 startActivity(new Intent(this, StickCalib.class));
+                finish();
+            }
+        });
+        tvMast.setOnClickListener(view -> {
+            if(DataSaved.isWL==DRILL){
+                en_dis(false);
+                startActivity(new Intent(this, ToolSensor.class));
                 finish();
             }
         });
@@ -527,6 +535,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         switch (mode) {
             case 0:
                 //Excavatore
+                tvMast.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.VISIBLE);
@@ -551,6 +560,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 1:
                 //Wheel
+                tvMast.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 if (DataSaved.Extra_Heading > 0) {
                     toExtraSensor.setVisibility(View.VISIBLE);
@@ -582,6 +592,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             case 2:
             case 3:
                 //Dozer
+                tvMast.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.GONE);
@@ -605,6 +616,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 4:
                 //Grader
+                tvMast.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.GONE);
@@ -628,6 +640,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
                 break;
             case 10:
                 //DRILL
+                tvMast.setVisibility(View.VISIBLE);
                 drillEnc.setVisibility(View.VISIBLE);
                 toExtraSensor.setVisibility(View.GONE);
                 tvFrame.setVisibility(View.VISIBLE);

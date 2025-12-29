@@ -3,7 +3,6 @@ package gui.tech_menu;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -77,8 +76,8 @@ public class FrameCalib extends AppCompatActivity {
         off = findViewById(R.id.cbxOff);
         fwd = findViewById(R.id.cbxLeft);
         bwd = findViewById(R.id.cbxRight);
-        left = findViewById(R.id.cbxsinistra);
-        right = findViewById(R.id.cbxdestra);
+        left = findViewById(R.id.cbxFwd);
+        right = findViewById(R.id.cbxBwd);
         minusOffsetPitch = findViewById(R.id.offsetMinusPitch);
         plusOffsetPitch = findViewById(R.id.offsetPlusPitch);
         setOffsetPitch = findViewById(R.id.offsetSetZeroPitch);

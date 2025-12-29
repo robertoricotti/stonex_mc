@@ -21,7 +21,7 @@ import utils.MyMCUtils;
 public class Sensors_Decoder {
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
     public static double Deg_roll, Deg_pitch, Deg_boom1, Deg_boom2, Deg_stick, Deg_bucket, Deg_tilt, Deg_Benna_W_Tilt, Deg_bucket_DEMO,
-            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom, Deg_Tool_Roll;
+            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom, Deg_Tool_Roll,Deg_Tool_Pitch;
     public static int V_Laser = 255, WheelSteer;
     static double norm, ax_norm, ay_norm, az_norm;
     static short acc_x;

@@ -105,8 +105,8 @@
         app:layout_constraintTop_toBottomOf="@id/h60"
         app:layout_constraintBottom_toTopOf="@id/h90"
         app:layout_constraintRight_toLeftOf="@id/v60"
-        android:src="@drawable/tool_delta_y"
-        android:paddingVertical="5dp"
+        android:src="@drawable/delta_z"
+        android:paddingVertical="1dp"
         />
 
 

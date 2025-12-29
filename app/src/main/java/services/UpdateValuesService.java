@@ -136,6 +136,7 @@ public class UpdateValuesService extends Service {
                     String L2length = MyData.get_String("M" + i + "_LengthL2");
                     String L3length = MyData.get_String("M" + i + "_LengthL3");
                     String bucketMountPos = MyData.get_String("M" + i + "_Bucket_MountPos");
+                    String toolMountPos = MyData.get_String("M" + i + "toolMountPos");
                     String offsetDogBone = MyData.get_String("M" + i + "_OffsetDB");
                     String pitchLength = MyData.get_String("M" + i + "_LengthPitch");
                     String rollLength = MyData.get_String("M" + i + "_LengthRoll");
@@ -143,8 +144,11 @@ public class UpdateValuesService extends Service {
                     String offsetPitch = MyData.get_String("M" + i + "_OffsetFrameY");
                     String offsetRoll = MyData.get_String("M" + i + "_OffsetFrameX");
                     String offset_Tool_Roll = MyData.get_String("M" + i + "offset_Tool_Roll");
-                    String offset_Tool_Orient = MyData.get_String("M" + i + "offset_Tool_Orient");
-                    String offset_Tool_Dist = MyData.get_String("M" + i + "offset_Tool_Dist");
+                    String offset_Tool_Pitch = MyData.get_String("M" + i + "offset_Tool_Pitch");
+                   //TODO DELTE
+                    String Tool_Delta_X=MyData.get_String("M" + i + "Tool_Delta_X");
+                    String Tool_Delta_Y=MyData.get_String("M" + i + "Tool_Delta_Y");
+                    String Tool_Delta_Z=MyData.get_String("M" + i + "Tool_Delta_Z");
                     String offset_Boom_Tool=MyData.get_String("M" + i + "offset_Boom_Tool");
                     String drill_Bit_Len = MyData.get_String("M" + i + "drill_Bit_Len");
                     String drill_Rod_Len = MyData.get_String("M" + i + "drill_Rod_Len");
@@ -292,6 +296,9 @@ public class UpdateValuesService extends Service {
                     if (bucketMountPos == null) {
                         MyData.push("M" + i + "_Bucket_MountPos", "0");
                     }
+                    if (toolMountPos == null) {
+                        MyData.push("M" + i + "toolMountPos", "0");
+                    }
                     if (offsetDogBone == null) {
                         MyData.push("M" + i + "_OffsetDB", "0.00");
                     }
@@ -313,12 +320,19 @@ public class UpdateValuesService extends Service {
                     if (offset_Tool_Roll == null) {
                         MyData.push("M" + i + "offset_Tool_Roll", "0.00");
                     }
-                    if (offset_Tool_Orient == null) {
-                        MyData.push("M" + i + "offset_Tool_Orient", "0.00");
+                    if (offset_Tool_Pitch == null) {
+                        MyData.push("M" + i + "offset_Tool_Pitch", "0.00");
                     }
-                    if (offset_Tool_Dist == null) {
-                        MyData.push("M" + i + "offset_Tool_Dist", "0.00");
+                    if (Tool_Delta_X == null) {
+                        MyData.push("M" + i + "Tool_Delta_X", "0.00");
                     }
+                    if (Tool_Delta_Y == null) {
+                        MyData.push("M" + i + "Tool_Delta_Y", "0.00");
+                    }
+                    if (Tool_Delta_Z == null) {
+                        MyData.push("M" + i + "Tool_Delta_Z", "0.00");
+                    }
+
                     if (offset_Boom_Tool == null) {
                         MyData.push("M" + i + "offset_Boom_Tool", "0.00");
                     }
@@ -1180,6 +1194,11 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di lrBucket: " + e.getMessage());
                 }
+                try {
+                    DataSaved.lrTool = MyData.get_Int("M" + indexMach + "toolMountPos");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di toolMountPos: " + e.getMessage());
+                }
 
                 try {
                     DataSaved.lrFrame = MyData.get_Int("M" + indexMach + "_Frame_MountPos");
@@ -1350,15 +1369,27 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di offset_Tool_Roll: " + e.getMessage());
                 }
                 try {
-                    DataSaved.offset_Tool_Orient = MyData.get_Double("M" + indexMach + "offset_Tool_Orient");
+                    DataSaved.offset_Tool_Pitch = MyData.get_Double("M" + indexMach + "offset_Tool_Pitch");
                 } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di offset_Tool_Orient: " + e.getMessage());
+                    Log.e("Error", "Errore nell'inizializzazione di offset_Tool_Pitch: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.Tool_Delta_X = MyData.get_Double("M" + indexMach + "Tool_Delta_X");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Tool_Delta_X: " + e.getMessage());
                 }
                 try {
-                    DataSaved.offset_Tool_Dist = MyData.get_Double("M" + indexMach + "offset_Tool_Dist");
+                    DataSaved.Tool_Delta_Y = MyData.get_Double("M" + indexMach + "Tool_Delta_Y");
                 } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di offset_Tool_Dist: " + e.getMessage());
+                    Log.e("Error", "Errore nell'inizializzazione di Tool_Delta_Y: " + e.getMessage());
                 }
+                try {
+                    DataSaved.Tool_Delta_Z = MyData.get_Double("M" + indexMach + "Tool_Delta_Z");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Tool_Delta_Z: " + e.getMessage());
+                }
+
                 try {
                     DataSaved.offset_Boom_Tool = MyData.get_Double("M" + indexMach + "offset_Boom_Tool");
                 } catch (Exception e) {

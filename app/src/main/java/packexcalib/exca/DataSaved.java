@@ -103,15 +103,19 @@ public class DataSaved {
     public static int lrFrame;
 
     public static int lrTilt;
+    public static int lrTool;
+
 
     public static int lrRotary;
 
     public static double Rotary_Diam;
     public static double drill_Bit_Len;
     public static double drill_Rod_Len;
-    public static double offset_Tool_Orient;
-    public static double offset_Tool_Dist;
+    public static double Tool_Delta_X;
+    public static double Tool_Delta_Y;
+    public static double Tool_Delta_Z;
     public static double offset_Tool_Roll;
+    public static double offset_Tool_Pitch;
     public static double offset_Boom_Tool;
     public static double offsetRoll;
 
