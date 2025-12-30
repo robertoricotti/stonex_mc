@@ -31,7 +31,7 @@ import gui.dialogs_and_toast.LaserDialog;
 import gui.draw_class.FlatAngleBar;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
-import packexcalib.exca.Excavator_RealValues;
+import packexcalib.exca.Offset_Applier;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
 import services.CanService;
@@ -273,7 +273,7 @@ public class Digging_CutAndFill2D extends BaseClass {
             if (DataSaved.laserOn == 1) {
                 DataSaved.monumentRelease = 0;
 
-                if (Excavator_RealValues.realLaser() == 0) {
+                if (Offset_Applier.realLaser() == 0) {
                     flagLaser_C2D = true;
                     DataSaved.offsetLaserZH = ExcavatorLib.quotaLASER_2D;
                     MyData.push("Laser_Height_Zero", String.valueOf(DataSaved.offsetLaserZH));
@@ -540,13 +540,13 @@ public class Digging_CutAndFill2D extends BaseClass {
 
             if (DataSaved.laserOn == 1) {
                 try {
-                    if (Excavator_RealValues.realLaser() <= -10 && CanService.flagLaser) {
+                    if (Offset_Applier.realLaser() <= -10 && CanService.flagLaser) {
                         laser.setImageResource(R.drawable.down_btn);
                         laser.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color._____cancel_text));
-                    } else if (Excavator_RealValues.realLaser() == 0 && CanService.flagLaser) {
+                    } else if (Offset_Applier.realLaser() == 0 && CanService.flagLaser) {
                         laser.setImageResource(R.drawable.equals_btn);
                         laser.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
-                    } else if (Excavator_RealValues.realLaser() >= 10 && CanService.flagLaser) {
+                    } else if (Offset_Applier.realLaser() >= 10 && CanService.flagLaser) {
                         laser.setImageResource(R.drawable.up_btn);
                         laser.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color._____cancel_text));
                     } else if (!CanService.flagLaser) {

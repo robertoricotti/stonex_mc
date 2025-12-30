@@ -26,6 +26,7 @@ public class TiltEncript {
                 roll = 0d;
                 break;
             case 1:
+                //fwd
                 pitch = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                 roll = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                 break;
@@ -34,11 +35,11 @@ public class TiltEncript {
                 roll = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                 pitch = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                 break;
-            case 3:
+            case 3://bwd
                 pitch = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                 roll = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                 break;
-            case 4:
+            case 4://left
                 roll = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                 pitch = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                 break;
@@ -185,6 +186,46 @@ public class TiltEncript {
                 break;
         }
         return new double[]{pitch, -roll};
+
+    }
+
+    public static double[] encriptTSM_Tool(byte[] data, int mount) {
+        double norm, ax_norm, ay_norm, az_norm;
+        short acc_x;
+        short acc_y;
+        short acc_z;
+        double pitch = 0, roll = 0;
+        acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
+        acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+        acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
+        norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
+        ax_norm = (double) acc_y / norm;
+        ay_norm = (double) acc_x / norm;
+        az_norm = (double) acc_z / norm;
+        switch (mount) {
+            case 0:
+                pitch = 0d;
+                roll = 0d;
+                break;
+            case 4:
+                pitch = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                roll = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                break;
+            case 1:
+                //right
+                roll = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                pitch = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                break;
+            case 3:
+                pitch = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                roll = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                break;
+            case 2:
+                roll = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                pitch = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                break;
+        }
+        return new double[]{pitch, roll};
 
     }
 
@@ -510,6 +551,49 @@ public class TiltEncript {
 
         //Log.w("FMI_Out", "Roll:" + String.format("%.2f", out[0]) + "   Pitch:" + String.format("%.2f", out[1]) + "   Yaw:" + String.format("%.2f", out[2]));
         return out;
+    }
+
+    public static double[] encriptFMI_Tool(byte[] data, int mount) {
+        double norm, ax_norm, ay_norm, az_norm;
+        short acc_x;
+        short acc_y;
+        short acc_z;
+        double pitch = 0, roll = 0;
+        acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
+        acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
+        acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
+        norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
+        ax_norm = (double) acc_y / norm;
+        ay_norm = (double) acc_x / norm;
+        az_norm = (double) acc_z / norm;
+        switch (mount) {
+            case 0:
+                pitch = 0d;
+                roll = 0d;
+                break;
+            case 3:
+                //fwd
+                pitch = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                roll = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                break;
+            case 2:
+                //right
+                roll = (Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                pitch = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                break;
+            case 4:
+                //bkwd
+                pitch = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                roll = (Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                break;
+            case 1:
+                //left
+                roll = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                pitch = -(Math.atan2(ay_norm, Math.sqrt(ax_norm * ax_norm + az_norm * az_norm)) * 180.0 / Math.PI);
+                break;
+        }
+        return new double[]{pitch, -roll};
+
     }
 
 

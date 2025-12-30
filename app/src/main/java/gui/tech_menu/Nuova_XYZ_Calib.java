@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.stx_dig.R;
 
 import gui.dialogs_and_toast.CustomNumberDialog;
+import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 
 public class Nuova_XYZ_Calib extends AppCompatActivity {
@@ -19,6 +20,7 @@ public class Nuova_XYZ_Calib extends AppCompatActivity {
     int indexMeasure;
     CustomNumberDialog numberDialog;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_Drill_GNSS dialogDrillGnss;
     ImageView wlwl, imgupsx, imgupdx, imgdwdx, aaaa;
 
     @Override

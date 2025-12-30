@@ -2,6 +2,8 @@ package gui.dialogs_user_settings;
 
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
+import static utils.MyTypes.DRILL;
+import static utils.MyTypes.SOLARDRILL;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -21,6 +23,7 @@ import com.example.stx_dig.R;
 
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.DialogPassword;
+import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
 import gui.draw_class.MyColorClass;
@@ -46,6 +49,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
     DialogLanguages dialogLanguages;
     DialogUnitOfMeasure dialogUnitOfMeasure;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_Drill_GNSS dialogDrillGnss;
     Dialog_InfoApp dialogInfoApp;
     DialogColors dialogColors;
     TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue, tvVert, tvAng, stepValue, tvoffstep;
@@ -91,6 +95,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
         dialogUnitOfMeasure = new DialogUnitOfMeasure(this);
         dialogColors = new DialogColors(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
+        dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogInfoApp = new Dialog_InfoApp(this);
 
         but_piu_auto_zR=findViewById(R.id.but_piu_auto_zR);
@@ -378,8 +383,14 @@ public class Nuova_User_Settings extends AppCompatActivity {
             }
         });
         status.setOnClickListener(view -> {
-            if (!dialogGnssCoordinates.alertDialog.isShowing()) {
-                dialogGnssCoordinates.show();
+            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                if (!dialogDrillGnss.alertDialog.isShowing()) {
+                    dialogDrillGnss.show();
+                }
+            }else {
+                if (!dialogGnssCoordinates.alertDialog.isShowing()) {
+                    dialogGnssCoordinates.show();
+                }
             }
         });
         back.setOnClickListener(view -> {

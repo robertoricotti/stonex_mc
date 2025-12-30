@@ -15,7 +15,7 @@ import static packexcalib.exca.Sensors_Decoder.Deg_tilt;
 import static packexcalib.exca.Sensors_Decoder.V_Laser;
 import static utils.MyTypes.EXCAVATOR;
 
-public class Excavator_RealValues {
+public class Offset_Applier {
 
     public static double correctStick, mcorrectStrick;
     public static boolean dbAlert = false;

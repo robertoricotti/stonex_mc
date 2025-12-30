@@ -11,18 +11,19 @@ import java.util.Arrays;
 import packexcalib.gnss.NmeaListener;
 
 public class DrillLib {
+    public static double[] coordBoomLink;
 
     public static void Drill(){
 
         try{
             startXYZ = new double[]{NmeaListener.Est1, NmeaListener.Nord1, NmeaListener.Quota1};
-            correctPitch = Excavator_RealValues.realPitch(DataSaved.offsetPitch);//dato da utilizzare nel software già offsettato
-            correctRoll = Excavator_RealValues.realRoll(DataSaved.offsetRoll);
-            correctBoom1 = Excavator_RealValues.realBoom1(DataSaved.offsetBoom1);
-            correctBoom2 = Excavator_RealValues.realBoom2(DataSaved.offsetBoom2);
-            correctMastLink = Excavator_RealValues.realMastLink(DataSaved.offsetStick);
-            correctToolRoll=Excavator_RealValues.real_Tool_Roll(DataSaved.offset_Tool_Roll);
-            correctToolPitch=Excavator_RealValues.real_Tool_Pitch(DataSaved.offset_Tool_Pitch);;
+            correctPitch = Offset_Applier.realPitch(DataSaved.offsetPitch);//dato da utilizzare nel software già offsettato
+            correctRoll = Offset_Applier.realRoll(DataSaved.offsetRoll);
+            correctBoom1 = Offset_Applier.realBoom1(DataSaved.offsetBoom1);
+            correctBoom2 = Offset_Applier.realBoom2(DataSaved.offsetBoom2);
+            correctMastLink = Offset_Applier.realMastLink(DataSaved.offsetStick);
+            correctToolRoll= Offset_Applier.real_Tool_Roll(DataSaved.offset_Tool_Roll);
+            correctToolPitch= Offset_Applier.real_Tool_Pitch(DataSaved.offset_Tool_Pitch);;
             if (DataSaved.Extra_Heading != 0) {
                 if (NmeaListener.roof_Orientation != 999.999) {
                     swing_boom_angle = NmeaListener.roof_Orientation - (NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
@@ -72,7 +73,7 @@ public class DrillLib {
                 coordB2 = coordB1;
             }
             coordST = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.L_Stick + ExtensionBoom, hdt_BOOM);
-
+            //TODO il calcolo del MAST
 
             Log.d("coordTool", Arrays.toString(coordTool));
             Log.d("toolBitCoord", Arrays.toString(toolBitCoord));

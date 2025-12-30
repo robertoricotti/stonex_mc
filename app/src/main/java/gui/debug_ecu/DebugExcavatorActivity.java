@@ -39,7 +39,7 @@ import gui.digging_excavator.DiggingProfile;
 
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
-import packexcalib.exca.Excavator_RealValues;
+import packexcalib.exca.Offset_Applier;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
 import services.CanService;
@@ -356,15 +356,15 @@ public class DebugExcavatorActivity extends BaseClass {
                         statStickLaser.setTextColor(getColor(R.color.white));
                     } else {
 
-                        if (Excavator_RealValues.realLaser() < 0) {
-                            statStickLaser.setText("▼ " + String.valueOf(Excavator_RealValues.realLaser()));
+                        if (Offset_Applier.realLaser() < 0) {
+                            statStickLaser.setText("▼ " + String.valueOf(Offset_Applier.realLaser()));
                             statStickLaser.setTextColor(getColor(R.color.red));
-                        } else if (Excavator_RealValues.realLaser() > 0) {
+                        } else if (Offset_Applier.realLaser() > 0) {
                             statStickLaser.setTextColor(getColor(R.color.cyan));
-                            statStickLaser.setText("▲ " + String.valueOf(Excavator_RealValues.realLaser()));
+                            statStickLaser.setText("▲ " + String.valueOf(Offset_Applier.realLaser()));
                         } else {
                             statStickLaser.setTextColor(getColor(R.color.green));
-                            statStickLaser.setText("⧗ " + String.valueOf(Excavator_RealValues.realLaser()));
+                            statStickLaser.setText("⧗ " + String.valueOf(Offset_Applier.realLaser()));
 
                         }
                     }

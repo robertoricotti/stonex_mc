@@ -37,6 +37,7 @@ import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_CanBaud;
+import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_Wheel_Steer;
 import packexcalib.exca.DataSaved;
@@ -45,6 +46,7 @@ import utils.MyDeviceManager;
 
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_Drill_GNSS dialogDrillGnss;
     CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
@@ -81,6 +83,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         dialogCanBaud = new Dialog_CanBaud(this);
         dialogPassword = new DialogPassword(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
+        dialogDrillGnss =new Dialog_Drill_GNSS(this);
         customQwertyDialog = new CustomQwertyDialog(this, null);
         dialogSwingBoom = new Dialog_Swing_Boom(this);
         dialogWheelSteer = new Dialog_Wheel_Steer(this);
@@ -150,8 +153,14 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             }
         });
         status.setOnClickListener(view -> {
-            if (!dialogGnssCoordinates.alertDialog.isShowing()) {
-                dialogGnssCoordinates.show();
+            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                if (!dialogDrillGnss.alertDialog.isShowing()) {
+                    dialogDrillGnss.show();
+                }
+            }else {
+                if (!dialogGnssCoordinates.alertDialog.isShowing()) {
+                    dialogGnssCoordinates.show();
+                }
             }
         });
 

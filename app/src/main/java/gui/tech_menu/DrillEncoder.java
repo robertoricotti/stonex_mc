@@ -117,6 +117,7 @@ public class DrillEncoder extends BaseClass {
                 } else {
                     exit.setEnabled(false);
                     save.setEnabled(false);
+                    save();
                     startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
                     finish();
                 }
@@ -128,6 +129,15 @@ public class DrillEncoder extends BaseClass {
             save.setEnabled(false);
             startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
             finish();
+        });
+        diamVal.setOnClickListener(view -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(diamVal);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(diamVal);
+            }
         });
     }
     private void onCheckedChange() {

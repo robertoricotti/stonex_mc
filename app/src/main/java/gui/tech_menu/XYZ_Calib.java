@@ -2,6 +2,7 @@ package gui.tech_menu;
 
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.SOLARDRILL;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.stx_dig.R;
 
 import gui.dialogs_and_toast.CustomNumberDialog;
+import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
@@ -41,6 +43,7 @@ public class XYZ_Calib extends AppCompatActivity {
     int indexMeasure;
     CustomNumberDialog numberDialog;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_Drill_GNSS dialogDrillGnss;
     ImageView wlwl, imgupsx, imgupdx, imgdwdx, aaaa;
     TextView tvX, tvY, tvZ, titolo, tv_btw;
     ImageView xp, xm, yp, ym, zp, zm, hp, hm;
@@ -99,6 +102,7 @@ public class XYZ_Calib extends AppCompatActivity {
         indexMachineSelected = MyData.get_Int("MachineSelected");
         numberDialog = new CustomNumberDialog(this, -1);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
+        dialogDrillGnss =new Dialog_Drill_GNSS(this);
         updateTxt();
         tvX.setText("ΔX " + Utils.getMetriSimbol());
         tvY.setText("ΔY " + Utils.getMetriSimbol());
@@ -106,8 +110,14 @@ public class XYZ_Calib extends AppCompatActivity {
         tv_btw.setText("G1>>G2 " + Utils.getMetriSimbol());
 
         gpsDebug.setOnClickListener(view -> {
-            if (!dialogGnssCoordinates.alertDialog.isShowing()) {
-                dialogGnssCoordinates.show();
+            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                if (!dialogDrillGnss.alertDialog.isShowing()) {
+                    dialogDrillGnss.show();
+                }
+            }else {
+                if (!dialogGnssCoordinates.alertDialog.isShowing()) {
+                    dialogGnssCoordinates.show();
+                }
             }
         });
         update.setOnClickListener(view -> {

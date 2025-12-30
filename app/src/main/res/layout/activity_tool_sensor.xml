@@ -108,7 +108,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
-        android:text="MASR\nROLL ANGLE (°)"
+        android:text="MAST\nROLL ANGLE (°)"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="22sp"

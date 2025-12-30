@@ -365,24 +365,22 @@ public class CanSender extends Service {
                                         (byte) 0xB0});
                     }
                 }
+                if (DataSaved.Interface_Type == 4) {
+                    if (!(MyApp.visibleActivity instanceof My3DActivity)) {
+                        MyDeviceManager.CanWrite(true, 1, 0x18EEFFE6, 8,
+                                new byte[]{(byte) 0xF4,
+                                        (byte) 0xF0,
+                                        (byte) 0xD3,
+                                        (byte) 0xE6,
+                                        (byte) 0x0,
+                                        (byte) 0x82,
+                                        (byte) 0x0,
+                                        (byte) 0xB0});
+                    }
+                }
             }else {
                 MyDeviceManager.CanWrite(true,0,0,2,new byte[]{1,0});
             }
-
-            if (DataSaved.Interface_Type == 4) {
-                if (!(MyApp.visibleActivity instanceof My3DActivity)) {
-                    MyDeviceManager.CanWrite(true, 1, 0x18EEFFE6, 8,
-                            new byte[]{(byte) 0xF4,
-                                    (byte) 0xF0,
-                                    (byte) 0xD3,
-                                    (byte) 0xE6,
-                                    (byte) 0x0,
-                                    (byte) 0x82,
-                                    (byte) 0x0,
-                                    (byte) 0xB0});
-                }
-            }
-
 
             if (DataSaved.isCanOpen == 5) {
                 startCanopen++;

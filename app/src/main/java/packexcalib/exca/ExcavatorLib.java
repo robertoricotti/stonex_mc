@@ -61,21 +61,21 @@ public class ExcavatorLib {
             boolean GPS_Enabled = DataSaved.portView >= 2;
 
 
-            correctPitch = Excavator_RealValues.realPitch(DataSaved.offsetPitch);//dato da utilizzare nel software già offsettato
-            correctBoom1 = Excavator_RealValues.realBoom1(DataSaved.offsetBoom1);
-            correctBoom2 = Excavator_RealValues.realBoom2(DataSaved.offsetBoom2);
-            correctStick = Excavator_RealValues.realStick(DataSaved.offsetStick);
-            correctRoll = Excavator_RealValues.realRoll(DataSaved.offsetRoll);
-            correctBucket = Excavator_RealValues.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[0];
-            correctFlat = Excavator_RealValues.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[1];
-            correctDeltaAngle = Excavator_RealValues.realDeltaAngle(DataSaved.offsetTiltDeltaAngle);
-            correctDBStickAngle = Excavator_RealValues.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[2];
-            correctTilt = Excavator_RealValues.realTilt(DataSaved.offsetTilt);
-            bennaSimulata = Excavator_RealValues.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[3];
+            correctPitch = Offset_Applier.realPitch(DataSaved.offsetPitch);//dato da utilizzare nel software già offsettato
+            correctBoom1 = Offset_Applier.realBoom1(DataSaved.offsetBoom1);
+            correctBoom2 = Offset_Applier.realBoom2(DataSaved.offsetBoom2);
+            correctStick = Offset_Applier.realStick(DataSaved.offsetStick);
+            correctRoll = Offset_Applier.realRoll(DataSaved.offsetRoll);
+            correctBucket = Offset_Applier.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[0];
+            correctFlat = Offset_Applier.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[1];
+            correctDeltaAngle = Offset_Applier.realDeltaAngle(DataSaved.offsetTiltDeltaAngle);
+            correctDBStickAngle = Offset_Applier.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[2];
+            correctTilt = Offset_Applier.realTilt(DataSaved.offsetTilt);
+            bennaSimulata = Offset_Applier.realBucket(DataSaved.offsetBucket, DataSaved.offsetFlat, DataSaved.offsetDogBone, DataSaved.L1, DataSaved.L2, DataSaved.L3, DataSaved.L4)[3];
             deg_Roll = correctRoll;
-            correctWTilt = Excavator_RealValues.realDegWTilt(DataSaved.offsetDegWTilt);
-            correctEbubbleX = Excavator_RealValues.realEBubble_X(DataSaved.offsetBubble_X);
-            correctEbubbleY = Excavator_RealValues.realEBubble_Y(DataSaved.offsetBubble_Y);
+            correctWTilt = Offset_Applier.realDegWTilt(DataSaved.offsetDegWTilt);
+            correctEbubbleX = Offset_Applier.realEBubble_X(DataSaved.offsetBubble_X);
+            correctEbubbleY = Offset_Applier.realEBubble_Y(DataSaved.offsetBubble_Y);
             Len_Roll = DataSaved.L_Roll;
             larghezzabenna = DataSaved.W_Bucket;
 

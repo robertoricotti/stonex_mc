@@ -1,6 +1,8 @@
 package gui.tech_menu;
 
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static utils.MyTypes.DRILL;
+import static utils.MyTypes.SOLARDRILL;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -17,6 +19,7 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
+import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
@@ -36,6 +39,7 @@ public class DrillToolCalib extends BaseClass {
     int indexMeasure;
     CustomNumberDialog numberDialog;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_Drill_GNSS dialogDrillGnss;
     double myStep = 0.001;
 
     @Override
@@ -54,6 +58,7 @@ public class DrillToolCalib extends BaseClass {
         indexMachineSelected = MyData.get_Int("MachineSelected");
         numberDialog = new CustomNumberDialog(this, -1);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
+        dialogDrillGnss=new Dialog_Drill_GNSS(this);
         but_meno_x=findViewById(R.id.but_meno_x);
         but_piu_x=findViewById(R.id.but_piu_x);
         but_meno_y=findViewById(R.id.but_meno_y);
@@ -82,6 +87,17 @@ public class DrillToolCalib extends BaseClass {
     }
 
     private void onClick() {
+        gpsdebugg.setOnClickListener(view -> {
+            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                if (!dialogDrillGnss.alertDialog.isShowing()) {
+                    dialogDrillGnss.show();
+                }
+            }else {
+                if (!dialogGnssCoordinates.alertDialog.isShowing()) {
+                    dialogGnssCoordinates.show();
+                }
+            }
+        });
         save.setOnClickListener(view -> {
             exit.setEnabled(false);
             save.setEnabled(false);

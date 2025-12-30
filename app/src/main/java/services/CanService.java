@@ -6,9 +6,9 @@ import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
-import static utils.MyTypes.GRADER;
 import static utils.MyTypes.FMI_SENS;
-import static utils.MyTypes.NO_SENSORS;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
 
@@ -47,7 +47,7 @@ public class CanService extends Service {
     public static int SteerConnected, isAuto;
     public static int m;
     public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
-    public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser,flagDefault;
+    public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser, flagDefault;
     CanFileReceiver receiver = new CanFileReceiver();
     public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc;
     public static boolean CanServiceState = false;
@@ -137,8 +137,7 @@ public class CanService extends Service {
                     if (id == 1414) {
                         DataSaved.damp_Tl = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
                     }
-                }
-                else if (DataSaved.isCanOpen == TSM_ACC) {
+                } else if (DataSaved.isCanOpen == TSM_ACC) {
                     if (id == 1409) {
                         DataSaved.damp_Fr = msg[4];
                     }
@@ -158,7 +157,7 @@ public class CanService extends Service {
                         DataSaved.damp_Tl = msg[4];
                     }
 
-                }else if (DataSaved.isCanOpen==DEMO_BAG){
+                } else if (DataSaved.isCanOpen == DEMO_BAG) {
                     nmeaSTX_Disc = false;
                 }
                 if (DataSaved.my_comPort == 0 && DataSaved.gpsType == 0) {
@@ -219,8 +218,7 @@ public class CanService extends Service {
                     } else {
                         SteerConnected = 0;
                     }
-                }
-                else {
+                } else {
                     SteerConnected = 0;
                 }
                 if (id == 0x204301) {
@@ -232,11 +230,11 @@ public class CanService extends Service {
                 switch (DataSaved.isCanOpen) {
                     case FMI_SENS:
                         if (id == 0x1FF) {
-                            flagDefault=true;
+                            flagDefault = true;
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
                             handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
                         }
-                        if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
+                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL || DataSaved.isWL == SOLARDRILL) {
                             if (id == 0x181) {
                                 frameOK = true;
                                 handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
@@ -262,7 +260,7 @@ public class CanService extends Service {
                                 handler_bucketOK.removeCallbacks(timeoutRunnable_bucketOK);
                                 handler_bucketOK.postDelayed(timeoutRunnable_bucketOK, 3000);
                             }
-                            if (id == 0x186||id==0x560106A) {
+                            if (id == 0x186 || id == 0x560106A) {
                                 tiltOK = true;
                                 tiltDisc = false;
                                 handler_tiltOK.removeCallbacks(timeoutRunnable_tiltOK);
@@ -304,8 +302,7 @@ public class CanService extends Service {
                                 handler_tl.removeCallbacks(timeoutRunnable_tl);
                                 handler_tl.postDelayed(timeoutRunnable_tl, 3000);
                             }
-                        }
-                        else {
+                        } else {
                             if ((id == 0x185 || id == 0x186 || id == 0x560106A) && DataSaved.lrBucket != 0) {
                                 tiltOK = true;
                                 tiltDisc = false;
@@ -317,11 +314,11 @@ public class CanService extends Service {
                     case TSM_ACC:
                         //moba o tsm
                         if (id == 899) {
-                            flagDefault=true;
+                            flagDefault = true;
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
                             handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
                         }
-                        if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
+                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL||DataSaved.isWL==SOLARDRILL) {
                             if (id == 897) {
                                 frameOK = true;
                                 handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
@@ -390,8 +387,7 @@ public class CanService extends Service {
                                 handler_tl.removeCallbacks(timeoutRunnable_tl);
                                 handler_tl.postDelayed(timeoutRunnable_tl, 3000);
                             }
-                        }
-                        else {
+                        } else {
                             if ((id == 901 || id == 902 || id == 90181738 || id == 90181733) && DataSaved.lrBucket != 0) {
                                 tiltOK = true;
                                 tiltDisc = false;
@@ -426,7 +422,7 @@ public class CanService extends Service {
                         }
                         if (id == 0X195) {
                             tiltOK = true;
-                            tiltDisc=false;
+                            tiltDisc = false;
                             handler_tiltOK.removeCallbacks(timeoutRunnable_tiltOK);
                             handler_tiltOK.postDelayed(timeoutRunnable_tiltOK, 3000);
                         }
@@ -446,17 +442,18 @@ public class CanService extends Service {
                 if (id == 0x7DF || id == 0x560106A) {
                     receiver.receivePacket(msg);
                 }
-                switch (DataSaved.isWL){
+                switch (DataSaved.isWL) {
                     case EXCAVATOR:
                     case WHEELLOADER:
                     case DOZER:
                     case DOZER_SIX:
                     case GRADER:
-                        Sensors_Decoder.decode(id,msg);
+                        Sensors_Decoder.decode(id, msg);
                         break;
 
                     case DRILL:
-                        Sensors_Decoder_Drill.decode(id,msg);
+                    case SOLARDRILL:
+                        Sensors_Decoder_Drill.decode(id, msg);
                         break;
                 }
 
@@ -598,7 +595,6 @@ public class CanService extends Service {
             Log.e("Can_Error", Log.getStackTraceString(e));
         }
     }
-
 
 
     @Override

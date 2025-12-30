@@ -30,6 +30,7 @@ import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
 import gui.debug_ecu.Can_Msg_Debug;
+import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.hydro.Hydro_Activity_Entering;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
@@ -62,6 +63,7 @@ public class ExcavatorChooserActivity extends BaseClass {
     ProgressBar progressBar;
     Dialog_InfoApp dialogInfoApp;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_Drill_GNSS dialogDrillGnss;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class ExcavatorChooserActivity extends BaseClass {
         dialogUnitOfMeasure = new DialogUnitOfMeasure(this);
         dialogInfoApp = new Dialog_InfoApp(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
+        dialogDrillGnss=new Dialog_Drill_GNSS(this);
 
     }
 
@@ -362,8 +365,14 @@ public class ExcavatorChooserActivity extends BaseClass {
             }
         });
         img00.setOnClickListener(view -> {
-            if (!dialogGnssCoordinates.alertDialog.isShowing()) {
-                dialogGnssCoordinates.show();
+            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                if (!dialogDrillGnss.alertDialog.isShowing()) {
+                    dialogDrillGnss.show();
+                }
+            }else {
+                if (!dialogGnssCoordinates.alertDialog.isShowing()) {
+                    dialogGnssCoordinates.show();
+                }
             }
         });
         btn_3.setOnClickListener(view -> {

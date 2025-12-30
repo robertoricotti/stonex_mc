@@ -15,7 +15,10 @@ import static services.CanService.tiltDisc;
 import static services.CanService.tiltOK;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -459,7 +462,9 @@ git push
                         @Override
                         public void run() {
                             try {
-
+                                if (DataSaved.isWL ==DRILL||DataSaved.isWL==SOLARDRILL) {
+                                    DataSaved.lrBucket=DataSaved.lrTool;
+                                }
                                 if (DataSaved.my_comPort == 4) {
 
 
@@ -825,11 +830,21 @@ git push
                     (!tiltOK) && DataSaved.lrTilt != 0, false, false
 
             });
-        } else {
+        } else if(DataSaved.isWL ==DOZER||DataSaved.isWL==DOZER_SIX||DataSaved.isWL==GRADER) {
             errorCode = PLC_DataTypes_BigEndian.Encode_8_bool_be(new boolean[]{
                     tiltDisc && DataSaved.lrBucket != 0,
                     false,
                     false, false, false, false, false, false
+            });
+        }else if (DataSaved.isWL ==DRILL||DataSaved.isWL==SOLARDRILL) {
+            errorCode = PLC_DataTypes_BigEndian.Encode_8_bool_be(new boolean[]{
+                    (!frameOK) && DataSaved.lrFrame != 0,
+                    (!boom1OK) && DataSaved.lrBoom1 != 0,
+                    (!boom2OK) && DataSaved.lrBoom2 != 0,
+                    (!stickOK) && DataSaved.lrStick != 0,
+                    (!bucketOK) && DataSaved.lrTool != 0,
+                   false, false, false
+
             });
         }
     }

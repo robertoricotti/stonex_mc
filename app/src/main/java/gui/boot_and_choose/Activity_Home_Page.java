@@ -45,6 +45,7 @@ import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_Create_New_Prj;
+import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
 import gui.dialogs_and_toast.Dialog_To_DueDi;
@@ -71,6 +72,7 @@ public class Activity_Home_Page extends BaseClass {
     Dialog_Create_New_Prj dialogCreateNewPrj;
     Dialog_InfoApp dialogInfoApp;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_Drill_GNSS dialogDrillGnss;
     Dialog_To_DueDi dialogToDueDi;
 
     @Override
@@ -134,6 +136,7 @@ public class Activity_Home_Page extends BaseClass {
         dialogCreateNewPrj = new Dialog_Create_New_Prj(this);
         dialogInfoApp = new Dialog_InfoApp(this);
         dialogGnssCoordinates=new Dialog_GNSS_Coordinates(this);
+        dialogDrillGnss=new Dialog_Drill_GNSS(this);
         dialogToDueDi=new Dialog_To_DueDi(this);
         close = findViewById(R.id.btn_1);
         progressBar = findViewById(R.id.progressBar);
@@ -205,8 +208,14 @@ public class Activity_Home_Page extends BaseClass {
             }
         });
         keyLic.setOnClickListener(view -> {
-            if (!dialogGnssCoordinates.alertDialog.isShowing()){
-                dialogGnssCoordinates.show();
+            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                if (!dialogDrillGnss.alertDialog.isShowing()) {
+                    dialogDrillGnss.show();
+                }
+            }else {
+                if (!dialogGnssCoordinates.alertDialog.isShowing()) {
+                    dialogGnssCoordinates.show();
+                }
             }
         });
         newProj.setOnClickListener(view -> {
@@ -241,10 +250,18 @@ public class Activity_Home_Page extends BaseClass {
 
 
             if (licenseType > 1) {
-                enableAll(false);
-                progressBar.setVisibility(View.VISIBLE);
-                stringsStat.setVisibility(View.VISIBLE);
-                startService(new Intent(this, ReadProjectService.class));
+                if(DataSaved.isWL==EXCAVATOR||
+                        DataSaved.isWL==WHEELLOADER||
+                        DataSaved.isWL==DOZER||
+                        DataSaved.isWL==DOZER_SIX||
+                        DataSaved.isWL==GRADER) {
+                    enableAll(false);
+                    progressBar.setVisibility(View.VISIBLE);
+                    stringsStat.setVisibility(View.VISIBLE);
+                    startService(new Intent(this, ReadProjectService.class));
+                }else if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                    new CustomToast(this,"Not Implemented");
+                }
             }
 
         });
