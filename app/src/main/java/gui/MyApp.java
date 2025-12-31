@@ -99,6 +99,7 @@ import gui.projects.Usb_Project_Nova;
 import gui.tech_menu.Boom1Calib;
 import gui.tech_menu.Boom2Calib;
 import gui.tech_menu.CanOpenTSM;
+import gui.tech_menu.DampingActivity;
 import gui.tech_menu.DrillEncoder;
 import gui.tech_menu.DrillToolCalib;
 import gui.tech_menu.ExcavatorChooserActivity;
@@ -719,6 +720,8 @@ git push
             ((DrillToolCalib) activity).updateUI();
         }else if (activity instanceof ToolSensor) {
             ((ToolSensor) activity).updateUI();
+        }else if (activity instanceof DampingActivity) {
+            ((DampingActivity) activity).updateUI();
         }
 
     }

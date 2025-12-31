@@ -537,9 +537,9 @@ public class Dialog_Drill_GNSS {
                     try {
                         txtbennasx.setText(coordShowed(DataSaved.coordOrder)[2]);
 
-                        txtbennacx.setText(Utils.readSensorCalibration(String.valueOf(RopeLen))+Utils.getMetriSimbol());
+                        txtbennacx.setText(Utils.readSensorCalibration(String.valueOf(RopeLen))+" "+Utils.getMetriSimbol());
 
-                        txtbennadx.setText(Utils.readSensorCalibration(String.valueOf(Sensors_Decoder.ExtensionBoom))+Utils.getMetriSimbol());
+                        txtbennadx.setText(Utils.readSensorCalibration(String.valueOf(Sensors_Decoder.ExtensionBoom))+" "+Utils.getMetriSimbol());
 
 
                     } catch (Exception e) {

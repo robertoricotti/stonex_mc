@@ -73,6 +73,7 @@
             app:tint="@color/white"/>
 
         <ImageView
+            android:id="@+id/readAlli"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
@@ -80,8 +81,8 @@
             android:layout_weight="6"
             android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
-            android:src="@drawable/moba_sensore"
-            app:tint="@color/transparent" />
+            android:src="@drawable/btn_refresh"
+            app:tint="@color/white" />
         <ImageView
             android:id="@+id/sendMsg"
             android:layout_width="wrap_content"
@@ -91,7 +92,7 @@
             android:layout_weight="1"
             android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
-            android:src="@drawable/save_icon"
+            android:src="@drawable/bottone_save_mch"
             app:tint="@color/white"
             />
 
@@ -153,12 +154,11 @@
                 android:id="@+id/tx_fr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="?"
+                android:ems="10"
                 android:textColor="@color/_____cancel_text"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:layout_weight="1"
                 />
 
             <Button
@@ -203,13 +203,11 @@
                 android:id="@+id/tx_b1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="?"
-
+                android:ems="10"
                 android:textColor="@color/_____cancel_text"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:layout_weight="1"
                 />
 
             <Button
@@ -255,13 +253,11 @@
                 android:id="@+id/tx_b2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="?"
-
+                android:ems="10"
                 android:textColor="@color/_____cancel_text"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:layout_weight="1"
                 />
 
             <Button
@@ -307,13 +303,11 @@
                 android:id="@+id/tx_st"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="?"
-
+                android:ems="10"
                 android:textColor="@color/_____cancel_text"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:layout_weight="1"
                 />
 
             <Button
@@ -359,13 +353,11 @@
                 android:id="@+id/tx_bk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="?"
-
+                android:ems="10"
                 android:textColor="@color/_____cancel_text"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:layout_weight="1"
                 />
 
             <Button
@@ -411,13 +403,12 @@
                 android:id="@+id/tx_tl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="?"
-
+                android:ems="10"
                 android:textColor="@color/_____cancel_text"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:layout_weight="1"
+
                 />
 
             <Button

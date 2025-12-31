@@ -1,6 +1,7 @@
 package gui.tech_menu;
 
 import static gui.MyApp.errorCode;
+import static gui.dialogs_and_toast.DialogPassword.isTech2;
 import static packexcalib.exca.DataSaved.isCanOpen;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
@@ -516,8 +517,13 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
 
         });
         toCanopen.setOnClickListener(view -> {
-            if (!dialogPassword.dialog.isShowing()) {
-                dialogPassword.show(-1);
+            if(isTech2){
+                startActivity(new Intent(this, CanOpenTSM.class));
+                finish();
+            }else {
+                if (!dialogPassword.dialog.isShowing()) {
+                    dialogPassword.show(-1);
+                }
             }
         });
         toDamping.setOnClickListener(view -> {

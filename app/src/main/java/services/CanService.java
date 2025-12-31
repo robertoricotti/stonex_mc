@@ -10,6 +10,7 @@ import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.TSM_ACC;
+import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
@@ -118,42 +119,23 @@ public class CanService extends Service {
 
             if (channel == 1) {
 
-                if (DataSaved.isCanOpen == FMI_SENS) {
-                    if (id == 1409) {
-                        DataSaved.damp_Fr = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
-                    }
-                    if (id == 1410) {
-                        DataSaved.damp_B1 = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
-                    }
-                    if (id == 1411) {
-                        DataSaved.damp_B2 = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
-                    }
-                    if (id == 1412) {
-                        DataSaved.damp_St = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
-                    }
-                    if (id == 1413) {
-                        DataSaved.damp_Bk = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
-                    }
-                    if (id == 1414) {
-                        DataSaved.damp_Tl = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[4], msg[5]});
-                    }
-                } else if (DataSaved.isCanOpen == TSM_ACC) {
-                    if (id == 1409) {
+                if (DataSaved.isCanOpen == TSM_ACC || DataSaved.isCanOpen == TSM_ANGOLARI || DataSaved.isCanOpen == FMI_SENS) {
+                    if (id == 0x581) {
                         DataSaved.damp_Fr = msg[4];
                     }
-                    if (id == 1410) {
+                    if (id == 0x582) {
                         DataSaved.damp_B1 = msg[4];
                     }
-                    if (id == 1415) {
+                    if (id == 0x587) {
                         DataSaved.damp_B2 = msg[4];
                     }
-                    if (id == 1412) {
+                    if (id == 0x584) {
                         DataSaved.damp_St = msg[4];
                     }
-                    if (id == 1413) {
+                    if (id == 0x585) {
                         DataSaved.damp_Bk = msg[4];
                     }
-                    if (id == 1414) {
+                    if (id == 0x586) {
                         DataSaved.damp_Tl = msg[4];
                     }
 
@@ -245,7 +227,7 @@ public class CanService extends Service {
                                 handler_boom1OK.removeCallbacks(timeoutRunnable_boom1OK);
                                 handler_boom1OK.postDelayed(timeoutRunnable_boom1OK, 3000);
                             }
-                            if (id == 903) {
+                            if (id == 0x187) {
                                 boom2OK = true;
                                 handler_boom2OK.removeCallbacks(timeoutRunnable_boom2OK);
                                 handler_boom2OK.postDelayed(timeoutRunnable_boom2OK, 3000);
@@ -318,7 +300,7 @@ public class CanService extends Service {
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
                             handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
                         }
-                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL||DataSaved.isWL==SOLARDRILL) {
+                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL || DataSaved.isWL == SOLARDRILL) {
                             if (id == 897) {
                                 frameOK = true;
                                 handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);

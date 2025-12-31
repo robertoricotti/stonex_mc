@@ -3,6 +3,7 @@ package gui.tech_menu;
 import static services.CanService.flagDefault;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.TSM_ACC;
+import static utils.MyTypes.TSM_ANGOLARI;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -78,10 +79,9 @@ public class CanOpenTSM extends AppCompatActivity {
         gotoCanOpen.setVisibility(View.INVISIBLE);
         backToNova.setVisibility(View.INVISIBLE);
         restoreDef.setVisibility(View.INVISIBLE);
-        storeStx.setVisibility(View.INVISIBLE);
         saveall.setVisibility(View.INVISIBLE);
         if(DataSaved.isCanOpen==FMI_SENS){
-            titolo.setText("FMI CanOpen Setup - CONNECT 1 SENSOR AT A TIME ");
+            titolo.setText("FMI CanOpen Setup - CONNECT ONLY 1 SENSOR AT A TIME ");
             cbDEF.setText("Default ID 0x7F");
             storeStx.setVisibility(View.INVISIBLE);
         }
@@ -405,19 +405,17 @@ public class CanOpenTSM extends AppCompatActivity {
             cbBK.setChecked(CanService.bucketOK);
             cbTL.setChecked(CanService.tiltOK);
             cbDEF.setChecked(flagDefault);
-            if (isSend) {
-                gotoCanOpen.setVisibility(View.INVISIBLE);
-                backToNova.setVisibility(View.INVISIBLE);
-                restoreDef.setVisibility(View.INVISIBLE);
-                storeStx.setVisibility(View.INVISIBLE);
-                saveall.setVisibility(View.INVISIBLE);
-            }
-            if (!isSend) {
-                // gotoCanOpen.setVisibility(View.VISIBLE);
-                // backToNova.setVisibility(View.VISIBLE);
-                // restoreDef.setVisibility(View.VISIBLE);
-                storeStx.setVisibility(View.VISIBLE);
-                // saveall.setVisibility(View.VISIBLE);
+            if(DataSaved.isCanOpen==TSM_ACC||DataSaved.isCanOpen==TSM_ANGOLARI) {
+                if (isSend) {
+                    gotoCanOpen.setVisibility(View.INVISIBLE);
+                    backToNova.setVisibility(View.INVISIBLE);
+                    restoreDef.setVisibility(View.INVISIBLE);
+                    storeStx.setVisibility(View.INVISIBLE);
+                    saveall.setVisibility(View.INVISIBLE);
+                }
+                if (!isSend) {
+                    storeStx.setVisibility(View.VISIBLE);
+                }
             }
             txtProgress.setText(String.valueOf(progresso) + "%");
 

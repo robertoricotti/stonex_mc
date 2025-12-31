@@ -6,6 +6,8 @@ import static gui.MyApp.isApollo;
 import static gui.MyApp.licenseType;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
+import static gui.tech_menu.DampingActivity.readFMI;
+import static gui.tech_menu.DampingActivity.readTSM;
 import static packexcalib.exca.DataSaved.GAIN_LEFT;
 import static packexcalib.exca.DataSaved.GAIN_RIGHT;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_DOZER;
@@ -33,7 +35,10 @@ import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.TSM_ACC;
+import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -53,6 +58,7 @@ import java.util.concurrent.TimeUnit;
 import cloud.WebSocketPlugin;
 import gui.MyApp;
 import gui.my_opengl.My3DActivity;
+import gui.tech_menu.DampingActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
@@ -394,6 +400,8 @@ public class CanSender extends Service {
                     startCanopen = 0;
                 }
             }
+
+
 
 
         }
