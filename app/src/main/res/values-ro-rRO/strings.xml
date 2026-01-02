@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">STX MC V4</string>
+    <string name="first_rod_l">LUNGIMEA PRIMEI Tije</string>
+    <string name="rod_l">LUNGIMEA TIJEI</string>
+    <string name="bit_l">LUNGIMEA BURGHIULUI - LĂȚIME</string>
+
     <string name="error_license">Licență expirată sau lipsă\nContactați dealerul local pentru a rezolva problema.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>

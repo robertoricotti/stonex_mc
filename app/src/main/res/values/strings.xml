@@ -21,6 +21,11 @@
     <string name="brigbck">BRIGHTNESS-BACKGROUND</string>
     <string name="etxoff">EXTERNAL OFFSET STEP Inc/Dec</string>
 
+    <string name="first_rod_l">FIRST ROD LENGTH</string>
+    <string name="rod_l">ROD LENGTH</string>
+    <string name="bit_l">DRILL BIT LENGTH - WIDTH</string>
+
+
     <string name="color_bucket">BUCKET - BLADE COLOR</string>
     <string name="color_boom">BOOM - FRAME COLOR</string>
     <string name="ext_offset">EXTERNAL OFFSET STEP</string>

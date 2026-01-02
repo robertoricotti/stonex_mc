@@ -422,13 +422,16 @@ public class Dialog_Drill_GNSS {
                         if (b[4]) {
                             bucket.setBackgroundColor(Color.RED);
                             bucket.setTextColor(Color.WHITE);
-                            bucketO.setText(String.format("%.02f", DataSaved.offsetBucket).replace(",", ".") + "°");
+                            bucketO.setText(String.format("%.02f", DataSaved.offset_Tool_Pitch).replace(",", ".") + "°" + "/" +
+                                    String.format("%.02f", DataSaved.offset_Tool_Roll).replace(",", ".") + "°");
                         } else {
                             if (DataSaved.lrTool != 0) {
                                 bucket.setBackgroundColor(Color.GREEN);
                                 bucket.setTextColor(Color.DKGRAY);
-                                bucketA.setText(String.format("%.02f", ExcavatorLib.correctBucket).replace(",", ".") + "°");
-                                bucketO.setText(String.format("%.02f", DataSaved.offsetBucket).replace(",", ".") + "°");
+                                bucketA.setText(String.format("%.02f", ExcavatorLib.correctToolPitch).replace(",", ".") + "°" + "/" +
+                                        String.format("%.02f", ExcavatorLib.correctToolRoll).replace(",", ".") + "°");
+                                bucketO.setText(String.format("%.02f", DataSaved.offset_Tool_Pitch).replace(",", ".") + "°" + "/" +
+                                        String.format("%.02f", DataSaved.offset_Tool_Roll).replace(",", ".") + "°");
                             } else {
                                 bucket.setBackgroundColor(Color.GRAY);
                                 bucket.setTextColor(Color.WHITE);

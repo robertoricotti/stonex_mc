@@ -67,6 +67,7 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketCalib;
 import gui.buckets.BucketCalibTilt;
 import gui.buckets.BucketChooserActivity;
+import gui.buckets.Drill_Rod_Activity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.DebugExcavatorActivity;
 import gui.debug_ecu.Serial_Msg_Debug;
@@ -722,6 +723,8 @@ git push
             ((ToolSensor) activity).updateUI();
         }else if (activity instanceof DampingActivity) {
             ((DampingActivity) activity).updateUI();
+        }else if (activity instanceof Drill_Rod_Activity) {
+            ((Drill_Rod_Activity) activity).updateUI();
         }
 
     }

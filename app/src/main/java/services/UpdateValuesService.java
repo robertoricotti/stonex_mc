@@ -151,7 +151,9 @@ public class UpdateValuesService extends Service {
                     String Tool_Delta_Z=MyData.get_String("M" + i + "Tool_Delta_Z");
                     String offset_Boom_Tool=MyData.get_String("M" + i + "offset_Boom_Tool");
                     String drill_Bit_Len = MyData.get_String("M" + i + "drill_Bit_Len");
+                    String drill_Bit_Width = MyData.get_String("M" + i + "drill_Bit_Width");
                     String drill_Rod_Len = MyData.get_String("M" + i + "drill_Rod_Len");
+                    String drill_First_Rod_Len = MyData.get_String("M" + i + "drill_First_Rod_Len");
                     String gpsdeltaX = MyData.get_String("M" + i + "_OffsetGPSX");
                     String gpsdeltaY = MyData.get_String("M" + i + "_OffsetGPSY");
                     String gpsdeltaZ = MyData.get_String("M" + i + "_OffsetGPSZ");
@@ -339,8 +341,14 @@ public class UpdateValuesService extends Service {
                     if (drill_Bit_Len == null) {
                         MyData.push("M" + i + "drill_Bit_Len", "0.00");
                     }
+                    if (drill_Bit_Width == null) {
+                        MyData.push("M" + i + "drill_Bit_Width", "0.00");
+                    }
                     if (drill_Rod_Len == null) {
                         MyData.push("M" + i + "drill_Rod_Len", "0.00");
+                    }
+                    if (drill_First_Rod_Len == null) {
+                        MyData.push("M" + i + "drill_First_Rod_Len", "0.00");
                     }
 
                     if (gpsdeltaX == null) {
@@ -1401,9 +1409,19 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di drill_Bit_Len: " + e.getMessage());
                 }
                 try {
+                    DataSaved.drill_Bit_Width = MyData.get_Double("M" + indexMach + "drill_Bit_Width");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di drill_Bit_Width: " + e.getMessage());
+                }
+                try {
                     DataSaved.drill_Rod_Len = MyData.get_Double("M" + indexMach + "drill_Rod_Len");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di drill_Rod_Len: " + e.getMessage());
+                }
+                try {
+                    DataSaved.drill_First_Rod_Len = MyData.get_Double("M" + indexMach + "drill_First_Rod_Len");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di drill_First_Rod_Len: " + e.getMessage());
                 }
 
                 try {

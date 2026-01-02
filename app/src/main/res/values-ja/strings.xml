@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">STX MC V4</string>
+    <string name="first_rod_l">最初のロッドの長さ</string>
+    <string name="rod_l">ロッドの長さ</string>
+    <string name="bit_l">ドリルビットの長さ - 幅</string>
+
     <string name="error_license">ライセンスが期限切れ、または見つかりません。\n問題を解決するには、販売代理店にお問い合わせください。</string>
     <string name="copyright">著作権 © \n全著作権所有</string>
     <string name="website">www.stonex.it</string>

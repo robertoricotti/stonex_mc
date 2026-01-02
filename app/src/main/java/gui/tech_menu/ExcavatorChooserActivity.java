@@ -29,6 +29,7 @@ import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
+import gui.buckets.Drill_Rod_Activity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.hydro.Hydro_Activity_Entering;
@@ -183,10 +184,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM1.setImageResource(R.drawable.ecu_96);
         }else if(isWL1==DRILL){
             machine1.setImageResource(R.drawable.drill_btn);
-            bucketM1.setImageResource(R.drawable.ecu_96);
+            bucketM1.setImageResource(R.drawable.drillbit_2);
         }else if(isWL1==SOLARDRILL){
             machine1.setImageResource(R.drawable.drill_btn);
-            bucketM1.setImageResource(R.drawable.ecu_96);
+            bucketM1.setImageResource(R.drawable.drillbit_2);
         }
         if (isWL2 == WHEELLOADER) {
             machine2.setImageResource(R.drawable.wheel_machines_btn);
@@ -198,10 +199,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM2.setImageResource(R.drawable.ecu_96);
         }else if(isWL2==DRILL){
             machine2.setImageResource(R.drawable.drill_btn);
-            bucketM2.setImageResource(R.drawable.ecu_96);
+            bucketM2.setImageResource(R.drawable.drillbit_2);
         }else if(isWL2==SOLARDRILL){
             machine2.setImageResource(R.drawable.drill_btn);
-            bucketM2.setImageResource(R.drawable.ecu_96);
+            bucketM2.setImageResource(R.drawable.drillbit_2);
         }
         if (isWL3 == WHEELLOADER) {
             machine3.setImageResource(R.drawable.wheel_machines_btn);
@@ -213,10 +214,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM3.setImageResource(R.drawable.ecu_96);
         }else if(isWL3==DRILL){
             machine3.setImageResource(R.drawable.drill_btn);
-            bucketM3.setImageResource(R.drawable.ecu_96);
+            bucketM3.setImageResource(R.drawable.drillbit_2);
         }else if(isWL3==SOLARDRILL){
             machine3.setImageResource(R.drawable.drill_btn);
-            bucketM3.setImageResource(R.drawable.ecu_96);
+            bucketM3.setImageResource(R.drawable.drillbit_2);
         }
         if (isWL4 == WHEELLOADER) {
             machine4.setImageResource(R.drawable.wheel_machines_btn);
@@ -228,10 +229,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM4.setImageResource(R.drawable.ecu_96);
         }else if(isWL4==DRILL){
             machine4.setImageResource(R.drawable.drill_btn);
-            bucketM4.setImageResource(R.drawable.ecu_96);
+            bucketM4.setImageResource(R.drawable.drillbit_2);
         }else if(isWL4==SOLARDRILL){
             machine4.setImageResource(R.drawable.drill_btn);
-            bucketM4.setImageResource(R.drawable.ecu_96);
+            bucketM4.setImageResource(R.drawable.drillbit_2);
         }
         m1.setBackground(indexMachineSelected == 1 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_1) {
@@ -420,7 +421,10 @@ public class ExcavatorChooserActivity extends BaseClass {
                                 }
                             }
                         } else if (isWL1==DRILL||isWL1==SOLARDRILL) {
-                            new CustomToast(this, "No AUTO Implemented").show_alert();
+                            Intent i = new Intent(this, Drill_Rod_Activity.class);
+                            i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
+                            startActivity(i);
+                            finish();
 
                         }
                     } else {
@@ -452,7 +456,10 @@ public class ExcavatorChooserActivity extends BaseClass {
                                 }
                             }
                         } else if (isWL2==DRILL||isWL2==SOLARDRILL) {
-                            new CustomToast(this, "No AUTO Implemented").show_alert();
+                            Intent i = new Intent(this, Drill_Rod_Activity.class);
+                            i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
+                            startActivity(i);
+                            finish();
 
                         }
                     } else {
@@ -484,7 +491,10 @@ public class ExcavatorChooserActivity extends BaseClass {
                                 }
                             }
                         } else if (isWL3==DRILL||isWL3==SOLARDRILL) {
-                            new CustomToast(this, "No AUTO Implemented").show_alert();
+                            Intent i = new Intent(this, Drill_Rod_Activity.class);
+                            i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
+                            startActivity(i);
+                            finish();
 
                         }
                     } else {
@@ -516,7 +526,10 @@ public class ExcavatorChooserActivity extends BaseClass {
                                 }
                             }
                         } else if (isWL4==DRILL||isWL4==SOLARDRILL) {
-                            new CustomToast(this, "No AUTO Implemented").show_alert();
+                            Intent i = new Intent(this, Drill_Rod_Activity.class);
+                            i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
+                            startActivity(i);
+                            finish();
 
                         }
                     } else {
