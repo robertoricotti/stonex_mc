@@ -160,6 +160,7 @@ public class MastLinkCalib extends BaseClass {
         }
         DataSaved.lrStick = mounPos;
         DataSaved.L_Stick=Double.parseDouble(Utils.writeMetri(lengthStick.getText().toString()));
+        DataSaved.offset_Boom_Tool=Double.parseDouble(Utils.writeMetri(boomOffset.getText().toString()));
         MyData.push("M" + indexMachineSelected + "_Stick_MountPos", String.valueOf(mounPos));
         MyData.push("M" + indexMachineSelected + "_OffsetStick", String.valueOf(DataSaved.offsetStick));
         MyData.push("M" + indexMachineSelected + "_LengthStick", Utils.writeMetri(lengthStick.getText().toString()));

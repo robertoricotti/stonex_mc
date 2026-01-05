@@ -242,6 +242,7 @@ public class UpdateValuesService extends Service {
                     String colorStick = MyData.get_String("M" + i + "coloreStick");
 
                     String Rotary_Mount = MyData.get_String("M" + i + "Rotary_Mount");
+                    String numeroAste = MyData.get_String("M" + i + "numeroAste");
                     String Rotary_Diam = MyData.get_String("M" + i + "Rotary_Diam");
 
                     if (nameM == null) {
@@ -627,6 +628,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (Rotary_Mount == null) {
                         MyData.push("M" + i + "Rotary_Mount", "0");
+                    }
+                    if (numeroAste == null) {
+                        MyData.push("M" + i + "numeroAste", "0");
                     }
 
                     if (Rotary_Diam == null) {
@@ -1609,6 +1613,11 @@ public class UpdateValuesService extends Service {
                     DataSaved.lrRotary = MyData.get_Int("M" + indexMach + "Rotary_Mount");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Rotary_Mount: " + e.getMessage());
+                }
+                try {
+                    DataSaved.numeroAste = MyData.get_Int("M" + indexMach + "numeroAste");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di numeroAste: " + e.getMessage());
                 }
                 try {
                     DataSaved.Rotary_Diam = MyData.get_Double("M" + indexMach + "Rotary_Diam");

@@ -113,6 +113,7 @@ public class DataSaved {
     public static double drill_Bit_Width;
     public static double drill_First_Rod_Len;
     public static double drill_Rod_Len;
+    public static int numeroAste;
     public static double Tool_Delta_X;
     public static double Tool_Delta_Y;
     public static double Tool_Delta_Z;

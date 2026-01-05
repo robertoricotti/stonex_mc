@@ -4,6 +4,7 @@ import android.util.Log;
 import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
+import static packexcalib.exca.Sensors_Decoder_Drill.RopeLen;
 
 
 import java.util.Arrays;
@@ -11,7 +12,8 @@ import java.util.Arrays;
 import packexcalib.gnss.NmeaListener;
 
 public class DrillLib {
-    public static double[] coordBoomLink;
+    public static double[] coordBoomLink_1,coordTool_DeltaZ,coordBoomLink_Final;
+    static double Z_Totale;
 
     public static void Drill(){
 
@@ -65,22 +67,56 @@ public class DrillLib {
                 coordMiniPitch = coordinateDY;
             }
             overturn = Math.abs(correctRoll) > 85.0d || Math.abs(correctPitch) > 85.0d;
-            coordB1 = Exca_Quaternion.endPoint(coordMiniPitch, correctBoom1, Deg_Boom_Roll, DataSaved.L_Boom1, hdt_BOOM);
+            coordB1 = Exca_Quaternion.endPoint(coordMiniPitch, correctBoom1, Deg_Boom_Roll, DataSaved.L_Boom1+ExtensionBoom, hdt_BOOM);
             if (DataSaved.lrBoom2 != 0) {
                 coordB2 = Exca_Quaternion.endPoint(coordB1, correctBoom2, Deg_Boom_Roll, DataSaved.L_Boom2, hdt_BOOM);
 
             } else {
                 coordB2 = coordB1;
             }
-            coordST = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.L_Stick + ExtensionBoom, hdt_BOOM);
-            //TODO il calcolo del MAST
+            coordST = Exca_Quaternion.endPoint(coordB2, correctMastLink+(90*getSign(DataSaved.L_Stick)), Deg_Boom_Roll, DataSaved.L_Stick, hdt_BOOM);
+            //qui siamo al centro perno dell'inizio mast link
+            if(DataSaved.offset_Boom_Tool>0) {
+                coordBoomLink_1 = Exca_Quaternion.endPoint(coordST, -Deg_Boom_Roll, correctMastLink,DataSaved.offset_Boom_Tool,hdt_BOOM+90);
+            }else if(DataSaved.offset_Boom_Tool<0){
+                coordBoomLink_1 = Exca_Quaternion.endPoint(coordST, Deg_Boom_Roll, correctMastLink,Math.abs(DataSaved.offset_Boom_Tool),hdt_BOOM-90);
+
+            }else {
+                coordBoomLink_1=coordST;
+            }
+            coordBoomLink_Final=Exca_Quaternion.endPoint(coordBoomLink_1,correctMastLink,Deg_Boom_Roll,DataSaved.Tool_Delta_Y,hdt_BOOM);
+            //qui siamo al centro rotazione della fine del mast link
+
+            if(DataSaved.Tool_Delta_X>0){
+                coordTool=Exca_Quaternion.endPoint(coordBoomLink_Final,correctToolRoll,-correctToolPitch,DataSaved.Tool_Delta_X,hdt_BOOM-90);
+            } else if (DataSaved.Tool_Delta_X<0) {
+                coordTool=Exca_Quaternion.endPoint(coordBoomLink_Final,-correctToolRoll,correctToolPitch,Math.abs(DataSaved.Tool_Delta_X),hdt_BOOM+90);
+            }else {
+                coordTool=coordBoomLink_Final;
+            }
+
+            //Z Totale
+            Z_Totale=DataSaved.Tool_Delta_Z+RopeLen+DataSaved.drill_First_Rod_Len+(DataSaved.numeroAste*DataSaved.drill_Rod_Len)+DataSaved.drill_Bit_Len;
+
+            coordTool_DeltaZ=Exca_Quaternion.endPoint(coordTool,correctToolPitch-90,correctToolRoll,DataSaved.Tool_Delta_Z,hdt_BOOM);
+
+
+            toolEndCoord=Exca_Quaternion.endPoint(coordTool,correctToolPitch-90,correctToolRoll,Z_Totale,hdt_BOOM);
 
             Log.d("coordTool", Arrays.toString(coordTool));
-            Log.d("toolBitCoord", Arrays.toString(toolBitCoord));
+
             Log.d("toolEndCoord", Arrays.toString(toolEndCoord));
         } catch (Exception e) {
             Log.e("DrillLib",Log.getStackTraceString(e));
         }
 
+    }
+
+    private static double getSign(double value){
+        if(value<0){
+            return -1d;
+        }else {
+            return 1d;
+        }
     }
 }
