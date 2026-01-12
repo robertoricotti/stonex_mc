@@ -1,24 +1,13 @@
-package gui.buckets;
+package drill_pile.gui;
 
-import static utils.MyTypes.DRILL;
-import static utils.MyTypes.SOLARDRILL;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.style.IconMarginSpan;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.stx_dig.R;
 
@@ -27,10 +16,8 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
-import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.my_opengl.My3DActivity;
 import gui.tech_menu.ExcavatorChooserActivity;
-import gui.tech_menu.Nuova_Machine_Settings;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import services.UpdateValuesService;
@@ -92,8 +79,8 @@ public class Drill_Rod_Activity extends BaseClass {
             }else {
                 if(whoDig.contains("ExcavatorChooserActivity")){
                     goBackIntent=new Intent(this, ExcavatorChooserActivity.class);
-                }else if (whoDig.contains("My3DActivity")){
-                    goBackIntent=new Intent(this, My3DActivity.class);
+                }else if (whoDig.contains("Drill_Activity")){
+                    goBackIntent=new Intent(this, Drill_Activity.class);
                 }
             }
         } catch (Exception e) {

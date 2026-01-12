@@ -100,6 +100,7 @@ public class ExcavatorLib {
                 } else {
                     swing_boom_angle = 0;
                 }
+                hdt_BOOM = ((hdt0 + swing_boom_angle) % 360 + 360) % 360;
 
             }
 

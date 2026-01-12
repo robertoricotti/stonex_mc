@@ -44,7 +44,6 @@ import com.example.stx_dig.R;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -67,7 +66,7 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketCalib;
 import gui.buckets.BucketCalibTilt;
 import gui.buckets.BucketChooserActivity;
-import gui.buckets.Drill_Rod_Activity;
+import drill_pile.gui.Drill_Rod_Activity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.DebugExcavatorActivity;
 import gui.debug_ecu.Serial_Msg_Debug;
@@ -79,6 +78,7 @@ import gui.digging_excavator.Digging3D_DXF;
 import gui.digging_excavator.DiggingProfile;
 import gui.digging_excavator.Digging_CutAndFill1D;
 import gui.digging_excavator.Digging_CutAndFill2D;
+import drill_pile.gui.Drill_Activity;
 import gui.gps.NmeaGenerator;
 import gui.gps.Nuovo_Gps;
 import gui.grading_dozergrader.Grading3D_DXF;
@@ -89,7 +89,6 @@ import gui.hydro.ECU_Activity;
 import gui.hydro.Hydro_Activity_Entering;
 import gui.hydro.KOMATSU_Activity;
 import gui.my_opengl.My3DActivity;
-import gui.my_opengl.MyGLRenderer;
 import gui.profiles.ProfileCalibAuto;
 import gui.profiles.ProfileCalibManual;
 import gui.profiles.ProfilesMenuActivity;
@@ -128,7 +127,6 @@ import utils.FullscreenActivity;
 import utils.LanguageSetter;
 import utils.MyData;
 import utils.MyDeviceManager;
-import utils.Utils;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
     public static  int MAX_NUMERO_FACCE=5000;
@@ -725,6 +723,9 @@ git push
             ((DampingActivity) activity).updateUI();
         }else if (activity instanceof Drill_Rod_Activity) {
             ((Drill_Rod_Activity) activity).updateUI();
+        }
+        else if (activity instanceof Drill_Activity) {
+            ((Drill_Activity) activity).updateUI();
         }
 
     }

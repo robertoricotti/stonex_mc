@@ -22,7 +22,6 @@ public class BaseClass extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d("KeyEve", String.valueOf(event.getKeyCode()));
 
-
         if (event.getKeyCode() == KeyEvent.KEYCODE_F1) {
 
             if(!isTouched) {

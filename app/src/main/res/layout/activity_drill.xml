@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="drill_pile.gui.Drill_Activity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/alta"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.08"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bassa"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.92"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/centro"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.5"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/cent_v"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.46"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/side"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.92"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bassa"
+        android:background="@color/_____cancel_text"
+        >
+        <ImageView
+            android:id="@+id/digMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:rotation="180"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/menu_btn"
+            app:tint="@color/black" />
+
+
+
+        <ImageView
+            android:id="@+id/bucketEdge"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/benna_misura_cnt"
+            />
+
+        <ImageView
+            android:id="@+id/settingOffset"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/offset_btn"
+            app:tint="@color/black" />
+        <ImageView
+            android:id="@+id/hydroPoint"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/cent_right_pg"
+            />
+        <ImageView
+            android:id="@+id/typeView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:rotationY="180"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/view_btn"
+            app:tint="@color/black" />
+
+
+
+
+        <ImageView
+            android:id="@+id/lineReference"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/btn_pt_lines"
+            />
+        <ImageView
+            android:id="@+id/drilltool"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/drillbit_2_96"
+            app:tint="@color/_____cancel_text" />
+        <ImageView
+            android:id="@+id/Status"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/gnss_setup_btn"
+            app:tint="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/side"
+        app:layout_constraintBottom_toTopOf="@id/alta"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toRightOf="@id/side"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bassa"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/application_table_line_color"
+        app:layout_constraintBottom_toTopOf="@+id/bassa"
+        app:layout_constraintRight_toLeftOf="@id/side"
+        app:layout_constraintLeft_toRightOf="@id/cent_v"
+        app:layout_constraintTop_toBottomOf="@id/alta">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bubble"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/application_table_line_color"
+        app:layout_constraintBottom_toTopOf="@+id/bassa"
+        app:layout_constraintRight_toLeftOf="@id/cent_v"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/alta">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divisorioC"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintLeft_toLeftOf="@id/cent_v"
+        app:layout_constraintRight_toRightOf="@id/cent_v"
+        app:layout_constraintTop_toBottomOf="@id/alta"
+        app:layout_constraintBottom_toTopOf="@id/bassa"/>
+    <View
+        android:id="@+id/divisorioDx"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintLeft_toLeftOf="@id/side"
+        app:layout_constraintRight_toRightOf="@id/side"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bassa"/>
+    <View
+        android:id="@+id/divisorioUp"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/side"
+        app:layout_constraintTop_toTopOf="@id/alta"
+        app:layout_constraintBottom_toBottomOf="@id/alta"/>
+    <View
+        android:id="@+id/divisorioDw"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bassa"
+        app:layout_constraintBottom_toBottomOf="@id/bassa"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
