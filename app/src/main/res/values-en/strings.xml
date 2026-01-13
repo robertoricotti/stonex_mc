@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">STX MC V4</string>
+    <string name="remove_all_rods">REMOVE ALL RODS?</string>
+    <string name="sdd_rod">ADD 1 ROD?</string>
+    <string name="remove_one_rod">ADD 1 ROD?</string>
+    <string name="rod_nr">NUMBER OF RODS</string>
     <string name="first_rod_l">FIRST ROD LENGTH</string>
     <string name="rod_l">ROD LENGTH</string>
     <string name="bit_l">DRILL BIT LENGTH - WIDTH</string>

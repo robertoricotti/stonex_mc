@@ -3,6 +3,10 @@
     <string name="first_rod_l">ERSTE STANGENLÄNGE</string>
     <string name="rod_l">STANGENLÄNGE</string>
     <string name="bit_l">BOHRERLÄNGE - DURCHMESSER</string>
+    <string name="rod_nr">ANZAHL DER STÄBE</string>
+    <string name="remove_all_rods">ALLE STÄBE ENTFERNEN?</string>
+    <string name="sdd_rod">1 STAB HINZUFÜGEN?</string>
+    <string name="remove_one_rod">1 STAB HINZUFÜGEN?</string>
 
     <string name="error_license">Lizenz abgelaufen oder fehlt\nBitte wenden Sie sich an Ihren örtlichen Händler, um das Problem zu beheben.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>

@@ -60,11 +60,8 @@
             android:scaleType="centerInside"
             app:srcCompat="@drawable/menu_btn"
             app:tint="@color/black" />
-
-
-
         <ImageView
-            android:id="@+id/bucketEdge"
+            android:id="@+id/drilltool"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
@@ -73,11 +70,15 @@
             android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/benna_misura_cnt"
-            />
+            app:srcCompat="@drawable/drillbit_2_96"
+            app:tint="@color/black" />
+
+
+
 
         <ImageView
-            android:id="@+id/settingOffset"
+            android:visibility="gone"
+            android:id="@+id/folders"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
@@ -86,7 +87,7 @@
             android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/offset_btn"
+            app:srcCompat="@drawable/btn_file_manager"
             app:tint="@color/black" />
         <ImageView
             android:id="@+id/hydroPoint"
@@ -129,18 +130,7 @@
             android:scaleType="centerInside"
             app:srcCompat="@drawable/btn_pt_lines"
             />
-        <ImageView
-            android:id="@+id/drilltool"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="1.5dp"
-            android:layout_marginTop="2dp"
-            android:layout_weight="0.5"
-            android:background="@drawable/custom_background_test3d_box_grigino"
-            android:padding="5dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/drillbit_2_96"
-            app:tint="@color/_____cancel_text" />
+
         <ImageView
             android:id="@+id/Status"
             android:layout_width="wrap_content"
@@ -153,6 +143,18 @@
             android:scaleType="centerInside"
             app:srcCompat="@drawable/gnss_setup_btn"
             app:tint="@color/white" />
+        <ImageView
+            android:id="@+id/playpause"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/btn_play"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -160,23 +162,127 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/side"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/alta"
         app:layout_constraintTop_toTopOf="parent"
         >
 
+        <TextView
+            android:id="@+id/idpalo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="26sp"
+            android:ems="12"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:text="P:1234"
+            android:background="@color/_____cancel_text"
+
+            />
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/_____cancel_text"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/pole_heading"
+            android:padding="5dp"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/txthdt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center|left"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:ems="6"
+            android:text="0.0°"
+            android:layout_weight="1"
+            android:background="@color/_____cancel_text"
+
+            />
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/_____cancel_text"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/pole_angle"
+            android:padding="5dp"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/txttilt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center|left"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:ems="6"
+            android:text="0.0°"
+            android:layout_weight="1"
+            android:background="@color/_____cancel_text"
+
+            />
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/_____cancel_text"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/baseline_arrow_circle_down"
+            android:padding="5dp"
+            android:rotation="0"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/txtdepth"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="26sp"
+            android:textColor="@color/white"
+            android:ems="6"
+            android:text="0.0 m"
+            android:layout_weight="1"
+            android:background="@color/_____cancel_text"
+
+            />
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/sideLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
+        android:background="@color/black"
         app:layout_constraintLeft_toRightOf="@id/side"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/alta"
         app:layout_constraintBottom_toTopOf="@id/bassa"
         app:layout_constraintRight_toRightOf="parent"
         >
-
+<drill_pile.gui.VerticalTargetIndicatorView
+    android:id="@+id/verticalIndicator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="1dp"
+    />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -218,7 +324,7 @@
         android:background="@color/_____cancel_text"
         app:layout_constraintLeft_toLeftOf="@id/side"
         app:layout_constraintRight_toRightOf="@id/side"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/alta"
         app:layout_constraintBottom_toTopOf="@id/bassa"/>
     <View
         android:id="@+id/divisorioUp"
@@ -226,7 +332,7 @@
         android:layout_height="2dp"
         android:background="@color/_____cancel_text"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/side"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/alta"
         app:layout_constraintBottom_toBottomOf="@id/alta"/>
     <View

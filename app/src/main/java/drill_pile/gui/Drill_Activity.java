@@ -1,21 +1,39 @@
 package drill_pile.gui;
 
+import static gui.MyApp.errorCode;
+
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.example.stx_dig.R;
 
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
+import gui.draw_class.MyColorClass;
+import okio.Utf8;
+import packexcalib.exca.DataSaved;
+import utils.Utils;
 
 public class Drill_Activity extends AppCompatActivity {
+    double currentDepth = 0;
+    int flip = 0;
     Dialog_Drill_GNSS dialogDrillGnss;
-    View divisorioC,divisorioDx,divisorioUp,divisorioDw;
-    ImageView digMenu,drilltool,Status;
+    View divisorioC, divisorioDx, divisorioUp, divisorioDw;
+    ImageView digMenu, drilltool, Status, folders, playpause;
+    ConstraintLayout topview, bubble;
+    VerticalTargetIndicatorView indicator;
+    TextView idpalo,txthdt,txttilt,txtdepth;
+    LinearLayout sideLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,27 +45,59 @@ public class Drill_Activity extends AppCompatActivity {
 
     }
 
-    private void findView(){
-        dialogDrillGnss=new Dialog_Drill_GNSS(this);
-        divisorioC=findViewById(R.id.divisorioC);
-        divisorioDx=findViewById(R.id.divisorioDx);
-        divisorioUp=findViewById(R.id.divisorioUp);
-        divisorioDw=findViewById(R.id.divisorioDw);
-        digMenu=findViewById(R.id.digMenu);
-        Status=findViewById(R.id.Status);
-        drilltool=findViewById(R.id.drilltool);
+    private void findView() {
+        dialogDrillGnss = new Dialog_Drill_GNSS(this);
+        divisorioC = findViewById(R.id.divisorioC);
+        divisorioDx = findViewById(R.id.divisorioDx);
+        divisorioUp = findViewById(R.id.divisorioUp);
+        divisorioDw = findViewById(R.id.divisorioDw);
+        digMenu = findViewById(R.id.digMenu);
+        Status = findViewById(R.id.Status);
+        drilltool = findViewById(R.id.drilltool);
+        folders = findViewById(R.id.folders);
+        playpause = findViewById(R.id.playpause);
+        topview = findViewById(R.id.topview);
+        bubble = findViewById(R.id.bubble);
+        indicator = findViewById(R.id.verticalIndicator);
+        idpalo=findViewById(R.id.idpalo);
+        txthdt=findViewById(R.id.txthdt);
+        txttilt=findViewById(R.id.txttilt);
+        txtdepth=findViewById(R.id.txtdepth);
+        sideLayout=findViewById(R.id.sideLayout);
+
+
 
     }
-    private void init(){
+
+    private void init() {
+        divisorioC.setBackgroundColor(MyColorClass.colorConstraint);
+        divisorioDw.setBackgroundColor(MyColorClass.colorConstraint);
+        divisorioDx.setBackgroundColor(MyColorClass.colorConstraint);
+        divisorioUp.setBackgroundColor(MyColorClass.colorConstraint);
+        bubble.setBackgroundColor(MyColorClass.colorSfondo);
+        topview.setBackgroundColor(MyColorClass.colorSfondo);
+        sideLayout.setBackgroundColor(MyColorClass.colorSfondo);
+
+        // configurazione iniziale
+        currentDepth = 57.0;
+
+        indicator.setTargetValue(50.123f);
+        double low=50.123-0.5;
+        double high=50.123+2;
+        indicator.setRange(low, high);
+        indicator.setTolerance(DataSaved.deadbandH);
+
 
     }
-    private void onClick(){
+
+    private void onClick() {
+
         digMenu.setOnClickListener(view -> {
             startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
         });
         Status.setOnClickListener(view -> {
-            if(!dialogDrillGnss.alertDialog.isShowing()){
+            if (!dialogDrillGnss.alertDialog.isShowing()) {
                 dialogDrillGnss.show();
             }
         });
@@ -57,10 +107,42 @@ public class Drill_Activity extends AppCompatActivity {
             startActivity(i);
             finish();
         });
+        folders.setOnClickListener(view -> {
+
+        });
+        playpause.setOnClickListener(view -> {
+
+        });
 
     }
 
-    public void updateUI(){
+    public void updateUI() {
+        if (DataSaved.gpsOk && errorCode == 0) {
 
+            Status.setImageTintList(ColorStateList.valueOf(Color.DKGRAY));
+            Status.setBackground(getDrawable(R.drawable.custom_background_test3d_box_gpsok));
+            flip = 0;
+        } else {
+
+            flipFlop();
+            flip += 1;
+            flip = flip % 20;
+        }
+        // realtime update
+        currentDepth-=0.02;
+        indicator.setCurrentValue((float)currentDepth);//TODO adattare in realtime
+        txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(currentDepth))+Utils.getMetriSimbol().replace("[","").replace("]",""));
+    }
+
+    private void flipFlop() {
+
+        if (flip == 0) {
+            Status.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            Status.setBackground(getDrawable(R.drawable.custom_background_test3d_box_gpsko));
+        }
+        if (flip == 10) {
+            Status.setImageTintList(ColorStateList.valueOf(Color.RED));
+            Status.setBackground(getDrawable(R.drawable.custom_background_test3d_box_grigino));
+        }
     }
 }

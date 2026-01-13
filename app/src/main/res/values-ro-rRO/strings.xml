@@ -4,6 +4,10 @@
     <string name="first_rod_l">LUNGIMEA PRIMEI Tije</string>
     <string name="rod_l">LUNGIMEA TIJEI</string>
     <string name="bit_l">LUNGIMEA BURGHIULUI - LĂȚIME</string>
+    <string name="rod_nr">NUMĂR DE TIJE</string>
+    <string name="remove_all_rods">ELIMINAȚI TOATE TIJELE?</string>
+    <string name="sdd_rod">ADĂUGAȚI 1 TIJĂ?</string>
+    <string name="remove_one_rod">ADĂUGAȚI 1 TIJĂ?</string>
 
     <string name="error_license">Licență expirată sau lipsă\nContactați dealerul local pentru a rezolva problema.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>

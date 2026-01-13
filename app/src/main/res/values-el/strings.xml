@@ -4,6 +4,11 @@
     <string name="first_rod_l">ΜΗΚΟΣ ΠΡΩΤΗΣ ΡΑΒΔΟΥ</string>
     <string name="rod_l">ΜΗΚΟΣ ΡΑΒΔΟΥ</string>
     <string name="bit_l">ΜΗΚΟΣ ΤΡΥΠΑΝΙΟΥ - ΠΛΑΤΟΣ</string>
+    <string name="rod_nr">ΑΡΙΘΜΟΣ ΡΑΒΔΩΝ</string>
+    <string name="remove_all_rods">ΑΦΑΙΡΕΣΗ ΟΛΩΝ ΤΩΝ ΡΑΒΔΩΝ;</string>
+    <string name="sdd_rod">ΠΡΟΣΘΗΚΗ 1 ΡΑΒΔΟΥ;</string>
+    <string name="remove_one_rod">ΠΡΟΣΘΗΚΗ 1 ΡΑΒΔΟΥ;</string>
+
 
     <string name="error_license">Η άδεια έχει λήξει ή λείπει\nΕπικοινωνήστε με τον τοπικό αντιπρόσωπο για να επιλύσετε το πρόβλημα.</string>
     <string name="copyright">Πνευματικά δικαιώματα © \nΌλα τα δικαιώματα διατηρούνται</string>

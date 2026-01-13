@@ -3,6 +3,10 @@
     <string name="first_rod_l">EERSTE STANGLENGTE</string>
     <string name="rod_l">STANGLENGTE</string>
     <string name="bit_l">BOORLENGTE - BREEDTE</string>
+    <string name="rod_nr">AANTAL STAVEN</string>
+    <string name="remove_all_rods">ALLE STAVEN VERWIJDEREN?</string>
+    <string name="sdd_rod">1 STAAF TOEVOEGEN?</string>
+    <string name="remove_one_rod">1 STAAF TOEVOEGEN?</string>
 
     <string name="error_license">Licentie verlopen of ontbreekt\nNeem contact op met uw lokale dealer om het probleem op te lossen.</string>
     <string name="copyright">Copyright © \nAlle rechten voorbehouden</string>

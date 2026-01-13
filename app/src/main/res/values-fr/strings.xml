@@ -3,6 +3,10 @@
     <string name="first_rod_l">LONGUEUR DE LA PREMIÈRE TIGE</string>
     <string name="rod_l">LONGUEUR DE LA TIGE</string>
     <string name="bit_l">LONGUEUR DU FORET - LARGEUR</string>
+    <string name="rod_nr">NOMBRE DE TIGES</string>
+    <string name="remove_all_rods">SUPPRIMER TOUTES LES TIGES ?</string>
+    <string name="sdd_rod">AJOUTER 1 TIGE ?</string>
+    <string name="remove_one_rod">AJOUTER 1 TIGE ?</string>
 
     <string name="error_license">Licence expirée ou manquante\nVeuillez contacter votre revendeur local pour résoudre le problème.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>

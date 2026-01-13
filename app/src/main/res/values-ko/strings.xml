@@ -4,6 +4,10 @@
     <string name="first_rod_l">첫 번째 로드 길이</string>
     <string name="rod_l">로드 길이</string>
     <string name="bit_l">드릴 비트 길이 - 너비</string>
+    <string name="rod_nr">로드 개수</string>
+    <string name="remove_all_rods">모든 로드를 제거하시겠습니까?</string>
+    <string name="sdd_rod">로드 1개를 추가하시겠습니까?</string>
+    <string name="remove_one_rod">로드 1개를 추가하시겠습니까?</string>
 
     <string name="error_license">라이선스가 만료되었거나 없습니다\n문제를 해결하려면 현지 딜러에게 문의하십시오.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>

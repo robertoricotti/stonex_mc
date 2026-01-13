@@ -3,6 +3,11 @@
     <string name="first_rod_l">第一根杆长度</string>
     <string name="rod_l">杆长度</string>
     <string name="bit_l">钻头长度 - 宽度</string>
+    <string name="rod_nr">杆数量</string>
+    <string name="remove_all_rods">删除所有杆？</string>
+    <string name="sdd_rod">添加 1 根杆？</string>
+    <string name="remove_one_rod">添加 1 根杆？</string>
+
     <string name="error_license">许可证已过期或缺失\n请联系当地经销商以解决问题。</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>

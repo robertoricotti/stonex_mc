@@ -3,6 +3,10 @@
     <string name="first_rod_l">COMPRIMENTO DA PRIMEIRA HASTE</string>
     <string name="rod_l">COMPRIMENTO DA HASTE</string>
     <string name="bit_l">COMPRIMENTO DA BROCA - LARGURA</string>
+    <string name="rod_nr">NÚMERO DE HASTES</string>
+    <string name="remove_all_rods">REMOVER TODAS AS HASTES?</string>
+    <string name="sdd_rod">ADICIONAR 1 HASTE?</string>
+    <string name="remove_one_rod">ADICIONAR 1 HASTE?</string>
 
     <string name="error_license">Licença expirada ou ausente\nEntre em contato com o revendedor local para resolver o problema.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>

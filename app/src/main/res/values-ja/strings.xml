@@ -3,6 +3,10 @@
     <string name="first_rod_l">最初のロッドの長さ</string>
     <string name="rod_l">ロッドの長さ</string>
     <string name="bit_l">ドリルビットの長さ - 幅</string>
+    <string name="rod_nr">ロッド数</string>
+    <string name="remove_all_rods">すべてのロッドを削除しますか？</string>
+    <string name="sdd_rod">ロッドを1本追加しますか？</string>
+    <string name="remove_one_rod">ロッドを1本追加しますか？</string>
 
     <string name="error_license">ライセンスが期限切れ、または見つかりません。\n問題を解決するには、販売代理店にお問い合わせください。</string>
     <string name="copyright">著作権 © \n全著作権所有</string>
