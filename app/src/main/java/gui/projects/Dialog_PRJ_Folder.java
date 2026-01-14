@@ -158,7 +158,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
             if (files != null) {
                 for (File file : files) {
                     boolean isFolder = file.isDirectory();
-                    if (file.getName().toLowerCase().endsWith(".dxf") || file.getName().toLowerCase().endsWith(".xml") || file.getName().toLowerCase().endsWith(".pstx") || file.getName().toLowerCase().endsWith(".csv")) {
+                    if (file.getName().toLowerCase().endsWith(".dxf") || file.getName().toLowerCase().endsWith(".xml") || file.getName().toLowerCase().endsWith(".pstx") || file.getName().toLowerCase().endsWith(".csv")
+                            || file.getName().toLowerCase().endsWith(".ird")) {
                         long size1 = file.isDirectory() ? getFolderSize(file) : file.length();
                         arrayFiles.add(new ProjectAdapter.FileItem(file.getName(), isFolder, size1));
                     }
