@@ -1890,7 +1890,6 @@ public class UpdateValuesService extends Service {
                 DataSaved.progettoSelected_POLY = MyData.get_String("progettoSelected_POLY");
                 DataSaved.progettoSelected_POINT = MyData.get_String("progettoSelected_POINT");
 
-                DataSaved.progettoSelected_POINT_IREDES = MyData.get_String("progettoSelected_POINT_IREDES");
 
 
                 try {

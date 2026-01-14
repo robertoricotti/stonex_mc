@@ -22,6 +22,7 @@ import iredes.DrillHole_IR;
 import iredes.DrillPlan_IR;
 import iredes.NavData_IR;
 import iredes.Pattern_IR;
+import iredes.Point3D_Drill;
 import iredes.Point3D_IR;
 import iredes.RigStatus_IR;
 
@@ -298,12 +299,8 @@ public class DataSaved {
     public static List<Point3D_IR> rawPoints = new ArrayList<>();
     public static List<Point3D_IR> filteredRawPoints = new ArrayList<>();
 
-    //--COORDINATE BIT -FRESA
-    public static double[]coordBIT=new double[3];
-    public static double[]coordDrillHEAD=new double[3];
 
-    //Progetto
-    public static String progettoSelected_POINT_IREDES;
+
 
 
     //MC
@@ -336,6 +333,7 @@ public class DataSaved {
     public static List<Polyline> filteredPolylines = new ArrayList<>();
     public static List<Polyline> filteredPolylinesGL_2D = new ArrayList<>();
     public static List<Point3D> points = new ArrayList<>();
+    public static List<Point3D_Drill> drill_points = new ArrayList<>();
     public static List<Point3D> filteredPoints = new ArrayList<>();
     public static List<Arc> arcs = new ArrayList<>();
     public static List<Circle> circles = new ArrayList<>();

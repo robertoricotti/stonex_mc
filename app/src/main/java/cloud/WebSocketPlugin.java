@@ -5,6 +5,7 @@ import static gui.MyApp.folderPath;
 import static gui.MyApp.isApollo;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.restoreCode;
+import static utils.MyTypes.MC_3D_PRO_AUTO;
 
 import android.content.Context;
 import android.os.Environment;
@@ -375,7 +376,7 @@ public class WebSocketPlugin {
             }
         }else {
             activationCode="0123456789";
-            licenseType=5;
+            licenseType=MC_3D_PRO_AUTO;
             MyData.push("licenza", activationCode);
             Log.d("AcT",licenseType+"  "+activationCode);
         }

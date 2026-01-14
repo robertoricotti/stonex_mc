@@ -23,6 +23,7 @@ import dxf.DxfText;
 import dxf.Face3D;
 import dxf.Layer;
 import dxf.Point3D;
+import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 
 public class LandXMLParser {
@@ -124,6 +125,9 @@ public class LandXMLParser {
                 }
             }
 
+
+            parseCGPoints(doc, landXMLData, xyz, conversionFactor);
+
         } catch (Exception e) {
             Log.e("LandXMLParser", "Errore durante il parsing", e);
         }
@@ -149,4 +153,210 @@ public class LandXMLParser {
                 .replace("\r", "")
                 .replace("\n", "");
     }
+
+    // ------------------------------------------------------------
+// CGPoints / CgPoints
+// ------------------------------------------------------------
+    private static void parseCGPoints(Document doc, LandXMLData landXMLData, int xyz, double conversionFactor) {
+        // LandXML standard: <CgPoints><CgPoint name="...">y x z</CgPoint></CgPoints>
+        // Alcuni software usano tag/attributi custom: cerchiamo in modo robusto.
+        NodeList nodes = doc.getElementsByTagName("CgPoint");
+        if (nodes == null || nodes.getLength() == 0) {
+            nodes = doc.getElementsByTagName("CGPoint");
+        }
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node n = nodes.item(i);
+            if (n.getNodeType() != Node.ELEMENT_NODE) continue;
+            Element e = (Element) n;
+
+            Point3D_Drill p = new Point3D_Drill();
+
+            // --- ID / Row / Desc ---
+            p.setId(firstNonEmptyAttr(e, "name", "id", "pntRef", "oID", "point", "code"));
+            p.setRowId(firstNonEmptyAttr(e, "row", "Row", "alignment", "Alignment", "group", "Group", "set", "Set", "line", "Line"));
+
+            String desc = firstNonEmptyAttr(e, "desc", "Desc", "description", "Description");
+            if (desc == null) desc = firstChildText(e, "Desc", "Description", "Descr", "Note");
+            p.setDescription(desc);
+
+            // --- Diametro / Tilt ---
+            p.setDiameter(firstNonEmptyDouble(e,
+                    new String[]{"diameter", "Diameter", "dia", "Dia", "d", "D"},
+                    new String[]{"Diameter", "Dia", "D", "diam"}));
+            p.setTilt(firstNonEmptyDouble(e,
+                    new String[]{"tilt", "Tilt", "inclination", "Inclination", "inclin", "Inclin", "slope", "Slope"},
+                    new String[]{"Tilt", "Inclination", "Inclin", "Slope"}));
+
+            // --- Coordinate testa/fine ---
+            // 1) figli espliciti
+            Double[] head = firstCoordFromChildren(e, xyz, conversionFactor, "Start", "Head", "From", "Top", "P1");
+            Double[] end = firstCoordFromChildren(e, xyz, conversionFactor, "End", "Tail", "To", "Bottom", "P2");
+
+            // 2) attributi (varianti)
+            if (head == null) head = coordFromAttributes(e, xyz, conversionFactor,
+                    new String[]{"x", "X", "e", "E", "east", "East", "easting", "Easting", "xHead", "XHead", "headX", "HeadX"},
+                    new String[]{"y", "Y", "n", "N", "north", "North", "northing", "Northing", "yHead", "YHead", "headY", "HeadY"},
+                    new String[]{"z", "Z", "h", "H", "elev", "Elev", "elevation", "Elevation", "zHead", "ZHead", "headZ", "HeadZ"}
+            );
+            if (end == null) end = coordFromAttributes(e, xyz, conversionFactor,
+                    new String[]{"xEnd", "XEnd", "endX", "EndX", "x2", "X2", "x_to", "X_to"},
+                    new String[]{"yEnd", "YEnd", "endY", "EndY", "y2", "Y2", "y_to", "Y_to"},
+                    new String[]{"zEnd", "ZEnd", "endZ", "EndZ", "z2", "Z2", "z_to", "Z_to"}
+            );
+
+            // 3) testo del CgPoint: può essere (x y z) o (y x z) e a volte (6 numeri) testa+fine
+            if (head == null) {
+                Double[] coords = coordFromText(e.getTextContent(), xyz, conversionFactor);
+                if (coords != null) head = coords;
+            }
+            if (end == null) {
+                Double[] coords6 = coordFromText6(e.getTextContent(), xyz, conversionFactor);
+                if (coords6 != null) end = new Double[]{coords6[3], coords6[4], coords6[5]};
+            }
+
+            if (head != null) {
+                p.setHeadX(head[0]);
+                p.setHeadY(head[1]);
+                p.setHeadZ(head[2]);
+            }
+            if (end != null) {
+                p.setEndX(end[0]);
+                p.setEndY(end[1]);
+                p.setEndZ(end[2]);
+            }
+
+            // Calcola heading/depth/length se possibile
+            p.recomputeDerived();
+
+            // Salva solo se c'è almeno un dato utile
+            if (p.getId() != null || p.getRowId() != null || p.getDescription() != null ||
+                    p.getHeadX() != null || p.getEndX() != null || p.getDiameter() != null || p.getTilt() != null) {
+                landXMLData.addDrillPoint(p);
+            }
+        }
+    }
+
+    private static String firstNonEmptyAttr(Element e, String... names) {
+        for (String n : names) {
+            String v = e.getAttribute(n);
+            if (v != null) {
+                v = v.trim();
+                if (!v.isEmpty()) return v;
+            }
+        }
+        return null;
+    }
+
+    private static String firstChildText(Element e, String... childNames) {
+        for (String name : childNames) {
+            NodeList nl = e.getElementsByTagName(name);
+            if (nl != null && nl.getLength() > 0) {
+                String t = nl.item(0).getTextContent();
+                if (t != null) {
+                    t = t.trim();
+                    if (!t.isEmpty()) return t;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static Double firstNonEmptyDouble(Element e, String[] attrNames, String[] childNames) {
+        // attributi
+        for (String n : attrNames) {
+            String v = e.getAttribute(n);
+            Double d = parseDoubleSafe(v);
+            if (d != null) return d;
+        }
+        // figli
+        for (String cn : childNames) {
+            NodeList nl = e.getElementsByTagName(cn);
+            if (nl != null && nl.getLength() > 0) {
+                Double d = parseDoubleSafe(nl.item(0).getTextContent());
+                if (d != null) return d;
+            }
+        }
+        return null;
+    }
+
+    private static Double parseDoubleSafe(String s) {
+        if (s == null) return null;
+        s = s.trim();
+        if (s.isEmpty()) return null;
+        s = s.replace(',', '.'); // virgola decimale
+        try {
+            return Double.parseDouble(s);
+        } catch (Exception ignore) {
+            return null;
+        }
+    }
+
+    private static Double[] firstCoordFromChildren(Element e, int xyz, double conv, String... childNames) {
+        for (String name : childNames) {
+            NodeList nl = e.getElementsByTagName(name);
+            if (nl != null && nl.getLength() > 0) {
+                String txt = nl.item(0).getTextContent();
+                Double[] c = coordFromText(txt, xyz, conv);
+                if (c != null) return c;
+            }
+        }
+        return null;
+    }
+
+    private static Double[] coordFromAttributes(Element e, int xyz, double conv,
+                                                String[] xNames, String[] yNames, String[] zNames) {
+        Double x = null, y = null, z = null;
+        for (String n : xNames) { x = parseDoubleSafe(e.getAttribute(n)); if (x != null) break; }
+        for (String n : yNames) { y = parseDoubleSafe(e.getAttribute(n)); if (y != null) break; }
+        for (String n : zNames) { z = parseDoubleSafe(e.getAttribute(n)); if (z != null) break; }
+        if (x == null || y == null || z == null) return null;
+
+        // Adegua swap X/Y come nel resto del parser
+        double xx = xyz == 1 ? y : x;
+        double yy = xyz == 1 ? x : y;
+        return new Double[]{xx * conv, yy * conv, z * conv};
+    }
+
+    private static Double[] coordFromText(String text, int xyz, double conv) {
+        if (text == null) return null;
+        String t = text.trim();
+        if (t.isEmpty()) return null;
+
+        String[] tokens = t.split("[\\s,;]+");
+        if (tokens.length < 3) return null;
+
+        Double a = parseDoubleSafe(tokens[0]);
+        Double b = parseDoubleSafe(tokens[1]);
+        Double c = parseDoubleSafe(tokens[2]);
+        if (a == null || b == null || c == null) return null;
+
+        double x = xyz == 1 ? b : a;
+        double y = xyz == 1 ? a : b;
+        return new Double[]{x * conv, y * conv, c * conv};
+    }
+
+    private static Double[] coordFromText6(String text, int xyz, double conv) {
+        if (text == null) return null;
+        String t = text.trim();
+        if (t.isEmpty()) return null;
+
+        String[] tokens = t.split("[\\s,;]+");
+        if (tokens.length < 6) return null;
+
+        Double a1 = parseDoubleSafe(tokens[0]);
+        Double b1 = parseDoubleSafe(tokens[1]);
+        Double c1 = parseDoubleSafe(tokens[2]);
+        Double a2 = parseDoubleSafe(tokens[3]);
+        Double b2 = parseDoubleSafe(tokens[4]);
+        Double c2 = parseDoubleSafe(tokens[5]);
+        if (a1 == null || b1 == null || c1 == null || a2 == null || b2 == null || c2 == null) return null;
+
+        double x1 = xyz == 1 ? b1 : a1;
+        double y1 = xyz == 1 ? a1 : b1;
+        double x2 = xyz == 1 ? b2 : a2;
+        double y2 = xyz == 1 ? a2 : b2;
+        return new Double[]{x1 * conv, y1 * conv, c1 * conv, x2 * conv, y2 * conv, c2 * conv};
+    }
+
 }

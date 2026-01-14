@@ -37,6 +37,8 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.MC_2D;
+import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
@@ -144,7 +146,7 @@ public class CanSender extends Service {
     private final Runnable task = new Runnable() {
         @Override
         public void run() {
-            if (MyApp.licenseType == 5) {
+            if (MyApp.licenseType == MC_3D_PRO_AUTO) {
                 switch (DataSaved.isWL) {
                     case DOZER:
                     case DOZER_SIX:
@@ -213,7 +215,7 @@ public class CanSender extends Service {
 
 
             try {
-                if (licenseType > 1) {
+                if (licenseType > MC_2D) {
                     switch (DataSaved.my_comPort) {
                         case 0:
                             if (DataSaved.gpsType == 0) {

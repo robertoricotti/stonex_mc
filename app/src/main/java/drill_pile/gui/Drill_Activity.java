@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
@@ -24,7 +25,7 @@ import okio.Utf8;
 import packexcalib.exca.DataSaved;
 import utils.Utils;
 
-public class Drill_Activity extends AppCompatActivity {
+public class Drill_Activity extends BaseClass {
     double currentDepth = 0;
     int flip = 0;
     Dialog_Drill_GNSS dialogDrillGnss;
@@ -34,6 +35,7 @@ public class Drill_Activity extends AppCompatActivity {
     VerticalTargetIndicatorView indicator;
     TextView idpalo,txthdt,txttilt,txtdepth;
     LinearLayout sideLayout;
+    int colorUp,colorDown,colorGreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,15 @@ public class Drill_Activity extends AppCompatActivity {
     }
 
     private void init() {
+        if (DataSaved.colorMode == 0) {
+            colorUp = Color.RED;
+            colorDown = Color.BLUE;
+            colorGreen = Color.GREEN;
+        } else {
+            colorDown =Color.RED;
+            colorUp = Color.BLUE;
+            colorGreen = Color.GREEN;
+        }
         divisorioC.setBackgroundColor(MyColorClass.colorConstraint);
         divisorioDw.setBackgroundColor(MyColorClass.colorConstraint);
         divisorioDx.setBackgroundColor(MyColorClass.colorConstraint);
@@ -79,13 +90,14 @@ public class Drill_Activity extends AppCompatActivity {
         sideLayout.setBackgroundColor(MyColorClass.colorSfondo);
 
         // configurazione iniziale
-        currentDepth = 57.0;
+        currentDepth = 1254.0;
 
-        indicator.setTargetValue(50.123f);
-        double low=50.123-0.5;
-        double high=50.123+2;
+        indicator.setTargetValue(1250.123f);
+        double low=1250.123-0.5;
+        double high=1250.123+2;
         indicator.setRange(low, high);
         indicator.setTolerance(DataSaved.deadbandH);
+        indicator.setColors(colorUp,colorDown,colorGreen);
 
 
     }
@@ -129,9 +141,9 @@ public class Drill_Activity extends AppCompatActivity {
             flip = flip % 20;
         }
         // realtime update
-        currentDepth-=0.02;
+        currentDepth-=0.01;
         indicator.setCurrentValue((float)currentDepth);//TODO adattare in realtime
-        txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(currentDepth))+Utils.getMetriSimbol().replace("[","").replace("]",""));
+        txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(currentDepth-1250.123))+Utils.getMetriSimbol().replace("[","").replace("]",""));
     }
 
     private void flipFlop() {

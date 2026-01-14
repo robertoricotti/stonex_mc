@@ -21,6 +21,7 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
@@ -47,6 +48,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import drill_pile.gui.Drill_Activity;
 import dxf.Arc;
 import dxf.Circle;
 import dxf.DXFData;
@@ -60,6 +62,8 @@ import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.my_opengl.My3DActivity;
 import gui.projects.PickProject;
+import iredes.DrillCSVParser;
+import iredes.IrdParser;
 import landxml.LandXMLData;
 import landxml.LandXMLParser;
 import packexcalib.exca.DataSaved;
@@ -140,6 +144,7 @@ public class ReadProjectService extends Service {
                     Execute_MC();
                     break;
                 case DRILL:
+                case SOLARDRILL:
                     Excecute_DRILL();
                     break;
             }
@@ -222,10 +227,22 @@ public class ReadProjectService extends Service {
         Runnable checkWL = new Runnable() {
             @Override
             public void run() {
-                if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
-                    startCorrectActivity();
-                } else {
-                    handler.postDelayed(this, 200); // Riprova ogni 200ms
+                if(DataSaved.isWL==EXCAVATOR||
+                DataSaved.isWL==WHEELLOADER||
+                DataSaved.isWL==DOZER||
+                DataSaved.isWL==DOZER_SIX||
+                DataSaved.isWL==GRADER) {
+                    if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
+                        startCorrectActivity();
+                    } else {
+                        handler.postDelayed(this, 200); // Riprova ogni 200ms
+                    }
+                }else if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                    if (isFinishedPOINT) {
+                        startCorrectActivityDrill();
+                    } else {
+                        handler.postDelayed(this, 200); // Riprova ogni 200ms
+                    }
                 }
             }
         };
@@ -248,11 +265,23 @@ public class ReadProjectService extends Service {
             MyApp.visibleActivity.recreate();
         }
     }
+    private void startCorrectActivityDrill() {
+        if (MyApp.visibleActivity == null) return;
 
-    public static void clearCache(Context context, String projectName) {
-        File file = new File(context.getFilesDir(), projectName + ".ser");
-        if (file.exists()) file.delete();
+        if (!(MyApp.visibleActivity instanceof Drill_Activity)) {
+            Intent intent;
+            intent = new Intent(MyApp.visibleActivity, Drill_Activity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("whats", "whats");
+            startActivity(intent);
+
+            MyApp.visibleActivity.finish();
+        } else {
+            MyApp.visibleActivity.recreate();
+        }
     }
+
+
 
     public static void startCRS() {
         String s = MyData.get_String("crs");
@@ -430,7 +459,6 @@ public class ReadProjectService extends Service {
     }
 
     private void Execute_MC() {
-        {
             startCRS();
             if (DataSaved.dxfLayers_DTM == null) {
                 DataSaved.dxfLayers_DTM = new ArrayList<>();
@@ -444,6 +472,7 @@ public class ReadProjectService extends Service {
             String nomeProgettoTRM = MyData.get_String("progettoSelected");
             int lastIndexTRM = nomeProgettoTRM.lastIndexOf(".");
             String fileExtensionTRM = nomeProgettoTRM.substring(lastIndexTRM + 1);
+
             String nomeProgettoPOLY = MyData.get_String("progettoSelected_POLY");
             mettiPoly = nomeProgettoPOLY != null && !nomeProgettoPOLY.equals("");
             if (nomeProgettoPOLY == null || nomeProgettoPOLY.equals("")) {
@@ -501,7 +530,8 @@ public class ReadProjectService extends Service {
                             }
                         }
                         parserStatus = "Reading TRM...";
-                        if (fileExtensionTRM.equalsIgnoreCase("dxf") || fileExtensionTRM.equalsIgnoreCase("pstx")) {
+                        if (fileExtensionTRM.equalsIgnoreCase("dxf") || fileExtensionTRM.equalsIgnoreCase("pstx"))
+                        {
                             if (MyApp.licenseType > 1) {
                                 isFinishedDTM = false;
 
@@ -641,7 +671,8 @@ public class ReadProjectService extends Service {
                                 goToLicense();
                             }
 
-                        } else if (fileExtensionTRM.equalsIgnoreCase("xml")) {
+                        }
+                        else if (fileExtensionTRM.equalsIgnoreCase("xml")) {
                             if (MyApp.licenseType > 1) {
 
                                 isFinishedDTM = false;
@@ -813,14 +844,186 @@ public class ReadProjectService extends Service {
                     MyApp.visibleActivity.finish();
 
                 }
+
             } else {
 
                 goToLicense();
             }
-        }
+
     }
 
     private void Excecute_DRILL() {
-        //TODO Read DRrill
+
+        startCRS();
+        String nomeProgettoPOINT = MyData.get_String("progettoSelected_POINT");
+        mettiPunti = nomeProgettoPOINT != null && !nomeProgettoPOINT.equals("");
+        if (nomeProgettoPOINT == null || nomeProgettoPOINT.equals("")) {
+            isFinishedPOINT = true;
+        }
+
+        String nomeProgettoPOLY = MyData.get_String("progettoSelected_POLY");
+        mettiPoly = nomeProgettoPOLY != null && !nomeProgettoPOLY.equals("");
+        if (nomeProgettoPOLY == null || nomeProgettoPOLY.equals("")) {
+            isFinishedPOLY = true;
+        }
+        if (MyApp.licenseType > 1) {
+            if (!nomeProgettoPOINT.equals("")){
+                //TODO Read DRrill
+                try {
+                    if (mettiPoly) {
+                        int lastIndexPOLY = nomeProgettoPOLY.lastIndexOf(".");
+                        fileExtensionPOLY = nomeProgettoPOLY.substring(lastIndexPOLY + 1);
+                        DataSaved.progettoSelected_POLY = nomeProgettoPOLY;
+                    } else {
+                        if (DataSaved.polylines != null) {
+                            DataSaved.polylines.clear();
+                        }
+                        if (DataSaved.polylines_2D != null) {
+                            DataSaved.polylines_2D.clear();
+                        }
+                        if (DataSaved.arcs != null) {
+                            DataSaved.arcs.clear();
+                        }
+                        if (DataSaved.circles != null) {
+                            DataSaved.circles.clear();
+                        }
+                        if (DataSaved.lines_2D != null) {
+                            DataSaved.lines_2D.clear();
+                        }
+                        if (DataSaved.dxfLayers_POLY != null) {
+                            DataSaved.dxfLayers_POLY.clear();
+                        }
+
+
+                    }
+                    if (mettiPunti) {
+                        int lastIndexPOINT = nomeProgettoPOINT.lastIndexOf(".");
+                        fileExtensionPOINT = nomeProgettoPOINT.substring(lastIndexPOINT + 1);
+                        DataSaved.progettoSelected_POINT = nomeProgettoPOINT;
+                    } else {
+
+                        if (DataSaved.drill_points != null) {
+                            DataSaved.drill_points.clear();
+                        }
+                        if (DataSaved.dxfLayers_POINT != null) {
+                            DataSaved.dxfLayers_POINT.clear();
+                        }
+                    }
+                    parserStatus = "Reading TRM...";
+                    try {
+                        uom = MyData.get_Int("Unit_Of_Measure");
+                    } catch (NumberFormatException e) {
+                        uom = 0;
+                    }
+                    isFeet = uom > 1;
+
+                    if (!DataSaved.lastProjectNamePOINT.equals(nomeProgettoPOINT)) {
+                        isFinishedPOINT = false;
+                        DataSaved.drill_points = new ArrayList<>();
+
+
+                        if (mettiPunti) {
+                            switch (fileExtensionPOINT.toLowerCase()) {
+                                case "dxf":
+                                    parserStatus = "Reading Points...";
+                                    //TODO DXFPOINTS
+                                    break;
+                                case "xml":
+                                    //TODO CGPOINTS
+                                    parserStatus = "Reading Points...";
+                                    landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
+                                    DataSaved.drill_points = landXMLPOINT.getDrillPoints();
+                                    break;
+
+                                case "csv":
+                                    //parsare pnezd o gestire i csv in maniera efficace
+                                    parserStatus = "Reading Points...";
+                                    File f = new File(DataSaved.progettoSelected_POINT);
+                                    DataSaved.drill_points= DrillCSVParser.parse(f, 0, 1, conversionFactor);
+
+                                    break;
+                                case "ird":
+                                    //TODO parsare IREDES
+                                    parserStatus = "Reading Points...";
+                                    DataSaved.drill_points=IrdParser.parseIrd(DataSaved.progettoSelected_POINT, 1, conversionFactor);
+                                    break;
+                            }
+                        }
+
+                    } else {
+                        isFinishedPOINT = true;
+                    }
+                    if (!DataSaved.lastProjectNamePOLY.equals(nomeProgettoPOLY)) {
+                        isFinishedPOLY = false;
+                        DataSaved.polylines = new ArrayList<>();
+                        DataSaved.polylines_2D = new ArrayList<>();
+                        DataSaved.arcs = new ArrayList<>();
+                        DataSaved.circles = new ArrayList<>();
+                        DataSaved.lines_2D = new ArrayList<>();
+
+                        if (mettiPoly) {
+                            switch (fileExtensionPOLY.toLowerCase()) {
+                                case "dxf":
+                                case "pstx":
+
+                                    parserStatus = "Reading Polylines...";
+                                    dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+
+                                    dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                    DataSaved.polylines = dxfDataPoly.getPolylines();
+                                    DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
+                                    DataSaved.arcs = dxfDataPoly.getArcs();
+                                    DataSaved.circles = dxfDataPoly.getCircles();
+                                    DataSaved.lines_2D = dxfDataPoly.getLines();
+                                    DataSaved.dxfLayers_POLY = dxfDataPoly.getLayers();
+                                    copiaPoly();
+                                    break;
+                                case "xml":
+
+                                    parserStatus = "Reading Polylines...";
+
+                                    landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
+
+                                    DataSaved.polylines = landXMLPOLY.getPolylines();
+                                    DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
+                                    copiaPoly();
+                                    break;
+                            }
+
+                        }
+
+
+                    } else {
+                        isFinishedPOLY = true;
+                    }
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    DataSaved.isAutoSnap = 0;
+                    ERRORE_PROGETTO = true;
+
+                    Intent intent = new Intent(MyApp.visibleActivity, PickProject.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    MyApp.visibleActivity.finish();
+                }
+            } else {
+
+                DataSaved.isAutoSnap = 0;
+
+                Intent intent = new Intent(MyApp.visibleActivity, PickProject.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                MyApp.visibleActivity.finish();
+
+            }
+            waitForWLThenStartActivity();
+        }else {
+            goToLicense();
+        }
+
     }
 }

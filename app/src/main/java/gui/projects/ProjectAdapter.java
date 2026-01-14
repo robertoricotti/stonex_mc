@@ -1,5 +1,13 @@
 package gui.projects;
 
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DRILL;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.SOLARDRILL;
+import static utils.MyTypes.WHEELLOADER;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -68,7 +76,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         CheckBox ckTrm = holder.ckTrm;
         CheckBox ckPoly = holder.ckPolyl;
         CheckBox ckPoi = holder.ckPoi;
-        CheckBox ckJson=holder.ckJson;
+        CheckBox ckJson = holder.ckJson;
 
         // Configurazione visibilità e contenuti in base al tipo di file (cartella o file)
         if (isFolder) {
@@ -81,22 +89,36 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             sizeTextView.setText(formatSize(fileSize));
 
         } else {
+
             int lastIndex = nameFile.lastIndexOf(".");
             String fileExtension = nameFile.substring(lastIndex + 1).toLowerCase();
-            if(fileExtension.equalsIgnoreCase("geojson")) {
+            if (DataSaved.isWL == EXCAVATOR ||
+                    DataSaved.isWL == WHEELLOADER ||
+                    DataSaved.isWL == DOZER_SIX ||
+                    DataSaved.isWL == DOZER ||
+                    DataSaved.isWL == GRADER) {
+                if (fileExtension.equalsIgnoreCase("geojson")) {
+                    ckTrm.setVisibility(View.INVISIBLE);
+                    ckPoly.setVisibility(View.INVISIBLE);
+                    ckPoi.setVisibility(View.INVISIBLE);
+                    ckJson.setVisibility(View.VISIBLE);
+                    sizeTextView.setVisibility(View.VISIBLE);
+                } else if (fileExtension.equalsIgnoreCase("csv")) {
+                    ckTrm.setVisibility(View.INVISIBLE);
+                    ckPoly.setVisibility(View.INVISIBLE);
+                    ckPoi.setVisibility(View.VISIBLE);
+                    ckJson.setVisibility(View.INVISIBLE);
+                    sizeTextView.setVisibility(View.VISIBLE);
+                } else {
+                    ckTrm.setVisibility(View.VISIBLE);
+                    ckPoly.setVisibility(View.VISIBLE);
+                    ckPoi.setVisibility(View.VISIBLE);
+                    ckJson.setVisibility(View.INVISIBLE);
+                    sizeTextView.setVisibility(View.VISIBLE);
+                }
+
+            }else if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
                 ckTrm.setVisibility(View.INVISIBLE);
-                ckPoly.setVisibility(View.INVISIBLE);
-                ckPoi.setVisibility(View.INVISIBLE);
-                ckJson.setVisibility(View.VISIBLE);
-                sizeTextView.setVisibility(View.VISIBLE);
-            }else if(fileExtension.equalsIgnoreCase("csv")) {
-                ckTrm.setVisibility(View.INVISIBLE);
-                ckPoly.setVisibility(View.INVISIBLE);
-                ckPoi.setVisibility(View.VISIBLE);
-                ckJson.setVisibility(View.INVISIBLE);
-                sizeTextView.setVisibility(View.VISIBLE);
-            }else {
-                ckTrm.setVisibility(View.VISIBLE);
                 ckPoly.setVisibility(View.VISIBLE);
                 ckPoi.setVisibility(View.VISIBLE);
                 ckJson.setVisibility(View.INVISIBLE);
@@ -135,25 +157,23 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
 
         // Imposta gli stati delle checkbox in base alle posizioni selezionate
         ckTrm.setChecked(holder.getAdapterPosition() == selectedCkTrmPosition);
-        if(ckTrm.isChecked()){
+        if (ckTrm.isChecked()) {
             ckTrm.setBackgroundColor(ContextCompat.getColor(constraintLayout.getContext(), R.color.bg_sfsgreen));
-        }else {
+        } else {
             ckTrm.setBackgroundColor(ContextCompat.getColor(constraintLayout.getContext(), R.color.transparent));
         }
         ckPoly.setChecked(holder.getAdapterPosition() == selectedCkPolyPosition);
-        if(ckPoly.isChecked()){
+        if (ckPoly.isChecked()) {
             ckPoly.setBackgroundColor(ContextCompat.getColor(constraintLayout.getContext(), R.color.yellow));
-        }else {
+        } else {
             ckPoly.setBackgroundColor(ContextCompat.getColor(constraintLayout.getContext(), R.color.transparent));
         }
         ckPoi.setChecked(holder.getAdapterPosition() == selectedCkPoiPosition);
-        if(ckPoi.isChecked()){
-            ckPoi.setBackgroundColor(( Color.parseColor("#2196F3")));
-        }else {
+        if (ckPoi.isChecked()) {
+            ckPoi.setBackgroundColor((Color.parseColor("#2196F3")));
+        } else {
             ckPoi.setBackgroundColor(ContextCompat.getColor(constraintLayout.getContext(), R.color.transparent));
         }
-
-
 
 
         // Imposta i listener di click per le checkbox
@@ -193,6 +213,9 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             case "txt":
                 icon.setImageResource(R.drawable.mytxt);
                 break;
+            case "ird":
+                icon.setImageResource(R.drawable.ird_200);
+                break;
         }
 
     }
@@ -219,7 +242,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public CheckBox ckTrm, ckPolyl, ckPoi,ckJson;
+        public CheckBox ckTrm, ckPolyl, ckPoi, ckJson;
         public TextView nameTextView;
         public ConstraintLayout panel;
         public ImageView icon;
@@ -231,24 +254,24 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             ckTrm = itemView.findViewById(R.id.ckTrm);
             ckPolyl = itemView.findViewById(R.id.ckPolyl);
             ckPoi = itemView.findViewById(R.id.ckPoi);
-            ckJson=itemView.findViewById(R.id.ckJSON);
+            ckJson = itemView.findViewById(R.id.ckJSON);
             icon = itemView.findViewById(R.id.pointCk);
             nameTextView = itemView.findViewById(R.id.path_tv);
             panel = itemView.findViewById(R.id.panel);
             sizeTextView = itemView.findViewById(R.id.size_tv);
             nameTextView.setOnClickListener((View v) -> {
-                if(selectedItem==-1){
-                selectedItem = getAdapterPosition();}
-                else {
-                    selectedItem=-1;
+                if (selectedItem == -1) {
+                    selectedItem = getAdapterPosition();
+                } else {
+                    selectedItem = -1;
                 }
                 notifyDataSetChanged();
             });
             icon.setOnClickListener((View v) -> {
-                if(selectedItem==-1){
-                    selectedItem = getAdapterPosition();}
-                else {
-                    selectedItem=-1;
+                if (selectedItem == -1) {
+                    selectedItem = getAdapterPosition();
+                } else {
+                    selectedItem = -1;
                 }
                 notifyDataSetChanged();
             });
@@ -259,7 +282,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         private void setCheckboxListeners() {
             ckTrm.setOnClickListener(v -> {
                 int position = getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION) return; // Safeguard against invalid positions
+                if (position == RecyclerView.NO_POSITION)
+                    return; // Safeguard against invalid positions
 
                 if (ckTrm.isChecked()) {
                     selectedCkTrmPosition = position; // Set selected position for ckTrm
@@ -271,34 +295,37 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
 
             ckPolyl.setOnClickListener(v -> {
                 int position = getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION) return; // Safeguard against invalid positions
+                if (position == RecyclerView.NO_POSITION)
+                    return; // Safeguard against invalid positions
 
                 if (ckPolyl.isChecked()) {
                     selectedCkPolyPosition = position; // Set selected position for ckPolyl
                 } else {
                     selectedCkPolyPosition = -1; // Deselect if unchecked
-                    MyData.push("progettoSelected_POLY","");
-                    DataSaved.lastProjectNamePOLY="";
+                    MyData.push("progettoSelected_POLY", "");
+                    DataSaved.lastProjectNamePOLY = "";
                 }
                 notifyDataSetChanged(); // Refresh the view to reflect changes
             });
 
             ckPoi.setOnClickListener(v -> {
                 int position = getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION) return; // Safeguard against invalid positions
+                if (position == RecyclerView.NO_POSITION)
+                    return; // Safeguard against invalid positions
 
                 if (ckPoi.isChecked()) {
                     selectedCkPoiPosition = position; // Set  posselectedition for ckPoi
                 } else {
                     selectedCkPoiPosition = -1; // Deselect if unchecked
-                    MyData.push("progettoSelected_POINT","");
-                DataSaved.lastProjectNamePOINT="";
+                    MyData.push("progettoSelected_POINT", "");
+                    DataSaved.lastProjectNamePOINT = "";
                 }
                 notifyDataSetChanged(); // Refresh the view to reflect changes
             });
             ckJson.setOnClickListener(v -> {
                 int position = getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION) return; // Safeguard against invalid positions
+                if (position == RecyclerView.NO_POSITION)
+                    return; // Safeguard against invalid positions
 
                 notifyDataSetChanged(); // Refresh the view to reflect changes
             });
@@ -348,25 +375,25 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         for (int i = 0; i < files.size(); i++) {
             FileItem fileItem = files.get(i);
             String nameFile = fileItem.getName();
-            if (selectedCkTrmPosition == -1 && DataSaved.progettoSelected != null && DataSaved.progettoSelected.substring(DataSaved.progettoSelected.lastIndexOf("/")+1,DataSaved.progettoSelected.length()).equals(nameFile)) {
+            if (selectedCkTrmPosition == -1 && DataSaved.progettoSelected != null && DataSaved.progettoSelected.substring(DataSaved.progettoSelected.lastIndexOf("/") + 1, DataSaved.progettoSelected.length()).equals(nameFile)) {
                 selectedCkTrmPosition = i;
             }
-            if (selectedCkPolyPosition == -1 && DataSaved.progettoSelected_POLY != null && DataSaved.progettoSelected_POLY.substring(DataSaved.progettoSelected_POLY.lastIndexOf("/")+1,DataSaved.progettoSelected_POLY.length()).equals(nameFile)) {
+            if (selectedCkPolyPosition == -1 && DataSaved.progettoSelected_POLY != null && DataSaved.progettoSelected_POLY.substring(DataSaved.progettoSelected_POLY.lastIndexOf("/") + 1, DataSaved.progettoSelected_POLY.length()).equals(nameFile)) {
                 selectedCkPolyPosition = i;
             }
-            if (selectedCkPoiPosition == -1 && DataSaved.progettoSelected_POINT != null && DataSaved.progettoSelected_POINT.substring(DataSaved.progettoSelected_POINT.lastIndexOf("/")+1,DataSaved.progettoSelected_POINT.length()).equals(nameFile)) {
+            if (selectedCkPoiPosition == -1 && DataSaved.progettoSelected_POINT != null && DataSaved.progettoSelected_POINT.substring(DataSaved.progettoSelected_POINT.lastIndexOf("/") + 1, DataSaved.progettoSelected_POINT.length()).equals(nameFile)) {
                 selectedCkPoiPosition = i;
             }
 
 
         }
-        if(selectedCkPolyPosition==-1){
-            MyData.push("progettoSelected_POLY","");
-            DataSaved.lastProjectNamePOLY="";
+        if (selectedCkPolyPosition == -1) {
+            MyData.push("progettoSelected_POLY", "");
+            DataSaved.lastProjectNamePOLY = "";
         }
-        if(selectedCkPoiPosition==-1){
-            MyData.push("progettoSelected_POINT","");
-            DataSaved.lastProjectNamePOINT="";
+        if (selectedCkPoiPosition == -1) {
+            MyData.push("progettoSelected_POINT", "");
+            DataSaved.lastProjectNamePOINT = "";
 
         }
 
@@ -374,8 +401,9 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         // Notify the adapter to refresh and apply the initial checkbox selections
         notifyDataSetChanged();
     }
-    public void setItem(int i){
-        selectedItem=i;
+
+    public void setItem(int i) {
+        selectedItem = i;
         notifyDataSetChanged();
     }
 

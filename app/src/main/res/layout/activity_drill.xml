@@ -70,7 +70,7 @@
             android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/drillbit_2_96"
+            app:srcCompat="@drawable/btn_drill_tool"
             app:tint="@color/black" />
 
 

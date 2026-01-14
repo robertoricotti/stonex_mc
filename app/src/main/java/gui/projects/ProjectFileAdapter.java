@@ -104,7 +104,9 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
                 icon.setImageResource(R.drawable.pnezd_menu);
             } else if (fileExtension.equalsIgnoreCase("txt")) {
                 icon.setImageResource(R.drawable.mytxt);
-            } else if (nameFile.startsWith("#1P_#")) {
+            } else if (fileExtension.equalsIgnoreCase("ird")) {
+                icon.setImageResource(R.drawable.ird_200);
+            }else if (nameFile.startsWith("#1P_#")) {
                 icon.setImageResource(R.drawable.image_1p);
             } else if (nameFile.startsWith("#AB_#")) {
                 icon.setImageResource(R.drawable.image_ab);

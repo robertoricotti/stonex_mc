@@ -6,6 +6,7 @@ import static gui.grade_draw_class.Grade_Top_View_DXF.giroFrecciaDozer;
 import static services.ReadProjectService.isFinishedDTM;
 import static services.ReadProjectService.isFinishedPOINT;
 import static services.ReadProjectService.isFinishedPOLY;
+import static utils.MyTypes.MC_3D_PRO_AUTO;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -198,7 +199,7 @@ public class Grading3D_DXF extends BaseClass {
     }
 
     private void init() {
-        if (licenseType == 5 ) {
+        if (licenseType == MC_3D_PRO_AUTO ) {
             hydro_set.setVisibility(View.VISIBLE);
         } else {
             hydro_set.setVisibility(View.GONE);
@@ -857,7 +858,7 @@ public class Grading3D_DXF extends BaseClass {
         } else {
             txtwait.setVisibility(View.VISIBLE);
         }
-        if (MyApp.licenseType == 5) {
+        if (MyApp.licenseType == MC_3D_PRO_AUTO) {
             if (false) {
                 autoL.setVisibility(View.VISIBLE);
                 autoL.setImageResource(R.drawable.auto_test_rosso);

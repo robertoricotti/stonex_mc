@@ -78,12 +78,13 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
+
         <activity
             android:name="drill_pile.gui.Drill_Activity"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="drill_pile.gui.Drill_Rod_Activity"
             android:autoRemoveFromRecents="true"

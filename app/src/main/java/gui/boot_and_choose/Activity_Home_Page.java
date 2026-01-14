@@ -18,6 +18,11 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.MC_1D;
+import static utils.MyTypes.MC_2D;
+import static utils.MyTypes.MC_3D_EASY;
+import static utils.MyTypes.MC_3D_PRO;
+import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
@@ -162,7 +167,7 @@ public class Activity_Home_Page extends BaseClass {
 
         progressBar.setVisibility(View.INVISIBLE);
         stringsStat.setVisibility(View.INVISIBLE);
-        if (licenseType < 2) {
+        if (licenseType ==MC_1D||licenseType==MC_2D) {
             newProj.setAlpha(0.3f);
             toDig.setAlpha(0.3f);
             joblist.setAlpha(0.3f);
@@ -215,7 +220,7 @@ public class Activity_Home_Page extends BaseClass {
             }
         });
         newProj.setOnClickListener(view -> {
-            if (licenseType > 1) {
+            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO) {
                 if (!dialogCreateNewPrj.dialog.isShowing()) {
                     dialogCreateNewPrj.show();
                 }
@@ -230,7 +235,7 @@ public class Activity_Home_Page extends BaseClass {
 
         });
         joblist.setOnClickListener((View v) -> {
-            if (licenseType > 1) {
+            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO) {
                 enableAll(false);
                 startActivity(new Intent(this, PickProject.class));
                 finish();
@@ -245,22 +250,13 @@ public class Activity_Home_Page extends BaseClass {
         toDig.setOnClickListener((View v) -> {
 
 
-            if (licenseType > 1) {
-                if(DataSaved.isWL==EXCAVATOR||
-                        DataSaved.isWL==WHEELLOADER||
-                        DataSaved.isWL==DOZER||
-                        DataSaved.isWL==DOZER_SIX||
-                        DataSaved.isWL==GRADER) {
-                    enableAll(false);
+            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO) {
+                enableAll(false);
                     progressBar.setVisibility(View.VISIBLE);
                     stringsStat.setVisibility(View.VISIBLE);
                     startService(new Intent(this, ReadProjectService.class));
-                }else if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
-                    startActivity(new Intent(this, Drill_Activity.class));
-                    enableAll(false);
-                    finish();
-                    //TODO passare da service per aprire l'activity
-                }
+            }else {
+                new CustomToast(this,"No License").show_alert();
             }
 
         });

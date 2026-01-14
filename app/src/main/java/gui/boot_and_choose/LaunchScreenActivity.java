@@ -5,6 +5,7 @@ import static gui.MyApp.deviceBuild;
 import static gui.MyApp.folderPath;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.visibleActivity;
+import static utils.MyTypes.MC_3D_PRO_AUTO;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -148,7 +149,7 @@ public class LaunchScreenActivity extends BaseClass {
                         startActivity(new Intent(LaunchScreenActivity.this, LicenseFail_Activity.class));
                         finish();
                     }
-                    hasAuto = licenseType == 5;
+                    hasAuto = licenseType == MC_3D_PRO_AUTO;
                 } catch (Exception e) {
                     new CustomToast(LaunchScreenActivity.this, "No License CODE").show_error();
                     finishAndRemoveTask();
@@ -350,14 +351,6 @@ public class LaunchScreenActivity extends BaseClass {
         }
 
         switch (MyApp.licenseType) {
-            case 10:
-            case 11:
-                Intent intent1;
-                intent1 = new Intent(this, Drill_MainPage.class);
-                startActivity(intent1);
-                finish();
-                break;
-
             case 0:
             case 1:
             case 2:

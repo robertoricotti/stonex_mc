@@ -9,6 +9,7 @@ import dxf.Face3D;
 import dxf.Layer;
 import dxf.Point3D;
 import dxf.Polyline;
+import iredes.Point3D_Drill;
 import services.ReadProjectService;
 
 public class LandXMLData implements Serializable {
@@ -18,6 +19,7 @@ public class LandXMLData implements Serializable {
     private List<Point3D> points;
     private List<DxfText> texts;
     private List<Layer> layers;
+    private List<Point3D_Drill> drillPoints;
 
     public LandXMLData() {
         faces = new ArrayList<>();
@@ -25,6 +27,7 @@ public class LandXMLData implements Serializable {
         points = new ArrayList<>();
         texts = new ArrayList<>();
         layers = new ArrayList<>();
+        drillPoints = new ArrayList<>();
     }
 
     // Getter per Face3D
@@ -88,6 +91,14 @@ public class LandXMLData implements Serializable {
             }
         }
         return false;
+    }
+
+    public List<Point3D_Drill> getDrillPoints() {
+        return drillPoints;
+    }
+
+    public void addDrillPoint(Point3D_Drill p) {
+        drillPoints.add(p);
     }
 
 }

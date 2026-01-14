@@ -22,14 +22,18 @@ import utils.Utils;
 public class VerticalTargetIndicatorView extends View {
 
     // ===== VALORI REALI (metri) =====
+
     private double currentValue = 0.0;
     private double targetValue = 0.0;
     private double maxHigh = 1.0;
     private double maxLow = -1.0;
     private double tolerance = 0.02; // ± metri
+    private int colorUp=Color.BLUE;
+    private int colorDown=Color.RED;
+    private int colorGreen=Color.GREEN;
 
     // ===== COSTANTI GRAFICHE =====
-    private static final float TARGET_POSITION = 0.8f; // 8% dall’alto
+    private static final float TARGET_POSITION = 0.85f; // 85% dall’alto
 
     // ===== PAINT =====
     private final Paint barPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -49,9 +53,10 @@ public class VerticalTargetIndicatorView extends View {
         targetPaint.setColor(Color.WHITE);
         targetPaint.setStrokeWidth(4f);
 
-        textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(24f);
+        textPaint.setColor(MyColorClass.colorConstraint);
+
         textPaint.setTextAlign(Paint.Align.RIGHT);
+        textPaint.setFakeBoldText(true);
     }
 
     // ===== API PUBBLICA =====
@@ -76,6 +81,12 @@ public class VerticalTargetIndicatorView extends View {
         this.tolerance = toleranceMeters;
         invalidate();
     }
+    public void setColors(int colorUp,int colorDown,int colorGreen){
+        this.colorUp=colorUp;
+        this.colorDown=colorDown;
+        this.colorGreen=colorGreen;
+
+    }
 
     // ===== DISEGNO =====
 
@@ -99,14 +110,17 @@ public class VerticalTargetIndicatorView extends View {
         double delta = currentValue - targetValue;
         int color;
         if (Math.abs(delta) <= tolerance) {
-            color = Color.GREEN;
-            textPaint.setColor(MyColorClass.colorConstraint);
+            color =colorGreen;
+            targetPaint.setColor(colorGreen);
+
         } else if (delta > 0) {
-            color = Color.BLUE;
-            textPaint.setColor(MyColorClass.colorConstraint);
+            color = colorUp;
+            targetPaint.setColor(colorUp);
+
         } else {
-            color = Color.RED;
-            textPaint.setColor(Color.WHITE);
+            color = colorDown;
+            targetPaint.setColor(colorUp);
+
         }
         barPaint.setColor(color);
         arrowPaint.setColor(color);
@@ -138,7 +152,7 @@ public class VerticalTargetIndicatorView extends View {
         toleranceVisual = Math.max(4f, Math.min(40f, toleranceVisual)); // clamp per spessore minimo e massimo
 
         targetPaint.setStrokeWidth(toleranceVisual);
-        targetPaint.setColor(Color.BLUE);
+
         targetPaint.setAlpha(225);
         // Disegna la linea "tolleranza"
         canvas.drawLine(centerX - 80, targetY, centerX + 80, targetY, targetPaint);
@@ -149,12 +163,24 @@ public class VerticalTargetIndicatorView extends View {
         canvas.drawLine(centerX - 80, targetY, centerX + 80, targetY, targetPaint);
 
         // Testo target
+        textPaint.setTextSize(22f);
         canvas.drawText(
-                Utils.readUnitOfMeasureLITE(String.valueOf(targetValue)),
-                w - 8,
+                Utils.readUnitOfMeasureLITE(String.valueOf(targetValue))+Utils.getMetriSimbol().replace("[","").replace("]",""),
+                w - 1,
                 targetY - 8,
                 textPaint
         );
+
+        // Testo actual
+        textPaint.setTextSize(18f);
+        canvas.drawText(
+                Utils.readUnitOfMeasureLITE(String.valueOf(currentValue))+Utils.getMetriSimbol().replace("[","").replace("]",""),
+
+                w-1,
+                arrowY ,
+                textPaint
+        );
+        //DF07.EA01.0E2D.DBAD.D803
     }
 
     private void drawArrow(Canvas canvas, float x, float y) {

@@ -1,6 +1,8 @@
 package gui.dialogs_and_toast;
 
 import static gui.MyApp.licenseType;
+import static utils.MyTypes.MC_1D;
+import static utils.MyTypes.MC_2D;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -65,7 +67,7 @@ public class Dialog_To_DueDi {
         to1d = dialog.findViewById(R.id.to1D);
         to2d = dialog.findViewById(R.id.to2D);
         toProfile = dialog.findViewById(R.id.toProfile);
-        if(licenseType<1){
+        if(licenseType<MC_2D){
             to2d.setAlpha(0.3f);
         }
     }
@@ -93,7 +95,7 @@ public class Dialog_To_DueDi {
         to2d.setOnClickListener(view -> {
             DataSaved.portView=1;
             DataSaved.profileSelected=0;
-            if (licenseType > 0) {
+            if (licenseType > MC_1D) {
                 activity.startActivity(new Intent(activity, Digging2D.class));
                 activity.finish();
                 dialog.dismiss();

@@ -18,6 +18,7 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
@@ -143,7 +144,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static int errorCode;
     public static String activationCode = "none";
     public static String restoreCode;
-    public static int licenseType = 5;
+    public static int licenseType = MC_3D_PRO_AUTO;
     public static String expiry = "2001-12-31";
     public static final long timeUI = 65;
     public static String[] geoidAll = new String[]{};

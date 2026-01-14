@@ -5,6 +5,13 @@ import static gui.MyApp.geoidAll;
 import static gui.dialogs_and_toast.Diaalog_Set_SP.getCrsCodeFromFileName;
 import static utils.CanFileTransfer.sendFileViaCAN;
 import static utils.CanFileTransfer.sendFileViaSerial;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DRILL;
+import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.GRADER;
+import static utils.MyTypes.SOLARDRILL;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -35,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import drill_pile.gui.Drill_Activity;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
@@ -135,6 +143,9 @@ public class Dialog_PRJ_Folder extends BaseClass {
         recyclerViewSP.setAdapter(spAdapter);
         recyclerViewSP.setLayoutManager(new LinearLayoutManager(activity));
         recyclerViewSP.setItemViewCacheSize(spAdapter.getItemCount());
+        if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+            addSurf.setVisibility(View.INVISIBLE);
+        }
 
 
 
@@ -216,63 +227,125 @@ public class Dialog_PRJ_Folder extends BaseClass {
         });
 
         usaFile.setOnClickListener(view -> {
-            if (projectAdapter.getSelectedCkTrmPosition() == -1) {
-                new CustomToast(activity, "SELECT A TERRAIN MODEL TO USE").show();
-            } else {
-                progressBar.setVisibility(View.VISIBLE);
-                recyclerViewSP.setVisibility(View.INVISIBLE);
-                recyclerViewFiles.setVisibility(View.INVISIBLE);
-                exit.setVisibility(View.INVISIBLE);
-                usaFile.setVisibility(View.INVISIBLE);
-                usaSP.setVisibility(View.INVISIBLE);
-                try {
-                    if (projectAdapter.getSelectedCkPolyPosition() != -1) {
-                        filenamePoly = mPath + "/" + arrayFiles.get(projectAdapter.getSelectedCkPolyPosition()).getName();
-                        MyData.push("progettoSelected_POLY", filenamePoly);
-
-                    } else {
-                        MyData.push("progettoSelected_POLY", "");
-                    }
-                } catch (Exception e) {
-                    Log.e("Orrore",Log.getStackTraceString(e));
-                    new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
-                }
-                try {
-                    if (projectAdapter.getSelectedCkPoiPosition() != -1) {
-                        filenamePoint = mPath + "/" + arrayFiles.get(projectAdapter.getSelectedCkPoiPosition()).getName();
-                        MyData.push("progettoSelected_POINT", filenamePoint);
-                    } else {
-                        MyData.push("progettoSelected_POINT", "");
-                    }
-                } catch (Exception e) {
-                    Log.e("Orrore",Log.getStackTraceString(e));
-                    new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
-                }
-
-                DataSaved.lockUnlock = 0; // Disable the point lock function before initializing a new project
-                try {
+            if(DataSaved.isWL==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DOZER||DataSaved.isWL==GRADER||DataSaved.isWL==DOZER_SIX) {
+                if (projectAdapter.getSelectedCkTrmPosition() == -1) {
+                    new CustomToast(activity, "SELECT A TERRAIN MODEL TO USE").show();
+                } else {
                     progressBar.setVisibility(View.VISIBLE);
+                    recyclerViewSP.setVisibility(View.INVISIBLE);
+                    recyclerViewFiles.setVisibility(View.INVISIBLE);
+                    exit.setVisibility(View.INVISIBLE);
+                    usaFile.setVisibility(View.INVISIBLE);
+                    usaSP.setVisibility(View.INVISIBLE);
+                    try {
+                        if (projectAdapter.getSelectedCkPolyPosition() != -1) {
+                            filenamePoly = mPath + "/" + arrayFiles.get(projectAdapter.getSelectedCkPolyPosition()).getName();
+                            MyData.push("progettoSelected_POLY", filenamePoly);
 
-                    fileName = mPath + "/" + arrayFiles.get(projectAdapter.getSelectedCkTrmPosition()).getName();
-                    MyData.push("progettoSelected", fileName);
-                    DataSaved.progettoSelected = MyData.get_String("progettoSelected");
-                    DataSaved.progettoSelected_POLY = MyData.get_String("progettoSelected_POLY");
-                    DataSaved.progettoSelected_POINT = MyData.get_String("progettoSelected_POINT");
-                    new CustomToast(activity, activity.getString(R.string.wait_until)).show_long();
-                    stopUpdating();
-
-                    if(activity instanceof My3DActivity) {
-                        activity.startService(new Intent(activity, ReadProjectService.class));
-                    }else {
-                        activity.startActivity(new Intent(activity, Activity_Home_Page.class));
-                        activity.finish();
+                        } else {
+                            MyData.push("progettoSelected_POLY", "");
+                        }
+                    } catch (Exception e) {
+                        Log.e("Orrore", Log.getStackTraceString(e));
+                        new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
                     }
-                    dialog.dismiss();
+                    try {
+                        if (projectAdapter.getSelectedCkPoiPosition() != -1) {
+                            filenamePoint = mPath + "/" + arrayFiles.get(projectAdapter.getSelectedCkPoiPosition()).getName();
+                            MyData.push("progettoSelected_POINT", filenamePoint);
+                        } else {
+                            MyData.push("progettoSelected_POINT", "");
+                        }
+                    } catch (Exception e) {
+                        Log.e("Orrore", Log.getStackTraceString(e));
+                        new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
+                    }
 
-                } catch (Exception e) {
-                    Log.e("Orrore",Log.getStackTraceString(e));
-                    new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
-                    progressBar.setVisibility(View.INVISIBLE);
+                    DataSaved.lockUnlock = 0; // Disable the point lock function before initializing a new project
+                    try {
+                        progressBar.setVisibility(View.VISIBLE);
+
+                        fileName = mPath + "/" + arrayFiles.get(projectAdapter.getSelectedCkTrmPosition()).getName();
+                        MyData.push("progettoSelected", fileName);
+                        DataSaved.progettoSelected = MyData.get_String("progettoSelected");
+                        DataSaved.progettoSelected_POLY = MyData.get_String("progettoSelected_POLY");
+                        DataSaved.progettoSelected_POINT = MyData.get_String("progettoSelected_POINT");
+                        new CustomToast(activity, activity.getString(R.string.wait_until)).show_long();
+                        stopUpdating();
+
+                        if (activity instanceof My3DActivity) {
+                            activity.startService(new Intent(activity, ReadProjectService.class));
+                        } else {
+                            activity.startActivity(new Intent(activity, Activity_Home_Page.class));
+                            activity.finish();
+                        }
+                        dialog.dismiss();
+
+                    } catch (Exception e) {
+                        Log.e("Orrore", Log.getStackTraceString(e));
+                        new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }else if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                if(projectAdapter.getSelectedCkPoiPosition()==-1){
+                    new CustomToast(activity, "SELECT A POINT FILE TO USE").show();
+                }else {
+                    progressBar.setVisibility(View.VISIBLE);
+                    recyclerViewSP.setVisibility(View.INVISIBLE);
+                    recyclerViewFiles.setVisibility(View.INVISIBLE);
+                    exit.setVisibility(View.INVISIBLE);
+                    usaFile.setVisibility(View.INVISIBLE);
+                    usaSP.setVisibility(View.INVISIBLE);
+                    try {
+                        if (projectAdapter.getSelectedCkPolyPosition() != -1) {
+                            filenamePoly = mPath + "/" + arrayFiles.get(projectAdapter.getSelectedCkPolyPosition()).getName();
+                            MyData.push("progettoSelected_POLY", filenamePoly);
+
+                        } else {
+                            MyData.push("progettoSelected_POLY", "");
+                        }
+                    } catch (Exception e) {
+                        Log.e("Orrore", Log.getStackTraceString(e));
+                        new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
+                    }
+                    try {
+                        if (projectAdapter.getSelectedCkPoiPosition() != -1) {
+                            filenamePoint = mPath + "/" + arrayFiles.get(projectAdapter.getSelectedCkPoiPosition()).getName();
+                            MyData.push("progettoSelected_POINT", filenamePoint);
+                        } else {
+                            MyData.push("progettoSelected_POINT", "");
+                        }
+                    } catch (Exception e) {
+                        Log.e("Orrore", Log.getStackTraceString(e));
+                        new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
+                    }
+
+                    DataSaved.lockUnlock = 0; // Disable the point lock function before initializing a new project
+                    try {
+                        progressBar.setVisibility(View.VISIBLE);
+
+                        fileName = mPath + "/" + arrayFiles.get(projectAdapter.getSelectedCkPoiPosition()).getName();
+                        MyData.push("progettoSelected", fileName);
+                        DataSaved.progettoSelected = MyData.get_String("progettoSelected");
+                        DataSaved.progettoSelected_POLY = MyData.get_String("progettoSelected_POLY");
+                        DataSaved.progettoSelected_POINT = MyData.get_String("progettoSelected_POINT");
+                        new CustomToast(activity, activity.getString(R.string.wait_until)).show_long();
+                        stopUpdating();
+
+                        if (activity instanceof Drill_Activity) {
+                            activity.startService(new Intent(activity, ReadProjectService.class));
+                        } else {
+                            activity.startActivity(new Intent(activity, Activity_Home_Page.class));
+                            activity.finish();
+                        }
+                        dialog.dismiss();
+
+                    } catch (Exception e) {
+                        Log.e("Orrore", Log.getStackTraceString(e));
+                        new CustomToast(activity, "CHECK FILE SELECTION!").show_alert();
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
         });

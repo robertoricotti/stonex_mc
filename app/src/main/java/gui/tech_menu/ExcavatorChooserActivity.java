@@ -184,10 +184,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM1.setImageResource(R.drawable.ecu_96);
         }else if(isWL1==DRILL){
             machine1.setImageResource(R.drawable.drill_btn);
-            bucketM1.setImageResource(R.drawable.drillbit_2);
+            bucketM1.setImageResource(R.drawable.btn_drill_tool);
         }else if(isWL1==SOLARDRILL){
             machine1.setImageResource(R.drawable.drill_btn);
-            bucketM1.setImageResource(R.drawable.drillbit_2);
+            bucketM1.setImageResource(R.drawable.btn_drill_tool);
         }
         if (isWL2 == WHEELLOADER) {
             machine2.setImageResource(R.drawable.wheel_machines_btn);
@@ -199,10 +199,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM2.setImageResource(R.drawable.ecu_96);
         }else if(isWL2==DRILL){
             machine2.setImageResource(R.drawable.drill_btn);
-            bucketM2.setImageResource(R.drawable.drillbit_2);
+            bucketM2.setImageResource(R.drawable.btn_drill_tool);
         }else if(isWL2==SOLARDRILL){
             machine2.setImageResource(R.drawable.drill_btn);
-            bucketM2.setImageResource(R.drawable.drillbit_2);
+            bucketM2.setImageResource(R.drawable.btn_drill_tool);
         }
         if (isWL3 == WHEELLOADER) {
             machine3.setImageResource(R.drawable.wheel_machines_btn);
@@ -214,10 +214,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM3.setImageResource(R.drawable.ecu_96);
         }else if(isWL3==DRILL){
             machine3.setImageResource(R.drawable.drill_btn);
-            bucketM3.setImageResource(R.drawable.drillbit_2);
+            bucketM3.setImageResource(R.drawable.btn_drill_tool);
         }else if(isWL3==SOLARDRILL){
             machine3.setImageResource(R.drawable.drill_btn);
-            bucketM3.setImageResource(R.drawable.drillbit_2);
+            bucketM3.setImageResource(R.drawable.btn_drill_tool);
         }
         if (isWL4 == WHEELLOADER) {
             machine4.setImageResource(R.drawable.wheel_machines_btn);
@@ -229,10 +229,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             bucketM4.setImageResource(R.drawable.ecu_96);
         }else if(isWL4==DRILL){
             machine4.setImageResource(R.drawable.drill_btn);
-            bucketM4.setImageResource(R.drawable.drillbit_2);
+            bucketM4.setImageResource(R.drawable.btn_drill_tool);
         }else if(isWL4==SOLARDRILL){
             machine4.setImageResource(R.drawable.drill_btn);
-            bucketM4.setImageResource(R.drawable.drillbit_2);
+            bucketM4.setImageResource(R.drawable.btn_drill_tool);
         }
         m1.setBackground(indexMachineSelected == 1 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_1) {
