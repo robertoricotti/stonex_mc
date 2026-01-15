@@ -175,23 +175,26 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
 
         int dialogWidth = screenWidth / 2;
 
-        // offset alto 50% (metti 0.10 per 10%)
-        int topOffset = (int) (screenHeight * 0.08);
+        // offset alto 10%
+        int topOffset = (int) (screenHeight * 0.10);
 
         WindowManager.LayoutParams lp = window.getAttributes();
+
         lp.width = dialogWidth;
-
-        // ✅ fondamentale: altezza = spazio rimanente
-        lp.height = screenHeight - topOffset;
-
         lp.gravity = Gravity.START | Gravity.TOP;
         lp.x = 0;
         lp.y = topOffset;
 
+        // ⚠️ NON usare screenHeight direttamente
+        lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+
         window.setAttributes(lp);
 
+        //  fondamentale: lascia che Android gestisca il bottom
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
+
 
 
 
