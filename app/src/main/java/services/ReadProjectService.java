@@ -90,7 +90,7 @@ public class ReadProjectService extends Service {
     public static String parserStatus = "Wait Reading Files....";
     public static int numbers;
     public static boolean isFinishedDTM, isFinishedPOLY, isFinishedPOINT;
-    static double conversionFactor = 1;
+    public static double conversionFactor = 1;
     public static LocalizationModel model;
 
     public ReadProjectService() {
@@ -931,7 +931,7 @@ public class ReadProjectService extends Service {
                                 case "xml":
                                     //TODO CGPOINTS
                                     parserStatus = "Reading Points...";
-                                    landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
+                                    landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor);
                                     DataSaved.drill_points = landXMLPOINT.getDrillPoints();
                                     break;
 
@@ -939,13 +939,13 @@ public class ReadProjectService extends Service {
                                     //parsare pnezd o gestire i csv in maniera efficace
                                     parserStatus = "Reading Points...";
                                     File f = new File(DataSaved.progettoSelected_POINT);
-                                    DataSaved.drill_points= DrillCSVParser.parse(f, 0, 1, conversionFactor);
+                                    DataSaved.drill_points= DrillCSVParser.parse(f, 0, DataSaved.xyz_yxz, conversionFactor);
 
                                     break;
                                 case "ird":
                                     //TODO parsare IREDES
                                     parserStatus = "Reading Points...";
-                                    DataSaved.drill_points=IrdParser.parseIrd(DataSaved.progettoSelected_POINT, 1, conversionFactor);
+                                    DataSaved.drill_points=IrdParser.parseIrd(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor);
                                     break;
                             }
                         }
@@ -964,8 +964,6 @@ public class ReadProjectService extends Service {
                         if (mettiPoly) {
                             switch (fileExtensionPOLY.toLowerCase()) {
                                 case "dxf":
-                                case "pstx":
-
                                     parserStatus = "Reading Polylines...";
                                     dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
 
@@ -979,11 +977,8 @@ public class ReadProjectService extends Service {
                                     copiaPoly();
                                     break;
                                 case "xml":
-
                                     parserStatus = "Reading Polylines...";
-
                                     landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
-
                                     DataSaved.polylines = landXMLPOLY.getPolylines();
                                     DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
                                     copiaPoly();
@@ -1020,6 +1015,7 @@ public class ReadProjectService extends Service {
                 MyApp.visibleActivity.finish();
 
             }
+            DataSaved.lastProjectName=DataSaved.lastProjectNamePOINT;
             waitForWLThenStartActivity();
         }else {
             goToLicense();

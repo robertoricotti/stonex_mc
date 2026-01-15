@@ -2054,6 +2054,12 @@ public class UpdateValuesService extends Service {
                 DataSaved.S_CRS = MyData.get_String("crs");
 
                 try {
+                    DataSaved.xyz_yxz = MyData.get_Int("xyz");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di xyz_yxz: " + e.getMessage());
+                }
+
+                try {
                     DataSaved.Colore_Surf = MyData.get_Int("Colore_Surf");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Colore_Surf: " + e.getMessage());

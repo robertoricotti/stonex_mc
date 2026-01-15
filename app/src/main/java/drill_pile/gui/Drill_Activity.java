@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.stx_dig.R;
 
@@ -23,6 +26,7 @@ import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.draw_class.MyColorClass;
 import okio.Utf8;
 import packexcalib.exca.DataSaved;
+import services.ReadProjectService;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass {
@@ -30,7 +34,7 @@ public class Drill_Activity extends BaseClass {
     int flip = 0;
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw;
-    ImageView digMenu, drilltool, Status, folders, playpause;
+    ImageView digMenu, drilltool, Status, folders, playpause,lineReference;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
     TextView idpalo,txthdt,txttilt,txtdepth;
@@ -66,6 +70,7 @@ public class Drill_Activity extends BaseClass {
         txttilt=findViewById(R.id.txttilt);
         txtdepth=findViewById(R.id.txtdepth);
         sideLayout=findViewById(R.id.sideLayout);
+        lineReference=findViewById(R.id.lineReference);
 
 
 
@@ -104,6 +109,20 @@ public class Drill_Activity extends BaseClass {
 
     private void onClick() {
 
+        lineReference.setOnClickListener(view -> {
+
+            FragmentManager fm = getSupportFragmentManager();
+            Fragment existing = fm.findFragmentByTag("drill_grid");
+            if (fm.findFragmentByTag("drill_grid") != null) return;
+
+            // 👉 non è aperta → apri
+            DrillPointsFullscreenDialog
+                        .newInstance("Drill Pattern", ReadProjectService.conversionFactor)
+                        .show(fm, "drill_grid");
+
+        });
+
+
         digMenu.setOnClickListener(view -> {
             startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
@@ -129,6 +148,7 @@ public class Drill_Activity extends BaseClass {
     }
 
     public void updateUI() {
+
         if (DataSaved.gpsOk && errorCode == 0) {
 
             Status.setImageTintList(ColorStateList.valueOf(Color.DKGRAY));
@@ -144,7 +164,18 @@ public class Drill_Activity extends BaseClass {
         currentDepth-=0.01;
         indicator.setCurrentValue((float)currentDepth);//TODO adattare in realtime
         txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(currentDepth-1250.123))+Utils.getMetriSimbol().replace("[","").replace("]",""));
-    }
+
+        if(DataSaved.Selected_Point3D_Drill!=null) {
+            idpalo.setText("R:" + DataSaved.Selected_Point3D_Drill.getRowId() + " - " + "P:" + DataSaved.Selected_Point3D_Drill.getId());
+            txthdt.setText(String.format("%.1f",DataSaved.Selected_Point3D_Drill.getHeadingDeg())+"°");
+            txttilt.setText(String.format("%.1f",DataSaved.Selected_Point3D_Drill.getTilt())+"°");
+
+        }else {
+            idpalo.setText("R:__ P___");
+            txthdt.setText("_°");
+            txttilt.setText("_°");
+        }
+        }
 
     private void flipFlop() {
 

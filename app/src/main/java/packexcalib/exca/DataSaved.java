@@ -25,6 +25,7 @@ import iredes.Pattern_IR;
 import iredes.Point3D_Drill;
 import iredes.Point3D_IR;
 import iredes.RigStatus_IR;
+import iredes.Selected_Point3D_Drill;
 
 public class DataSaved {
     //Dragaggio
@@ -85,6 +86,9 @@ public class DataSaved {
 
     ///
     ///
+    ///
+    public static Point3D_Drill Selected_Point3D_Drill = null;
+    public static int xyz_yxz;// 0= E N Q     ------    1=N E Q
     public static int coordOrder;
     public static String machineName;
     public static int lock3dRotation;

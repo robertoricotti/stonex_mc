@@ -97,29 +97,24 @@ public class DrillCSVParser {
             if (head != null) { p.setHeadX(head[0]); p.setHeadY(head[1]); p.setHeadZ(head[2]); }
             if (end  != null) { p.setEndX(end[0]);  p.setEndY(end[1]);  p.setEndZ(end[2]);  }
 
-// Tilt (qui: inclination)
-            p.setTilt(incl);
-
-// Se Bearing presente, usalo come heading (altrimenti calcolato da coordinate)
-            if (bearing != null) p.setHeadingDeg(bearing);
-
-// Depth/Length dal file (convertiti) se presenti
+// Depth/Length dal file (convertiti) se presenti -> li teniamo come override se vuoi
             if (depth != null)  p.setDepth(depth * conv);
             if (length != null) p.setLength(length * conv);
-
-// se Length manca ma c’è Delta Distance, usalo come fallback
             if (p.getLength() == null && deltaDist != null) p.setLength(deltaDist * conv);
 
-// ricalcolo derivati: SOLO se non ho già depth/length/heading dal file
-            Double keepHeading = p.getHeadingDeg();
-            Double keepDepth = p.getDepth();
+// Calcola i derivati geometrici (depth/length se mancano)
+            Double keepDepth  = p.getDepth();
             Double keepLength = p.getLength();
 
             p.recomputeDerived();
 
-            if (keepHeading != null) p.setHeadingDeg(keepHeading);
-            if (keepDepth != null)   p.setDepth(keepDepth);
-            if (keepLength != null)  p.setLength(keepLength);
+            if (keepDepth != null)  p.setDepth(keepDepth);
+            if (keepLength != null) p.setLength(keepLength);
+
+// ✅ Bearing e Tilt SEMPRE calcolati (non dal file)
+            p.setHeadingDeg(computeBearingDeg(p));
+            p.setTilt(computeTiltDeg(p));
+
 
         } else {
             // Fallback POSIZIONALE (il tuo CSV allegato)
@@ -162,13 +157,10 @@ public class DrillCSVParser {
             p.setDiameter(null);
         }
 
-        // se hai abbastanza coordinate, ricalcola depth/length/heading "geometrico"
-        // (non sovrascrive headingDeg se già settato? qui sì: quindi ricalcoliamo SOLO se headingDeg è null)
-        Double existingHeading = p.getHeadingDeg();
+        // se hai abbastanza coordinate, garantisci coerenza derivati
         p.recomputeDerived();
-        if (existingHeading != null) {
-            p.setHeadingDeg(existingHeading); // preserva bearing del file se lo vuoi come "heading"
-        }
+        p.setHeadingDeg(computeBearingDeg(p));
+        p.setTilt(computeTiltDeg(p));
 
         // scarta righe completamente vuote
         if (p.getId() == null && p.getHeadX() == null && p.getEndX() == null) return null;
@@ -326,4 +318,37 @@ public class DrillCSVParser {
         double yy = (xyz == 1) ? x : y;
         return new Double[] { xx * conv, yy * conv, z * conv };
     }
+
+    // -------------------------------------------------
+// Bearing + Tilt calcolati da coordinate
+// -------------------------------------------------
+
+    /** Bearing topografico: 0=N, 90=E, 180=S, 270=W (X=Est, Y=Nord) */
+    private static Double computeBearingDeg(Point3D_Drill p) {
+        if (p.getHeadX() == null || p.getHeadY() == null || p.getEndX() == null || p.getEndY() == null) return null;
+
+        double dx = p.getEndX() - p.getHeadX(); // Est
+        double dy = p.getEndY() - p.getHeadY(); // Nord
+
+        double bearing = Math.toDegrees(Math.atan2(dx, dy));
+        if (bearing < 0) bearing += 360.0;
+        return bearing;
+    }
+
+    /** Tilt rispetto alla verticale: 0=verticale, 90=orizzontale */
+    private static Double computeTiltDeg(Point3D_Drill p) {
+        if (p.getHeadX() == null || p.getHeadY() == null || p.getHeadZ() == null ||
+                p.getEndX() == null  || p.getEndY() == null  || p.getEndZ() == null) return null;
+
+        double dx = p.getEndX() - p.getHeadX();
+        double dy = p.getEndY() - p.getHeadY();
+        double dz = p.getEndZ() - p.getHeadZ();
+
+        double horiz = Math.sqrt(dx * dx + dy * dy);
+        double vert  = Math.abs(dz);
+
+        if (horiz == 0 && vert == 0) return 0.0;
+        return Math.toDegrees(Math.atan2(horiz, vert));
+    }
+
 }

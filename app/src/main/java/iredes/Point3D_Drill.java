@@ -9,6 +9,8 @@ import java.io.Serializable;
 public class Point3D_Drill implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    // 0 = da fare, 1 = fatto, -1 = abortito
+    private Integer status;  // nullable, default 0 consigliato
 
     // Identificativi / metadati
     private String id;          // id del punto (o name)
@@ -46,10 +48,12 @@ public class Point3D_Drill implements Serializable {
     public void recomputeDerived() {
         // Heading (azimut)
         if (headX != null && headY != null && endX != null && endY != null) {
-            double dx = endX - headX;
-            double dy = endY - headY;
-            double deg = Math.toDegrees(Math.atan2(dy, dx));
+            double dx = endX - headX; // Est
+            double dy = endY - headY; // Nord
+
+            double deg = Math.toDegrees(Math.atan2(dx, dy));
             if (deg < 0) deg += 360.0;
+
             headingDeg = deg;
         } else {
             headingDeg = null;
@@ -113,7 +117,8 @@ public class Point3D_Drill implements Serializable {
     public void setHeadingDeg(Double headingDeg) { this.headingDeg = headingDeg; }
     public void setDepth(Double depth) { this.depth = depth; }
     public void setLength(Double length) { this.length = length; }
-
+    public Integer getStatus() { return status; }
+    public void setStatus(Integer status) { this.status = status; }
     @Override
     public String toString() {
         return "Point3D_Drill{" +

@@ -33,8 +33,18 @@ public class My_LocationCalc {
         double c = 2 * Math.asin(Math.sqrt(a));
         return EarthRadius * c;
     }
-
     public static double calcBearingXY(double x1, double y1, double x2, double y2) {
+        double dx = x2 - x1; // Est
+        double dy = y2 - y1; // Nord
+
+        double bearing = Math.toDegrees(Math.atan2(dx, dy));
+        if (bearing < 0) {
+            bearing += 360.0;
+        }
+
+        return bearing;
+    }
+   /* public static double calcBearingXY(double x1, double y1, double x2, double y2) {
         double lat1_D = y1 / EarthRadius; // Converte y in metri in latitudine in gradi
         double lon1_D = x1 / (EarthRadius * Math.cos(Math.toRadians(lat1_D))); // Converte x in metri in longitudine in gradi
         double lat2_D = y2 / EarthRadius;
@@ -55,7 +65,7 @@ public class My_LocationCalc {
         }
 
         return bearing;
-    }
+    }*/
     public static double dmsToDecimal(String dms) {
         // Rimuovi spazi e caratteri speciali dalla stringa DMS
         dms = dms.replaceAll("[^0-9.°'-]", "");

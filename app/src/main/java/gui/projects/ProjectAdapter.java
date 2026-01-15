@@ -119,8 +119,16 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
 
             }else if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
                 ckTrm.setVisibility(View.INVISIBLE);
-                ckPoly.setVisibility(View.VISIBLE);
-                ckPoi.setVisibility(View.VISIBLE);
+                if(fileExtension.equalsIgnoreCase("dxf")){
+                ckPoly.setVisibility(View.VISIBLE);}else {
+                    ckPoly.setVisibility(View.INVISIBLE);
+                }
+                if(fileExtension.equalsIgnoreCase("csv")||
+                        fileExtension.equalsIgnoreCase("xml")||
+                        fileExtension.equalsIgnoreCase("ird")){
+                ckPoi.setVisibility(View.VISIBLE);}else {
+                    ckPoi.setVisibility(View.INVISIBLE);
+                }
                 ckJson.setVisibility(View.INVISIBLE);
                 sizeTextView.setVisibility(View.VISIBLE);
             }
@@ -401,6 +409,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         // Notify the adapter to refresh and apply the initial checkbox selections
         notifyDataSetChanged();
     }
+
+
 
     public void setItem(int i) {
         selectedItem = i;

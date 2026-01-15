@@ -82,6 +82,23 @@
         android:src="@drawable/btn_selection_ok"
         app:tint="@color/blue"
         />
+    <TextView
+        android:id="@+id/textP"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:text="P-E-N-Z-D"
+        android:ems="5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/topH"
+        android:layout_marginRight="20dp"
+        app:layout_constraintRight_toLeftOf="@id/usaFile"
+        android:background="@drawable/sfondo_dialog_scura"
+        android:layout_marginVertical="5dp"
+        />
     <ImageView
         android:id="@+id/deleteFile"
         android:layout_width="70dp"

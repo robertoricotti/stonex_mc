@@ -51,6 +51,7 @@ import gui.dialogs_and_toast.CustomMenuLista;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Diaalog_Set_SP;
 import gui.dialogs_and_toast.Dialog_Add_Surfaces;
+import gui.draw_class.MyColorClass;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.LocalizationFactory;
@@ -65,7 +66,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
     Activity activity;
     public Dialog dialog;
     ImageView exit,setSP,setGeoide;
-    TextView titFiles, messaggio,inUso,inUsoGeoid;
+    TextView titFiles, messaggio,inUso,inUsoGeoid,textP;
     View titSP;
     ImageView usaSP, usaFile, deleteFile, deleteSP,addSurf;
     RecyclerView recyclerViewFiles, recyclerViewSP;
@@ -125,6 +126,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
         deleteSP.setVisibility(View.INVISIBLE);
         setGeoide=dialog.findViewById(R.id.geoidA);
         addSurf=dialog.findViewById(R.id.add_surf);
+        textP=dialog.findViewById(R.id.textP);
         diaalogSetSp=new Diaalog_Set_SP(activity);
         dialogAddSurfaces=new Dialog_Add_Surfaces(activity,mPath);
 
@@ -180,6 +182,13 @@ public class Dialog_PRJ_Folder extends BaseClass {
     }
 
     public void onClick() {
+
+        textP.setOnClickListener(view -> {
+            //TODO
+            DataSaved.xyz_yxz+=1;
+            DataSaved.xyz_yxz=DataSaved.xyz_yxz%2;
+            MyData.push("xyz",String.valueOf(DataSaved.xyz_yxz));
+        });
         addSurf.setOnClickListener(view -> {
             if(!dialogAddSurfaces.dialog.isShowing()){
                 dialogAddSurfaces.show();
@@ -605,6 +614,19 @@ public class Dialog_PRJ_Folder extends BaseClass {
                 // Update View
 
                 try {
+
+                    if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                        textP.setVisibility(View.VISIBLE);
+                        addSurf.setVisibility(View.GONE);
+                        if(DataSaved.xyz_yxz==0){
+                            textP.setText("P-E-N-Z-D");
+                        }else {
+                            textP.setText("P-N-E-Z-D");
+                        }
+                    }else {
+                        addSurf.setVisibility(View.VISIBLE);
+                        textP.setVisibility(View.GONE);
+                    }
                     String s1 = "";
                     s1 = MyData.get_String("LastSP");
                     if (s1 == null) {
