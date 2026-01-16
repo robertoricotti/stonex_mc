@@ -216,7 +216,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 icon.setImageResource(R.drawable.accuracy);
                 break;
             case "csv":
-                icon.setImageResource(R.drawable.pnezd_menu);
+                icon.setImageResource(R.drawable.mycsv);
                 break;
             case "txt":
                 icon.setImageResource(R.drawable.mytxt);

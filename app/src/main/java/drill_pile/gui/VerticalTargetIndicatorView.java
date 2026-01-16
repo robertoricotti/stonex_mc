@@ -165,7 +165,7 @@ public class VerticalTargetIndicatorView extends View {
         // Testo target
         textPaint.setTextSize(22f);
         canvas.drawText(
-                Utils.readUnitOfMeasureLITE(String.valueOf(targetValue))+Utils.getMetriSimbol().replace("[","").replace("]",""),
+                Utils.readUnitOfMeasureLITE(String.valueOf(targetValue)),
                 w - 1,
                 targetY - 8,
                 textPaint
@@ -174,7 +174,7 @@ public class VerticalTargetIndicatorView extends View {
         // Testo actual
         textPaint.setTextSize(18f);
         canvas.drawText(
-                Utils.readUnitOfMeasureLITE(String.valueOf(currentValue))+Utils.getMetriSimbol().replace("[","").replace("]",""),
+                Utils.readUnitOfMeasureLITE(String.valueOf(currentValue)),
 
                 w-1,
                 arrowY ,

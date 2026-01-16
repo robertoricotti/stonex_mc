@@ -6,16 +6,12 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.stx_dig.R;
 
@@ -24,9 +20,7 @@ import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.draw_class.MyColorClass;
-import okio.Utf8;
 import packexcalib.exca.DataSaved;
-import services.ReadProjectService;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass {
@@ -34,12 +28,13 @@ public class Drill_Activity extends BaseClass {
     int flip = 0;
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw;
-    ImageView digMenu, drilltool, Status, folders, playpause,lineReference;
+    ImageView digMenu, drilltool, Status, folders, playpause, lineReference, tiposnap;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView idpalo,txthdt,txttilt,txtdepth;
+    TextView idpalo, txthdt, txttilt, txtdepth,uomesure;
     LinearLayout sideLayout;
-    int colorUp,colorDown,colorGreen;
+    int colorUp, colorDown, colorGreen;
+    Dialog_AutoSnap dialogAutoSnap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +48,7 @@ public class Drill_Activity extends BaseClass {
 
     private void findView() {
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
+        dialogAutoSnap = new Dialog_AutoSnap(this);
         divisorioC = findViewById(R.id.divisorioC);
         divisorioDx = findViewById(R.id.divisorioDx);
         divisorioUp = findViewById(R.id.divisorioUp);
@@ -65,13 +61,14 @@ public class Drill_Activity extends BaseClass {
         topview = findViewById(R.id.topview);
         bubble = findViewById(R.id.bubble);
         indicator = findViewById(R.id.verticalIndicator);
-        idpalo=findViewById(R.id.idpalo);
-        txthdt=findViewById(R.id.txthdt);
-        txttilt=findViewById(R.id.txttilt);
-        txtdepth=findViewById(R.id.txtdepth);
-        sideLayout=findViewById(R.id.sideLayout);
-        lineReference=findViewById(R.id.lineReference);
-
+        idpalo = findViewById(R.id.idpalo);
+        txthdt = findViewById(R.id.txthdt);
+        txttilt = findViewById(R.id.txttilt);
+        txtdepth = findViewById(R.id.txtdepth);
+        sideLayout = findViewById(R.id.sideLayout);
+        lineReference = findViewById(R.id.lineReference);
+        tiposnap = findViewById(R.id.tiposnap);
+        uomesure=findViewById(R.id.uomesure);
 
 
     }
@@ -82,7 +79,7 @@ public class Drill_Activity extends BaseClass {
             colorDown = Color.BLUE;
             colorGreen = Color.GREEN;
         } else {
-            colorDown =Color.RED;
+            colorDown = Color.RED;
             colorUp = Color.BLUE;
             colorGreen = Color.GREEN;
         }
@@ -98,11 +95,34 @@ public class Drill_Activity extends BaseClass {
         currentDepth = 1254.0;
 
         indicator.setTargetValue(1250.123f);
-        double low=1250.123-0.5;
-        double high=1250.123+2;
+        double low = 1250.123 - 0.5;
+        double high = 1250.123 + 2;
         indicator.setRange(low, high);
         indicator.setTolerance(DataSaved.deadbandH);
-        indicator.setColors(colorUp,colorDown,colorGreen);
+        indicator.setColors(colorUp, colorDown, colorGreen);
+        switch (DataSaved.temaSoftware){
+            case 0:
+                tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
+                tiposnap.setImageTintList(getColorStateList(R.color.white));
+                uomesure.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
+                uomesure.setTextColor(getColor(R.color.white));
+                break;
+
+            case 1:
+                tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
+                tiposnap.setImageTintList(getColorStateList(R.color._____cancel_text));
+                uomesure.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
+                uomesure.setTextColor(getColor(R.color._____cancel_text));
+                break;
+
+            case 2:
+                tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
+                tiposnap.setImageTintList(getColorStateList(R.color._____cancel_text));
+                uomesure.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
+                uomesure.setTextColor(getColor(R.color._____cancel_text));
+                break;
+        }
+        uomesure.setText(Utils.getMetriSimbol().replace("[","").replace("]",""));
 
 
     }
@@ -111,14 +131,9 @@ public class Drill_Activity extends BaseClass {
 
         lineReference.setOnClickListener(view -> {
 
-            FragmentManager fm = getSupportFragmentManager();
-            Fragment existing = fm.findFragmentByTag("drill_grid");
-            if (fm.findFragmentByTag("drill_grid") != null) return;
-
-            // 👉 non è aperta → apri
-            DrillPointsFullscreenDialog
-                        .newInstance("Drill Pattern", ReadProjectService.conversionFactor)
-                        .show(fm, "drill_grid");
+            if (!dialogAutoSnap.dialog.isShowing()) {
+                dialogAutoSnap.show();
+            }
 
         });
 
@@ -161,21 +176,34 @@ public class Drill_Activity extends BaseClass {
             flip = flip % 20;
         }
         // realtime update
-        currentDepth-=0.01;
-        indicator.setCurrentValue((float)currentDepth);//TODO adattare in realtime
-        txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(currentDepth-1250.123))+Utils.getMetriSimbol().replace("[","").replace("]",""));
+        currentDepth -= 0.01;
+        indicator.setCurrentValue((float) currentDepth);//TODO adattare in realtime
+        txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(currentDepth - 1250.123)) );
 
-        if(DataSaved.Selected_Point3D_Drill!=null) {
+        if (DataSaved.Selected_Point3D_Drill != null) {
             idpalo.setText("R:" + DataSaved.Selected_Point3D_Drill.getRowId() + " - " + "P:" + DataSaved.Selected_Point3D_Drill.getId());
-            txthdt.setText(String.format("%.1f",DataSaved.Selected_Point3D_Drill.getHeadingDeg())+"°");
-            txttilt.setText(String.format("%.1f",DataSaved.Selected_Point3D_Drill.getTilt())+"°");
+            txthdt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getHeadingDeg()) + "°");
+            txttilt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getTilt()) + "°");
 
-        }else {
+        } else {
             idpalo.setText("R:__ P___");
             txthdt.setText("_°");
             txttilt.setText("_°");
         }
+        switch (DataSaved.isAutoSnap){
+            case 0:
+                tiposnap.setImageResource(R.drawable.edit_list);
+                break;
+
+            case 1:
+                tiposnap.setImageResource(R.drawable.autosnappi);
+                break;
+
+            case 2:
+                tiposnap.setImageResource(R.drawable.pick_pp);
+                break;
         }
+    }
 
     private void flipFlop() {
 

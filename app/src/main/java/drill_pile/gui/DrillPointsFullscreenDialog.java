@@ -44,9 +44,9 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
 
     private static final String ARG_TITLE = "arg_title";
     private static final String ARG_DISPLAY_FACTOR = "arg_display_factor";
-
+    private boolean isFullScreen = true;
     private LinearLayout toolbar;
-    private ImageView chiudi;
+    private ImageView chiudi,espandi;
     private TextView titolo;
     private RecyclerView rvHeader, rvRows;
     private Button btnClose, btnCopyCsv;
@@ -110,6 +110,7 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
         btnCopyCsv = v.findViewById(R.id.btnCopyCsv);
         etSearch = v.findViewById(R.id.etSearch);
         chiudi=v.findViewById(R.id.chiudi);
+        espandi=v.findViewById(R.id.espandi);
         titolo=v.findViewById(R.id.titolo);
 
         String title = getArguments() != null ? getArguments().getString(ARG_TITLE) : "Drill Points";
@@ -149,6 +150,11 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
                 customQwertyDialog.show(etSearch);
             }
         });
+        espandi.setOnClickListener(view -> {
+            isFullScreen = !isFullScreen;
+            applyWindowMode();
+            updateFullscreenIcon();
+        });
 
         btnCopyCsv.setOnClickListener(view -> copyCsvToClipboard());
 
@@ -160,7 +166,13 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+        isFullScreen=true;
+        applyWindowMode();
+        updateFullscreenIcon();
 
+    }
+
+    private void applyWindowMode() {
         Dialog dialog = getDialog();
         if (dialog == null) return;
 
@@ -173,29 +185,43 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
         int screenWidth = dm.widthPixels;
         int screenHeight = dm.heightPixels;
 
-        int dialogWidth = screenWidth / 2;
-
-        // offset alto 10%
-        int topOffset = (int) (screenHeight * 0.10);
-
         WindowManager.LayoutParams lp = window.getAttributes();
 
-        lp.width = dialogWidth;
-        lp.gravity = Gravity.START | Gravity.TOP;
-        lp.x = 0;
-        lp.y = topOffset;
+        if (isFullScreen) {
+            // ✅ FULLSCREEN
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.gravity = Gravity.TOP | Gravity.START;
+            lp.x = 0;
+            lp.y = 0;
 
-        // ⚠️ NON usare screenHeight direttamente
-        lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            // Se hai una tua funzione fullscreen activity, applicala qui (opzionale)
+            // FullscreenActivity.setFullScreen(dialog);
+
+        } else {
+            // ✅ SIDE PANEL (metà sinistra come ora)
+            lp.width = screenWidth / 2;
+            lp.height = screenHeight; // come stai facendo ora
+            lp.gravity = Gravity.START | Gravity.BOTTOM;
+            lp.x = 0;
+            lp.y = 0;
+        }
 
         window.setAttributes(lp);
 
-        //  fondamentale: lascia che Android gestisca il bottom
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        FullscreenActivity.setFullScreen(dialog);
     }
 
 
+    private void updateFullscreenIcon() {
+        if (espandi == null) return;
+        espandi.setImageResource(
+                isFullScreen ?R.drawable.baseline_close_fullscreen_96
+                        : R.drawable.baseline_open_in_full_96
+        );
+    }
 
 
 
@@ -485,9 +511,9 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
             });
 
             rowRoot.setOnClickListener(v -> {
-                if (!selectable) return;
+            /*    if (!selectable) return;
                 DataSaved.Selected_Point3D_Drill = p;
-                if (onSelectionChanged != null) onSelectionChanged.run();
+                if (onSelectionChanged != null) onSelectionChanged.run();*/
             });
 
             cells.removeAllViews();
