@@ -14,6 +14,7 @@ import dxf.Face3D;
 import dxf.Layer;
 import dxf.Point3D;
 import dxf.Polyline;
+import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 
 public class TriangleHelper {
@@ -107,6 +108,29 @@ public class TriangleHelper {
 
 
 
+    }
+
+    public void updatePointRaius(double[] currentPosition, double radius){
+        List<Point3D_Drill> filteredPunti = new ArrayList<>();
+        for (Point3D_Drill point : DataSaved.drill_points) {
+            if (distance2d(currentPosition, point) <= radius) {
+
+                        filteredPunti.add(point);
+
+            }
+        }
+
+        filteredPunti.sort((f1, f2) -> {
+            double dist1 = distance2d(currentPosition, f1);
+            double dist2 = distance2d(currentPosition, f2);
+            return Double.compare(dist1, dist2);
+        });
+        // Limita il numero massimo di punti a 1500
+        if (filteredPunti.size() > 1500) {
+            filteredPunti = filteredPunti.subList(0, 1500);
+        }
+
+        DataSaved.filtered_drill_points = filteredPunti;
     }
 
     // Calcola la distanza minima tra la currentPosition e una Face3D
@@ -214,7 +238,9 @@ public class TriangleHelper {
         return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
     }
 
-
+    private double distance2d(double[] p1, Point3D_Drill p2) {
+        return Math.sqrt(Math.pow(p1[0] - p2.getHeadX(), 2) + Math.pow(p1[1] - p2.getHeadY(), 2));
+    }
 
     private double distance2d(double[] p1, Point3D p2) {
         return Math.sqrt(Math.pow(p1[0] - p2.getX(), 2) + Math.pow(p1[1] - p2.getY(), 2));

@@ -338,6 +338,7 @@ public class DataSaved {
     public static List<Polyline> filteredPolylinesGL_2D = new ArrayList<>();
     public static List<Point3D> points = new ArrayList<>();
     public static List<Point3D_Drill> drill_points = new ArrayList<>();
+    public static List<Point3D_Drill> filtered_drill_points=new ArrayList<>();
     public static List<Point3D> filteredPoints = new ArrayList<>();
     public static List<Arc> arcs = new ArrayList<>();
     public static List<Circle> circles = new ArrayList<>();

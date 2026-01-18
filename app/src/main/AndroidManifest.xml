@@ -78,6 +78,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
+        <service
+            android:name="services.PointService"
+            android:enabled="true"
+            android:exported="false"/>
 
         <activity
             android:name="drill_pile.gui.Drill_Activity"

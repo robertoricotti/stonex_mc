@@ -21,6 +21,7 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
+import services.PointService;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass {
@@ -44,6 +45,19 @@ public class Drill_Activity extends BaseClass {
         init();
         onClick();
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startService(new Intent(this, PointService.class));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopService(new Intent(this, PointService.class));
     }
 
     private void findView() {
@@ -186,7 +200,7 @@ public class Drill_Activity extends BaseClass {
             txttilt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getTilt()) + "°");
 
         } else {
-            idpalo.setText("R:__ P___");
+            idpalo.setText("R:___ P:___");
             txthdt.setText("_°");
             txttilt.setText("_°");
         }
