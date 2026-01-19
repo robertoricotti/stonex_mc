@@ -65,7 +65,7 @@ public class PointService extends Service {
             while (isRunning){
                 long startTime = System.currentTimeMillis();
                 Log.d("PointService","Running..");
-                updateCurrentPosition(ExcavatorLib.toolEndCoord, DataSaved.RaggioDXF);
+                updateCurrentPosition(ExcavatorLib.toolEndCoord,1000);
                 /** do Running Stuff Here
                  *
                  *

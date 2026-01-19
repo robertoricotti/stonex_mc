@@ -126,8 +126,8 @@ public class TriangleHelper {
             return Double.compare(dist1, dist2);
         });
         // Limita il numero massimo di punti a 1500
-        if (filteredPunti.size() > 1500) {
-            filteredPunti = filteredPunti.subList(0, 1500);
+        if (filteredPunti.size() > 2500) {
+            filteredPunti = filteredPunti.subList(0, 2500);
         }
 
         DataSaved.filtered_drill_points = filteredPunti;
