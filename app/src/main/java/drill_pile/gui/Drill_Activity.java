@@ -19,19 +19,23 @@ import com.example.stx_dig.R;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
+import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.draw_class.MyColorClass;
+import gui.gps.NmeaGenerator;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
+import packexcalib.gnss.NmeaListener;
 import services.PointService;
+import utils.MyData;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass {
     public static int typeVistaDrill;
-    double currentDepth = 0;
+
     int flip = 0;
     Dialog_Drill_GNSS dialogDrillGnss;
-    View divisorioC, divisorioDx, divisorioUp, divisorioDw;
+    View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas;
     ImageView digMenu, drilltool, typeView, Status, folders, playpause, lineReference, tiposnap,
             zoom_P, zoom_M, zoom_C, compass;
     ConstraintLayout topview, bubble;
@@ -118,13 +122,7 @@ public class Drill_Activity extends BaseClass {
         topview.setBackgroundColor(MyColorClass.colorSfondo);
         sideLayout.setBackgroundColor(MyColorClass.colorSfondo);
 
-        // configurazione iniziale
-        currentDepth = 1254.0;
 
-        indicator.setTargetValue(1250.123f);
-        double low = 1250.123 - 0.5;
-        double high = 1250.123 + 2;
-        indicator.setRange(low, high);
         indicator.setTolerance(DataSaved.deadbandH);
         indicator.setColors(colorUp, colorDown, colorGreen);
         textInfo.setTextColor(MyColorClass.colorConstraint);
@@ -163,14 +161,16 @@ public class Drill_Activity extends BaseClass {
 
         }
         uomesure.setText(Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+        topViewCanvas = new Drill_TopView(this);
+        topview.addView(topViewCanvas);
 
 
     }
 
     private void onClick() {
         compass.setOnLongClickListener(view -> {
-
-            return true;
+            locateMachine();
+            return false;
         });
         typeView.setOnClickListener(view -> {
             typeVistaDrill += 1;
@@ -212,23 +212,25 @@ public class Drill_Activity extends BaseClass {
     }
 
     public void updateUI() {
-        rot += 0.5f;
-        compass.setRotation(rot);
+        float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
+        rotBus = rotBus % 360;
+        compass.setRotation(rotBus);
+
         switch (typeVistaDrill) {
             case 0:
-                cent_v.setGuidelinePercent(0.46f);
-                zoom_P.setVisibility(View.VISIBLE);
-                zoom_M.setVisibility(View.VISIBLE);
-                zoom_C.setVisibility(View.VISIBLE);
+                cent_v.setGuidelinePercent(0.4f);
+                zoom_P.setVisibility(View.INVISIBLE);
+                zoom_M.setVisibility(View.INVISIBLE);
+                zoom_C.setVisibility(View.INVISIBLE);
                 compass.setVisibility(View.VISIBLE);
                 break;
 
             case 1:
 
                 cent_v.setGuidelinePercent(-0.01f);
-                zoom_P.setVisibility(View.VISIBLE);
-                zoom_M.setVisibility(View.VISIBLE);
-                zoom_C.setVisibility(View.VISIBLE);
+                zoom_P.setVisibility(View.INVISIBLE);
+                zoom_M.setVisibility(View.INVISIBLE);
+                zoom_C.setVisibility(View.INVISIBLE);
                 compass.setVisibility(View.VISIBLE);
                 break;
 
@@ -237,7 +239,7 @@ public class Drill_Activity extends BaseClass {
                 zoom_P.setVisibility(View.INVISIBLE);
                 zoom_M.setVisibility(View.INVISIBLE);
                 zoom_C.setVisibility(View.INVISIBLE);
-                compass.setVisibility(View.INVISIBLE);
+                compass.setVisibility(View.VISIBLE);
                 break;
         }
 
@@ -253,20 +255,21 @@ public class Drill_Activity extends BaseClass {
             flip += 1;
             flip = flip % 20;
         }
-        // realtime update
-        currentDepth -= 0.01;
-        indicator.setCurrentValue((float) currentDepth);//TODO adattare in realtime
-        txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(currentDepth - 1250.123)));
+
+
+
 
         if (DataSaved.Selected_Point3D_Drill != null) {
             idpalo.setText("R:" + DataSaved.Selected_Point3D_Drill.getRowId() + " - " + "P:" + DataSaved.Selected_Point3D_Drill.getId());
             txthdt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getHeadingDeg()) + "°");
             txttilt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getTilt()) + "°");
+            txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.toolEndCoord[2] - DataSaved.Selected_Point3D_Drill.getEndZ())));
 
         } else {
             idpalo.setText("R:___ P:___");
-            txthdt.setText("_°");
-            txttilt.setText("_°");
+            txthdt.setText("_._°");
+            txttilt.setText("_._°");
+            txtdepth.setText("__.__");
         }
         switch (DataSaved.isAutoSnap) {
             case 0:
@@ -283,6 +286,10 @@ public class Drill_Activity extends BaseClass {
         }
 
         textInfo.setText(setTesto());
+        topViewCanvas.invalidate();
+        // realtime update
+
+        setIndicator();
     }
 
     private void flipFlop() {
@@ -301,11 +308,69 @@ public class Drill_Activity extends BaseClass {
         String s0 = "Tool E: " + Utils.showCoords(String.valueOf(ExcavatorLib.toolEndCoord[0]));
         String s1 = "Tool N: " + Utils.showCoords(String.valueOf(ExcavatorLib.toolEndCoord[1]));
         String s2 = "Tool Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.toolEndCoord[2]));
-        String p= "Project: "+DataSaved.progettoSelected_POINT.substring(DataSaved.progettoSelected_POINT.lastIndexOf("/") + 1);
-        if(DataSaved.coordOrder==0){
-            return new String(s0+"\n"+s1+"\n"+s2+"\n"+p);
-        }else {
-            return new String(s1+"\n"+s0+"\n"+s2+"\n"+p);
+        String p = "Project: " + DataSaved.progettoSelected_POINT.substring(DataSaved.progettoSelected_POINT.lastIndexOf("/") + 1);
+        if (DataSaved.coordOrder == 0) {
+            return new String(s0 + "\n" + s1 + "\n" + s2 + "\n" + p);
+        } else {
+            return new String(s1 + "\n" + s0 + "\n" + s2 + "\n" + p);
+        }
+    }
+
+    private void setIndicator() {
+        try {
+            indicator.setTargetValue(DataSaved.Selected_Point3D_Drill.getEndZ());
+            double low = DataSaved.Selected_Point3D_Drill.getEndZ() - 0.5;
+            double high = DataSaved.Selected_Point3D_Drill.getEndZ() + 2;
+            indicator.setRange(low, high);
+            indicator.setCurrentValue((float) ExcavatorLib.toolEndCoord[2]);//TODO adattare in realtime
+        }catch(Exception ignored){
+
+        }
+
+    }
+
+    private void locateMachine() {
+        if (DataSaved.my_comPort == 4) {
+            try {
+                DataSaved.demoNORD = DataSaved.drill_points.get(0).getHeadY();
+                NmeaGenerator.LATITUDE = DataSaved.demoNORD;
+                DataSaved.demoEAST = DataSaved.drill_points.get(0).getHeadX();
+                NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
+                DataSaved.demoZ = DataSaved.drill_points.get(0).getHeadZ() + 2;
+                NmeaGenerator.ALTITUDE = DataSaved.demoZ;
+                MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
+                MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
+                MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
+
+            } catch (Exception e) {
+                try {
+                    DataSaved.demoNORD = DataSaved.points.get(0).getY();
+                    NmeaGenerator.LATITUDE = DataSaved.demoNORD;
+                    DataSaved.demoEAST = DataSaved.points.get(0).getX();
+                    NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
+                    DataSaved.demoZ = DataSaved.points.get(0).getZ() + 3;
+                    NmeaGenerator.ALTITUDE = DataSaved.demoZ;
+                    MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
+                    MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
+                    MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
+
+                } catch (Exception ex) {
+                    try {
+                        DataSaved.demoNORD = DataSaved.polylines.get(0).getVertices().get(0).getY();
+                        NmeaGenerator.LATITUDE = DataSaved.demoNORD;
+                        DataSaved.demoEAST = DataSaved.polylines.get(0).getVertices().get(0).getX();
+                        NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
+                        DataSaved.demoZ = DataSaved.polylines.get(0).getVertices().get(0).getZ() + 3;
+                        NmeaGenerator.ALTITUDE = DataSaved.demoZ;
+                        MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
+                        MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
+                        MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
+                    } catch (Exception exception) {
+                        new CustomToast(this, "Impossible to Locate Machine").show_error();
+                    }
+                }
+            }
+
         }
     }
 

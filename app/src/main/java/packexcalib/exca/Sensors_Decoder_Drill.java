@@ -1,5 +1,6 @@
 package packexcalib.exca;
 
+import static gui.gps.NmeaGenerator.HEADING;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_Tool_Pitch;
 import static packexcalib.exca.Sensors_Decoder.Deg_Tool_Roll;
@@ -16,6 +17,9 @@ import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
 
 import android.util.Log;
+
+import gui.gps.NmeaGenerator;
+import packexcalib.gnss.NmeaListener;
 
 
 public class Sensors_Decoder_Drill {
@@ -216,7 +220,79 @@ public class Sensors_Decoder_Drill {
                     if (DataSaved.Extra_Heading == 0) {
                         Deg_Boom_Roll = Deg_roll;
                     }
-                   DrillLib.Drill();
+                    if (DataSaved.my_comPort == 4) {
+                        //demo ROLLER
+                        switch (id) {
+                            case 0x195:
+
+                                boolean[] boo = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                                latP = boo[6];
+                                latM = boo[7];
+                                break;
+                            case 0x1F0:
+                                boolean[] be = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                                qP = be[4];
+                                qM = be[5];
+                                lonP = be[6];
+                                lonM = be[7];
+
+                                break;
+                            case 0x3F0:
+                                boolean[] ba = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
+                                rotL = ba[1];
+                                rotR = ba[5];
+                                break;
+                        }
+                        boolean[] keyEvents = new boolean[]{rotL, rotR, latP, latM, lonP, lonM, qP, qM};
+
+
+                        if (keyEvents[0]) {
+                            // rotLeft
+                            HEADING -= 0.05;
+                            HEADING = normalizeAngle(HEADING);
+
+
+                        }
+                        if (keyEvents[1]) {
+                            // rotRight
+                            HEADING += 0.05;
+                            HEADING = normalizeAngle(HEADING);
+
+                        }
+                        if (DataSaved.portView == 1) {
+                            NmeaListener.roof_Orientation = HEADING;
+                        }
+
+                        if (keyEvents[2]) {
+                            // lat+
+                            NmeaGenerator.LATITUDE += 0.005;
+
+                        }
+                        if (keyEvents[3]) {
+                            // lat-
+                            NmeaGenerator.LATITUDE -= 0.005;
+
+                        }
+                        if (keyEvents[4]) {
+                            // F4
+                            NmeaGenerator.LONGITUDE += 0.005;
+
+                        }
+                        if (keyEvents[5]) {
+                            // lon+
+                            NmeaGenerator.LONGITUDE -= 0.005;
+
+                        }
+
+
+                        if (keyEvents[6]) {
+                            NmeaGenerator.ALTITUDE += 0.001;
+                        }
+                        if (keyEvents[7]) {
+                            NmeaGenerator.ALTITUDE -= 0.001;
+                        }
+                    }
+                    DrillLib.Drill();
                     break;
             }
 

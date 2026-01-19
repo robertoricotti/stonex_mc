@@ -97,7 +97,7 @@ public class PointService extends Service {
         if (DistToPoint.dist2D(position, lastPosition) > r) {
 
             lastPosition = position;
-            triangleHelper.updatePointRaius(lastPosition, DataSaved.RaggioDXF);
+            triangleHelper.updatePointRaius(lastPosition, raggio);
 
         }
 

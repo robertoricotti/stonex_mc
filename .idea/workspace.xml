@@ -431,9 +431,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 NFR calcolo drillLib">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Bubble.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/TriangleHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/surfcreator/TriangleHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" afterDir="false" />
     </list>
@@ -474,8 +477,8 @@
         <option value="valueResourceFile" />
         <option value="Interface" />
         <option value="Enum" />
-        <option value="Class" />
         <option value="layoutResourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -553,6 +556,9 @@
     </key>
     <key name="android.template.-148982574">
       <recent name="gui.tech_menu" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="dxf" />
     </key>
   </component>
   <component name="RunManager" selected="Android App.app">
@@ -654,14 +660,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00028" summary="4.0.9 pre release FW solo danfoss ok">
-      <option name="closed" value="true" />
-      <created>1762963321483</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1762963321483</updated>
     </task>
     <task id="LOCAL-00029" summary="4.0.9 RELEASE UFFICIALE">
       <option name="closed" value="true" />
@@ -1047,7 +1045,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768777117842</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="4.1.0 NFR calcolo drillLib">
+      <option name="closed" value="true" />
+      <created>1768839177198</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1768839177198</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
