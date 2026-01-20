@@ -15,16 +15,12 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-
-import com.example.stx_dig.R;
-
 import dxf.DrawDXF_Drill_Point;
-import dxf.Point3D;
-import gui.draw_class.MyColorClass;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.NmeaListener;
+import services.PointService;
 
 
 public class Drill_TopView extends View {
@@ -63,7 +59,7 @@ public class Drill_TopView extends View {
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
 
         if (offsetY == 0) {
-            offsetY = 100;
+            offsetY = 0;
         }
 
 
@@ -86,9 +82,10 @@ public class Drill_TopView extends View {
                 extraHeading = 0;
             }
             rotationAngle = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
-            rotationAngleBoom = Math.toRadians(rotationAngle + extraHeading);
+            rotationAngleBoom = (rotationAngle + Math.toRadians(extraHeading));
+            rotationAngle=rotationAngleBoom;
 
-            originPointTool = new PointF(getWidth() * 0.5f, getHeight() * 0.75f);
+            originPointTool = new PointF(getWidth() * 0.5f, getHeight() * 0.7f);
 
             canvas.save();
             canvas.scale((float) DataSaved.scale_Factor3D, (float) DataSaved.scale_Factor3D, getWidth() * 0.5f, getHeight() * 0.75f);
@@ -108,30 +105,53 @@ public class Drill_TopView extends View {
             */
             drawDrillPoints();
             if(DataSaved.Selected_Point3D_Drill!=null) {
-                drawSelectedPoint(DataSaved.Selected_Point3D_Drill);
+                int colore=Color.RED;
+                if(PointService.okXY){
+                    colore=Color.GREEN;
+                }
+                drawSelectedPoint(DataSaved.Selected_Point3D_Drill,colore);
             }
             // 1) target giallo: drillbit (fisso sullo schermo)
+            int coloreTargetGiallo=Color.YELLOW;
+            int coloreTargetCiano=Color.CYAN;
+            if(PointService.okTilt){
+                coloreTargetCiano=Color.GREEN;
+                coloreTargetGiallo=Color.GREEN;
+            }
             PointF toolScreen = new PointF(toolX, toolY);
-            drawTarget(toolScreen, Color.YELLOW,
-                    Math.max(16f, scala * 0.50f),
-                    Math.max(9f,  scala * 0.28f),
-                    Math.max(11f, scala * 0.38f)
-            );
-
-            // 2) target ciano: drillhead (si muove rispetto al tool)
-            PointF headScreen = worldToScreen(headEast, headNord);
-            drawTarget(headScreen, Color.CYAN,
-
-
+            drawTarget(toolScreen, coloreTargetGiallo,
                     Math.max(18f, scala * 0.55f),
                     Math.max(10f, scala * 0.32f),
                     Math.max(12f, scala * 0.40f)
+            );
+            paint.setStrokeWidth(Math.max(1f, scala * 0.002f));
+            canvas.drawLine(toolX,toolY,toolX+80f,toolY,paint);//destra
+            canvas.drawLine(toolX,toolY,toolX,toolY+80f,paint);//dietro
+            canvas.drawLine(toolX,toolY,toolX-80f,toolY,paint);//sinistra
+            canvas.drawLine(toolX,toolY,toolX,toolY-80f,paint);//avanti
+
+
+            // 2) target ciano: drillhead (si muove rispetto al tool)
+            PointF headScreen = worldToScreen(headEast, headNord);
+            drawTarget(headScreen, coloreTargetCiano,
+                    Math.max(16f, scala * 0.50f),
+                    Math.max(9f,  scala * 0.28f),
+                    Math.max(11f, scala * 0.38f)
+
+
             );
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(Math.max(2f, scala * 0.05f));
             paint.setColor(Color.CYAN);
             canvas.drawLine(toolScreen.x, toolScreen.y, headScreen.x, headScreen.y, paint);
-
+            if(PointService.okXY) {
+                paint.setColor(Color.DKGRAY);
+                paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f));
+                canvas.drawLine(toolX, toolY, toolX + 10f, toolY, paint);//destra
+                canvas.drawLine(toolX, toolY, toolX, toolY + 10f, paint);//dietro
+                canvas.drawLine(toolX, toolY, toolX - 10f, toolY, paint);//sinistra
+                canvas.drawLine(toolX, toolY, toolX, toolY - 10f, paint);//avanti
+            }
 
 
             canvas.restore();
@@ -174,8 +194,8 @@ public class Drill_TopView extends View {
             Log.e("DrillDraw", "Errore drawDrillPoints", e);
         }
     }
-    private void drawSelectedPoint(Point3D_Drill point3DDrill){
-        int col=Color.BLUE;
+    private void drawSelectedPoint(Point3D_Drill point3DDrill,int colore){
+
         double size=0.3;
         DrawDXF_Drill_Point.draw(canvas,
                 paint,
@@ -185,7 +205,7 @@ public class Drill_TopView extends View {
                 toolEast,
                 toolNord,
                 scala,
-                col,
+                colore,
                 rotationAngle,true,size
         );
     }

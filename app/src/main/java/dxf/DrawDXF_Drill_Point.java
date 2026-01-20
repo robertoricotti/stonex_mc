@@ -29,7 +29,7 @@ public class DrawDXF_Drill_Point {
                 float offY = 3f;//sposatre a dx il testo dal punto
                 diffX = (point.getHeadX() - bucketEst) * scala;
                 diffY = (point.getHeadY() - bucketNord) * scala;
-                String testo = point.getRowId() + point.getId();
+                String testo = point.getRowId() +"-"+ point.getId();
                 rotatedXV1 = (float) (bucketX + diffX * Math.cos(rotationAngle) - diffY * Math.sin(rotationAngle));
                 rotatedYV1 = (float) (bucketY - diffX * Math.sin(rotationAngle) - diffY * Math.cos(rotationAngle));
                 paint.setTextSize(24);
@@ -52,7 +52,7 @@ public class DrawDXF_Drill_Point {
                     float offY = 3f;//sposatre a dx il testo dal punto
                     diffX = (point.getHeadX() - bucketEst) * scala;
                     diffY = (point.getHeadY() - bucketNord) * scala;
-                    String testo = point.getRowId() + point.getId();
+                    String testo = point.getRowId() +"-"+ point.getId();
                     rotatedXV1 = (float) (bucketX + diffX * Math.cos(rotationAngle) - diffY * Math.sin(rotationAngle));
                     rotatedYV1 = (float) (bucketY - diffX * Math.sin(rotationAngle) - diffY * Math.cos(rotationAngle));
                     paint.setTextSize(24);
@@ -81,19 +81,18 @@ public static void draw(Canvas canvas, Paint paint, Point3D_Drill point, float b
     paint.setStrokeWidth((float) (0.05 * scala));
     canvas.drawCircle(rotatedXV1, rotatedYV1, r, paint);
     paint.setStrokeWidth((float) (0.035 * scala));
-    paint.setColor(Color.BLUE);
     canvas.drawLine(bucketX,bucketY,rotatedXV1,rotatedYV1,paint);
     paint.setStrokeWidth(10f);
 
     if(txt){
-        float offX = 3.5f;//alzare il testo dal punto
+        float offX = 4f;//alzare il testo dal punto
         float offY = 3.5f;//sposatre a dx il testo dal punto
         diffX = (point.getHeadX() - bucketEst) * scala;
         diffY = (point.getHeadY()- bucketNord) * scala;
-        String testo = point.getRowId()+point.getId();
+        String testo = point.getRowId() +"-"+ point.getId();
         rotatedXV1 = (float) (bucketX + diffX * Math.cos(rotationAngle) - diffY * Math.sin(rotationAngle));
         rotatedYV1 = (float) (bucketY - diffX * Math.sin(rotationAngle) - diffY * Math.cos(rotationAngle));
-        paint.setTextSize(24);
+        paint.setTextSize(28);
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawText(testo, rotatedXV1 + offX, rotatedYV1 - offY, paint);

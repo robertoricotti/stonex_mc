@@ -1,6 +1,9 @@
 package services;
 
 import static drill_pile.gui.Drill_Activity.isDrilling;
+import static packexcalib.exca.DataSaved.Selected_Point3D_Drill;
+import static packexcalib.exca.ExcavatorLib.coordTool;
+import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 
 import android.app.Service;
@@ -12,6 +15,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import drill_pile.gui.DrillGuidance;
+import drill_pile.gui.PlanError;
+import iredes.DrillMatch;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
@@ -23,6 +29,17 @@ public class PointService extends Service {
     private ExecutorService executor;
     private static double[] lastPosition;
     TriangleHelper triangleHelper;
+    DrillMatch.MatchStates st;
+    DrillGuidance.Triangles tri;
+    public static double[] pe=new double[3];
+    public static boolean okXY = false;
+    public static boolean okTilt = false;
+    public static boolean okOri = false;
+
+    public static boolean FrecciaUP = false;
+    public static boolean FrecciaRIGHT = false;
+    public static boolean FrecciaDOWN = false;
+    public static boolean FrecciaLEFT = false;
 
     public PointService() {
     }
@@ -78,7 +95,7 @@ public class PointService extends Service {
                     case 1:
                         if (!isDrilling) {
                             if (DataSaved.drill_points != null && !DataSaved.drill_points.isEmpty()) {
-                                DataSaved.Selected_Point3D_Drill = findNearestDrillPoint(toolEndCoord[0], toolEndCoord[1], DataSaved.filtered_drill_points);
+                                Selected_Point3D_Drill = findNearestDrillPoint(toolEndCoord[0], toolEndCoord[1], DataSaved.filtered_drill_points);
                             }
                         }
                         break;
@@ -87,6 +104,50 @@ public class PointService extends Service {
 
 
                         break;
+                }
+                if (Selected_Point3D_Drill != null) {
+                    st = DrillMatch.matchMastToHole(
+                            coordTool, toolEndCoord,
+                            new double[]{
+                                    Selected_Point3D_Drill.getHeadX(), Selected_Point3D_Drill.getHeadY(), Selected_Point3D_Drill.getHeadZ()
+                            }, new double[]{
+                                    Selected_Point3D_Drill.getEndX(), Selected_Point3D_Drill.getEndY(), Selected_Point3D_Drill.getEndZ()
+                            },
+                            DataSaved.tolleranza_XY, DataSaved.tolleranza_Slope
+                    );
+                    okXY = st.xyInRange;
+                    okTilt = st.tiltInRange;
+                    okOri = st.orientationInRange;
+
+                    tri = DrillGuidance.computeTiltTriangles(
+                            coordTool, toolEndCoord,
+                            new double[]{
+                                    Selected_Point3D_Drill.getHeadX(), Selected_Point3D_Drill.getHeadY(), Selected_Point3D_Drill.getHeadZ()
+                            }, new double[]{
+                                    Selected_Point3D_Drill.getEndX(), Selected_Point3D_Drill.getEndY(), Selected_Point3D_Drill.getEndZ()
+                            },
+                            hdt_BOOM,
+                            DataSaved.tolleranza_Slope
+                    );
+                    FrecciaUP = tri.up;
+                    FrecciaRIGHT = tri.right;
+                    FrecciaDOWN = tri.down;
+                    FrecciaLEFT = tri.left;
+
+                     pe=PlanError.calcPlanErrorToAxisXY(
+                             toolEndCoord[0], toolEndCoord[1],
+                             Selected_Point3D_Drill.getHeadX(), Selected_Point3D_Drill.getHeadY(),
+                             Selected_Point3D_Drill.getEndX(), Selected_Point3D_Drill.getEndY()
+                    );
+
+                } else {
+                    okXY = false;
+                    okTilt = false;
+                    okOri = false;
+                    FrecciaUP = false;
+                    FrecciaRIGHT = false;
+                    FrecciaDOWN = false;
+                    FrecciaLEFT = false;
                 }
 
 
@@ -145,9 +206,9 @@ public class PointService extends Service {
         }
         assert nearestPoint != null;
         Log.d("PointStatus", nearestPoint.getStatus() + "");
-        if(nearestPoint.getStatus()==null||nearestPoint.getStatus()==0) {
+        if (nearestPoint.getStatus() == null || nearestPoint.getStatus() == 0) {
             return nearestPoint;
-        }else {
+        } else {
             return null;
         }
 

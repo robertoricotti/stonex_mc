@@ -19,6 +19,7 @@ import com.example.stx_dig.R;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
 import utils.FullscreenActivity;
+import utils.MyData;
 
 public class Dialog_AutoSnap {
 
@@ -61,6 +62,7 @@ public class Dialog_AutoSnap {
 
     }
     private void findView(){
+
         close=dialog.findViewById(R.id.chiudi);
         autosnap=dialog.findViewById(R.id.autosnap);
         pick=dialog.findViewById(R.id.pick_sel);
@@ -121,6 +123,15 @@ public class Dialog_AutoSnap {
                 pick.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 break;
 
+        }
+        try {
+            if(MyData.get_String("isAutosnap")==null){
+                MyData.push("isAutosnap",String.valueOf(DataSaved.isAutoSnap));
+            }else {
+                MyData.push("isAutosnap",String.valueOf(DataSaved.isAutoSnap));
+            }
+        } catch (Exception e) {
+            MyData.push("isAutosnap",String.valueOf(0));
         }
     }
 }

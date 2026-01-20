@@ -1,6 +1,7 @@
 package drill_pile.gui;
 
 import static gui.MyApp.errorCode;
+import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -38,7 +39,7 @@ public class Drill_Activity extends BaseClass {
     public static boolean isDrilling;
     int flip = 0;
     Dialog_Drill_GNSS dialogDrillGnss;
-    View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas;
+    View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas,bubbleCanvas;
     ImageView digMenu, drilltool, typeView, Status, folders, playpause, lineReference, tiposnap,
             zoom_P, zoom_M, zoom_C, compass;
     ConstraintLayout topview, bubble;
@@ -47,7 +48,7 @@ public class Drill_Activity extends BaseClass {
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
-    Guideline cent_v;
+    Guideline cent_v,side;
     float rot = 0;
 
     @Override
@@ -70,10 +71,23 @@ public class Drill_Activity extends BaseClass {
     @Override
     protected void onStop() {
         super.onStop();
+        MyData.push("scaleFactor3D", String.valueOf(DataSaved.scale_Factor3D));
         stopService(new Intent(this, PointService.class));
     }
 
     private void findView() {
+        DataSaved.scale_Factor3D=MyData.get_Double("scaleFactor3D");
+        try {
+            if(MyData.get_String("isAutosnap")==null){
+                MyData.push("isAutosnap",String.valueOf(DataSaved.isAutoSnap));
+            }else {
+                DataSaved.isAutoSnap=MyData.get_Int("isAutosnap");
+
+            }
+        } catch (Exception e) {
+            MyData.push("isAutosnap",String.valueOf(0));
+            DataSaved.isAutoSnap=0;
+        }
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogAutoSnap = new Dialog_AutoSnap(this);
         divisorioC = findViewById(R.id.divisorioC);
@@ -100,6 +114,7 @@ public class Drill_Activity extends BaseClass {
         zoom_M = findViewById(R.id.zoom_M);
         zoom_C = findViewById(R.id.zoom_C);
         cent_v = findViewById(R.id.cent_v);
+        side = findViewById(R.id.side);
         typeView = findViewById(R.id.typeView);
         compass = findViewById(R.id.compass);
         textInfo = findViewById(R.id.textInfo);
@@ -166,6 +181,8 @@ public class Drill_Activity extends BaseClass {
         uomesure.setText(Utils.getMetriSimbol().replace("[", "").replace("]", ""));
         topViewCanvas = new Drill_TopView(this);
         topview.addView(topViewCanvas);
+        bubbleCanvas=new Drill_Bubble(this);
+        bubble.addView(bubbleCanvas);
 
 
     }
@@ -216,15 +233,23 @@ public class Drill_Activity extends BaseClass {
 
     public void updateUI() {
 
-
-
         float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
         rotBus = rotBus % 360;
         compass.setRotation(rotBus);
+        float cen=0.35f;
+        float lef=-0.01f;
+        float rig=0.92f;
+        float sid=0.92f;
+        if(!isDrilling){
+            cen=0.43f;
+            rig=1f;
+            sid=1f;
+        }
+        side.setGuidelinePercent(sid);
 
         switch (typeVistaDrill) {
             case 0:
-                cent_v.setGuidelinePercent(0.35f);
+                cent_v.setGuidelinePercent(cen);
                 zoom_P.setVisibility(View.INVISIBLE);
                 zoom_M.setVisibility(View.INVISIBLE);
                 zoom_C.setVisibility(View.INVISIBLE);
@@ -233,7 +258,7 @@ public class Drill_Activity extends BaseClass {
 
             case 1:
 
-                cent_v.setGuidelinePercent(-0.01f);
+                cent_v.setGuidelinePercent(lef);
                 zoom_P.setVisibility(View.INVISIBLE);
                 zoom_M.setVisibility(View.INVISIBLE);
                 zoom_C.setVisibility(View.INVISIBLE);
@@ -241,7 +266,7 @@ public class Drill_Activity extends BaseClass {
                 break;
 
             case 2:
-                cent_v.setGuidelinePercent(0.92f);
+                cent_v.setGuidelinePercent(rig);
                 zoom_P.setVisibility(View.INVISIBLE);
                 zoom_M.setVisibility(View.INVISIBLE);
                 zoom_C.setVisibility(View.INVISIBLE);
@@ -296,7 +321,13 @@ public class Drill_Activity extends BaseClass {
 
         textInfo.setText(setTesto());
         topViewCanvas.invalidate();
-        // realtime update
+        ((Drill_Bubble) bubbleCanvas).setColors(Color.GREEN,Color.GREEN,MyColorClass.colorConstraint,Color.MAGENTA);
+        ((Drill_Bubble) bubbleCanvas).setTriangles(PointService.FrecciaUP,PointService.FrecciaLEFT,PointService.FrecciaDOWN,PointService.FrecciaRIGHT);
+        ((Drill_Bubble) bubbleCanvas).setPlanError(PointService.pe[0], PointService.pe[1]);
+        ((Drill_Bubble) bubbleCanvas).setCenterDistance(Double.parseDouble(Utils.readUnitOfMeasureLITE(String.valueOf(PointService.pe[2]))));
+        ((Drill_Bubble) bubbleCanvas).setHeadingDeg(hdt_BOOM);
+        ((Drill_Bubble) bubbleCanvas).setCrossOnly(PointService.okXY);
+        bubbleCanvas.invalidate();
 
         setIndicator();
     }

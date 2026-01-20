@@ -431,13 +431,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 NFR screen work">
+      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillGuidance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/PlanError.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/iredes/DrillMatch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_AutoSnap.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_AutoSnap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Rod_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Rod_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Bubble.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Bubble.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -659,14 +663,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00030" summary="4.0.10 RELEASE UFFICIALE">
-      <option name="closed" value="true" />
-      <created>1763116868203</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1763116868203</updated>
     </task>
     <task id="LOCAL-00031" summary="4.0.11 develop firmware danfoss">
       <option name="closed" value="true" />
@@ -1052,7 +1048,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768863752770</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="4.1.0 NFR screen work">
+      <option name="closed" value="true" />
+      <created>1768909081547</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1768909081547</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
