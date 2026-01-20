@@ -113,17 +113,19 @@ public class Drill_TopView extends View {
             // 1) target giallo: drillbit (fisso sullo schermo)
             PointF toolScreen = new PointF(toolX, toolY);
             drawTarget(toolScreen, Color.YELLOW,
-                    Math.max(18f, scala * 0.55f),
-                    Math.max(10f, scala * 0.32f),
-                    Math.max(12f, scala * 0.40f)
+                    Math.max(16f, scala * 0.50f),
+                    Math.max(9f,  scala * 0.28f),
+                    Math.max(11f, scala * 0.38f)
             );
 
             // 2) target ciano: drillhead (si muove rispetto al tool)
             PointF headScreen = worldToScreen(headEast, headNord);
             drawTarget(headScreen, Color.CYAN,
-                    Math.max(16f, scala * 0.50f),
-                    Math.max(9f,  scala * 0.28f),
-                    Math.max(11f, scala * 0.38f)
+
+
+                    Math.max(18f, scala * 0.55f),
+                    Math.max(10f, scala * 0.32f),
+                    Math.max(12f, scala * 0.40f)
             );
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(Math.max(2f, scala * 0.05f));
@@ -135,7 +137,7 @@ public class Drill_TopView extends View {
             canvas.restore();
 
 
-            Log.d("ErrorDrill", DataSaved.filtered_drill_points.isEmpty() + "");
+            Log.d("ErrorDrill", DataSaved.scale_Factor3D + "");
         } catch (Exception e) {
             Log.e("ErrorDrill", Log.getStackTraceString(e));
 
@@ -339,7 +341,7 @@ public class Drill_TopView extends View {
         public boolean onScale(ScaleGestureDetector detector) {
             DataSaved.scale_Factor3D *= detector.getScaleFactor();
             // Limita il fattore di scala
-            DataSaved.scale_Factor3D = Math.max(0.05f, Math.min(DataSaved.scale_Factor3D, 10.0f));
+            DataSaved.scale_Factor3D = Math.max(0.4f, Math.min(DataSaved.scale_Factor3D, 6.5f));
             invalidate();
             return true;
         }

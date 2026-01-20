@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,6 +16,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Guideline;
 
 import com.example.stx_dig.R;
+
+import org.bouncycastle.jce.provider.BrokenPBE;
 
 import gui.BaseClass;
 import gui.MyApp;
@@ -32,7 +35,7 @@ import utils.Utils;
 
 public class Drill_Activity extends BaseClass {
     public static int typeVistaDrill;
-
+    public static boolean isDrilling;
     int flip = 0;
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas;
@@ -212,13 +215,16 @@ public class Drill_Activity extends BaseClass {
     }
 
     public void updateUI() {
+
+
+
         float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
         rotBus = rotBus % 360;
         compass.setRotation(rotBus);
 
         switch (typeVistaDrill) {
             case 0:
-                cent_v.setGuidelinePercent(0.4f);
+                cent_v.setGuidelinePercent(0.35f);
                 zoom_P.setVisibility(View.INVISIBLE);
                 zoom_M.setVisibility(View.INVISIBLE);
                 zoom_C.setVisibility(View.INVISIBLE);
@@ -263,8 +269,11 @@ public class Drill_Activity extends BaseClass {
             idpalo.setText("R:" + DataSaved.Selected_Point3D_Drill.getRowId() + " - " + "P:" + DataSaved.Selected_Point3D_Drill.getId());
             txthdt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getHeadingDeg()) + "°");
             txttilt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getTilt()) + "°");
-            txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.toolEndCoord[2] - DataSaved.Selected_Point3D_Drill.getEndZ())));
-
+            if(isDrilling) {
+                txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.toolEndCoord[2] - DataSaved.Selected_Point3D_Drill.getEndZ())));
+            }else {
+                txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.toolEndCoord[2] - DataSaved.Selected_Point3D_Drill.getHeadZ())));
+            }
         } else {
             idpalo.setText("R:___ P:___");
             txthdt.setText("_._°");
@@ -323,6 +332,7 @@ public class Drill_Activity extends BaseClass {
             double high = DataSaved.Selected_Point3D_Drill.getEndZ() + 2;
             indicator.setRange(low, high);
             indicator.setCurrentValue((float) ExcavatorLib.toolEndCoord[2]);//TODO adattare in realtime
+
         }catch(Exception ignored){
 
         }
@@ -336,7 +346,7 @@ public class Drill_Activity extends BaseClass {
                 NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                 DataSaved.demoEAST = DataSaved.drill_points.get(0).getHeadX();
                 NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
-                DataSaved.demoZ = DataSaved.drill_points.get(0).getHeadZ() + 2;
+                DataSaved.demoZ = DataSaved.drill_points.get(0).getHeadZ() + 4;
                 NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                 MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                 MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
@@ -373,5 +383,10 @@ public class Drill_Activity extends BaseClass {
 
         }
     }
-
+    private static double normalizeAngle(double a) {
+        a = a % 360.0;
+        if (a > 180) a -= 360;
+        if (a < -180) a += 360;
+        return a;
+    }
 }

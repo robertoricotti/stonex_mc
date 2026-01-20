@@ -430,13 +430,12 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 NFR calcolo drillLib">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Bubble.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 NFR screen work">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Rod_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Rod_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" afterDir="false" />
     </list>
@@ -660,14 +659,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00029" summary="4.0.9 RELEASE UFFICIALE">
-      <option name="closed" value="true" />
-      <created>1762965786261</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1762965786261</updated>
     </task>
     <task id="LOCAL-00030" summary="4.0.10 RELEASE UFFICIALE">
       <option name="closed" value="true" />
@@ -1053,12 +1044,19 @@
       <option name="project" value="LOCAL" />
       <updated>1768839177198</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="4.1.0 NFR screen work">
+      <option name="closed" value="true" />
+      <created>1768863752769</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1768863752770</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.0.11 RELEASE" />
     <MESSAGE value="4.0.12 Test implementazione icg82" />
     <MESSAGE value="4.0.12 RELEASE" />
     <MESSAGE value="4.0.13 RELEASE" />
@@ -1083,7 +1081,8 @@
     <MESSAGE value="4.1.0 FMI Implementation done" />
     <MESSAGE value="4.1.0 NFR ROD-BIT PAGE" />
     <MESSAGE value="4.1.0 NFR calcolo drillLib" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 NFR calcolo drillLib" />
+    <MESSAGE value="4.1.0 NFR screen work" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 NFR screen work" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1101,7 +1100,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1768776816697" />
+            <CheckInfo lastCheckTimestamp="1768901258742" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1111,7 +1110,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1768776816698" />
+            <CheckInfo lastCheckTimestamp="1768901258743" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1121,7 +1120,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1768776816697" />
+            <CheckInfo lastCheckTimestamp="1768901258742" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

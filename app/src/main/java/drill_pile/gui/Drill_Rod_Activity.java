@@ -24,6 +24,7 @@ import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import services.UpdateValuesService;
+import utils.FullscreenActivity;
 import utils.MyData;
 import utils.Utils;
 
@@ -46,6 +47,7 @@ public class Drill_Rod_Activity extends BaseClass {
         findView();
         init();
         onClick();
+        FullscreenActivity.setFullScreen(this);
 
 
     }
