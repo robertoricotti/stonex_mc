@@ -144,6 +144,10 @@ public class Drill_Activity extends BaseClass {
         indicator.setTolerance(DataSaved.deadbandH);
         indicator.setColors(colorUp, colorDown, colorGreen);
         textInfo.setTextColor(MyColorClass.colorConstraint);
+        topViewCanvas = new Drill_TopView(this);
+        topview.addView(topViewCanvas);
+        bubbleCanvas=new Drill_Bubble(this);
+        bubble.addView(bubbleCanvas);
         switch (DataSaved.temaSoftware) {
             case 0:
                 tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
@@ -157,6 +161,8 @@ public class Drill_Activity extends BaseClass {
                 zoom_C.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
                 zoom_C.setImageTintList(getColorStateList(R.color.white));
                 compass.setImageTintList(getColorStateList(R.color.white));
+                ((Drill_TopView) topViewCanvas).setColorTarget_Alto(Color.CYAN);
+                ((Drill_TopView) topViewCanvas).setColorTarget_Basso(Color.YELLOW);
 
                 break;
 
@@ -173,16 +179,15 @@ public class Drill_Activity extends BaseClass {
                 zoom_C.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
                 zoom_C.setImageTintList(getColorStateList(R.color._____cancel_text));
                 compass.setImageTintList(getColorStateList(R.color._____cancel_text));
+                ((Drill_TopView) topViewCanvas).setColorTarget_Alto(Color.BLUE);
+                ((Drill_TopView) topViewCanvas).setColorTarget_Basso(getResources().getColor(R.color.bg));
 
                 break;
 
 
         }
         uomesure.setText(Utils.getMetriSimbol().replace("[", "").replace("]", ""));
-        topViewCanvas = new Drill_TopView(this);
-        topview.addView(topViewCanvas);
-        bubbleCanvas=new Drill_Bubble(this);
-        bubble.addView(bubbleCanvas);
+
 
 
     }
@@ -226,6 +231,13 @@ public class Drill_Activity extends BaseClass {
 
         });
         playpause.setOnClickListener(view -> {
+            if(
+            PointService.okTilt&&
+            PointService.okXY){
+                isDrilling=!isDrilling;
+            }else {
+                isDrilling=false;
+            }//TODO ROUTINE trivellazione
 
         });
 
@@ -321,10 +333,33 @@ public class Drill_Activity extends BaseClass {
 
         textInfo.setText(setTesto());
         topViewCanvas.invalidate();
-        ((Drill_Bubble) bubbleCanvas).setColors(Color.GREEN,Color.GREEN,MyColorClass.colorConstraint,Color.MAGENTA);
+        int ringColor=Color.GREEN;
+        int tricolor=Color.GREEN;
+        int arrowColor=Color.GREEN;
+        int textColor=MyColorClass.colorConstraint;
+        if(!PointService.okTilt){
+            ringColor=getResources().getColor(R.color.bg_sfsred);
+            if(DataSaved.temaSoftware==0){
+                tricolor = Color.YELLOW;
+            }else {
+                tricolor = Color.BLUE;
+            }
+        }
+        if(!PointService.okXY){
+            arrowColor=Color.RED;
+            textColor=Color.WHITE;
+        }
+
+
+        ((Drill_Bubble) bubbleCanvas).setColors(ringColor,arrowColor,textColor,tricolor);
         ((Drill_Bubble) bubbleCanvas).setTriangles(PointService.FrecciaUP,PointService.FrecciaLEFT,PointService.FrecciaDOWN,PointService.FrecciaRIGHT);
         ((Drill_Bubble) bubbleCanvas).setPlanError(PointService.pe[0], PointService.pe[1]);
-        ((Drill_Bubble) bubbleCanvas).setCenterDistance(Double.parseDouble(Utils.readUnitOfMeasureLITE(String.valueOf(PointService.pe[2]))));
+        if(DataSaved.Selected_Point3D_Drill==null){
+            ((Drill_Bubble) bubbleCanvas).setCenterDistance("---.---");
+        }else {
+            ((Drill_Bubble) bubbleCanvas).setCenterDistance((Utils.readUnitOfMeasureLITE(String.valueOf(PointService.pe[2]))));
+        }
+
         ((Drill_Bubble) bubbleCanvas).setHeadingDeg(hdt_BOOM);
         ((Drill_Bubble) bubbleCanvas).setCrossOnly(PointService.okXY);
         bubbleCanvas.invalidate();

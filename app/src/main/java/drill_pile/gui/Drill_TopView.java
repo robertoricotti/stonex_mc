@@ -24,6 +24,28 @@ import services.PointService;
 
 
 public class Drill_TopView extends View {
+    private final android.graphics.Matrix drawMatrix = new android.graphics.Matrix();
+    private final android.graphics.Matrix invDrawMatrix = new android.graphics.Matrix();
+    private final float[] tmpPt = new float[2];
+
+
+    private final java.util.ArrayList<ScreenPt> screenPts = new java.util.ArrayList<>();
+    private final java.util.HashMap<Long, java.util.ArrayList<Integer>> grid = new java.util.HashMap<>();
+
+    // dimensione cella in px (in schermo) per il picking
+    private float gridCellPx = 60f;
+
+    // soglia tap (raggio) in px: scala con zoom
+    private float pickRadiusPx = 40f;
+
+    // per capire se rigenerare cache solo quando serve
+    private boolean pickCacheDirty = true;
+
+    // salva parametri usati per la cache (così eviti rebuild inutili)
+    private float lastScaleFactor = -1;
+    private float lastOffsetX = Float.NaN, lastOffsetY = Float.NaN;
+    private double lastRot = Double.NaN;
+    private double lastToolE = Double.NaN, lastToolN = Double.NaN;
 
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
@@ -44,6 +66,8 @@ public class Drill_TopView extends View {
     float ancorPX, ancorPY;
     private static final int INVALID_POINTER_ID = -1;
     private int activePointerId = INVALID_POINTER_ID;
+    private int colorTarget_Alto=Color.CYAN;
+    private int colorTarget_Basso=Color.YELLOW;
 
 
     public Drill_TopView(Context context) {
@@ -87,9 +111,34 @@ public class Drill_TopView extends View {
 
             originPointTool = new PointF(getWidth() * 0.5f, getHeight() * 0.7f);
 
+            /*
+
+
+
+             */
+
+            float pivotX = getWidth() * 0.5f;
+            float pivotY = getHeight() * 0.75f;
+            float s = (float) DataSaved.scale_Factor3D;
+
+            drawMatrix.reset();
+            drawMatrix.postScale(s, s, pivotX, pivotY);
+            drawMatrix.postTranslate(offsetX, offsetY);
+
+// opzionale: prepara anche l’inversa (torna utile nel pick)
+            invDrawMatrix.reset();
+            drawMatrix.invert(invDrawMatrix);
+
+            /*
+
+
+
+             */
+
             canvas.save();
-            canvas.scale((float) DataSaved.scale_Factor3D, (float) DataSaved.scale_Factor3D, getWidth() * 0.5f, getHeight() * 0.75f);
-            canvas.translate(offsetX, offsetY);
+            canvas.concat(drawMatrix);
+            //canvas.scale((float) DataSaved.scale_Factor3D, (float) DataSaved.scale_Factor3D, getWidth() * 0.5f, getHeight() * 0.75f);
+            //canvas.translate(offsetX, offsetY);
 
             toolEast = ExcavatorLib.toolEndCoord[0]; // Coordinata REALI EST del primo punto
             toolNord = ExcavatorLib.toolEndCoord[1]; // Coordinata REALI NORD del primo punto
@@ -97,7 +146,9 @@ public class Drill_TopView extends View {
             headNord = ExcavatorLib.coordTool[1];
             toolX = originPointTool.x;
             toolY = originPointTool.y;
-
+            if (DataSaved.isAutoSnap == 2) {
+                ensurePickCache();
+            }
 
 
            /*
@@ -112,17 +163,17 @@ public class Drill_TopView extends View {
                 drawSelectedPoint(DataSaved.Selected_Point3D_Drill,colore);
             }
             // 1) target giallo: drillbit (fisso sullo schermo)
-            int coloreTargetGiallo=Color.YELLOW;
-            int coloreTargetCiano=Color.CYAN;
+            int coloreTargetGiallo=colorTarget_Basso;
+            int coloreTargetCiano=colorTarget_Alto;
             if(PointService.okTilt){
                 coloreTargetCiano=Color.GREEN;
                 coloreTargetGiallo=Color.GREEN;
             }
             PointF toolScreen = new PointF(toolX, toolY);
             drawTarget(toolScreen, coloreTargetGiallo,
-                    Math.max(18f, scala * 0.55f),
-                    Math.max(10f, scala * 0.32f),
-                    Math.max(12f, scala * 0.40f)
+                    Math.max(16f, scala * 0.50f),
+                    Math.max(9f,  scala * 0.28f),
+                    Math.max(11f, scala * 0.38f)
             );
             paint.setStrokeWidth(Math.max(1f, scala * 0.002f));
             canvas.drawLine(toolX,toolY,toolX+80f,toolY,paint);//destra
@@ -134,9 +185,11 @@ public class Drill_TopView extends View {
             // 2) target ciano: drillhead (si muove rispetto al tool)
             PointF headScreen = worldToScreen(headEast, headNord);
             drawTarget(headScreen, coloreTargetCiano,
-                    Math.max(16f, scala * 0.50f),
-                    Math.max(9f,  scala * 0.28f),
-                    Math.max(11f, scala * 0.38f)
+
+
+                    Math.max(18f, scala * 0.55f),
+                    Math.max(10f, scala * 0.32f),
+                    Math.max(12f, scala * 0.40f)
 
 
             );
@@ -326,6 +379,18 @@ public class Drill_TopView extends View {
     // Implementazione della classe interna per il trascinamento
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
+        public void onLongPress(@NonNull MotionEvent e) {
+            if (DataSaved.isAutoSnap != 2) {
+                return;   // 🔴 autosnap disattivo → niente picking
+            }
+            // long press di default ~500ms; se vuoi 1s esatto vedi sezione "1s preciso"
+            Point3D_Drill hit = pickPoint(e.getX(), e.getY());
+            if (hit != null) {
+                DataSaved.Selected_Point3D_Drill = hit;
+                invalidate();
+            }
+        }
+        @Override
         public boolean onDown(MotionEvent e) {
             return true;
         }
@@ -403,6 +468,132 @@ public class Drill_TopView extends View {
         }
         return color;
     }
+
+    public void setColorTarget_Alto(int colorTarget_Alto) {
+        this.colorTarget_Alto = colorTarget_Alto;
+    }
+
+    public void setColorTarget_Basso(int colorTarget_Basso) {
+        this.colorTarget_Basso = colorTarget_Basso;
+    }
+    // --- Picking cache ---
+    private static class ScreenPt {
+        float x, y;
+        int index; // indice in filtered_drill_points
+    }
+    private static long key(int cx, int cy) {
+        return (((long) cx) << 32) ^ (cy & 0xffffffffL);
+    }
+
+    private int cellX(float x) { return (int) Math.floor(x / gridCellPx); }
+    private int cellY(float y) { return (int) Math.floor(y / gridCellPx); }
+    private void ensurePickCache() {
+        if (DataSaved.filtered_drill_points == null) return;
+
+        boolean changed =
+                lastScaleFactor != DataSaved.scale_Factor3D ||
+                        lastRot != rotationAngle ||
+                        lastToolE != toolEast ||
+                        lastToolN != toolNord;
+
+        if (!pickCacheDirty && !changed) return;
+
+        pickCacheDirty = false;
+        lastScaleFactor = (float)DataSaved.scale_Factor3D;
+        lastOffsetX = offsetX;
+        lastOffsetY = offsetY;
+        lastRot = rotationAngle;
+        lastToolE = toolEast;
+        lastToolN = toolNord;
+
+        // tuning soglie: aumentano un po' con zoom, ma restano in px (non world)
+        pickRadiusPx = (float) Math.max(18f, 30f * DataSaved.scale_Factor3D);
+        gridCellPx = (float) Math.max(40f, 70f * DataSaved.scale_Factor3D);
+
+        screenPts.clear();
+        grid.clear();
+
+        // build: punti in coordinate schermo (post-transform canvas.translate/scale)
+        // NOTA: qui stai già disegnando in un canvas scalato/traslato, ma pick usa MotionEvent in px "view".
+        // Quindi dobbiamo mappare correttamente: il modo più semplice è convertire il tap in "canvas space"
+        // (vedi pickPoint). Qui memorizziamo in "canvas space" coerente con worldToScreen.
+        // worldToScreen già restituisce coordinate nello stesso spazio in cui disegni (dopo translate/scale nel canvas).
+        // Quindi è OK memorizzare worldToScreen.
+
+        for (int i = 0; i < DataSaved.filtered_drill_points.size(); i++) {
+            Point3D_Drill p = DataSaved.filtered_drill_points.get(i);
+            if (p == null || p.getHeadX() == null || p.getHeadY() == null) continue;
+
+            // usa le coordinate "head" (o quello che rappresenta il punto in top view)
+            double e = p.getHeadX();
+            double n = p.getHeadY();
+
+            PointF s = worldToScreen(e, n);
+
+            ScreenPt sp = new ScreenPt();
+            sp.x = s.x;
+            sp.y = s.y;
+            sp.index = i;
+            int idx = screenPts.size();
+            screenPts.add(sp);
+
+            int cx = cellX(sp.x);
+            int cy = cellY(sp.y);
+            long k = key(cx, cy);
+            java.util.ArrayList<Integer> bucket = grid.get(k);
+            if (bucket == null) {
+                bucket = new java.util.ArrayList<>();
+                grid.put(k, bucket);
+            }
+            bucket.add(idx); // idx in screenPts
+        }
+    }
+    private Point3D_Drill pickPoint(float touchX_view, float touchY_view) {
+
+        if (DataSaved.isAutoSnap != 2) return null;
+        if (DataSaved.filtered_drill_points == null || DataSaved.filtered_drill_points.isEmpty()) return null;
+
+        // touch in view coords -> local coords (quelle usate da worldToScreen e draw)
+        tmpPt[0] = touchX_view;
+        tmpPt[1] = touchY_view;
+        invDrawMatrix.mapPoints(tmpPt);
+
+        float xLocal = tmpPt[0];
+        float yLocal = tmpPt[1];
+
+        ensurePickCache();
+
+        // ora usa xLocal/yLocal per cercare nella grid/cache
+        int cx = cellX(xLocal);
+        int cy = cellY(yLocal);
+
+        float bestD2 = pickRadiusPx * pickRadiusPx;
+        int bestIndex = -1;
+
+        for (int gx = cx - 1; gx <= cx + 1; gx++) {
+            for (int gy = cy - 1; gy <= cy + 1; gy++) {
+                java.util.ArrayList<Integer> bucket = grid.get(key(gx, gy));
+                if (bucket == null) continue;
+
+                for (int b = 0; b < bucket.size(); b++) {
+                    ScreenPt sp = screenPts.get(bucket.get(b));
+                    float dx = sp.x - xLocal;
+                    float dy = sp.y - yLocal;
+                    float d2 = dx*dx + dy*dy;
+                    if (d2 < bestD2) {
+                        bestD2 = d2;
+                        bestIndex = sp.index;
+                    }
+                }
+            }
+        }
+
+        if (bestIndex >= 0 && bestIndex < DataSaved.filtered_drill_points.size()) {
+            return DataSaved.filtered_drill_points.get(bestIndex);
+        }
+        return null;
+    }
+
 
 
 }
