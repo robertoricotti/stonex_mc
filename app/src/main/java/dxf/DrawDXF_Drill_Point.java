@@ -44,43 +44,92 @@ public class DrawDXF_Drill_Point {
 
     }
 
-    public static void draw(Canvas canvas, Paint paint, Point3D_Drill point, float bucketX, float bucketY, double bucketEst, double bucketNord, float scala, int color, double rotationAngle, boolean txt, double size) {
+    public static void draw(Canvas canvas, Paint paint, Point3D_Drill point,
+                            float bucketX, float bucketY,
+                            double bucketEst, double bucketNord,
+                            float scala, int color, double rotationAngle,
+                            boolean txt, double size) {
 
-        double diffX = (point.getHeadX() - bucketEst) * scala;
-        double diffY = (point.getHeadY() - bucketNord) * scala;
-        float rotatedXV1 = (float) (bucketX + diffX * Math.cos(rotationAngle) - diffY * Math.sin(rotationAngle));
-        float rotatedYV1 = (float) (bucketY - diffX * Math.sin(rotationAngle) - diffY * Math.cos(rotationAngle));
-        float r = ((float) size * scala);
+        if (point == null) return;
+        if (point.getHeadX() == null || point.getHeadY() == null) return;
+
+        // --- testa (head) ---
+        double diffHX = (point.getHeadX() - bucketEst) * scala;
+        double diffHY = (point.getHeadY() - bucketNord) * scala;
+
+        float headX = (float) (bucketX + diffHX * Math.cos(rotationAngle) - diffHY * Math.sin(rotationAngle));
+        float headY = (float) (bucketY - diffHX * Math.sin(rotationAngle) - diffHY * Math.cos(rotationAngle));
+
+        float rHead = (float) (size * scala);
+        float rEnd  = rHead * 0.75f;
+
+        // --- fondo (end) ---
+        boolean hasEnd = (point.getEndX() != null && point.getEndY() != null);
+
+        float endX = headX;
+        float endY = headY;
+
+        if (hasEnd) {
+            double diffEX = (point.getEndX() - bucketEst) * scala;
+            double diffEY = (point.getEndY() - bucketNord) * scala;
+
+            endX = (float) (bucketX + diffEX * Math.cos(rotationAngle) - diffEY * Math.sin(rotationAngle));
+            endY = (float) (bucketY - diffEX * Math.sin(rotationAngle) - diffEY * Math.cos(rotationAngle));
+        }
+
+        // --- linea centro-centro (se ho il fondo) ---
+        if (hasEnd) {
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setColor(MyColorClass.colorConstraint);
+            paint.setStrokeWidth((float) (0.035 * scala));
+            canvas.drawLine(headX, headY, endX, endY, paint);
+        }
+
+        // --- disegno testa ---
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(color);
-        canvas.drawCircle(rotatedXV1, rotatedYV1, r, paint);
+        canvas.drawCircle(headX, headY, rHead, paint);
+
         paint.setColor(MyColorClass.colorSfondo);
         paint.setStrokeWidth((float) (0.04 * scala));
-        canvas.drawPoint(rotatedXV1, rotatedYV1, paint);
+        canvas.drawPoint(headX, headY, paint);
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(MyColorClass.colorConstraint);
         paint.setStrokeWidth((float) (0.05 * scala));
-        canvas.drawCircle(rotatedXV1, rotatedYV1, r, paint);
-        paint.setStrokeWidth((float) (0.035 * scala));
-        canvas.drawLine(bucketX, bucketY, rotatedXV1, rotatedYV1, paint);
-        paint.setStrokeWidth(10f);
+        canvas.drawCircle(headX, headY, rHead, paint);
 
-        if (txt) {
-            float offX = 4f;//alzare il testo dal punto
-            float offY = 3.5f;//sposatre a dx il testo dal punto
-            diffX = (point.getHeadX() - bucketEst) * scala;
-            diffY = (point.getHeadY() - bucketNord) * scala;
+        // --- disegno fondo ---
+        if (hasEnd) {
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(color);
+            canvas.drawCircle(endX, endY, rEnd, paint);
+
+            paint.setColor(MyColorClass.colorSfondo);
+            paint.setStrokeWidth((float) (0.04 * scala));
+            canvas.drawPoint(endX, endY, paint);
+
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setColor(MyColorClass.colorConstraint);
+            paint.setStrokeWidth((float) (0.05 * scala));
+            canvas.drawCircle(endX, endY, rEnd, paint);
+        }
+
+        paint.setStrokeWidth(10f); // ripristino come avevi tu
+
+        // --- testo (lo metto vicino alla testa) ---
+        if (false) {
+            float offX = 4f;
+            float offY = 3.5f;
             String testo = point.getRowId() + "-" + point.getId();
-            rotatedXV1 = (float) (bucketX + diffX * Math.cos(rotationAngle) - diffY * Math.sin(rotationAngle));
-            rotatedYV1 = (float) (bucketY - diffX * Math.sin(rotationAngle) - diffY * Math.cos(rotationAngle));
+
             paint.setTextSize(28);
             paint.setColor(color);
             paint.setStyle(Paint.Style.FILL);
-            canvas.drawText(testo, rotatedXV1 + offX, rotatedYV1 - offY, paint);
+            canvas.drawText(testo, headX + offX, headY - offY, paint);
         }
-
-
     }
+
 
     private static boolean isSamePoint(Point3D_Drill a, Point3D_Drill b) {
         if (a == null || b == null) return false;
