@@ -430,14 +430,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 Working Page 70%">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 pick point ok">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillPointsFullscreenDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillPointsFullscreenDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Bubble.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Bubble.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/sfondo_trasp_chiaro.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/sfondo_trasp_chiaro.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/sfondo_trasp_scuro.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/sfondo_trasp_scuro.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -659,14 +659,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00032" summary="4.0.11 cut fill full screen">
-      <option name="closed" value="true" />
-      <created>1763158013485</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1763158013485</updated>
     </task>
     <task id="LOCAL-00033" summary="4.0.11 RELEASE">
       <option name="closed" value="true" />
@@ -1052,12 +1044,19 @@
       <option name="project" value="LOCAL" />
       <updated>1768931801325</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="4.1.0 pick point ok">
+      <option name="closed" value="true" />
+      <created>1769002021758</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1769002021758</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.0.12 RELEASE" />
     <MESSAGE value="4.0.13 RELEASE" />
     <MESSAGE value="4.0.14 NFR" />
     <MESSAGE value="4.0.14 RELEASE" />
@@ -1082,7 +1081,8 @@
     <MESSAGE value="4.1.0 NFR calcolo drillLib" />
     <MESSAGE value="4.1.0 NFR screen work" />
     <MESSAGE value="4.1.0 Working Page 70%" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 Working Page 70%" />
+    <MESSAGE value="4.1.0 pick point ok" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 pick point ok" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1092,14 +1092,6 @@
           <line>37</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java</url>
-          <line>124</line>
-          <properties class="drill_pile.gui.Drill_Activity" method="init">
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
@@ -1108,7 +1100,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1768901258742" />
+            <CheckInfo lastCheckTimestamp="1769006064638" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1118,7 +1110,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1768901258743" />
+            <CheckInfo lastCheckTimestamp="1769006064619" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1128,7 +1120,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1768901258742" />
+            <CheckInfo lastCheckTimestamp="1769006064621" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

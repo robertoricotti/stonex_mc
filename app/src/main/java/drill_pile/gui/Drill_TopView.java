@@ -340,7 +340,7 @@ public class Drill_TopView extends View {
                 activePointerId = event.getPointerId(0);
                 break;
 
-            case MotionEvent.ACTION_MOVE:
+     /*       case MotionEvent.ACTION_MOVE:
                 if (!scaleGestureDetector.isInProgress()) {
                     float dx = x - lastTouchX;
                     float dy = y - lastTouchY;
@@ -353,7 +353,7 @@ public class Drill_TopView extends View {
                     lastTouchX = x;
                     lastTouchY = y;
                 }
-                break;
+                break;*/
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -386,7 +386,11 @@ public class Drill_TopView extends View {
             // long press di default ~500ms; se vuoi 1s esatto vedi sezione "1s preciso"
             Point3D_Drill hit = pickPoint(e.getX(), e.getY());
             if (hit != null) {
-                DataSaved.Selected_Point3D_Drill = hit;
+                if (isSamePoint(hit, DataSaved.Selected_Point3D_Drill)) {
+                    DataSaved.Selected_Point3D_Drill = null;   // toggle off
+                } else {
+                    DataSaved.Selected_Point3D_Drill = hit;
+                }
                 invalidate();
             }
         }
@@ -397,10 +401,11 @@ public class Drill_TopView extends View {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            // Aggiorna gli offset in base ai gesti di trascinamento
-            offsetX -= (float) (distanceX / DataSaved.scale_Factor3D);
-            offsetY -= (float) (distanceY / DataSaved.scale_Factor3D);
+            // distanceX è quanto è "scorso" il contenuto, quindi per seguire il dito va sottratto
+            offsetX -= distanceX;
+            offsetY -= distanceY;
             invalidate();
+
             return true;
         }
 
@@ -594,7 +599,17 @@ public class Drill_TopView extends View {
         return null;
     }
 
+    private static boolean isSamePoint(Point3D_Drill a, Point3D_Drill b) {
+        if (a == null || b == null) return false;
 
+        // se rowId + id identificano univocamente il punto
+        return safeEq(a.getRowId(), b.getRowId()) &&
+                safeEq(a.getId(), b.getId());
+    }
+
+    private static boolean safeEq(Object x, Object y) {
+        return (x == y) || (x != null && x.equals(y));
+    }
 
 }
 

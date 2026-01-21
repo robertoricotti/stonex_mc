@@ -28,6 +28,7 @@ import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.draw_class.MyColorClass;
 import gui.gps.NmeaGenerator;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.DrillLib;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.NmeaListener;
 import services.PointService;
@@ -44,7 +45,7 @@ public class Drill_Activity extends BaseClass {
             zoom_P, zoom_M, zoom_C, compass;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo;
+    TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo,tiltInfo;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
@@ -118,6 +119,7 @@ public class Drill_Activity extends BaseClass {
         typeView = findViewById(R.id.typeView);
         compass = findViewById(R.id.compass);
         textInfo = findViewById(R.id.textInfo);
+        tiltInfo=findViewById(R.id.tiltInfo);
 
 
     }
@@ -144,6 +146,7 @@ public class Drill_Activity extends BaseClass {
         indicator.setTolerance(DataSaved.deadbandH);
         indicator.setColors(colorUp, colorDown, colorGreen);
         textInfo.setTextColor(MyColorClass.colorConstraint);
+        tiltInfo.setTextColor(MyColorClass.colorConstraint);
         topViewCanvas = new Drill_TopView(this);
         topview.addView(topViewCanvas);
         bubbleCanvas=new Drill_Bubble(this);
@@ -261,6 +264,8 @@ public class Drill_Activity extends BaseClass {
 
         switch (typeVistaDrill) {
             case 0:
+                //
+                tiltInfo.setVisibility(View.VISIBLE);
                 cent_v.setGuidelinePercent(cen);
                 zoom_P.setVisibility(View.INVISIBLE);
                 zoom_M.setVisibility(View.INVISIBLE);
@@ -269,7 +274,7 @@ public class Drill_Activity extends BaseClass {
                 break;
 
             case 1:
-
+                tiltInfo.setVisibility(View.INVISIBLE);
                 cent_v.setGuidelinePercent(lef);
                 zoom_P.setVisibility(View.INVISIBLE);
                 zoom_M.setVisibility(View.INVISIBLE);
@@ -278,6 +283,8 @@ public class Drill_Activity extends BaseClass {
                 break;
 
             case 2:
+                //
+                tiltInfo.setVisibility(View.VISIBLE);
                 cent_v.setGuidelinePercent(rig);
                 zoom_P.setVisibility(View.INVISIBLE);
                 zoom_M.setVisibility(View.INVISIBLE);
@@ -355,7 +362,7 @@ public class Drill_Activity extends BaseClass {
         ((Drill_Bubble) bubbleCanvas).setTriangles(PointService.FrecciaUP,PointService.FrecciaLEFT,PointService.FrecciaDOWN,PointService.FrecciaRIGHT);
         ((Drill_Bubble) bubbleCanvas).setPlanError(PointService.pe[0], PointService.pe[1]);
         if(DataSaved.Selected_Point3D_Drill==null){
-            ((Drill_Bubble) bubbleCanvas).setCenterDistance("---.---");
+            ((Drill_Bubble) bubbleCanvas).setCenterDistance("???");
         }else {
             ((Drill_Bubble) bubbleCanvas).setCenterDistance((Utils.readUnitOfMeasureLITE(String.valueOf(PointService.pe[2]))));
         }
@@ -365,6 +372,14 @@ public class Drill_Activity extends BaseClass {
         bubbleCanvas.invalidate();
 
         setIndicator();
+        String s = String.format(
+                java.util.Locale.US,
+                "Y: %7.2f°\nX: %7.2f°",
+                ExcavatorLib.correctToolPitch,
+                ExcavatorLib.correctToolRoll
+        );
+        tiltInfo.setText(s);
+
     }
 
     private void flipFlop() {

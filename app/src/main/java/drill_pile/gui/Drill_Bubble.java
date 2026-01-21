@@ -6,9 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+
+import packexcalib.exca.DataSaved;
 
 public class Drill_Bubble extends View {
 
@@ -179,32 +182,11 @@ public class Drill_Bubble extends View {
         return path;
     }
 
-
-    /**
-     * Triangolo centrato in (tx,ty) puntato verso angDeg (0=su, 90=destra...).
-     */
-    private Path triangle(float tx, float ty, float size, float angDeg) {
-        float s = size;
-
-        // triangolo base “su”
-        Path path = new Path();
-        path.moveTo(tx, ty - s);          // punta
-        path.lineTo(tx + s, ty + s);      // base dx
-        path.lineTo(tx - s, ty + s);      // base sx
-        path.close();
-
-        // ruota attorno al centro (tx,ty)
-        android.graphics.Matrix m = new android.graphics.Matrix();
-        m.setRotate(angDeg, tx, ty);
-        path.transform(m);
-        return path;
-    }
-
     private void drawInnerArrow(Canvas canvas, float cx, float cy, float rInner) {
         double screenAngleDeg = 0;
 
         // SOLO croce / target quando in tolleranza (o come decidi tu)
-        if (showCrossOnly) {
+        if (showCrossOnly|| DataSaved.Selected_Point3D_Drill==null) {
             p.setStyle(Paint.Style.FILL);
             p.setColor(arrowColor);
             canvas.drawCircle(cx, cy, 70f, p);
@@ -314,6 +296,14 @@ public class Drill_Bubble extends View {
             rotDeg = 0;
         } else {
             rotDeg = rotDeg + 90;
+        }
+        rotDeg=rotDeg%360;
+
+        if(rotDeg<270&&rotDeg>90){
+            rotDeg+=180;
+        }
+        if(DataSaved.Selected_Point3D_Drill==null){
+            rotDeg=0;
         }
         canvas.rotate(rotDeg, cx, cy);
         canvas.drawText(txt, cx, textY, p);

@@ -500,15 +500,35 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
             cbSelect.setOnCheckedChangeListener(null);
             cbSelect.setEnabled(selectable);
             cbSelect.setChecked(selected && selectable);
-
             cbSelect.setOnClickListener(v -> {
+                if (!selectable) {
+                    cbSelect.setChecked(false);
+                    return;
+                }
+
+                Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
+
+                if (isSamePoint(p, sel)) {
+                    // 🔁 era già selezionato → deseleziona
+                    DataSaved.Selected_Point3D_Drill = null;
+                    cbSelect.setChecked(false);
+                } else {
+                    // ✅ nuova selezione
+                    DataSaved.Selected_Point3D_Drill = p;
+                    cbSelect.setChecked(true);
+                }
+
+                if (onSelectionChanged != null) onSelectionChanged.run();
+            });
+
+          /*  cbSelect.setOnClickListener(v -> {
                 if (!selectable) {
                     cbSelect.setChecked(false);
                     return;
                 }
                 DataSaved.Selected_Point3D_Drill = p;
                 if (onSelectionChanged != null) onSelectionChanged.run();
-            });
+            });*/
 
             rowRoot.setOnClickListener(v -> {
             /*    if (!selectable) return;
@@ -558,4 +578,16 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
             return (int) (dp * d);
         }
     }
+    private static boolean isSamePoint(Point3D_Drill a, Point3D_Drill b) {
+        if (a == null || b == null) return false;
+
+        // se rowId + id identificano univocamente il punto
+        return safeEq(a.getRowId(), b.getRowId()) &&
+                safeEq(a.getId(), b.getId());
+    }
+
+    private static boolean safeEq(Object x, Object y) {
+        return (x == y) || (x != null && x.equals(y));
+    }
+
 }
