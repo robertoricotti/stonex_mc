@@ -185,10 +185,11 @@
             />
         <View
             android:layout_width="2dp"
+
             android:layout_height="match_parent"
             android:background="@color/white"/>
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="@color/_____cancel_text"
             android:scaleType="centerInside"
@@ -200,11 +201,26 @@
             android:id="@+id/txthdt"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center|left"
+            android:gravity="left"
             android:textStyle="bold"
             android:textSize="24sp"
             android:textColor="@color/white"
-            android:ems="6"
+            android:ems="3"
+            android:text="0.0°"
+            android:layout_weight="1"
+            android:background="@color/_____cancel_text"
+
+            />
+
+        <TextView
+            android:id="@+id/txthdtActual"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="bottom|left"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textColor="@color/cyan"
+            android:ems="3"
             android:text="0.0°"
             android:layout_weight="1"
             android:background="@color/_____cancel_text"
@@ -215,7 +231,7 @@
             android:layout_height="match_parent"
             android:background="@color/white"/>
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="@color/_____cancel_text"
             android:scaleType="centerInside"
@@ -227,11 +243,26 @@
             android:id="@+id/txttilt"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center|left"
+            android:gravity="left"
             android:textStyle="bold"
             android:textSize="24sp"
             android:textColor="@color/white"
-            android:ems="6"
+            android:ems="3"
+            android:text="0.0°"
+            android:layout_weight="1"
+            android:background="@color/_____cancel_text"
+
+            />
+
+        <TextView
+            android:id="@+id/txttiltActual"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="bottom|left"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textColor="@color/cyan"
+            android:ems="3"
             android:text="0.0°"
             android:layout_weight="1"
             android:background="@color/_____cancel_text"
@@ -243,7 +274,7 @@
             android:background="@color/white"/>
         <ImageView
             android:id="@+id/quotaIndicator"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="@color/_____cancel_text"
             android:scaleType="centerInside"
@@ -445,14 +476,5 @@
         android:gravity="left"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bassa"/>
-    <TextView
-        android:layout_margin="15dp"
-        android:id="@+id/headInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="26sp"
-        android:textStyle="normal"
-        android:gravity="left"
-        app:layout_constraintLeft_toLeftOf="@id/cent_v"
-        app:layout_constraintTop_toBottomOf="@id/alta"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
