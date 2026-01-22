@@ -299,7 +299,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/open_in_full/baseline_open_in_full_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialsymbolsoutlined/adjust/outline_adjust_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -309,7 +309,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="baseline_open_in_full_96" />
+                            <entry key="outputName" value="outline_adjust_24" />
                             <entry key="sourceFile" value="D:\Development\MC_V4" />
                           </map>
                         </option>

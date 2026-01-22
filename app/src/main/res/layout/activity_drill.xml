@@ -30,7 +30,7 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.35"/>
+        app:layout_constraintGuide_percent="0.0"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/side"
         android:orientation="vertical"
@@ -103,6 +103,7 @@
             app:srcCompat="@drawable/cent_right_pg"
             />
         <ImageView
+
             android:id="@+id/typeView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -241,6 +242,7 @@
             android:layout_height="match_parent"
             android:background="@color/white"/>
         <ImageView
+            android:id="@+id/quotaIndicator"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@color/_____cancel_text"
@@ -428,7 +430,7 @@
         android:id="@+id/tiltInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:textSize="26sp"
         android:textStyle="normal"
         android:gravity="left"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -443,4 +445,14 @@
         android:gravity="left"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bassa"/>
+    <TextView
+        android:layout_margin="15dp"
+        android:id="@+id/headInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="26sp"
+        android:textStyle="normal"
+        android:gravity="left"
+        app:layout_constraintLeft_toLeftOf="@id/cent_v"
+        app:layout_constraintTop_toBottomOf="@id/alta"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

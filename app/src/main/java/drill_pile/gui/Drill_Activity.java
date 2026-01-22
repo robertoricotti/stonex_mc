@@ -30,22 +30,27 @@ import gui.gps.NmeaGenerator;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.DrillLib;
 import packexcalib.exca.ExcavatorLib;
+import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import services.PointService;
+import utils.DistToPoint;
 import utils.MyData;
+import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass {
     public static int typeVistaDrill;
     public static boolean isDrilling;
     int flip = 0;
+    float rotationCont;
+
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas,bubbleCanvas;
     ImageView digMenu, drilltool, typeView, Status, folders, playpause, lineReference, tiposnap,
-            zoom_P, zoom_M, zoom_C, compass;
+            zoom_P, zoom_M, zoom_C, compass,quotaIndicator;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo,tiltInfo;
+    TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo,tiltInfo,headInfo;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
@@ -120,6 +125,8 @@ public class Drill_Activity extends BaseClass {
         compass = findViewById(R.id.compass);
         textInfo = findViewById(R.id.textInfo);
         tiltInfo=findViewById(R.id.tiltInfo);
+        headInfo=findViewById(R.id.headInfo);
+        quotaIndicator=findViewById(R.id.quotaIndicator);
 
 
     }
@@ -147,6 +154,7 @@ public class Drill_Activity extends BaseClass {
         indicator.setColors(colorUp, colorDown, colorGreen);
         textInfo.setTextColor(MyColorClass.colorConstraint);
         tiltInfo.setTextColor(MyColorClass.colorConstraint);
+        headInfo.setTextColor(MyColorClass.colorConstraint);
         topViewCanvas = new Drill_TopView(this);
         topview.addView(topViewCanvas);
         bubbleCanvas=new Drill_Bubble(this);
@@ -235,8 +243,8 @@ public class Drill_Activity extends BaseClass {
         });
         playpause.setOnClickListener(view -> {
             if(
-            PointService.okTilt&&
-            PointService.okXY){
+            PointService.okTilt&&PointService.okXY
+           ){
                 isDrilling=!isDrilling;
             }else {
                 isDrilling=false;
@@ -259,12 +267,17 @@ public class Drill_Activity extends BaseClass {
             cen=0.43f;
             rig=1f;
             sid=1f;
+            settaFreccia();
+        }else {
+            quotaIndicator.setImageResource((R.drawable.baseline_arrow_circle_down));
+            quotaIndicator.setRotation(0);
         }
         side.setGuidelinePercent(sid);
 
         switch (typeVistaDrill) {
             case 0:
                 //
+                headInfo.setVisibility(View.VISIBLE);
                 tiltInfo.setVisibility(View.VISIBLE);
                 cent_v.setGuidelinePercent(cen);
                 zoom_P.setVisibility(View.INVISIBLE);
@@ -274,6 +287,7 @@ public class Drill_Activity extends BaseClass {
                 break;
 
             case 1:
+                headInfo.setVisibility(View.VISIBLE);
                 tiltInfo.setVisibility(View.INVISIBLE);
                 cent_v.setGuidelinePercent(lef);
                 zoom_P.setVisibility(View.INVISIBLE);
@@ -284,6 +298,7 @@ public class Drill_Activity extends BaseClass {
 
             case 2:
                 //
+                headInfo.setVisibility(View.INVISIBLE);
                 tiltInfo.setVisibility(View.VISIBLE);
                 cent_v.setGuidelinePercent(rig);
                 zoom_P.setVisibility(View.INVISIBLE);
@@ -314,7 +329,7 @@ public class Drill_Activity extends BaseClass {
             txthdt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getHeadingDeg()) + "°");
             txttilt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getTilt()) + "°");
             if(isDrilling) {
-                txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.toolEndCoord[2] - DataSaved.Selected_Point3D_Drill.getEndZ())));
+                txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(deltaQuota3D())));
             }else {
                 txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(ExcavatorLib.toolEndCoord[2] - DataSaved.Selected_Point3D_Drill.getHeadZ())));
             }
@@ -340,10 +355,10 @@ public class Drill_Activity extends BaseClass {
 
         textInfo.setText(setTesto());
         topViewCanvas.invalidate();
-        int ringColor=Color.GREEN;
-        int tricolor=Color.GREEN;
-        int arrowColor=Color.GREEN;
-        int textColor=MyColorClass.colorConstraint;
+        int ringColor=getColor(R.color.verde_sfondo_scuro);
+        int tricolor=getColor(R.color.transparent);
+        int arrowColor=getColor(R.color.verde_sfondo_scuro);
+
         if(!PointService.okTilt){
             ringColor=getResources().getColor(R.color.bg_sfsred);
             if(DataSaved.temaSoftware==0){
@@ -352,19 +367,31 @@ public class Drill_Activity extends BaseClass {
                 tricolor = Color.BLUE;
             }
         }
+
         if(!PointService.okXY){
-            arrowColor=Color.RED;
-            textColor=Color.WHITE;
+            if(Math.abs(PointService.pe[2])<1){
+                arrowColor =getColor(R.color.arancio_sfondo_scuro);
+            }else {
+                arrowColor = getColor(R.color.rosso_sfondo_scuro);;
+            }
+
         }
 
 
-        ((Drill_Bubble) bubbleCanvas).setColors(ringColor,arrowColor,textColor,tricolor);
+        rotationCont+=1;
+        rotationCont=rotationCont%360;
+        ((Drill_Bubble) bubbleCanvas).setDrillingMode(isDrilling,rotationCont);
+        ((Drill_Bubble) bubbleCanvas).setColors(ringColor,arrowColor,MyColorClass.colorSfondo,MyColorClass.colorConstraint,tricolor);
         ((Drill_Bubble) bubbleCanvas).setTriangles(PointService.FrecciaUP,PointService.FrecciaLEFT,PointService.FrecciaDOWN,PointService.FrecciaRIGHT);
         ((Drill_Bubble) bubbleCanvas).setPlanError(PointService.pe[0], PointService.pe[1]);
-        if(DataSaved.Selected_Point3D_Drill==null){
-            ((Drill_Bubble) bubbleCanvas).setCenterDistance("???");
+        if(!isDrilling) {
+            if (DataSaved.Selected_Point3D_Drill == null) {
+                ((Drill_Bubble) bubbleCanvas).setCenterDistance("???");
+            } else {
+                ((Drill_Bubble) bubbleCanvas).setCenterDistance((Utils.readUnitOfMeasureLITE(String.valueOf(PointService.pe[2]))));
+            }
         }else {
-            ((Drill_Bubble) bubbleCanvas).setCenterDistance((Utils.readUnitOfMeasureLITE(String.valueOf(PointService.pe[2]))));
+            ((Drill_Bubble) bubbleCanvas).setCenterDistance(Utils.readUnitOfMeasureLITE(String.valueOf(deltaQuota3D())));
         }
 
         ((Drill_Bubble) bubbleCanvas).setHeadingDeg(hdt_BOOM);
@@ -379,6 +406,16 @@ public class Drill_Activity extends BaseClass {
                 ExcavatorLib.correctToolRoll
         );
         tiltInfo.setText(s);
+        String st = String.format(
+                java.util.Locale.US,
+                "mast T: %7.2f°\nmast H: %7.2f°",
+                MyMCUtils.calculateTotalTilt(ExcavatorLib.correctToolPitch,
+                ExcavatorLib.correctToolRoll), My_LocationCalc.calcBearingXY(
+                        ExcavatorLib.coordTool[0],ExcavatorLib.coordTool[1],
+                        ExcavatorLib.toolEndCoord[0],ExcavatorLib.toolEndCoord[1])
+
+        );
+        headInfo.setText(st);
 
     }
 
@@ -462,6 +499,32 @@ public class Drill_Activity extends BaseClass {
                 }
             }
 
+        }
+    }
+
+    private void settaFreccia(){
+        if(DataSaved.Selected_Point3D_Drill==null){
+            return;
+        }
+        double dist=ExcavatorLib.toolEndCoord[2] - DataSaved.Selected_Point3D_Drill.getHeadZ();
+        if(dist>DataSaved.deadbandH){
+            quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
+            quotaIndicator.setRotation(0);
+        }else if(dist<-DataSaved.deadbandH){
+            quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
+            quotaIndicator.setRotation(180);
+        }else {
+            quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
+            quotaIndicator.setRotation(0);
+        }
+
+    }
+    private double deltaQuota3D(){
+        if(DataSaved.Selected_Point3D_Drill!=null) {
+            return DistToPoint.dist3D(ExcavatorLib.toolEndCoord, new double[]{DataSaved.Selected_Point3D_Drill.getEndX(),
+                    DataSaved.Selected_Point3D_Drill.getEndY(), DataSaved.Selected_Point3D_Drill.getEndZ()});
+        }else {
+            return 0;
         }
     }
     private static double normalizeAngle(double a) {

@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.service.autofill.Dataset;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -24,6 +23,8 @@ import services.PointService;
 
 
 public class Drill_TopView extends View {
+    private android.graphics.DashPathEffect dashEffect;
+    private float lastDashScala = -1f;
     private final android.graphics.Matrix drawMatrix = new android.graphics.Matrix();
     private final android.graphics.Matrix invDrawMatrix = new android.graphics.Matrix();
     private final float[] tmpPt = new float[2];
@@ -68,6 +69,7 @@ public class Drill_TopView extends View {
     private int activePointerId = INVALID_POINTER_ID;
     private int colorTarget_Alto=Color.CYAN;
     private int colorTarget_Basso=Color.YELLOW;
+    boolean isOXonHole=Math.abs(PointService.pe[2])<DataSaved.tolleranza_XY;
 
 
     public Drill_TopView(Context context) {
@@ -100,6 +102,7 @@ public class Drill_TopView extends View {
         paint.setAntiAlias(true);
 
         try {
+            isOXonHole=Math.abs(PointService.pe[2])<DataSaved.tolleranza_XY;
 
             double extraHeading = NmeaListener.roof_Orientation + DataSaved.offsetSwingExca;
             if (DataSaved.Extra_Heading == 0) {
@@ -111,12 +114,6 @@ public class Drill_TopView extends View {
 
             originPointTool = new PointF(getWidth() * 0.5f, getHeight() * 0.7f);
 
-            /*
-
-
-
-             */
-
             float pivotX = getWidth() * 0.5f;
             float pivotY = getHeight() * 0.75f;
             float s = (float) DataSaved.scale_Factor3D;
@@ -125,7 +122,7 @@ public class Drill_TopView extends View {
             drawMatrix.postScale(s, s, pivotX, pivotY);
             drawMatrix.postTranslate(offsetX, offsetY);
 
-// opzionale: prepara anche l’inversa (torna utile nel pick)
+            // opzionale: prepara anche l’inversa (torna utile nel pick)
             invDrawMatrix.reset();
             drawMatrix.invert(invDrawMatrix);
 
@@ -137,8 +134,6 @@ public class Drill_TopView extends View {
 
             canvas.save();
             canvas.concat(drawMatrix);
-            //canvas.scale((float) DataSaved.scale_Factor3D, (float) DataSaved.scale_Factor3D, getWidth() * 0.5f, getHeight() * 0.75f);
-            //canvas.translate(offsetX, offsetY);
 
             toolEast = ExcavatorLib.toolEndCoord[0]; // Coordinata REALI EST del primo punto
             toolNord = ExcavatorLib.toolEndCoord[1]; // Coordinata REALI NORD del primo punto
@@ -150,36 +145,33 @@ public class Drill_TopView extends View {
                 ensurePickCache();
             }
 
-
-           /*
-           DISEGNARE QUI
-            */
             drawDrillPoints();
             if(DataSaved.Selected_Point3D_Drill!=null) {
                 int colore=Color.RED;
-                if(PointService.okXY){
+                if(isOXonHole){
                     colore=Color.GREEN;
                 }
                 drawSelectedPoint(DataSaved.Selected_Point3D_Drill,colore);
+
             }
             // 1) target giallo: drillbit (fisso sullo schermo)
             int coloreTargetGiallo=colorTarget_Basso;
             int coloreTargetCiano=colorTarget_Alto;
-            if(PointService.okTilt){
+            boolean okOrient=true;
+            if(shouldDrawDashedForSelected()){
+                okOrient=PointService.okOri;
+            }
+            if(PointService.okTilt&&isOXonHole&&okOrient){
                 coloreTargetCiano=Color.GREEN;
                 coloreTargetGiallo=Color.GREEN;
             }
             PointF toolScreen = new PointF(toolX, toolY);
             drawTarget(toolScreen, coloreTargetGiallo,
-                    Math.max(16f, scala * 0.50f),
-                    Math.max(9f,  scala * 0.28f),
-                    Math.max(11f, scala * 0.38f)
+                    Math.max(16f, scala * 0.45f),
+                    Math.max(9f,  scala * 0.23f),
+                    Math.max(11f, scala * 0.33f),true
             );
             paint.setStrokeWidth(Math.max(1f, scala * 0.002f));
-            canvas.drawLine(toolX,toolY,toolX+80f,toolY,paint);//destra
-            canvas.drawLine(toolX,toolY,toolX,toolY+80f,paint);//dietro
-            canvas.drawLine(toolX,toolY,toolX-80f,toolY,paint);//sinistra
-            canvas.drawLine(toolX,toolY,toolX,toolY-80f,paint);//avanti
 
 
             // 2) target ciano: drillhead (si muove rispetto al tool)
@@ -187,17 +179,26 @@ public class Drill_TopView extends View {
             drawTarget(headScreen, coloreTargetCiano,
 
 
-                    Math.max(18f, scala * 0.55f),
-                    Math.max(10f, scala * 0.32f),
-                    Math.max(12f, scala * 0.40f)
+                    Math.max(18f, scala * 0.50f),
+                    Math.max(0f, scala * 0.00f),
+                    Math.max(12f, scala * 0.35f),false
 
 
             );
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(Math.max(2f, scala * 0.05f));
-            paint.setColor(Color.CYAN);
-            canvas.drawLine(toolScreen.x, toolScreen.y, headScreen.x, headScreen.y, paint);
-            if(PointService.okXY) {
+            int solid = Color.CYAN;
+
+            // dashed più “profondo”: stesso colore ma alpha (trasparente)
+            int dashed = Color.argb(155, 0, 255, 255); // ciano trasparente
+
+            // se sei in OK totale, fallo verde anche nella guida
+
+            if (PointService.okTilt && isOXonHole &&okOrient ) {
+                solid  = Color.GREEN;
+                dashed = Color.argb(140, 0, 255, 0);
+            }
+
+            drawGuidelineExtended(toolScreen, headScreen, solid, dashed,shouldDrawDashedForSelected());
+            if(isOXonHole) {
                 paint.setColor(Color.DKGRAY);
                 paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f));
                 canvas.drawLine(toolX, toolY, toolX + 10f, toolY, paint);//destra
@@ -250,7 +251,7 @@ public class Drill_TopView extends View {
     private void drawSelectedPoint(Point3D_Drill point3DDrill,int colore){
 
         double size=0.3;
-        DrawDXF_Drill_Point.draw(canvas,
+        DrawDXF_Drill_Point.drawSelected(canvas,
                 paint,
                 point3DDrill,
                 toolX,
@@ -263,7 +264,10 @@ public class Drill_TopView extends View {
         );
     }
 
-    private void drawTarget(PointF c, int color, float rOuter, float rInner, float cross) {
+    private void drawTarget(PointF c, int color,
+                            float rOuter, float rInner, float cross,
+                            boolean drawCross) {
+
         paint.setAntiAlias(true);
 
         // anello esterno
@@ -276,12 +280,14 @@ public class Drill_TopView extends View {
         paint.setStrokeWidth(Math.max(2f, scala * 0.04f));
         canvas.drawCircle(c.x, c.y, rInner, paint);
 
-        // croce
-        paint.setStrokeWidth(Math.max(2f, scala * 0.05f));
-        canvas.drawLine(c.x - cross, c.y, c.x + cross, c.y, paint);
-        canvas.drawLine(c.x, c.y - cross, c.x, c.y + cross, paint);
+        // ✖ croce (solo se richiesta)
+        if (drawCross) {
+            paint.setStrokeWidth(Math.max(2f, scala * 0.05f));
+            canvas.drawLine(c.x - cross, c.y, c.x + cross, c.y, paint);
+            canvas.drawLine(c.x, c.y - cross, c.x, c.y + cross, paint);
+        }
 
-        // rombo centrale (come il “quadrotto” in foto)
+        // rombo centrale
         float s = Math.max(6f, scala * 0.18f);
         Path diamond = new Path();
         diamond.moveTo(c.x, c.y - s);
@@ -294,6 +300,7 @@ public class Drill_TopView extends View {
         paint.setColor(color);
         canvas.drawPath(diamond, paint);
     }
+
 
     private PointF worldToScreen(double worldE, double worldN) {
         double dx = (worldE - toolEast) * scala;
@@ -340,20 +347,7 @@ public class Drill_TopView extends View {
                 activePointerId = event.getPointerId(0);
                 break;
 
-     /*       case MotionEvent.ACTION_MOVE:
-                if (!scaleGestureDetector.isInProgress()) {
-                    float dx = x - lastTouchX;
-                    float dy = y - lastTouchY;
 
-                    offsetX += dx;
-                    offsetY += dy;
-
-                    invalidate();
-
-                    lastTouchX = x;
-                    lastTouchY = y;
-                }
-                break;*/
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -610,6 +604,121 @@ public class Drill_TopView extends View {
     private static boolean safeEq(Object x, Object y) {
         return (x == y) || (x != null && x.equals(y));
     }
+    private void ensureDashEffect() {
+        // pattern proporzionale alla scala, ma con minimi
+        float dash = Math.max(10f, scala * 0.25f);
+        float gap  = Math.max(8f,  scala * 0.18f);
+
+        if (dashEffect == null || lastDashScala != scala) {
+            dashEffect = new android.graphics.DashPathEffect(new float[]{dash, gap}, 0f);
+            lastDashScala = scala;
+        }
+    }
+    private void drawGuidelineExtended(PointF a, PointF b, int solidColor, int dashedColor,boolean drawDashed) {
+        float dx = b.x - a.x;
+        float dy = b.y - a.y;
+        float len = (float) Math.hypot(dx, dy);
+        if (len < 1e-3f) return;
+
+        float ux = dx / len;
+        float uy = dy / len;
+
+        // quanto estendere: fino a "fuori schermo"
+        float W = getWidth();
+        float H = getHeight();
+        float margin = Math.max(40f, scala * 1.2f);
+
+        // calcolo t massimo per arrivare al bordo in entrambe le direzioni
+        float tPos = distanceToRectEdge(b.x, b.y, ux, uy, -margin, -margin, W + margin, H + margin);
+        float tNeg = distanceToRectEdge(a.x, a.y, -ux, -uy, -margin, -margin, W + margin, H + margin);
+
+        // punti estesi
+        float x2 = b.x + ux * tPos;
+        float y2 = b.y + uy * tPos;
+
+        float x0 = a.x - ux * tNeg;
+        float y0 = a.y - uy * tNeg;
+
+        // 1) linea piena tra i due target
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setPathEffect(null);
+        paint.setColor(solidColor);
+        paint.setStrokeWidth(Math.max(2f, scala * 0.05f));
+        canvas.drawLine(a.x, a.y, b.x, b.y, paint);
+        if (!drawDashed) return;
+        // 2) dashed oltre head (b -> esteso)
+        ensureDashEffect();
+        paint.setPathEffect(dashEffect);
+        paint.setColor(dashedColor);
+        paint.setStrokeWidth(Math.max(2f, scala * 0.045f));
+        canvas.drawLine(b.x, b.y, x2, y2, paint);
+
+        // 3) (opzionale) dashed anche dietro tool (a -> esteso)
+        // se non lo vuoi, commenta questo blocco
+        paint.setStrokeWidth(Math.max(2f, scala * 0.035f));
+        canvas.drawLine(a.x, a.y, x0, y0, paint);
+
+        paint.setPathEffect(null);
+    }
+
+    /**
+     * Distanza t >= 0 per cui (x + vx*t, y + vy*t) raggiunge il bordo del rettangolo.
+     * Ritorna il t massimo entro il rettangolo.
+     */
+    private float distanceToRectEdge(float x, float y, float vx, float vy,
+                                     float left, float top, float right, float bottom) {
+
+        float tMax = Float.POSITIVE_INFINITY;
+
+        if (Math.abs(vx) > 1e-6f) {
+            float t1 = (left - x) / vx;
+            float t2 = (right - x) / vx;
+            float tx = Math.max(t1, t2);
+            // in realtà ci serve il primo incrocio "in avanti": prendiamo il più piccolo positivo valido
+            float tminPos = minPositive(t1, t2);
+            if (tminPos < tMax) tMax = tminPos;
+        }
+        if (Math.abs(vy) > 1e-6f) {
+            float t1 = (top - y) / vy;
+            float t2 = (bottom - y) / vy;
+            float tminPos = minPositive(t1, t2);
+            if (tminPos < tMax) tMax = tminPos;
+        }
+
+        // Se qualcosa va storto, fallback a una lunghezza fissa
+        if (!Float.isFinite(tMax) || tMax < 0f) {
+            return Math.max(getWidth(), getHeight());
+        }
+        return tMax;
+    }
+
+    private float minPositive(float a, float b) {
+        boolean ap = a > 0f;
+        boolean bp = b > 0f;
+        if (ap && bp) return Math.min(a, b);
+        if (ap) return a;
+        if (bp) return b;
+        return Float.POSITIVE_INFINITY;
+    }
+    private boolean shouldDrawDashedForSelected() {
+        Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
+        if (sel == null) return false;
+
+        // Assicurati che headingDeg sia calcolato (se non lo fai già altrove)
+        if (sel.getHeadingDeg() == null) {
+            sel.recomputeDerived();
+        }
+
+        Double h = sel.getHeadingDeg();
+        if (h == null) return false;
+
+        double eps = 0.0001; // tolleranza
+        double hh = ((h % 360.0) + 360.0) % 360.0; // normalizza 0..360
+
+        // considera "0" anche 360
+        return !(Math.abs(hh) < eps || Math.abs(hh - 360.0) < eps);
+    }
+
 
 }
 

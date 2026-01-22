@@ -3,6 +3,7 @@ package drill_pile.gui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -16,6 +17,9 @@ import packexcalib.exca.DataSaved;
 public class Drill_Bubble extends View {
 
     private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private boolean isDrilling = false;
+    private float circleDeg = 0f;   // gradi rotazione croce (0..360)
+
 
     // -------- Input dinamici (set da fuori) --------
     private boolean showCrossOnly = false;
@@ -35,6 +39,7 @@ public class Drill_Bubble extends View {
     private boolean triUp, triRight, triDown, triLeft;
 
     // Colori (tu li gestisci come vuoi)
+    private int inColor= Color.TRANSPARENT;
     private int ringColor = 0xFF2E7D32;     // verde default
     private int arrowColor = 0xFF2E7D32;
     private int textColor = 0xFFFFFFFF;
@@ -94,7 +99,8 @@ public class Drill_Bubble extends View {
     /**
      * Colori (opzionale)
      */
-    public void setColors(int ringColor, int arrowColor, int textColor, int triColor) {
+    public void setColors(int ringColor, int inColor,int arrowColor, int textColor, int triColor) {
+        this.inColor=inColor;
         this.ringColor = ringColor;
         this.arrowColor = arrowColor;
         this.textColor = textColor;
@@ -113,9 +119,12 @@ public class Drill_Bubble extends View {
         float h = getHeight();
         float cx = w * 0.5f;
         float cy = h * 0.5f;
-
-        float rOuter = Math.min(w, h) * 0.42f;
-        float rInner = rOuter * 0.72f;
+        if (isDrilling) {
+            drawDrillingCircle(canvas, cx, cy);
+            return;
+        }
+        float rOuter = Math.min(w, h) * 0.36f;
+        float rInner = rOuter * 0.66f;
 
         float strokeOuter = Math.max(3f, rOuter * 0.25f);
         float strokeInner = Math.max(2f, rOuter * 0.035f);
@@ -127,7 +136,9 @@ public class Drill_Bubble extends View {
         canvas.drawCircle(cx, cy, rOuter, p);
 
         // --- cerchio interno ---
+        p.setStyle(Paint.Style.FILL);
         p.setStrokeWidth(strokeInner);
+        p.setColor(inColor);
         canvas.drawCircle(cx, cy, rInner, p);
 
         // (opzionale) riempimento interno
@@ -150,7 +161,7 @@ public class Drill_Bubble extends View {
     private void drawOuterTriangles(Canvas canvas, float cx, float cy, float rOuter, float strokeOuter) {
 
         // ✅ posizionati vicino all'anello interno (dentro l'anello esterno)
-        float inset = strokeOuter * 0.55f;               // quanto "entrare" rispetto al bordo esterno
+        float inset = strokeOuter * 0.75f;               // quanto "entrare" rispetto al bordo esterno
         float r = rOuter - (strokeOuter * 0.5f) + inset; // raggio dove posizioni i triangoli
 
         // ✅ triangoli più "aperti" e bassi
@@ -185,12 +196,7 @@ public class Drill_Bubble extends View {
     private void drawInnerArrow(Canvas canvas, float cx, float cy, float rInner) {
         double screenAngleDeg = 0;
 
-        // SOLO croce / target quando in tolleranza (o come decidi tu)
-        if (showCrossOnly|| DataSaved.Selected_Point3D_Drill==null) {
-            p.setStyle(Paint.Style.FILL);
-            p.setColor(arrowColor);
-            canvas.drawCircle(cx, cy, 70f, p);
-        } else {
+        {
 
             // Bearing nel mondo (0=N,90=E) dal vettore errore
             double bearing = Math.toDegrees(Math.atan2(errEast, errNorth));
@@ -200,6 +206,7 @@ public class Drill_Bubble extends View {
 
             // Direzione in schermo: 0° = su
             double a = Math.toRadians(screenAngleDeg);
+
             float dirX = (float) -Math.sin(a);
             float dirY = (float)  Math.cos(a);
 
@@ -269,8 +276,11 @@ public class Drill_Bubble extends View {
             // Disegno pieno (come in foto)
             p.setStyle(Paint.Style.FILL);
             p.setColor(arrowColor);
-            canvas.drawPath(shaft, p);
-            canvas.drawPath(head, p);
+
+            if(!showCrossOnly&&DataSaved.Selected_Point3D_Drill!=null) {
+                canvas.drawPath(shaft, p);
+                canvas.drawPath(head, p);
+            }
         }
 
         // -----------------------------
@@ -293,6 +303,7 @@ public class Drill_Bubble extends View {
         canvas.save();
         float rotDeg = (float) screenAngleDeg;
         if (showCrossOnly) {
+            p.setColor(Color.DKGRAY);
             rotDeg = 0;
         } else {
             rotDeg = rotDeg + 90;
@@ -309,9 +320,68 @@ public class Drill_Bubble extends View {
         canvas.drawText(txt, cx, textY, p);
         canvas.restore();
     }
+    private void drawDrillingCircle(Canvas canvas, float cx, float cy) {
+
+        float w = getWidth();
+        float h = getHeight();
+        float min = Math.min(w, h);
+
+        // stai un po' dentro al bordo
+        float margin = Math.max(10f, min * 0.08f);
+        float r = (min * 0.5f) - margin;
+
+        float stroke = Math.max(6f, r * 0.12f);
+
+        // --- CERCHIO GIALLO PIENO ---
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(Color.YELLOW);
+        canvas.drawCircle(cx, cy, r, p);
+
+        // --- bordo del cerchio (per renderlo leggibile) ---
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(stroke);
+        p.setColor(Color.rgb(180, 180, 0)); // giallo più scuro
+        canvas.drawCircle(cx, cy, r, p);
+
+        // --- croce grigia ruotata di circleDeg ---
+        float crossLen = r * 0.65f;
+        float crossStroke = Math.max(3f, stroke * 0.35f);
+
+        canvas.save();
+        canvas.rotate(circleDeg, cx, cy);
+
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(crossStroke);
+        p.setColor(Color.DKGRAY);
+
+        canvas.drawLine(cx - crossLen, cy, cx + crossLen, cy, p);
+        canvas.drawLine(cx, cy - crossLen, cx, cy + crossLen, p);
+
+        canvas.restore();
+
+        // --- testo centrale NON ruota ---
+        String t = distTextValue;
+
+        float textSize = Math.max(24f, r * 0.40f);
+        p.setTextSize(textSize);
+        p.setFakeBoldText(true);
+        p.setTextAlign(Paint.Align.CENTER);
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(Color.BLUE);
+
+        Paint.FontMetrics fm = p.getFontMetrics();
+        float textY = cy - (fm.ascent + fm.descent) / 2f;
+
+        canvas.drawText(t, cx, textY, p);
+    }
 
 
 
+    public void setDrillingMode(boolean drilling, float circleDeg) {
+        this.isDrilling = drilling;
+        this.circleDeg = circleDeg;
+        invalidate();
+    }
 
 
 

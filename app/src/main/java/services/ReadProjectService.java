@@ -866,6 +866,7 @@ public class ReadProjectService extends Service {
 
         startCRS();
         String nomeProgettoPOINT = MyData.get_String("progettoSelected_POINT");
+
         mettiPunti = nomeProgettoPOINT != null && !nomeProgettoPOINT.equals("");
         if (nomeProgettoPOINT == null || nomeProgettoPOINT.equals("")) {
             isFinishedPOINT = true;
@@ -927,12 +928,14 @@ public class ReadProjectService extends Service {
                     }
                     isFeet = uom > 1;
 
+                    Log.d("RESD",DataSaved.lastProjectNamePOINT+"\n"+nomeProgettoPOINT);
                     if (!DataSaved.lastProjectNamePOINT.equals(nomeProgettoPOINT)) {
                         isFinishedPOINT = false;
                         DataSaved.drill_points = new ArrayList<>();
 
 
                         if (mettiPunti) {
+                            DataSaved.Selected_Point3D_Drill=null;
                             switch (fileExtensionPOINT.toLowerCase()) {
                                 case "dxf":
                                     parserStatus = "Reading Points...";
@@ -959,7 +962,7 @@ public class ReadProjectService extends Service {
                                     break;
                             }
                         }
-
+                        DataSaved.lastProjectNamePOINT=nomeProgettoPOINT;
                     } else {
                         isFinishedPOINT = true;
                     }

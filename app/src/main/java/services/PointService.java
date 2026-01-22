@@ -24,14 +24,36 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.surfcreator.TriangleHelper;
 import utils.DistToPoint;
 
+/**
+ * PointService "robusto" per guida:
+ * - autosnap (1): seleziona punto più vicino (solo se non drilling)
+ * - calcola okXY/okTilt/okOri con DrillMatch (XY su asse foro)
+ * - calcola triangoli pitch/roll con DrillGuidance (robusto)
+ * - calcola PlanError (bit->asse foro in XY) e aggiorna pe[] (compatibilità)
+ *
+ * IMPORTANTI FIX rispetto al tuo:
+ * 1) lastPosition = position.clone() (non reference)
+ * 2) gestione null EndX/EndY/EndZ (niente autounboxing NPE silenziosi)
+ * 3) PlanError.Result -> pe[] = {errE, errN, dist}
+ * 4) sleep senza Math.abs e ciclo più stabile
+ */
 public class PointService extends Service {
-    private boolean isRunning = false;
+
+    private static final String TAG = "PointService";
+
+    private volatile boolean isRunning = false;
     private ExecutorService executor;
+
     private static double[] lastPosition;
-    TriangleHelper triangleHelper;
-    DrillMatch.MatchStates st;
-    DrillGuidance.Triangles tri;
-    public static double[] pe=new double[3];
+
+    private TriangleHelper triangleHelper;
+
+    // Debug/state (se ti serve loggare)
+    private DrillMatch.MatchStates st;
+    private DrillGuidance.Triangles tri;
+
+    // OUTPUT pubblici (come li usi già nel resto app)
+    public static double[] pe = new double[]{0, 0, 0}; // {errE, errN, dist}
     public static boolean okXY = false;
     public static boolean okTilt = false;
     public static boolean okOri = false;
@@ -41,26 +63,29 @@ public class PointService extends Service {
     public static boolean FrecciaDOWN = false;
     public static boolean FrecciaLEFT = false;
 
-    public PointService() {
-    }
+    // Loop timing
+    private static final long LOOP_MS = 100L;
 
     @Override
     public void onCreate() {
-        Log.d("PointService", "Created");
+        super.onCreate();
+        Log.d(TAG, "Created");
+
         triangleHelper = new TriangleHelper();
-        lastPosition = new double[]{0, 0, 0};  // Posizione iniziale
-        executor = Executors.newCachedThreadPool();
+        lastPosition = new double[]{0, 0, 0};
+
+        // un singolo thread basta (eviti concorrenza)
+        executor = Executors.newSingleThreadExecutor();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("PointService", "Started");
+        Log.d(TAG, "Started");
+
         if (!isRunning) {
             isRunning = true;
             executor.execute(pointRunnable);
         }
-
-
         return START_NOT_STICKY;
     }
 
@@ -68,117 +93,175 @@ public class PointService extends Service {
     public void onDestroy() {
         super.onDestroy();
         stopPointLoop();
-        Log.d("PointService", "Destroyed");
+        Log.d(TAG, "Destroyed");
     }
 
     private void stopPointLoop() {
         isRunning = false;
-        executor.shutdownNow();
+        if (executor != null) {
+            executor.shutdownNow();
+        }
     }
 
-
     private final Runnable pointRunnable = () -> {
-        try {
-            while (isRunning) {
-                long startTime = System.currentTimeMillis();
-                Log.d("PointService", "Running..");
+        while (isRunning) {
+            final long startTime = System.currentTimeMillis();
+
+            try {
+                // Aggiorna posizione “filtrata” (FIX: clone)
                 updateCurrentPosition(ExcavatorLib.toolEndCoord, 1000);
-                /** do Running Stuff Here
-                 *
-                 *
-                 */
+
+                // --- autosnap / selezione punto ---
                 switch (DataSaved.isAutoSnap) {
                     case 0:
-
+                        // niente
                         break;
 
                     case 1:
+                        // auto-selezione solo se non drilling
                         if (!isDrilling) {
-                            if (DataSaved.drill_points != null && !DataSaved.drill_points.isEmpty()) {
-                                Selected_Point3D_Drill = findNearestDrillPoint(toolEndCoord[0], toolEndCoord[1], DataSaved.filtered_drill_points);
+                            if (DataSaved.filtered_drill_points != null && !DataSaved.filtered_drill_points.isEmpty()) {
+                                Selected_Point3D_Drill = findNearestDrillPoint(
+                                        toolEndCoord[0], toolEndCoord[1],
+                                        DataSaved.filtered_drill_points
+                                );
                             }
                         }
                         break;
 
                     case 2:
-
-
+                        // selezione manuale (long press) -> qui non fare nulla
                         break;
                 }
-                if (Selected_Point3D_Drill != null) {
-                    st = DrillMatch.matchMastToHole(
-                            coordTool, toolEndCoord,
-                            new double[]{
-                                    Selected_Point3D_Drill.getHeadX(), Selected_Point3D_Drill.getHeadY(), Selected_Point3D_Drill.getHeadZ()
-                            }, new double[]{
-                                    Selected_Point3D_Drill.getEndX(), Selected_Point3D_Drill.getEndY(), Selected_Point3D_Drill.getEndZ()
-                            },
-                            DataSaved.tolleranza_XY, DataSaved.tolleranza_Slope
-                    );
-                    okXY = st.xyInRange;
-                    okTilt = st.tiltInRange;
-                    okOri = st.orientationInRange;
 
-                    tri = DrillGuidance.computeTiltTriangles(
-                            coordTool, toolEndCoord,
-                            new double[]{
-                                    Selected_Point3D_Drill.getHeadX(), Selected_Point3D_Drill.getHeadY(), Selected_Point3D_Drill.getHeadZ()
-                            }, new double[]{
-                                    Selected_Point3D_Drill.getEndX(), Selected_Point3D_Drill.getEndY(), Selected_Point3D_Drill.getEndZ()
-                            },
-                            hdt_BOOM,
-                            DataSaved.tolleranza_Slope
-                    );
-                    FrecciaUP = tri.up;
-                    FrecciaRIGHT = tri.right;
-                    FrecciaDOWN = tri.down;
-                    FrecciaLEFT = tri.left;
+                // --- guida (ok + frecce + plan error) ---
+                computeGuidance();
 
-                     pe=PlanError.calcPlanErrorToAxisXY(
-                             toolEndCoord[0], toolEndCoord[1],
-                             Selected_Point3D_Drill.getHeadX(), Selected_Point3D_Drill.getHeadY(),
-                             Selected_Point3D_Drill.getEndX(), Selected_Point3D_Drill.getEndY()
-                    );
-
-                } else {
-                    okXY = false;
-                    okTilt = false;
-                    okOri = false;
-                    FrecciaUP = false;
-                    FrecciaRIGHT = false;
-                    FrecciaDOWN = false;
-                    FrecciaLEFT = false;
-                }
-
-
-                long elapsedTime = System.currentTimeMillis() - startTime;
-                long sleepTime = 100 - elapsedTime;
-
-                if (sleepTime > 0) {
-                    try {
-                        Thread.sleep(Math.abs(sleepTime));
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
+            } catch (Throwable t) {
+                // non far morire il servizio
+                Log.e(TAG, "Loop error", t);
             }
 
-        } catch (Exception ignored) {
-
+            // sleep stabile
+            final long elapsed = System.currentTimeMillis() - startTime;
+            final long sleep = LOOP_MS - elapsed;
+            if (sleep > 0) {
+                try {
+                    Thread.sleep(sleep);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
     };
 
+    private void computeGuidance() {
+        final Point3D_Drill sel = Selected_Point3D_Drill;
 
-    private void updateCurrentPosition(double[] position, double raggio) {
-        double r = raggio / 4;
-        r = Math.min(r, 30);
-        if (DistToPoint.dist2D(position, lastPosition) > r) {
-
-            lastPosition = position;
-            triangleHelper.updatePointRaius(lastPosition, raggio);
-
+        if (sel == null) {
+            resetOutputs();
+            return;
         }
 
+        // Validazione coordinate testa
+        if (sel.getHeadX() == null || sel.getHeadY() == null || sel.getHeadZ() == null) {
+            resetOutputs();
+            return;
+        }
+
+        // Validazione coordinate fondo (evita autounboxing NPE)
+        final boolean hasEnd = (sel.getEndX() != null && sel.getEndY() != null && sel.getEndZ() != null);
+
+        // arrays (mast)
+        final double[] mastHead = coordTool;    // già double[3]
+        final double[] mastBit = toolEndCoord;  // già double[3]
+
+        // arrays (hole)
+        final double[] holeStart = new double[]{sel.getHeadX(), sel.getHeadY(), sel.getHeadZ()};
+
+        // Se manca end: puoi decidere policy.
+        // Qui: okTilt/okOri = false, okXY calcolato come distanza da head (DrillMatch lo fa in fallback se asse degenero,
+        // ma se end mancante non possiamo passare holeEnd valido).
+        if (!hasEnd) {
+            // XY fallback su head
+            double dx = mastBit[0] - holeStart[0];
+            double dy = mastBit[1] - holeStart[1];
+            double dist = Math.sqrt(dx * dx + dy * dy);
+
+            okXY = dist <= DataSaved.tolleranza_XY;
+            okTilt = false;
+            okOri = false;
+
+            FrecciaUP = FrecciaRIGHT = FrecciaDOWN = FrecciaLEFT = false;
+
+            pe = new double[]{dx, dy, dist};
+            return;
+        }
+
+        final double[] holeEnd = new double[]{sel.getEndX(), sel.getEndY(), sel.getEndZ()};
+
+        // --- Match (OK) ---
+        st = DrillMatch.matchMastToHole(
+                mastHead, mastBit,
+                holeStart, holeEnd,
+                DataSaved.tolleranza_XY,
+                DataSaved.tolleranza_Slope
+        );
+
+        okXY = st.xyInRange;
+        okTilt = st.tiltInRange;
+        okOri = st.orientationInRange;
+
+        // --- Triangoli (guida pitch/roll) ---
+        tri = DrillGuidance.computeTiltTriangles(
+                mastHead, mastBit,
+                holeStart, holeEnd,
+                hdt_BOOM,
+                DataSaved.tolleranza_Slope
+        );
+
+        FrecciaUP = tri.up;
+        FrecciaRIGHT = tri.right;
+        FrecciaDOWN = tri.down;
+        FrecciaLEFT = tri.left;
+
+        // --- Plan Error (bit -> asse foro XY) ---
+        // PlanError restituisce Result. Tu vuoi double[3].
+        PlanError.Result per = PlanError.calcPlanErrorToAxisXY(
+                mastBit[0], mastBit[1],
+                holeStart[0], holeStart[1],
+                holeEnd[0], holeEnd[1],
+                false // retta infinita consigliata per "in asse"
+        );
+        pe = new double[]{per.errE, per.errN, per.dist};
+    }
+
+    private void resetOutputs() {
+        okXY = false;
+        okTilt = false;
+        okOri = false;
+
+        FrecciaUP = false;
+        FrecciaRIGHT = false;
+        FrecciaDOWN = false;
+        FrecciaLEFT = false;
+
+        pe = new double[]{0, 0, 0};
+    }
+
+    /**
+     * FIX: copia position, non reference!
+     */
+    private void updateCurrentPosition(double[] position, double raggio) {
+        if (position == null || position.length < 3) return;
+
+        double r = raggio / 4.0;
+        r = Math.min(r, 30.0);
+
+        if (DistToPoint.dist2D(position, lastPosition) > r) {
+            lastPosition = position.clone(); // <--- FIX CRITICO
+            triangleHelper.updatePointRaius(lastPosition, raggio);
+        }
     }
 
     @Override
@@ -187,30 +270,30 @@ public class PointService extends Service {
     }
 
     public static Point3D_Drill findNearestDrillPoint(double bucketEst, double bucketNord, List<Point3D_Drill> filteredPoints) {
+        if (filteredPoints == null || filteredPoints.isEmpty()) return null;
 
-        if (filteredPoints == null || filteredPoints.isEmpty()) {
-            return null;
-        }
-
-        Point3D_Drill nearestPoint = null;
+        Point3D_Drill nearest = null;
         double minDistance = Double.MAX_VALUE;
 
-        for (Point3D_Drill point : filteredPoints) {
+        for (Point3D_Drill p : filteredPoints) {
+            if (p == null) continue;
+            if (p.getHeadX() == null || p.getHeadY() == null) continue;
 
-            double distance = new DistToPoint(bucketEst, bucketNord, 0, point.getHeadX(), point.getHeadY(), 0).getDist_to_point();
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestPoint = point;
+            // distanza in XY dalla testa foro
+            double d = new DistToPoint(bucketEst, bucketNord, 0,
+                    p.getHeadX(), p.getHeadY(), 0).getDist_to_point();
 
+            if (d < minDistance) {
+                minDistance = d;
+                nearest = p;
             }
         }
-        assert nearestPoint != null;
-        Log.d("PointStatus", nearestPoint.getStatus() + "");
-        if (nearestPoint.getStatus() == null || nearestPoint.getStatus() == 0) {
-            return nearestPoint;
-        } else {
-            return null;
-        }
 
+        if (nearest == null) return null;
+
+        Integer status = nearest.getStatus();
+        if (status == null || status == 0) return nearest;
+
+        return null;
     }
 }

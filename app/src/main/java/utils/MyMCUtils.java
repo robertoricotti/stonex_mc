@@ -5,6 +5,9 @@ import android.util.Log;
 import packexcalib.exca.DataSaved;
 
 public class MyMCUtils {
+    public static double calculateTotalTilt(double pitch, double roll) {
+        return Math.sqrt(pitch * pitch + roll * roll);
+    }
 
     public static double DegToPercent(String str) {
         double a = Math.toRadians(Double.parseDouble(str));
