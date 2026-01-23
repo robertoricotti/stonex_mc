@@ -25,9 +25,9 @@ import iredes.Pattern_IR;
 import iredes.Point3D_Drill;
 import iredes.Point3D_IR;
 import iredes.RigStatus_IR;
-import iredes.Selected_Point3D_Drill;
 
 public class DataSaved {
+    public static int Unit_Of_Measure;
     //Dragaggio
     public static double HighThreshold;
     public static double LowThreshold;
@@ -278,8 +278,11 @@ public class DataSaved {
     public static int damp_Tl;
 
     public static int hasQuick;
-    public static double tolleranza_Axis = 0.05; // 5 cm (esempio)
-    public static double tolleranza_Z = 0.03; // 3 cm (esempio)
+    public static double Drill_tolleranza_Axis = 0.05; // 5 cm (esempio)
+    public static double Drill_tolleranza_Z = 0.03; // 3 cm (esempio)
+    public static double Drill_tolleranza_XY = 0.03;
+    public static double Drill_tolleranza_Angolo = 0.5;
+    public static double Drill_tolleranza_HDT = 0.5;
 
 
     //IREDES

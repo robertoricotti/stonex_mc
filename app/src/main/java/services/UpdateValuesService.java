@@ -1696,6 +1696,11 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di offsetHDT: " + e.getMessage());
                 }
+                try {
+                    DataSaved.Unit_Of_Measure = MyData.get_Int("Unit_Of_Measure");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di offsetHDT: " + e.getMessage());
+                }
 
                 try {
                     DataSaved.deadbandH = MyData.get_Double("Deadband_H");

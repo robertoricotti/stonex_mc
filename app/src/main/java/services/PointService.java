@@ -227,7 +227,7 @@ public class PointService extends Service {
             if (!Double.isNaN(hz) && !Double.isNaN(mastBit[2])) {
                 dzToHead = mastBit[2] - hz;
                 dist3DToHead = Math.sqrt(distXYToHead * distXYToHead + dzToHead * dzToHead);
-                okZ = (Math.abs(dzToHead) <= DataSaved.tolleranza_Z);
+                okZ = (Math.abs(dzToHead) <= DataSaved.Drill_tolleranza_Z);
             } else {
                 dzToHead = Double.NaN;
                 dist3DToHead = Double.NaN;
@@ -261,7 +261,7 @@ public class PointService extends Service {
             okStart = false;
 
             // Drill check: axisTol vs distAxis (qui è dist bit->head)
-            double axisTol = (DataSaved.tolleranza_Axis > 0) ? DataSaved.tolleranza_Axis : DataSaved.tolleranza_XY;
+            double axisTol = (DataSaved.Drill_tolleranza_Axis > 0) ? DataSaved.Drill_tolleranza_Axis : DataSaved.tolleranza_XY;
             okDrill = (distAxis <= axisTol);
 
             return;
@@ -327,7 +327,7 @@ public class PointService extends Service {
         // -------------------------
         // 9) OK_DRILL logic (discesa): solo distanza bit->asse
         // -------------------------
-        double axisTol = (DataSaved.tolleranza_Axis > 0) ? DataSaved.tolleranza_Axis : DataSaved.tolleranza_XY;
+        double axisTol = (DataSaved.Drill_tolleranza_Axis > 0) ? DataSaved.Drill_tolleranza_Axis : DataSaved.tolleranza_XY;
         okDrill = (distAxis <= axisTol);
     }
 

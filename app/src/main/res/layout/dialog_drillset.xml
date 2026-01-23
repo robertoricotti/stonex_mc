@@ -18,5 +18,294 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginVertical="15dp"
         app:tint="@color/_____cancel_text"/>
+    <LinearLayout
+        android:padding="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center|top"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/chiudi">
+        <TextView
+            android:id="@+id/distTit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="26sp"
+            android:background="@color/_____cancel_text"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="DISTANCES"
+
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                android:ems="15"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="XY Tolerance"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/_____cancel_text" />
+
+
+
+            <EditText
+                android:id="@+id/tv1"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@color/bg_gray"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="+/- 0.02 [m]"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                android:ems="15"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="AXIS Tolerance"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/_____cancel_text" />
+
+
+
+            <EditText
+                android:id="@+id/tv2"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@color/bg_gray"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="+/- 0.02 [m]"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                android:ems="15"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="Z Tolerance"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/_____cancel_text" />
+
+
+
+            <EditText
+                android:id="@+id/tv3"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@color/bg_gray"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="+/- 0.02 [m]"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+        <TextView
+            android:id="@+id/angleTit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="26sp"
+            android:background="@color/_____cancel_text"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="ANGLES  [°]"
+
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                android:ems="15"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="ANGLE Tolerance"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/_____cancel_text" />
+
+
+
+            <EditText
+                android:id="@+id/tv4"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@color/bg_gray"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="+/- 0.02 [m]"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                android:ems="15"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="AZIMUT Tolerance"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/_____cancel_text" />
+
+
+
+            <EditText
+                android:id="@+id/tv5"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@color/bg_gray"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="+/- 0.02 [m]"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold|italic" />
+
+
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

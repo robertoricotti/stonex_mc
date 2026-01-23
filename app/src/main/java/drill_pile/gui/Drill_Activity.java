@@ -1,6 +1,5 @@
 package drill_pile.gui;
 
-import static gui.MyApp.activationCode;
 import static gui.MyApp.errorCode;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 
@@ -8,7 +7,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,7 +43,7 @@ public class Drill_Activity extends BaseClass {
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
     ImageView digMenu, drilltool, typeView, Status, folders, playpause, lineReference, tiposnap,
-            zoom_P, zoom_M, zoom_C, compass, quotaIndicator,infoPoint,drillSet;
+            zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
     TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual;
@@ -53,13 +51,15 @@ public class Drill_Activity extends BaseClass {
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
     Dialog_InfoPoint dialogInfoPoint;
+    Dialog_DrillSet dialogDrillSet;
     Guideline cent_v, side;
-    float rot = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drill);
+        initTollerances();
         findView();
         init();
         onClick();
@@ -95,7 +95,8 @@ public class Drill_Activity extends BaseClass {
         }
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogAutoSnap = new Dialog_AutoSnap(this);
-        dialogInfoPoint=new Dialog_InfoPoint(this);
+        dialogInfoPoint = new Dialog_InfoPoint(this);
+        dialogDrillSet=new Dialog_DrillSet(this);
         divisorioC = findViewById(R.id.divisorioC);
         divisorioDx = findViewById(R.id.divisorioDx);
         divisorioUp = findViewById(R.id.divisorioUp);
@@ -125,8 +126,8 @@ public class Drill_Activity extends BaseClass {
         compass = findViewById(R.id.compass);
         textInfo = findViewById(R.id.textInfo);
         tiltInfo = findViewById(R.id.tiltInfo);
-        drillSet=findViewById(R.id.drillSet);
-        infoPoint=findViewById(R.id.infoPoint);
+        drillSet = findViewById(R.id.drillSet);
+        infoPoint = findViewById(R.id.infoPoint);
         quotaIndicator = findViewById(R.id.quotaIndicator);
         txthdtActual = findViewById(R.id.txthdtActual);
         txttiltActual = findViewById(R.id.txttiltActual);
@@ -206,11 +207,16 @@ public class Drill_Activity extends BaseClass {
     }
 
     private void onClick() {
+        drillSet.setOnClickListener(view -> {
+            if(!dialogDrillSet.dialog.isShowing()){
+                dialogDrillSet.show();
+            }
+        });
         infoPoint.setOnClickListener(view -> {
-            if(DataSaved.Selected_Point3D_Drill==null){
-                new CustomToast(this,"No Point Selected!").show();
-            }else {
-                if(!dialogInfoPoint.dialog.isShowing()){
+            if (DataSaved.Selected_Point3D_Drill == null) {
+                new CustomToast(this, "No Point Selected!").show();
+            } else {
+                if (!dialogInfoPoint.dialog.isShowing()) {
                     dialogInfoPoint.show();
                 }
             }
@@ -419,7 +425,7 @@ public class Drill_Activity extends BaseClass {
         double mastTilt = MyMCUtils.calculateTotalTilt(ExcavatorLib.correctToolPitch,
                 ExcavatorLib.correctToolRoll);
         if (DataSaved.Selected_Point3D_Drill != null) {
-            poleHDT =DataSaved.Selected_Point3D_Drill.getHeadingDeg();
+            poleHDT = DataSaved.Selected_Point3D_Drill.getHeadingDeg();
 
             poleTilt = DataSaved.Selected_Point3D_Drill.getTilt();
         }
@@ -571,5 +577,57 @@ public class Drill_Activity extends BaseClass {
         if (a > 180) a -= 360;
         if (a < -180) a += 360;
         return a;
+    }
+
+    private void initTollerances() {
+        String Drill_tolleranza_Axis = MyData.get_String("Drill_tolleranza_Axis");
+        String Drill_tolleranza_Z = MyData.get_String("Drill_tolleranza_Z");
+        String Drill_tolleranza_XY = MyData.get_String("Drill_tolleranza_XY");
+        String Drill_tolleranza_Angolo = MyData.get_String("Drill_tolleranza_Angolo");
+        String Drill_tolleranza_HDT = MyData.get_String("Drill_tolleranza_HDT");
+
+        if (Drill_tolleranza_Axis == null) {
+            MyData.push("Drill_tolleranza_Axis", "0.03");
+        }
+        if (Drill_tolleranza_Z == null) {
+            MyData.push("Drill_tolleranza_Z", "0.05");
+        }
+        if (Drill_tolleranza_XY == null) {
+            MyData.push("Drill_tolleranza_XY", "0.03");
+        }
+        if (Drill_tolleranza_Angolo == null) {
+            MyData.push("Drill_tolleranza_Angolo", "0.3");
+        }
+        if (Drill_tolleranza_HDT == null) {
+            MyData.push("Drill_tolleranza_HDT", "0.5");
+        }
+
+        try {
+            DataSaved.Drill_tolleranza_Axis = MyData.get_Double("Drill_tolleranza_Axis");
+        } catch (Exception ignored) {
+
+        }
+        try {
+            DataSaved.Drill_tolleranza_Z = MyData.get_Double("Drill_tolleranza_Z");
+        } catch (Exception ignored) {
+
+        }
+        try {
+            DataSaved.Drill_tolleranza_XY = MyData.get_Double("Drill_tolleranza_XY");
+        } catch (Exception ignored) {
+
+        }
+        try {
+            DataSaved.Drill_tolleranza_Angolo = MyData.get_Double("Drill_tolleranza_Angolo");
+        } catch (Exception ignored) {
+
+        }
+        try {
+            DataSaved.Drill_tolleranza_HDT = MyData.get_Double("Drill_tolleranza_HDT");
+        } catch (Exception ignored) {
+
+        }
+
+
     }
 }
