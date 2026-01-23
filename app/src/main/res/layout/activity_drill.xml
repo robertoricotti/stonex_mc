@@ -417,6 +417,30 @@
         app:layout_constraintTop_toBottomOf="@id/tiposnap"
         app:layout_constraintRight_toLeftOf="@id/side"
         />
+    <ImageView
+        android:id="@+id/drillSet"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="5dp"
+        app:layout_constraintTop_toBottomOf="@id/uomesure"
+        app:layout_constraintRight_toLeftOf="@id/side"
+        android:layout_margin="5dp"
+        android:src="@drawable/settings_btn"
+        app:tint="@color/white"
+        android:background="@drawable/sfondo_trasp_chiaro"
+        />
+    <ImageView
+        android:id="@+id/infoPoint"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="5dp"
+        app:layout_constraintTop_toBottomOf="@id/drillSet"
+        app:layout_constraintRight_toLeftOf="@id/side"
+        android:layout_margin="5dp"
+        android:src="@drawable/infopoint"
+        app:tint="@color/white"
+        android:background="@drawable/sfondo_trasp_chiaro"
+        />
 
     <ImageView
         android:id="@+id/zoom_P"

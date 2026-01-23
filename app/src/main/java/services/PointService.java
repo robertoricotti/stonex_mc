@@ -63,8 +63,21 @@ public class PointService extends Service {
     public static boolean FrecciaDOWN = false;
     public static boolean FrecciaLEFT = false;
 
+    public static double holePitchDeg,holeRollDeg;
+
     // Loop timing
     private static final long LOOP_MS = 100L;
+
+    // --- START vs DRILL ---
+    public static boolean okStart = false;   // OK per iniziare
+    public static boolean okDrill = false;   // OK durante discesa (asse)
+    public static boolean okZ = false;       // quota corretta in start
+
+    public static double distXYToHead = Double.NaN; // bit->testa (XY)
+    public static double dzToHead = Double.NaN;     // bitZ - headZ
+    public static double dist3DToHead = Double.NaN; // opzionale
+    public static double distAxis = Double.NaN;     // bit->asse (XY) (come pe[2] / st.distXY)
+
 
     @Override
     public void onCreate() {
@@ -156,51 +169,107 @@ public class PointService extends Service {
     };
 
     private void computeGuidance() {
+
         final Point3D_Drill sel = Selected_Point3D_Drill;
 
+        // -------------------------
+        // 0) No selection
+        // -------------------------
         if (sel == null) {
             resetOutputs();
             return;
         }
 
-        // Validazione coordinate testa
-        if (sel.getHeadX() == null || sel.getHeadY() == null || sel.getHeadZ() == null) {
+        // -------------------------
+        // 1) Validate HEAD (min required)
+        // -------------------------
+        final Double hxObj = sel.getHeadX();
+        final Double hyObj = sel.getHeadY();
+        final Double hzObj = sel.getHeadZ(); // può essere null: okStart richiede Z
+
+        if (hxObj == null || hyObj == null) {
             resetOutputs();
             return;
         }
 
-        // Validazione coordinate fondo (evita autounboxing NPE)
-        final boolean hasEnd = (sel.getEndX() != null && sel.getEndY() != null && sel.getEndZ() != null);
+        // Mast arrays
+        final double[] mastHead = coordTool;   // [E,N,Z]
+        final double[] mastBit  = toolEndCoord; // [E,N,Z]
 
-        // arrays (mast)
-        final double[] mastHead = coordTool;    // già double[3]
-        final double[] mastBit = toolEndCoord;  // già double[3]
-
-        // arrays (hole)
-        final double[] holeStart = new double[]{sel.getHeadX(), sel.getHeadY(), sel.getHeadZ()};
-
-        // Se manca end: puoi decidere policy.
-        // Qui: okTilt/okOri = false, okXY calcolato come distanza da head (DrillMatch lo fa in fallback se asse degenero,
-        // ma se end mancante non possiamo passare holeEnd valido).
-        if (!hasEnd) {
-            // XY fallback su head
-            double dx = mastBit[0] - holeStart[0];
-            double dy = mastBit[1] - holeStart[1];
-            double dist = Math.sqrt(dx * dx + dy * dy);
-
-            okXY = dist <= DataSaved.tolleranza_XY;
-            okTilt = false;
-            okOri = false;
-
-            FrecciaUP = FrecciaRIGHT = FrecciaDOWN = FrecciaLEFT = false;
-
-            pe = new double[]{dx, dy, dist};
+        if (mastHead == null || mastHead.length < 3 || mastBit == null || mastBit.length < 3) {
+            resetOutputs();
             return;
         }
 
-        final double[] holeEnd = new double[]{sel.getEndX(), sel.getEndY(), sel.getEndZ()};
+        final double hx = hxObj;
+        final double hy = hyObj;
+        final double hz = (hzObj != null) ? hzObj : Double.NaN;
 
-        // --- Match (OK) ---
+        // -------------------------
+        // 2) End availability
+        // -------------------------
+        final Double exObj = sel.getEndX();
+        final Double eyObj = sel.getEndY();
+        final Double ezObj = sel.getEndZ();
+        final boolean hasEnd = (exObj != null && eyObj != null && ezObj != null);
+
+        final double[] holeStart = new double[]{hx, hy, Double.isNaN(hz) ? 0.0 : hz};
+        final double[] holeEnd   = hasEnd ? new double[]{exObj, eyObj, ezObj} : holeStart;
+
+        // -------------------------
+        // 3) Always compute "bit -> head" XY (+Z if possible)
+        // -------------------------
+        {
+            double dxh = mastBit[0] - hx;
+            double dyh = mastBit[1] - hy;
+            distXYToHead = Math.sqrt(dxh * dxh + dyh * dyh);
+
+            if (!Double.isNaN(hz) && !Double.isNaN(mastBit[2])) {
+                dzToHead = mastBit[2] - hz;
+                dist3DToHead = Math.sqrt(distXYToHead * distXYToHead + dzToHead * dzToHead);
+                okZ = (Math.abs(dzToHead) <= DataSaved.tolleranza_Z);
+            } else {
+                dzToHead = Double.NaN;
+                dist3DToHead = Double.NaN;
+                okZ = false;
+            }
+        }
+
+        // -------------------------
+        // 4) If no END: degrade mode (no tilt/orientation guidance)
+        // -------------------------
+        if (!hasEnd) {
+
+            // XY fallback: bit->head
+            okXY = (distXYToHead <= DataSaved.tolleranza_XY);
+
+            okTilt = false;
+            okOri  = false;
+
+            FrecciaUP = FrecciaRIGHT = FrecciaDOWN = FrecciaLEFT = false;
+            holePitchDeg = Double.NaN;
+            holeRollDeg  = Double.NaN;
+
+            // "pe" as bit->head vector
+            double dx = mastBit[0] - hx;
+            double dy = mastBit[1] - hy;
+            pe = new double[]{dx, dy, distXYToHead};
+
+            distAxis = distXYToHead;
+
+            // Start requires tilt/orientation too -> cannot be true without end
+            okStart = false;
+
+            // Drill check: axisTol vs distAxis (qui è dist bit->head)
+            double axisTol = (DataSaved.tolleranza_Axis > 0) ? DataSaved.tolleranza_Axis : DataSaved.tolleranza_XY;
+            okDrill = (distAxis <= axisTol);
+
+            return;
+        }
+
+        // -------------------------
+        // 5) Full match (END present)
+        // -------------------------
         st = DrillMatch.matchMastToHole(
                 mastHead, mastBit,
                 holeStart, holeEnd,
@@ -208,11 +277,13 @@ public class PointService extends Service {
                 DataSaved.tolleranza_Slope
         );
 
-        okXY = st.xyInRange;
+        okXY  = st.xyInRange;          // qui = bit->ASSE
         okTilt = st.tiltInRange;
-        okOri = st.orientationInRange;
+        okOri  = st.orientationInRange;
 
-        // --- Triangoli (guida pitch/roll) ---
+        // -------------------------
+        // 6) Triangles (pitch/roll guidance)
+        // -------------------------
         tri = DrillGuidance.computeTiltTriangles(
                 mastHead, mastBit,
                 holeStart, holeEnd,
@@ -225,29 +296,72 @@ public class PointService extends Service {
         FrecciaDOWN = tri.down;
         FrecciaLEFT = tri.left;
 
-        // --- Plan Error (bit -> asse foro XY) ---
-        // PlanError restituisce Result. Tu vuoi double[3].
+        holePitchDeg = tri.holePitchDeg;
+        holeRollDeg  = tri.holeRollDeg;
+
+        // -------------------------
+        // 7) Plan error bit->axis (XY) + distAxis
+        // -------------------------
         PlanError.Result per = PlanError.calcPlanErrorToAxisXY(
                 mastBit[0], mastBit[1],
                 holeStart[0], holeStart[1],
                 holeEnd[0], holeEnd[1],
                 false // retta infinita consigliata per "in asse"
         );
+
         pe = new double[]{per.errE, per.errN, per.dist};
+        distAxis = per.dist;
+
+        // -------------------------
+        // 8) OK_START logic (inizio): bit su testa + tilt + ori (se inclinato) + Z
+        // -------------------------
+        final boolean ignoreOri = (Double.isNaN(st.holeTiltDeg) || st.holeTiltDeg < 2.0);
+        final boolean oriForStart = ignoreOri ? true : okOri;
+
+        okStart =
+                (distXYToHead <= DataSaved.tolleranza_XY) // bit sulla testa in pianta
+                        && okZ                             // quota progetto testa
+                        && okTilt                          // inclinazione corretta
+                        && oriForStart;                    // azimut se significativo
+
+        // -------------------------
+        // 9) OK_DRILL logic (discesa): solo distanza bit->asse
+        // -------------------------
+        double axisTol = (DataSaved.tolleranza_Axis > 0) ? DataSaved.tolleranza_Axis : DataSaved.tolleranza_XY;
+        okDrill = (distAxis <= axisTol);
     }
 
     private void resetOutputs() {
+        // Match principali
         okXY = false;
         okTilt = false;
         okOri = false;
 
+        // Stati operativi
+        okStart = false;
+        okDrill = false;
+        okZ = false;
+
+        // Frecce guida
         FrecciaUP = false;
         FrecciaRIGHT = false;
         FrecciaDOWN = false;
         FrecciaLEFT = false;
 
+        // Errori planimetrici
         pe = new double[]{0, 0, 0};
+
+        // Distanze diagnostiche
+        distAxis = Double.NaN;
+        distXYToHead = Double.NaN;
+        dzToHead = Double.NaN;
+        dist3DToHead = Double.NaN;
+
+        // (opzionale) azzera anche angoli target se li mostri in UI
+        holePitchDeg = Double.NaN;
+        holeRollDeg  = Double.NaN;
     }
+
 
     /**
      * FIX: copia position, non reference!

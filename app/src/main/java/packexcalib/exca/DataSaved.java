@@ -278,6 +278,9 @@ public class DataSaved {
     public static int damp_Tl;
 
     public static int hasQuick;
+    public static double tolleranza_Axis = 0.05; // 5 cm (esempio)
+    public static double tolleranza_Z = 0.03; // 3 cm (esempio)
+
 
     //IREDES
     // ---- DRILL PLAN ----

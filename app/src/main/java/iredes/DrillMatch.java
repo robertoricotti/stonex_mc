@@ -163,6 +163,9 @@ public final class DrillMatch {
         if (horiz < 1e-12 && vert < 1e-12) return Double.NaN;
         return Math.toDegrees(Math.atan2(horiz, vert));
     }
+    public static double tiltDegFromVerticalPublic(double[] a, double[] b) {
+        return tiltDegFromVertical(a, b);
+    }
 
     /** Differenza angolare minima 0..180 tra due angoli 0..360. */
     private static double angleDiffDeg(double a, double b) {

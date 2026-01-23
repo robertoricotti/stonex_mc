@@ -1,5 +1,6 @@
 package drill_pile.gui;
 
+import static gui.MyApp.activationCode;
 import static gui.MyApp.errorCode;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 
@@ -44,13 +45,14 @@ public class Drill_Activity extends BaseClass {
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
     ImageView digMenu, drilltool, typeView, Status, folders, playpause, lineReference, tiposnap,
-            zoom_P, zoom_M, zoom_C, compass, quotaIndicator;
+            zoom_P, zoom_M, zoom_C, compass, quotaIndicator,infoPoint,drillSet;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
     TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
+    Dialog_InfoPoint dialogInfoPoint;
     Guideline cent_v, side;
     float rot = 0;
 
@@ -93,6 +95,7 @@ public class Drill_Activity extends BaseClass {
         }
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogAutoSnap = new Dialog_AutoSnap(this);
+        dialogInfoPoint=new Dialog_InfoPoint(this);
         divisorioC = findViewById(R.id.divisorioC);
         divisorioDx = findViewById(R.id.divisorioDx);
         divisorioUp = findViewById(R.id.divisorioUp);
@@ -122,7 +125,8 @@ public class Drill_Activity extends BaseClass {
         compass = findViewById(R.id.compass);
         textInfo = findViewById(R.id.textInfo);
         tiltInfo = findViewById(R.id.tiltInfo);
-
+        drillSet=findViewById(R.id.drillSet);
+        infoPoint=findViewById(R.id.infoPoint);
         quotaIndicator = findViewById(R.id.quotaIndicator);
         txthdtActual = findViewById(R.id.txthdtActual);
         txttiltActual = findViewById(R.id.txttiltActual);
@@ -202,6 +206,16 @@ public class Drill_Activity extends BaseClass {
     }
 
     private void onClick() {
+        infoPoint.setOnClickListener(view -> {
+            if(DataSaved.Selected_Point3D_Drill==null){
+                new CustomToast(this,"No Point Selected!").show();
+            }else {
+                if(!dialogInfoPoint.dialog.isShowing()){
+                    dialogInfoPoint.show();
+                }
+            }
+
+        });
         compass.setOnLongClickListener(view -> {
             locateMachine();
             return false;
@@ -423,7 +437,7 @@ public class Drill_Activity extends BaseClass {
         if (!isInRangeAngle(mastTilt, 0, DataSaved.tolleranza_Slope)) {
             confronto = mastHDT;
         }
-        Log.d("Confronto", String.valueOf(confronto)+"  "+poleHDT+"  "+isInRangeAngle(confronto, poleHDT, DataSaved.tolleranza_Slope));
+
         if (isInRangeAngle(confronto, poleHDT, DataSaved.tolleranza_Slope)) {
             txthdtActual.setTextColor(Color.GREEN);
         } else {
