@@ -30,7 +30,7 @@ import utils.DistToPoint;
  * - calcola okXY/okTilt/okOri con DrillMatch (XY su asse foro)
  * - calcola triangoli pitch/roll con DrillGuidance (robusto)
  * - calcola PlanError (bit->asse foro in XY) e aggiorna pe[] (compatibilità)
- *
+ * <p>
  * IMPORTANTI FIX rispetto al tuo:
  * 1) lastPosition = position.clone() (non reference)
  * 2) gestione null EndX/EndY/EndZ (niente autounboxing NPE silenziosi)
@@ -63,7 +63,7 @@ public class PointService extends Service {
     public static boolean FrecciaDOWN = false;
     public static boolean FrecciaLEFT = false;
 
-    public static double holePitchDeg,holeRollDeg;
+    public static double holePitchDeg, holeRollDeg;
 
     // Loop timing
     private static final long LOOP_MS = 100L;
@@ -77,6 +77,10 @@ public class PointService extends Service {
     public static double dzToHead = Double.NaN;     // bitZ - headZ
     public static double dist3DToHead = Double.NaN; // opzionale
     public static double distAxis = Double.NaN;     // bit->asse (XY) (come pe[2] / st.distXY)
+
+    public static double remainingZ = Double.NaN;        // per pali verticali
+    public static double remainingAxis = Double.NaN;     // per pali inclinati
+
 
 
     @Override
@@ -194,7 +198,7 @@ public class PointService extends Service {
 
         // Mast arrays
         final double[] mastHead = coordTool;   // [E,N,Z]
-        final double[] mastBit  = toolEndCoord; // [E,N,Z]
+        final double[] mastBit = toolEndCoord; // [E,N,Z]
 
         if (mastHead == null || mastHead.length < 3 || mastBit == null || mastBit.length < 3) {
             resetOutputs();
@@ -214,7 +218,7 @@ public class PointService extends Service {
         final boolean hasEnd = (exObj != null && eyObj != null && ezObj != null);
 
         final double[] holeStart = new double[]{hx, hy, Double.isNaN(hz) ? 0.0 : hz};
-        final double[] holeEnd   = hasEnd ? new double[]{exObj, eyObj, ezObj} : holeStart;
+        final double[] holeEnd = hasEnd ? new double[]{exObj, eyObj, ezObj} : holeStart;
 
         // -------------------------
         // 3) Always compute "bit -> head" XY (+Z if possible)
@@ -241,14 +245,14 @@ public class PointService extends Service {
         if (!hasEnd) {
 
             // XY fallback: bit->head
-            okXY = (distXYToHead <= DataSaved.tolleranza_XY);
+            okXY = (distXYToHead <= DataSaved.Drill_tolleranza_XY);
 
             okTilt = false;
-            okOri  = false;
+            okOri = false;
 
             FrecciaUP = FrecciaRIGHT = FrecciaDOWN = FrecciaLEFT = false;
             holePitchDeg = Double.NaN;
-            holeRollDeg  = Double.NaN;
+            holeRollDeg = Double.NaN;
 
             // "pe" as bit->head vector
             double dx = mastBit[0] - hx;
@@ -261,7 +265,7 @@ public class PointService extends Service {
             okStart = false;
 
             // Drill check: axisTol vs distAxis (qui è dist bit->head)
-            double axisTol = (DataSaved.Drill_tolleranza_Axis > 0) ? DataSaved.Drill_tolleranza_Axis : DataSaved.tolleranza_XY;
+            double axisTol = (DataSaved.Drill_tolleranza_Axis > 0) ? DataSaved.Drill_tolleranza_Axis : DataSaved.Drill_tolleranza_XY;
             okDrill = (distAxis <= axisTol);
 
             return;
@@ -273,13 +277,13 @@ public class PointService extends Service {
         st = DrillMatch.matchMastToHole(
                 mastHead, mastBit,
                 holeStart, holeEnd,
-                DataSaved.tolleranza_XY,
-                DataSaved.tolleranza_Slope
+                DataSaved.Drill_tolleranza_XY,
+                DataSaved.Drill_tolleranza_Angolo
         );
 
-        okXY  = st.xyInRange;          // qui = bit->ASSE
+        okXY = st.xyInRange;          // qui = bit->ASSE
         okTilt = st.tiltInRange;
-        okOri  = st.orientationInRange;
+        okOri = st.orientationInRange;
 
         // -------------------------
         // 6) Triangles (pitch/roll guidance)
@@ -288,16 +292,27 @@ public class PointService extends Service {
                 mastHead, mastBit,
                 holeStart, holeEnd,
                 hdt_BOOM,
-                DataSaved.tolleranza_Slope
+                DataSaved.Drill_tolleranza_Angolo
         );
 
-        FrecciaUP = tri.up;
-        FrecciaRIGHT = tri.right;
-        FrecciaDOWN = tri.down;
-        FrecciaLEFT = tri.left;
+        // Pitch/Roll del mast e del foro (già calcolati da DrillGuidance)
+        double mastPitch = tri.mastPitchDeg;
+        double mastRoll  = tri.mastRollDeg;
+
+        double holePitch = tri.holePitchDeg;
+        double holeRoll  = tri.holeRollDeg;
+
+// Se il palo è verticale: guida verso "bolla" (pitch=0, roll=0)
+        if (isHoleVerticalDeg(st.holeTiltDeg)) {
+            setTrianglesToReachTargets(mastPitch, mastRoll, 0.0, 0.0, DataSaved.Drill_tolleranza_Angolo);
+        } else {
+            // Palo inclinato: guida verso i target del foro
+            setTrianglesToReachTargets(mastPitch, mastRoll, holePitch, holeRoll, DataSaved.Drill_tolleranza_Angolo);
+        }
+
 
         holePitchDeg = tri.holePitchDeg;
-        holeRollDeg  = tri.holeRollDeg;
+        holeRollDeg = tri.holeRollDeg;
 
         // -------------------------
         // 7) Plan error bit->axis (XY) + distAxis
@@ -315,11 +330,11 @@ public class PointService extends Service {
         // -------------------------
         // 8) OK_START logic (inizio): bit su testa + tilt + ori (se inclinato) + Z
         // -------------------------
-        final boolean ignoreOri = (Double.isNaN(st.holeTiltDeg) || st.holeTiltDeg < 2.0);
+        final boolean ignoreOri = (Double.isNaN(st.holeTiltDeg) || st.holeTiltDeg < 1.0);
         final boolean oriForStart = ignoreOri ? true : okOri;
 
         okStart =
-                (distXYToHead <= DataSaved.tolleranza_XY) // bit sulla testa in pianta
+                (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
                         && okZ                             // quota progetto testa
                         && okTilt                          // inclinazione corretta
                         && oriForStart;                    // azimut se significativo
@@ -327,8 +342,102 @@ public class PointService extends Service {
         // -------------------------
         // 9) OK_DRILL logic (discesa): solo distanza bit->asse
         // -------------------------
-        double axisTol = (DataSaved.Drill_tolleranza_Axis > 0) ? DataSaved.Drill_tolleranza_Axis : DataSaved.tolleranza_XY;
+        double axisTol = (DataSaved.Drill_tolleranza_Axis > 0) ? DataSaved.Drill_tolleranza_Axis : DataSaved.Drill_tolleranza_XY;
         okDrill = (distAxis <= axisTol);
+        if (isDrilling) {
+            boolean vertical = false;
+            double tiltProj = 0.0;
+            if (sel != null && sel.getTilt() != null) {
+                tiltProj = sel.getTilt();
+                vertical = tiltProj < 1.0;
+            }
+
+            Log.d("DRILL_GUIDE", "------------------------------");
+
+            // 1) Stato generale
+            Log.d("DRILL_GUIDE", "OK_DRILL=" + okDrill +
+                    "  OK_XY=" + okXY +
+                    "  OK_TILT=" + okTilt +
+                    "  OK_ORI=" + okOri);
+
+            // 2) Tipo palo
+            Log.d("DRILL_GUIDE", "HOLE_TILT_PROJ=" + tiltProj +
+                    " deg  VERTICAL=" + vertical);
+
+            // 3) Discostamento laterale
+            Log.d("DRILL_GUIDE", String.format(
+                    "AXIS_ERR_XY=%.3f m   (errE=%.3f , errN=%.3f)",
+                    distAxis, pe[0], pe[1]
+            ));
+
+            // 4) Distanza dalla testa (utile all’inizio)
+            Log.d("DRILL_GUIDE", String.format(
+                    "DIST_TO_HEAD_XY=%.3f m   DZ_TO_HEAD=%.3f m   DIST3D=%.3f m",
+                    distXYToHead, dzToHead, dist3DToHead
+            ));
+
+            // 5) Profondità / avanzamento
+            if (sel != null &&
+                    sel.getHeadZ() != null &&
+                    sel.getEndZ() != null &&
+                    ExcavatorLib.toolEndCoord != null) {
+
+                double bitZ = ExcavatorLib.toolEndCoord[2];
+                double headZ = sel.getHeadZ();
+                double endZ  = sel.getEndZ();
+
+                if (vertical) {
+                    double remainingZ = endZ - bitZ;
+                    PointService.remainingZ = remainingZ;
+                    PointService.remainingAxis = Double.NaN;
+                    Log.d("DRILL_GUIDE", String.format(
+                            "DEPTH_VERTICAL: bitZ=%.3f  endZ=%.3f  REMAIN_Z=%.3f m",
+                            bitZ, endZ, remainingZ
+                    ));
+                } else {
+                    // avanzamento lungo asse
+                    double s = distAlongAxisFromHead(
+                            ExcavatorLib.toolEndCoord,
+                            sel.getHeadX(), sel.getHeadY(), sel.getHeadZ(),
+                            sel.getEndX(), sel.getEndY(), sel.getEndZ()
+                    );
+
+                    double ax = sel.getEndX() - sel.getHeadX();
+                    double ay = sel.getEndY() - sel.getHeadY();
+                    double az = sel.getEndZ() - sel.getHeadZ();
+                    double L = Math.sqrt(ax*ax + ay*ay + az*az);
+
+                    double sClamped = Math.max(0.0, Math.min(L, s));
+                    double remainingAxis = L - sClamped;
+                    PointService.remainingAxis = remainingAxis;
+                    PointService.remainingZ = Double.NaN;
+                    Log.d("DRILL_GUIDE", String.format(
+                            "DEPTH_INCLINED: ADV=%.3f / %.3f m   REMAIN_AXIS=%.3f m",
+                            sClamped, L, remainingAxis
+                    ));
+                }
+            }
+
+            // 6) Angoli mast vs progetto
+            if (st != null) {
+                Log.d("DRILL_GUIDE", String.format(
+                        "TILT: mast=%.2f°  hole=%.2f°  OK=%s",
+                        st.mastTiltDeg, st.holeTiltDeg, okTilt
+                ));
+
+                Log.d("DRILL_GUIDE", String.format(
+                        "ORI: mast=%.2f°  hole=%.2f°  d=%.2f°  OK=%s",
+                        st.mastBearingDeg, st.holeBearingDeg, st.dBearingDeg, okOri
+                ));
+            }
+
+            // 7) Frecce pitch/roll
+            Log.d("DRILL_GUIDE", "ARROWS  UP=" + FrecciaUP +
+                    " DOWN=" + FrecciaDOWN +
+                    " LEFT=" + FrecciaLEFT +
+                    " RIGHT=" + FrecciaRIGHT);
+        }
+
     }
 
     private void resetOutputs() {
@@ -359,7 +468,7 @@ public class PointService extends Service {
 
         // (opzionale) azzera anche angoli target se li mostri in UI
         holePitchDeg = Double.NaN;
-        holeRollDeg  = Double.NaN;
+        holeRollDeg = Double.NaN;
     }
 
 
@@ -409,5 +518,48 @@ public class PointService extends Service {
         if (status == null || status == 0) return nearest;
 
         return null;
+    }
+
+    private static boolean isHoleVerticalDeg(double holeTiltDeg) {
+        return !Double.isNaN(holeTiltDeg) && holeTiltDeg < 1.0; // tua soglia
+    }
+
+    private static void setTrianglesToReachTargets(double mastPitch, double mastRoll,
+                                                   double targetPitch, double targetRoll,
+                                                   double tolDeg) {
+        double dP = mastPitch - targetPitch;
+        double dR = mastRoll - targetRoll;
+
+        // stessa logica di DrillGuidance: se mast < target => UP/RIGHT
+        FrecciaUP = (Math.abs(dP) > tolDeg) && (dP < 0);
+        FrecciaDOWN = (Math.abs(dP) > tolDeg) && (dP > 0);
+
+        FrecciaRIGHT = (Math.abs(dR) > tolDeg) && (dR < 0);
+        FrecciaLEFT = (Math.abs(dR) > tolDeg) && (dR > 0);
+    }
+    private static double distAlongAxisFromHead(
+            double[] bit,  // [E,N,Z]
+            double hx, double hy, double hz,
+            double ex, double ey, double ez
+    ) {
+        double ax = ex - hx;
+        double ay = ey - hy;
+        double az = ez - hz;
+
+        double L = Math.sqrt(ax*ax + ay*ay + az*az);
+        if (L < 1e-9) return Double.NaN;
+
+        // versore asse
+        double ux = ax / L;
+        double uy = ay / L;
+        double uz = az / L;
+
+        // vettore head->bit
+        double bx = bit[0] - hx;
+        double by = bit[1] - hy;
+        double bz = bit[2] - hz;
+
+        // proiezione scalare (metri lungo asse, 0=head, L=end)
+        return (bx*ux + by*uy + bz*uz);
     }
 }

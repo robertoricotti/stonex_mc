@@ -1,5 +1,7 @@
 package drill_pile.gui;
 
+import static drill_pile.gui.Drill_Activity.showCroce;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -69,7 +71,8 @@ public class Drill_TopView extends View {
     private int activePointerId = INVALID_POINTER_ID;
     private int colorTarget_Alto=Color.CYAN;
     private int colorTarget_Basso=Color.YELLOW;
-    boolean isOXonHole=Math.abs(PointService.pe[2])<DataSaved.tolleranza_XY;
+    private int colorDashed_Line=Color.CYAN;
+    private boolean isBitOnHoleHead=false;
 
 
     public Drill_TopView(Context context) {
@@ -102,7 +105,6 @@ public class Drill_TopView extends View {
         paint.setAntiAlias(true);
 
         try {
-            isOXonHole=Math.abs(PointService.pe[2])<DataSaved.tolleranza_XY;
 
             double extraHeading = NmeaListener.roof_Orientation + DataSaved.offsetSwingExca;
             if (DataSaved.Extra_Heading == 0) {
@@ -126,12 +128,6 @@ public class Drill_TopView extends View {
             invDrawMatrix.reset();
             drawMatrix.invert(invDrawMatrix);
 
-            /*
-
-
-
-             */
-
             canvas.save();
             canvas.concat(drawMatrix);
 
@@ -146,59 +142,55 @@ public class Drill_TopView extends View {
             }
 
             drawDrillPoints();
-            if(DataSaved.Selected_Point3D_Drill!=null) {
-                int colore=Color.RED;
-                if(isOXonHole){
-                    colore=Color.GREEN;
-                }
-                drawSelectedPoint(DataSaved.Selected_Point3D_Drill,colore);
+            if(DataSaved.Selected_Point3D_Drill!=null){
+                drawSelectedPoint(DataSaved.Selected_Point3D_Drill);
+            }
 
-            }
             // 1) target giallo: drillbit (fisso sullo schermo)
-            int coloreTargetGiallo=colorTarget_Basso;
-            int coloreTargetCiano=colorTarget_Alto;
-            boolean okOrient=true;
-            if(shouldDrawDashedForSelected()){
-                okOrient=PointService.okOri;
-            }
-            if(PointService.okTilt&&isOXonHole&&okOrient){
-                coloreTargetCiano=Color.GREEN;
-                coloreTargetGiallo=Color.GREEN;
-            }
+
             PointF toolScreen = new PointF(toolX, toolY);
-            drawTarget(toolScreen, coloreTargetGiallo,
-                    Math.max(16f, scala * 0.45f),
-                    Math.max(9f,  scala * 0.23f),
-                    Math.max(11f, scala * 0.33f),true
+            drawTarget(toolScreen, colorTarget_Basso,
+                    Math.max(18f, scala * 0.55f),
+                    Math.max(11f,  scala * 0.28f),
+                    Math.max(13f, scala * 0.38f),true
             );
             paint.setStrokeWidth(Math.max(1f, scala * 0.002f));
+            if(showCroce) {
+                paint.setColor(colorTarget_Basso);
+                paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f));
+                canvas.drawLine(toolX, toolY, toolX + 100f, toolY, paint);//destra
+                canvas.drawLine(toolX, toolY, toolX, toolY + 100f, paint);//dietro
+                canvas.drawLine(toolX, toolY, toolX - 100f, toolY, paint);//sinistra
+                canvas.drawLine(toolX, toolY, toolX, toolY - 100f, paint);//avanti
+            }
 
 
             // 2) target ciano: drillhead (si muove rispetto al tool)
             PointF headScreen = worldToScreen(headEast, headNord);
-            drawTarget(headScreen, coloreTargetCiano,
+            drawTarget(headScreen, colorTarget_Alto,
 
 
-                    Math.max(18f, scala * 0.50f),
+                    Math.max(20f, scala * 0.55f),
                     Math.max(0f, scala * 0.00f),
-                    Math.max(12f, scala * 0.35f),false
+                    Math.max(14f, scala * 0.4f),false
 
 
             );
-            int solid = Color.CYAN;
+
+
 
             // dashed più “profondo”: stesso colore ma alpha (trasparente)
             int dashed = Color.argb(155, 0, 255, 255); // ciano trasparente
 
             // se sei in OK totale, fallo verde anche nella guida
 
-            if (PointService.okTilt && isOXonHole &&okOrient ) {
-                solid  = Color.GREEN;
+            if (isBitOnHoleHead ) {
+
                 dashed = Color.argb(140, 0, 255, 0);
             }
 
-            drawGuidelineExtended(toolScreen, headScreen, solid, dashed,shouldDrawDashedForSelected());
-            if(isOXonHole) {
+            drawGuidelineExtended(toolScreen, headScreen, colorDashed_Line, dashed,shouldDrawDashedForSelected());
+            if(isBitOnHoleHead) {
                 paint.setColor(Color.DKGRAY);
                 paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f));
                 canvas.drawLine(toolX, toolY, toolX + 10f, toolY, paint);//destra
@@ -248,7 +240,7 @@ public class Drill_TopView extends View {
             Log.e("DrillDraw", "Errore drawDrillPoints", e);
         }
     }
-    private void drawSelectedPoint(Point3D_Drill point3DDrill,int colore){
+    private void drawSelectedPoint(Point3D_Drill point3DDrill){
 
         double size=0.3;
         DrawDXF_Drill_Point.drawSelected(canvas,
@@ -259,7 +251,6 @@ public class Drill_TopView extends View {
                 toolEast,
                 toolNord,
                 scala,
-                colore,
                 rotationAngle,true,size
         );
     }
@@ -423,6 +414,7 @@ public class Drill_TopView extends View {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
+
             DataSaved.scale_Factor3D *= detector.getScaleFactor();
             // Limita il fattore di scala
             DataSaved.scale_Factor3D = Math.max(0.4f, Math.min(DataSaved.scale_Factor3D, 6.5f));
@@ -474,6 +466,12 @@ public class Drill_TopView extends View {
 
     public void setColorTarget_Basso(int colorTarget_Basso) {
         this.colorTarget_Basso = colorTarget_Basso;
+    }
+    public void setColorDashed_Line(int colorDashed_Line) {
+        this.colorDashed_Line = colorDashed_Line;
+    }
+    public void setBitOnHoleHead(boolean isBitOnHoleHead){
+        this.isBitOnHoleHead=isBitOnHoleHead;
     }
     // --- Picking cache ---
     private static class ScreenPt {

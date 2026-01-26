@@ -29,10 +29,10 @@ public class DrawDXF_Drill_Point {
 
         // dimensioni (un pelo più piccole del selected)
         float rHead = 0.12f * scala;
-        float rEnd  = rHead * 0.75f;
+        float rEnd = rHead * 0.75f;
 
         // ✅ tutti i NON selected in colorConstraint
-        int fillColor   = MyColorClass.colorConstraint;
+        int fillColor = MyColorClass.colorConstraint;
         int strokeColor = MyColorClass.colorConstraint;
 
         // stroke
@@ -65,17 +65,17 @@ public class DrawDXF_Drill_Point {
                 float ux = vx / len;
                 float uy = vy / len;
                 float nx = -uy;
-                float ny =  ux;
+                float ny = ux;
 
                 float headLx = headX + nx * rHead;
                 float headLy = headY + ny * rHead;
                 float headRx = headX - nx * rHead;
                 float headRy = headY - ny * rHead;
 
-                float endLx  = endX + nx * rEnd;
-                float endLy  = endY + ny * rEnd;
-                float endRx  = endX - nx * rEnd;
-                float endRy  = endY - ny * rEnd;
+                float endLx = endX + nx * rEnd;
+                float endLy = endY + ny * rEnd;
+                float endRx = endX - nx * rEnd;
+                float endRy = endY - ny * rEnd;
 
                 int lineColor = getCylinderLineColor();
 
@@ -137,6 +137,9 @@ public class DrawDXF_Drill_Point {
         // 3) Testo: SEMPRE se txt == true (anche senza fondo)
         if (txt) {
             String testo = point.getRowId() + "-" + point.getId();
+            if (point.getRowId() == null) {
+                testo = point.getId();
+            }
             paint.setTextSize(24);
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(MyColorClass.colorConstraint);
@@ -147,11 +150,10 @@ public class DrawDXF_Drill_Point {
     }
 
 
-
     public static void drawSelected(Canvas canvas, Paint paint, Point3D_Drill point,
                                     float bucketX, float bucketY,
                                     double bucketEst, double bucketNord,
-                                    float scala, int colorIgnored, double rotationAngle,
+                                    float scala, double rotationAngle,
                                     boolean txt, double size) {
 
         if (point == null) return;
@@ -165,7 +167,7 @@ public class DrawDXF_Drill_Point {
         float headY = (float) (bucketY - diffHX * Math.sin(rotationAngle) - diffHY * Math.cos(rotationAngle));
 
         float rHead = (float) (size * scala);
-        float rEnd  = rHead * 0.75f;
+        float rEnd = rHead * 0.75f;
 
         // --- end (basso) ---
         boolean hasEnd = (point.getEndX() != null && point.getEndY() != null);
@@ -183,17 +185,17 @@ public class DrawDXF_Drill_Point {
 
         paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f));
         paint.setColor(MyColorClass.colorConstraint);
-        canvas.drawLine(bucketX,bucketY,headX,headY,paint);
+        canvas.drawLine(bucketX, bucketY, headX, headY, paint);
         // Colori: alto blu, basso rosso, alpha < 1
         // (metti alpha tra 90..200 a gusto; 150 è un buon compromesso)
         final int aFill = 150;
         final int aStroke = 200;
 
-        final int blueFill   = android.graphics.Color.argb(aFill,   0, 120, 255);
-        final int blueStroke = android.graphics.Color.argb(aStroke, 0,  90, 200);
+        final int blueFill = android.graphics.Color.argb(aFill, 0, 120, 255);
+        final int blueStroke = android.graphics.Color.argb(aStroke, 0, 90, 200);
 
-        final int redFill    = android.graphics.Color.argb(aFill,   255,  70,  70);
-        final int redStroke  = android.graphics.Color.argb(aStroke, 200,  40,  40);
+        final int redFill = android.graphics.Color.argb(aFill, 255, 70, 70);
+        final int redStroke = android.graphics.Color.argb(aStroke, 200, 40, 40);
 
         // spessori scalati
         float stroke = Math.max(2f, (float) (0.06 * scala));
@@ -232,7 +234,9 @@ public class DrawDXF_Drill_Point {
                 float offX = 6f;
                 float offY = 6f;
                 String testo = point.getRowId() + "-" + point.getId();
-
+                if (point.getRowId() == null) {
+                    testo = point.getId();
+                }
                 paint.setTextSize(28);
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(MyColorClass.colorConstraint);
@@ -260,7 +264,9 @@ public class DrawDXF_Drill_Point {
                 float offX = 6f;
                 float offY = 6f;
                 String testo = point.getRowId() + "-" + point.getId();
-
+                if (point.getRowId() == null) {
+                    testo = point.getId();
+                }
                 paint.setTextSize(28);
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(MyColorClass.colorConstraint);
@@ -275,7 +281,7 @@ public class DrawDXF_Drill_Point {
 
         // normale (perpendicolare) per i lati cilindro
         float nx = -uy;
-        float ny =  ux;
+        float ny = ux;
 
         // punti laterali su head (alto) e su end (basso)
         float headLx = headX + nx * rHead;
@@ -283,10 +289,10 @@ public class DrawDXF_Drill_Point {
         float headRx = headX - nx * rHead;
         float headRy = headY - ny * rHead;
 
-        float endLx  = endX + nx * rEnd;
-        float endLy  = endY + ny * rEnd;
-        float endRx  = endX - nx * rEnd;
-        float endRy  = endY - ny * rEnd;
+        float endLx = endX + nx * rEnd;
+        float endLy = endY + ny * rEnd;
+        float endRx = endX - nx * rEnd;
+        float endRy = endY - ny * rEnd;
 
         paint.setAntiAlias(true);
 
@@ -340,7 +346,7 @@ public class DrawDXF_Drill_Point {
         paint.setStrokeWidth(Math.max(1f, stroke * 0.35f));
         paint.setColor(android.graphics.Color.argb(70, 255, 255, 255));
         canvas.drawLine(headX + nx * (rHead * 0.25f), headY + ny * (rHead * 0.25f),
-                endX  + nx * (rEnd  * 0.25f), endY  + ny * (rEnd  * 0.25f), paint);
+                endX + nx * (rEnd * 0.25f), endY + ny * (rEnd * 0.25f), paint);
 
         // 4) puntini centrali (opzionali)
         paint.setStyle(Paint.Style.FILL);
@@ -351,19 +357,20 @@ public class DrawDXF_Drill_Point {
 
         // 5) testo (se ti serve)
 
-            float offX = 6f;
-            float offY = 6f;
-            String testo = point.getRowId() + "-" + point.getId();
-
-            paint.setTextSize(28);
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(MyColorClass.colorConstraint);
-            canvas.drawText(testo, headX + offX, headY - offY, paint);
+        float offX = 6f;
+        float offY = 6f;
+        String testo = point.getRowId() + "-" + point.getId();
+        if (point.getRowId() == null) {
+            testo = point.getId();
+        }
+        paint.setTextSize(28);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(MyColorClass.colorConstraint);
+        canvas.drawText(testo, headX + offX, headY - offY, paint);
 
 
         paint.setStrokeWidth(10f); // ripristino come fai tu altrove
     }
-
 
 
     private static boolean isSamePoint(Point3D_Drill a, Point3D_Drill b) {
@@ -375,6 +382,7 @@ public class DrawDXF_Drill_Point {
     private static boolean safeEq(Object x, Object y) {
         return (x == y) || (x != null && x.equals(y));
     }
+
     private static int getCylinderLineColor() {
         if (DataSaved.temaSoftware == 0) {
             // sfondo nero → linee chiare

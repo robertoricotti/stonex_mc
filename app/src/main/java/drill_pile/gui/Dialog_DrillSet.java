@@ -88,8 +88,8 @@ public class Dialog_DrillSet {
         tv1.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_XY)));
         tv2.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_Axis)));
         tv3.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_Z)));
-        tv4.setText(Utils.readAngolo(String.valueOf(DataSaved.Drill_tolleranza_Angolo)));
-        tv5.setText(Utils.readAngolo(String.valueOf(DataSaved.Drill_tolleranza_HDT)));
+        tv4.setText((String.valueOf(DataSaved.Drill_tolleranza_Angolo)));
+        tv5.setText((String.valueOf(DataSaved.Drill_tolleranza_HDT)));
 
     }
     private void onClick(){

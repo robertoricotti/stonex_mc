@@ -259,6 +259,32 @@ public class MyMCUtils {
 
 
 
+    public static double[] projectPointOnAxis3D(
+            double pE, double pN, double pZ,
+            double aE, double aN, double aZ,
+            double bE, double bN, double bZ
+    ) {
+        double vx = bE - aE, vy = bN - aN, vz = bZ - aZ;     // direzione asse
+        double wx = pE - aE, wy = pN - aN, wz = pZ - aZ;     // da A a P
+
+        double vv = vx*vx + vy*vy + vz*vz;
+        if (vv < 1e-12) {
+            // asse degenero -> ritorna A
+            return new double[]{aE, aN, aZ, 0.0};
+        }
+
+        // parametro sulla retta (infinita)
+        double t = (wx*vx + wy*vy + wz*vz) / vv;
+
+        // se vuoi limitarlo al segmento A-B:
+        // t = Math.max(0.0, Math.min(1.0, t));
+
+        double qE = aE + t * vx;
+        double qN = aN + t * vy;
+        double qZ = aZ + t * vz;
+
+        return new double[]{qE, qN, qZ, t};
+    }
 
 
 
