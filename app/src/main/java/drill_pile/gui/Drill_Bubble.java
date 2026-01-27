@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import packexcalib.exca.DataSaved;
 
 public class Drill_Bubble extends View {
+    private float uiRotDeg = 0f;
+
 
     private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -97,6 +99,8 @@ public class Drill_Bubble extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.save();
+        canvas.rotate(uiRotDeg, getWidth()*0.5f, getHeight()*0.5f);
 
         float w = getWidth();
         float h = getHeight();
@@ -145,6 +149,7 @@ public class Drill_Bubble extends View {
 
         // -------- testo centrale SEMPRE NON RUOTA --------
         drawCenterText(canvas, cx, cy, rInner);
+        canvas.restore();
     }
 
     private void drawOuterTriangles(Canvas canvas, float cx, float cy, float rOuter, float strokeOuter) {
@@ -272,6 +277,7 @@ public class Drill_Bubble extends View {
     }
 
     private void drawCenterText(Canvas canvas, float cx, float cy, float rInner) {
+        canvas.rotate(-uiRotDeg,getWidth()*0.5f,getHeight()*0.5f);
         String txt = distTextValue != null ? distTextValue : "";
 
         float textSize = Math.max(18f, rInner * 0.50f);
@@ -285,5 +291,10 @@ public class Drill_Bubble extends View {
         float textY = cy - (fm.ascent + fm.descent) / 2f;
 
         canvas.drawText(txt, cx, textY, p);
+        canvas.rotate(uiRotDeg,getWidth()*0.5f,getHeight()*0.5f);
+    }
+    public void setUiRotationDeg(float deg) {
+        uiRotDeg = ((deg % 360f) + 360f) % 360f;
+        invalidate();
     }
 }

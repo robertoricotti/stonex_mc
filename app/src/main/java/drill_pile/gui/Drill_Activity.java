@@ -1,7 +1,6 @@
 package drill_pile.gui;
 
 import static gui.MyApp.errorCode;
-import static packexcalib.exca.ExcavatorLib.coordTool;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static utils.MyMCUtils.projectPointOnAxis3D;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,9 +38,9 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass {
-    int coloreAlto=Color.CYAN;
-    int coloreBasso=Color.YELLOW;
-    int coloreDashed=Color.CYAN;
+    int coloreAlto = Color.CYAN;
+    int coloreBasso = Color.YELLOW;
+    int coloreDashed = Color.CYAN;
     double poleHDT = 0;
     double poleTilt = 0;
     double mastHDT = 0;
@@ -52,7 +50,7 @@ public class Drill_Activity extends BaseClass {
     static int arrowColor = MyColorClass.colorConstraint;
     static float kostant = 1.2f;
     public static int typeVistaDrill;
-    public static boolean isDrilling=false;
+    public static boolean isDrilling = false;
     int flip = 0;
     float rotationCont;
 
@@ -181,6 +179,9 @@ public class Drill_Activity extends BaseClass {
         topview.addView(topViewCanvas);
         bubbleCanvas = new Drill_Bubble(this);
         bubble.addView(bubbleCanvas);
+        ((Drill_TopView) topViewCanvas).setTargetScale(1.25f);
+        ((Drill_TopView) topViewCanvas).setUiRotationDeg(90*DataSaved.Drill_Screen);
+        ((Drill_Bubble)bubbleCanvas).setUiRotationDeg(90*DataSaved.Drill_Screen);
         switch (DataSaved.temaSoftware) {
             case 0:
                 tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
@@ -198,10 +199,11 @@ public class Drill_Activity extends BaseClass {
 
                 ((Drill_TopView) topViewCanvas).setColorTarget_Alto(Color.CYAN);
                 ((Drill_TopView) topViewCanvas).setColorTarget_Basso(Color.YELLOW);
+                ((Drill_TopView) topViewCanvas).setColoreCroce(Color.YELLOW);
                 ((Drill_TopView) topViewCanvas).setColorDashed_Line(Color.CYAN);
-                coloreAlto=Color.CYAN;
-                coloreBasso=Color.YELLOW;
-                coloreDashed=Color.CYAN;
+                coloreAlto = Color.CYAN;
+                coloreBasso = Color.YELLOW;
+                coloreDashed = Color.CYAN;
 
                 break;
 
@@ -221,10 +223,11 @@ public class Drill_Activity extends BaseClass {
                 zoom_C.setImageTintList(getColorStateList(R.color._____cancel_text));
                 ((Drill_TopView) topViewCanvas).setColorTarget_Alto(Color.BLUE);
                 ((Drill_TopView) topViewCanvas).setColorTarget_Basso(getResources().getColor(R.color.bg));
+                ((Drill_TopView) topViewCanvas).setColoreCroce(getResources().getColor(R.color.bg));
                 ((Drill_TopView) topViewCanvas).setColorDashed_Line(Color.BLUE);
-                coloreAlto=Color.BLUE;
-                coloreBasso=getResources().getColor(R.color.bg);
-                coloreDashed=Color.BLUE;
+                coloreAlto = Color.BLUE;
+                coloreBasso = getResources().getColor(R.color.bg);
+                coloreDashed = Color.BLUE;
 
                 break;
 
@@ -322,206 +325,27 @@ public class Drill_Activity extends BaseClass {
         if (DataSaved.Extra_Heading == 0) {
             extraHeading = 0;
         }
-        double viewHeading = (NmeaListener.mch_Orientation + DataSaved.deltaGPS2)+extraHeading;
-        if (isDrilling) {
-            rotationCont += 1;
-            rotationCont = rotationCont % 360;
+        double viewHeading = (NmeaListener.mch_Orientation + DataSaved.deltaGPS2) + extraHeading;
+        setBubble(viewHeading);
 
-            ((Drill_Bubble) bubbleCanvas).setDrillingMode(isDrilling, rotationCont);
-
-            Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
-
-            double d = Double.NaN;
-
-            if (sel != null && sel.getTilt() != null) {
-
-                boolean isVertical = sel.getTilt() < 1.0; // soglia 1°
-
-                if (isVertical) {
-                    // palo verticale → distanza verticale
-                    d = PointService.remainingZ;
-                } else {
-                    // palo inclinato → distanza lungo asse
-                    d = PointService.remainingAxis;
-                }
-            }
-
-            if (Double.isNaN(d)) {
-                ((Drill_Bubble) bubbleCanvas).setCenterDistance("???");
-            } else {
-                ((Drill_Bubble) bubbleCanvas).setCenterDistance(
-                        Utils.readUnitOfMeasureLITE(String.valueOf(d))
-                );
-            }
-
-
-            double dax;
-            double[] qpos=new double[3];
-
-            if(sel!=null){
-                qpos = projectPointOnAxis3D(
-                        toolEndCoord[0], toolEndCoord[1], toolEndCoord[2],
-                        sel.getHeadX(), sel.getHeadY(), sel.getHeadZ(),
-                        sel.getEndX(),  sel.getEndY(),  sel.getEndZ());
-
-            }
-            if (DataSaved.Selected_Point3D_Drill != null
-                    && DataSaved.Selected_Point3D_Drill.getEndX() != null
-                    && DataSaved.Selected_Point3D_Drill.getEndY() != null) {
-                dax = PointService.distAxis; // vero bit->asse
-            } else {
-                dax = PointService.distXYToHead; // fallback
-            }
-            ((Drill_Bubble) bubbleCanvas).setCenterDistance(
-                    Utils.readUnitOfMeasureLITE(String.valueOf(dax))
-            );
-            double errE = qpos[0] - toolEndCoord[0];
-            double errN = qpos[1] - toolEndCoord[1];
-            ((Drill_Bubble) bubbleCanvas).setPlanError(errE, errN);
-
-            ((Drill_Bubble) bubbleCanvas).setHeadingDeg((viewHeading ) % 360.0);
-            setIndicator();
-            //TODO Routine infissione da vedere in seguito per generare report
-
+        boolean bitOnHead = (PointService.distXYToHead <= DataSaved.Drill_tolleranza_XY)
+                && (PointService.okZ || Double.isNaN(PointService.dzToHead)); // se quota non disponibile
+        ((Drill_TopView) topViewCanvas).setBitOnHoleHead(bitOnHead);
+        if (PointService.okStart) {
+            ((Drill_TopView) topViewCanvas).setColorTarget_Basso(Color.GREEN);
+            ((Drill_TopView) topViewCanvas).setColorTarget_Alto(getResources().getColor(R.color.verde_sfondo_scuro));
+            ((Drill_TopView) topViewCanvas).setColorDashed_Line(getResources().getColor(R.color.verde_sfondo_scuro));
         } else {
-            rotationCont = 0;
-            ((Drill_Bubble) bubbleCanvas).setDrillingMode(isDrilling, rotationCont);
-            if (DataSaved.Selected_Point3D_Drill == null) {
-                ((Drill_Bubble) bubbleCanvas).setCenterDistance("****");
-            } else {
-
-                //  SE PRONTO A TRIVELLARE → MOSTRA "READY"
-                if (PointService.okStart && !isDrilling) {
-                    ((Drill_Bubble) bubbleCanvas).setCenterDistance("READY");
-                } else {
-
-                    Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
-
-                    // "verticale" se tilt progetto < 1°
-                    double tiltProj = (sel.getTilt() != null) ? sel.getTilt() : 0.0;
-                    boolean isVertical = tiltProj < 1.0;
-
-                    // Per guidare sulla testa servono Z testa + Z fondo
-                    boolean hasHeadZ = (sel.getHeadZ() != null);
-                    boolean hasEndZ  = (sel.getEndZ() != null);
-                    boolean canGuideHead = !isVertical && hasHeadZ && hasEndZ;
-
-                    double d;
-                    if (canGuideHead) {
-                        // guida sul punto di inizio trivellazione (testa)
-                        d = PointService.distXYToHead;
-                    } else {
-                        // guida in asse (palo verticale o dati incompleti)
-                        d = PointService.distAxis;
-                    }
-
-                    ((Drill_Bubble) bubbleCanvas).setCenterDistance(
-                            Utils.readUnitOfMeasureLITE(String.valueOf(d))
-                    );
-                }
-            }
-
-
-            if (!PointService.okTilt) {
-                ringColor = getResources().getColor(R.color.bg_sfsred);
-                if (DataSaved.temaSoftware == 0) {
-                    tricolor = Color.YELLOW;
-                } else {
-                    tricolor = Color.BLUE;
-                }
-            } else {
-                ringColor = getColor(R.color.verde_sfondo_scuro);
-            }
-
-
-
-            /// //
-
-            double dShown = Double.NaN;
-            boolean isVertical = true;
-            Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
-
-            if (sel != null) {
-
-
-                double tiltProj = (sel.getTilt() != null) ? sel.getTilt() : 0.0;
-                isVertical = tiltProj < 1.0; // tua soglia
-
-                boolean canGuideHead = !isVertical && sel.getHeadZ() != null && sel.getEndZ() != null;
-
-                dShown = canGuideHead ? PointService.distXYToHead : PointService.distAxis;
-            }
-            if (Double.isNaN(dShown)) {
-                arrowColor = getColor(R.color.rosso_sfondo_scuro);
-            } else if (dShown < DataSaved.Drill_tolleranza_XY) {
-                arrowColor = getColor(R.color.verde_sfondo_scuro);
-            } else if (dShown < 1.0) {
-                arrowColor = getColor(R.color.arancio_sfondo_scuro);
-            } else {
-                arrowColor = getColor(R.color.rosso_sfondo_scuro);
-            }
-
-            ((Drill_Bubble) bubbleCanvas).setColors(ringColor, arrowColor, MyColorClass.colorSfondo, MyColorClass.colorConstraint, tricolor);
-            ((Drill_Bubble) bubbleCanvas).setTriangles(PointService.FrecciaUP, PointService.FrecciaLEFT, PointService.FrecciaDOWN, PointService.FrecciaRIGHT);
-
-
-            if (sel != null && sel.getHeadX()!=null && sel.getHeadY()!=null) {
-
-                double bitX = toolEndCoord[0];
-                double bitY = toolEndCoord[1];
-
-                double headX = sel.getHeadX();
-                double headY = sel.getHeadY();
-
-                boolean hasEndXY = (sel.getEndX()!=null && sel.getEndY()!=null);
-
-
-                double errE, errN;
-
-                if (!isVertical) {
-                    // palo inclinato -> guida verso TESTA
-                    errE = headX - bitX;
-                    errN = headY - bitY;
-                } else {
-                    // palo verticale -> guida verso ASSE (se hai endXY) altrimenti verso testa
-                    if (hasEndXY) {
-                        PlanError.Result per = PlanError.calcPlanErrorToAxisXY(
-                                bitX, bitY,
-                                headX, headY,
-                                sel.getEndX(), sel.getEndY(),
-                                false
-                        );
-                        errE = per.projE - bitX;   // NOTA: verso l’asse
-                        errN = per.projN - bitY;
-                    } else {
-                        errE = headX - bitX;
-                        errN = headY - bitY;
-                    }
-                }
-
-                ((Drill_Bubble) bubbleCanvas).setPlanError(errE, errN);
-                ((Drill_Bubble) bubbleCanvas).setHeadingDeg((viewHeading ) % 360.0);
-            }
-
-
-            ((Drill_Bubble) bubbleCanvas).setCrossOnly(PointService.okStart);
-
-            boolean bitOnHead = (PointService.distXYToHead <= DataSaved.Drill_tolleranza_XY)
-                    && (PointService.okZ || Double.isNaN(PointService.dzToHead)); // se quota non disponibile
-            ((Drill_TopView) topViewCanvas).setBitOnHoleHead(bitOnHead);
-            if (PointService.okStart){
-                ((Drill_TopView) topViewCanvas).setColorTarget_Basso(getResources().getColor(R.color.verde_sfondo_scuro));
-                ((Drill_TopView) topViewCanvas).setColorTarget_Alto(getResources().getColor(R.color.verde_sfondo_scuro));
-                ((Drill_TopView)topViewCanvas).setColorDashed_Line(getResources().getColor(R.color.verde_sfondo_scuro));
-            }else {
-                ((Drill_TopView) topViewCanvas).setColorTarget_Basso(coloreBasso);
-                ((Drill_TopView) topViewCanvas).setColorTarget_Alto(coloreAlto);
-                ((Drill_TopView)topViewCanvas).setColorDashed_Line(coloreDashed);
-            }
+            ((Drill_TopView) topViewCanvas).setColorTarget_Basso(coloreBasso);
+            ((Drill_TopView) topViewCanvas).setColorTarget_Alto(coloreAlto);
+            ((Drill_TopView) topViewCanvas).setColorDashed_Line(coloreDashed);
         }
-
-
-
+        if (isDrilling) {
+            ((Drill_Bubble) bubbleCanvas).setCrossOnly(false); // voglio freccia SEMPRE
+            setIndicator();
+        } else {
+            ((Drill_Bubble) bubbleCanvas).setCrossOnly(PointService.okStart); // se vuoi “READY”
+        }
 
 
         mastHDT = My_LocationCalc.calcBearingXY(
@@ -630,9 +454,9 @@ public class Drill_Activity extends BaseClass {
             flip = flip % 20;
         }
         if (DataSaved.Selected_Point3D_Drill != null) {
-            String roww=DataSaved.Selected_Point3D_Drill.getRowId();
-            if(roww==null){
-                roww=" ";
+            String roww = DataSaved.Selected_Point3D_Drill.getRowId();
+            if (roww == null) {
+                roww = " ";
             }
             idpalo.setText("R:" + roww + " - " + "P:" + DataSaved.Selected_Point3D_Drill.getId());
             txthdt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getHeadingDeg()) + "°");
@@ -657,7 +481,7 @@ public class Drill_Activity extends BaseClass {
             double[] bit = toolEndCoord;
 
             boolean hasHead = (hxObj != null && hyObj != null && hzObj != null);
-            boolean hasEnd  = (exObj != null && eyObj != null && ezObj != null);
+            boolean hasEnd = (exObj != null && eyObj != null && ezObj != null);
 
             if (!hasHead) {
                 txtdepth.setText("__.__");
@@ -681,7 +505,7 @@ public class Drill_Activity extends BaseClass {
                         double dx = bit[0] - hx;
                         double dy = bit[1] - hy;
                         double dz = bit[2] - hz;
-                        double dist3D = Math.sqrt(dx*dx + dy*dy + dz*dz);
+                        double dist3D = Math.sqrt(dx * dx + dy * dy + dz * dz);
                         txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(dist3D)));
                     }
                 }
@@ -709,7 +533,7 @@ public class Drill_Activity extends BaseClass {
                     }
 
                     // lunghezza palo
-                    double L = Math.sqrt((ex-hx)*(ex-hx) + (ey-hy)*(ey-hy) + (ez-hz)*(ez-hz));
+                    double L = Math.sqrt((ex - hx) * (ex - hx) + (ey - hy) * (ey - hy) + (ez - hz) * (ez - hz));
 
                     // clamp per avere range fisico 0..L
                     double sClamped = clamp(s, 0.0, L);
@@ -858,7 +682,7 @@ public class Drill_Activity extends BaseClass {
                 double dx = bit[0] - hxObj;
                 double dy = bit[1] - hyObj;
                 double dz = bit[2] - hzObj;
-                double dist3D = Math.sqrt(dx*dx + dy*dy + dz*dz);
+                double dist3D = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
                 // target = 0 (vuoi arrivare esattamente sulla testa)
                 // qui però serve anche il segno per dire su/giù:
@@ -925,7 +749,7 @@ public class Drill_Activity extends BaseClass {
                 return;
             }
 
-            double L = Math.sqrt((exObj-hxObj)*(exObj-hxObj) + (eyObj-hyObj)*(eyObj-hyObj) + (ezObj-hzObj)*(ezObj-hzObj));
+            double L = Math.sqrt((exObj - hxObj) * (exObj - hxObj) + (eyObj - hyObj) * (eyObj - hyObj) + (ezObj - hzObj) * (ezObj - hzObj));
             double sClamped = clamp(s, 0.0, L);
             double remainingAxis = L - sClamped;
 
@@ -1025,6 +849,7 @@ public class Drill_Activity extends BaseClass {
     private static boolean isFinite(double v) {
         return !Double.isNaN(v) && !Double.isInfinite(v);
     }
+
     private static double distAlongAxisFromHead(
             double[] bit,  // [E,N,Z]
             double hx, double hy, double hz,
@@ -1034,7 +859,7 @@ public class Drill_Activity extends BaseClass {
         double ay = ey - hy;
         double az = ez - hz;
 
-        double L = Math.sqrt(ax*ax + ay*ay + az*az);
+        double L = Math.sqrt(ax * ax + ay * ay + az * az);
         if (L < 1e-9) return Double.NaN;
 
         // versore asse
@@ -1048,14 +873,180 @@ public class Drill_Activity extends BaseClass {
         double bz = bit[2] - hz;
 
         // proiezione scalare (metri lungo asse, 0=head, L=end)
-        return (bx*ux + by*uy + bz*uz);
+        return (bx * ux + by * uy + bz * uz);
     }
 
     private static double clamp(double v, double min, double max) {
         return Math.max(min, Math.min(max, v));
     }
 
+    private void setBubble(double viewHeading) {
+        /// bubble
+        // --------------------
+// BUBBLE (unica UI sempre uguale)
+// cambia solo input: errE/errN + testo + colori + triangoli
+// --------------------
+        Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
 
+
+// drilling overlay (croce rotante) SOLO come overlay grafico
+        if (isDrilling) {
+            rotationCont = (rotationCont + 1) % 360;
+            ((Drill_Bubble) bubbleCanvas).setDrillingMode(true, rotationCont);
+        } else {
+            rotationCont = 0;
+            ((Drill_Bubble) bubbleCanvas).setDrillingMode(false, 0);
+        }
+
+// Se non ho selezione -> reset bubble
+        if (sel == null || sel.getHeadX() == null || sel.getHeadY() == null) {
+            ((Drill_Bubble) bubbleCanvas).setCenterDistance("???");
+            ((Drill_Bubble) bubbleCanvas).setPlanError(0, 0);
+            ((Drill_Bubble) bubbleCanvas).setHeadingDeg(viewHeading);
+            ((Drill_Bubble) bubbleCanvas).setTriangles(false, false, false, false);
+            // colori neutri
+            ((Drill_Bubble) bubbleCanvas).setColors(
+                    getColor(R.color.rosso_sfondo_scuro),
+                    MyColorClass.colorSfondo,
+                    getColor(R.color.rosso_sfondo_scuro),
+                    MyColorClass.colorConstraint,
+                    getColor(R.color.rosso_sfondo_scuro)
+            );
+        } else {
+
+            // verticale se tilt progetto < 1°
+            double tiltProj = (sel.getTilt() != null) ? sel.getTilt() : 0.0;
+            boolean isVertical = tiltProj < 1.0;
+
+            boolean hasEndXY = (sel.getEndX() != null && sel.getEndY() != null);
+            boolean hasEndXYZ = (sel.getEndX() != null && sel.getEndY() != null && sel.getEndZ() != null
+                    && sel.getHeadZ() != null);
+
+            double bitX = toolEndCoord[0];
+            double bitY = toolEndCoord[1];
+
+            double headX = sel.getHeadX();
+            double headY = sel.getHeadY();
+
+            // 1) ERRORE (errE/errN) = VETTORE DI CORREZIONE NEL MONDO
+            double errE, errN;
+
+            if (!isDrilling) {
+                // ---- NAVIGAZIONE / START ----
+                if (!isVertical) {
+                    // palo inclinato -> guida verso TESTA
+                    errE = headX - bitX;
+                    errN = headY - bitY;
+                } else {
+                    // palo verticale -> guida verso ASSE (se possibile) altrimenti verso testa
+                    if (hasEndXY) {
+                        PlanError.Result per = PlanError.calcPlanErrorToAxisXY(
+                                bitX, bitY,
+                                headX, headY,
+                                sel.getEndX(), sel.getEndY(),
+                                false
+                        );
+                        errE = per.projE - bitX;
+                        errN = per.projN - bitY;
+                    } else {
+                        errE = headX - bitX;
+                        errN = headY - bitY;
+                    }
+                }
+            } else {
+                // ---- DRILLING ---- guida SEMPRE verso ASSE (punto sull’asse alla quota bit)
+                if (hasEndXYZ) {
+                    double[] qpos = projectPointOnAxis3D(
+                            toolEndCoord[0], toolEndCoord[1], toolEndCoord[2],
+                            sel.getHeadX(), sel.getHeadY(), sel.getHeadZ(),
+                            sel.getEndX(), sel.getEndY(), sel.getEndZ()
+                    );
+                    errE = qpos[0] - bitX;
+                    errN = qpos[1] - bitY;
+                } else if (hasEndXY) {
+                    PlanError.Result per = PlanError.calcPlanErrorToAxisXY(
+                            bitX, bitY,
+                            headX, headY,
+                            sel.getEndX(), sel.getEndY(),
+                            false
+                    );
+                    errE = per.projE - bitX;
+                    errN = per.projN - bitY;
+                } else {
+                    // fallback
+                    errE = headX - bitX;
+                    errN = headY - bitY;
+                }
+            }
+
+            ((Drill_Bubble) bubbleCanvas).setPlanError(errE, errN);
+
+            // 2) HEADING della vista (stesso sia nav che drill)
+            // (IMPORTANTE: niente radianti, solo gradi 0..360)
+            ((Drill_Bubble) bubbleCanvas).setHeadingDeg(viewHeading);
+
+            // 3) TESTO CENTRALE
+            if (!isDrilling && PointService.okStart) {
+                ((Drill_Bubble) bubbleCanvas).setCenterDistance("READY");
+            } else {
+                double dShown;
+                if (isDrilling) {
+                    // durante drilling mostri SEMPRE dist da asse
+                    dShown = PointService.distAxis;
+                } else {
+                    // in navigazione: testa se inclinato, asse se verticale
+                    dShown = (!isVertical) ? PointService.distXYToHead : PointService.distAxis;
+                }
+                ((Drill_Bubble) bubbleCanvas).setCenterDistance(
+                        Double.isFinite(dShown) ? Utils.readUnitOfMeasureLITE(String.valueOf(dShown)) : "???"
+                );
+            }
+
+            // 4) TRIANGOLI: sì, tienili sempre (anche palo verticale = “in bolla”)
+            ((Drill_Bubble) bubbleCanvas).setTriangles(
+                    PointService.FrecciaUP,
+                    PointService.FrecciaLEFT,
+                    PointService.FrecciaDOWN,
+                    PointService.FrecciaRIGHT
+            );
+
+            // 5) COLORI
+            // ring = okTilt? verde : rosso
+            int ringColorLocal = PointService.okTilt ? getColor(R.color.verde_sfondo_scuro)
+                    : getResources().getColor(R.color.bg_sfsred);
+
+            // arrowColor = in base alla distanza che stai mostrando (dShown), non pe[2] a caso
+            double dForColor = isDrilling ? PointService.distAxis : ((!isVertical) ? PointService.distXYToHead : PointService.distAxis);
+
+            int arrowColorLocal;
+            if (!Double.isFinite(dForColor)) {
+                arrowColorLocal = getColor(R.color.rosso_sfondo_scuro);
+            } else if (dForColor <= DataSaved.Drill_tolleranza_XY) {
+                arrowColorLocal = getColor(R.color.verde_sfondo_scuro);
+            } else if (dForColor < 1.0) {
+                arrowColorLocal = getColor(R.color.arancio_sfondo_scuro);
+            } else {
+                arrowColorLocal = getColor(R.color.rosso_sfondo_scuro);
+            }
+
+            int triColorLocal = (DataSaved.temaSoftware == 0) ? Color.YELLOW : Color.BLUE;
+
+            // FIX IMPORTANTISSIMO: ordine corretto setColors(ring, in, arrow, text, tri)
+            ((Drill_Bubble) bubbleCanvas).setColors(
+                    ringColorLocal,
+                    arrowColorLocal,
+                    MyColorClass.colorSfondo,
+                    MyColorClass.colorConstraint,
+                    triColorLocal
+            );
+
+            // 6) NON nascondere mai la freccia durante drilling
+            ((Drill_Bubble) bubbleCanvas).setCrossOnly(false);
+        }
+
+
+        //end bubble
+    }
 
 
 }

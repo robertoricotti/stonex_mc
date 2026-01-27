@@ -11,8 +11,8 @@ public class DrawDXF_Drill_Point {
     public static void draw(Canvas canvas, Paint paint, Point3D_Drill point,
                             float bucketX, float bucketY,
                             double bucketEst, double bucketNord,
-                            float scala, int colorIgnored, double rotationAngle,
-                            boolean txt) {
+                            float scala, double rotationAngle,
+                            boolean txt,float uiDeg) {
 
         if (point == null) return;
         if (point.getHeadX() == null || point.getHeadY() == null) return;
@@ -136,6 +136,7 @@ public class DrawDXF_Drill_Point {
 
         // 3) Testo: SEMPRE se txt == true (anche senza fondo)
         if (txt) {
+            canvas.rotate(-uiDeg,headX,headY);
             String testo = point.getRowId() + "-" + point.getId();
             if (point.getRowId() == null) {
                 testo = point.getId();
@@ -144,6 +145,7 @@ public class DrawDXF_Drill_Point {
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(MyColorClass.colorConstraint);
             canvas.drawText(testo, headX + 3f, headY - 3f, paint);
+            canvas.rotate(uiDeg,headX,headY);
         }
 
         paint.setStrokeWidth(10f);
@@ -154,7 +156,7 @@ public class DrawDXF_Drill_Point {
                                     float bucketX, float bucketY,
                                     double bucketEst, double bucketNord,
                                     float scala, double rotationAngle,
-                                    boolean txt, double size) {
+                                    boolean txt, double size,float uiDeg) {
 
         if (point == null) return;
         if (point.getHeadX() == null || point.getHeadY() == null) return;
@@ -221,16 +223,7 @@ public class DrawDXF_Drill_Point {
             paint.setStrokeWidth(Math.max(1f, (float) (0.04 * scala)));
             canvas.drawPoint(headX, headY, paint);
             if (txt) {
-                float offX = 6f;
-                float offY = 6f;
-                String testo = point.getRowId() + "-" + point.getId();
-
-                paint.setTextSize(28);
-                paint.setStyle(Paint.Style.FILL);
-                paint.setColor(MyColorClass.colorConstraint);
-                canvas.drawText(testo, headX + offX, headY - offY, paint);
-            }
-            if (txt) {
+                canvas.rotate(-uiDeg,headX,headY);
                 float offX = 6f;
                 float offY = 6f;
                 String testo = point.getRowId() + "-" + point.getId();
@@ -241,6 +234,7 @@ public class DrawDXF_Drill_Point {
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(MyColorClass.colorConstraint);
                 canvas.drawText(testo, headX + offX, headY - offY, paint);
+                canvas.rotate(uiDeg,headX,headY);
             }
             return;
         }
@@ -261,6 +255,7 @@ public class DrawDXF_Drill_Point {
             paint.setColor(blueStroke);
             canvas.drawCircle(headX, headY, rHead, paint);
             if (txt) {
+                canvas.rotate(-uiDeg,headX,headY);
                 float offX = 6f;
                 float offY = 6f;
                 String testo = point.getRowId() + "-" + point.getId();
@@ -271,6 +266,7 @@ public class DrawDXF_Drill_Point {
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(MyColorClass.colorConstraint);
                 canvas.drawText(testo, headX + offX, headY - offY, paint);
+                canvas.rotate(uiDeg,headX,headY);
             }
             return;
         }
@@ -366,7 +362,9 @@ public class DrawDXF_Drill_Point {
         paint.setTextSize(28);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(MyColorClass.colorConstraint);
+        canvas.rotate(-uiDeg,headX,headY);
         canvas.drawText(testo, headX + offX, headY - offY, paint);
+        canvas.rotate(uiDeg,headX,headY);
 
 
         paint.setStrokeWidth(10f); // ripristino come fai tu altrove

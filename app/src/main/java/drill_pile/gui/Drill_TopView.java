@@ -25,8 +25,10 @@ import services.PointService;
 
 
 public class Drill_TopView extends View {
+    private float uiRotDeg = 0f;
     private android.graphics.DashPathEffect dashEffect;
     private float lastDashScala = -1f;
+    private float targetScale=1.0f;
     private final android.graphics.Matrix drawMatrix = new android.graphics.Matrix();
     private final android.graphics.Matrix invDrawMatrix = new android.graphics.Matrix();
     private final float[] tmpPt = new float[2];
@@ -46,6 +48,7 @@ public class Drill_TopView extends View {
 
     // salva parametri usati per la cache (così eviti rebuild inutili)
     private float lastScaleFactor = -1;
+    private float lastUiRotDeg=Float.NaN;
     private float lastOffsetX = Float.NaN, lastOffsetY = Float.NaN;
     private double lastRot = Double.NaN;
     private double lastToolE = Double.NaN, lastToolN = Double.NaN;
@@ -73,6 +76,7 @@ public class Drill_TopView extends View {
     private int colorTarget_Basso=Color.YELLOW;
     private int colorDashed_Line=Color.CYAN;
     private boolean isBitOnHoleHead=false;
+    private int coloreCroce=Color.YELLOW;
 
 
     public Drill_TopView(Context context) {
@@ -120,11 +124,18 @@ public class Drill_TopView extends View {
             float pivotY = getHeight() * 0.75f;
             float s = (float) DataSaved.scale_Factor3D;
 
-            drawMatrix.reset();
+
+            drawMatrix.reset(); // <<< FIX CRITICO
+            // 1) scala (zoom)
             drawMatrix.postScale(s, s, pivotX, pivotY);
+// 2) RUOTA TUTTA LA TOPVIEW per il display laterale
+//    (questa è la chiave)
+            drawMatrix.postRotate(uiRotDeg, pivotX, pivotY);
+
+// 3) pan
             drawMatrix.postTranslate(offsetX, offsetY);
 
-            // opzionale: prepara anche l’inversa (torna utile nel pick)
+// inversa per il picking
             invDrawMatrix.reset();
             drawMatrix.invert(invDrawMatrix);
 
@@ -150,18 +161,19 @@ public class Drill_TopView extends View {
 
             PointF toolScreen = new PointF(toolX, toolY);
             drawTarget(toolScreen, colorTarget_Basso,
-                    Math.max(18f, scala * 0.55f),
-                    Math.max(11f,  scala * 0.28f),
-                    Math.max(13f, scala * 0.38f),true
+                    Math.max(18f, scala * 0.55f)*targetScale,
+                    Math.max(11f,  scala * 0.28f)*targetScale,
+                    Math.max(13f, scala * 0.38f)*targetScale,
+                    true
             );
             paint.setStrokeWidth(Math.max(1f, scala * 0.002f));
             if(showCroce) {
-                paint.setColor(colorTarget_Basso);
-                paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f));
-                canvas.drawLine(toolX, toolY, toolX + 100f, toolY, paint);//destra
-                canvas.drawLine(toolX, toolY, toolX, toolY + 100f, paint);//dietro
-                canvas.drawLine(toolX, toolY, toolX - 100f, toolY, paint);//sinistra
-                canvas.drawLine(toolX, toolY, toolX, toolY - 100f, paint);//avanti
+                paint.setColor(coloreCroce);
+                paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f)*targetScale);
+                canvas.drawLine(toolX, toolY, toolX + 100f*targetScale, toolY, paint);//destra
+                canvas.drawLine(toolX, toolY, toolX, toolY + 100f*targetScale, paint);//dietro
+                canvas.drawLine(toolX, toolY, toolX - 100f*targetScale, toolY, paint);//sinistra
+                canvas.drawLine(toolX, toolY, toolX, toolY - 100f*targetScale, paint);//avanti
             }
 
 
@@ -170,9 +182,10 @@ public class Drill_TopView extends View {
             drawTarget(headScreen, colorTarget_Alto,
 
 
-                    Math.max(20f, scala * 0.55f),
-                    Math.max(0f, scala * 0.00f),
-                    Math.max(14f, scala * 0.4f),false
+                    Math.max(22f, scala * 0.65f)*targetScale,
+                    Math.max(0f, scala * 0.00f)*targetScale,
+                    Math.max(16f, scala * 0.5f)*targetScale,
+                    false
 
 
             );
@@ -232,8 +245,7 @@ public class Drill_TopView extends View {
                         toolEast,
                         toolNord,
                         scala,
-                        col,
-                        rotationAngle,true
+                        rotationAngle,true,uiRotDeg
                 );
             }
         } catch (Exception e) {
@@ -251,7 +263,7 @@ public class Drill_TopView extends View {
                 toolEast,
                 toolNord,
                 scala,
-                rotationAngle,true,size
+                rotationAngle,true,size,uiRotDeg
         );
     }
 
@@ -315,50 +327,42 @@ public class Drill_TopView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        // Gestisci lo zoom con il ScaleGestureDetector
+        // 1) sempre passare l’evento ai detector
         scaleGestureDetector.onTouchEvent(event);
-
-        // Gestisci il pan con il GestureDetector
         gestureDetector.onTouchEvent(event);
 
-        int action = event.getActionMasked();
-        int pointerIndex = event.findPointerIndex(activePointerId);
-
-        if (pointerIndex == -1) {
-            return true; // Nessun puntatore valido
-        }
-
-        float x = event.getX(pointerIndex);
-        float y = event.getY(pointerIndex);
+        // 2) gestisci activePointerId in modo corretto (senza bloccare)
+        final int action = event.getActionMasked();
 
         switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                lastTouchX = x;
-                lastTouchY = y;
+            case MotionEvent.ACTION_DOWN: {
                 activePointerId = event.getPointerId(0);
+                lastTouchX = event.getX(0);
+                lastTouchY = event.getY(0);
                 break;
+            }
 
-
-
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-
-                activePointerId = INVALID_POINTER_ID;
-                break;
-
-            case MotionEvent.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_POINTER_UP: {
                 int pointerId = event.getPointerId(event.getActionIndex());
                 if (pointerId == activePointerId) {
-                    int newPointerIndex = event.getPointerCount() == 2 ? 1 : 0;
-                    activePointerId = event.getPointerId(newPointerIndex);
-                    lastTouchX = event.getX(newPointerIndex);
-                    lastTouchY = event.getY(newPointerIndex);
+                    int newIndex = (event.getPointerCount() > 1) ? (event.getActionIndex() == 0 ? 1 : 0) : 0;
+                    activePointerId = event.getPointerId(newIndex);
+                    lastTouchX = event.getX(newIndex);
+                    lastTouchY = event.getY(newIndex);
                 }
                 break;
+            }
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL: {
+                activePointerId = INVALID_POINTER_ID;
+                break;
+            }
         }
 
         return true;
     }
+
 
 
     // Implementazione della classe interna per il trascinamento
@@ -473,6 +477,9 @@ public class Drill_TopView extends View {
     public void setBitOnHoleHead(boolean isBitOnHoleHead){
         this.isBitOnHoleHead=isBitOnHoleHead;
     }
+    public void setColoreCroce(int coloreCroce){
+        this.coloreCroce=coloreCroce;
+    }
     // --- Picking cache ---
     private static class ScreenPt {
         float x, y;
@@ -491,10 +498,11 @@ public class Drill_TopView extends View {
                 lastScaleFactor != DataSaved.scale_Factor3D ||
                         lastRot != rotationAngle ||
                         lastToolE != toolEast ||
-                        lastToolN != toolNord;
+                        lastToolN != toolNord ||
+                        lastUiRotDeg != uiRotDeg;     // <--- AGGIUNGI;
 
         if (!pickCacheDirty && !changed) return;
-
+        lastUiRotDeg = uiRotDeg;
         pickCacheDirty = false;
         lastScaleFactor = (float)DataSaved.scale_Factor3D;
         lastOffsetX = offsetX;
@@ -717,7 +725,19 @@ public class Drill_TopView extends View {
         return !(Math.abs(hh) < eps || Math.abs(hh - 360.0) < eps);
     }
 
+    public void setTargetScale(float targetScale) {
+        this.targetScale = targetScale;
+    }
+    public void setUiRotationDeg(float deg) {
+        uiRotDeg = ((deg % 360f) + 360f) % 360f;
 
+        // consigliato: reset pan per non ritrovarti fuori schermo
+        offsetX = 0f;
+        offsetY = 0f;
+
+        pickCacheDirty = true;
+        invalidate();
+    }
 }
 
 

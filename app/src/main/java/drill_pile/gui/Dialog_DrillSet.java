@@ -31,7 +31,8 @@ import utils.Utils;
 public class Dialog_DrillSet {
     Activity activity;
     public Dialog dialog;
-    ImageView close;
+    ImageView close,toLeft,toWard,toRight;
+    int tempScreen,finalScreen;
     TextView angleTit,distTit;
     EditText tv1,tv2,tv3,tv4,tv5;
     CustomNumberDialog customNumberDialog;
@@ -45,6 +46,7 @@ public class Dialog_DrillSet {
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
     }
     public void show() {
+        finalScreen=-2;
         dialog.create();
         dialog.setContentView(R.layout.dialog_drillset);
         dialog.setCancelable(true);
@@ -63,8 +65,8 @@ public class Dialog_DrillSet {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 0.65);
-        int height = (int) (displayMetrics.heightPixels * 0.85);
+        int width = (int) (displayMetrics.widthPixels * 0.75);
+        int height = (int) (displayMetrics.heightPixels * 0.90);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
         findView();
@@ -90,9 +92,36 @@ public class Dialog_DrillSet {
         tv3.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_Z)));
         tv4.setText((String.valueOf(DataSaved.Drill_tolleranza_Angolo)));
         tv5.setText((String.valueOf(DataSaved.Drill_tolleranza_HDT)));
+        toLeft=dialog.findViewById(R.id.screetoLeft);
+        toWard=dialog.findViewById(R.id.screetoTop);
+        toRight=dialog.findViewById(R.id.screetoRight);
+
+        tempScreen=DataSaved.Drill_Screen;
+        updateImage(tempScreen);
+
+
 
     }
     private void onClick(){
+        toLeft.setOnClickListener(view -> {
+            tempScreen=-1;
+            DataSaved.Drill_Screen=-1;
+            finalScreen=tempScreen;
+            updateImage(tempScreen);
+        });
+        toWard.setOnClickListener(view -> {
+            tempScreen=0;
+            DataSaved.Drill_Screen=0;
+            finalScreen=tempScreen;
+            updateImage(tempScreen);
+        });
+        toRight.setOnClickListener(view -> {
+            tempScreen=1;
+            DataSaved.Drill_Screen=1;
+            finalScreen=tempScreen;
+            updateImage(tempScreen);
+        });
+
         close.setOnClickListener(view -> {
             save();
             dialog.dismiss();
@@ -158,10 +187,37 @@ public class Dialog_DrillSet {
             MyData.push("Drill_tolleranza_Z", String.valueOf(DataSaved.Drill_tolleranza_Z));
             MyData.push("Drill_tolleranza_Angolo", String.valueOf(DataSaved.Drill_tolleranza_Angolo));
             MyData.push("Drill_tolleranza_HDT", String.valueOf(DataSaved.Drill_tolleranza_HDT));
+            if(tempScreen==finalScreen) {
+                MyData.push("Drill_Screen", String.valueOf(DataSaved.Drill_Screen));
+                new CustomToast(activity,"Restart Working Page").show_alert();
+            }
         } catch (Exception e) {
            new CustomToast(activity,"Error...").show_error();
         }
 
+    }
+
+    private void updateImage(int screen){
+        switch (screen){
+            case -1:
+                toLeft.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
+                toWard.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                toRight.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                break;
+
+            case 0:
+                toLeft.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                toWard.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
+                toRight.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                break;
+
+            case 1:
+                toLeft.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                toWard.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                toRight.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
+                break;
+
+        }
     }
 
 }

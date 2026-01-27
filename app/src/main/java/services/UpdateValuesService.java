@@ -760,6 +760,7 @@ public class UpdateValuesService extends Service {
                 String deadbandFA = MyData.get_String("Deadband_FlatAngle");
                 String pivotHeightAlarm = MyData.get_String("Pivot_Height_Alarm");
                 String unitOfMeasure = MyData.get_String("Unit_Of_Measure");
+                String Drill_Screen = MyData.get_String("Drill_Screen");
                 String offsetHdt = MyData.get_String("Offset_Hdt");
 
                 String volumeAudioSystem = MyData.get_String("volumeAudioSystem");
@@ -889,6 +890,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (unitOfMeasure == null) {
                         MyData.push("Unit_Of_Measure", "1");
+                    }
+                    if (Drill_Screen == null) {
+                        MyData.push("Drill_Screen", "0");
                     }
                     if (laser_height_Zero == null) {
                         MyData.push("Laser_Height_Zero", "0");
@@ -1699,7 +1703,12 @@ public class UpdateValuesService extends Service {
                 try {
                     DataSaved.Unit_Of_Measure = MyData.get_Int("Unit_Of_Measure");
                 } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di offsetHDT: " + e.getMessage());
+                    Log.e("Error", "Errore nell'inizializzazione di Unit_Of_Measure: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Drill_Screen = MyData.get_Int("Drill_Screen");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Drill_Screen: " + e.getMessage());
                 }
 
                 try {
