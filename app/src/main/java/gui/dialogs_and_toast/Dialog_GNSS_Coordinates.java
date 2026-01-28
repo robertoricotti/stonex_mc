@@ -47,7 +47,7 @@ import utils.MyDeviceManager;
 import utils.Utils;
 
 public class Dialog_GNSS_Coordinates extends BaseClass {
-    TextView textViewPW;
+    TextView textViewPW,datetim;
     Dialog_Edit_Zeta_DXF dialogEditZetaDxf;
     ProgressBar progressBar;
     Activity activity;
@@ -108,6 +108,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         cqmeno = alertDialog.findViewById(R.id.cqmeno);//
         tvCq = alertDialog.findViewById(R.id.tvcq);//
         txCon = alertDialog.findViewById(R.id.txconnected);//
+        datetim=alertDialog.findViewById(R.id.datetim);
 
         serialCon = alertDialog.findViewById(R.id.serialCon);
         txtbennasx = alertDialog.findViewById(R.id.txtbennasx);
@@ -359,6 +360,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                datetim.setText(NmeaListener.date_time_iso);
                 // Update coord TextView with new coordinates
                 try {
                     if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){

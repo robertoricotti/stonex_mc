@@ -6,13 +6,23 @@ import static packexcalib.gnss.CRS_Strings._UTM;
 
 import android.util.Log;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 
 
 public class NmeaListener {
+    public static String date_time_dmy = "";
+    public static String date_time_ymd = "";
+    public static String date_time_iso = "";
+    public static final int FORMAT_DDMMYYYY = 0;
+    public static final int FORMAT_YYYYMMDD = 1;
+    public static final int FORMAT_ISO = 2;
     static CoordinateXYZ coordinateXYZLLQ, coordinateXYZJKT, coordinateXYZ_1, coordinateXYZ, coord, coordUTM;
     public static double tmpQuotaUTM;
     static double tmpQuotaLOC;
@@ -36,7 +46,7 @@ public class NmeaListener {
     public static double Nord1, Est1, Quota1, mch_Orientation, mch_Hdt, mch_Hdt_1, roof_Orientation;
     public static String ggaNord, ggaEast, ggaNoS, ggaWoE, ggaZ1, ggaZ2, ggaSat, ggaDop, ggaQuality, ggaRtk, fix1;//String data from  GPS1
     static boolean hdtError = false;
-    static  Can318PositionDecoder posDecoder = new Can318PositionDecoder();
+    static Can318PositionDecoder posDecoder = new Can318PositionDecoder();
     /*
     NMEA STX Below
      */
@@ -57,6 +67,7 @@ public class NmeaListener {
             if (DataSaved.my_comPort == 4) {//momentaneamente escluso
                 NmeaInput = NMEA0183.split(",");
                 switch (NmeaInput[0]) {
+
 
                     case "$PTNL":
                         try {
@@ -240,6 +251,12 @@ public class NmeaListener {
                             break;
                         case "$GPRMC":
                         case "$GNRMC":
+                            if (DataSaved.my_comPort != 0){
+                                date_time_dmy = dateTimeFromRMC(NmeaInput[1], FORMAT_DDMMYYYY);
+                                date_time_ymd = dateTimeFromRMC(NmeaInput[1], FORMAT_YYYYMMDD);
+                                date_time_iso = dateTimeFromRMC(NmeaInput[1], FORMAT_ISO);
+
+                            }
                             break;
 
 
@@ -317,6 +334,11 @@ public class NmeaListener {
                 VRMS_ = String.format("%.3f", PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[2], data[3]}) * 0.001).replace(",", ".");
                 tmpGeoidSeparator = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[4], data[5], data[6], data[7]}) * 0.001;
                 break;
+            case 0x18FF0B10:
+                date_time_dmy = parseCanDateTime(data, FORMAT_DDMMYYYY);
+                date_time_ymd = parseCanDateTime(data, FORMAT_YYYYMMDD);
+                date_time_iso = parseCanDateTime(data, FORMAT_ISO);
+                break;
 
             case 0x18FF0D10:
                 //LOCAL Z
@@ -337,7 +359,7 @@ public class NmeaListener {
                 coord = Deg2UTM.trasform(tmpNordLOC, tmpEstLOC, tmpQuotaLOC, _LOCAL_COORDINATES_FROM_GNSS);
                 Nord1 = coord.getNorthing();
                 Est1 = coord.getEasting();
-                Quota1 = DataSaved.offset_Z_antenna + coord.getQuota() ;
+                Quota1 = DataSaved.offset_Z_antenna + coord.getQuota();
                 break;
 
             case _UTM:
@@ -388,27 +410,27 @@ public class NmeaListener {
                     fix1 = "Inv";
                     break;
                 case 1:
-                    ggaQuality="1";
-                    fix1="SINGLE";
+                    ggaQuality = "1";
+                    fix1 = "SINGLE";
                     break;
                 case 2:
-                    ggaQuality="2";
-                    fix1="DGPS";
+                    ggaQuality = "2";
+                    fix1 = "DGPS";
                     break;
                 case 3:
-                    ggaQuality="4";
-                    fix1="FIX";
+                    ggaQuality = "4";
+                    fix1 = "FIX";
                     break;
                 case 4:
-                    ggaQuality="5";
-                    fix1="FLOAT";
+                    ggaQuality = "5";
+                    fix1 = "FLOAT";
                     break;
 
             }
-            ggaSat=String.valueOf(o.satUsed);
-            if(Double.isNaN(o.correctionAge)){
+            ggaSat = String.valueOf(o.satUsed);
+            if (Double.isNaN(o.correctionAge)) {
                 ggaRtk = "0.0";
-            }else {
+            } else {
                 ggaRtk = String.valueOf(o.correctionAge);
             }
 
@@ -436,9 +458,9 @@ public class NmeaListener {
                     coord = Deg2UTM.trasform(mLat_1, mLon_1, tmpQuotaUTM, _NONE);
                     Nord1 = coord.getNorthing();
                     Est1 = coord.getEasting();
-                    Quota1 = DataSaved.offset_Z_antenna + coord.getQuota() ;
-                    mChar=coord.getLetter();
-                    mZone=coord.getZone();
+                    Quota1 = DataSaved.offset_Z_antenna + coord.getQuota();
+                    mChar = coord.getLetter();
+                    mZone = coord.getZone();
 
                     break;
 
@@ -447,17 +469,17 @@ public class NmeaListener {
                     coordUTM = Deg2UTM.trasform(mLat_1, mLon_1, tmpQuotaUTM, _UTM);
                     Nord1 = coordUTM.getNorthing();
                     Est1 = coordUTM.getEasting();
-                    Quota1 = DataSaved.offset_Z_antenna + coordUTM.getQuota() ;
-                    mChar=coordUTM.getLetter();
-                    mZone=coordUTM.getZone();
+                    Quota1 = DataSaved.offset_Z_antenna + coordUTM.getQuota();
+                    mChar = coordUTM.getLetter();
+                    mZone = coordUTM.getZone();
                     break;
                 default:
                     coordinateXYZ = Deg2UTM.trasform(mLat_1, mLon_1, tmpQuotaUTM, DataSaved.S_CRS);
                     Nord1 = coordinateXYZ.getNorthing();
                     Est1 = coordinateXYZ.getEasting();
-                    Quota1 = DataSaved.offset_Z_antenna + coordinateXYZ.getQuota() ;
-                    mChar=coordinateXYZ.getLetter();
-                    mZone=coordinateXYZ.getZone();
+                    Quota1 = DataSaved.offset_Z_antenna + coordinateXYZ.getQuota();
+                    mChar = coordinateXYZ.getLetter();
+                    mZone = coordinateXYZ.getZone();
                     break;
 
             }
@@ -583,5 +605,160 @@ public class NmeaListener {
         }
     }
 
+    public static String parseCanDateTime(byte[] canData, int formatType) {
+
+        if (canData == null || canData.length != 8) {
+            throw new IllegalArgumentException("CAN data must be exactly 8 bytes");
+        }
+
+        // ---- DATE (d0..d3) little-endian U32 ----
+        long dateValue = ByteBuffer
+                .wrap(canData, 0, 4)
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .getInt() & 0xFFFFFFFFL;
+
+        int day = (int) (dateValue / 1_000_000);
+        int month = (int) ((dateValue / 10_000) % 100);
+        int year = (int) (dateValue % 10_000);
+
+        // ---- TIME (d4..d7) little-endian U32 ----
+        long timeValue = ByteBuffer
+                .wrap(canData, 4, 4)
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .getInt() & 0xFFFFFFFFL;
+
+        int hour = (int) (timeValue / 10_000_000);
+        int minute = (int) ((timeValue / 100_000) % 100);
+        int second = (int) ((timeValue / 1_000) % 100);
+        int millisecond = (int) (timeValue % 1_000);
+
+        // ---- LocalDateTime UTC ----
+        LocalDateTime dateTime = LocalDateTime.of(
+                year, month, day,
+                hour, minute, second,
+                millisecond * 1_000_000
+        );
+
+        DateTimeFormatter formatter;
+
+        switch (formatType) {
+            case FORMAT_YYYYMMDD:
+                formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                break;
+
+            case FORMAT_ISO:
+                formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                break;
+
+            case FORMAT_DDMMYYYY:
+            default:
+                formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS");
+                break;
+        }
+
+        return dateTime.format(formatter);
+    }
+
+    public static String dateTimeFromZDA(String zda, int formatType) {
+
+        if (zda == null || !zda.contains("ZDA")) {
+            throw new IllegalArgumentException("Invalid ZDA sentence");
+        }
+
+        String[] f = zda.split(",");
+
+        if (f.length < 5 || f[1].isEmpty()) {
+            throw new IllegalArgumentException("ZDA missing date/time");
+        }
+
+        // ---- TIME hhmmss.sss ----
+        String t = f[1];
+
+        int hour   = Integer.parseInt(t.substring(0, 2));
+        int minute = Integer.parseInt(t.substring(2, 4));
+        int second = Integer.parseInt(t.substring(4, 6));
+
+        int millisecond = 0;
+        if (t.contains(".")) {
+            String ms = t.substring(t.indexOf('.') + 1);
+            millisecond = Integer.parseInt(String.format("%-3s", ms).replace(' ', '0'));
+        }
+
+        // ---- DATE ----
+        int day   = Integer.parseInt(f[2]);
+        int month = Integer.parseInt(f[3]);
+        int year  = Integer.parseInt(f[4]);
+
+        LocalDateTime dateTime = LocalDateTime.of(
+                year, month, day,
+                hour, minute, second,
+                millisecond * 1_000_000
+        );
+
+        return formatDateTime(dateTime, formatType);
+    }
+    public static String dateTimeFromRMC(String rmc, int formatType) {
+
+        if (rmc == null || !rmc.contains("RMC")) {
+            throw new IllegalArgumentException("Invalid RMC sentence");
+        }
+
+        String[] f = rmc.split(",");
+
+        if (f.length < 10 || !"A".equals(f[2])) {
+            throw new IllegalArgumentException("RMC missing valid date/time");
+        }
+
+        // ---- TIME hhmmss.sss ----
+        String t = f[1];
+
+        int hour   = Integer.parseInt(t.substring(0, 2));
+        int minute = Integer.parseInt(t.substring(2, 4));
+        int second = Integer.parseInt(t.substring(4, 6));
+
+        int millisecond = 0;
+        if (t.contains(".")) {
+            String ms = t.substring(t.indexOf('.') + 1);
+            millisecond = Integer.parseInt(String.format("%-3s", ms).replace(' ', '0'));
+        }
+
+        // ---- DATE ddmmyy ----
+        String d = f[9];
+
+        int day   = Integer.parseInt(d.substring(0, 2));
+        int month = Integer.parseInt(d.substring(2, 4));
+        int year  = 2000 + Integer.parseInt(d.substring(4, 6));
+
+        LocalDateTime dateTime = LocalDateTime.of(
+                year, month, day,
+                hour, minute, second,
+                millisecond * 1_000_000
+        );
+
+        return formatDateTime(dateTime, formatType);
+    }
+    private static String formatDateTime(
+            LocalDateTime dateTime,
+            int formatType
+    ) {
+        DateTimeFormatter formatter;
+
+        switch (formatType) {
+            case FORMAT_YYYYMMDD:
+                formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                break;
+
+            case FORMAT_ISO:
+                formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                break;
+
+            case FORMAT_DDMMYYYY:
+            default:
+                formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS");
+                break;
+        }
+
+        return dateTime.format(formatter);
+    }
 
 }
