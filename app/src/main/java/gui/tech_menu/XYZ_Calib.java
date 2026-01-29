@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
@@ -32,7 +33,7 @@ import services.UpdateValuesService;
 import utils.MyData;
 import utils.Utils;
 
-public class XYZ_Calib extends AppCompatActivity {
+public class XYZ_Calib extends BaseClass {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isRepeating = false;
 

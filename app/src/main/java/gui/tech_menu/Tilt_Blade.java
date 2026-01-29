@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import packexcalib.exca.DataSaved;
@@ -25,7 +26,7 @@ import services.UpdateValuesService;
 import utils.MyData;
 import utils.MyMCUtils;
 
-public class Tilt_Blade extends AppCompatActivity {
+public class Tilt_Blade extends BaseClass {
     Button setPitch,setRoll;
     ImageView save,cancex;
     int indexMachineSelected, bucketMountPos;

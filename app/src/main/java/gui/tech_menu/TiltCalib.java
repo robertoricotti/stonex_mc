@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomToast;
@@ -32,7 +33,7 @@ import services.UpdateValuesService;
 import utils.MyData;
 import utils.Utils;
 
-public class TiltCalib extends AppCompatActivity {
+public class TiltCalib extends BaseClass {
     ImageView save, exit;
 
    ImageView bennaMeno,bennaPiu,bennaSelezionata;

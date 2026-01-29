@@ -6,8 +6,6 @@ import static gui.MyApp.isApollo;
 import static gui.MyApp.licenseType;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
-import static gui.tech_menu.DampingActivity.readFMI;
-import static gui.tech_menu.DampingActivity.readTSM;
 import static packexcalib.exca.DataSaved.GAIN_LEFT;
 import static packexcalib.exca.DataSaved.GAIN_RIGHT;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_DOZER;
@@ -35,12 +33,10 @@ import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
-import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.MC_2D;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
-import static utils.MyTypes.TSM_ACC;
-import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -60,7 +56,6 @@ import java.util.concurrent.TimeUnit;
 import cloud.WebSocketPlugin;
 import gui.MyApp;
 import gui.my_opengl.My3DActivity;
-import gui.tech_menu.DampingActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
@@ -71,10 +66,10 @@ import utils.MyMCUtils;
 
 
 public class CanSender extends Service {
-    public static byte GNSS_MSG=0x01;
+    public static byte GNSS_MSG = 0x01;
 
     //private long lastCall = 0;
-    public final static double MAX_SCALE=0.3;
+    public final static double MAX_SCALE = 0.3;
     static boolean sending;
     public static double QL, QC, QR;
     public static double GroundSlope;
@@ -212,8 +207,23 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
+            try {
+                if (isTech) {
+                    isTechCount++;
+                    if (isTechCount >= 600) {
+                        isTechCount = 0;
+                        isTech = false;//Tech LogIn dosabled after 5 minutes inside a Work Activity
+                        isTech2 = false;
+                    }
+                }
 
 
+            } catch (Exception ignored) {
+
+            }
+            if (DataSaved.isCanOpen == JOYSTICKS) {
+                return;
+            }
             try {
                 if (licenseType > MC_2D) {
                     switch (DataSaved.my_comPort) {
@@ -254,10 +264,10 @@ public class CanSender extends Service {
                                             break;
 
                                     }
-                                    if(DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)){
-                                        GNSS_MSG=0x03;
-                                    }else {
-                                        GNSS_MSG=0x01;
+                                    if (DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)) {
+                                        GNSS_MSG = 0x03;
+                                    } else {
+                                        GNSS_MSG = 0x01;
                                     }
 
 
@@ -322,10 +332,10 @@ public class CanSender extends Service {
 
                     }
                     DataSaved.gpsOk = false;
-                    if(DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)){
-                        GNSS_MSG=0x03;
-                    }else {
-                        GNSS_MSG=0x01;
+                    if (DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)) {
+                        GNSS_MSG = 0x03;
+                    } else {
+                        GNSS_MSG = 0x01;
                     }
 
 
@@ -335,20 +345,7 @@ public class CanSender extends Service {
             }
 
 
-            try {
-                if (isTech) {
-                    isTechCount++;
-                    if (isTechCount >= 600) {
-                        isTechCount = 0;
-                        isTech = false;//Tech LogIn dosabled after 5 minutes inside a Work Activity
-                        isTech2 = false;
-                    }
-                }
 
-
-            } catch (Exception e) {
-
-            }
 
         }
 
@@ -386,10 +383,9 @@ public class CanSender extends Service {
                                         (byte) 0xB0});
                     }
                 }
-            }else {
-                MyDeviceManager.CanWrite(true,0,0,2,new byte[]{1,0});
+            } else {
+                MyDeviceManager.CanWrite(true, 0, 0, 2, new byte[]{1, 0});
             }
-
             if (DataSaved.isCanOpen == 5) {
                 startCanopen++;
                 if (startCanopen == 2) {
@@ -402,9 +398,6 @@ public class CanSender extends Service {
                     startCanopen = 0;
                 }
             }
-
-
-
 
         }
 

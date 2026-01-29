@@ -7,6 +7,7 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
@@ -38,6 +39,9 @@ public class Sensors_Decoder {
     }
 
     public static void decode(int id, byte[] data) {
+        if(DataSaved.isCanOpen==JOYSTICKS){
+            return;
+        }
         try {
 
             if (DataSaved.isExtensionBoom > 0) {

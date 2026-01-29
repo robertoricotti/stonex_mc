@@ -11,11 +11,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 
-public class Nuova_XYZ_Calib extends AppCompatActivity {
+public class Nuova_XYZ_Calib extends BaseClass {
     int indexMachineSelected;
     int indexMeasure;
     CustomNumberDialog numberDialog;

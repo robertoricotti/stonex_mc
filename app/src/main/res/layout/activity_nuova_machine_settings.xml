@@ -277,7 +277,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
-                android:visibility="gone">
+                android:visibility="visible">
                 <CheckBox
                     android:id="@+id/ckMach"
                     android:layout_width="wrap_content"
@@ -389,6 +389,17 @@
                     android:textStyle="bold|italic"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ckVecchia" />
+                <CheckBox
+                    android:id="@+id/ckJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/_____cancel_text"
+                    android:text="DUAL THRUSTMASTER JOYSTICKS"
+                    android:textColor="@color/_____cancel_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ck6" />
 
                 <View
                     android:id="@+id/brake"
@@ -396,7 +407,7 @@
                     android:layout_height="1dp"
                     android:background="@color/_____cancel_text"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ck6" />
+                    app:layout_constraintTop_toBottomOf="@id/ckJ" />
 
                 <EditText
                     android:id="@+id/techInfo"

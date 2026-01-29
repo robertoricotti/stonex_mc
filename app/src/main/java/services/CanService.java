@@ -1,5 +1,6 @@
 package services;
 
+import static packexcalib.exca.DataSaved.gpsOk;
 import static packexcalib.exca.DataSaved.offsetH;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
@@ -8,6 +9,7 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
@@ -108,6 +110,24 @@ public class CanService extends Service {
     }
 
     public void OnCan(int channel, byte[] msg, int dlc, int id) {
+        if(DataSaved.isCanOpen==JOYSTICKS){
+            nmeaSTX_Disc = false;
+            frameDisc = false;
+            boom2Disc = false;
+            boom1Disc = false;
+            bucketDisc = false;
+            tiltDisc = false;
+            stickDisc = false;
+            frameOK = true;
+            boom1OK = true;
+            boom2OK = true;
+            stickOK = true;
+            bucketOK = true;
+            flagLaser = true;
+            tiltOK = true;
+
+            return;
+        }
 
 
         try {

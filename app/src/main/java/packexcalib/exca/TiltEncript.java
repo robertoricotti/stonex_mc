@@ -47,24 +47,24 @@ public class TiltEncript {
         return new double[]{pitch, roll};
 
     }
+
     public static double[] encriptTSM_Boom(byte[] data, int mount) {
         double norm, ax_norm, ay_norm, az_norm;
-        double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
-        short acc_x;
-        short acc_y;
-        short acc_z;
+        short acc_x;//x da CAN
+        short acc_y;//y da CAN
+        short acc_z;//z da CAN
         double pitch = 0, roll = 0;
-        acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});
+        acc_x = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0], data[1]});//d0+d1*256 con segno
         acc_y = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]});
         acc_z = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[4], data[5]});
         norm = Math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-        ax_norm = (double) acc_y / norm;
-        ay_norm = (double) acc_x / norm;
-        az_norm = (double) acc_z / norm;
+        ax_norm = (double) acc_y / norm;//normalizzazione
+        ay_norm = (double) acc_x / norm;//normalizzazione
+        az_norm = (double) acc_z / norm;//normalizzazione
         switch (mount) {
             case 1:
-                pitch = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;
-                roll=(-Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);
+                pitch = Math.atan2(ax_norm, ay_norm) * 180 / Math.PI;//Z non utilizzata
+                roll=(-Math.atan2(-az_norm, Math.sqrt(ax_norm * ax_norm + ay_norm * ay_norm)) * 180 / Math.PI);//Z dominante se degenera
                 break;
             case -1:
                 pitch = Math.atan2(ax_norm, -ay_norm) * 180 / Math.PI;

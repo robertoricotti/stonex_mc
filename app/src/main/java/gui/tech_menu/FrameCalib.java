@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomToast;
@@ -30,7 +31,7 @@ import utils.MyData;
 import utils.Utils;
 
 
-public class FrameCalib extends AppCompatActivity {
+public class FrameCalib extends BaseClass {
 
     private double mHdt;
     static double mOffsetHdt;

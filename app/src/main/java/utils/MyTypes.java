@@ -26,6 +26,7 @@ public class MyTypes {
     public static final int TSM_ACC=3;
     public static final int DEMO_BAG=5;
     public static final int DEVELOP_SIMUL=4;
+    public static final int JOYSTICKS=10;
 
 
     public static final int MC_1D=0;

@@ -30,11 +30,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomToast;
 import packexcalib.exca.DataSaved;
 import utils.MyDeviceManager;
 
-public class DampingActivity extends AppCompatActivity {
+public class DampingActivity extends BaseClass {
     String msgInfo = "3=Default Value\n\n" +
             "1=Min Sensor SPEED\n\n" +
             "2..7=Increase SPEED by 1\n\n" +

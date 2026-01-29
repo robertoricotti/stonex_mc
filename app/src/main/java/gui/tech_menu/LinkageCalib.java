@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomToast;
@@ -30,7 +31,7 @@ import utils.MyData;
 import utils.Utils;
 
 
-public class LinkageCalib extends AppCompatActivity {
+public class LinkageCalib extends BaseClass {
     EditText lengthL1, lengthL2, lengthL3, lengthL4;
     CheckBox off, left, right, cbtop,cbtopRev;
     TextView dogBoneAngle, dogBoneOffsetAngle, textL1, textL2, textL3, textL4;

@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomToast;
 import packexcalib.exca.DataSaved;
 import services.CanService;
@@ -28,7 +29,7 @@ import services.UpdateValuesService;
 import utils.MyDeviceManager;
 
 
-public class CanOpenTSM extends AppCompatActivity {
+public class CanOpenTSM extends BaseClass {
     int progresso = 0;
     TextView txtProgress,titolo;
 

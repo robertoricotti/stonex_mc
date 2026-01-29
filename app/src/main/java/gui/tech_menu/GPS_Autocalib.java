@@ -15,6 +15,7 @@ import com.example.stx_dig.R;
 
 import java.util.Arrays;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.InformationsDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
@@ -27,7 +28,7 @@ import utils.DistToPoint;
 import services.UpdateValuesService;
 import utils.MyData;
 
-public class GPS_Autocalib extends AppCompatActivity {
+public class GPS_Autocalib extends BaseClass {
     InformationsDialog informationsDialog;
     static double result, resultD1, resultD2, resultTOT, dX, dY;
     private boolean vis2, vis3, vis4, vis5;

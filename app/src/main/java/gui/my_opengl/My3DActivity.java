@@ -5,6 +5,10 @@ import static gui.MyApp.errorCode;
 import static gui.MyApp.hAlarm;
 import static gui.MyApp.isOffgrid;
 import static packexcalib.exca.DataSaved.OUTPUT_HYDRO;
+import static packexcalib.exca.Sensors_Decoder.Deg_boom1;
+import static packexcalib.exca.Sensors_Decoder.Deg_bucket;
+import static packexcalib.exca.Sensors_Decoder.Deg_pitch;
+import static packexcalib.exca.Sensors_Decoder.Deg_roll;
 import static services.CanSender.prepLeft;
 import static services.CanSender.prepRight;
 import static services.CanService.Dozer_Auto_Main;
@@ -18,6 +22,7 @@ import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -45,6 +50,7 @@ import androidx.constraintlayout.widget.Guideline;
 
 import com.example.stx_dig.R;
 
+import DPAD.DPadHelper;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
@@ -74,6 +80,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
+import services.Joystick_Service;
 import services.TriangleService;
 import utils.LeicaLB;
 import utils.MyData;
@@ -152,6 +159,9 @@ public class My3DActivity extends BaseClass {
             if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
                 serviseStrarted = true;
                 startService(new Intent(this, TriangleService.class));
+            }
+            if(DataSaved.isCanOpen==JOYSTICKS){
+                startService(new Intent(this, Joystick_Service.class));
             }
         }
         try {
@@ -792,6 +802,9 @@ public class My3DActivity extends BaseClass {
         stopService(new Intent(this, TriangleService.class));
         MyDeviceManager.OUT1(MyApp.visibleActivity, 0);
         MyDeviceManager.OUT2(MyApp.visibleActivity, 0);
+        if(DataSaved.isCanOpen==JOYSTICKS){
+            stopService(new Intent(this, Joystick_Service.class));
+        }
     }
 
     private void checkBooleans() {
@@ -1768,8 +1781,26 @@ public class My3DActivity extends BaseClass {
             }
 
         }
+        setDpad();
     }
+    private void setDpad(){
+        DPadHelper.getInstance().update(
+                NmeaGenerator.HEADING,
+                -90+DataSaved.offsetStick,
+                0,
+                DataSaved.demoEAST,
+                DataSaved.demoNORD,
+                -90+Deg_bucket,
+                30+Deg_boom1,
+                0,
+                Deg_roll,
+                Deg_pitch,
+                new double[]{0,0,DataSaved.demoZ}
 
+
+
+        );
+    }
     private static String[] coordShow(int mode) {
         String s = OUTPUT_HYDRO + "\n";
         if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {

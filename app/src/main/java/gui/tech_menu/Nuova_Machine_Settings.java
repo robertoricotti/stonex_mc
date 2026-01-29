@@ -10,6 +10,7 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
@@ -48,7 +49,7 @@ import utils.MyDeviceManager;
 public class Nuova_Machine_Settings extends AppCompatActivity {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
-    CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2;
+    CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2,ckJ;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
@@ -122,6 +123,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ckMach = findViewById(R.id.ckMach);
         ckDO = findViewById(R.id.ck2);
         ck22 = findViewById(R.id.ck22);
+        ckJ = findViewById(R.id.ckJ);
         ckUHF = findViewById(R.id.ck3);
         ckUpper = findViewById(R.id.ck4);
         ck_stxGen2 = findViewById(R.id.ckVecchia);
@@ -170,6 +172,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             ckDEMO.setChecked(false);
             ck_stxGen1.setChecked(true);
             ck_stxGen2.setChecked(false);
+            ckJ.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "3");
             isCanOpen=TSM_ACC;
 
@@ -178,6 +181,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             ckDEMO.setChecked(false);
             ck_stxGen2.setChecked(true);
             ck_stxGen1.setChecked(false);
+            ckJ.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "1");
             isCanOpen=FMI_SENS;
 
@@ -186,8 +190,17 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             ckDEMO.setChecked(true);
             ck_stxGen1.setChecked(false);
             ck_stxGen2.setChecked(false);
+            ckJ.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "5");
             isCanOpen=DEMO_BAG;
+        });
+        ckJ.setOnClickListener(view -> {
+            ckDEMO.setChecked(false);
+            ck_stxGen1.setChecked(false);
+            ck_stxGen2.setChecked(false);
+            ckJ.setChecked(true);
+            MyData.push("M" + machineSel + "_useCanOpen", "10");
+            isCanOpen=JOYSTICKS;
         });
 
         ck22.setOnClickListener(view -> {

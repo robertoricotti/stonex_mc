@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomToast;
@@ -34,7 +35,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 import utils.Utils;
 
-public class Boom1Calib extends AppCompatActivity {
+public class Boom1Calib extends BaseClass {
     EditText lengthBoom1,extTxt;
     CheckBox off, left, right,isExt;
     TextView boom1Angle, boom1OffsetAngle, textBoom1,border,extValue;

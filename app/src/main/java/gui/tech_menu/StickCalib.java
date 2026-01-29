@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomToast;
@@ -32,7 +33,7 @@ import utils.MyDeviceManager;
 import utils.Utils;
 
 
-public class StickCalib extends AppCompatActivity {
+public class StickCalib extends BaseClass {
     EditText lengthStick, laserV, laserH, extValue;
     CheckBox off, left, right, isExt;
     TextView stickAngle, stickOffsetAngle, textLength, textLV, textLH,titolao;

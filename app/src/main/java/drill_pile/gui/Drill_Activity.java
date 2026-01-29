@@ -3,7 +3,12 @@ package drill_pile.gui;
 import static gui.MyApp.errorCode;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
+import static packexcalib.exca.Sensors_Decoder.Deg_boom1;
+import static packexcalib.exca.Sensors_Decoder.Deg_bucket;
+import static packexcalib.exca.Sensors_Decoder.Deg_pitch;
+import static packexcalib.exca.Sensors_Decoder.Deg_roll;
 import static utils.MyMCUtils.projectPointOnAxis3D;
+import static utils.MyTypes.JOYSTICKS;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -19,6 +24,7 @@ import androidx.constraintlayout.widget.Guideline;
 
 import com.example.stx_dig.R;
 
+import DPAD.DPadHelper;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
@@ -31,6 +37,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
+import services.Joystick_Service;
 import services.PointService;
 import utils.DistToPoint;
 import utils.MyData;
@@ -86,6 +93,9 @@ public class Drill_Activity extends BaseClass {
     protected void onStart() {
         super.onStart();
         startService(new Intent(this, PointService.class));
+        if(DataSaved.isCanOpen==JOYSTICKS){
+            startService(new Intent(this, Joystick_Service.class));
+        }
     }
 
     @Override
@@ -93,6 +103,9 @@ public class Drill_Activity extends BaseClass {
         super.onStop();
         MyData.push("scaleFactor3D", String.valueOf(DataSaved.scale_Factor3D));
         stopService(new Intent(this, PointService.class));
+        if(DataSaved.isCanOpen==JOYSTICKS){
+            stopService(new Intent(this, Joystick_Service.class));
+        }
     }
 
     private void findView() {
@@ -649,8 +662,26 @@ public class Drill_Activity extends BaseClass {
             }
 
         }
+        setDpad();
     }
+    private void setDpad(){
+        DPadHelper.getInstance().update(
+                NmeaGenerator.HEADING,
+                -90+DataSaved.offsetStick,
+                0,
+                DataSaved.demoEAST,
+                DataSaved.demoNORD,
+                -90+Deg_bucket,
+                30+Deg_boom1,
+                0,
+                Deg_roll,
+                Deg_pitch,
+                new double[]{0,0,DataSaved.demoZ}
 
+
+
+        );
+    }
     private void settaFreccia() {
 
         Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
