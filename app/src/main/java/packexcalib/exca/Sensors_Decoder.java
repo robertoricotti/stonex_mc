@@ -1,6 +1,6 @@
 package packexcalib.exca;
 
-import static gui.gps.NmeaGenerator.HEADING;
+import static packexcalib.exca.DataSaved.HEADING;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
@@ -346,31 +346,31 @@ public class Sensors_Decoder {
 
                 if (keyEvents[2]) {
                     // lat+
-                    NmeaGenerator.LATITUDE += 0.005;
+                    DataSaved.demoNORD += 0.005;
 
                 }
                 if (keyEvents[3]) {
                     // lat-
-                    NmeaGenerator.LATITUDE -= 0.005;
+                    DataSaved.demoNORD -= 0.005;
 
                 }
                 if (keyEvents[4]) {
                     // F4
-                    NmeaGenerator.LONGITUDE += 0.005;
+                    DataSaved.demoEAST += 0.005;
 
                 }
                 if (keyEvents[5]) {
                     // lon+
-                    NmeaGenerator.LONGITUDE -= 0.005;
+                    DataSaved.demoEAST -= 0.005;
 
                 }
 
 
                 if (keyEvents[6]) {
-                    NmeaGenerator.ALTITUDE += 0.001;
+                    DataSaved.demoZ += 0.001;
                 }
                 if (keyEvents[7]) {
-                    NmeaGenerator.ALTITUDE -= 0.001;
+                    DataSaved.demoZ -= 0.001;
                 }
             }
             if (DataSaved.isCanOpen == DEMO_BAG) {

@@ -111,6 +111,13 @@ public class Boom2Calib extends BaseClass {
     @SuppressLint("DefaultLocale")
     public void updateUI() {
 
+        if (minusPressed && plusPressed) {
+            count++;
+            if(count>40) {
+                DataSaved.offsetBoom2 = 0;
+            }
+        }
+
                     if (plusPressed) {
                         count++;
                         if (count > 15) {

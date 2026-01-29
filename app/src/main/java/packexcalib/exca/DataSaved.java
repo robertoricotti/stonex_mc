@@ -380,6 +380,7 @@ public class DataSaved {
     public static double demoNORD;
     public static double demoEAST;
     public static double demoZ;
+    public static double HEADING;
     public static double gradientDB;
     public static double distBetween;
     public static double distG1_G2;

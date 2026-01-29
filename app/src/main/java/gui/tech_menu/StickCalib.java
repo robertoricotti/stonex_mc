@@ -138,6 +138,12 @@ public class StickCalib extends BaseClass {
 
     @SuppressLint("DefaultLocale")
     public void updateUI() {
+        if (minusPressed && plusPressed) {
+            count++;
+            if(count>40) {
+                DataSaved.offsetStick = 0;
+            }
+        }
 
         if (plusPressed) {
             count++;

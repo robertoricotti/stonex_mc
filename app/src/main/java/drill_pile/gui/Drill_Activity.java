@@ -37,7 +37,6 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
-import services.Joystick_Service;
 import services.PointService;
 import utils.DistToPoint;
 import utils.MyData;
@@ -93,9 +92,7 @@ public class Drill_Activity extends BaseClass {
     protected void onStart() {
         super.onStart();
         startService(new Intent(this, PointService.class));
-        if(DataSaved.isCanOpen==JOYSTICKS){
-            startService(new Intent(this, Joystick_Service.class));
-        }
+
     }
 
     @Override
@@ -103,9 +100,7 @@ public class Drill_Activity extends BaseClass {
         super.onStop();
         MyData.push("scaleFactor3D", String.valueOf(DataSaved.scale_Factor3D));
         stopService(new Intent(this, PointService.class));
-        if(DataSaved.isCanOpen==JOYSTICKS){
-            stopService(new Intent(this, Joystick_Service.class));
-        }
+
     }
 
     private void findView() {
@@ -623,11 +618,8 @@ public class Drill_Activity extends BaseClass {
         if (DataSaved.my_comPort == 4) {
             try {
                 DataSaved.demoNORD = DataSaved.drill_points.get(0).getHeadY();
-                NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                 DataSaved.demoEAST = DataSaved.drill_points.get(0).getHeadX();
-                NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
                 DataSaved.demoZ = DataSaved.drill_points.get(0).getHeadZ() + 4;
-                NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                 MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                 MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
                 MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
@@ -635,11 +627,8 @@ public class Drill_Activity extends BaseClass {
             } catch (Exception e) {
                 try {
                     DataSaved.demoNORD = DataSaved.points.get(0).getY();
-                    NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                     DataSaved.demoEAST = DataSaved.points.get(0).getX();
-                    NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
                     DataSaved.demoZ = DataSaved.points.get(0).getZ() + 3;
-                    NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                     MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                     MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
                     MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
@@ -647,11 +636,8 @@ public class Drill_Activity extends BaseClass {
                 } catch (Exception ex) {
                     try {
                         DataSaved.demoNORD = DataSaved.polylines.get(0).getVertices().get(0).getY();
-                        NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                         DataSaved.demoEAST = DataSaved.polylines.get(0).getVertices().get(0).getX();
-                        NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
                         DataSaved.demoZ = DataSaved.polylines.get(0).getVertices().get(0).getZ() + 3;
-                        NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                         MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                         MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
                         MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
@@ -666,7 +652,7 @@ public class Drill_Activity extends BaseClass {
     }
     private void setDpad(){
         DPadHelper.getInstance().update(
-                NmeaGenerator.HEADING,
+                DataSaved.HEADING,
                 -90+DataSaved.offsetStick,
                 0,
                 DataSaved.demoEAST,
@@ -676,7 +662,7 @@ public class Drill_Activity extends BaseClass {
                 0,
                 Deg_roll,
                 Deg_pitch,
-                new double[]{0,0,DataSaved.demoZ}
+                new double[]{ DataSaved.demoEAST,DataSaved.demoNORD,DataSaved.demoZ}
 
 
 

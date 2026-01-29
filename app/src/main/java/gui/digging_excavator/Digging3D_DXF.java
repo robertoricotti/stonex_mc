@@ -124,11 +124,8 @@ public class Digging3D_DXF extends BaseClass {
                     whats = intent.getStringExtra("whats");
                     if (DataSaved.my_comPort == 4 && whats != null) {
                         DataSaved.demoNORD = DataSaved.dxfFaces.get(0).getP1().getY();
-                        NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                         DataSaved.demoEAST = DataSaved.dxfFaces.get(0).getP1().getX();
-                        NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
                         DataSaved.demoZ = DataSaved.dxfFaces.get(0).getP1().getZ() + 3;
-                        NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                         MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                         MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
                         MyData.push("demoZ", String.valueOf(DataSaved.demoZ));

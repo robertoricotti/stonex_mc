@@ -19,9 +19,10 @@ import DPAD.DPadHelper;
 import DPAD.DPadManager;
 import DPAD.DPadState;
 import DPAD.T16000MProfile;
-import gui.gps.NmeaGenerator;
+import packexcalib.exca.DataSaved;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
+import packexcalib.exca.ExcavatorLib;
 import utils.MyDeviceManager;
 
 
@@ -77,6 +78,7 @@ public class BaseClass extends AppCompatActivity {
         cm = new DPadManager(this, new T16000MProfile());
         cm.setListener(new DPadManager.Listener() {
             @Override public void onDPadConnected(DPadState state) {
+
                 Log.i(TAG, "Connected: " + "{ name: " + state.deviceName +  " deviceId= " + state.deviceId + " }");
             }
             @Override public void onDPadDisconnected(int deviceId) {
@@ -150,32 +152,32 @@ public class BaseClass extends AppCompatActivity {
             if (event.getAction() == KeyEvent.ACTION_DOWN){
                 switch (event.getKeyCode()){
                     case 131:
-                        nuovaPos=Exca_Quaternion.endPoint(new double[]{NmeaGenerator.LONGITUDE,NmeaGenerator.LATITUDE,NmeaGenerator.ALTITUDE},0,0,0.05,hdt_BOOM);
-                        NmeaGenerator.LONGITUDE=nuovaPos[0];
-                        NmeaGenerator.LATITUDE=nuovaPos[1];
-                        NmeaGenerator.ALTITUDE=nuovaPos[2];
+                        nuovaPos=Exca_Quaternion.endPoint(new double[]{DataSaved.demoEAST,DataSaved.demoNORD,DataSaved.demoZ},0,0,0.05,hdt_BOOM);
+                        DataSaved.demoEAST=nuovaPos[0];
+                        DataSaved.demoNORD=nuovaPos[1];
+                        DataSaved.demoZ=nuovaPos[2];
                         break;
                     case 132:
-                        nuovaPos=Exca_Quaternion.endPoint(new double[]{NmeaGenerator.LONGITUDE,NmeaGenerator.LATITUDE,NmeaGenerator.ALTITUDE},0,0,0.05,hdt_BOOM+180);
-                        NmeaGenerator.LONGITUDE=nuovaPos[0];
-                        NmeaGenerator.LATITUDE=nuovaPos[1];
-                        NmeaGenerator.ALTITUDE=nuovaPos[2];
+                        nuovaPos=Exca_Quaternion.endPoint(new double[]{DataSaved.demoEAST,DataSaved.demoNORD,DataSaved.demoZ},0,0,0.05,hdt_BOOM+180);
+                        DataSaved.demoEAST=nuovaPos[0];
+                        DataSaved.demoNORD=nuovaPos[1];
+                        DataSaved.demoZ=nuovaPos[2];
                         break;
                     case 133:
-                        nuovaPos=Exca_Quaternion.endPoint(new double[]{NmeaGenerator.LONGITUDE,NmeaGenerator.LATITUDE,NmeaGenerator.ALTITUDE},0,0,0.05,hdt_BOOM+90);
-                        NmeaGenerator.LONGITUDE=nuovaPos[0];
-                        NmeaGenerator.LATITUDE=nuovaPos[1];
-                        NmeaGenerator.ALTITUDE=nuovaPos[2];
+                        nuovaPos=Exca_Quaternion.endPoint(new double[]{DataSaved.demoEAST,DataSaved.demoNORD,DataSaved.demoZ},0,0,0.05,hdt_BOOM+90);
+                        DataSaved.demoEAST=nuovaPos[0];
+                        DataSaved.demoNORD=nuovaPos[1];
+                        DataSaved.demoZ=nuovaPos[2];
                         break;
                     case 134:
-                        nuovaPos=Exca_Quaternion.endPoint(new double[]{NmeaGenerator.LONGITUDE,NmeaGenerator.LATITUDE,NmeaGenerator.ALTITUDE},0,0,0.05,hdt_BOOM-90);
-                        NmeaGenerator.LONGITUDE=nuovaPos[0];
-                        NmeaGenerator.LATITUDE=nuovaPos[1];
-                        NmeaGenerator.ALTITUDE=nuovaPos[2];
+                        nuovaPos=Exca_Quaternion.endPoint(new double[]{DataSaved.demoEAST,DataSaved.demoNORD,DataSaved.demoZ},0,0,0.05,hdt_BOOM-90);
+                        DataSaved.demoEAST=nuovaPos[0];
+                        DataSaved.demoNORD=nuovaPos[1];
+                        DataSaved.demoZ=nuovaPos[2];
                         break;
                     case 135:
-                       NmeaGenerator.HEADING+=0.5;
-                       NmeaGenerator.HEADING=NmeaGenerator.HEADING%360;
+                       DataSaved.HEADING+=0.5;
+                       DataSaved.HEADING=DataSaved.HEADING%360;
                         break;
                 }
 
@@ -295,7 +297,7 @@ public class BaseClass extends AppCompatActivity {
                 }
 
                 double heading = helper.normalize180(newLeftX) + delta;
-                newXYZ = Exca_Quaternion.endPoint(cur.xyz, 0, 0, stepDistance.meters, heading);
+                newXYZ = Exca_Quaternion.endPoint(cur.xyz, 0, 0, stepDistance.meters, heading+DataSaved.deltaGPS2);
             }
 
             helper.update(

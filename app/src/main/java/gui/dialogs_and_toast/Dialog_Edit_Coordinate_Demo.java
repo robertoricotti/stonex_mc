@@ -106,17 +106,14 @@ public class Dialog_Edit_Coordinate_Demo {
     private void save() {
         if (!nord.getText().toString().isEmpty()) {
             DataSaved.demoNORD = Double.parseDouble(nord.getText().toString().replace(",", "."));
-            NmeaGenerator.LATITUDE = DataSaved.demoNORD;
             MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
         }
         if (!est.getText().toString().isEmpty()) {
             DataSaved.demoEAST = Double.parseDouble(est.getText().toString().replace(",", "."));
-            NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
             MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
         }
         if (!zeta.getText().toString().isEmpty()) {
             DataSaved.demoZ = Double.parseDouble(zeta.getText().toString().replace(",", "."));
-            NmeaGenerator.ALTITUDE = DataSaved.demoZ;
             MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
         }
 

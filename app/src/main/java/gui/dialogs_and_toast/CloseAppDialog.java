@@ -24,6 +24,7 @@ import serial.OpenSerialPort;
 import serial.SerialPortManager;
 import services.CanSender;
 import services.CanService;
+import services.Joystick_Service;
 import services.TriangleService;
 import utils.CPCanHelper;
 import utils.FullscreenActivity;
@@ -97,6 +98,7 @@ public class CloseAppDialog {
                 activity.stopService(new Intent(activity, TriangleService.class));
                 OpenSerialPort.mOpened = false;
                 SerialPortManager.instance().close();
+                activity.stopService(new Intent(activity, Joystick_Service.class));
 
             } catch (Exception e) {
                 e.printStackTrace();

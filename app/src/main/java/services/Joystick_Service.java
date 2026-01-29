@@ -1,5 +1,6 @@
 package services;
 
+import static packexcalib.exca.DataSaved.HEADING;
 import static packexcalib.exca.Sensors_Decoder.Deg_Benna_W_Tilt;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_Roto;
@@ -68,20 +69,25 @@ public class Joystick_Service extends Service {
                 switch (DataSaved.isWL) {
                     case EXCAVATOR:
                         final DPadMapper current =DPadHelper.getInstance().getSnapshot();
-                        NmeaGenerator.HEADING=current.leftAxisX;
+                        HEADING=current.leftAxisX;
                         Deg_stick=current.leftAxisY;
                         Deg_bucket=current.rightAxisX;
                         Deg_Benna_W_Tilt=current.rightAxisX;
-                        Deg_boom1=current.rightAxisY;
+                        Deg_boom1=current.rightAxisY*-1;
                         Deg_Roto=current.leftYaw;
                         Deg_tilt=current.rightYaw;
                         DataSaved.demoEAST=current.xyz[0];
                         DataSaved.demoNORD=current.xyz[1];
                         DataSaved.demoZ=current.xyz[2];
-                        Deg_pitch=current.rightHatY;
+                        Deg_pitch=current.rightHatY*-1;
                         Deg_roll=current.rightHatX;
                         Deg_Boom_Roll=Deg_roll;
 
+                        if (DataSaved.portView == 1) {
+                            NmeaListener.roof_Orientation = HEADING;
+                        }
+                        NmeaListener.ggaQuality="4";
+                        NmeaListener.VRMS_="0.002";
                         ExcavatorLib.Excavator();
                         break;
 

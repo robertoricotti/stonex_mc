@@ -80,7 +80,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
-import services.Joystick_Service;
+
 import services.TriangleService;
 import utils.LeicaLB;
 import utils.MyData;
@@ -160,9 +160,7 @@ public class My3DActivity extends BaseClass {
                 serviseStrarted = true;
                 startService(new Intent(this, TriangleService.class));
             }
-            if(DataSaved.isCanOpen==JOYSTICKS){
-                startService(new Intent(this, Joystick_Service.class));
-            }
+
         }
         try {
 
@@ -802,9 +800,7 @@ public class My3DActivity extends BaseClass {
         stopService(new Intent(this, TriangleService.class));
         MyDeviceManager.OUT1(MyApp.visibleActivity, 0);
         MyDeviceManager.OUT2(MyApp.visibleActivity, 0);
-        if(DataSaved.isCanOpen==JOYSTICKS){
-            stopService(new Intent(this, Joystick_Service.class));
-        }
+
     }
 
     private void checkBooleans() {
@@ -1742,11 +1738,8 @@ public class My3DActivity extends BaseClass {
         if (DataSaved.my_comPort == 4) {
             try {
                 DataSaved.demoNORD = DataSaved.dxfFaces.get(0).getP1().getY();
-                NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                 DataSaved.demoEAST = DataSaved.dxfFaces.get(0).getP1().getX();
-                NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
                 DataSaved.demoZ = DataSaved.dxfFaces.get(0).getP1().getZ() + 3;
-                NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                 MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                 MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
                 MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
@@ -1754,11 +1747,8 @@ public class My3DActivity extends BaseClass {
             } catch (Exception e) {
                 try {
                     DataSaved.demoNORD = DataSaved.points.get(0).getY();
-                    NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                     DataSaved.demoEAST = DataSaved.points.get(0).getX();
-                    NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
                     DataSaved.demoZ = DataSaved.points.get(0).getZ() + 3;
-                    NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                     MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                     MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
                     MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
@@ -1766,11 +1756,8 @@ public class My3DActivity extends BaseClass {
                 } catch (Exception ex) {
                     try {
                         DataSaved.demoNORD = DataSaved.polylines.get(0).getVertices().get(0).getY();
-                        NmeaGenerator.LATITUDE = DataSaved.demoNORD;
                         DataSaved.demoEAST = DataSaved.polylines.get(0).getVertices().get(0).getX();
-                        NmeaGenerator.LONGITUDE = DataSaved.demoEAST;
                         DataSaved.demoZ = DataSaved.polylines.get(0).getVertices().get(0).getZ() + 3;
-                        NmeaGenerator.ALTITUDE = DataSaved.demoZ;
                         MyData.push("demoNORD", String.valueOf(DataSaved.demoNORD));
                         MyData.push("demoEAST", String.valueOf(DataSaved.demoEAST));
                         MyData.push("demoZ", String.valueOf(DataSaved.demoZ));
@@ -1785,20 +1772,17 @@ public class My3DActivity extends BaseClass {
     }
     private void setDpad(){
         DPadHelper.getInstance().update(
-                NmeaGenerator.HEADING,
-                -90+DataSaved.offsetStick,
+                DataSaved.HEADING,
+                -90,
                 0,
-                DataSaved.demoEAST,
-                DataSaved.demoNORD,
-                -90+Deg_bucket,
-                30+Deg_boom1,
+                MyData.get_Double("demoEAST"),
+                MyData.get_Double("demoNORD"),
+                -90,
+                -30,
                 0,
-                Deg_roll,
-                Deg_pitch,
-                new double[]{0,0,DataSaved.demoZ}
-
-
-
+                0,
+                0,
+                new double[]{ MyData.get_Double("demoEAST"), MyData.get_Double("demoNORD"), MyData.get_Double("demoZ")}
         );
     }
     private static String[] coordShow(int mode) {

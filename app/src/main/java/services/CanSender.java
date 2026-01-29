@@ -221,9 +221,7 @@ public class CanSender extends Service {
             } catch (Exception ignored) {
 
             }
-            if (DataSaved.isCanOpen == JOYSTICKS) {
-                return;
-            }
+
             try {
                 if (licenseType > MC_2D) {
                     switch (DataSaved.my_comPort) {

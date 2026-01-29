@@ -1,5 +1,7 @@
 package gui.gps;
 
+import static packexcalib.exca.DataSaved.HEADING;
+
 import android.util.Log;
 
 import java.math.RoundingMode;
@@ -15,7 +17,7 @@ import packexcalib.gnss.CalculateXor8;
 import packexcalib.gnss.NmeaListener;
 
 public class NmeaGenerator {
-    public static double LATITUDE, LONGITUDE, ALTITUDE, HEADING;
+    //public static double LATITUDE, LONGITUDE, ALTITUDE, HEADING;
 
 
     static CalculateXor8 calculateXor8, calculateXorHdt;
@@ -39,7 +41,7 @@ public class NmeaGenerator {
 
             String sLat = new Formatter().format("%02d%.7f", (int) formattedLatitude, (formattedLatitude % 1) * 60).toString().replace(",", ".");
             String sLon = new Formatter().format("%03d%.7f", (int) formattedLongitude, (formattedLongitude % 1) * 60).toString().replace(",", ".");
-            String sAlt = String.valueOf(ALTITUDE).replace(",", ".");
+            String sAlt = String.valueOf(DataSaved.demoZ).replace(",", ".");
             String stime = formatTime(now);
 
             String gpggaString = "$GPGGA," + stime + "," + sLat + "," + latitudeDirection + "," + sLon + "," + longitudeDirection + ",4,24,0.9," + sAlt + ",M,0,M,01,0000";
@@ -55,16 +57,7 @@ public class NmeaGenerator {
     public static String generateLLQ() {
         try {
 
-            if (LATITUDE == 0) {
-                LATITUDE = DataSaved.demoNORD;
 
-            }
-            if (LONGITUDE == 0) {
-                LONGITUDE = DataSaved.demoEAST;
-            }
-            if (ALTITUDE == 0) {
-                ALTITUDE = DataSaved.demoZ;
-            }
             if (HEADING == 0) {
                 HEADING = 90;
             }
@@ -77,10 +70,10 @@ public class NmeaGenerator {
             char latitudeDirection = 'M';
             char longitudeDirection = 'M';
 
-            String sAlt = String.format("%.3f", ALTITUDE).replace(",", ".");
+            String sAlt = String.format("%.3f", DataSaved.demoZ).replace(",", ".");
             String stime = formatTime(now);
             String date = "13112024";
-            String gpggaString = "$GPLLQ," + stime + "," + date + "," + String.format("%.3f", LONGITUDE).replace(",", ".") + "," + longitudeDirection + "," + String.format("%.3f", LATITUDE).replace(",", ".") + "," + latitudeDirection + ",3,24," + NmeaListener.VRMS_ + "," + sAlt + ",M,0,M,01,0000";
+            String gpggaString = "$GPLLQ," + stime + "," + date + "," + String.format("%.3f", DataSaved.demoEAST).replace(",", ".") + "," + longitudeDirection + "," + String.format("%.3f", DataSaved.demoNORD).replace(",", ".") + "," + latitudeDirection + ",3,24," + NmeaListener.VRMS_ + "," + sAlt + ",M,0,M,01,0000";
             myNmea = gpggaString.substring(gpggaString.indexOf("$") + 1, gpggaString.length());
             calculateXor8 = new CalculateXor8(myNmea.getBytes(StandardCharsets.UTF_8));
             int checksum = calculateXor8.xor;
