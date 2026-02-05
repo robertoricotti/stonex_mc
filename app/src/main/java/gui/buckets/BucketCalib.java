@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileWriter;
 
 
+import gui.BaseClass;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomQwertyDialog;
@@ -41,7 +42,7 @@ import utils.MyData;
 import utils.Utils;
 
 
-public class BucketCalib extends AppCompatActivity {
+public class BucketCalib extends BaseClass {
     Button  offsetZeroMinus, offsetZeroPlus, offsetZero, offsetZeroFlat;
     ImageView esc, save,load;
     EditText nameBucket, lengthBucket, widthBucket, L4Bucket;

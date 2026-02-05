@@ -244,6 +244,7 @@ public class DataSaved {
 
 
     public static int isCanOpen;
+    public static int Dozer_UpsideDown;
 
     public static double scale_Factor;
     public static double scale_Factor3D;

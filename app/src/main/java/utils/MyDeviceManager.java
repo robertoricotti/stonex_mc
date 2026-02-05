@@ -7,6 +7,11 @@ import static gui.MyApp.GEN2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.usb.UsbConstants;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbEndpoint;
+import android.hardware.usb.UsbInterface;
+import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -21,6 +26,7 @@ import com.van.jni.VanCmd;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import kotlin.ExposedCopyVisibility;
 import packexcalib.exca.DataSaved;
@@ -34,6 +40,64 @@ public class MyDeviceManager {
 
     public MyDeviceManager() {
 
+    }
+    public class UsbDebugUtils {
+
+        private static final String TAG = "USB_SNAPSHOT";
+
+        public static void logUsbDevices(Context context) {
+            UsbManager usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+            if (usbManager == null) {
+                Log.e(TAG, "UsbManager NULL");
+                return;
+            }
+
+            Map<String, UsbDevice> deviceList = usbManager.getDeviceList();
+            Log.i(TAG, "==============================");
+            Log.i(TAG, "USB DEVICE SNAPSHOT");
+            Log.i(TAG, "Connected devices: " + deviceList.size());
+
+            if (deviceList.isEmpty()) {
+                Log.i(TAG, "No USB devices connected");
+                Log.i(TAG, "==============================");
+                return;
+            }
+
+            for (Map.Entry<String, UsbDevice> entry : deviceList.entrySet()) {
+                UsbDevice device = entry.getValue();
+
+                Log.i(TAG, "------------------------------");
+                Log.i(TAG, "Key: " + entry.getKey());
+                Log.i(TAG, "DeviceName: " + device.getDeviceName());
+                Log.i(TAG, "VendorId: " + device.getVendorId());
+                Log.i(TAG, "ProductId: " + device.getProductId());
+                Log.i(TAG, "Class: " + device.getDeviceClass());
+                Log.i(TAG, "Subclass: " + device.getDeviceSubclass());
+                Log.i(TAG, "Protocol: " + device.getDeviceProtocol());
+                Log.i(TAG, "Interfaces: " + device.getInterfaceCount());
+
+                for (int i = 0; i < device.getInterfaceCount(); i++) {
+                    UsbInterface usbInterface = device.getInterface(i);
+
+                    Log.i(TAG, "  Interface #" + i);
+                    Log.i(TAG, "    Class: " + usbInterface.getInterfaceClass());
+                    Log.i(TAG, "    Subclass: " + usbInterface.getInterfaceSubclass());
+                    Log.i(TAG, "    Protocol: " + usbInterface.getInterfaceProtocol());
+                    Log.i(TAG, "    Endpoints: " + usbInterface.getEndpointCount());
+
+                    for (int e = 0; e < usbInterface.getEndpointCount(); e++) {
+                        UsbEndpoint ep = usbInterface.getEndpoint(e);
+                        Log.i(TAG, "      Endpoint #" + e +
+                                " Addr=" + ep.getAddress() +
+                                " Dir=" + (ep.getDirection() == UsbConstants.USB_DIR_IN ? "IN" : "OUT") +
+                                " Type=" + ep.getType() +
+                                " MaxPacket=" + ep.getMaxPacketSize());
+                    }
+                }
+            }
+
+            Log.i(TAG, "==============================");
+        }
     }
 
     public static void setLumen(float value){

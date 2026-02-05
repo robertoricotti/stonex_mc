@@ -52,7 +52,6 @@ import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
 import gui.dialogs_and_toast.Dialog_To_DueDi;
 import gui.dialogs_user_settings.Nuova_User_Settings;
-import drill_pile.gui.Drill_Activity;
 import gui.projects.PickProject;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
@@ -411,5 +410,13 @@ public class Activity_Home_Page extends BaseClass {
 
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+       // MyDeviceManager.UsbDebugUtils.logUsbDevices(this);
+       // InputDebugUtils.logInputDevices();
+
     }
 }

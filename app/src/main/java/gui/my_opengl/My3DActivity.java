@@ -5,10 +5,6 @@ import static gui.MyApp.errorCode;
 import static gui.MyApp.hAlarm;
 import static gui.MyApp.isOffgrid;
 import static packexcalib.exca.DataSaved.OUTPUT_HYDRO;
-import static packexcalib.exca.Sensors_Decoder.Deg_boom1;
-import static packexcalib.exca.Sensors_Decoder.Deg_bucket;
-import static packexcalib.exca.Sensors_Decoder.Deg_pitch;
-import static packexcalib.exca.Sensors_Decoder.Deg_roll;
 import static services.CanSender.prepLeft;
 import static services.CanSender.prepRight;
 import static services.CanService.Dozer_Auto_Main;
@@ -22,7 +18,6 @@ import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
-import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -50,6 +45,7 @@ import androidx.constraintlayout.widget.Guideline;
 
 import com.example.stx_dig.R;
 
+
 import DPAD.DPadHelper;
 import gui.BaseClass;
 import gui.MyApp;
@@ -71,7 +67,6 @@ import gui.draw_class.DrawDXF_Layer2;
 import gui.draw_class.DrawDXF_Layer2_Tilt;
 import gui.draw_class.MyColorClass;
 import gui.draw_class.Top_View_DXF;
-import gui.gps.NmeaGenerator;
 import gui.grade_draw_class.Grade_DrawDXF_Layer1;
 import gui.grade_draw_class.Grade_DrawDXF_Layer2;
 import gui.hydro.Dialog_Gain_Hydro;
@@ -89,6 +84,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
+
     int flip = 0;
 
     ImageView navigatorHDT;
@@ -800,6 +796,7 @@ public class My3DActivity extends BaseClass {
         stopService(new Intent(this, TriangleService.class));
         MyDeviceManager.OUT1(MyApp.visibleActivity, 0);
         MyDeviceManager.OUT2(MyApp.visibleActivity, 0);
+
 
     }
 
@@ -1771,19 +1768,8 @@ public class My3DActivity extends BaseClass {
         setDpad();
     }
     private void setDpad(){
-        DPadHelper.getInstance().update(
-                DataSaved.HEADING,
-                -90,
-                0,
-                MyData.get_Double("demoEAST"),
-                MyData.get_Double("demoNORD"),
-                -90,
-                -30,
-                0,
-                0,
-                0,
-                new double[]{ MyData.get_Double("demoEAST"), MyData.get_Double("demoNORD"), MyData.get_Double("demoZ")}
-        );
+
+        DPadHelper.getInstance().setXYZ( new double[]{ MyData.get_Double("demoEAST"), MyData.get_Double("demoNORD"), MyData.get_Double("demoZ")});
     }
     private static String[] coordShow(int mode) {
         String s = OUTPUT_HYDRO + "\n";

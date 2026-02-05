@@ -58,9 +58,7 @@ public class NmeaGenerator {
         try {
 
 
-            if (HEADING == 0) {
-                HEADING = 90;
-            }
+          
 
             NmeaListener.VRMS_ = "0.014";
             Calendar now = Calendar.getInstance();

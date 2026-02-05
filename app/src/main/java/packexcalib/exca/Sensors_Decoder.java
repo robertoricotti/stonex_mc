@@ -276,6 +276,7 @@ public class Sensors_Decoder {
                     switch (id & 0x1FFFFFFF) {
                         case 0x386:
                         case 0x385:
+                        case 0x381:
                             double[] outGrad = TiltEncript.encriptTSM_Blade(data, DataSaved.lrBucket);
                             Deg_pitch = outGrad[0];
                             Deg_roll = outGrad[1];
@@ -295,7 +296,10 @@ public class Sensors_Decoder {
                             Deg_Yaw_Frame = eulers[2];
                             break;
                     }
-
+                        if(DataSaved.Dozer_UpsideDown>0){
+                            Deg_roll*=-1;
+                            Deg_pitch*=-1;
+                        }
                     ExcavatorLib.Excavator();
                     break;
 
@@ -517,7 +521,7 @@ public class Sensors_Decoder {
 
     }
 
-    private static double normalizeAngle(double a) {
+    public static double normalizeAngle(double a) {
         a = a % 360.0;
         if (a > 180) a -= 360;
         if (a < -180) a += 360;

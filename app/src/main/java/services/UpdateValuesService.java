@@ -3,6 +3,7 @@ package services;
 
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
@@ -145,6 +146,7 @@ public class UpdateValuesService extends Service {
                     String offsetRoll = MyData.get_String("M" + i + "_OffsetFrameX");
                     String offset_Tool_Roll = MyData.get_String("M" + i + "offset_Tool_Roll");
                     String offset_Tool_Pitch = MyData.get_String("M" + i + "offset_Tool_Pitch");
+                    String Dozer_UpsideDown = MyData.get_String("M" + i + "Dozer_UpsideDown");
                    //TODO DELTE
                     String Tool_Delta_X=MyData.get_String("M" + i + "Tool_Delta_X");
                     String Tool_Delta_Y=MyData.get_String("M" + i + "Tool_Delta_Y");
@@ -325,6 +327,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (offset_Tool_Pitch == null) {
                         MyData.push("M" + i + "offset_Tool_Pitch", "0.00");
+                    }
+                    if (Dozer_UpsideDown == null) {
+                        MyData.push("M" + i + "Dozer_UpsideDown", "0");
                     }
                     if (Tool_Delta_X == null) {
                         MyData.push("M" + i + "Tool_Delta_X", "0.00");
@@ -1389,6 +1394,11 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di offset_Tool_Pitch: " + e.getMessage());
                 }
+                try {
+                    DataSaved.Dozer_UpsideDown = MyData.get_Int("M" + indexMach + "Dozer_UpsideDown");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Dozer_UpsideDown: " + e.getMessage());
+                }
 
                 try {
                     DataSaved.Tool_Delta_X = MyData.get_Double("M" + indexMach + "Tool_Delta_X");
@@ -2183,6 +2193,7 @@ public class UpdateValuesService extends Service {
                 if (!startedService) {
                     try {
                         startService(new Intent(UpdateValuesService.this, CanService.class));
+
                     } catch (Exception e) {
                         Log.e("Error", "Errore nell'inizializzazione di CanService: " + e.getMessage());
                     }

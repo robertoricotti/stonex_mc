@@ -18,7 +18,6 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
-import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
@@ -123,7 +122,6 @@ import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.NmeaListener;
 import services.CanSender;
 import services.CanService;
-import services.Joystick_Service;
 import services.TriangleService;
 import services.UpdateValuesService;
 import utils.FullscreenActivity;
@@ -253,8 +251,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             Log.e("GridShift", Log.getStackTraceString(e));
         }
 
-
-        startService(new Intent(this, Joystick_Service.class));
 
         myCrash();
 
@@ -471,7 +467,7 @@ git push
                                 if (DataSaved.isWL ==DRILL||DataSaved.isWL==SOLARDRILL) {
                                     DataSaved.lrBucket=DataSaved.lrTool;
                                 }
-                                if (DataSaved.my_comPort == 4&&DataSaved.isCanOpen!=JOYSTICKS) {
+                                if (DataSaved.my_comPort == 4) {
 
 
                                     new SerialEvent(NmeaGenerator.generateLLQ());
@@ -488,6 +484,7 @@ git push
 
 
                                 }
+
 
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {

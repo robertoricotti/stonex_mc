@@ -26,6 +26,7 @@ import com.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileWriter;
 
+import gui.BaseClass;
 import gui.MyApp;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
@@ -38,7 +39,7 @@ import services.UpdateValuesService;
 import utils.MyData;
 import utils.Utils;
 
-public class BucketCalibTilt extends AppCompatActivity {
+public class BucketCalibTilt extends BaseClass {
     TextView bucketLengthT, bucketWidthT, L4T, tinyBukt;
     EditText name, bucketLength, bucketWidth, L4;
     Button minusTiltLevelAngle, plusTiltLevelAngle, setTiltLevelAngle;

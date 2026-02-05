@@ -4,7 +4,7 @@ import android.view.KeyEvent;
 
 public class T16000MProfile implements DPadProfile {
 
-    private float globalDeadband = 0.05f; // Deadband globale del 5% (valore predefinito)
+    private float globalDeadband = 0.1f; // Deadband globale del 10% (valore predefinito)
 
     @Override public String name() { return "Thrustmaster T.16000M"; }
 

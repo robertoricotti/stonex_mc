@@ -3,12 +3,7 @@ package drill_pile.gui;
 import static gui.MyApp.errorCode;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
-import static packexcalib.exca.Sensors_Decoder.Deg_boom1;
-import static packexcalib.exca.Sensors_Decoder.Deg_bucket;
-import static packexcalib.exca.Sensors_Decoder.Deg_pitch;
-import static packexcalib.exca.Sensors_Decoder.Deg_roll;
 import static utils.MyMCUtils.projectPointOnAxis3D;
-import static utils.MyTypes.JOYSTICKS;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -24,6 +19,7 @@ import androidx.constraintlayout.widget.Guideline;
 
 import com.example.stx_dig.R;
 
+
 import DPAD.DPadHelper;
 import gui.BaseClass;
 import gui.MyApp;
@@ -31,7 +27,6 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.draw_class.MyColorClass;
-import gui.gps.NmeaGenerator;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
@@ -615,6 +610,7 @@ public class Drill_Activity extends BaseClass {
     }
 
     private void locateMachine() {
+
         if (DataSaved.my_comPort == 4) {
             try {
                 DataSaved.demoNORD = DataSaved.drill_points.get(0).getHeadY();
@@ -651,22 +647,9 @@ public class Drill_Activity extends BaseClass {
         setDpad();
     }
     private void setDpad(){
-        DPadHelper.getInstance().update(
-                DataSaved.HEADING,
-                -90+DataSaved.offsetStick,
-                0,
-                DataSaved.demoEAST,
-                DataSaved.demoNORD,
-                -90+Deg_bucket,
-                30+Deg_boom1,
-                0,
-                Deg_roll,
-                Deg_pitch,
-                new double[]{ DataSaved.demoEAST,DataSaved.demoNORD,DataSaved.demoZ}
 
+        DPadHelper.getInstance().setXYZ( new double[]{ MyData.get_Double("demoEAST"), MyData.get_Double("demoNORD"), MyData.get_Double("demoZ")});
 
-
-        );
     }
     private void settaFreccia() {
 

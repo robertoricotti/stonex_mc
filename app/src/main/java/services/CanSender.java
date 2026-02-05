@@ -8,6 +8,7 @@ import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
 import static packexcalib.exca.DataSaved.GAIN_LEFT;
 import static packexcalib.exca.DataSaved.GAIN_RIGHT;
+import static packexcalib.exca.DataSaved.HEADING;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_DOZER;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_GRADER;
 import static packexcalib.exca.DataSaved.OUTPUT_HYDRO;
@@ -16,6 +17,15 @@ import static packexcalib.exca.DataSaved.maxSpeedRightUP;
 import static packexcalib.exca.DataSaved.minSpeedRightDW;
 import static packexcalib.exca.DataSaved.minSpeedRightUP;
 import static packexcalib.exca.ExcavatorLib.correctRoll;
+import static packexcalib.exca.Sensors_Decoder.Deg_Benna_W_Tilt;
+import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
+import static packexcalib.exca.Sensors_Decoder.Deg_Roto;
+import static packexcalib.exca.Sensors_Decoder.Deg_boom1;
+import static packexcalib.exca.Sensors_Decoder.Deg_bucket;
+import static packexcalib.exca.Sensors_Decoder.Deg_pitch;
+import static packexcalib.exca.Sensors_Decoder.Deg_roll;
+import static packexcalib.exca.Sensors_Decoder.Deg_stick;
+import static packexcalib.exca.Sensors_Decoder.Deg_tilt;
 import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.NmeaListener.Est1;
 import static packexcalib.gnss.NmeaListener.Nord1;
@@ -53,6 +63,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import DPAD.DPadHelper;
+import DPAD.DPadMapperLeft;
+import DPAD.DPadMapperRight;
 import cloud.WebSocketPlugin;
 import gui.MyApp;
 import gui.my_opengl.My3DActivity;
@@ -124,7 +137,6 @@ public class CanSender extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         senderExecutor500 = Executors.newSingleThreadScheduledExecutor();
         senderExecutor2000 = Executors.newSingleThreadScheduledExecutor();
-
         scheduledExecutorService1min = Executors.newSingleThreadScheduledExecutor();
         senderExecutor500.scheduleAtFixedRate(new AsyncSender500(), 1000, 500, TimeUnit.MILLISECONDS);
         senderExecutor2000.scheduleAtFixedRate(new AsyncSender2000(), 1000, 2000, TimeUnit.MILLISECONDS);
@@ -157,6 +169,54 @@ public class CanSender extends Service {
 
             }
 
+            if (DataSaved.isCanOpen == JOYSTICKS) {
+                switch (DataSaved.isWL) {
+                    case EXCAVATOR:
+                        final DPadMapperLeft currentLeft = DPadHelper.getInstance().getLeft();
+                        final DPadMapperRight currentRight = DPadHelper.getInstance().getRight();
+                        HEADING = currentLeft.getLeftAxisX();;
+                        Deg_stick = currentLeft.getLeftAxisY();
+                        Deg_bucket = currentRight.getRightAxisX();
+                        Deg_Benna_W_Tilt = currentRight.getRightAxisX();
+                        Deg_boom1 = currentRight.getRightAxisY() * -1;
+                        Deg_Roto = currentLeft.getLeftYaw();
+                        NmeaListener.roof_Orientation = currentRight.getRightYaw();
+                        DataSaved.demoEAST = DPadHelper.getInstance().getX();
+                        DataSaved.demoNORD = DPadHelper.getInstance().getY();
+                        DataSaved.demoZ = DPadHelper.getInstance().getZ();
+                        Deg_pitch = (currentRight.getRightHatY() * -1) * 0.5;
+                        Deg_tilt = currentRight.getRightHatX();
+                        Deg_Boom_Roll = Deg_roll;
+
+
+                        if (DataSaved.portView == 1) {
+                            NmeaListener.roof_Orientation = HEADING;
+                        }
+
+
+                        ExcavatorLib.Excavator();
+                        break;
+
+                    case WHEELLOADER:
+
+                        break;
+
+                    case DOZER:
+                    case DOZER_SIX:
+
+                        break;
+
+
+                    case GRADER:
+
+                        break;
+
+                    case DRILL:
+
+                        break;
+
+                }
+            }
             handler.postDelayed(this, 25); // esempio
         }
     };
@@ -341,8 +401,6 @@ public class CanSender extends Service {
                     connections = 0;
                 }
             }
-
-
 
 
         }

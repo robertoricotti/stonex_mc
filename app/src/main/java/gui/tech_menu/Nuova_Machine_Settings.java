@@ -34,6 +34,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.stx_dig.R;
 
+import org.apache.commons.math3.ml.neuralnet.UpdateAction;
+
 import gui.MyApp;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
@@ -43,6 +45,7 @@ import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_Wheel_Steer;
 import packexcalib.exca.DataSaved;
+import services.UpdateValuesService;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -142,6 +145,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
 
 
 
+
     }
 
     private void onClick() {
@@ -201,6 +205,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
             ckJ.setChecked(true);
             MyData.push("M" + machineSel + "_useCanOpen", "10");
             isCanOpen=JOYSTICKS;
+
         });
 
         ck22.setOnClickListener(view -> {
@@ -870,6 +875,7 @@ public class Nuova_Machine_Settings extends AppCompatActivity {
         ck_stxGen1.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 3);//TSM
         ck_stxGen2.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 1);//G2
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag
+        ckJ.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 10);
         ckUpper.setChecked(MyData.get_Int("UpperBar_Visible") == 1);
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);
         ckMach.setChecked(MyData.get_Int("drwaMachieSchema") == 1);

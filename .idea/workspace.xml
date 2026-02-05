@@ -441,25 +441,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 pre drill routine">
+      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/DPAD/DPadHelper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/DPAD/DPadManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/DPAD/DPadMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/DPAD/DPadProfile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/DPAD/DPadState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/DPAD/MotionEventAdapter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/DPAD/T16000MProfile.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/BaseClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/BaseClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/BaseClass_2.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CloseAppDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CloseAppDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Edit_Coordinate_Demo.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Edit_Coordinate_Demo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging3D_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/digging_excavator/Digging3D_DXF.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/gps/NmeaGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/gps/NmeaGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grading3D_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/grading_dozergrader/Grading3D_DXF.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Boom1Calib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Boom1Calib.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Boom2Calib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Boom2Calib.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/StickCalib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/StickCalib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Tilt_Blade.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Tilt_Blade.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/Joystick_Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/Joystick_Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/Joystick_Service.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyDeviceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_blade.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_blade.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -469,7 +480,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Pixel_XL_API_33.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -684,14 +695,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00043" summary="4.0.15 RELEASE">
-      <option name="closed" value="true" />
-      <created>1764323178440</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1764323178440</updated>
     </task>
     <task id="LOCAL-00044" summary="4.0.15 voglioa di thomas">
       <option name="closed" value="true" />
@@ -1077,7 +1080,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769688203873</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="4.1.0 pre drill routine">
+      <option name="closed" value="true" />
+      <created>1769701049187</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1769701049187</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -1114,7 +1125,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1769683733893" />
+            <CheckInfo lastCheckTimestamp="1770220176246" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1124,7 +1135,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1769683733894" />
+            <CheckInfo lastCheckTimestamp="1770220176224" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1134,7 +1145,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1769683733894" />
+            <CheckInfo lastCheckTimestamp="1770220176224" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

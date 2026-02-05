@@ -57,6 +57,20 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <CheckBox
+        android:id="@+id/upside"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UPSIDE-DOWN"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:layout_marginLeft="60dp"
+        app:layout_constraintLeft_toRightOf="@id/centV"
+        app:layout_constraintBottom_toTopOf="@+id/guideline94"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline102"

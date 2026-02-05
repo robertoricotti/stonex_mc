@@ -30,7 +30,7 @@ public class Tilt_Blade extends BaseClass {
     Button setPitch,setRoll;
     ImageView save,cancex;
     int indexMachineSelected, bucketMountPos;
-    CheckBox off,fw,bw, rightt, leftt;
+    CheckBox off,fw,bw, rightt, leftt,upside;
     CustomNumberDialog numberDialog;
     CustomNumberDialogFtIn numberDialogFtIn;
     TextView pitch,roll,offsetPitch,offsetRoll;
@@ -60,6 +60,7 @@ public class Tilt_Blade extends BaseClass {
         offsetPlusPitch=findViewById(R.id.offsetPlusPitch);
         rightt =findViewById(R.id.vert_up);
         leftt =findViewById(R.id.vert_dw);
+        upside=findViewById(R.id.upside);
         init();
         onClick();
         updateUI();
@@ -80,6 +81,7 @@ public class Tilt_Blade extends BaseClass {
         }
 
         bucketMountPos = MyData.get_Int("M" + indexMachineSelected + "_Bucket_MountPos");
+
         switch (bucketMountPos) {
             case 0:
                 off.setChecked(true);
@@ -126,7 +128,7 @@ public class Tilt_Blade extends BaseClass {
                 break;
 
         }
-
+        upside.setChecked(MyData.get_Int("M" + indexMachineSelected + "Dozer_UpsideDown")>0);
 
     }
     private void ckInit(){
@@ -180,6 +182,10 @@ public class Tilt_Blade extends BaseClass {
     }
     @SuppressLint("ClickableViewAccessibility")
     private void onClick(){
+        upside.setOnClickListener(view -> {
+            DataSaved.Dozer_UpsideDown+=1;
+            DataSaved.Dozer_UpsideDown=DataSaved.Dozer_UpsideDown%2;
+        });
         setPitch.setOnLongClickListener(view -> {
             setPitch.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
             DataSaved.offsetPitch = Sensors_Decoder.Deg_pitch;
@@ -216,6 +222,7 @@ public class Tilt_Blade extends BaseClass {
             MyData.push("M" + indexMachineSelected + "_Bucket_MountPos", String.valueOf(bucketMountPos));
             MyData.push("M" + indexMachineSelected + "_OffsetFrameY", String.valueOf(DataSaved.offsetPitch));
             MyData.push("M" + indexMachineSelected + "_OffsetFrameX", String.valueOf(DataSaved.offsetRoll));
+            MyData.push("M" + indexMachineSelected + "Dozer_UpsideDown", String.valueOf(DataSaved.Dozer_UpsideDown));
             startActivity(new Intent(this,Nuova_Machine_Settings.class));
             startService(new Intent(this, UpdateValuesService.class));
             finish();
@@ -294,6 +301,7 @@ public class Tilt_Blade extends BaseClass {
     }
     @SuppressLint("DefaultLocale")
     public void updateUI(){
+        upside.setChecked(DataSaved.Dozer_UpsideDown==1);
         pitch.setText(String.format("%.02f", MyMCUtils.wrap(ExcavatorLib.correctPitch)).replace(",", "."));
         roll.setText(String.format("%.02f", MyMCUtils.wrap(ExcavatorLib.correctRoll)).replace(",", "."));
         offsetPitch.setText(String.format("%.02f",DataSaved.offsetPitch).replace(",", "."));
