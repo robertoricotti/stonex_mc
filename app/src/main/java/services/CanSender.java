@@ -20,6 +20,8 @@ import static packexcalib.exca.ExcavatorLib.correctRoll;
 import static packexcalib.exca.Sensors_Decoder.Deg_Benna_W_Tilt;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_Roto;
+import static packexcalib.exca.Sensors_Decoder.Deg_Tool_Pitch;
+import static packexcalib.exca.Sensors_Decoder.Deg_Tool_Roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_boom1;
 import static packexcalib.exca.Sensors_Decoder.Deg_bucket;
 import static packexcalib.exca.Sensors_Decoder.Deg_pitch;
@@ -70,9 +72,11 @@ import cloud.WebSocketPlugin;
 import gui.MyApp;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.DrillLib;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
+import packexcalib.exca.Sensors_Decoder_Drill;
 import packexcalib.gnss.NmeaListener;
 import utils.MyDeviceManager;
 import utils.MyMCUtils;
@@ -170,10 +174,11 @@ public class CanSender extends Service {
             }
 
             if (DataSaved.isCanOpen == JOYSTICKS) {
+                final DPadMapperLeft currentLeft = DPadHelper.getInstance().getLeft();
+                final DPadMapperRight currentRight = DPadHelper.getInstance().getRight();
                 switch (DataSaved.isWL) {
                     case EXCAVATOR:
-                        final DPadMapperLeft currentLeft = DPadHelper.getInstance().getLeft();
-                        final DPadMapperRight currentRight = DPadHelper.getInstance().getRight();
+
                         HEADING = currentLeft.getLeftAxisX();;
                         Deg_stick = currentLeft.getLeftAxisY();
                         Deg_bucket = currentRight.getRightAxisX();
@@ -198,21 +203,58 @@ public class CanSender extends Service {
                         break;
 
                     case WHEELLOADER:
-
+                        HEADING = currentLeft.getLeftAxisX();
+                        Deg_stick = currentLeft.getLeftAxisY();
+                        Deg_bucket = currentRight.getRightAxisX();
+                        Deg_Benna_W_Tilt = currentRight.getRightAxisX();
+                        Deg_boom1 = currentRight.getRightAxisY() * -1;
+                        DataSaved.SteerWheel_Result = currentRight.getRightYaw();
+                        DataSaved.demoEAST = DPadHelper.getInstance().getX();
+                        DataSaved.demoNORD = DPadHelper.getInstance().getY();
+                        DataSaved.demoZ = DPadHelper.getInstance().getZ();
+                        Deg_pitch = (currentRight.getRightHatY() * -1) * 0.5;
+                        Deg_tilt = currentRight.getRightHatX();
+                        Deg_Boom_Roll = Deg_roll;
+                        ExcavatorLib.Excavator();
                         break;
 
                     case DOZER:
                     case DOZER_SIX:
-
+                        HEADING = currentRight.getRightHatX();;
+                        Deg_roll = currentRight.getRightAxisX();
+                        Deg_pitch=currentRight.getRightAxisY()*-1;
+                        DataSaved.demoEAST = DPadHelper.getInstance().getX();
+                        DataSaved.demoNORD = DPadHelper.getInstance().getY();
+                        DataSaved.demoZ = DPadHelper.getInstance().getZ();
+                        ExcavatorLib.Excavator();
                         break;
 
 
                     case GRADER:
-
+                        HEADING = currentRight.getRightHatX();;
+                        Deg_roll = currentRight.getRightAxisX();
+                        Deg_pitch=currentRight.getRightAxisY()*-1;
+                        DataSaved.demoEAST = DPadHelper.getInstance().getX();
+                        DataSaved.demoNORD = DPadHelper.getInstance().getY();
+                        DataSaved.demoZ = DPadHelper.getInstance().getZ();
+                        ExcavatorLib.Excavator();
                         break;
 
                     case DRILL:
-
+                        HEADING = currentLeft.getLeftAxisX();
+                        NmeaListener.roof_Orientation = currentRight.getRightYaw();
+                        Deg_pitch = (currentRight.getRightHatY() * -1) * 0.5;
+                        Deg_boom1 = currentRight.getRightAxisY() * -1;
+                        Deg_Boom_Roll = Deg_roll;
+                        Deg_Tool_Pitch = currentRight.getRightAxisX();
+                        Deg_Tool_Roll = currentRight.getRightHatX();
+                        double len=0;
+                        len=MyMCUtils.myscaleD(currentLeft.getLeftYaw(),-180,180,-3,3);
+                        Sensors_Decoder_Drill.RopeLen = len;
+                        DataSaved.demoEAST = DPadHelper.getInstance().getX();
+                        DataSaved.demoNORD = DPadHelper.getInstance().getY();
+                        DataSaved.demoZ = DPadHelper.getInstance().getZ();
+                        DrillLib.Drill();
                         break;
 
                 }

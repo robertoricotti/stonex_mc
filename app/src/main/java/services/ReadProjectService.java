@@ -144,6 +144,7 @@ public class ReadProjectService extends Service {
                     break;
                 case DRILL:
                 case SOLARDRILL:
+
                     Excecute_DRILL();
                     break;
             }
@@ -937,10 +938,10 @@ public class ReadProjectService extends Service {
                         if (mettiPunti) {
                             DataSaved.Selected_Point3D_Drill=null;
                             switch (fileExtensionPOINT.toLowerCase()) {
-                                case "dxf":
+                               /* case "dxf":
                                     parserStatus = "Reading Points...";
                                     //TODO DXFPOINTS
-                                    break;
+                                    break;*/
                                 case "xml":
                                     //TODO CGPOINTS
                                     parserStatus = "Reading Points...";
@@ -959,6 +960,16 @@ public class ReadProjectService extends Service {
                                     //TODO parsare IREDES
                                     parserStatus = "Reading Points...";
                                     DataSaved.drill_points = IrdParser.parseIrd(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor);
+                                    break;
+                                default:
+                                    isFinishedPOINT=true;
+                                    DataSaved.isAutoSnap = 0;
+                                    ERRORE_PROGETTO = true;
+
+                                    Intent intent = new Intent(MyApp.visibleActivity, PickProject.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    MyApp.visibleActivity.finish();
                                     break;
                             }
                         }

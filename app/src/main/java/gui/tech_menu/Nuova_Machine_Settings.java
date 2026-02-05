@@ -36,6 +36,7 @@ import com.example.stx_dig.R;
 
 import org.apache.commons.math3.ml.neuralnet.UpdateAction;
 
+import gui.BaseClass;
 import gui.MyApp;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
@@ -49,7 +50,7 @@ import services.UpdateValuesService;
 import utils.MyData;
 import utils.MyDeviceManager;
 
-public class Nuova_Machine_Settings extends AppCompatActivity {
+public class Nuova_Machine_Settings extends BaseClass {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
     CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2,ckJ;

@@ -26,22 +26,20 @@ public class DrillLib {
             correctMastLink = Offset_Applier.realMastLink(DataSaved.offsetStick);
             correctToolRoll= Offset_Applier.real_Tool_Roll(DataSaved.offset_Tool_Roll);
             correctToolPitch= Offset_Applier.real_Tool_Pitch(DataSaved.offset_Tool_Pitch);;
+            double hdt0 = ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
             if (DataSaved.Extra_Heading != 0) {
+
                 if (NmeaListener.roof_Orientation != 999.999) {
-                    swing_boom_angle = NmeaListener.roof_Orientation - (NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+                    swing_boom_angle = ((NmeaListener.roof_Orientation + DataSaved.offsetSwingExca) % 360 + 360) % 360;
+
                 } else {
-                    swing_boom_angle = 0;
+                    swing_boom_angle = hdt0;
                 }
+                hdt_BOOM = ((swing_boom_angle) % 360 + 360) % 360;
             } else {
                 swing_boom_angle = 0;
+                hdt_BOOM = ((hdt0 + swing_boom_angle) % 360 + 360) % 360;
             }
-            double offsetSwing = 0;
-            if (DataSaved.Extra_Heading == 1) {
-                offsetSwing = DataSaved.offsetSwingExca;
-            }
-            double hdt0 = ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
-            hdt_BOOM = ((hdt0 + swing_boom_angle + offsetSwing) % 360 + 360) % 360;
-
             double hdtR = ((hdt0 + 90) % 360 + 360) % 360;
 
             double hdtL = ((hdt0 - 90) % 360 + 360) % 360;
