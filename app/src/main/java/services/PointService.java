@@ -562,4 +562,7 @@ public class PointService extends Service {
         // proiezione scalare (metri lungo asse, 0=head, L=end)
         return (bx*ux + by*uy + bz*uz);
     }
+    public static boolean isTiltWithinTolerance() {
+        return !(FrecciaUP || FrecciaLEFT || FrecciaDOWN || FrecciaRIGHT);
+    }
 }

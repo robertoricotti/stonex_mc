@@ -19,7 +19,6 @@ import androidx.constraintlayout.widget.Guideline;
 
 import com.example.stx_dig.R;
 
-
 import DPAD.DPadHelper;
 import gui.BaseClass;
 import gui.MyApp;
@@ -158,11 +157,11 @@ public class Drill_Activity extends BaseClass {
         if (DataSaved.colorMode == 0) {
             colorUp = Color.RED;
             colorDown = Color.BLUE;
-            colorGreen = Color.GREEN;
+            colorGreen = getResources().getColor(R.color.verde_sfondo_scuro);
         } else {
             colorDown = Color.RED;
             colorUp = Color.BLUE;
-            colorGreen = Color.GREEN;
+            colorGreen = getResources().getColor(R.color.verde_sfondo_scuro);
         }
         divisorioC.setBackgroundColor(MyColorClass.colorConstraint);
         divisorioDw.setBackgroundColor(MyColorClass.colorConstraint);
@@ -173,7 +172,7 @@ public class Drill_Activity extends BaseClass {
         sideLayout.setBackgroundColor(MyColorClass.colorSfondo);
 
 
-        indicator.setTolerance(DataSaved.deadbandH);
+        indicator.setTolerance(DataSaved.Drill_tolleranza_Z);
         indicator.setColors(colorUp, colorDown, colorGreen);
         textInfo.setTextColor(MyColorClass.colorConstraint);
         tiltInfo.setTextColor(MyColorClass.colorConstraint);
@@ -183,8 +182,8 @@ public class Drill_Activity extends BaseClass {
         bubbleCanvas = new Drill_Bubble(this);
         bubble.addView(bubbleCanvas);
         ((Drill_TopView) topViewCanvas).setTargetScale(1.25f);
-        ((Drill_TopView) topViewCanvas).setUiRotationDeg(90*DataSaved.Drill_Screen);
-        ((Drill_Bubble)bubbleCanvas).setUiRotationDeg(90*DataSaved.Drill_Screen);
+        ((Drill_TopView) topViewCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
+        ((Drill_Bubble) bubbleCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
         switch (DataSaved.temaSoftware) {
             case 0:
                 tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
@@ -311,12 +310,12 @@ public class Drill_Activity extends BaseClass {
         });
         playpause.setOnClickListener(view -> {
             if (
-                    PointService.okTilt && PointService.okXY
+                    PointService.okStart
             ) {
                 isDrilling = !isDrilling;
             } else {
                 isDrilling = false;
-            }//TODO ROUTINE trivellazione
+            }
 
         });
 
@@ -346,6 +345,7 @@ public class Drill_Activity extends BaseClass {
         if (isDrilling) {
             ((Drill_Bubble) bubbleCanvas).setCrossOnly(false); // voglio freccia SEMPRE
             setIndicator();
+            setFrecciaDrill();
         } else {
             ((Drill_Bubble) bubbleCanvas).setCrossOnly(PointService.okStart); // se vuoi “READY”
         }
@@ -406,10 +406,8 @@ public class Drill_Activity extends BaseClass {
             rig = 1f;
             sid = 1f;
             settaFreccia();
-        } else {
-            quotaIndicator.setImageResource((R.drawable.baseline_arrow_circle_down));
-            quotaIndicator.setRotation(0);
         }
+
         side.setGuidelinePercent(sid);
 
         switch (typeVistaDrill) {
@@ -517,7 +515,7 @@ public class Drill_Activity extends BaseClass {
                 // -------- DURANTE TRIVELLAZIONE --------
                 if (!hasEnd) {
                     // fallback: quello che avevi tu
-                    txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(deltaQuota3D())));
+                    txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(-deltaQuota3D())));
                     return;
                 }
 
@@ -526,12 +524,12 @@ public class Drill_Activity extends BaseClass {
                 if (vertical) {
                     // verticale: residuo in Z verso fondo (endZ - bitZ)
                     double dzEnd = ez - bit[2]; // >0 se manca ancora da scendere
-                    txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(dzEnd)));
+                    txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(-dzEnd)));
                 } else {
                     // inclinato: residuo lungo asse palo (consigliato)
                     double s = distAlongAxisFromHead(bit, hx, hy, hz, ex, ey, ez); // metri da head lungo asse
                     if (!isFinite(s)) {
-                        txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(deltaQuota3D())));
+                        txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(-deltaQuota3D())));
                         return;
                     }
 
@@ -542,8 +540,9 @@ public class Drill_Activity extends BaseClass {
                     double sClamped = clamp(s, 0.0, L);
                     double remaining = L - sClamped; // metri che mancano al fondo lungo asse
 
-                    txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(remaining)));
+                    txtdepth.setText(Utils.readUnitOfMeasureLITE(String.valueOf(-remaining)));
                 }
+                //TODO Routine disabilita pulsanti e reportistica QUI
             }
 
 
@@ -597,6 +596,7 @@ public class Drill_Activity extends BaseClass {
 
     private void setIndicator() {
         try {
+            indicator.setTolerance(DataSaved.Drill_tolleranza_Z);
             indicator.setTargetValue(DataSaved.Selected_Point3D_Drill.getEndZ());
             double low = DataSaved.Selected_Point3D_Drill.getEndZ() - 0.5;
             double high = DataSaved.Selected_Point3D_Drill.getEndZ() + 2;
@@ -646,11 +646,13 @@ public class Drill_Activity extends BaseClass {
         }
         setDpad();
     }
-    private void setDpad(){
 
-        DPadHelper.getInstance().setXYZ( new double[]{ MyData.get_Double("demoEAST"), MyData.get_Double("demoNORD"), MyData.get_Double("demoZ")});
+    private void setDpad() {
+
+        DPadHelper.getInstance().setXYZ(new double[]{MyData.get_Double("demoEAST"), MyData.get_Double("demoNORD"), MyData.get_Double("demoZ")});
 
     }
+
     private void settaFreccia() {
 
         Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
@@ -695,17 +697,40 @@ public class Drill_Activity extends BaseClass {
             if (targetError > tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
                 quotaIndicator.setRotation(0);
+                txtdepth.setBackgroundColor(colorUp);
+                quotaIndicator.setBackgroundColor(colorUp);
             } else if (targetError < -tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
                 quotaIndicator.setRotation(180);
+                txtdepth.setBackgroundColor(colorDown);
+                quotaIndicator.setBackgroundColor(colorDown);
             } else {
                 quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
                 quotaIndicator.setRotation(0);
+                txtdepth.setBackgroundColor(colorGreen);
+                quotaIndicator.setBackgroundColor(colorGreen);
             }
 
             return;
         }
 
+
+    }
+    private void setFrecciaDrill(){
+        Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
+        if (sel == null) return;
+
+        double[] bit = toolEndCoord;
+        if (bit == null || bit.length < 3) return;
+
+        Double hxObj = sel.getHeadX(), hyObj = sel.getHeadY(), hzObj = sel.getHeadZ();
+        if (hxObj == null || hyObj == null || hzObj == null) return;
+
+        boolean vertical = isHoleVertical(sel);
+
+        // targetError > 0  => sei "sopra" il target (devi scendere / aumentare avanzamento)
+        // targetError < 0  => sei "sotto" il target (devi salire / diminuire avanzamento)
+        double targetError;
         // =========================
         // DURANTE TRIVELLAZIONE
         // =========================
@@ -717,6 +742,8 @@ public class Drill_Activity extends BaseClass {
             // fallback: non posso stimare correttamente "quanto manca"
             quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
             quotaIndicator.setRotation(0);
+            txtdepth.setBackgroundColor(Color.TRANSPARENT);
+            quotaIndicator.setBackgroundColor(Color.TRANSPARENT);
             return;
         }
 
@@ -725,19 +752,25 @@ public class Drill_Activity extends BaseClass {
             double remainingZ = ezObj - bit[2];
             // >0 => manca ancora (devi scendere) => freccia giù
             // <0 => sei oltre fondo => freccia su
-            targetError = remainingZ;
+            targetError = -remainingZ;
 
             double tol = DataSaved.Drill_tolleranza_Z;
 
             if (targetError > tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
                 quotaIndicator.setRotation(0);
+                txtdepth.setBackgroundColor(colorUp);
+                quotaIndicator.setBackgroundColor(colorUp);
             } else if (targetError < -tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
                 quotaIndicator.setRotation(180);
+                txtdepth.setBackgroundColor(colorDown);
+                quotaIndicator.setBackgroundColor(colorDown);
             } else {
                 quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
                 quotaIndicator.setRotation(0);
+                txtdepth.setBackgroundColor(colorGreen);
+                quotaIndicator.setBackgroundColor(colorGreen);
             }
 
         } else {
@@ -746,6 +779,8 @@ public class Drill_Activity extends BaseClass {
             if (!isFinite(s)) {
                 quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
                 quotaIndicator.setRotation(0);
+                txtdepth.setBackgroundColor(Color.TRANSPARENT);
+                quotaIndicator.setBackgroundColor(Color.TRANSPARENT);
                 return;
             }
 
@@ -765,12 +800,18 @@ public class Drill_Activity extends BaseClass {
             if (targetError > tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
                 quotaIndicator.setRotation(0);
+                txtdepth.setBackgroundColor(colorUp);
+                quotaIndicator.setBackgroundColor(colorUp);
             } else if (targetError < -tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
                 quotaIndicator.setRotation(180);
+                txtdepth.setBackgroundColor(colorDown);
+                quotaIndicator.setBackgroundColor(colorDown);
             } else {
                 quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
                 quotaIndicator.setRotation(0);
+                txtdepth.setBackgroundColor(colorGreen);
+                quotaIndicator.setBackgroundColor(colorGreen);
             }
         }
     }
@@ -1012,16 +1053,21 @@ public class Drill_Activity extends BaseClass {
 
             // 5) COLORI
             // ring = okTilt? verde : rosso
-            int ringColorLocal = PointService.okTilt ? getColor(R.color.verde_sfondo_scuro)
+
+            int ringColorLocal = PointService.isTiltWithinTolerance() ? getColor(R.color.verde_sfondo_scuro)
                     : getResources().getColor(R.color.bg_sfsred);
 
             // arrowColor = in base alla distanza che stai mostrando (dShown), non pe[2] a caso
             double dForColor = isDrilling ? PointService.distAxis : ((!isVertical) ? PointService.distXYToHead : PointService.distAxis);
 
+            double mTol=DataSaved.Drill_tolleranza_XY;
+            if(!isVertical){
+                mTol=DataSaved.Drill_tolleranza_Axis;
+            }
             int arrowColorLocal;
             if (!Double.isFinite(dForColor)) {
                 arrowColorLocal = getColor(R.color.rosso_sfondo_scuro);
-            } else if (dForColor <= DataSaved.Drill_tolleranza_XY) {
+            } else if (dForColor <= mTol) {
                 arrowColorLocal = getColor(R.color.verde_sfondo_scuro);
             } else if (dForColor < 1.0) {
                 arrowColorLocal = getColor(R.color.arancio_sfondo_scuro);

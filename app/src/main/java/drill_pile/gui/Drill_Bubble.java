@@ -138,7 +138,16 @@ public class Drill_Bubble extends View {
         drawOuterTriangles(canvas, cx, cy, rOuter, strokeOuter);
 
         // -------- freccia XY (bit -> asse/testa) --------
-        if (!showCrossOnly && DataSaved.Selected_Point3D_Drill != null) {
+        boolean canShowInnerArrow;
+        if (isDrilling) {
+            // in drilling: mostra solo se sei fuori asse
+            canShowInnerArrow = !services.PointService.okDrill;
+        } else {
+            // in setup: mostra se hai un target selezionato
+            canShowInnerArrow = (DataSaved.Selected_Point3D_Drill != null);
+        }
+
+        if (!showCrossOnly && canShowInnerArrow) {
             drawInnerArrow(canvas, cx, cy, rInner * 0.82f);
         }
 
