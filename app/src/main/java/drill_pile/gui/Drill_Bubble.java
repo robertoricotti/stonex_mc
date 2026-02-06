@@ -109,7 +109,7 @@ public class Drill_Bubble extends View {
 
         // tieniti più “dentro” (anti-bordo)
         float baseR = Math.min(w, h) * 0.46f;     // raggio massimo teorico
-        float safe = Math.max(8f, baseR * 0.08f); // margine
+        float safe = Math.max(8f, baseR * 0.2f); // margine
         float rOuter = baseR - safe;
         float rInner = rOuter * 0.66f;
 

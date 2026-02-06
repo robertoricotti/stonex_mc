@@ -1,6 +1,6 @@
 package services;
 
-
+import static services.CanService.*;
 import static gui.MyApp.hAlarm;
 import static gui.MyApp.isApollo;
 import static gui.MyApp.licenseType;
@@ -174,6 +174,20 @@ public class CanSender extends Service {
             }
 
             if (DataSaved.isCanOpen == JOYSTICKS) {
+                nmeaSTX_Disc = false;
+                frameDisc = false;
+                boom2Disc = false;
+                boom1Disc = false;
+                bucketDisc = false;
+                tiltDisc = false;
+                stickDisc = false;
+                frameOK = true;
+                boom1OK = true;
+                boom2OK = true;
+                stickOK = true;
+                bucketOK = true;
+                flagLaser = true;
+                tiltOK = true;
                 final DPadMapperLeft currentLeft = DPadHelper.getInstance().getLeft();
                 final DPadMapperRight currentRight = DPadHelper.getInstance().getRight();
                 switch (DataSaved.isWL) {

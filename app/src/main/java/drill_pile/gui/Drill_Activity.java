@@ -835,7 +835,7 @@ public class Drill_Activity extends BaseClass {
             // target = 0 (vuoi arrivare a fondo), quindi "errore" = remainingAxis
             // >0 => manca ancora => scendi
             // <0 non succede con clamp, ma lo gestiamo uguale
-            targetError = remainingAxis;
+            targetError = -remainingAxis;
 
             // qui TI SERVE una tolleranza "lungo asse" (metri).
             // se non l’hai, usa Drill_tolleranza_Z come fallback ma meglio creare Drill_tolleranza_DepthAxis

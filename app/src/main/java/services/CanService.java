@@ -111,20 +111,6 @@ public class CanService extends Service {
 
     public void OnCan(int channel, byte[] msg, int dlc, int id) {
         if(DataSaved.isCanOpen==JOYSTICKS){
-            nmeaSTX_Disc = false;
-            frameDisc = false;
-            boom2Disc = false;
-            boom1Disc = false;
-            bucketDisc = false;
-            tiltDisc = false;
-            stickDisc = false;
-            frameOK = true;
-            boom1OK = true;
-            boom2OK = true;
-            stickOK = true;
-            bucketOK = true;
-            flagLaser = true;
-            tiltOK = true;
 
             return;
         }
