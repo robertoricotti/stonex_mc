@@ -492,7 +492,11 @@ public class PointService extends Service {
         return null;
     }
 
-    public static Point3D_Drill findNearestDrillPoint(double bucketEst, double bucketNord, List<Point3D_Drill> filteredPoints) {
+    public static Point3D_Drill findNearestDrillPoint(
+            double bucketEst,
+            double bucketNord,
+            List<Point3D_Drill> filteredPoints
+    ) {
         if (filteredPoints == null || filteredPoints.isEmpty()) return null;
 
         Point3D_Drill nearest = null;
@@ -501,6 +505,11 @@ public class PointService extends Service {
         for (Point3D_Drill p : filteredPoints) {
             if (p == null) continue;
             if (p.getHeadX() == null || p.getHeadY() == null) continue;
+
+            // Se NON è TODO, non è selezionabile: saltalo subito
+            Integer status = p.getStatus();
+            boolean isTodo = (status == null || status == 0);
+            if (!isTodo) continue;
 
             // distanza in XY dalla testa foro
             double d = new DistToPoint(bucketEst, bucketNord, 0,
@@ -512,13 +521,9 @@ public class PointService extends Service {
             }
         }
 
-        if (nearest == null) return null;
-
-        Integer status = nearest.getStatus();
-        if (status == null || status == 0) return nearest;
-
-        return null;
+        return nearest; // null se non c'è alcun TODO vicino
     }
+
 
     private static boolean isHoleVerticalDeg(double holeTiltDeg) {
         return !Double.isNaN(holeTiltDeg) && holeTiltDeg < 1.0; // tua soglia

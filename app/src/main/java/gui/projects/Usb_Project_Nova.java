@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cp.cputils.Apollo2;
+import com.cp.cputils.shellcommand.CpCmd;
 import com.example.stx_dig.R;
 import com.van.jni.VanCmd;
 
@@ -134,8 +135,10 @@ public class Usb_Project_Nova extends AppCompatActivity {
                     Apollo2 apollo2 = Apollo2.getInstance(this);
                     apollo2.exec("umount " + usbPath);
 
-                } else {
+                } else if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){
                     VanCmd.exec("umount " + usbPath, 0);
+                }else if(Build.BRAND.equals("MEGA_1")){
+                    new CpCmd().exceCmd("umount " + usbPath);
                 }
                 new CustomToast(this, getResources().getString(R.string.rimuovi_usb)).show_alert();
                 unmount = true;

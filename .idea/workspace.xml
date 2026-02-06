@@ -441,9 +441,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 pre drill routine">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/outline_arrows_left_right_circle_96.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Bubble.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Bubble.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Usb_Project_Nova.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Usb_Project_Nova.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -454,7 +457,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -669,14 +672,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00046" summary="4.0.16 NFR USA TEST">
-      <option name="closed" value="true" />
-      <created>1764799364343</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1764799364343</updated>
     </task>
     <task id="LOCAL-00047" summary="4.0.16 NFR USA TEST">
       <option name="closed" value="true" />
@@ -1062,7 +1057,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770332619392</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="4.1.0 pre drill routine">
+      <option name="closed" value="true" />
+      <created>1770376172258</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1770376172258</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

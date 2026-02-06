@@ -6,12 +6,15 @@ import static packexcalib.gnss.CRS_Strings._UTM;
 
 import android.util.Log;
 
+import com.cp.cputils.Apollo2;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 
@@ -52,10 +55,12 @@ public class NmeaListener {
      */
 
 
+
     public NmeaListener() {
     }
 
     public static void NmeaStandard(String NMEA0183) {
+
 
         try {
 

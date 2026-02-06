@@ -187,17 +187,21 @@ public class Drill_Activity extends BaseClass {
         switch (DataSaved.temaSoftware) {
             case 0:
                 tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                tiposnap.setImageTintList(getColorStateList(R.color.white));
+                tiposnap.setImageTintList(getColorStateList(R.color.Bg_yellow));
                 uomesure.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                uomesure.setTextColor(getColor(R.color.white));
+                uomesure.setTextColor(getColor(R.color.Bg_yellow));
                 puntatore.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                puntatore.setImageTintList(getColorStateList(R.color.white));
+                puntatore.setImageTintList(getColorStateList(R.color.Bg_yellow));
                 zoom_P.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                zoom_P.setImageTintList(getColorStateList(R.color.white));
+                zoom_P.setImageTintList(getColorStateList(R.color.Bg_yellow));
                 zoom_M.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                zoom_M.setImageTintList(getColorStateList(R.color.white));
+                zoom_M.setImageTintList(getColorStateList(R.color.Bg_yellow));
                 zoom_C.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                zoom_C.setImageTintList(getColorStateList(R.color.white));
+                zoom_C.setImageTintList(getColorStateList(R.color.Bg_yellow));
+                drillSet.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
+                drillSet.setImageTintList(getColorStateList(R.color.Bg_yellow));
+                infoPoint.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
+                infoPoint.setImageTintList(getColorStateList(R.color.Bg_yellow));
 
                 ((Drill_TopView) topViewCanvas).setColorTarget_Alto(Color.CYAN);
                 ((Drill_TopView) topViewCanvas).setColorTarget_Basso(Color.YELLOW);
@@ -212,17 +216,21 @@ public class Drill_Activity extends BaseClass {
             case 1:
             case 2:
                 tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
-                tiposnap.setImageTintList(getColorStateList(R.color._____cancel_text));
+                tiposnap.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 uomesure.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
-                uomesure.setTextColor(getColor(R.color._____cancel_text));
+                uomesure.setTextColor(getColor(R.color.colorStonexBlue));
                 puntatore.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
-                puntatore.setImageTintList(getColorStateList(R.color._____cancel_text));
+                puntatore.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 zoom_P.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
-                zoom_P.setImageTintList(getColorStateList(R.color._____cancel_text));
+                zoom_P.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 zoom_M.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
-                zoom_M.setImageTintList(getColorStateList(R.color._____cancel_text));
+                zoom_M.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 zoom_C.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
-                zoom_C.setImageTintList(getColorStateList(R.color._____cancel_text));
+                zoom_C.setImageTintList(getColorStateList(R.color.colorStonexBlue));
+                drillSet.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
+                drillSet.setImageTintList(getColorStateList(R.color.colorStonexBlue));
+                infoPoint.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
+                infoPoint.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 ((Drill_TopView) topViewCanvas).setColorTarget_Alto(Color.BLUE);
                 ((Drill_TopView) topViewCanvas).setColorTarget_Basso(getResources().getColor(R.color.bg));
                 ((Drill_TopView) topViewCanvas).setColoreCroce(getResources().getColor(R.color.bg));
@@ -309,9 +317,7 @@ public class Drill_Activity extends BaseClass {
 
         });
         playpause.setOnClickListener(view -> {
-            if (
-                    PointService.okStart
-            ) {
+            if (PointService.okStart) {
                 isDrilling = !isDrilling;
             } else {
                 isDrilling = false;
@@ -365,7 +371,7 @@ public class Drill_Activity extends BaseClass {
         }
         String s = String.format(
                 java.util.Locale.US,
-                "Y: %7.2f°\nX: %7.2f°",
+                "Y_deg: %7.2f°\nX_deg: %7.2f°",
                 ExcavatorLib.correctToolPitch,
                 ExcavatorLib.correctToolRoll
         );
@@ -419,6 +425,7 @@ public class Drill_Activity extends BaseClass {
                 zoom_P.setVisibility(View.VISIBLE);
                 zoom_M.setVisibility(View.VISIBLE);
                 zoom_C.setVisibility(View.VISIBLE);
+                puntatore.setVisibility(View.VISIBLE);
                 compass.setVisibility(View.VISIBLE);
                 break;
 
@@ -429,6 +436,7 @@ public class Drill_Activity extends BaseClass {
                 zoom_P.setVisibility(View.VISIBLE);
                 zoom_M.setVisibility(View.VISIBLE);
                 zoom_C.setVisibility(View.VISIBLE);
+                puntatore.setVisibility(View.VISIBLE);
                 compass.setVisibility(View.VISIBLE);
                 break;
 
@@ -441,6 +449,7 @@ public class Drill_Activity extends BaseClass {
                 zoom_M.setVisibility(View.INVISIBLE);
                 zoom_C.setVisibility(View.INVISIBLE);
                 compass.setVisibility(View.VISIBLE);
+                puntatore.setVisibility(View.INVISIBLE);
                 break;
         }
         if (DataSaved.gpsOk && errorCode == 0) {
@@ -467,6 +476,8 @@ public class Drill_Activity extends BaseClass {
 
             if (sel == null || toolEndCoord == null || toolEndCoord.length < 3) {
                 txtdepth.setText("__.__");
+                txtdepth.setBackgroundColor(getColor(R.color._____cancel_text));
+                quotaIndicator.setBackgroundColor(getColor(R.color._____cancel_text));
                 return;
             }
 
@@ -486,6 +497,8 @@ public class Drill_Activity extends BaseClass {
 
             if (!hasHead) {
                 txtdepth.setText("__.__");
+                txtdepth.setBackgroundColor(getColor(R.color._____cancel_text));
+                quotaIndicator.setBackgroundColor(getColor(R.color._____cancel_text));
                 return;
             }
 
@@ -551,6 +564,8 @@ public class Drill_Activity extends BaseClass {
             txthdt.setText("_._°");
             txttilt.setText("_._°");
             txtdepth.setText("__.__");
+            txtdepth.setBackgroundColor(getColor(R.color._____cancel_text));
+            quotaIndicator.setBackgroundColor(getColor(R.color._____cancel_text));
         }
         switch (DataSaved.isAutoSnap) {
             case 0:
@@ -567,6 +582,34 @@ public class Drill_Activity extends BaseClass {
         }
 
         textInfo.setText(setTesto());
+
+        if(isDrilling){
+            playpause.setAlpha(1.0f);
+            playpause.setImageResource(R.drawable.bt_stop_search);
+            playpause.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_box_giallo));
+            digMenu.setEnabled(false);
+            digMenu.setAlpha(0.3f);
+            lineReference.setEnabled(false);
+            lineReference.setAlpha(0.3f);
+            drillSet.setEnabled(false);
+            drillSet.setVisibility(View.INVISIBLE);
+
+        }else {
+            if (!PointService.okStart) {
+                playpause.setAlpha(0.3f);
+            }else {
+                playpause.setAlpha(1.0f);
+            }
+            playpause.setImageResource(R.drawable.btn_play);
+            playpause.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_box_grigino));
+            digMenu.setEnabled(true);
+            digMenu.setAlpha(1.0f);
+            lineReference.setEnabled(true);
+            lineReference.setAlpha(1.0f);
+            drillSet.setEnabled(true);
+            drillSet.setVisibility(View.VISIBLE);
+        }
+
 
     }
 
@@ -705,7 +748,7 @@ public class Drill_Activity extends BaseClass {
                 txtdepth.setBackgroundColor(colorDown);
                 quotaIndicator.setBackgroundColor(colorDown);
             } else {
-                quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
+                quotaIndicator.setImageResource(R.drawable.outline_arrows_left_right_circle_96);
                 quotaIndicator.setRotation(0);
                 txtdepth.setBackgroundColor(colorGreen);
                 quotaIndicator.setBackgroundColor(colorGreen);
@@ -716,7 +759,8 @@ public class Drill_Activity extends BaseClass {
 
 
     }
-    private void setFrecciaDrill(){
+
+    private void setFrecciaDrill() {
         Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
         if (sel == null) return;
 
@@ -740,10 +784,10 @@ public class Drill_Activity extends BaseClass {
 
         if (!hasEnd) {
             // fallback: non posso stimare correttamente "quanto manca"
-            quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
+            quotaIndicator.setImageResource(R.drawable.outline_arrows_left_right_circle_96);
             quotaIndicator.setRotation(0);
-            txtdepth.setBackgroundColor(Color.TRANSPARENT);
-            quotaIndicator.setBackgroundColor(Color.TRANSPARENT);
+            txtdepth.setBackgroundColor(getColor(R.color._____cancel_text));
+            quotaIndicator.setBackgroundColor(getColor(R.color._____cancel_text));
             return;
         }
 
@@ -767,7 +811,7 @@ public class Drill_Activity extends BaseClass {
                 txtdepth.setBackgroundColor(colorDown);
                 quotaIndicator.setBackgroundColor(colorDown);
             } else {
-                quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
+                quotaIndicator.setImageResource(R.drawable.outline_arrows_left_right_circle_96);
                 quotaIndicator.setRotation(0);
                 txtdepth.setBackgroundColor(colorGreen);
                 quotaIndicator.setBackgroundColor(colorGreen);
@@ -777,10 +821,10 @@ public class Drill_Activity extends BaseClass {
             // inclinato: quanto manca lungo asse (remainingAxis)
             double s = distAlongAxisFromHead(bit, hxObj, hyObj, hzObj, exObj, eyObj, ezObj);
             if (!isFinite(s)) {
-                quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
+                quotaIndicator.setImageResource(R.drawable.outline_arrows_left_right_circle_96);
                 quotaIndicator.setRotation(0);
-                txtdepth.setBackgroundColor(Color.TRANSPARENT);
-                quotaIndicator.setBackgroundColor(Color.TRANSPARENT);
+                txtdepth.setBackgroundColor(getColor(R.color._____cancel_text));
+                quotaIndicator.setBackgroundColor(getColor(R.color._____cancel_text));
                 return;
             }
 
@@ -808,7 +852,7 @@ public class Drill_Activity extends BaseClass {
                 txtdepth.setBackgroundColor(colorDown);
                 quotaIndicator.setBackgroundColor(colorDown);
             } else {
-                quotaIndicator.setImageResource(R.drawable.outline_adjust_24);
+                quotaIndicator.setImageResource(R.drawable.outline_arrows_left_right_circle_96);
                 quotaIndicator.setRotation(0);
                 txtdepth.setBackgroundColor(colorGreen);
                 quotaIndicator.setBackgroundColor(colorGreen);
@@ -1060,9 +1104,9 @@ public class Drill_Activity extends BaseClass {
             // arrowColor = in base alla distanza che stai mostrando (dShown), non pe[2] a caso
             double dForColor = isDrilling ? PointService.distAxis : ((!isVertical) ? PointService.distXYToHead : PointService.distAxis);
 
-            double mTol=DataSaved.Drill_tolleranza_XY;
-            if(!isVertical){
-                mTol=DataSaved.Drill_tolleranza_Axis;
+            double mTol = DataSaved.Drill_tolleranza_XY;
+            if (!isVertical) {
+                mTol = DataSaved.Drill_tolleranza_Axis;
             }
             int arrowColorLocal;
             if (!Double.isFinite(dForColor)) {
