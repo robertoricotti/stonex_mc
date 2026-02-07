@@ -13,6 +13,12 @@ public class MyTypes {
 
 
 
+    public static final int ROCKDRILL_MODE=0;
+    public static final int JETGROUTING_MODE=1;
+    public static final int SOLARFARM_MODE=2;
+
+
+
 
 
     public static final int SMC=0;

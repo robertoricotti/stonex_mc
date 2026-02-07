@@ -277,7 +277,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
-                android:visibility="visible">
+                android:visibility="gone">
                 <CheckBox
                     android:id="@+id/ckMach"
                     android:layout_width="wrap_content"
@@ -474,6 +474,47 @@
                     android:orientation="vertical"
                     tools:layout_editor_absoluteX="16dp"
                     tools:layout_editor_absoluteY="84dp">
+                    <LinearLayout
+                        android:id="@+id/lay_drilmode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+                        <CheckBox
+                            android:id="@+id/ckRock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:text="ROCK DRILL MODE"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:ems="12"
+                            android:textStyle="bold|italic"
+                            />
+                        <CheckBox
+                            android:id="@+id/ckJet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:text="JET GROUTING MODE"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:ems="12"
+                            android:textStyle="bold|italic"
+                            />
+                        <CheckBox
+                            android:id="@+id/ckSolar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:text="SOLAR FARM MODE"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:ems="12"
+                            android:textStyle="bold|italic"
+                            />
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/toxyz"

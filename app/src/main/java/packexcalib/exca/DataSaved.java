@@ -29,6 +29,8 @@ import iredes.RigStatus_IR;
 public class DataSaved {
     public static int Unit_Of_Measure;
     public static int Drill_Screen;
+    public static int Drilling_Mode;
+
     //Dragaggio
     public static double HighThreshold;
     public static double LowThreshold;

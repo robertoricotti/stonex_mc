@@ -53,7 +53,7 @@ import utils.MyDeviceManager;
 public class Nuova_Machine_Settings extends BaseClass {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
-    CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2,ckJ;
+    CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2,ckJ,ckRock,ckJet,ckSolar;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
@@ -65,7 +65,7 @@ public class Nuova_Machine_Settings extends BaseClass {
     Dialog_CanBaud dialogCanBaud;
     Dialog_Swing_Boom dialogSwingBoom;
     Dialog_Wheel_Steer dialogWheelSteer;
-    LinearLayout linear_1, linear_2, linear_3;
+    LinearLayout linear_1, linear_2, linear_3,lay_drilmode;
     int small, bigg;
 
     @Override
@@ -113,7 +113,10 @@ public class Nuova_Machine_Settings extends BaseClass {
         tvSwing = findViewById(R.id.tvSwing);
         toExtraSensor = findViewById(R.id.toExtraSensor);
         drillEnc = findViewById(R.id.drillEnc);
-        //drill.setVisibility(View.GONE);
+        lay_drilmode=findViewById(R.id.lay_drilmode);
+        ckRock=findViewById(R.id.ckRock);
+        ckJet=findViewById(R.id.ckJet);
+        ckSolar=findViewById(R.id.ckSolar);
         tvFrame = findViewById(R.id.toFrame);
         tvBoom1 = findViewById(R.id.toBoom1);
         tvBoom2 = findViewById(R.id.toBoom2);
@@ -143,10 +146,6 @@ public class Nuova_Machine_Settings extends BaseClass {
         can2bd = findViewById(R.id.toCan2);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
 
-
-
-
-
     }
 
     private void onClick() {
@@ -172,6 +171,30 @@ public class Nuova_Machine_Settings extends BaseClass {
             }
         });
 
+        ckRock.setOnClickListener(view -> {
+            ckRock.setChecked(true);
+            ckJet.setChecked(false);
+            ckSolar.setChecked(false);
+            MyData.push("M" + machineSel + "Drilling_Mode", "0");
+            DataSaved.Drilling_Mode=0;
+
+        });
+        ckJet.setOnClickListener(view -> {
+            ckRock.setChecked(false);
+            ckJet.setChecked(true);
+            ckSolar.setChecked(false);
+            MyData.push("M" + machineSel + "Drilling_Mode", "1");
+            DataSaved.Drilling_Mode=1;
+
+        });
+        ckSolar.setOnClickListener(view -> {
+            ckRock.setChecked(false);
+            ckJet.setChecked(false);
+            ckSolar.setChecked(true);
+            MyData.push("M" + machineSel + "Drilling_Mode", "2");
+            DataSaved.Drilling_Mode=2;
+
+        });
 
         ck_stxGen1.setOnClickListener(view -> {
             ckDEMO.setChecked(false);
@@ -553,6 +576,11 @@ public class Nuova_Machine_Settings extends BaseClass {
     }
 
     public void updateUI() {
+        if(DataSaved.isWL==DRILL){
+            lay_drilmode.setVisibility(View.VISIBLE);
+        }else {
+            lay_drilmode.setVisibility(View.GONE);
+        }
         if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
             toCanopen.setVisibility(View.VISIBLE);
             toDamping.setVisibility(View.VISIBLE);
@@ -881,6 +909,9 @@ public class Nuova_Machine_Settings extends BaseClass {
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);
         ckMach.setChecked(MyData.get_Int("drwaMachieSchema") == 1);
         techInfo.setText(MyData.get_String("techInfo"));
+        ckRock.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == 0);
+        ckJet.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == 1);
+        ckSolar.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == 2);
 
     }
 

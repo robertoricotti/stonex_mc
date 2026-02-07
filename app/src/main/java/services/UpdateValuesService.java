@@ -170,6 +170,7 @@ public class UpdateValuesService extends Service {
                     String Wheel_Steer_Range = MyData.get_String("M" + i + "Wheel_Steer_Range");
 
                     String swingLen = MyData.get_String("M" + i + "_Swing_Len");
+                    String Drilling_Mode = MyData.get_String("M" + i + "Drilling_Mode");
 
 
                     String iswl = MyData.get_String("M" + i + "_isWL");
@@ -398,6 +399,9 @@ public class UpdateValuesService extends Service {
 
                     if (swingLen == null) {
                         MyData.push("M" + i + "_Swing_Len", "0.0");
+                    }
+                    if (Drilling_Mode == null) {
+                        MyData.push("M" + i + "Drilling_Mode", "0");
                     }
 
                     //draw
@@ -1857,6 +1861,12 @@ public class UpdateValuesService extends Service {
                     DataSaved.miniPitch_L = MyData.get_Double("M" + indexMach + "_Swing_Len");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di miniPitch_L: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.Drilling_Mode = MyData.get_Int("M" + indexMach + "Drilling_Mode");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Drilling_Mode: " + e.getMessage());
                 }
 
 

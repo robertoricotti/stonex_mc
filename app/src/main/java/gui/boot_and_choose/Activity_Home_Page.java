@@ -67,7 +67,7 @@ public class Activity_Home_Page extends BaseClass {
     ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo,testSP;
     CloseAppDialog closeAppDialog;
     ProgressBar progressBar;
-    TextView stringsStat, titolo;
+    TextView stringsStat, titolo,txt2d;
     DialogPassword dialogPassword;
     Dialog_Create_New_Prj dialogCreateNewPrj;
     Dialog_InfoApp dialogInfoApp;
@@ -131,6 +131,7 @@ public class Activity_Home_Page extends BaseClass {
     }
 
     private void findView() {
+        txt2d=findViewById(R.id.textView3);
         closeAppDialog = new CloseAppDialog(this);
         dialogPassword = new DialogPassword(this);
         dialogCreateNewPrj = new Dialog_Create_New_Prj(this);
@@ -174,9 +175,28 @@ public class Activity_Home_Page extends BaseClass {
         }else {
             DataSaved.portView=2;
         }
-        if (DataSaved.isWL > EXCAVATOR) {
-            toDueD.setAlpha(0.3f);
+        switch (DataSaved.isWL){
+            case EXCAVATOR:
+                toDueD.setAlpha(1.0f);
+                toDueD.setImageResource(R.drawable.bottone_duedi);
+                txt2d.setText("1D  - 2D");
+                break;
+            case WHEELLOADER:
+            case DOZER:
+            case GRADER:
+            case DOZER_SIX:
+                toDueD.setAlpha(0.3f);
+                toDueD.setImageResource(R.drawable.bottone_duedi);
+                txt2d.setText("1D  - 2D");
+                break;
+            case DRILL:
+            case SOLARDRILL:
+                toDueD.setAlpha(1.0f);
+                toDueD.setImageResource(R.drawable.bottone_report_prj);
+                txt2d.setText("REPORTS");
+                break;
         }
+
 
     }
 
@@ -197,15 +217,22 @@ public class Activity_Home_Page extends BaseClass {
             }
         });
         toDueD.setOnClickListener(view -> {
-            if (DataSaved.isWL > EXCAVATOR) {
-                new CustomToast(this, " ").show_alert();
-            } else {
-                //TODO apri 2D
-                if(!dialogToDueDi.dialog.isShowing()){
-                    dialogToDueDi.show();
-                }
+            switch (DataSaved.isWL){
+                case EXCAVATOR:
+                    if(!dialogToDueDi.dialog.isShowing()){
+                        dialogToDueDi.show();
+                    }
+                    break;
 
+                case DRILL:
+                case SOLARDRILL:
+                    //TODO APRI REPORT
+                    break;
+                default:
+
+                    break;
             }
+
         });
         keyLic.setOnClickListener(view -> {
             if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
