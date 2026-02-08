@@ -471,14 +471,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 da fare 3 drill options">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportCsvWriter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectStateCsvStore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/PickReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/PickReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ReportFileAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ReportFileAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Remote_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Remote_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_report_picker.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_report_picker.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/report_picker_row.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/report_picker_row.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/Point3D_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/Point3D_Drill.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -517,8 +515,8 @@
         <option value="valueResourceFile" />
         <option value="Interface" />
         <option value="Enum" />
-        <option value="Class" />
         <option value="layoutResourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -706,14 +704,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00051" summary="4.0.16 NFR USA TEST before release">
-      <option name="closed" value="true" />
-      <created>1765451272456</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1765451272456</updated>
     </task>
     <task id="LOCAL-00052" summary="4.0.16 NFR USA TEST before release">
       <option name="closed" value="true" />
@@ -1099,7 +1089,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770509289212</updated>
     </task>
-    <option name="localTasksCounter" value="100" />
+    <task id="LOCAL-00100" summary="4.1.0 da fare 3 drill options">
+      <option name="closed" value="true" />
+      <created>1770549370775</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1770549370775</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

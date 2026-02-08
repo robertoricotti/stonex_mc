@@ -41,6 +41,7 @@ import org.locationtech.proj4j.UnsupportedParameterException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -48,6 +49,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import drill_pile.gui.Drill_Activity;
+import drill_pile.gui.ProjectReportCsvWriter;
+import drill_pile.gui.ProjectStateCsvStore;
 import dxf.Arc;
 import dxf.Circle;
 import dxf.DXFData;
@@ -63,6 +66,7 @@ import gui.my_opengl.My3DActivity;
 import gui.projects.PickProject;
 import iredes.DrillCSVParser;
 import iredes.IrdParser;
+import iredes.Point3D_Drill;
 import landxml.LandXMLData;
 import landxml.LandXMLParser;
 import packexcalib.exca.DataSaved;
@@ -1044,5 +1048,37 @@ public class ReadProjectService extends Service {
             goToLicense();
         }
 
+    }
+
+    private void generaReport(){
+        //TODO
+       /* File outDir = new File(basePath + "/Exported/" + projectFolderName + "_OUT");
+
+        ProjectReportCsvWriter writer = new ProjectReportCsvWriter(outDir, projectFolderName);
+
+        LinkedHashMap<String, String> preamble = new LinkedHashMap<>();
+        preamble.put("Company", DataSaved.companyName);
+        preamble.put("Machine", DataSaved.machineName);
+        preamble.put("Project", projectFolderName);
+
+        writer.initReport(preamble);*/
+    }
+    private void generaState(){
+      /*  File outDir = new File(basePath + "/Exported/" + projectFolderName + "_OUT");
+
+        ProjectStateCsvStore stateStore = new ProjectStateCsvStore(outDir, projectFolderName);
+        stateStore.initAndLoad(); // crea file se non esiste + carica cache
+
+// Poi, quando costruisci/riempi drill_points:
+// per ogni punto, applichi lo stato salvato:
+        for (Point3D_Drill p : DataSaved.drill_points) {
+            String id = p.getRowId()+p.getId();
+            ProjectStateCsvStore.HoleState st = stateStore.getState(id);
+
+            // mappa sui tuoi status int: 0=TODO, 1=DONE, 2=ABORTED (esempio)
+            if (st == ProjectStateCsvStore.HoleState.DONE) p.setStatus(1);
+            else if (st == ProjectStateCsvStore.HoleState.ABORTED) p.setStatus(2);
+            else p.setStatus(0);
+        }*/
     }
 }

@@ -36,7 +36,8 @@ public class Point3D_Drill implements Serializable {
     private Double depth;       // profondità = headZ - endZ (positiva se scende)
     private Double length;      // lunghezza 3D testa-fine
 
-    public Point3D_Drill() {}
+    public Point3D_Drill() {
+    }
 
     public Point3D_Drill(String id) {
         this.id = id;
@@ -81,44 +82,128 @@ public class Point3D_Drill implements Serializable {
     // -------------------------
     // Getter / Setter
     // -------------------------
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getRowId() { return rowId; }
-    public void setRowId(String rowId) { this.rowId = rowId; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getRowId() {
+        if (rowId != null) {
+            return rowId;
+        } else return "";
+    }
 
-    public Double getHeadX() { return headX; }
-    public void setHeadX(Double headX) { this.headX = headX; }
-    public Double getHeadY() { return headY; }
-    public void setHeadY(Double headY) { this.headY = headY; }
-    public Double getHeadZ() { return headZ; }
-    public void setHeadZ(Double headZ) { this.headZ = headZ; }
+    public void setRowId(String rowId) {
+        this.rowId = rowId;
+    }
 
-    public Double getEndX() { return endX; }
-    public void setEndX(Double endX) { this.endX = endX; }
-    public Double getEndY() { return endY; }
-    public void setEndY(Double endY) { this.endY = endY; }
-    public Double getEndZ() { return endZ; }
-    public void setEndZ(Double endZ) { this.endZ = endZ; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Double getDiameter() { return diameter; }
-    public void setDiameter(Double diameter) { this.diameter = diameter; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public Double getTilt() { return tilt; }
-    public void setTilt(Double tilt) { this.tilt = tilt; }
+    public Double getHeadX() {
+        return headX;
+    }
 
-    public Double getHeadingDeg() { return headingDeg; }
-    public Double getDepth() { return depth; }
-    public Double getLength() { return length; }
+    public void setHeadX(Double headX) {
+        this.headX = headX;
+    }
 
-    public void setHeadingDeg(Double headingDeg) { this.headingDeg = headingDeg; }
-    public void setDepth(Double depth) { this.depth = depth; }
-    public void setLength(Double length) { this.length = length; }
-    public Integer getStatus() { return status; }
-    public void setStatus(Integer status) { this.status = status; }
+    public Double getHeadY() {
+        return headY;
+    }
+
+    public void setHeadY(Double headY) {
+        this.headY = headY;
+    }
+
+    public Double getHeadZ() {
+        return headZ;
+    }
+
+    public void setHeadZ(Double headZ) {
+        this.headZ = headZ;
+    }
+
+    public Double getEndX() {
+        return endX;
+    }
+
+    public void setEndX(Double endX) {
+        this.endX = endX;
+    }
+
+    public Double getEndY() {
+        return endY;
+    }
+
+    public void setEndY(Double endY) {
+        this.endY = endY;
+    }
+
+    public Double getEndZ() {
+        return endZ;
+    }
+
+    public void setEndZ(Double endZ) {
+        this.endZ = endZ;
+    }
+
+    public Double getDiameter() {
+        return diameter;
+    }
+
+    public void setDiameter(Double diameter) {
+        this.diameter = diameter;
+    }
+
+    public Double getTilt() {
+        return tilt;
+    }
+
+    public void setTilt(Double tilt) {
+        this.tilt = tilt;
+    }
+
+    public Double getHeadingDeg() {
+        return headingDeg;
+    }
+
+    public Double getDepth() {
+        return depth;
+    }
+
+    public Double getLength() {
+        return length;
+    }
+
+    public void setHeadingDeg(Double headingDeg) {
+        this.headingDeg = headingDeg;
+    }
+
+    public void setDepth(Double depth) {
+        this.depth = depth;
+    }
+
+    public void setLength(Double length) {
+        this.length = length;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Point3D_Drill{" +
