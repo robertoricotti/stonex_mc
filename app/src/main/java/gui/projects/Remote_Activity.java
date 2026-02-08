@@ -1,5 +1,6 @@
 package gui.projects;
 
+import static cloud.WebSocketPlugin.isAuthenticated;
 import static gui.MyApp.folderPath;
 
 import android.content.Intent;
@@ -41,7 +42,7 @@ import utils.MyDeviceManager;
 import utils.NetworkUtils;
 
 public class Remote_Activity extends AppCompatActivity {
-    public static boolean isAuthenticated;
+
     static String LocalFilePath = null;
     static String RemoteFilePath = null;
     boolean isF;

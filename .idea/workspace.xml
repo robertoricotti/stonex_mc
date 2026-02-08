@@ -308,6 +308,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_remote.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_report_picker.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -466,15 +471,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 da fare 3 drill options">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/PickReport.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ReportFileAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/baseline_cloud_upload_96.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_report_picker.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/report_picker_row.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/PickReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/PickReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ReportFileAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ReportFileAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Remote_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Remote_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_report_picker.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_report_picker.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/report_picker_row.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/report_picker_row.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -702,14 +706,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00050" summary="4.0.16 NFR USA TEST before release">
-      <option name="closed" value="true" />
-      <created>1765391634172</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1765391634173</updated>
     </task>
     <task id="LOCAL-00051" summary="4.0.16 NFR USA TEST before release">
       <option name="closed" value="true" />
@@ -1095,7 +1091,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770450601681</updated>
     </task>
-    <option name="localTasksCounter" value="99" />
+    <task id="LOCAL-00099" summary="4.1.0 da fare 3 drill options">
+      <option name="closed" value="true" />
+      <created>1770509289212</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1770509289212</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -1132,7 +1136,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1770447036878" />
+            <CheckInfo lastCheckTimestamp="1770542536814" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1142,7 +1146,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1770447036875" />
+            <CheckInfo lastCheckTimestamp="1770542536814" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1152,7 +1156,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1770447036877" />
+            <CheckInfo lastCheckTimestamp="1770542536814" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

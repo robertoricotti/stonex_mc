@@ -62,6 +62,7 @@ import java.util.concurrent.TimeUnit;
 import cloud.S3ManagerSingleton;
 import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Ecu_Sensors_Activity;
+import drill_pile.gui.PickReport;
 import event_bus.SerialEvent;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketCalib;
@@ -729,6 +730,8 @@ git push
         }
         else if (activity instanceof Drill_Activity) {
             ((Drill_Activity) activity).updateUI();
+        }else if (activity instanceof PickReport) {
+            ((PickReport) activity).updateUI();
         }
 
     }

@@ -48,7 +48,26 @@
             android:layout_height="match_parent"
             android:layout_weight="1"/>
 
-
+        <ImageView
+            android:id="@+id/usb_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            app:tint="@color/white"
+            app:srcCompat="@drawable/bt_remove_usb" />
+        <ImageView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginTop="2dp"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:tint="@color/white"
+            app:srcCompat="@drawable/cloud_ko" />
 
     </LinearLayout>
 

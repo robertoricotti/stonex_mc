@@ -46,7 +46,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class WebSocketPlugin {
-
+    public static boolean isAuthenticated;
     private WebSocket webSocket;
 
     private static final String WS_URL = "wss://licensemc.stonexpositioning.com/api/v1/ws";
@@ -269,7 +269,7 @@ public class WebSocketPlugin {
     }
 
     private void handleCommand(WebSocket ws, JSONObject response) throws Exception {
-        Remote_Activity.isAuthenticated = false;
+        isAuthenticated = false;
         String type = response.optString("type");
         JSONObject license = response.optJSONObject("license");
 
@@ -293,7 +293,7 @@ public class WebSocketPlugin {
         } else if ("temp_credentials".equals(type)) {
             JSONObject credentials = response.optJSONObject("data");
             //Log.d("TestM", "Received temp credentials: " + credentials);
-            Remote_Activity.isAuthenticated = true;
+            isAuthenticated = true;
             if (credentials == null) {
                 return;
             }

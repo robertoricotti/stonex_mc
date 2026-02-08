@@ -1,6 +1,13 @@
 package drill_pile.gui;
+import static cloud.WebSocketPlugin.isAuthenticated;
+import static gui.dialogs_and_toast.DialogPassword.isTech;
 
+import androidx.appcompat.app.AlertDialog;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.os.storage.StorageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +22,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.stx_dig.R;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
+import gui.MyApp;
+import gui.dialogs_and_toast.CustomToast;
+import gui.projects.Usb_Project_Nova;
+import utils.MyData;
+import utils.NetworkUtils;
 
 
 public class ReportFileAdapter extends RecyclerView.Adapter<ReportFileAdapter.ViewHolder> {
+    private OnCloudClickListener cloudListener;
     private ArrayList<FileItem> files;
     private int selectedItem = -1;
     private boolean isFold = false;
@@ -112,6 +132,16 @@ public class ReportFileAdapter extends RecyclerView.Adapter<ReportFileAdapter.Vi
         }
         textView.setText(nameFile);
         constraintLayout.setBackgroundColor(selectedItem == position ? ContextCompat.getColor(constraintLayout.getContext(), R.color.bg_sfsgreen) : ContextCompat.getColor(constraintLayout.getContext(), R.color.transparent));
+        boolean isSelected = (selectedItem == position);
+
+        usb.setVisibility(isSelected ? View.VISIBLE : View.INVISIBLE);
+        cloud.setVisibility(isSelected&&isAuthenticated&& NetworkUtils.isInternetAvailable(MyApp.visibleActivity) ? View.VISIBLE : View.INVISIBLE);
+        delete.setVisibility(isSelected&&isTech ? View.VISIBLE : View.INVISIBLE);
+        holder.cloud.setOnClickListener(v -> {
+            if (cloudListener != null && holder.getAdapterPosition() != RecyclerView.NO_POSITION) {
+                cloudListener.onCloudClick(holder.getAdapterPosition());
+            }
+        });
     }
 
     @Override
@@ -177,19 +207,52 @@ public class ReportFileAdapter extends RecyclerView.Adapter<ReportFileAdapter.Vi
 
             });
 
-            usb.setOnClickListener((View v) -> {
-
-
+            usb.setOnClickListener(v -> {
+                if (usbClickListener != null) {
+                    usbClickListener.onUsbClick(getAdapterPosition());
+                }
             });
             cloud.setOnClickListener((View v) -> {
 
 
             });
-            delete.setOnClickListener((View v) -> {
-                //TODO far aprire una dialog e chiedere conferma della eliminazione se sì elimina il file, se no chiudi dialog e selectPosition=-1
+            delete.setOnClickListener(v -> {
 
+                int pos = getAdapterPosition();
+                if (pos == RecyclerView.NO_POSITION) return;
 
+                Context context = v.getContext();
+                FileItem item = files.get(pos);
+
+                File file = new File(item.getPath()); // 🔥 PATH ASSOLUTO
+
+                new AlertDialog.Builder(context)
+                        .setTitle("DELETING REPORT")
+                        .setMessage("DELETE THE SELECTED REPORT?\n\n" + item.getName())
+                        .setPositiveButton("YES", (dialog, which) -> {
+
+                            boolean deleted;
+                            if (file.isDirectory()) {
+                                deleted = deleteRecursive(file);
+                            } else {
+                                deleted = file.delete();
+                            }
+
+                            if (deleted) {
+                                files.remove(pos);
+                                notifyItemRemoved(pos);
+                                selectedItem = -1;
+                            }
+                        })
+                        .setNegativeButton("NO", (dialog, which) -> {
+                            selectedItem = -1;
+                            notifyDataSetChanged();
+                        })
+                        .show();
             });
+
+
+
         }
     }
     public String getSelectedFilePath() {
@@ -281,5 +344,65 @@ public class ReportFileAdapter extends RecyclerView.Adapter<ReportFileAdapter.Vi
         public String getPath() {
             return path;
         }
+    }
+    private boolean deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            File[] children = fileOrDirectory.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    deleteRecursive(child);
+                }
+            }
+        }
+        return fileOrDirectory.delete();
+    }
+    public interface OnUsbClickListener {
+        void onUsbClick(int position);
+    }
+
+    private OnUsbClickListener usbClickListener;
+
+    public void setOnUsbClickListener(OnUsbClickListener listener) {
+        this.usbClickListener = listener;
+    }
+
+    private void copyRecursive(File source, File dest) throws IOException {
+
+        if (source.isDirectory()) {
+            if (!dest.exists()) dest.mkdirs();
+
+            File[] children = source.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    copyRecursive(child, new File(dest, child.getName()));
+                }
+            }
+        } else {
+            try (InputStream in = new FileInputStream(source);
+                 OutputStream out = new FileOutputStream(dest)) {
+
+                byte[] buffer = new byte[8192];
+                int length;
+                while ((length = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, length);
+                }
+            }
+        }
+    }
+
+    public interface OnCloudClickListener {
+        void onCloudClick(int position);
+    }
+
+
+
+    public void setOnCloudClickListener(OnCloudClickListener listener) {
+        this.cloudListener = listener;
+    }
+    public FileItem getItem(int position) {
+        if (position >= 0 && position < files.size()) {
+            return files.get(position);
+        }
+        return null;
     }
 }
