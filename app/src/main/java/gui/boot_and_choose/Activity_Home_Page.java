@@ -42,6 +42,7 @@ import android.widget.TextView;
 import com.example.stx_dig.R;
 
 import cloud.S3ManagerSingleton;
+import drill_pile.gui.PickReport;
 import gui.BaseClass;
 import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
@@ -227,6 +228,8 @@ public class Activity_Home_Page extends BaseClass {
                 case DRILL:
                 case SOLARDRILL:
                     //TODO APRI REPORT
+                    startActivity(new Intent(this, PickReport.class));
+                    finish();
                     break;
                 default:
 

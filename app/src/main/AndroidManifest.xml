@@ -83,6 +83,12 @@
             android:name="services.PointService"
             android:enabled="true"
             android:exported="false" />
+        <activity
+            android:name="drill_pile.gui.PickReport"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
             android:name="drill_pile.gui.Drill_Activity"
