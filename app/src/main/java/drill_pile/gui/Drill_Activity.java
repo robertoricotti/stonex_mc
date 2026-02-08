@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +19,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Guideline;
 
 import com.example.stx_dig.R;
+
+import java.io.File;
+import java.io.IOException;
 
 import DPAD.DPadHelper;
 import gui.BaseClass;
@@ -32,12 +36,17 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import services.PointService;
+import services.ReadProjectService;
 import utils.DistToPoint;
 import utils.MyData;
 import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass {
+
+    private String currentHoleId;
+    private String startIso;
+
     int coloreAlto = Color.CYAN;
     int coloreBasso = Color.YELLOW;
     int coloreDashed = Color.CYAN;
@@ -583,7 +592,7 @@ public class Drill_Activity extends BaseClass {
 
         textInfo.setText(setTesto());
 
-        if(isDrilling){
+        if (isDrilling) {
             playpause.setAlpha(1.0f);
             playpause.setImageResource(R.drawable.bt_stop_search);
             playpause.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_box_giallo));
@@ -594,10 +603,10 @@ public class Drill_Activity extends BaseClass {
             drillSet.setEnabled(false);
             drillSet.setVisibility(View.INVISIBLE);
 
-        }else {
+        } else {
             if (!PointService.okStart) {
                 playpause.setAlpha(0.3f);
-            }else {
+            } else {
                 playpause.setAlpha(1.0f);
             }
             playpause.setImageResource(R.drawable.btn_play);
@@ -1138,5 +1147,124 @@ public class Drill_Activity extends BaseClass {
         //end bubble
     }
 
+    /**
+     *
+     * QUI I METODI PER REPORT
+     */
+    private void Start_Foro() {
+        if (DataSaved.Selected_Point3D_Drill == null) return;
+
+        currentHoleId = buildHoleId(DataSaved.Selected_Point3D_Drill);
+        startIso = NmeaListener.date_time_iso;
+
+        // Stato runtime (in memoria)
+        DataSaved.Selected_Point3D_Drill.setStatus(0); // TODO
+
+        // Persistenza
+        try {
+            ReadProjectService.stateStore.upsertAndSave(currentHoleId,
+                    ProjectStateCsvStore.HoleState.TODO,
+                    startIso,
+                    null,
+                    null,
+                    null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // UI / logica drilling
+        isDrilling = true;
+        refreshAfterStateChange();
+    }
+
+    private void End_Foro_Ok() {
+        if (DataSaved.Selected_Point3D_Drill == null) return;
+
+        String endIso = NmeaListener.date_time_iso;
+
+        // Stato runtime (in memoria)
+        DataSaved.Selected_Point3D_Drill.setStatus(1); // DONE (scegli tu il numero)
+
+        // Persistenza
+        try {
+            ReadProjectService.stateStore.upsertAndSave(
+                    currentHoleId,
+                    ProjectStateCsvStore.HoleState.DONE,
+                    startIso,
+                    endIso,
+                    "",
+                    "HOLES/" + currentHoleId + ".csv"
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        isDrilling = false;
+        refreshAfterStateChange();
+        DataSaved.Selected_Point3D_Drill = null;
+    }
+
+
+    private void End_Foro_Aborted() {
+        if (DataSaved.Selected_Point3D_Drill == null) return;
+
+        String endIso = NmeaListener.date_time_iso;
+
+        // Stato runtime (in memoria)
+        DataSaved.Selected_Point3D_Drill.setStatus(2); // ABORTED
+
+        // Persistenza
+        try {
+            ReadProjectService.stateStore.upsertAndSave(
+                    currentHoleId,
+                    ProjectStateCsvStore.HoleState.ABORTED,
+                    startIso,
+                    endIso,
+                    "Operator aborted",
+                    "HOLES/" + currentHoleId + ".csv"
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        isDrilling = false;
+        refreshAfterStateChange();
+        DataSaved.Selected_Point3D_Drill = null;
+    }
+
+
+    private String extractProjectName(String fullPath) {
+        if (fullPath == null) return null;
+
+        String marker = "Projects/";
+        int start = fullPath.indexOf(marker);
+
+        if (start == -1) return null;
+
+        start += marker.length();
+        int end = fullPath.indexOf("/", start);
+
+        if (end == -1) {
+            // caso raro: Projects/NOME (senza sottocartelle)
+            return fullPath.substring(start);
+        }
+
+        return fullPath.substring(start, end);
+    }
+    private String buildHoleId(iredes.Point3D_Drill p) {
+        String id = p.getId() != null ? p.getId() : "";
+        String row = p.getRowId() != null ? p.getRowId() : "";
+        return row + "_" + id;
+    }
+    private void refreshAfterStateChange() {
+        // 1) se il punto selezionato non è più TODO, deseleziona
+        Integer st = DataSaved.Selected_Point3D_Drill.getStatus();
+        if (st != null && st != 0) {
+            DataSaved.Selected_Point3D_Drill = null; // oppure lascia selezionato ma disabilita start
+        }
+
+        // 2) forza ridisegno
+
+    }
 
 }

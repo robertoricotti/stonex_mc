@@ -31,9 +31,25 @@ public class DrawDXF_Drill_Point {
         float rHead = 0.12f * scala;
         float rEnd = rHead * 0.75f;
 
-        // ✅ tutti i NON selected in colorConstraint
-        int fillColor = MyColorClass.colorConstraint;
-        int strokeColor = MyColorClass.colorConstraint;
+        // Colore in base allo stato: 0/TODO = default, 1/DONE = verde, -1/ABORTED = magenta
+        Integer st = point.getStatus();
+        final boolean isDone = (st != null && st == 1);
+        final boolean isAborted = (st != null && st == -1);
+
+        int fillColor;
+        int strokeColor;
+
+        if (isDone) {
+            fillColor = android.graphics.Color.argb(190, 0, 200, 0);      // verde (fill)
+            strokeColor = android.graphics.Color.argb(230, 0, 140, 0);    // verde scuro (stroke)
+        } else if (isAborted) {
+            fillColor = android.graphics.Color.argb(190, 255, 0, 255);    // magenta (fill)
+            strokeColor = android.graphics.Color.argb(230, 180, 0, 180);  // magenta scuro (stroke)
+        } else {
+            fillColor = MyColorClass.colorConstraint;
+            strokeColor = MyColorClass.colorConstraint;
+        }
+
 
         // stroke
         float stroke = Math.max(1.5f, (float) (0.045 * scala));
@@ -77,7 +93,8 @@ public class DrawDXF_Drill_Point {
                 float endRx = endX - nx * rEnd;
                 float endRy = endY - ny * rEnd;
 
-                int lineColor = getCylinderLineColor();
+                int lineColor = (isDone || isAborted) ? strokeColor : getCylinderLineColor();
+
 
                 // asse centrale (doppio stroke per contrasto)
                 paint.setStyle(Paint.Style.STROKE);

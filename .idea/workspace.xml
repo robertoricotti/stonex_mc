@@ -470,12 +470,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 da fare 3 drill options">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportCsvWriter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectStateCsvStore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 da fare i report">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/Point3D_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/Point3D_Drill.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -704,14 +702,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00052" summary="4.0.16 NFR USA TEST before release">
-      <option name="closed" value="true" />
-      <created>1765472150332</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1765472150333</updated>
     </task>
     <task id="LOCAL-00053" summary="4.0.16 BEFORE RELEASE">
       <option name="closed" value="true" />
@@ -1097,12 +1087,19 @@
       <option name="project" value="LOCAL" />
       <updated>1770549370775</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="4.1.0 da fare i report">
+      <option name="closed" value="true" />
+      <created>1770566813319</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1770566813319</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.0.14 RELEASE" />
     <MESSAGE value="4.1.0 inizio DRILL" />
     <MESSAGE value="4.1.0 inizio DRILL iredes" />
     <MESSAGE value="4.0.15 pre release" />
@@ -1127,7 +1124,8 @@
     <MESSAGE value="4.1.0 pick point ok" />
     <MESSAGE value="4.1.0 pre drill routine" />
     <MESSAGE value="4.1.0 da fare 3 drill options" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 da fare 3 drill options" />
+    <MESSAGE value="4.1.0 da fare i report" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 da fare i report" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

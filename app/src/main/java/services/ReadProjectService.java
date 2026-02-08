@@ -6,7 +6,6 @@ import static gui.MyApp.gridFile_GR_dN;
 import static gui.MyApp.heposTransformer;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static services.CanSender.GNSS_MSG;
-import static services.CanSender.tryingBTCAN;
 import static services.TriangleService.scanPNEZD;
 import static services.UpdateValuesService.UTM;
 import static services.UpdateValuesService.WGS84;
@@ -26,6 +25,7 @@ import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -39,6 +39,7 @@ import org.locationtech.proj4j.UnknownAuthorityCodeException;
 import org.locationtech.proj4j.UnsupportedParameterException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -79,7 +80,7 @@ import utils.MyDeviceManager;
 
 public class ReadProjectService extends Service {
 
-
+    public static ProjectStateCsvStore stateStore;
     static boolean mettiPoly, mettiPunti;
     int uom;
     boolean isFeet;
@@ -272,8 +273,8 @@ public class ReadProjectService extends Service {
 
     private void startCorrectActivityDrill() {
         if (MyApp.visibleActivity == null) return;
-        if (DataSaved.drill_points != null&& !DataSaved.drill_points.isEmpty()) {
-            try{
+        if (DataSaved.drill_points != null && !DataSaved.drill_points.isEmpty()) {
+            try {
                 if (!(MyApp.visibleActivity instanceof Drill_Activity)) {
                     Intent intent;
                     intent = new Intent(MyApp.visibleActivity, Drill_Activity.class);
@@ -283,7 +284,8 @@ public class ReadProjectService extends Service {
 
                     MyApp.visibleActivity.finish();
                 } else {
-                    MyApp.visibleActivity.recreate();}
+                    MyApp.visibleActivity.recreate();
+                }
             } catch (Exception e) {
                 Intent intent;
                 intent = new Intent(MyApp.visibleActivity, PickProject.class);
@@ -933,14 +935,15 @@ public class ReadProjectService extends Service {
                     }
                     isFeet = uom > 1;
 
-                    Log.d("RESD",DataSaved.lastProjectNamePOINT+"\n"+nomeProgettoPOINT);
+                    Log.d("RESD", DataSaved.lastProjectNamePOINT + "\n" + nomeProgettoPOINT);
                     if (!DataSaved.lastProjectNamePOINT.equals(nomeProgettoPOINT)) {
                         isFinishedPOINT = false;
                         DataSaved.drill_points = new ArrayList<>();
 
 
                         if (mettiPunti) {
-                            DataSaved.Selected_Point3D_Drill=null;
+                            DataSaved.Selected_Point3D_Drill = null;
+
                             switch (fileExtensionPOINT.toLowerCase()) {
                                /* case "dxf":
                                     parserStatus = "Reading Points...";
@@ -966,7 +969,7 @@ public class ReadProjectService extends Service {
                                     DataSaved.drill_points = IrdParser.parseIrd(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor);
                                     break;
                                 default:
-                                    isFinishedPOINT=true;
+                                    isFinishedPOINT = true;
                                     DataSaved.isAutoSnap = 0;
                                     ERRORE_PROGETTO = true;
 
@@ -976,8 +979,12 @@ public class ReadProjectService extends Service {
                                     MyApp.visibleActivity.finish();
                                     break;
                             }
+
+                            generaReport(extractProjectName(DataSaved.progettoSelected_POINT), "");
+                            generaState(extractProjectName(DataSaved.progettoSelected_POINT));
+                            applyStateToParsedPoints();
                         }
-                        DataSaved.lastProjectNamePOINT=nomeProgettoPOINT;
+                        DataSaved.lastProjectNamePOINT = nomeProgettoPOINT;
                     } else {
                         isFinishedPOINT = true;
                     }
@@ -1050,35 +1057,87 @@ public class ReadProjectService extends Service {
 
     }
 
-    private void generaReport(){
-        //TODO
-       /* File outDir = new File(basePath + "/Exported/" + projectFolderName + "_OUT");
+    private void generaReport(String projectFolderName, String companyName) {
+
+        File outDir = new File(Environment.getExternalStorageDirectory().toString() + "/StonexMC_V4" + "/Exported/" + projectFolderName + "_OUT");
 
         ProjectReportCsvWriter writer = new ProjectReportCsvWriter(outDir, projectFolderName);
 
         LinkedHashMap<String, String> preamble = new LinkedHashMap<>();
-        preamble.put("Company", DataSaved.companyName);
+        preamble.put("Company", companyName);
         preamble.put("Machine", DataSaved.machineName);
         preamble.put("Project", projectFolderName);
 
-        writer.initReport(preamble);*/
+        try {
+            writer.initReport(preamble);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-    private void generaState(){
-      /*  File outDir = new File(basePath + "/Exported/" + projectFolderName + "_OUT");
 
-        ProjectStateCsvStore stateStore = new ProjectStateCsvStore(outDir, projectFolderName);
-        stateStore.initAndLoad(); // crea file se non esiste + carica cache
+    private void generaState(String projectFolderName) {
+        File outDir = new File(Environment.getExternalStorageDirectory().toString() + "/StonexMC_V4" + "/Exported/" + projectFolderName + "_OUT");
+
+        stateStore = new ProjectStateCsvStore(outDir, projectFolderName);
+        try {
+            stateStore.initAndLoad(); // crea file se non esiste + carica cache
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 // Poi, quando costruisci/riempi drill_points:
 // per ogni punto, applichi lo stato salvato:
         for (Point3D_Drill p : DataSaved.drill_points) {
-            String id = p.getRowId()+p.getId();
+            String id = p.getRowId() + p.getId();
             ProjectStateCsvStore.HoleState st = stateStore.getState(id);
 
             // mappa sui tuoi status int: 0=TODO, 1=DONE, 2=ABORTED (esempio)
             if (st == ProjectStateCsvStore.HoleState.DONE) p.setStatus(1);
             else if (st == ProjectStateCsvStore.HoleState.ABORTED) p.setStatus(2);
             else p.setStatus(0);
-        }*/
+        }
     }
+    private void applyStateToParsedPoints() {
+        if (stateStore == null) return;
+        if (DataSaved.drill_points == null || DataSaved.drill_points.isEmpty()) return;
+
+        for (iredes.Point3D_Drill p : DataSaved.drill_points) {
+            if (p == null) continue;
+
+            String holeId = p.getRowId()+p.getId();
+            if (holeId.isEmpty()) continue;
+
+            ProjectStateCsvStore.HoleState st = stateStore.getState(holeId);
+
+            // Mappa su status int del tuo Point3D_Drill: 0 TODO, 1 DONE, -1 ABORTED
+            if (st == ProjectStateCsvStore.HoleState.DONE) {
+                p.setStatus(1);
+            } else if (st == ProjectStateCsvStore.HoleState.ABORTED) {
+                p.setStatus(-1);
+            } else {
+                p.setStatus(0);
+            }
+        }
+    }
+
+
+    private String extractProjectName(String fullPath) {
+        if (fullPath == null) return null;
+
+        String marker = "Projects/";
+        int start = fullPath.indexOf(marker);
+
+        if (start == -1) return null;
+
+        start += marker.length();
+        int end = fullPath.indexOf("/", start);
+
+        if (end == -1) {
+            // caso raro: Projects/NOME (senza sottocartelle)
+            return fullPath.substring(start);
+        }
+
+        return fullPath.substring(start, end);
+    }
+
 }
