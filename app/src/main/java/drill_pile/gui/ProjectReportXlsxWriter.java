@@ -80,6 +80,7 @@ public class ProjectReportXlsxWriter {
             try (Workbook wb = new XSSFWorkbook()) {
                 Sheet sh = wb.createSheet(sheetName);
                 setupStylesAndLayout(wb, sh, preambleLines);
+                setDefaultColumnWidths(sh);
                 try (FileOutputStream fos = new FileOutputStream(xlsxFile, false)) {
                     wb.write(fos);
                 }
@@ -108,11 +109,35 @@ public class ProjectReportXlsxWriter {
             // Individua header/dataStart se non presenti (compatibile con file esistente)
             resolveHeaderAndDataStart(sh);
 
-            int rowIdx = findNextEmptyRow(sh);
-            Row row = sh.createRow(rowIdx);
+            int rowIdx = findAppendRowIndex(sh);
+            Row row = sh.getRow(rowIdx);
+            if (row == null) row = sh.createRow(rowIdx);   // crea solo se manca
+            else sh.removeRow(row);                         // (opzionale) se vuoi essere super-safe
+            row = sh.createRow(rowIdx);
 
-            CellStyle dataStyle = makeDataStyle(wb);
-            CellStyle numStyle = makeNumberStyle(wb);
+            String st = (r.state == null) ? "" : r.state.trim().toUpperCase(Locale.US);
+            boolean done = "DONE".equals(st);
+            boolean aborted = "ABORTED".equals(st) || "ABORT".equals(st);
+            boolean reopened = "RE-OPENED".equals(st) || "REOPENED".equals(st);
+
+// stili base
+            CellStyle dataStyle;
+            CellStyle numStyle;
+
+            if (done) {
+                dataStyle = makeRowFillStyle(wb, IndexedColors.LIGHT_GREEN.getIndex(), false);
+                numStyle  = makeRowFillStyle(wb, IndexedColors.LIGHT_GREEN.getIndex(), true);
+            } else if (aborted) {
+                dataStyle = makeRowFillStyle(wb, IndexedColors.ROSE.getIndex(), false);
+                numStyle  = makeRowFillStyle(wb, IndexedColors.ROSE.getIndex(), true);
+            } else if (reopened) {
+                dataStyle = makeRowFillStyle(wb, IndexedColors.LIGHT_TURQUOISE.getIndex(), false); // ciano
+                numStyle  = makeRowFillStyle(wb, IndexedColors.LIGHT_TURQUOISE.getIndex(), true);
+            } else {
+                dataStyle = makeDataStyle(wb);
+                numStyle  = makeNumberStyle(wb);
+            }
+
 
             int c = 0;
 
@@ -159,7 +184,7 @@ public class ProjectReportXlsxWriter {
 
             // Freeze header + auto-size (auto-size costicchia, ma ok per fine foro)
             sh.createFreezePane(0, dataStartRowIndex);
-            for (int i = 0; i < HEADER.length; i++) sh.autoSizeColumn(i);
+
 
             try (FileOutputStream fos = new FileOutputStream(xlsxFile, false)) {
                 wb.write(fos);
@@ -211,26 +236,74 @@ public class ProjectReportXlsxWriter {
     private void resolveHeaderAndDataStart(Sheet sh) {
         if (headerRowIndex >= 0 && dataStartRowIndex >= 0) return;
 
-        // Trova la riga header cercando "Hole-ID" (colonna 1) o "Machine" (colonna 0)
         int last = sh.getLastRowNum();
-        for (int r = 0; r <= Math.max(last, 50); r++) {
+
+        for (int r = 0; r <= Math.max(last, 80); r++) {
             Row row = sh.getRow(r);
             if (row == null) continue;
 
-            String c0 = getCellString(row.getCell(0));
-            String c1 = getCellString(row.getCell(1));
+            String c0 = getCellString(row.getCell(0)).trim();
+            String c1 = getCellString(row.getCell(1)).trim();
 
+            // nuovo formato
             if ("Machine".equalsIgnoreCase(c0) && "Hole-ID".equalsIgnoreCase(c1)) {
+                headerRowIndex = r;
+                dataStartRowIndex = r + 1;
+                return;
+            }
+
+            // vecchio formato (senza Machine)
+            if ("Hole-ID".equalsIgnoreCase(c0)) {
                 headerRowIndex = r;
                 dataStartRowIndex = r + 1;
                 return;
             }
         }
 
-        // fallback: se non trovato, metto header a riga 0 (ma normalmente non succede)
-        headerRowIndex = 0;
-        dataStartRowIndex = 1;
+        // fallback "intelligente": prova a mettere dataStart dopo l'ultima riga non vuota
+        headerRowIndex = -1;
+        dataStartRowIndex = firstPossibleDataRow(sh);
     }
+
+    private int firstPossibleDataRow(Sheet sh) {
+        int last = sh.getLastRowNum();
+        for (int r = last; r >= 0; r--) {
+            Row row = sh.getRow(r);
+            if (row == null) continue;
+            if (row.getPhysicalNumberOfCells() > 0) return r + 1;
+        }
+        return 0;
+    }
+
+    private int findAppendRowIndex(Sheet sh) {
+        resolveHeaderAndDataStart(sh);
+
+        int start = Math.max(0, dataStartRowIndex);
+        int last = sh.getLastRowNum();
+
+        int lastNonEmpty = start - 1;
+
+        for (int r = Math.max(last, start); r >= start; r--) {
+            Row row = sh.getRow(r);
+            if (row == null) continue;
+            if (row.getPhysicalNumberOfCells() > 0) {
+                lastNonEmpty = r;
+                break;
+            }
+        }
+
+        int idx = Math.max(start, lastNonEmpty + 1);
+
+        // sicurezza: se per caso esiste già, vai avanti
+        while (true) {
+            Row row = sh.getRow(idx);
+            if (row == null) break;
+            if (row.getPhysicalNumberOfCells() == 0) break;
+            idx++;
+        }
+        return idx;
+    }
+
 
     private int findNextEmptyRow(Sheet sh) {
         resolveHeaderAndDataStart(sh);
@@ -340,6 +413,20 @@ public class ProjectReportXlsxWriter {
     private static CellStyle makePreambleValStyle(Workbook wb) {
         return wb.createCellStyle();
     }
+    private static CellStyle makeRowFillStyle(Workbook wb, short fillColorIndex, boolean isNumber) {
+        CellStyle st = makeDataStyle(wb);
+
+        // formato numero se serve
+        if (isNumber) {
+            DataFormat fmt = wb.createDataFormat();
+            st.setDataFormat(fmt.getFormat("0.000"));
+        }
+
+        st.setFillForegroundColor(fillColorIndex);
+        st.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        return st;
+    }
+
 
     private static void ensureParentDirExists(File f) throws IOException {
         File dir = f.getParentFile();
@@ -348,4 +435,35 @@ public class ProjectReportXlsxWriter {
             if (!ok) throw new IOException("Unable to create directory: " + dir.getAbsolutePath());
         }
     }
+    private static void setDefaultColumnWidths(Sheet sh) {
+        // width in "1/256 of a character"
+        // valori indicativi, poi li rifiniamo
+        sh.setColumnWidth(0, 20 * 256); // Machine
+        sh.setColumnWidth(1, 14 * 256); // Hole-ID
+
+        // Coordinate
+        sh.setColumnWidth(2, 14 * 256); // Hole-N
+        sh.setColumnWidth(3, 14 * 256); // Hole-E
+        sh.setColumnWidth(4, 12 * 256); // Hole-Z
+
+        // Angoli/quote
+        sh.setColumnWidth(5, 14 * 256); // Bearing
+        sh.setColumnWidth(6, 12 * 256); // Tilt
+        sh.setColumnWidth(7, 12 * 256); // Depth
+        sh.setColumnWidth(8, 12 * 256); // Length
+
+        // Time
+        sh.setColumnWidth(9,  24 * 256); // Start-Time
+        sh.setColumnWidth(10, 24 * 256); // End-Time
+        sh.setColumnWidth(11, 14 * 256); // Duration
+
+        // Deltas
+        for (int i = 12; i <= 20; i++) {
+            sh.setColumnWidth(i, 12 * 256);
+        }
+
+        sh.setColumnWidth(21, 24 * 256); // AVG rate
+        sh.setColumnWidth(22, 12 * 256); // State
+    }
+
 }

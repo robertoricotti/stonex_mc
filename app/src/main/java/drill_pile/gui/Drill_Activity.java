@@ -1,26 +1,32 @@
 package drill_pile.gui;
 
 import static gui.MyApp.errorCode;
+import static packexcalib.exca.DataSaved.Selected_Point3D_Drill;
+import static packexcalib.exca.ExcavatorLib.coordTool;
+import static packexcalib.exca.ExcavatorLib.correctToolPitch;
+import static packexcalib.exca.ExcavatorLib.correctToolRoll;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static utils.MyMCUtils.projectPointOnAxis3D;
+import static utils.MyTypes.JETGROUTING_MODE;
+import static utils.MyTypes.ROCKDRILL_MODE;
+import static utils.MyTypes.SOLARDRILL;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Guideline;
 
 import com.example.stx_dig.R;
 
-import java.io.File;
 import java.io.IOException;
 
 import DPAD.DPadHelper;
@@ -32,7 +38,6 @@ import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.draw_class.MyColorClass;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
-import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import services.PointService;
@@ -42,7 +47,11 @@ import utils.MyData;
 import utils.MyMCUtils;
 import utils.Utils;
 
-public class Drill_Activity extends BaseClass {
+public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
+    private boolean play = false;
+    private boolean stop = false;
+    private boolean abort = false;
+    private double Start_dE, Start_dN, Start_dZ, End_dE, End_dN, End_dZ, delta_Tilt, delta_Bearing;
 
     private String currentHoleId;
     private String startIso;
@@ -66,7 +75,7 @@ public class Drill_Activity extends BaseClass {
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
     ImageView digMenu, drilltool, typeView, Status, folders, playpause, lineReference, tiposnap,
-            zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore;
+            zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
     TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual;
@@ -146,6 +155,8 @@ public class Drill_Activity extends BaseClass {
         zoom_P = findViewById(R.id.zoom_P);
         zoom_M = findViewById(R.id.zoom_M);
         zoom_C = findViewById(R.id.zoom_C);
+        abortisci = findViewById(R.id.abortisci);
+        normal_stop = findViewById(R.id.normalStop);
         cent_v = findViewById(R.id.cent_v);
         side = findViewById(R.id.side);
         typeView = findViewById(R.id.typeView);
@@ -258,6 +269,20 @@ public class Drill_Activity extends BaseClass {
     }
 
     private void onClick() {
+        normal_stop.setOnLongClickListener(view -> {
+            stop = true;
+            play = false;
+            abort = false;
+            Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+            return true;
+        });
+        abortisci.setOnLongClickListener(view -> {
+            abort = true;
+            stop = false;
+            play = false;
+            Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+            return true;
+        });
         zoom_P.setOnClickListener(view -> {
             DataSaved.scale_Factor3D *= kostant;
             DataSaved.scale_Factor3D = Math.max(0.4f, Math.min(DataSaved.scale_Factor3D, 6.5f));
@@ -279,7 +304,7 @@ public class Drill_Activity extends BaseClass {
             }
         });
         infoPoint.setOnClickListener(view -> {
-            if (DataSaved.Selected_Point3D_Drill == null) {
+            if (Selected_Point3D_Drill == null) {
                 new CustomToast(this, "No Point Selected!").show();
             } else {
                 if (!dialogInfoPoint.dialog.isShowing()) {
@@ -327,9 +352,12 @@ public class Drill_Activity extends BaseClass {
         });
         playpause.setOnClickListener(view -> {
             if (PointService.okStart) {
-                isDrilling = !isDrilling;
-            } else {
-                isDrilling = false;
+                if (!isDrilling) {
+                    play = true;
+                    stop = false;
+                    abort = false;
+                    Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+                }
             }
 
         });
@@ -367,22 +395,22 @@ public class Drill_Activity extends BaseClass {
 
 
         mastHDT = My_LocationCalc.calcBearingXY(
-                ExcavatorLib.coordTool[0], ExcavatorLib.coordTool[1],
+                coordTool[0], coordTool[1],
                 toolEndCoord[0], toolEndCoord[1]);
 
 
-        mastTilt = MyMCUtils.calculateTotalTilt(ExcavatorLib.correctToolPitch,
-                ExcavatorLib.correctToolRoll);
-        if (DataSaved.Selected_Point3D_Drill != null) {
-            poleHDT = DataSaved.Selected_Point3D_Drill.getHeadingDeg();
+        mastTilt = MyMCUtils.calculateTotalTilt(correctToolPitch,
+                correctToolRoll);
+        if (Selected_Point3D_Drill != null) {
+            poleHDT = Selected_Point3D_Drill.getHeadingDeg();
 
-            poleTilt = DataSaved.Selected_Point3D_Drill.getTilt();
+            poleTilt = Selected_Point3D_Drill.getTilt();
         }
         String s = String.format(
                 java.util.Locale.US,
                 "Y_deg: %7.2f°\nX_deg: %7.2f°",
-                ExcavatorLib.correctToolPitch,
-                ExcavatorLib.correctToolRoll
+                correctToolPitch,
+                correctToolRoll
         );
         tiltInfo.setText(s);
 
@@ -472,16 +500,16 @@ public class Drill_Activity extends BaseClass {
             flip += 1;
             flip = flip % 20;
         }
-        if (DataSaved.Selected_Point3D_Drill != null) {
-            String roww = DataSaved.Selected_Point3D_Drill.getRowId();
+        if (Selected_Point3D_Drill != null) {
+            String roww = Selected_Point3D_Drill.getRowId();
             if (roww == null) {
                 roww = " ";
             }
-            idpalo.setText("R:" + roww + " - " + "P:" + DataSaved.Selected_Point3D_Drill.getId());
-            txthdt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getHeadingDeg()) + "°");
-            txttilt.setText(String.format("%.1f", DataSaved.Selected_Point3D_Drill.getTilt()) + "°");
+            idpalo.setText("R:" + roww + " - " + "P:" + Selected_Point3D_Drill.getId());
+            txthdt.setText(String.format("%.1f", Selected_Point3D_Drill.getHeadingDeg()) + "°");
+            txttilt.setText(String.format("%.1f", Selected_Point3D_Drill.getTilt()) + "°");
 
-            Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
+            Point3D_Drill sel = Selected_Point3D_Drill;
 
             if (sel == null || toolEndCoord == null || toolEndCoord.length < 3) {
                 txtdepth.setText("__.__");
@@ -593,9 +621,11 @@ public class Drill_Activity extends BaseClass {
         textInfo.setText(setTesto());
 
         if (isDrilling) {
-            playpause.setAlpha(1.0f);
-            playpause.setImageResource(R.drawable.bt_stop_search);
-            playpause.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_box_giallo));
+            normal_stop.setVisibility(View.VISIBLE);
+            abortisci.setVisibility(View.VISIBLE);
+            lineReference.setVisibility(View.GONE);
+
+            typeView.setVisibility(View.GONE);
             digMenu.setEnabled(false);
             digMenu.setAlpha(0.3f);
             lineReference.setEnabled(false);
@@ -604,13 +634,16 @@ public class Drill_Activity extends BaseClass {
             drillSet.setVisibility(View.INVISIBLE);
 
         } else {
+            normal_stop.setVisibility(View.GONE);
+            abortisci.setVisibility(View.GONE);
+            lineReference.setVisibility(View.VISIBLE);
+
+            typeView.setVisibility(View.VISIBLE);
             if (!PointService.okStart) {
                 playpause.setAlpha(0.3f);
             } else {
                 playpause.setAlpha(1.0f);
             }
-            playpause.setImageResource(R.drawable.btn_play);
-            playpause.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_box_grigino));
             digMenu.setEnabled(true);
             digMenu.setAlpha(1.0f);
             lineReference.setEnabled(true);
@@ -649,9 +682,9 @@ public class Drill_Activity extends BaseClass {
     private void setIndicator() {
         try {
             indicator.setTolerance(DataSaved.Drill_tolleranza_Z);
-            indicator.setTargetValue(DataSaved.Selected_Point3D_Drill.getEndZ());
-            double low = DataSaved.Selected_Point3D_Drill.getEndZ() - 0.5;
-            double high = DataSaved.Selected_Point3D_Drill.getEndZ() + 2;
+            indicator.setTargetValue(Selected_Point3D_Drill.getEndZ());
+            double low = Selected_Point3D_Drill.getEndZ() - 0.5;
+            double high = Selected_Point3D_Drill.getEndZ() + 2;
             indicator.setRange(low, high);
             indicator.setCurrentValue((float) toolEndCoord[2]);//TODO adattare in realtime
 
@@ -707,7 +740,7 @@ public class Drill_Activity extends BaseClass {
 
     private void settaFreccia() {
 
-        Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
+        Point3D_Drill sel = Selected_Point3D_Drill;
         if (sel == null) return;
 
         double[] bit = toolEndCoord;
@@ -770,7 +803,7 @@ public class Drill_Activity extends BaseClass {
     }
 
     private void setFrecciaDrill() {
-        Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
+        Point3D_Drill sel = Selected_Point3D_Drill;
         if (sel == null) return;
 
         double[] bit = toolEndCoord;
@@ -871,9 +904,9 @@ public class Drill_Activity extends BaseClass {
 
 
     private double deltaQuota3D() {
-        if (DataSaved.Selected_Point3D_Drill != null) {
-            return DistToPoint.dist3D(toolEndCoord, new double[]{DataSaved.Selected_Point3D_Drill.getEndX(),
-                    DataSaved.Selected_Point3D_Drill.getEndY(), DataSaved.Selected_Point3D_Drill.getEndZ()});
+        if (Selected_Point3D_Drill != null) {
+            return DistToPoint.dist3D(toolEndCoord, new double[]{Selected_Point3D_Drill.getEndX(),
+                    Selected_Point3D_Drill.getEndY(), Selected_Point3D_Drill.getEndZ()});
         } else {
             return 0;
         }
@@ -980,7 +1013,7 @@ public class Drill_Activity extends BaseClass {
 // BUBBLE (unica UI sempre uguale)
 // cambia solo input: errE/errN + testo + colori + triangoli
 // --------------------
-        Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
+        Point3D_Drill sel = Selected_Point3D_Drill;
 
 
 // drilling overlay (croce rotante) SOLO come overlay grafico
@@ -1152,14 +1185,14 @@ public class Drill_Activity extends BaseClass {
      * QUI I METODI PER REPORT
      */
     private void Start_Foro() {
-        if (DataSaved.Selected_Point3D_Drill == null) return;
+        if (Selected_Point3D_Drill == null) return;
 
         // HoleId uniforme: SOLO ID (se hai già buildHoleId ok, ma deve tornare point.getId())
-        currentHoleId = buildHoleId(DataSaved.Selected_Point3D_Drill);
+        currentHoleId = buildHoleId(Selected_Point3D_Drill);
         startIso = NmeaListener.date_time_iso;
 
         // Stato runtime (in memoria)
-        DataSaved.Selected_Point3D_Drill.setStatus(0); // TODO
+        Selected_Point3D_Drill.setStatus(0); // TODO
 
         // Persistenza STATE (CSV)
         try {
@@ -1181,9 +1214,9 @@ public class Drill_Activity extends BaseClass {
 
 
     private void End_Foro_Ok() {
-        if (DataSaved.Selected_Point3D_Drill == null) return;
+        if (Selected_Point3D_Drill == null) return;
 
-        final iredes.Point3D_Drill p = DataSaved.Selected_Point3D_Drill; // snapshot
+        final iredes.Point3D_Drill p = Selected_Point3D_Drill; // snapshot
         final String holeId = buildHoleId(p);
         final String endIso = NmeaListener.date_time_iso;
 
@@ -1228,9 +1261,14 @@ public class Drill_Activity extends BaseClass {
             row.endTimeIso = endIso;
 
             // TODO: questi li colleghiamo dopo (quando mi dici da dove arrivano)
-            row.startdN = null; row.startdE = null; row.startdZ = null;
-            row.enddN = null; row.enddE = null; row.enddZ = null;
-            row.dTilt = null; row.dBearing = null;
+            row.startdN = Start_dN;
+            row.startdE = Start_dE;
+            row.startdZ = Start_dZ;
+            row.enddN = End_dN;
+            row.enddE = End_dE;
+            row.enddZ = End_dZ;
+            row.dTilt = delta_Tilt;
+            row.dBearing = delta_Bearing;
             row.avgPenetrationRate = null;
 
             row.state = "DONE";
@@ -1242,16 +1280,15 @@ public class Drill_Activity extends BaseClass {
 
         // chiusura UI
         isDrilling = false;
-        DataSaved.Selected_Point3D_Drill = null;
+
         refreshAfterStateChange();
     }
 
 
-
     private void End_Foro_Aborted() {
-        if (DataSaved.Selected_Point3D_Drill == null) return;
+        if (Selected_Point3D_Drill == null) return;
 
-        final iredes.Point3D_Drill p = DataSaved.Selected_Point3D_Drill; // snapshot
+        final iredes.Point3D_Drill p = Selected_Point3D_Drill; // snapshot
         final String holeId = buildHoleId(p);
         final String endIso = NmeaListener.date_time_iso;
 
@@ -1292,9 +1329,14 @@ public class Drill_Activity extends BaseClass {
             row.endTimeIso = endIso;
 
             // per ora null, li riempiamo dopo
-            row.startdN = null; row.startdE = null; row.startdZ = null;
-            row.enddN = null; row.enddE = null; row.enddZ = null;
-            row.dTilt = null; row.dBearing = null;
+            row.startdN = Start_dN;
+            row.startdE = Start_dE;
+            row.startdZ = Start_dZ;
+            row.enddN = End_dN;
+            row.enddE = End_dE;
+            row.enddZ = End_dZ;
+            row.dTilt = delta_Tilt;
+            row.dBearing = delta_Bearing;
             row.avgPenetrationRate = null;
 
             row.state = "ABORTED";
@@ -1305,44 +1347,222 @@ public class Drill_Activity extends BaseClass {
         }
 
         isDrilling = false;
-        DataSaved.Selected_Point3D_Drill = null;
+
         refreshAfterStateChange();
     }
 
 
+    private void refreshAfterStateChange() {
 
-    private String extractProjectName(String fullPath) {
-        if (fullPath == null) return null;
+        Point3D_Drill sel = Selected_Point3D_Drill;
 
-        String marker = "Projects/";
-        int start = fullPath.indexOf(marker);
-
-        if (start == -1) return null;
-
-        start += marker.length();
-        int end = fullPath.indexOf("/", start);
-
-        if (end == -1) {
-            // caso raro: Projects/NOME (senza sottocartelle)
-            return fullPath.substring(start);
+        // 1) Nessun selected → solo refresh grafico
+        if (sel == null) {
+            //invalidateViews();
+            return;
         }
 
-        return fullPath.substring(start, end);
+        // 2) Stato sicuro (default TODO = 0)
+        Integer st = sel.getStatus();
+        if (st == null) st = 0;
+
+        // 3) Se NON è TODO → deseleziona
+        if (st != 0) {
+            Selected_Point3D_Drill = null;
+        }
+
+        // 4) Refresh UI sempre
+        //invalidateViews();
     }
+
+
     private String buildHoleId(iredes.Point3D_Drill p) {
         String id = p.getId() != null ? p.getId() : "";
         String row = p.getRowId() != null ? p.getRowId() : "";
         return row + id;
     }
-    private void refreshAfterStateChange() {
-        // 1) se il punto selezionato non è più TODO, deseleziona
-        Integer st = DataSaved.Selected_Point3D_Drill.getStatus();
-        if (st != null && st != 0) {
-            DataSaved.Selected_Point3D_Drill = null; // oppure lascia selezionato ma disabilita start
+
+
+
+    private void Drill_Routine(int mode, boolean play, boolean stop, boolean abort) {
+
+        switch (mode) {
+            case ROCKDRILL_MODE:
+                if (play && !isDrilling) {
+                    Start_dE = Math.abs(Selected_Point3D_Drill.getHeadX() - toolEndCoord[0]);
+                    Start_dN = Math.abs(Selected_Point3D_Drill.getHeadY() - toolEndCoord[1]);
+                    Start_dZ = Math.abs(Selected_Point3D_Drill.getHeadZ() - toolEndCoord[2]);
+                    delta_Tilt = Math.abs(Selected_Point3D_Drill.getTilt() - MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll));
+                    delta_Bearing = Math.abs(Selected_Point3D_Drill.getHeadingDeg() - My_LocationCalc.calcBearingXY(
+                            coordTool[0], coordTool[1],
+                            toolEndCoord[0], toolEndCoord[1]
+
+                    ));
+
+                    Start_Foro();
+                    abort = false;
+                    play = false;
+                    stop = false;
+                    isDrilling = true;
+                }
+                if (stop && isDrilling) {
+                    End_dE = Math.abs(Selected_Point3D_Drill.getEndX() - toolEndCoord[0]);
+                    End_dN = Math.abs(Selected_Point3D_Drill.getEndY() - toolEndCoord[1]);
+                    End_dZ = Math.abs(Selected_Point3D_Drill.getEndZ() - toolEndCoord[2]);
+                    End_Foro_Ok();
+                    abort = false;
+                    play = false;
+                    stop = false;
+                    isDrilling = false;
+                }
+                if (abort && isDrilling) {
+                    End_dE = 0;
+                    End_dN = 0;
+                    End_dZ = 0;
+                    End_Foro_Aborted();
+                    abort = false;
+                    play = false;
+                    stop = false;
+                    isDrilling = false;
+                }
+
+                break;
+
+            case JETGROUTING_MODE:
+                if (play && !isDrilling) {
+                    Start_dE = Math.abs(Selected_Point3D_Drill.getHeadX() - toolEndCoord[0]);
+                    Start_dN = Math.abs(Selected_Point3D_Drill.getHeadY() - toolEndCoord[1]);
+                    Start_dZ = Math.abs(Selected_Point3D_Drill.getHeadZ() - toolEndCoord[2]);
+                    delta_Tilt = Math.abs(Selected_Point3D_Drill.getTilt() - MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll));
+                    delta_Bearing = 0;
+                    Start_Foro();
+                    abort = false;
+                    play = false;
+                    stop = false;
+                    isDrilling = true;
+                }
+                if (stop && isDrilling) {
+                    End_dE = 0;
+                    End_dN = 0;
+                    End_dZ = 0;
+                    End_Foro_Ok();
+                    abort = false;
+                    play = false;
+                    stop = false;
+                    isDrilling = false;
+                }
+                if (abort && isDrilling) {
+                    End_dE = 0;
+                    End_dN = 0;
+                    End_dZ = 0;
+                    End_Foro_Aborted();
+                    abort = false;
+                    play = false;
+                    stop = false;
+                    isDrilling = false;
+                }
+                break;
+
+            case SOLARDRILL:
+                //TODO il delta bearing va sulla linea selezionata, non sulla testa Mast
+                if (play && !isDrilling) {
+                    Start_dE = Math.abs(Selected_Point3D_Drill.getHeadX() - toolEndCoord[0]);
+                    Start_dN = Math.abs(Selected_Point3D_Drill.getHeadY() - toolEndCoord[1]);
+                    Start_dZ = Math.abs(Selected_Point3D_Drill.getHeadZ() - toolEndCoord[2]);
+                    delta_Tilt = Math.abs(Selected_Point3D_Drill.getTilt() - MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll));
+                    delta_Bearing = 0;
+                    Start_Foro();
+                    abort = false;
+                    play = false;
+                    stop = false;
+                    isDrilling = true;
+                }
+                if (stop && isDrilling) {
+                    End_dE = 0;
+                    End_dN = 0;
+                    End_dZ = 0;
+                    End_Foro_Ok();
+                    abort = false;
+                    play = false;
+                    stop = false;
+                    isDrilling = false;
+                }
+                if (abort && isDrilling) {
+                    End_dE = 0;
+                    End_dN = 0;
+                    End_dZ = 0;
+                    End_Foro_Aborted();
+                    abort = false;
+                    play = false;
+                    stop = false;
+                    isDrilling = false;
+                }
+                break;
+        }
+    }
+
+
+    private void reopenHoleToTodo(Point3D_Drill p) {
+        if (p == null || p.getId() == null || p.getId().trim().isEmpty()) return;
+
+        final String holeId = p.getId().trim();
+        final String nowIso = NmeaListener.date_time_iso;
+
+        // 1) Runtime
+        p.setStatus(0); // TODO
+
+        // 2) STATE.csv: sovrascrivi + pulisci campi (qui IMPORTANT: usare "" non null)
+        try {
+            ReadProjectService.stateStore.upsertAndSave(
+                    holeId,
+                    ProjectStateCsvStore.HoleState.TODO,
+                    "",   // startTimeIso pulito (oppure nowIso se vuoi memorizzare la riapertura)
+                    "",   // endTimeIso pulito
+                    "RE-OPENED", // note (audit anche nello state, opzionale)
+                    ""    // holeReportFile pulito
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        // 2) forza ridisegno
+        // 3) REPORT.xlsx: aggiungi riga audit ciano
+        try {
+            ProjectReportXlsxWriter.HoleSummaryRow row = new ProjectReportXlsxWriter.HoleSummaryRow();
+            row.holeId = holeId;
 
+            row.holeN = p.getHeadY();
+            row.holeE = p.getHeadX();
+            row.holeZ = p.getHeadZ();
+
+            p.recomputeDerived();
+            row.holeBearing = p.getHeadingDeg();
+            row.holeTilt = p.getTilt();
+            row.holeDepth = p.getDepth();
+            row.holeLength = p.getLength();
+
+            row.startTimeIso = nowIso;   // momento evento
+            row.endTimeIso = "";         // vuoto
+            row.state = "RE-OPENED";
+
+            ReadProjectService.reportXlsxWriter.appendHoleRow(row);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 4) Deseleziona se era selezionato
+        if (DataSaved.Selected_Point3D_Drill != null &&
+                holeId.equals(DataSaved.Selected_Point3D_Drill.getId())) {
+            DataSaved.Selected_Point3D_Drill = null;
+        }
+
+        refreshAfterStateChange();
+    }
+
+    @Override
+    public void onReopenRequested(@NonNull Point3D_Drill hole) {
+        reopenHoleToTodo(hole); // chiama il metodo che abbiamo definito (STATE overwrite + XLSX append ciano)
+        // Se vuoi anche aggiornare subito la mappa:
+        // invalidateViews();
     }
 
 }

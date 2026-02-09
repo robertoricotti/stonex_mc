@@ -28,8 +28,8 @@ public class DrawDXF_Drill_Point {
         float headY = (float) (bucketY - diffHX * Math.sin(rotationAngle) - diffHY * Math.cos(rotationAngle));
 
         // dimensioni (un pelo più piccole del selected)
-        float rHead = 0.12f * scala;
-        float rEnd = rHead * 0.75f;
+        float rHead = 0.145f * scala;
+        float rEnd = rHead * 0.78f;
 
         // Colore in base allo stato: 0/TODO = default, 1/DONE = verde, -1/ABORTED = magenta
         Integer st = point.getStatus();
@@ -158,9 +158,9 @@ public class DrawDXF_Drill_Point {
             if (point.getRowId() == null) {
                 testo = point.getId();
             }
-            paint.setTextSize(24);
+            paint.setTextSize(Math.max(18f, 0.22f * scala));
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(MyColorClass.colorConstraint);
+            paint.setColor(fillColor); // oppure fillColor, a gusto
             canvas.drawText(testo, headX + 3f, headY - 3f, paint);
             canvas.rotate(uiDeg,headX,headY);
         }

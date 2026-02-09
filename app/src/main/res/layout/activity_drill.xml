@@ -62,6 +62,18 @@
             app:srcCompat="@drawable/menu_btn"
             app:tint="@color/black" />
         <ImageView
+            android:id="@+id/Status"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/gnss_setup_btn"
+            app:tint="@color/white" />
+        <ImageView
             android:id="@+id/drilltool"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -131,20 +143,24 @@
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/btn_pt_lines"
+
             />
 
+
         <ImageView
-            android:id="@+id/Status"
+            android:id="@+id/normalStop"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="0.5"
-            android:background="@drawable/custom_background_test3d_box_grigino"
+            android:background="@drawable/custom_background_test3d_box_blu"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/gnss_setup_btn"
-            app:tint="@color/white" />
+            app:srcCompat="@drawable/normal_stop"
+            app:tint="@color/white"
+            android:visibility="visible"
+            />
         <ImageView
             android:id="@+id/playpause"
             android:layout_width="wrap_content"
@@ -156,6 +172,21 @@
             android:padding="5dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/btn_play"
+            />
+
+        <ImageView
+            android:id="@+id/abortisci"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/custom_background_test3d_rosso"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/abortisce"
+            app:tint="@color/white"
+
             />
     </LinearLayout>
 

@@ -471,12 +471,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 da fare i report">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportXlsxWriter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/abortisce.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/normal_stop.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillPointsFullscreenDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillPointsFullscreenDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportCsvWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportCsvWriter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/PickReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/PickReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportXlsxWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportXlsxWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -704,14 +708,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00054" summary="4.0.16 FMI_IMPLEMENT">
-      <option name="closed" value="true" />
-      <created>1765630801177</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1765630801178</updated>
     </task>
     <task id="LOCAL-00055" summary="4.0.16 FMI_IMPLEMENT changeID">
       <option name="closed" value="true" />
@@ -1097,7 +1093,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770584706231</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="4.1.0 da fare i report">
+      <option name="closed" value="true" />
+      <created>1770623090098</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1770623090098</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -1134,7 +1138,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1770542536814" />
+            <CheckInfo lastCheckTimestamp="1770645418863" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1144,7 +1148,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1770542536814" />
+            <CheckInfo lastCheckTimestamp="1770645418862" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1154,7 +1158,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1770542536814" />
+            <CheckInfo lastCheckTimestamp="1770645418862" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

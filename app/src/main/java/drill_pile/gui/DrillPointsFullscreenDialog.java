@@ -40,6 +40,8 @@ import utils.FullscreenActivity;
 import utils.MyData;
 
 public class DrillPointsFullscreenDialog extends DialogFragment {
+
+    @Nullable private OnHoleActionListener holeActionListener;
     CustomQwertyDialog customQwertyDialog;
 
     private static final String ARG_TITLE = "arg_title";
@@ -70,6 +72,8 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
              "Depth", "Length","Bearing", "Tilt",
             "Delta Z", "Diameter","Description"
     );
+
+
 
     /**
      * @param displayFactor moltiplicatore per mostrare coordinate/distanze:
@@ -135,7 +139,14 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
         rvRows.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
         rvRows.addItemDecoration(new DividerItemDecoration1dp(requireContext()));
 
-        rowsAdapter = new RowsAdapter(columns, filtered, displayFactor, () -> rowsAdapter.notifyDataSetChanged());
+        rowsAdapter = new RowsAdapter(
+                columns,
+                filtered,
+                displayFactor,
+                () -> rowsAdapter.notifyDataSetChanged(),
+                holeActionListener
+        );
+
         rvRows.setAdapter(rowsAdapter);
 
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -319,7 +330,7 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
     private static String statusLabel(Point3D_Drill p) {
         int s = statusValue(p);
         if (s == 1) return "DONE";
-        if (s == -1) return "ABORT";
+        if (s == -1) return "ABORTED";
         return "TO DO";
     }
 
@@ -434,12 +445,15 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
         private final List<Point3D_Drill> data;
         private final double displayFactor;
         private final Runnable onSelectionChanged;
-
-        RowsAdapter(List<String> cols, List<Point3D_Drill> data, double displayFactor, Runnable onSelectionChanged) {
+        private final OnHoleActionListener actionListener;
+        RowsAdapter(List<String> cols, List<Point3D_Drill> data, double displayFactor,
+                    Runnable onSelectionChanged,
+                    @Nullable OnHoleActionListener actionListener) {
             this.cols = cols;
             this.data = data;
             this.displayFactor = displayFactor;
             this.onSelectionChanged = onSelectionChanged;
+            this.actionListener = actionListener;
         }
 
         @NonNull
@@ -449,7 +463,8 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
         }
 
         @Override public void onBindViewHolder(@NonNull RowVH holder, int position) {
-            holder.bindData(cols, data.get(position), displayFactor, onSelectionChanged);
+            holder.bindData(cols, data.get(position), displayFactor, onSelectionChanged, actionListener);
+
         }
 
         @Override public int getItemCount() { return data.size(); }
@@ -485,7 +500,9 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
             rowRoot.setBackgroundColor(Color.LTGRAY);//sfondo dell'Header
         }
 
-        void bindData(List<String> cols, Point3D_Drill p, double displayFactor, Runnable onSelectionChanged) {
+        void bindData(List<String> cols, Point3D_Drill p, double displayFactor,
+                      Runnable onSelectionChanged,
+                      @Nullable OnHoleActionListener actionListener) {
             cbSelect.setVisibility(View.VISIBLE);
 
             tvStatus.setTypeface(tvStatus.getTypeface(), android.graphics.Typeface.NORMAL);
@@ -495,7 +512,22 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
             boolean selectable = isSelectable(p);
 
             // highlight riga selezionata
-            rowRoot.setBackgroundColor(selected ? Color.YELLOW : 0x00000000);
+            int s = statusValue(p);
+
+            if (selected) {
+                // Selected sempre giallo
+                rowRoot.setBackgroundColor(Color.YELLOW);
+            } else if (s == 1) {
+                // DONE verde (soft)
+                rowRoot.setBackgroundColor(Color.argb(100, 0, 200, 0));
+            } else if (s == -1) {
+                // ABORTED magenta (soft)
+                rowRoot.setBackgroundColor(Color.argb(100, 255, 0, 255));
+            } else {
+                // TODO / default
+                rowRoot.setBackgroundColor(Color.TRANSPARENT);
+            }
+
 
             cbSelect.setOnCheckedChangeListener(null);
             cbSelect.setEnabled(selectable);
@@ -536,11 +568,33 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
                 if (onSelectionChanged != null) onSelectionChanged.run();*/
             });
 
+
             cells.removeAllViews();
             Context ctx = rowRoot.getContext();
             for (String c : cols) {
                 cells.addView(makeCell(ctx, valueForColumn(p, c, displayFactor), false, c));
             }
+
+
+            // Long-press: allow RE-OPEN only for DONE/ABORTED
+            rowRoot.setOnLongClickListener(v -> {
+                int stt = statusValue(p);
+                if (stt == 0) return false; // TODO -> nothing to do
+                if (actionListener == null) return false;
+
+                new android.app.AlertDialog.Builder(v.getContext())
+                        .setTitle("Re-open hole")
+                        .setMessage("This hole will be set back to TODO and a RE-OPENED entry will be appended to the project report.\n\nContinue?")
+                        .setPositiveButton("RE-OPEN", (d, which) -> {
+                            actionListener.onReopenRequested(p);
+                            if (onSelectionChanged != null) onSelectionChanged.run();
+                        })
+                        .setNegativeButton("CANCEL", null)
+                        .show();
+
+                return true;
+            });
+
         }
 
         private static TextView makeCell(Context ctx, String text, boolean bold, String column) {
@@ -588,6 +642,23 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
 
     private static boolean safeEq(Object x, Object y) {
         return (x == y) || (x != null && x.equals(y));
+    }
+    public interface OnHoleActionListener {
+        void onReopenRequested(@NonNull Point3D_Drill hole);
+    }
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnHoleActionListener) {
+            holeActionListener = (OnHoleActionListener) context;
+        } else {
+            holeActionListener = null; // dialog funziona lo stesso, ma senza azione
+        }
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        holeActionListener = null;
     }
 
 }

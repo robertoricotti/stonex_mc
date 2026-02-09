@@ -1,6 +1,6 @@
 package drill_pile.gui;
 
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.serialNumber;
+
 import static cloud.WebSocketPlugin.isAuthenticated;
 import static gui.MyApp.folderPath;
 
@@ -41,6 +41,7 @@ import java.util.Map;
 
 import cloud.S3ManagerSingleton;
 import cloud.WebSocketPlugin;
+import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import utils.MyData;
@@ -373,17 +374,18 @@ public class PickReport extends AppCompatActivity {
 
     private void uploadReportToS3(ReportFileAdapter.FileItem item) {
 
+        Log.d("itemPath",item.getPath());
         String localPath = item.getPath();
         String name = item.getName();
         boolean isFolder = item.isFolder();
 
-        String s3BasePath = "serials/" + serialNumber + "/Exported/";
+        String s3BasePath = "serials/" + MyApp.DEVICE_SN + "/Exported/"+name;
 
         if (isFolder) {
 
             s3Manager.uploadFolderToS3(
                     localPath,
-                    s3BasePath + name,
+                    s3BasePath,
                     new S3ManagerSingleton.S3Callback() {
 
                         @Override
