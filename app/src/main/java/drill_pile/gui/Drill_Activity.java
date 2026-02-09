@@ -1154,83 +1154,161 @@ public class Drill_Activity extends BaseClass {
     private void Start_Foro() {
         if (DataSaved.Selected_Point3D_Drill == null) return;
 
+        // HoleId uniforme: SOLO ID (se hai già buildHoleId ok, ma deve tornare point.getId())
         currentHoleId = buildHoleId(DataSaved.Selected_Point3D_Drill);
         startIso = NmeaListener.date_time_iso;
 
         // Stato runtime (in memoria)
         DataSaved.Selected_Point3D_Drill.setStatus(0); // TODO
 
-        // Persistenza
+        // Persistenza STATE (CSV)
         try {
-            ReadProjectService.stateStore.upsertAndSave(currentHoleId,
+            ReadProjectService.stateStore.upsertAndSave(
+                    currentHoleId,
                     ProjectStateCsvStore.HoleState.TODO,
                     startIso,
                     null,
                     null,
-                    null);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // UI / logica drilling
-        isDrilling = true;
-        refreshAfterStateChange();
-    }
-
-    private void End_Foro_Ok() {
-        if (DataSaved.Selected_Point3D_Drill == null) return;
-
-        String endIso = NmeaListener.date_time_iso;
-
-        // Stato runtime (in memoria)
-        DataSaved.Selected_Point3D_Drill.setStatus(1); // DONE (scegli tu il numero)
-
-        // Persistenza
-        try {
-            ReadProjectService.stateStore.upsertAndSave(
-                    currentHoleId,
-                    ProjectStateCsvStore.HoleState.DONE,
-                    startIso,
-                    endIso,
-                    "",
-                    "HOLES/" + currentHoleId + ".csv"
+                    null
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        isDrilling = false;
+        isDrilling = true;
         refreshAfterStateChange();
-        DataSaved.Selected_Point3D_Drill = null;
     }
+
+
+    private void End_Foro_Ok() {
+        if (DataSaved.Selected_Point3D_Drill == null) return;
+
+        final iredes.Point3D_Drill p = DataSaved.Selected_Point3D_Drill; // snapshot
+        final String holeId = buildHoleId(p);
+        final String endIso = NmeaListener.date_time_iso;
+
+        // Stato runtime (in memoria)
+        p.setStatus(1); // DONE
+
+        // 1) Persistenza STATE (CSV)
+        try {
+            ReadProjectService.stateStore.upsertAndSave(
+                    holeId,
+                    ProjectStateCsvStore.HoleState.DONE,
+                    startIso,
+                    endIso,
+                    "",
+                    "HOLES/" + holeId + ".csv"
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 2) Report generale XLSX (una riga per foro)
+        try {
+            ProjectReportXlsxWriter.HoleSummaryRow row = new ProjectReportXlsxWriter.HoleSummaryRow();
+            row.holeId = holeId;
+
+            // Coordinate foro (attenzione: tu usi N/E come? qui assumo headY=N, headX=E)
+            row.holeN = p.getHeadY();
+            row.holeE = p.getHeadX();
+            row.holeZ = p.getHeadZ();
+
+            // Bearing/tilt/profondità/lunghezza se disponibili (o calcola con recomputeDerived)
+            // Se non sei sicuro che siano calcolati:
+            p.recomputeDerived();
+
+            row.holeBearing = p.getHeadingDeg();
+            row.holeTilt = p.getTilt();
+            row.holeDepth = p.getDepth();
+            row.holeLength = p.getLength();
+
+            // tempi
+            row.startTimeIso = startIso;
+            row.endTimeIso = endIso;
+
+            // TODO: questi li colleghiamo dopo (quando mi dici da dove arrivano)
+            row.startdN = null; row.startdE = null; row.startdZ = null;
+            row.enddN = null; row.enddE = null; row.enddZ = null;
+            row.dTilt = null; row.dBearing = null;
+            row.avgPenetrationRate = null;
+
+            row.state = "DONE";
+
+            ReadProjectService.reportXlsxWriter.appendHoleRow(row);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // chiusura UI
+        isDrilling = false;
+        DataSaved.Selected_Point3D_Drill = null;
+        refreshAfterStateChange();
+    }
+
 
 
     private void End_Foro_Aborted() {
         if (DataSaved.Selected_Point3D_Drill == null) return;
 
-        String endIso = NmeaListener.date_time_iso;
+        final iredes.Point3D_Drill p = DataSaved.Selected_Point3D_Drill; // snapshot
+        final String holeId = buildHoleId(p);
+        final String endIso = NmeaListener.date_time_iso;
 
         // Stato runtime (in memoria)
-        DataSaved.Selected_Point3D_Drill.setStatus(2); // ABORTED
+        p.setStatus(-1); // ABORTED (nel tuo modello è -1)
 
-        // Persistenza
+        // 1) Persistenza STATE (CSV)
         try {
             ReadProjectService.stateStore.upsertAndSave(
-                    currentHoleId,
+                    holeId,
                     ProjectStateCsvStore.HoleState.ABORTED,
                     startIso,
                     endIso,
                     "Operator aborted",
-                    "HOLES/" + currentHoleId + ".csv"
+                    "HOLES/" + holeId + ".csv"
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        // 2) Report generale XLSX
+        try {
+            ProjectReportXlsxWriter.HoleSummaryRow row = new ProjectReportXlsxWriter.HoleSummaryRow();
+            row.holeId = holeId;
+
+            p.recomputeDerived();
+
+            row.holeN = p.getHeadY();
+            row.holeE = p.getHeadX();
+            row.holeZ = p.getHeadZ();
+
+            row.holeBearing = p.getHeadingDeg();
+            row.holeTilt = p.getTilt();
+            row.holeDepth = p.getDepth();
+            row.holeLength = p.getLength();
+
+            row.startTimeIso = startIso;
+            row.endTimeIso = endIso;
+
+            // per ora null, li riempiamo dopo
+            row.startdN = null; row.startdE = null; row.startdZ = null;
+            row.enddN = null; row.enddE = null; row.enddZ = null;
+            row.dTilt = null; row.dBearing = null;
+            row.avgPenetrationRate = null;
+
+            row.state = "ABORTED";
+
+            ReadProjectService.reportXlsxWriter.appendHoleRow(row);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         isDrilling = false;
-        refreshAfterStateChange();
         DataSaved.Selected_Point3D_Drill = null;
+        refreshAfterStateChange();
     }
+
 
 
     private String extractProjectName(String fullPath) {
@@ -1254,7 +1332,7 @@ public class Drill_Activity extends BaseClass {
     private String buildHoleId(iredes.Point3D_Drill p) {
         String id = p.getId() != null ? p.getId() : "";
         String row = p.getRowId() != null ? p.getRowId() : "";
-        return row + "_" + id;
+        return row + id;
     }
     private void refreshAfterStateChange() {
         // 1) se il punto selezionato non è più TODO, deseleziona

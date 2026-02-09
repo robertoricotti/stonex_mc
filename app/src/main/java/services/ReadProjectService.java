@@ -50,7 +50,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import drill_pile.gui.Drill_Activity;
-import drill_pile.gui.ProjectReportCsvWriter;
+import drill_pile.gui.ProjectReportXlsxWriter;
 import drill_pile.gui.ProjectStateCsvStore;
 import dxf.Arc;
 import dxf.Circle;
@@ -79,7 +79,7 @@ import utils.MyDeviceManager;
 
 
 public class ReadProjectService extends Service {
-
+    public static ProjectReportXlsxWriter reportXlsxWriter;
     public static ProjectStateCsvStore stateStore;
     static boolean mettiPoly, mettiPunti;
     int uom;
@@ -1061,15 +1061,20 @@ public class ReadProjectService extends Service {
 
         File outDir = new File(Environment.getExternalStorageDirectory().toString() + "/StonexMC_V4" + "/Exported/" + projectFolderName + "_OUT");
 
-        ProjectReportCsvWriter writer = new ProjectReportCsvWriter(outDir, projectFolderName);
+        reportXlsxWriter = new ProjectReportXlsxWriter(
+                outDir,
+                projectFolderName,
+                DataSaved.machineName,
+                MyApp.DEVICE_SN
+        );
 
-        LinkedHashMap<String, String> preamble = new LinkedHashMap<>();
-        preamble.put("Company", companyName);
-        preamble.put("Machine", DataSaved.machineName);
-        preamble.put("Project", projectFolderName);
+        LinkedHashMap<String, String> pre = new LinkedHashMap<>();
+        pre.put("Company", companyName);
+        pre.put("Machine", DataSaved.machineName + " " + MyApp.DEVICE_SN);
+        pre.put("Project", projectFolderName);
 
         try {
-            writer.initReport(preamble);
+            reportXlsxWriter.initReport(pre);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -1097,6 +1102,7 @@ public class ReadProjectService extends Service {
             else p.setStatus(0);
         }
     }
+
     private void applyStateToParsedPoints() {
         if (stateStore == null) return;
         if (DataSaved.drill_points == null || DataSaved.drill_points.isEmpty()) return;
@@ -1104,7 +1110,7 @@ public class ReadProjectService extends Service {
         for (iredes.Point3D_Drill p : DataSaved.drill_points) {
             if (p == null) continue;
 
-            String holeId = p.getRowId()+p.getId();
+            String holeId = p.getRowId() + p.getId();
             if (holeId.isEmpty()) continue;
 
             ProjectStateCsvStore.HoleState st = stateStore.getState(holeId);

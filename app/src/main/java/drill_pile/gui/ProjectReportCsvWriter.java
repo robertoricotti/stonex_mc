@@ -10,9 +10,10 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ProjectReportCsvWriter {
-
+    private final String machineId;
     // Header richiesto (ordine fisso)
     public static final String[] HEADER = new String[] {
+            "Machine",
             "Hole-ID", "Hole-N", "Hole-E", "Hole-Z",
             "Hole-Bearing", "Hole-Tilt", "Hole-Depth", "Hole-Length",
             "Start-Time", "End-Time", "Duration",
@@ -28,13 +29,22 @@ public class ProjectReportCsvWriter {
 
     private final File reportFile;
 
-    public ProjectReportCsvWriter(File projectOutDir, String projectName) {
+    public ProjectReportCsvWriter(
+            File projectOutDir,
+            String projectName,
+            String machineName,
+            String machineSerial
+    ) {
         if (projectOutDir == null) throw new IllegalArgumentException("projectOutDir is null");
-        if (projectName == null || projectName.trim().isEmpty()) throw new IllegalArgumentException("projectName is empty");
+        if (projectName == null || projectName.trim().isEmpty())
+            throw new IllegalArgumentException("projectName is empty");
 
-        // Esempio: <NomeCartella>_REPORT.csv
         this.reportFile = new File(projectOutDir, projectName + "_REPORT.csv");
+
+        // come vuoi tu il formato
+        this.machineId = machineName + "_" + machineSerial;
     }
+
 
     public File getReportFile() {
         return reportFile;
@@ -168,11 +178,12 @@ public class ProjectReportCsvWriter {
         bw.newLine();
     }
 
-    private static String toCsvLine(HoleSummaryRow r) {
-        // Duration calcolata dalle ISO
+    private String toCsvLine(HoleSummaryRow r) {
         String duration = durationHHmmssSSS(r.startTimeIso, r.endTimeIso);
 
         String[] cols = new String[] {
+                machineId,                 // 👈 NUOVA PRIMA COLONNA
+
                 r.holeId,
 
                 fmt(r.holeN), fmt(r.holeE), fmt(r.holeZ),
@@ -199,6 +210,7 @@ public class ProjectReportCsvWriter {
         }
         return sb.toString();
     }
+
 
     private static String fmt(Double v) {
         if (v == null || v.isNaN() || v.isInfinite()) return "";

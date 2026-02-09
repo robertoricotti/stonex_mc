@@ -203,6 +203,11 @@ android {
         implementation 'androidx.activity:activity:1.11.0'
         implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 
+        implementation "org.apache.poi:poi:5.2.5"
+        implementation "org.apache.poi:poi-ooxml:5.2.5"
+        implementation "org.apache.commons:commons-collections4:4.4"
+        implementation "org.apache.commons:commons-compress:1.26.1"
+
     }
     buildTypes {
         release {
