@@ -270,17 +270,21 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     private void onClick() {
         normal_stop.setOnLongClickListener(view -> {
-            stop = true;
-            play = false;
-            abort = false;
-            Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+            if(isDrilling) {
+                stop = true;
+                play = false;
+                abort = false;
+                Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+            }
             return true;
         });
         abortisci.setOnLongClickListener(view -> {
-            abort = true;
-            stop = false;
-            play = false;
-            Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+            if(isDrilling) {
+                abort = true;
+                stop = false;
+                play = false;
+                Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+            }
             return true;
         });
         zoom_P.setOnClickListener(view -> {
@@ -621,11 +625,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         textInfo.setText(setTesto());
 
         if (isDrilling) {
-            normal_stop.setVisibility(View.VISIBLE);
-            abortisci.setVisibility(View.VISIBLE);
-            lineReference.setVisibility(View.GONE);
-
-            typeView.setVisibility(View.GONE);
+            normal_stop.setAlpha(1.0f);
+            abortisci.setAlpha(1.0f);
             digMenu.setEnabled(false);
             digMenu.setAlpha(0.3f);
             lineReference.setEnabled(false);
@@ -634,8 +635,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             drillSet.setVisibility(View.INVISIBLE);
 
         } else {
-            normal_stop.setVisibility(View.GONE);
-            abortisci.setVisibility(View.GONE);
+            normal_stop.setAlpha(0.3f);
+            abortisci.setAlpha(0.3f);
             lineReference.setVisibility(View.VISIBLE);
 
             typeView.setVisibility(View.VISIBLE);
