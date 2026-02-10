@@ -168,9 +168,8 @@ public class DialogLanguages {
             dialog.dismiss();
         });
         kor.setOnClickListener(view -> {
-            MyData.push("language","ko");
-            LanguageSetter.setLocale(activity,MyData.get_String("language"));
-
+            MyData.push("language", "ko");
+            LanguageSetter.setLocale(activity, MyData.get_String("language"));
             restart();
             dialog.dismiss();
         });

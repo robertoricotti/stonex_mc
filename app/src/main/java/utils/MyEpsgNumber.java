@@ -2128,6 +2128,17 @@ public class MyEpsgNumber {
     public final static int CUBA__ONSHORE_SOUTH_OF_21_30_N__NAD27__CUBA_SUR__2086 = 2086;
 
     public final static int CUBA__ONSHORE_SOUTH_OF_21_30_N__NAD27__CUBA_SUR__3796 = 3796;
+    //TODO
+    public final static int CZECH_REPUBLIC__S_JTSK__KROVAK_EAST_NORTH__5514 = 5514;
+    public final static int CZECH_REPUBLIC__S_JTSK__KROVAK__5513 = 5513;
+    public final static int CZECH_REPUBLIC__S_JTSK__KROVAK_EAST_NORTH__FERRO__5221 = 5221;
+    public final static int CZECH_REPUBLIC__ETRS89__UTM_ZONE_33N__25833 = 25833;
+    public final static int CZECH_REPUBLIC__ETRS89__UTM_ZONE_34N__25834 = 25834;
+
+
+
+
+
 
     public final static int DENMARK__ONSHORE_BORNHOLM__ETRS89__DKTM4__4096 = 4096;
 

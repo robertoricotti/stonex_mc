@@ -41,6 +41,7 @@ public class LanguageSetter {
                 break;
             case "ko":
                 str = "ko";
+                break;
             case "ja":
                 str = "ja";
                 break;
