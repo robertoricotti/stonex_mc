@@ -15,7 +15,7 @@ import packexcalib.exca.DataSaved;
 
 public class Drill_Bubble extends View {
     private float uiRotDeg = 0f;
-
+private float kH=0.8f,kB=1.35f,kD=0.95f;
 
     private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -164,11 +164,11 @@ public class Drill_Bubble extends View {
     private void drawOuterTriangles(Canvas canvas, float cx, float cy, float rOuter, float strokeOuter) {
 
         // più vicino all’anello interno: aumenta inset
-        float inset = strokeOuter * 0.95f;               // <--- qui avvicini i triangoli al cerchio interno
+        float inset = strokeOuter * kD;               // <--- qui avvicini i triangoli al cerchio interno
         float r = rOuter - (strokeOuter * 0.5f) + inset;
 
-        float height = strokeOuter * 0.80f;
-        float halfBase = strokeOuter * 1.35f;
+        float height = strokeOuter * kH;
+        float halfBase = strokeOuter * kB;
 
         p.setStyle(Paint.Style.FILL);
         p.setColor(triColor);
@@ -305,5 +305,10 @@ public class Drill_Bubble extends View {
     public void setUiRotationDeg(float deg) {
         uiRotDeg = ((deg % 360f) + 360f) % 360f;
         invalidate();
+    }
+    public void setTriMeasure(float kH,float kB,float kD){
+        this.kH=kH;
+        this.kB=kB;
+        this.kD=kD;
     }
 }

@@ -11,7 +11,6 @@ import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JOYSTICKS;
-import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
 
@@ -160,7 +159,7 @@ public class Nuova_Machine_Settings extends BaseClass {
             }
         });
         status.setOnClickListener(view -> {
-            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+            if(DataSaved.isWL==DRILL){
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
                 }

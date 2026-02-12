@@ -10,7 +10,6 @@ import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JOYSTICKS;
-import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
@@ -222,7 +221,7 @@ public class CanService extends Service {
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
                             handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
                         }
-                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL || DataSaved.isWL == SOLARDRILL) {
+                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL ) {
                             if (id == 0x181) {
                                 frameOK = true;
                                 handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
@@ -306,7 +305,7 @@ public class CanService extends Service {
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
                             handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
                         }
-                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL || DataSaved.isWL == SOLARDRILL) {
+                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL ) {
                             if (id == 897) {
                                 frameOK = true;
                                 handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
@@ -440,7 +439,6 @@ public class CanService extends Service {
                         break;
 
                     case DRILL:
-                    case SOLARDRILL:
                         Sensors_Decoder_Drill.decode(id, msg);
                         break;
                 }

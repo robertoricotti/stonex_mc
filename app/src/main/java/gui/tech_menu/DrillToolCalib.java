@@ -2,7 +2,6 @@ package gui.tech_menu;
 
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static utils.MyTypes.DRILL;
-import static utils.MyTypes.SOLARDRILL;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -88,7 +87,7 @@ public class DrillToolCalib extends BaseClass {
 
     private void onClick() {
         gpsdebugg.setOnClickListener(view -> {
-            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+            if(DataSaved.isWL==DRILL){
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
                 }

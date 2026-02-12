@@ -1,6 +1,8 @@
 package drill_pile.gui;
 
 import static drill_pile.gui.Drill_Activity.showCroce;
+import static services.ReadProjectService.persistAlignmentAB;
+import static utils.MyTypes.SOLARFARM_MODE;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -17,11 +20,14 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import dxf.DrawDXF_Drill_Point;
+import dxf.DrawLines;
+import gui.draw_class.MyColorClass;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.NmeaListener;
 import services.PointService;
+import services.ReadProjectService;
 
 
 public class Drill_TopView extends View {
@@ -168,13 +174,23 @@ public class Drill_TopView extends View {
             );
             paint.setStrokeWidth(Math.max(1f, scala * 0.002f));
             if(showCroce) {
+
+                float stroke = Math.max(0.8f, scala * 0.001f) * targetScale;
+                float arm = 100f * targetScale;
+
                 paint.setColor(coloreCroce);
-                paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f)*targetScale);
-                canvas.drawLine(toolX, toolY, toolX + 100f*targetScale, toolY, paint);//destra
-                canvas.drawLine(toolX, toolY, toolX, toolY + 100f*targetScale, paint);//dietro
-                canvas.drawLine(toolX, toolY, toolX - 100f*targetScale, toolY, paint);//sinistra
-                canvas.drawLine(toolX, toolY, toolX, toolY - 100f*targetScale, paint);//avanti
+                paint.setStrokeWidth(stroke);
+
+                // croce
+                canvas.drawLine(toolX, toolY, toolX + arm, toolY, paint); // destra
+                canvas.drawLine(toolX, toolY, toolX - arm, toolY, paint); // sinistra
+                canvas.drawLine(toolX, toolY, toolX, toolY + arm, paint); // dietro
+                canvas.drawLine(toolX, toolY, toolX, toolY - arm*0.5f, paint); // avanti
+
+                // 👇 triangolo in testa (verso avanti = Y negativo)
+                drawCrossDirectionTriangle(canvas, paint, toolX, toolY - arm*0.5f, stroke, targetScale);
             }
+
 
 
             // 2) target ciano: drillhead (si muove rispetto al tool)
@@ -250,6 +266,15 @@ public class Drill_TopView extends View {
             }
         } catch (Exception e) {
             Log.e("DrillDraw", "Errore drawDrillPoints", e);
+        }
+        if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+            if (DataSaved.alignAId != null && DataSaved.alignBId != null) {
+                drawAlignmentAB(canvas, paint,
+                        toolX, toolY,
+                        toolEast, toolNord,
+                        scala, rotationAngle,
+                        uiRotDeg);
+            }
         }
     }
     private void drawSelectedPoint(Point3D_Drill point3DDrill){
@@ -369,20 +394,54 @@ public class Drill_TopView extends View {
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public void onLongPress(@NonNull MotionEvent e) {
-            if (DataSaved.isAutoSnap != 2) {
-                return;   // 🔴 autosnap disattivo → niente picking
+            if (DataSaved.isAutoSnap != 2&&!DataSaved.isDefiningAB) {
+                return; // picking attivo solo in manuale
             }
-            // long press di default ~500ms; se vuoi 1s esatto vedi sezione "1s preciso"
+
             Point3D_Drill hit = pickPoint(e.getX(), e.getY());
-            if (hit != null) {
-                if (isSamePoint(hit, DataSaved.Selected_Point3D_Drill)) {
-                    DataSaved.Selected_Point3D_Drill = null;   // toggle off
-                } else {
-                    DataSaved.Selected_Point3D_Drill = hit;
+            if (hit == null) return;
+
+            // --- DEFINIZIONE AB ---
+            if (DataSaved.isDefiningAB) {
+                String id = (hit.getId() == null) ? null : hit.getId().trim();
+                if (id == null || id.isEmpty()) return;
+
+                // 1° punto -> A
+                if (DataSaved.alignAId == null || DataSaved.alignAId.isEmpty()) {
+                    DataSaved.alignAId = id;
+                    // feedback UI (toast/snackbar a piacere)
+                    // new CustomToast(getContext(), "A set: " + id).show_alert();
+                    invalidate();
+                    return;
                 }
+
+                // 2° punto -> B (evita A==B)
+                if (id.equalsIgnoreCase(DataSaved.alignAId)) {
+                    // new CustomToast(getContext(), "Pick a different point for B").show_alert();
+                    return;
+                }
+
+                DataSaved.alignBId = id;
+
+                // Persistenza + uscita modalità
+                persistAlignmentAB(DataSaved.alignAId, DataSaved.alignBId);
+
+                DataSaved.isDefiningAB = false;
+
+                // new CustomToast(getContext(), "Alignment set: A=" + DataSaved.alignAId + " B=" + DataSaved.alignBId).show_alert();
                 invalidate();
+                return;
             }
+
+            // --- COMPORTAMENTO STANDARD: selezione punto ---
+            if (isSamePoint(hit, DataSaved.Selected_Point3D_Drill)) {
+                DataSaved.Selected_Point3D_Drill = null;   // toggle off
+            } else {
+                DataSaved.Selected_Point3D_Drill = hit;
+            }
+            invalidate();
         }
+
         @Override
         public boolean onDown(MotionEvent e) {
             return true;
@@ -738,6 +797,175 @@ public class Drill_TopView extends View {
         pickCacheDirty = true;
         invalidate();
     }
+
+    private void drawAlignmentAB(Canvas canvas, Paint paint,
+                                 float bucketX, float bucketY,
+                                 double bucketEst, double bucketNord,
+                                 float scala, double rotationAngle,
+                                 float uiDeg) {
+
+        ReadProjectService.AlignmentPair ab =
+                ReadProjectService.findAlignmentPoints(
+                        DataSaved.drill_points,
+                        DataSaved.alignAId,
+                        DataSaved.alignBId
+                );
+
+        if (ab == null || !ab.isValid()) return;
+        if (ab.A.getHeadX() == null || ab.A.getHeadY() == null) return;
+        if (ab.B.getHeadX() == null || ab.B.getHeadY() == null) return;
+
+        // --- mondo -> schermo (stessa trasformazione dei punti) ---
+        float ax = worldToScreenX(ab.A.getHeadX(), ab.A.getHeadY(), bucketX, bucketEst, bucketNord, scala, rotationAngle);
+        float ay = worldToScreenY(ab.A.getHeadX(), ab.A.getHeadY(), bucketY, bucketEst, bucketNord, scala, rotationAngle);
+
+        float bx = worldToScreenX(ab.B.getHeadX(), ab.B.getHeadY(), bucketX, bucketEst, bucketNord, scala, rotationAngle);
+        float by = worldToScreenY(ab.B.getHeadX(), ab.B.getHeadY(), bucketY, bucketEst, bucketNord, scala, rotationAngle);
+
+        // --- stile linea (gialla con outline scuro) ---
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+
+        float strokeMain = Math.max(3f, scala * 0.015f);      // scala-based
+        float strokeOutline = strokeMain + Math.max(2f, strokeMain * 0.55f);
+
+        // outline scuro
+        paint.setStrokeWidth(strokeOutline);
+        paint.setColor(MyColorClass.colorConstraint);
+        canvas.drawLine(ax, ay, bx, by, paint);
+
+        // linea gialla
+        paint.setStrokeWidth(strokeMain);
+        paint.setColor(android.graphics.Color.argb(220, 255, 235, 0));
+        canvas.drawLine(ax, ay, bx, by, paint);
+        drawDirectionTriangle(canvas, paint, ax, ay, bx, by, strokeMain);
+        // (opzionale) pallini A/B per chiarezza
+        float r = Math.max(6f, strokeMain * 1.1f);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(android.graphics.Color.argb(230, 255, 235, 0));
+        canvas.drawCircle(ax, ay, r, paint);
+        canvas.drawCircle(bx, by, r, paint);
+    }
+
+    private float worldToScreenX(double worldE, double worldN,
+                                 float bucketX,
+                                 double bucketEst, double bucketNord,
+                                 float scala, double rotationAngle) {
+
+        double diffX = (worldE - bucketEst) * scala;
+        double diffY = (worldN - bucketNord) * scala;
+        return (float) (bucketX + diffX * Math.cos(rotationAngle) - diffY * Math.sin(rotationAngle));
+    }
+
+    private float worldToScreenY(double worldE, double worldN,
+                                 float bucketY,
+                                 double bucketEst, double bucketNord,
+                                 float scala, double rotationAngle) {
+
+        double diffX = (worldE - bucketEst) * scala;
+        double diffY = (worldN - bucketNord) * scala;
+        return (float) (bucketY - diffX * Math.sin(rotationAngle) - diffY * Math.cos(rotationAngle));
+    }
+    private void drawDirectionTriangle(Canvas canvas, Paint paint,
+                                       float ax, float ay, float bx, float by,
+                                       float strokeMain) {
+
+        float vx = bx - ax;
+        float vy = by - ay;
+        float len = (float) Math.hypot(vx, vy);
+        if (len < 1e-3f) return;
+
+        // unit direction A->B
+        float ux = vx / len;
+        float uy = vy / len;
+
+        // normal (perp)
+        float nx = -uy;
+        float ny = ux;
+
+        // centro linea
+        float cx = (ax + bx) * 0.5f;
+        float cy = (ay + by) * 0.5f;
+
+        // dimensioni triangolo (scalate)
+        float triLen = Math.max(16f, strokeMain * 3.2f);   // lunghezza punta
+        float triHalfW = Math.max(10f, strokeMain * 2.4f); // metà base
+
+        // punta verso B
+        float tipX = cx + ux * triLen;
+        float tipY = cy + uy * triLen;
+
+        // base dietro al centro
+        float baseCx = cx - ux * triLen * 0.55f;
+        float baseCy = cy - uy * triLen * 0.55f;
+
+        float leftX = baseCx + nx * triHalfW;
+        float leftY = baseCy + ny * triHalfW;
+        float rightX = baseCx - nx * triHalfW;
+        float rightY = baseCy - ny * triHalfW;
+
+        // ---- outline scuro ----
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(MyColorClass.colorConstraint);
+        android.graphics.Path p = new android.graphics.Path();
+        p.moveTo(tipX, tipY);
+        p.lineTo(leftX, leftY);
+        p.lineTo(rightX, rightY);
+        p.close();
+        canvas.drawPath(p, paint);
+
+        // ---- fill giallo ----
+        paint.setColor(android.graphics.Color.argb(235, 255, 235, 0));
+        canvas.drawPath(p, paint);
+
+        // (opzionale) bordo giallo più “pulito”
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(Math.max(2f, strokeMain * 0.6f));
+        paint.setColor(android.graphics.Color.argb(240, 255, 255, 120));
+        canvas.drawPath(p, paint);
+    }
+    private void drawCrossDirectionTriangle(Canvas canvas, Paint paint,
+                                            float tipX, float tipY,
+                                            float stroke, float scale) {
+
+        // dimensioni triangolo
+        float triLen = 20f * scale;
+        float triHalfW = 12f * scale;
+
+        // punta già nota (tipX, tipY)
+        float baseY = tipY + triLen;
+
+        float leftX = tipX - triHalfW;
+        float leftY = baseY;
+
+        float rightX = tipX + triHalfW;
+        float rightY = baseY;
+
+        android.graphics.Path path = new android.graphics.Path();
+        path.moveTo(tipX, tipY);     // punta
+        path.lineTo(leftX, leftY);   // base sx
+        path.lineTo(rightX, rightY); // base dx
+        path.close();
+
+        paint.setAntiAlias(true);
+
+        // bordo scuro per contrasto
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(android.graphics.Color.argb(170, 0, 0, 0));
+        canvas.drawPath(path, paint);
+
+        // riempimento colore croce
+        paint.setColor(coloreCroce);
+        canvas.drawPath(path, paint);
+
+        // contorno
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(Math.max(2f, stroke * 0.7f));
+        paint.setColor(android.graphics.Color.argb(220, 0, 0, 0));
+        canvas.drawPath(path, paint);
+    }
+
 }
 
 

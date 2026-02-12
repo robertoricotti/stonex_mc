@@ -2,7 +2,6 @@ package gui.tech_menu;
 
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
-import static utils.MyTypes.SOLARDRILL;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -111,7 +110,7 @@ public class XYZ_Calib extends BaseClass {
         tv_btw.setText("G1>>G2 " + Utils.getMetriSimbol());
 
         gpsDebug.setOnClickListener(view -> {
-            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+            if(DataSaved.isWL==DRILL){
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
                 }

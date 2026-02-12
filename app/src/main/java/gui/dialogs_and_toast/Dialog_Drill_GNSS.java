@@ -10,7 +10,7 @@ import static services.CanSender.GNSS_MSG;
 import static services.CanService.nmeaSTX_Disc;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.SMC;
-import static utils.MyTypes.SOLARDRILL;
+import static utils.MyTypes.SOLARFARM_MODE;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -24,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -44,6 +45,7 @@ import utils.MyDeviceManager;
 import utils.Utils;
 
 public class Dialog_Drill_GNSS {
+    LinearLayout layEnc;
     TextView textViewPW,datetim;
     Dialog_Edit_Zeta_DXF dialogEditZetaDxf;
     ProgressBar progressBar;
@@ -140,6 +142,7 @@ public class Dialog_Drill_GNSS {
         hdtoffset = alertDialog.findViewById(R.id.hdtoffset);
         setZeroRotary = alertDialog.findViewById(R.id.setZeroRotary);
         setZeroBoom = alertDialog.findViewById(R.id.setZeroBoom);
+        layEnc=alertDialog.findViewById(R.id.layEnc);
 
 
     }
@@ -149,6 +152,11 @@ public class Dialog_Drill_GNSS {
         progressBar.setVisibility(View.INVISIBLE);
         indexMach = MyData.get_Int("MachineSelected");
         DataSaved.radioMode = MyData.get_Int("M" + indexMach + "radioMode");
+        if(DataSaved.Drilling_Mode==SOLARFARM_MODE){
+            layEnc.setVisibility(View.INVISIBLE);
+        }else {
+            layEnc.setVisibility(View.VISIBLE);
+        }
 
         if (isTech) {
             if (DataSaved.useQuickSwitch == 1&&DataSaved.gpsType==SMC) {
@@ -352,7 +360,7 @@ public class Dialog_Drill_GNSS {
                     }
 
 
-                    if (DataSaved.isWL ==DRILL||DataSaved.isWL==SOLARDRILL) {
+                    if (DataSaved.isWL ==DRILL) {
                         boolean[] b = PLC_DataTypes_BigEndian.U8_to_bitmask_be((byte) errorCode);
 
 

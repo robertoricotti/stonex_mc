@@ -8,7 +8,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProjectStateCsvStore {
-
+    public static final String KEY_ALIGN_A = "__ALIGN_A";
+    public static final String KEY_ALIGN_B = "__ALIGN_B";
     public enum HoleState {
         TODO, DONE, ABORTED;
 
@@ -282,6 +283,41 @@ public class ProjectStateCsvStore {
             boolean ok = dir.mkdirs();
             if (!ok) throw new IOException("Unable to create directory: " + dir.getAbsolutePath());
         }
+    }
+    public HoleStateEntry getEntry(String holeId) {
+        if (holeId == null) return null;
+        return cache.get(holeId);
+    }
+    public static class AlignmentIds {
+        public final String aId;
+        public final String bId;
+
+        public AlignmentIds(String aId, String bId) {
+            this.aId = aId;
+            this.bId = bId;
+        }
+
+        public boolean isValid() {
+            return aId != null && !aId.trim().isEmpty()
+                    && bId != null && !bId.trim().isEmpty()
+                    && !aId.trim().equalsIgnoreCase(bId.trim());
+        }
+    }
+
+    public AlignmentIds loadAlignmentIds() {
+        HoleStateEntry a = cache.get(KEY_ALIGN_A);
+        HoleStateEntry b = cache.get(KEY_ALIGN_B);
+
+        String aId = (a == null) ? null : safeTrim(a.startTimeIso);
+        String bId = (b == null) ? null : safeTrim(b.startTimeIso);
+
+        return new AlignmentIds(aId, bId);
+    }
+
+    private static String safeTrim(String s) {
+        if (s == null) return null;
+        String t = s.trim();
+        return t.isEmpty() ? null : t;
     }
 }
 

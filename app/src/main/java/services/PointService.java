@@ -5,6 +5,10 @@ import static packexcalib.exca.DataSaved.Selected_Point3D_Drill;
 import static packexcalib.exca.ExcavatorLib.coordTool;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
+import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
+import static utils.MyTypes.JETGROUTING_MODE;
+import static utils.MyTypes.ROCKDRILL_MODE;
+import static utils.MyTypes.SOLARFARM_MODE;
 
 import android.app.Service;
 import android.content.Intent;
@@ -21,6 +25,8 @@ import iredes.DrillMatch;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
+import packexcalib.exca.Sensors_Decoder;
+import packexcalib.gnss.NmeaListener;
 import packexcalib.surfcreator.TriangleHelper;
 import utils.DistToPoint;
 
@@ -333,11 +339,27 @@ public class PointService extends Service {
         final boolean ignoreOri = (Double.isNaN(st.holeTiltDeg) || st.holeTiltDeg < 1.0);
         final boolean oriForStart = ignoreOri ? true : okOri;
 
-        okStart =
-                (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
+        switch (DataSaved.Drilling_Mode){
+            case ROCKDRILL_MODE:
+                okStart = (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
                         && okZ                             // quota progetto testa
                         && okTilt                          // inclinazione corretta
                         && oriForStart;                    // azimut se significativo
+                break;
+
+            case JETGROUTING_MODE:
+                okStart = (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
+                        && okZ                             // quota progetto testa
+                        && okTilt  ;                        // inclinazione corretta
+
+                break;
+
+            case SOLARFARM_MODE:
+                okStart = (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
+                        && isInRangeAngle( normalizeAngle(NmeaListener.mch_Orientation+DataSaved.deltaGPS2), normalizeAngle(DataSaved.ALLINEAMENTO_AB),DataSaved.Drill_tolleranza_HDT)                         // quota progetto testa
+                        && okTilt  ;                        // inclinazione corretta
+                break;
+        }
 
         // -------------------------
         // 9) OK_DRILL logic (discesa): solo distanza bit->asse
@@ -569,5 +591,35 @@ public class PointService extends Service {
     }
     public static boolean isTiltWithinTolerance() {
         return !(FrecciaUP || FrecciaLEFT || FrecciaDOWN || FrecciaRIGHT);
+    }
+    public static Point3D_Drill[] getAlignmentPointsById(String idA, String idB) {
+
+        Point3D_Drill pA = null;
+        Point3D_Drill pB = null;
+
+        if (DataSaved.drill_points == null || DataSaved.drill_points.isEmpty())
+            return new Point3D_Drill[]{null, null};
+
+        for (Point3D_Drill p : DataSaved.drill_points) {
+            if (p == null || p.getId() == null) continue;
+
+            String pid = p.getId().trim();
+
+            if (idA != null && pid.equalsIgnoreCase(idA.trim())) {
+                pA = p;
+            }
+
+            if (idB != null && pid.equalsIgnoreCase(idB.trim())) {
+                pB = p;
+            }
+
+            // se trovati entrambi esco prima
+            if (pA != null && pB != null) break;
+        }
+
+        return new Point3D_Drill[]{pA, pB};
+    }
+    private boolean isInRangeAngle(double angle, double target, double deadband) {
+        return Math.abs(angle - target) <= deadband;
     }
 }

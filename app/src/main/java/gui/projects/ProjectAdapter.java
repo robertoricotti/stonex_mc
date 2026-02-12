@@ -5,7 +5,6 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
-import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -117,7 +116,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                     sizeTextView.setVisibility(View.VISIBLE);
                 }
 
-            }else if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+            }else if(DataSaved.isWL==DRILL){
                 ckTrm.setVisibility(View.INVISIBLE);
                 if(fileExtension.equalsIgnoreCase("dxf")){
                 ckPoly.setVisibility(View.VISIBLE);}else {

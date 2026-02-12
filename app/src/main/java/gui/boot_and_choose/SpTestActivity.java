@@ -38,6 +38,7 @@ import packexcalib.gnss.GeoideInterpolation;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.LocalizationFactory;
 import packexcalib.gnss.LocalizationModel;
+import packexcalib.gnss.Ntv2GsbMetersGrid;
 import utils.MyData;
 
 /**
@@ -46,6 +47,7 @@ import utils.MyData;
  * diretta (Lat,Lon,H → E,N,Z) e inversa (E,N,Z → Lat,Lon,H).
  */
 public class SpTestActivity extends Activity {
+
     private final double[] quotaBuf = new double[1];
     boolean ggfReady;
     private static GeoideInterpolation UGF_READER;
@@ -149,7 +151,7 @@ public class SpTestActivity extends Activity {
                 }
             } else {
                 try {
-                    Log.d("EPGS", DataSaved.S_CRS);
+
                     setEPSGLocal();
                     double lat = Double.parseDouble(etLat.getText().toString().replace(",", "."));
                     double lon = Double.parseDouble(etLon.getText().toString().replace(",", "."));
@@ -174,7 +176,7 @@ public class SpTestActivity extends Activity {
                             MyData.push("Test_sHll",String.format("%.3f", h));
                             updateLLQ();
                         }
-                    } else {
+                    }else {
                         if (mywgsToUtm != null && myresult != null) {
                             mywgsToUtm.transform(new ProjCoordinate(lon, lat, h), myresult);
                             Easting = myresult.x;
@@ -458,4 +460,6 @@ public class SpTestActivity extends Activity {
     public void onBackPressed() {
 
     }
+
+
 }

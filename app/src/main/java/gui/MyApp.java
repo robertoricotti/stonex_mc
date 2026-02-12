@@ -19,7 +19,7 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
-import static utils.MyTypes.SOLARDRILL;
+
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -465,7 +465,7 @@ git push
                         @Override
                         public void run() {
                             try {
-                                if (DataSaved.isWL ==DRILL||DataSaved.isWL==SOLARDRILL) {
+                                if (DataSaved.isWL ==DRILL) {
                                     DataSaved.lrBucket=DataSaved.lrTool;
                                 }
                                 if (DataSaved.my_comPort == 4) {
@@ -849,7 +849,7 @@ git push
                     false,
                     false, false, false, false, false, false
             });
-        }else if (DataSaved.isWL ==DRILL||DataSaved.isWL==SOLARDRILL) {
+        }else if (DataSaved.isWL ==DRILL) {
             errorCode = PLC_DataTypes_BigEndian.Encode_8_bool_be(new boolean[]{
                     (!frameOK) && DataSaved.lrFrame != 0,
                     (!boom1OK) && DataSaved.lrBoom1 != 0,

@@ -23,7 +23,6 @@ import static utils.MyTypes.MC_2D;
 import static utils.MyTypes.MC_3D_EASY;
 import static utils.MyTypes.MC_3D_PRO;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
-import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -191,7 +190,6 @@ public class Activity_Home_Page extends BaseClass {
                 txt2d.setText("1D  - 2D");
                 break;
             case DRILL:
-            case SOLARDRILL:
                 toDueD.setAlpha(1.0f);
                 toDueD.setImageResource(R.drawable.bottone_report_prj);
                 txt2d.setText("REPORTS");
@@ -226,8 +224,6 @@ public class Activity_Home_Page extends BaseClass {
                     break;
 
                 case DRILL:
-                case SOLARDRILL:
-                    //TODO APRI REPORT
                     startActivity(new Intent(this, PickReport.class));
                     finish();
                     break;
@@ -238,7 +234,7 @@ public class Activity_Home_Page extends BaseClass {
 
         });
         keyLic.setOnClickListener(view -> {
-            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+            if(DataSaved.isWL==DRILL){
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
                 }
@@ -367,7 +363,6 @@ public class Activity_Home_Page extends BaseClass {
 
                     break;
                 case DRILL:
-                case SOLARDRILL:
                     toDig.setImageResource(R.drawable.bottone_drilla);
 
                     break;

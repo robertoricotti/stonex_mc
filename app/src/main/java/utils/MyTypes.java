@@ -7,7 +7,7 @@ public class MyTypes {
     public static final int DOZER_SIX=3;
     public static final int GRADER=4;
     public static final int DRILL=10;
-    public static final int SOLARDRILL=11;
+
     public static final int DREDGE=12;
     public static final int BARGE=13;
 

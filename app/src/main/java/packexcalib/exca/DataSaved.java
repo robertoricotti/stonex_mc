@@ -30,7 +30,10 @@ public class DataSaved {
     public static int Unit_Of_Measure;
     public static int Drill_Screen;
     public static int Drilling_Mode;
-
+    public static boolean isDefiningAB=false;
+    public static String alignAId = null;
+    public static String alignBId = null;
+    public static double ALLINEAMENTO_AB=0;
     //Dragaggio
     public static double HighThreshold;
     public static double LowThreshold;

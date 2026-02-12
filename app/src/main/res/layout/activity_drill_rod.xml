@@ -100,7 +100,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="90dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -147,7 +147,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="90dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -194,7 +194,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -280,6 +280,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center">
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
                 <ImageView
 
                     android:layout_width="70dp"
@@ -330,6 +334,10 @@
                     android:background="@drawable/sfondo_bottone_trasparente"
                     android:src="@drawable/btn_delete_forever"
                     />
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
             </LinearLayout>
             <View
                 android:layout_width="match_parent"

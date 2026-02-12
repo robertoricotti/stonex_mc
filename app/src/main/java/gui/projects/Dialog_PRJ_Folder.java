@@ -10,7 +10,6 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
-import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Activity;
@@ -145,7 +144,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
         recyclerViewSP.setAdapter(spAdapter);
         recyclerViewSP.setLayoutManager(new LinearLayoutManager(activity));
         recyclerViewSP.setItemViewCacheSize(spAdapter.getItemCount());
-        if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+        if(DataSaved.isWL==DRILL){
             addSurf.setVisibility(View.INVISIBLE);
         }
 
@@ -297,7 +296,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 }
-            }else if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+            }else if(DataSaved.isWL==DRILL){
                 if(projectAdapter.getSelectedCkPoiPosition()==-1){
                     new CustomToast(activity, "SELECT A POINT FILE TO USE").show();
                 }else {
@@ -615,7 +614,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
                 try {
 
-                    if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+                    if(DataSaved.isWL==DRILL){
                         textP.setVisibility(View.VISIBLE);
                         addSurf.setVisibility(View.GONE);
                         if(DataSaved.xyz_yxz==0){

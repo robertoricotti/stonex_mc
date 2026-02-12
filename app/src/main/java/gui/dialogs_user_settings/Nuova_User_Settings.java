@@ -3,7 +3,7 @@ package gui.dialogs_user_settings;
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static utils.MyTypes.DRILL;
-import static utils.MyTypes.SOLARDRILL;
+import static utils.MyTypes.SOLARFARM_MODE;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -383,7 +383,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
             }
         });
         status.setOnClickListener(view -> {
-            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+            if(DataSaved.isWL==DRILL){
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
                 }
@@ -643,6 +643,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
             tvoffstep.setText("EXTERNAL OFFSET STEP Inc/Dec");
 
             applyColorsToViews();
+
         } catch (Exception ex) {
             Log.e("UserMenu", Log.getStackTraceString(ex));
         }

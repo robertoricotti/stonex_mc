@@ -263,7 +263,7 @@ public class CanSender extends Service {
                         Deg_Tool_Pitch = currentRight.getRightAxisX();
                         Deg_Tool_Roll = currentRight.getRightHatX();
                         double len=0;
-                        len=MyMCUtils.myscaleD(currentLeft.getLeftYaw(),-180,180,-3,3);
+                        len=MyMCUtils.myscaleD(currentLeft.getLeftYaw(),-180,180,-6,6);
                         Sensors_Decoder_Drill.RopeLen = len;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();

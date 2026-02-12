@@ -8,7 +8,6 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
-import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -185,9 +184,6 @@ public class ExcavatorChooserActivity extends BaseClass {
         }else if(isWL1==DRILL){
             machine1.setImageResource(R.drawable.drill_btn);
             bucketM1.setImageResource(R.drawable.btn_drill_tool);
-        }else if(isWL1==SOLARDRILL){
-            machine1.setImageResource(R.drawable.drill_btn);
-            bucketM1.setImageResource(R.drawable.btn_drill_tool);
         }
         if (isWL2 == WHEELLOADER) {
             machine2.setImageResource(R.drawable.wheel_machines_btn);
@@ -198,9 +194,6 @@ public class ExcavatorChooserActivity extends BaseClass {
             machine2.setImageResource(R.drawable.grader_btn);
             bucketM2.setImageResource(R.drawable.ecu_96);
         }else if(isWL2==DRILL){
-            machine2.setImageResource(R.drawable.drill_btn);
-            bucketM2.setImageResource(R.drawable.btn_drill_tool);
-        }else if(isWL2==SOLARDRILL){
             machine2.setImageResource(R.drawable.drill_btn);
             bucketM2.setImageResource(R.drawable.btn_drill_tool);
         }
@@ -215,9 +208,6 @@ public class ExcavatorChooserActivity extends BaseClass {
         }else if(isWL3==DRILL){
             machine3.setImageResource(R.drawable.drill_btn);
             bucketM3.setImageResource(R.drawable.btn_drill_tool);
-        }else if(isWL3==SOLARDRILL){
-            machine3.setImageResource(R.drawable.drill_btn);
-            bucketM3.setImageResource(R.drawable.btn_drill_tool);
         }
         if (isWL4 == WHEELLOADER) {
             machine4.setImageResource(R.drawable.wheel_machines_btn);
@@ -228,9 +218,6 @@ public class ExcavatorChooserActivity extends BaseClass {
             machine4.setImageResource(R.drawable.grader_btn);
             bucketM4.setImageResource(R.drawable.ecu_96);
         }else if(isWL4==DRILL){
-            machine4.setImageResource(R.drawable.drill_btn);
-            bucketM4.setImageResource(R.drawable.btn_drill_tool);
-        }else if(isWL4==SOLARDRILL){
             machine4.setImageResource(R.drawable.drill_btn);
             bucketM4.setImageResource(R.drawable.btn_drill_tool);
         }
@@ -366,7 +353,7 @@ public class ExcavatorChooserActivity extends BaseClass {
             }
         });
         img00.setOnClickListener(view -> {
-            if(DataSaved.isWL==DRILL||DataSaved.isWL==SOLARDRILL){
+            if(DataSaved.isWL==DRILL){
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
                 }
@@ -420,7 +407,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                                     dialogPassword.show(3);
                                 }
                             }
-                        } else if (isWL1==DRILL||isWL1==SOLARDRILL) {
+                        } else if (isWL1==DRILL) {
                             Intent i = new Intent(this, Drill_Rod_Activity.class);
                             i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
                             startActivity(i);
@@ -455,7 +442,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                                     dialogPassword.show(3);
                                 }
                             }
-                        } else if (isWL2==DRILL||isWL2==SOLARDRILL) {
+                        } else if (isWL2==DRILL) {
                             Intent i = new Intent(this, Drill_Rod_Activity.class);
                             i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
                             startActivity(i);
@@ -490,7 +477,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                                     dialogPassword.show(3);
                                 }
                             }
-                        } else if (isWL3==DRILL||isWL3==SOLARDRILL) {
+                        } else if (isWL3==DRILL) {
                             Intent i = new Intent(this, Drill_Rod_Activity.class);
                             i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
                             startActivity(i);
@@ -525,7 +512,7 @@ public class ExcavatorChooserActivity extends BaseClass {
                                     dialogPassword.show(3);
                                 }
                             }
-                        } else if (isWL4==DRILL||isWL4==SOLARDRILL) {
+                        } else if (isWL4==DRILL) {
                             Intent i = new Intent(this, Drill_Rod_Activity.class);
                             i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
                             startActivity(i);

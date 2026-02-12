@@ -7,9 +7,11 @@ import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.UpdateValuesService.result;
 import static services.UpdateValuesService.shifted;
+
 import static services.UpdateValuesService.wgsToUtm;
 
 import android.util.Log;
+
 
 import org.locationtech.proj4j.ProjCoordinate;
 
@@ -60,7 +62,8 @@ public class Deg2UTM {
 
     public static CoordinateXYZ trasform(double Lat, double Lon, double Z, String crs) {
 
-        if (DataSaved.my_comPort == 4) {
+
+        if (DataSaved.my_comPort==4) {
 
             Northing = Lat;
             Easting = Lon;
@@ -299,7 +302,10 @@ public class Deg2UTM {
 
                     }
                     break;
-                default:
+
+
+
+                    default:
 
                     // ====== ramo con geoide + trasformazione ======
                     try {
@@ -408,7 +414,7 @@ public class Deg2UTM {
                                 Quota = shifted.z;
 
                             }
-                        } else {
+                        }  else {
                             if (wgsToUtm != null && result != null) {
                                 wgsToUtm.transform(new ProjCoordinate(Lon, Lat, q), result);
                                 Easting = result.x;
@@ -433,7 +439,7 @@ public class Deg2UTM {
             }
             try {
                 Zone = computeUtmZone(Lon);
-                Letter=computeUtmLetter(Lat);
+                Letter = computeUtmLetter(Lat);
             } catch (Exception ignored) {
 
             }
@@ -498,5 +504,7 @@ public class Deg2UTM {
     private static int computeUtmZone(double Lon) {
         return (int) Math.floor(Lon / 6 + 31);
     }
+
+
 
 }

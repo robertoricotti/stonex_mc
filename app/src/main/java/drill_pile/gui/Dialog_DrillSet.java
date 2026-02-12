@@ -65,8 +65,8 @@ public class Dialog_DrillSet {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 0.75);
-        int height = (int) (displayMetrics.heightPixels * 0.90);
+        int width = (int) (displayMetrics.widthPixels * 1);
+        int height = (int) (displayMetrics.heightPixels *1);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
         findView();

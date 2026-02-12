@@ -6,15 +6,12 @@ import static packexcalib.gnss.CRS_Strings._UTM;
 
 import android.util.Log;
 
-import com.cp.cputils.Apollo2;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 
@@ -55,7 +52,6 @@ public class NmeaListener {
      */
 
 
-
     public NmeaListener() {
     }
 
@@ -72,8 +68,6 @@ public class NmeaListener {
             if (DataSaved.my_comPort == 4) {//momentaneamente escluso
                 NmeaInput = NMEA0183.split(",");
                 switch (NmeaInput[0]) {
-
-
                     case "$PTNL":
                         try {
                             ggaEast = NmeaInput[6].replace("+", "").replace(",", ".");
@@ -112,12 +106,12 @@ public class NmeaListener {
                             qualityLeica();
                             VRMS_ = NmeaInput[9];
                             Quota1 = DataSaved.offset_Z_antenna + Double.parseDouble(NmeaInput[10].replace(",", "."));
-
                             coordinateXYZLLQ = Deg2UTM.trasform(mLat_1, mLon_1, Quota1, DataSaved.S_CRS);
                             Nord1 = coordinateXYZLLQ.getNorthing();
                             Est1 = coordinateXYZLLQ.getEasting();
                             mChar = coordinateXYZLLQ.getLetter();
                             mZone = coordinateXYZLLQ.getZone();
+                            Log.d("Calling", coordinateXYZLLQ.getNorthing() + "  " + coordinateXYZLLQ.getEasting() + "  " + coordinateXYZLLQ.getQuota());
                         } catch (Exception ignored) {
 
                         }
@@ -256,7 +250,7 @@ public class NmeaListener {
                             break;
                         case "$GPRMC":
                         case "$GNRMC":
-                            if (DataSaved.my_comPort != 0){
+                            if (DataSaved.my_comPort != 0) {
                                 date_time_dmy = dateTimeFromRMC(NmeaInput[1], FORMAT_DDMMYYYY);
                                 date_time_ymd = dateTimeFromRMC(NmeaInput[1], FORMAT_YYYYMMDD);
                                 date_time_iso = dateTimeFromRMC(NmeaInput[1], FORMAT_ISO);
@@ -376,6 +370,7 @@ public class NmeaListener {
 
                 break;
             default:
+
                 coordinateXYZ = Deg2UTM.trasform(tmpLat, tmpLon, tmpQuotaUTM, DataSaved.S_CRS);
                 Nord1 = coordinateXYZ.getNorthing();
                 Est1 = coordinateXYZ.getEasting();
@@ -679,7 +674,7 @@ public class NmeaListener {
         // ---- TIME hhmmss.sss ----
         String t = f[1];
 
-        int hour   = Integer.parseInt(t.substring(0, 2));
+        int hour = Integer.parseInt(t.substring(0, 2));
         int minute = Integer.parseInt(t.substring(2, 4));
         int second = Integer.parseInt(t.substring(4, 6));
 
@@ -690,9 +685,9 @@ public class NmeaListener {
         }
 
         // ---- DATE ----
-        int day   = Integer.parseInt(f[2]);
+        int day = Integer.parseInt(f[2]);
         int month = Integer.parseInt(f[3]);
-        int year  = Integer.parseInt(f[4]);
+        int year = Integer.parseInt(f[4]);
 
         LocalDateTime dateTime = LocalDateTime.of(
                 year, month, day,
@@ -702,6 +697,7 @@ public class NmeaListener {
 
         return formatDateTime(dateTime, formatType);
     }
+
     public static String dateTimeFromRMC(String rmc, int formatType) {
 
         if (rmc == null || !rmc.contains("RMC")) {
@@ -717,7 +713,7 @@ public class NmeaListener {
         // ---- TIME hhmmss.sss ----
         String t = f[1];
 
-        int hour   = Integer.parseInt(t.substring(0, 2));
+        int hour = Integer.parseInt(t.substring(0, 2));
         int minute = Integer.parseInt(t.substring(2, 4));
         int second = Integer.parseInt(t.substring(4, 6));
 
@@ -730,9 +726,9 @@ public class NmeaListener {
         // ---- DATE ddmmyy ----
         String d = f[9];
 
-        int day   = Integer.parseInt(d.substring(0, 2));
+        int day = Integer.parseInt(d.substring(0, 2));
         int month = Integer.parseInt(d.substring(2, 4));
-        int year  = 2000 + Integer.parseInt(d.substring(4, 6));
+        int year = 2000 + Integer.parseInt(d.substring(4, 6));
 
         LocalDateTime dateTime = LocalDateTime.of(
                 year, month, day,
@@ -742,6 +738,7 @@ public class NmeaListener {
 
         return formatDateTime(dateTime, formatType);
     }
+
     private static String formatDateTime(
             LocalDateTime dateTime,
             int formatType

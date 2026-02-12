@@ -20,11 +20,11 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
-import static utils.MyTypes.SOLARDRILL;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -32,6 +32,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import org.locationtech.proj4j.CRSFactory;
+import org.locationtech.proj4j.CoordinateReferenceSystem;
 import org.locationtech.proj4j.CoordinateTransformFactory;
 import org.locationtech.proj4j.InvalidValueException;
 import org.locationtech.proj4j.ProjCoordinate;
@@ -74,11 +75,13 @@ import packexcalib.exca.DataSaved;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.LocalizationFactory;
 import packexcalib.gnss.LocalizationModel;
+import packexcalib.gnss.Ntv2GsbMetersGrid;
 import utils.MyData;
 import utils.MyDeviceManager;
 
 
 public class ReadProjectService extends Service {
+
     public static ProjectReportXlsxWriter reportXlsxWriter;
     public static ProjectStateCsvStore stateStore;
     static boolean mettiPoly, mettiPunti;
@@ -148,8 +151,6 @@ public class ReadProjectService extends Service {
                     Execute_MC();
                     break;
                 case DRILL:
-                case SOLARDRILL:
-
                     Excecute_DRILL();
                     break;
             }
@@ -242,7 +243,7 @@ public class ReadProjectService extends Service {
                     } else {
                         handler.postDelayed(this, 200); // Riprova ogni 200ms
                     }
-                } else if (DataSaved.isWL == DRILL || DataSaved.isWL == SOLARDRILL) {
+                } else if (DataSaved.isWL == DRILL ) {
                     if (isFinishedPOINT) {
                         startCorrectActivityDrill();
                     } else {
@@ -330,7 +331,8 @@ public class ReadProjectService extends Service {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else {
+                }
+                else {
                     ////////
                     try {
                         result = new ProjCoordinate();
@@ -340,10 +342,9 @@ public class ReadProjectService extends Service {
                         WGS84 = crsFactory.createFromName("epsg:" + "4326");
                         try {
                             UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
-                        } catch (UnsupportedParameterException e) {
-                            throw new RuntimeException(e);
-                        } catch (InvalidValueException e) {
-                        } catch (UnknownAuthorityCodeException e) {
+                        } catch (InvalidValueException | UnknownAuthorityCodeException |UnsupportedParameterException e) {
+
+                            Log.e("GridShift", Log.getStackTraceString(e));
                         }
                         wgsToUtm = ctFactory.createTransform(WGS84, UTM);
                         utmToWgs = ctFactory.createTransform(UTM, WGS84);
@@ -352,7 +353,8 @@ public class ReadProjectService extends Service {
 
                     ///////////
                 }
-            } else if (s.equals(_NONE)) {
+            }
+            else if (s.equals(_NONE)) {
                 String CRS_ESTERNO = MyData.get_String("CRS_ESTERNO");
                 if (CRS_ESTERNO != null) {
                     try {
@@ -983,8 +985,10 @@ public class ReadProjectService extends Service {
                             generaReport(extractProjectName(DataSaved.progettoSelected_POINT), "");
                             generaState(extractProjectName(DataSaved.progettoSelected_POINT));
                             applyStateToParsedPoints();
+                            restoreAlignmentFromState();   // <--- QUESTO
                         }
                         DataSaved.lastProjectNamePOINT = nomeProgettoPOINT;
+
                     } else {
                         isFinishedPOINT = true;
                     }
@@ -1145,5 +1149,109 @@ public class ReadProjectService extends Service {
 
         return fullPath.substring(start, end);
     }
+
+    public static void persistAlignmentAB(String aId, String bId) {
+        if (stateStore == null) return;
+        if (aId == null || aId.trim().isEmpty()) return;
+        if (bId == null || bId.trim().isEmpty()) return;
+        if (aId.trim().equalsIgnoreCase(bId.trim())) return;
+
+        try {
+            stateStore.upsertAndSave("__ALIGN_A", ProjectStateCsvStore.HoleState.TODO,
+                    aId.trim(), "", "ALIGNMENT_A", "");
+
+            stateStore.upsertAndSave("__ALIGN_B", ProjectStateCsvStore.HoleState.TODO,
+                    bId.trim(), "", "ALIGNMENT_B", "");
+
+            // aggiorna anche runtime (così UI/guida è immediata)
+            DataSaved.alignAId = aId.trim();
+            DataSaved.alignBId = bId.trim();
+
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static class AlignmentPair {
+        public final Point3D_Drill A;
+        public final Point3D_Drill B;
+
+        public AlignmentPair(Point3D_Drill A, Point3D_Drill B) {
+            this.A = A;
+            this.B = B;
+        }
+
+        public boolean isValid() {
+            return A != null && B != null;
+        }
+    }
+
+    public static AlignmentPair findAlignmentPoints(List<Point3D_Drill> points, String idA, String idB) {
+        if (points == null || points.isEmpty()) return new AlignmentPair(null, null);
+        if (idA == null || idA.trim().isEmpty()) return new AlignmentPair(null, null);
+        if (idB == null || idB.trim().isEmpty()) return new AlignmentPair(null, null);
+
+        String a = idA.trim();
+        String b = idB.trim();
+
+        Point3D_Drill pA = null, pB = null;
+
+        for (Point3D_Drill p : points) {
+            if (p == null || p.getId() == null) continue;
+            String pid = p.getId().trim();
+
+            if (pA == null && pid.equalsIgnoreCase(a)) pA = p;
+            if (pB == null && pid.equalsIgnoreCase(b)) pB = p;
+
+            if (pA != null && pB != null) break;
+        }
+
+        return new AlignmentPair(pA, pB);
+    }
+
+    private void restoreAlignmentFromState() {
+        // reset default
+        DataSaved.alignAId = null;
+        DataSaved.alignBId = null;
+
+        if (stateStore == null) return;
+        if (DataSaved.drill_points == null || DataSaved.drill_points.isEmpty()) return;
+
+        ProjectStateCsvStore.HoleStateEntry eA = stateStore.getEntry("__ALIGN_A");
+        ProjectStateCsvStore.HoleStateEntry eB = stateStore.getEntry("__ALIGN_B");
+
+        String aId = (eA != null) ? safeTrim(eA.startTimeIso) : null;
+        String bId = (eB != null) ? safeTrim(eB.startTimeIso) : null;
+
+        // validazione
+        if (aId == null || bId == null) return;
+        if (aId.equalsIgnoreCase(bId)) return;
+
+        // trova i punti reali per ID
+        AlignmentPair ab = findAlignmentPoints(DataSaved.drill_points, aId, bId);
+        if (!ab.isValid()) {
+            // se uno dei due punti non esiste più nel progetto, non attiviamo nulla
+            return;
+        }
+
+        // salva in memoria (ID persistente)
+        DataSaved.alignAId = aId;
+        DataSaved.alignBId = bId;
+
+        // (opzionale) se vuoi anche loggare:
+        Log.d("ALIGN", "Restored alignment: A=" + aId + " B=" + bId);
+
+        // (opzionale) qui puoi calcolare bearing/versore e salvarlo dove ti serve
+        // double bearing = computeBearingDeg(ab.A, ab.B);
+        // DataSaved.alignmentBearingDeg = bearing;
+    }
+
+    private static String safeTrim(String s) {
+        if (s == null) return null;
+        String t = s.trim();
+        return t.isEmpty() ? null : t;
+    }
+
+
 
 }
