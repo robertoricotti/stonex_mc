@@ -9,6 +9,7 @@ import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
 import static services.PointService.getAlignmentPointsById;
+import static services.PointService.valoriTabella;
 import static utils.MyMCUtils.projectPointOnAxis3D;
 import static utils.MyTypes.JETGROUTING_MODE;
 import static utils.MyTypes.ROCKDRILL_MODE;
@@ -27,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -36,6 +36,7 @@ import androidx.constraintlayout.widget.Guideline;
 import com.example.stx_dig.R;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import DPAD.DPadHelper;
 import gui.BaseClass;
@@ -46,7 +47,6 @@ import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.draw_class.MyColorClass;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
-import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import services.PointService;
@@ -77,15 +77,15 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     static int tricolor = MyColorClass.colorConstraint;
     static int arrowColor = MyColorClass.colorConstraint;
     static float kostant = 1.2f;
-    public static int typeVistaDrill=0;
+    public static int typeVistaDrill = 0;
     public static boolean isDrilling = false;
     int flip = 0;
     float rotationCont;
 
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
-    ImageView digMenu, drilltool,  Status, folders, playpause, lineReference, tiposnap,imgHdt,
-            zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop,imgTilt;
+    ImageView digMenu, drilltool, Status, folders, playpause, lineReference, tiposnap, imgHdt,
+            zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
     TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual;
@@ -94,7 +94,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     Dialog_AutoSnap dialogAutoSnap;
     Dialog_InfoPoint dialogInfoPoint;
     Dialog_DrillSet dialogDrillSet;
-    Guideline cent_v, side,centro;
+    Guideline cent_v, side, centro;
     public static boolean showCroce;
 
 
@@ -109,6 +109,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
 
     }
+
+
 
     @Override
     protected void onStart() {
@@ -126,22 +128,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void findView() {
-        DataSaved.scale_Factor3D = MyData.get_Double("scaleFactor3D");
-        try {
-            if (MyData.get_String("isAutosnap") == null) {
-                MyData.push("isAutosnap", String.valueOf(DataSaved.isAutoSnap));
-            } else {
-                DataSaved.isAutoSnap = MyData.get_Int("isAutosnap");
 
-            }
-        } catch (Exception e) {
-            MyData.push("isAutosnap", String.valueOf(0));
-            DataSaved.isAutoSnap = 0;
-        }
-        dialogDrillGnss = new Dialog_Drill_GNSS(this);
-        dialogAutoSnap = new Dialog_AutoSnap(this);
-        dialogInfoPoint = new Dialog_InfoPoint(this);
-        dialogDrillSet = new Dialog_DrillSet(this);
+
         divisorioC = findViewById(R.id.divisorioC);
         divisorioDx = findViewById(R.id.divisorioDx);
         divisorioUp = findViewById(R.id.divisorioUp);
@@ -168,7 +156,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         abortisci = findViewById(R.id.abortisci);
         normal_stop = findViewById(R.id.normalStop);
         cent_v = findViewById(R.id.cent_v);
-        centro=findViewById(R.id.centro);
+        centro = findViewById(R.id.centro);
         side = findViewById(R.id.side);
         compass = findViewById(R.id.compass);
         textInfo = findViewById(R.id.textInfo);
@@ -179,38 +167,66 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         quotaIndicator = findViewById(R.id.quotaIndicator);
         txthdtActual = findViewById(R.id.txthdtActual);
         txttiltActual = findViewById(R.id.txttiltActual);
-        imgHdt=findViewById(R.id.imgHdt);
-        imgTilt=findViewById(R.id.imgTilt);
+        imgHdt = findViewById(R.id.imgHdt);
+        imgTilt = findViewById(R.id.imgTilt);
         tableDepthInfo = findViewById(R.id.tableDepthInfo);
 
 
     }
 
     private void init() {
-        if(DataSaved.Drilling_Mode==SOLARFARM_MODE){
+        dialogDrillGnss = new Dialog_Drill_GNSS(this);
+        dialogAutoSnap = new Dialog_AutoSnap(this);
+        dialogInfoPoint = new Dialog_InfoPoint(this);
+        dialogDrillSet = new Dialog_DrillSet(this);
+        try {
+            if (MyData.get_String("showCroce") != null) {
+                showCroce = Boolean.parseBoolean(MyData.get_String("showCroce"));
+            }
+        } catch (Exception e) {
+            showCroce = false;
+        }
+
+        DataSaved.scale_Factor3D = MyData.get_Double("scaleFactor3D");
+        try {
+            if (MyData.get_String("isAutosnap") == null) {
+                MyData.push("isAutosnap", String.valueOf(DataSaved.isAutoSnap));
+            } else {
+                DataSaved.isAutoSnap = MyData.get_Int("isAutosnap");
+
+            }
+        } catch (Exception e) {
+            MyData.push("isAutosnap", String.valueOf(0));
+            DataSaved.isAutoSnap = 0;
+        }
+        if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
             lineReference.setVisibility(View.VISIBLE);
             imgTilt.setVisibility(View.GONE);
             txttiltActual.setVisibility(View.GONE);
             txttilt.setVisibility(View.GONE);
             drilltool.setVisibility(View.GONE);
-            int mchint=MyData.get_Int("MachineSelected");
-            MyData.push("M"+mchint+"numeroAste","0");
-            DataSaved.numeroAste=0;
-        }else {
+            int mchint = MyData.get_Int("MachineSelected");
+            MyData.push("M" + mchint + "numeroAste", "0");
+            DataSaved.numeroAste = 0;
+        } else {
             lineReference.setVisibility(View.GONE);
             imgTilt.setVisibility(View.VISIBLE);
             txttiltActual.setVisibility(View.VISIBLE);
             txttilt.setVisibility(View.VISIBLE);
             drilltool.setVisibility(View.VISIBLE);
-            int mchint=MyData.get_Int("MachineSelected");
-            DataSaved.numeroAste=MyData.get_Int("M"+mchint+"numeroAste");
+            int mchint = MyData.get_Int("MachineSelected");
+            DataSaved.numeroAste = MyData.get_Int("M" + mchint + "numeroAste");
+        }
+        if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+            txthdt.setVisibility(View.GONE);
+            txthdtActual.setVisibility(View.GONE);
+            imgHdt.setVisibility(View.GONE);
         }
         if (DataSaved.colorMode == 0) {
             colorUp = Color.RED;
             colorDown = Color.BLUE;
             colorGreen = getResources().getColor(R.color.verde_sfondo_scuro);
-        }
-        else {
+        } else {
             colorDown = Color.RED;
             colorUp = Color.BLUE;
             colorGreen = getResources().getColor(R.color.verde_sfondo_scuro);
@@ -235,11 +251,14 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         ((Drill_TopView) topViewCanvas).setTargetScale(1.25f);
         ((Drill_TopView) topViewCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
         ((Drill_Bubble) bubbleCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
-        if(DataSaved.Drilling_Mode==JETGROUTING_MODE) {
+        if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+            addEmptyRows(4, 4);
+            infoPoint.setVisibility(View.GONE);
             ((Drill_Bubble) bubbleCanvas).setBubbleTransform(0.65f, 115f);
             tableDepthInfo.setVisibility(View.VISIBLE);
             centro.setGuidelinePercent(0.5f);
-        }else {
+        } else {
+            infoPoint.setVisibility(View.VISIBLE);
             ((Drill_Bubble) bubbleCanvas).resetBubbleTransform();
             tableDepthInfo.setVisibility(View.GONE);
             centro.setGuidelinePercent(0);
@@ -346,6 +365,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         });
         puntatore.setOnClickListener(view -> {
             showCroce = !showCroce;
+            MyData.push("showCroce", String.valueOf(showCroce));
         });
         drillSet.setOnClickListener(view -> {
             if (!dialogDrillSet.dialog.isShowing()) {
@@ -375,7 +395,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 DataSaved.alignAId = null;
                 DataSaved.alignBId = null;
                 // toast: "Pick point A"
-                new CustomToast(Drill_Activity.this,"Pick point A").show_alert();
+                new CustomToast(Drill_Activity.this, "Pick point A").show_alert();
             } else {
                 // toast: "Alignment selection canceled"
                 new CustomToast(Drill_Activity.this, "Alignment selection canceled").show_long();
@@ -384,7 +404,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // invalidate topview se serve
             // topView.invalidate();
         });
-
 
 
         digMenu.setOnClickListener(view -> {
@@ -406,6 +425,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         });
         playpause.setOnClickListener(view -> {
+
             if (PointService.okStart) {
                 if (!isDrilling) {
                     play = true;
@@ -414,6 +434,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
                 }
             }
+            if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+                clearTable();
+                setupTabella();
+                Log.d("ValoriTabella", Arrays.toString(valoriTabella));
+            }
 
         });
 
@@ -421,10 +446,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     public void updateUI() {
 
-
-        if(DataSaved.alignAId!=null&&DataSaved.alignBId!=null){
-            Point3D_Drill[] pab=getAlignmentPointsById(DataSaved.alignAId,DataSaved.alignBId);
-            DataSaved.ALLINEAMENTO_AB =My_LocationCalc.calcBearingXY(pab[0].getHeadX(),pab[0].getHeadY(),pab[1].getHeadX(),pab[1].getHeadY());
+        if (DataSaved.alignAId != null && DataSaved.alignBId != null) {
+            Point3D_Drill[] pab = getAlignmentPointsById(DataSaved.alignAId, DataSaved.alignBId);
+            DataSaved.ALLINEAMENTO_AB = My_LocationCalc.calcBearingXY(pab[0].getHeadX(), pab[0].getHeadY(), pab[1].getHeadX(), pab[1].getHeadY());
 
         }
 
@@ -481,7 +505,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         txttiltActual.setText(String.format("%.1f", mastTilt).replace(",", ".") + "°");
         double confronto = hdt_BOOM;
-        if(DataSaved.Drilling_Mode==ROCKDRILL_MODE||DataSaved.Drilling_Mode==JETGROUTING_MODE) {
+        if (DataSaved.Drilling_Mode == ROCKDRILL_MODE || DataSaved.Drilling_Mode == JETGROUTING_MODE) {
             if (!isInRangeAngle(mastTilt, 0, DataSaved.Drill_tolleranza_HDT)) {
                 confronto = mastHDT;
             }
@@ -491,9 +515,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             } else {
                 txthdtActual.setTextColor(Color.WHITE);
             }
-        }else {
-            txthdtActual.setText(String.format("%.1f", NmeaListener.mch_Orientation+DataSaved.deltaGPS2).replace(",", ".") + "°");
-            if (isInRangeAngle(NmeaListener.mch_Orientation+DataSaved.deltaGPS2, normalizeAngle(DataSaved.ALLINEAMENTO_AB), DataSaved.Drill_tolleranza_HDT)) {
+        } else {
+            txthdtActual.setText(String.format("%.1f", NmeaListener.mch_Orientation + DataSaved.deltaGPS2).replace(",", ".") + "°");
+            if (isInRangeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2, normalizeAngle(DataSaved.ALLINEAMENTO_AB), DataSaved.Drill_tolleranza_HDT)) {
                 txthdtActual.setTextColor(Color.WHITE);
                 txthdt.setTextColor(Color.WHITE);
                 txthdt.setBackgroundColor(getColor(R.color.verde_sfondo_scuro));
@@ -514,29 +538,30 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             txttiltActual.setTextColor(Color.WHITE);
         }
 
-        if(DataSaved.Drilling_Mode==SOLARFARM_MODE){
-            if(DataSaved.isAutoSnap==2){
+        if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+            if (DataSaved.isAutoSnap == 2) {
                 lineReference.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 lineReference.setVisibility(View.INVISIBLE);
             }
-            if(DataSaved.isDefiningAB){
+            if (DataSaved.isDefiningAB) {
                 lineReference.setBackground(getDrawable(R.drawable.custom_background_test3d_box_giallo));
-            }else {
+            } else {
                 lineReference.setBackground(getDrawable(R.drawable.custom_background_test3d_box_grigino));
             }
-            if(isDrilling){
-                double zeta=Selected_Point3D_Drill.getEndZ()+DataSaved.Drill_tolleranza_Z;
-                if(toolEndCoord[2]<zeta){
+            if (isDrilling) {
+                double zeta = Selected_Point3D_Drill.getEndZ() + DataSaved.Drill_tolleranza_Z;
+                if (toolEndCoord[2] < zeta) {
                     End_Foro_Ok();
-                    isDrilling=false;
+                    isDrilling = false;
                 }
             }
-        }else {
+        } else {
             lineReference.setVisibility(View.INVISIBLE);
         }
         topViewCanvas.invalidate();
         bubbleCanvas.invalidate();
+
     }
 
     private void setCommonElelemnts() {
@@ -554,6 +579,10 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             settaFreccia();
         }
 
+        if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+            sid = 1.0f;
+            cen = 0.43f;
+        }
         side.setGuidelinePercent(sid);
 
         switch (typeVistaDrill) {
@@ -609,9 +638,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 roww = " ";
             }
             idpalo.setText("R:" + roww + " - " + "P:" + Selected_Point3D_Drill.getId());
-            if(DataSaved.Drilling_Mode==SOLARFARM_MODE){
+            if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
                 txthdt.setText(String.format("%.1f", normalizeAngle(DataSaved.ALLINEAMENTO_AB)).replace(",", ".") + "°");
-            }else {
+            } else {
                 txthdt.setText(String.format("%.1f", Selected_Point3D_Drill.getHeadingDeg()).replace(",", ".") + "°");
             }
             txttilt.setText(String.format("%.1f", Selected_Point3D_Drill.getTilt()).replace(",", ".") + "°");
@@ -781,6 +810,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void setIndicator() {
+        if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+            return;
+        }
         try {
             indicator.setTolerance(DataSaved.Drill_tolleranza_Z);
             indicator.setTargetValue(Selected_Point3D_Drill.getEndZ());
@@ -1237,7 +1269,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // 4) TRIANGOLI: sì, tienili sempre (anche palo verticale = “in bolla”)
 
             if (PointService.okTilt) {
-                ((Drill_Bubble) bubbleCanvas).setTriMeasure(0.45f,0.95f,1.25f);
+                ((Drill_Bubble) bubbleCanvas).setTriMeasure(0.45f, 0.95f, 1.25f);
                 triColorLocal = Color.GREEN;
                 ((Drill_Bubble) bubbleCanvas).setTriangles(
                         true,
@@ -1245,8 +1277,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                         true,
                         true
                 );
-            }else {
-                ((Drill_Bubble) bubbleCanvas).setTriMeasure(0.8f,1.35f,0.95f);
+            } else {
+                ((Drill_Bubble) bubbleCanvas).setTriMeasure(0.8f, 1.35f, 0.95f);
                 ((Drill_Bubble) bubbleCanvas).setTriangles(
                         PointService.FrecciaUP,
                         PointService.FrecciaLEFT,
@@ -1400,6 +1432,10 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         isDrilling = false;
 
         refreshAfterStateChange();
+        if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+            clearTable();
+            addEmptyRows(4, 4);
+        }
     }
 
 
@@ -1467,6 +1503,10 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         isDrilling = false;
 
         refreshAfterStateChange();
+        if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+            clearTable();
+            addEmptyRows(4, 4);
+        }
     }
 
 
@@ -1586,7 +1626,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     Start_dN = Math.abs(Selected_Point3D_Drill.getHeadY() - toolEndCoord[1]);
                     Start_dZ = Math.abs(Selected_Point3D_Drill.getHeadZ() - toolEndCoord[2]);
                     delta_Tilt = Math.abs(Selected_Point3D_Drill.getTilt() - MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll));
-                    delta_Bearing = Math.abs(normalizeAngle(NmeaListener.mch_Orientation+DataSaved.deltaGPS2)- normalizeAngle(DataSaved.ALLINEAMENTO_AB));
+                    delta_Bearing = Math.abs(normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2) - normalizeAngle(DataSaved.ALLINEAMENTO_AB));
                     Start_Foro();
                     abort = false;
                     play = false;
@@ -1686,28 +1726,35 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         TableRow row = new TableRow(this);
         row.setPadding(2, 2, 2, 2);
+        row.setBackgroundColor(MyColorClass.colorSfondo);
 
-        row.addView(createCell(tipo, true));
-        row.addView(createCell(inizio, false));
-        row.addView(createCell(fine, false));
-        row.addView(createCell(pr, false));
+        row.addView(createCell(tipo, true, 1f));      // Tipo
+        row.addView(createCell(inizio, false, 1.8f));  // Inizio
+        row.addView(createCell(fine, false, 1.8f));    // Fine
+        row.addView(createCell(pr, false, 0.6f));      // Pr
 
         tableDepthInfo.addView(row);
     }
-    private TextView createCell(String text, boolean bold) {
+
+
+    private TextView createCell(String text, boolean bold, float weight) {
 
         TextView tv = new TextView(this);
 
         TableRow.LayoutParams params =
-                new TableRow.LayoutParams(0,
-                        TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                new TableRow.LayoutParams(
+                        0,
+                        TableRow.LayoutParams.WRAP_CONTENT,
+                        weight
+                );
 
         tv.setLayoutParams(params);
-        tv.setText(text);
+        tv.setText(text != null ? text : "");
         tv.setGravity(Gravity.CENTER);
-        tv.setPadding(12, 12, 12, 12);
-        tv.setTextColor(Color.WHITE);
+        tv.setPadding(2, 2, 2, 2);
+        tv.setTextColor(MyColorClass.colorConstraint);
         tv.setBackgroundResource(R.drawable.cell_border);
+        tv.setTextSize(18f);
 
         if (bold) {
             tv.setTypeface(null, Typeface.BOLD);
@@ -1716,5 +1763,69 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         return tv;
     }
 
+
+    private void setupTabella() {
+        if (valoriTabella[0] != null && !valoriTabella[0].isEmpty()) {
+            addRow("DRL", valoriTabella[0], valoriTabella[1], valoriTabella[2]);
+        } else {
+            addRow("DRL", "", "", "");
+        }
+        if (valoriTabella[3] != null && !valoriTabella[3].isEmpty()) {
+            addRow("DRL", valoriTabella[3], valoriTabella[4], valoriTabella[5]);
+        } else {
+            addRow("DRL", "", "", "");
+        }
+        if (valoriTabella[6] != null && !valoriTabella[6].isEmpty()) {
+            addRow("DRL", valoriTabella[6], valoriTabella[7], valoriTabella[8]);
+        } else {
+            addRow("DRL", "", "", "");
+        }
+        if (valoriTabella[9] != null && !valoriTabella[9].isEmpty()) {
+            addRow("DRL", valoriTabella[9], valoriTabella[10], valoriTabella[11]);
+        } else {
+            addRow("DRL", "", "", "");
+        }
+        if (valoriTabella[12] != null && !valoriTabella[12].isEmpty()) {
+            addRow("JET", valoriTabella[12], valoriTabella[13], valoriTabella[14]);
+        } else {
+            addRow("JET", "", "", "");
+        }
+        if (valoriTabella[15] != null && !valoriTabella[15].isEmpty()) {
+            addRow("JET", valoriTabella[15], valoriTabella[16], valoriTabella[17]);
+        } else {
+            addRow("JET", "", "", "");
+        }
+        if (valoriTabella[18] != null && !valoriTabella[18].isEmpty()) {
+            addRow("JET", valoriTabella[18], valoriTabella[19], valoriTabella[20]);
+        } else {
+            addRow("JET", "", "", "");
+        }
+        if (valoriTabella[21] != null && !valoriTabella[21].isEmpty()) {
+            addRow("JET", valoriTabella[21], valoriTabella[22], valoriTabella[23]);
+        } else {
+            addRow("JET", "", "", "");
+        }
+    }
+
+    private void clearTable() {
+
+        int childCount = tableDepthInfo.getChildCount();
+
+        if (childCount > 1) {
+            tableDepthInfo.removeViews(1, childCount - 1);
+        }
+
+    }
+
+    private void addEmptyRows(int drlCount, int jetCount) {
+
+        for (int i = 0; i < drlCount; i++) {
+            addRow("DRL", "", "", "");
+        }
+
+        for (int i = 0; i < jetCount; i++) {
+            addRow("JET", "", "", "");
+        }
+    }
 
 }

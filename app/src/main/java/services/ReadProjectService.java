@@ -931,7 +931,7 @@ public class ReadProjectService extends Service {
                             DataSaved.dxfLayers_POINT.clear();
                         }
                     }
-                    parserStatus = "Reading TRM...";
+                    parserStatus = "Reading File...";
                     try {
                         uom = MyData.get_Int("Unit_Of_Measure");
                     } catch (NumberFormatException e) {
@@ -939,7 +939,6 @@ public class ReadProjectService extends Service {
                     }
                     isFeet = uom > 1;
 
-                    Log.d("RESD", DataSaved.lastProjectNamePOINT + "\n" + nomeProgettoPOINT);
                     if (!DataSaved.lastProjectNamePOINT.equals(nomeProgettoPOINT)) {
                         isFinishedPOINT = false;
                         DataSaved.drill_points = new ArrayList<>();

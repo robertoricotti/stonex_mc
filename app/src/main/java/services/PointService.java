@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -44,6 +45,7 @@ import utils.DistToPoint;
  * 4) sleep senza Math.abs e ciclo più stabile
  */
 public class PointService extends Service {
+    int countTabella = 0;
     public static String[] valoriTabella;
 
     private static final String TAG = "PointService";
@@ -96,7 +98,7 @@ public class PointService extends Service {
         valoriTabella = new String[24];
         triangleHelper = new TriangleHelper();
         lastPosition = new double[]{0, 0, 0};
-
+        countTabella = 0;
         // un singolo thread basta (eviti concorrenza)
         executor = Executors.newSingleThreadExecutor();
     }
@@ -277,6 +279,7 @@ public class PointService extends Service {
             okOri = false; // senza END non ha senso, lo gestiamo per-mode
 
             if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+                tabellaValues();
                 // In JET: target = bolla (0/0) anche se manca END
                 tri = DrillGuidance.computeTiltTrianglesToTargets(
                         mastHead, mastBit,
@@ -310,7 +313,7 @@ public class PointService extends Service {
                         : DataSaved.Drill_tolleranza_XY;
 
                 okDrill = (distAxis <= axisTol) && okTilt;
-               valoriTabella= tabellaValues();
+
             } else {
                 // altri mode: senza END non faccio triangoli (come prima)
                 FrecciaUP = FrecciaRIGHT = FrecciaDOWN = FrecciaLEFT = false;
@@ -679,73 +682,76 @@ public class PointService extends Service {
         return Math.abs(angle - target) <= deadband;
     }
 
-    private String[] tabellaValues() {
-
+    private void tabellaValues() {
+        countTabella++;
         String[] result = new String[24]; // esempio
 
         if (Selected_Point3D_Drill == null)
-            return new String[24];
+           return;
 
-        double drillbit = toolEndCoord != null ? toolEndCoord[2] : Double.NaN;
+        if (countTabella % 10 == 0) {
+            double drillbit = toolEndCoord != null ? toolEndCoord[2] : Double.NaN;
 
-        Double start1_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_1());
-        Double stop1_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_1());
+            Double start1_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_1());
+            Double stop1_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_1());
 
-        Double start2_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_2());
-        Double stop2_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_2());
+            Double start2_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_2());
+            Double stop2_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_2());
 
-        Double start3_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_3());
-        Double stop3_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_3());
+            Double start3_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_3());
+            Double stop3_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_3());
 
-        Double start4_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_4());
-        Double stop4_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_4());
+            Double start4_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_4());
+            Double stop4_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_4());
 
-        Double start1_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_1());
-        Double stop1_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStop_1());
+            Double start1_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_1());
+            Double stop1_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStop_1());
 
-        Double start2_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_2());
-        Double stop2_jet = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_2());
+            Double start2_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_2());
+            Double stop2_jet = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_2());
 
-        Double start3_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_3());
-        Double stop3_jet = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_3());
+            Double start3_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_3());
+            Double stop3_jet = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_3());
 
-        Double start4_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_4());
-        Double stop4_jet = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_4());
+            Double start4_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_4());
+            Double stop4_jet = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_4());
 
-        result[0] = formatDoubleOrEmpty(Math.abs(drillbit - start1_drl));
-        result[1] = formatDoubleOrEmpty(Math.abs(drillbit - stop1_drl));
-        result[2] = Selected_Point3D_Drill.getPr_1();
+            result[0] = formatDoubleOrEmpty(Math.abs(drillbit - start1_drl));
+            result[1] = formatDoubleOrEmpty(Math.abs(drillbit - stop1_drl));
+            result[2] = Selected_Point3D_Drill.getPr_1();
 
-        result[3] = formatDoubleOrEmpty(Math.abs(drillbit - start2_drl));
-        result[4] = formatDoubleOrEmpty(Math.abs(drillbit - stop2_drl));
-        result[5] = Selected_Point3D_Drill.getPr_2();
+            result[3] = formatDoubleOrEmpty(Math.abs(drillbit - start2_drl));
+            result[4] = formatDoubleOrEmpty(Math.abs(drillbit - stop2_drl));
+            result[5] = Selected_Point3D_Drill.getPr_2();
 
-        result[6] = formatDoubleOrEmpty(Math.abs(drillbit - start3_drl));
-        result[7] = formatDoubleOrEmpty(Math.abs(drillbit - stop3_drl));
-        result[8] = Selected_Point3D_Drill.getPr_3();
+            result[6] = formatDoubleOrEmpty(Math.abs(drillbit - start3_drl));
+            result[7] = formatDoubleOrEmpty(Math.abs(drillbit - stop3_drl));
+            result[8] = Selected_Point3D_Drill.getPr_3();
 
-        result[9] = formatDoubleOrEmpty(Math.abs(drillbit - start4_drl));
-        result[10] = formatDoubleOrEmpty(Math.abs(drillbit - stop4_drl));
-        result[11] = Selected_Point3D_Drill.getPr_4();
+            result[9] = formatDoubleOrEmpty(Math.abs(drillbit - start4_drl));
+            result[10] = formatDoubleOrEmpty(Math.abs(drillbit - stop4_drl));
+            result[11] = Selected_Point3D_Drill.getPr_4();
 
-        //jet
-        result[12] = formatDoubleOrEmpty(Math.abs(drillbit - start1_jet));
-        result[13] = formatDoubleOrEmpty(Math.abs(drillbit - stop1_jet));
-        result[14] = Selected_Point3D_Drill.getPr_j_1();
+            //jet
+            result[12] = formatDoubleOrEmpty(Math.abs(drillbit - start1_jet));
+            result[13] = formatDoubleOrEmpty(Math.abs(drillbit - stop1_jet));
+            result[14] = Selected_Point3D_Drill.getPr_j_1();
 
-        result[15] = formatDoubleOrEmpty(Math.abs(drillbit - start2_jet));
-        result[16] = formatDoubleOrEmpty(Math.abs(drillbit - stop2_jet));
-        result[17] = Selected_Point3D_Drill.getPr_j_2();
+            result[15] = formatDoubleOrEmpty(Math.abs(drillbit - start2_jet));
+            result[16] = formatDoubleOrEmpty(Math.abs(drillbit - stop2_jet));
+            result[17] = Selected_Point3D_Drill.getPr_j_2();
 
-        result[18] = formatDoubleOrEmpty(Math.abs(drillbit - start3_jet));
-        result[19] = formatDoubleOrEmpty(Math.abs(drillbit - stop3_jet));
-        result[20] = Selected_Point3D_Drill.getPr_j_3();
+            result[18] = formatDoubleOrEmpty(Math.abs(drillbit - start3_jet));
+            result[19] = formatDoubleOrEmpty(Math.abs(drillbit - stop3_jet));
+            result[20] = Selected_Point3D_Drill.getPr_j_3();
 
-        result[21] = formatDoubleOrEmpty(Math.abs(drillbit - start4_jet));
-        result[22] = formatDoubleOrEmpty(Math.abs(drillbit - stop3_jet));
-        result[23] = Selected_Point3D_Drill.getPr_j_4();
+            result[21] = formatDoubleOrEmpty(Math.abs(drillbit - start4_jet));
+            result[22] = formatDoubleOrEmpty(Math.abs(drillbit - stop4_jet));
+            result[23] = Selected_Point3D_Drill.getPr_j_4();
+           valoriTabella=result;
 
-        return result;
+        }
+
     }
 
     private static Double parseDoubleSafe(String s) {

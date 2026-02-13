@@ -155,7 +155,7 @@ public class DrawDXF_Drill_Point {
         if (txt) {
             canvas.rotate(-uiDeg,headX,headY);
             String testo = point.getRowId() + "-" + point.getId();
-            if (point.getRowId() == null) {
+            if (point.getRowId() == null||point.getRowId().isEmpty()) {
                 testo = point.getId();
             }
             paint.setTextSize(Math.max(18f, 0.22f * scala));
@@ -244,7 +244,7 @@ public class DrawDXF_Drill_Point {
                 float offX = 6f;
                 float offY = 6f;
                 String testo = point.getRowId() + "-" + point.getId();
-                if (point.getRowId() == null) {
+                if (point.getRowId() == null||point.getRowId().isEmpty()) {
                     testo = point.getId();
                 }
                 paint.setTextSize(28);
@@ -276,7 +276,7 @@ public class DrawDXF_Drill_Point {
                 float offX = 6f;
                 float offY = 6f;
                 String testo = point.getRowId() + "-" + point.getId();
-                if (point.getRowId() == null) {
+                if (point.getRowId() == null||point.getRowId().isEmpty()) {
                     testo = point.getId();
                 }
                 paint.setTextSize(28);
@@ -373,7 +373,7 @@ public class DrawDXF_Drill_Point {
         float offX = 6f;
         float offY = 6f;
         String testo = point.getRowId() + "-" + point.getId();
-        if (point.getRowId() == null) {
+        if (point.getRowId() == null||point.getRowId().isEmpty()) {
             testo = point.getId();
         }
         paint.setTextSize(28);

@@ -342,27 +342,32 @@ public class Activity_Home_Page extends BaseClass {
             } else {
                 lock.setImageResource(R.drawable.lock);
             }
-            stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " New Faces\n");
+
             switch (DataSaved.isWL) {
                 case EXCAVATOR:
+                    stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " New Faces\n");
                     toDig.setImageResource(R.drawable.bottone_scava);
                     break;
 
                 case WHEELLOADER:
+                    stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " New Faces\n");
                     toDig.setImageResource(R.drawable.bottone_loada);
                     break;
 
                 case DOZER:
                 case DOZER_SIX:
+                    stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " New Faces\n");
                     toDig.setImageResource(R.drawable.bottone_grada);
                     break;
 
 
                 case GRADER:
+                    stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " New Faces\n");
                     toDig.setImageResource(R.drawable.bottone_grada);
 
                     break;
                 case DRILL:
+                    stringsStat.setText(ReadProjectService.parserStatus);
                     toDig.setImageResource(R.drawable.bottone_drilla);
 
                     break;
