@@ -17,11 +17,15 @@ import static utils.MyTypes.SOLARFARM_MODE;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +57,7 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
+    TableLayout tableDepthInfo;
     private boolean play = false;
     private boolean stop = false;
     private boolean abort = false;
@@ -72,14 +77,14 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     static int tricolor = MyColorClass.colorConstraint;
     static int arrowColor = MyColorClass.colorConstraint;
     static float kostant = 1.2f;
-    public static int typeVistaDrill;
+    public static int typeVistaDrill=0;
     public static boolean isDrilling = false;
     int flip = 0;
     float rotationCont;
 
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
-    ImageView digMenu, drilltool, typeView, Status, folders, playpause, lineReference, tiposnap,imgHdt,
+    ImageView digMenu, drilltool,  Status, folders, playpause, lineReference, tiposnap,imgHdt,
             zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop,imgTilt;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
@@ -89,7 +94,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     Dialog_AutoSnap dialogAutoSnap;
     Dialog_InfoPoint dialogInfoPoint;
     Dialog_DrillSet dialogDrillSet;
-    Guideline cent_v, side;
+    Guideline cent_v, side,centro;
     public static boolean showCroce;
 
 
@@ -163,8 +168,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         abortisci = findViewById(R.id.abortisci);
         normal_stop = findViewById(R.id.normalStop);
         cent_v = findViewById(R.id.cent_v);
+        centro=findViewById(R.id.centro);
         side = findViewById(R.id.side);
-        typeView = findViewById(R.id.typeView);
         compass = findViewById(R.id.compass);
         textInfo = findViewById(R.id.textInfo);
         tiltInfo = findViewById(R.id.tiltInfo);
@@ -176,6 +181,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         txttiltActual = findViewById(R.id.txttiltActual);
         imgHdt=findViewById(R.id.imgHdt);
         imgTilt=findViewById(R.id.imgTilt);
+        tableDepthInfo = findViewById(R.id.tableDepthInfo);
 
 
     }
@@ -217,7 +223,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         topview.setBackgroundColor(MyColorClass.colorSfondo);
         sideLayout.setBackgroundColor(MyColorClass.colorSfondo);
 
-
         indicator.setTolerance(DataSaved.Drill_tolleranza_Z);
         indicator.setColors(colorUp, colorDown, colorGreen);
         textInfo.setTextColor(MyColorClass.colorConstraint);
@@ -230,6 +235,15 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         ((Drill_TopView) topViewCanvas).setTargetScale(1.25f);
         ((Drill_TopView) topViewCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
         ((Drill_Bubble) bubbleCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
+        if(DataSaved.Drilling_Mode==JETGROUTING_MODE) {
+            ((Drill_Bubble) bubbleCanvas).setBubbleTransform(0.65f, 115f);
+            tableDepthInfo.setVisibility(View.VISIBLE);
+            centro.setGuidelinePercent(0.5f);
+        }else {
+            ((Drill_Bubble) bubbleCanvas).resetBubbleTransform();
+            tableDepthInfo.setVisibility(View.GONE);
+            centro.setGuidelinePercent(0);
+        }
         switch (DataSaved.temaSoftware) {
             case 0:
                 tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
@@ -352,11 +366,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             locateMachine();
             return false;
         });
-        typeView.setOnClickListener(view -> {
-            typeVistaDrill += 1;
-            typeVistaDrill = typeVistaDrill % 3;
-
-        });
 
         lineReference.setOnClickListener(view -> {
             DataSaved.isDefiningAB = !DataSaved.isDefiningAB;
@@ -463,7 +472,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         }
         String s = String.format(
                 java.util.Locale.US,
-                "Y_deg: %7.2f°\nX_deg: %7.2f°",
+                "Y: %7.2f°\nX: %7.2f°",
                 correctToolPitch,
                 correctToolRoll
         );
@@ -731,7 +740,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         } else {
             normal_stop.setAlpha(0.3f);
             abortisci.setAlpha(0.3f);
-            typeView.setVisibility(View.VISIBLE);
             if (!PointService.okStart) {
                 playpause.setAlpha(0.3f);
             } else {
@@ -1113,9 +1121,13 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (isDrilling) {
             rotationCont = (rotationCont + 1) % 360;
             ((Drill_Bubble) bubbleCanvas).setDrillingMode(true, rotationCont);
+            /*if(DataSaved.Drilling_Mode==JETGROUTING_MODE){
+                ((Drill_Bubble) bubbleCanvas).setBubbleTransform(0.75f, 120f);
+            }*/
         } else {
             rotationCont = 0;
             ((Drill_Bubble) bubbleCanvas).setDrillingMode(false, 0);
+
         }
 
 // Se non ho selezione -> reset bubble
@@ -1668,5 +1680,41 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         // Se vuoi anche aggiornare subito la mappa:
         // invalidateViews();
     }
+
+
+    private void addRow(String tipo, String inizio, String fine, String pr) {
+
+        TableRow row = new TableRow(this);
+        row.setPadding(2, 2, 2, 2);
+
+        row.addView(createCell(tipo, true));
+        row.addView(createCell(inizio, false));
+        row.addView(createCell(fine, false));
+        row.addView(createCell(pr, false));
+
+        tableDepthInfo.addView(row);
+    }
+    private TextView createCell(String text, boolean bold) {
+
+        TextView tv = new TextView(this);
+
+        TableRow.LayoutParams params =
+                new TableRow.LayoutParams(0,
+                        TableRow.LayoutParams.WRAP_CONTENT, 1f);
+
+        tv.setLayoutParams(params);
+        tv.setText(text);
+        tv.setGravity(Gravity.CENTER);
+        tv.setPadding(12, 12, 12, 12);
+        tv.setTextColor(Color.WHITE);
+        tv.setBackgroundResource(R.drawable.cell_border);
+
+        if (bold) {
+            tv.setTypeface(null, Typeface.BOLD);
+        }
+
+        return tv;
+    }
+
 
 }

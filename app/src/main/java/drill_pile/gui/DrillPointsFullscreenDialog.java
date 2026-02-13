@@ -386,7 +386,12 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
                 return p.getRowId();
 
             case "Hole":
-                return formatPoleId(p.getId()); // ✅ solo numero
+                // ✅ se rowId è vuoto, mostra ID completo (consistente col parser)
+                if (p.getRowId() == null || p.getRowId().trim().isEmpty()) {
+                    return safe(p.getId());
+                }
+                // ✅ altrimenti puoi continuare a mostrare solo la parte "hole"
+                return formatPoleId(p.getId());
 
             case "Description":
                 return p.getDescription();
@@ -601,14 +606,13 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
             TextView tv = new TextView(ctx);
 
             int widthDp;
-            if ("description".equals(column)) {
-                widthDp = 100; // 👈 PIÙ STRETTA (prova 90–110)
-            } else if ("rowId".equals(column) || "id".equals(column)) {
-                widthDp = 80;
+            if ("Description".equals(column)) {
+                widthDp = 180;
+            } else if ("Row".equals(column) || "Hole".equals(column)) {
+                widthDp = 90;
             } else {
-                widthDp = 150; // default
+                widthDp = 150;
             }
-
             LinearLayout.LayoutParams lp =
                     new LinearLayout.LayoutParams(dp(ctx, widthDp), LinearLayout.LayoutParams.WRAP_CONTENT);
             tv.setLayoutParams(lp);

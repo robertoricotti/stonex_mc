@@ -107,6 +107,52 @@ public final class DrillGuidance {
                 mastPitch, mastRoll, holePitch, holeRoll, dPitch, dRoll);
     }
 
+    public static Triangles computeTiltTrianglesToTargets(
+            double[] mastHead, double[] mastBit,
+            double headingDeg,
+            double targetPitchDeg,
+            double targetRollDeg,
+            double angleTolDeg
+    ) {
+        if (!is3(mastHead) || !is3(mastBit)) {
+            return new Triangles(false, false, false, false,
+                    Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
+        }
+
+        double[] mastPR = pitchRollDeg(mastHead, mastBit, headingDeg);
+        double mastPitch = mastPR[0];
+        double mastRoll  = mastPR[1];
+
+        if (Double.isNaN(mastPitch) || Double.isNaN(mastRoll)) {
+            return new Triangles(false, false, false, false,
+                    mastPitch, mastRoll,
+                    targetPitchDeg, targetRollDeg,
+                    Double.NaN, Double.NaN);
+        }
+
+        double dPitch = mastPitch - targetPitchDeg;
+        double dRoll  = mastRoll  - targetRollDeg;
+
+        boolean up = false, down = false, left = false, right = false;
+
+        if (Math.abs(dPitch) > angleTolDeg) {
+            if (dPitch < 0) up = true;
+            else down = true;
+        }
+
+        if (Math.abs(dRoll) > angleTolDeg) {
+            if (dRoll < 0) right = true;
+            else left = true;
+        }
+
+        return new Triangles(up, right, down, left,
+                mastPitch, mastRoll,
+                targetPitchDeg, targetRollDeg,
+                dPitch, dRoll);
+    }
+
+
+
     // -------------------------
     // Pitch/Roll robusti
     // -------------------------
@@ -128,14 +174,16 @@ public final class DrillGuidance {
         // "verticale utile": positiva se bit è sotto la testa
         double vert = -dZ; // = headZ - bitZ
 
-        // se vert ~ 0: mast quasi orizzontale -> evitare NaN, ma attenzione jitter
+        // Se il vettore mast è troppo piccolo, non posso stimare pitch/roll.
+// In JET è meglio considerare "in bolla" (0/0) piuttosto che NaN (che spegne tutto).
+        double norm2 = dE*dE + dN*dN + dZ*dZ;
+        if (norm2 < 1e-10) { // soglia ~ (0.00001 m)^2
+            return new double[]{0.0, 0.0};
+        }
+
+// Se vert ~ 0, evita divisioni instabili
         if (Math.abs(vert) < 1e-6) {
-            if (Math.abs(dE) > 1e-6 || Math.abs(dN) > 1e-6) {
-                // mantieni calcolabile
-                vert = 1e-6;
-            } else {
-                return new double[]{Double.NaN, Double.NaN};
-            }
+            vert = (vert >= 0) ? 1e-6 : -1e-6;
         }
 
         // Ruota XY mondo -> frame macchina (forward/right) usando heading

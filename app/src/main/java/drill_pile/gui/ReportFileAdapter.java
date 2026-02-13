@@ -127,6 +127,8 @@ public class ReportFileAdapter extends RecyclerView.Adapter<ReportFileAdapter.Vi
                 icon.setImageResource(R.drawable.area_image);
             } else if (nameFile.startsWith("pstx")) {
                 icon.setImageResource(R.drawable.canale_benna);
+            }else if (fileExtension.equalsIgnoreCase("xls")||fileExtension.equalsIgnoreCase("xlsx")) {
+                icon.setImageResource(R.drawable.my_xls);
             }
             sizeTextView.setText(formatSize(fileSize));
         }

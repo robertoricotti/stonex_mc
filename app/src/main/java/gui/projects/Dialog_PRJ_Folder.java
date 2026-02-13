@@ -102,6 +102,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
         init();
         onClick();
         startUpdating();
+        DataSaved.xyz_yxz=0;
+        MyData.push("xyz",String.valueOf(DataSaved.xyz_yxz));
 
     }
 
@@ -132,6 +134,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
     }
 
     public void init() {
+        textP.setVisibility(View.GONE);
         titFiles.setText(mPath.substring(mPath.lastIndexOf("/Projects/")));
         arrayFiles = new ArrayList<>();
         arraySP = new ArrayList<>();
@@ -160,7 +163,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                 for (File file : files) {
                     boolean isFolder = file.isDirectory();
                     if (file.getName().toLowerCase().endsWith(".dxf") || file.getName().toLowerCase().endsWith(".xml") || file.getName().toLowerCase().endsWith(".pstx") || file.getName().toLowerCase().endsWith(".csv")
-                            || file.getName().toLowerCase().endsWith(".ird")) {
+                            || file.getName().toLowerCase().endsWith(".ird")|| file.getName().toLowerCase().endsWith(".xls")|| file.getName().toLowerCase().endsWith(".xlsx")) {
                         long size1 = file.isDirectory() ? getFolderSize(file) : file.length();
                         arrayFiles.add(new ProjectAdapter.FileItem(file.getName(), isFolder, size1));
                     }
@@ -182,12 +185,12 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
     public void onClick() {
 
-        textP.setOnClickListener(view -> {
+     /*   textP.setOnClickListener(view -> {
             //TODO
             DataSaved.xyz_yxz+=1;
             DataSaved.xyz_yxz=DataSaved.xyz_yxz%2;
             MyData.push("xyz",String.valueOf(DataSaved.xyz_yxz));
-        });
+        });*/
         addSurf.setOnClickListener(view -> {
             if(!dialogAddSurfaces.dialog.isShowing()){
                 dialogAddSurfaces.show();
@@ -614,7 +617,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
                 try {
 
-                    if(DataSaved.isWL==DRILL){
+                  /*  if(DataSaved.isWL==DRILL){
                         textP.setVisibility(View.VISIBLE);
                         addSurf.setVisibility(View.GONE);
                         if(DataSaved.xyz_yxz==0){
@@ -625,7 +628,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     }else {
                         addSurf.setVisibility(View.VISIBLE);
                         textP.setVisibility(View.GONE);
-                    }
+                    }*/
                     String s1 = "";
                     s1 = MyData.get_String("LastSP");
                     if (s1 == null) {

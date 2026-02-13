@@ -124,8 +124,11 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 }
                 if(fileExtension.equalsIgnoreCase("csv")||
                         fileExtension.equalsIgnoreCase("xml")||
-                        fileExtension.equalsIgnoreCase("ird")){
-                ckPoi.setVisibility(View.VISIBLE);}else {
+                        fileExtension.equalsIgnoreCase("ird")||
+                        fileExtension.equalsIgnoreCase("xls")||
+                fileExtension.equalsIgnoreCase("xlsx")){
+                ckPoi.setVisibility(View.VISIBLE);}
+                else {
                     ckPoi.setVisibility(View.INVISIBLE);
                 }
                 ckJson.setVisibility(View.INVISIBLE);
@@ -222,6 +225,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 break;
             case "ird":
                 icon.setImageResource(R.drawable.ird_200);
+                break;
+            case "xls":
+            case "xlsx":
+                icon.setImageResource(R.drawable.my_xls);
                 break;
         }
 

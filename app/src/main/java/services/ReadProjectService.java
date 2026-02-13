@@ -68,6 +68,7 @@ import gui.my_opengl.My3DActivity;
 import gui.projects.PickProject;
 import iredes.DrillCSVParser;
 import iredes.IrdParser;
+import iredes.JetXlsxParser;
 import iredes.Point3D_Drill;
 import landxml.LandXMLData;
 import landxml.LandXMLParser;
@@ -894,7 +895,8 @@ public class ReadProjectService extends Service {
                         int lastIndexPOLY = nomeProgettoPOLY.lastIndexOf(".");
                         fileExtensionPOLY = nomeProgettoPOLY.substring(lastIndexPOLY + 1);
                         DataSaved.progettoSelected_POLY = nomeProgettoPOLY;
-                    } else {
+                    }
+                    else {
                         if (DataSaved.polylines != null) {
                             DataSaved.polylines.clear();
                         }
@@ -969,6 +971,16 @@ public class ReadProjectService extends Service {
                                     //TODO parsare IREDES
                                     parserStatus = "Reading Points...";
                                     DataSaved.drill_points = IrdParser.parseIrd(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor);
+                                    break;
+                                case "xlsx":
+                                case "xls":
+                                    parserStatus = "Reading Points..."+"\n...WAIT...";
+                                    DataSaved.drill_points = JetXlsxParser.parseJetXlsx(
+                                            DataSaved.progettoSelected_POINT,
+                                            DataSaved.xyz_yxz,
+                                            conversionFactor
+                                    );
+
                                     break;
                                 default:
                                     isFinishedPOINT = true;

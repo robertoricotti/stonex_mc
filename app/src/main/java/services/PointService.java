@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,7 +26,6 @@ import iredes.DrillMatch;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
-import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.NmeaListener;
 import packexcalib.surfcreator.TriangleHelper;
 import utils.DistToPoint;
@@ -44,6 +44,7 @@ import utils.DistToPoint;
  * 4) sleep senza Math.abs e ciclo più stabile
  */
 public class PointService extends Service {
+    public static String[] valoriTabella;
 
     private static final String TAG = "PointService";
 
@@ -88,12 +89,11 @@ public class PointService extends Service {
     public static double remainingAxis = Double.NaN;     // per pali inclinati
 
 
-
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "Created");
-
+        valoriTabella = new String[24];
         triangleHelper = new TriangleHelper();
         lastPosition = new double[]{0, 0, 0};
 
@@ -221,8 +221,19 @@ public class PointService extends Service {
         final Double exObj = sel.getEndX();
         final Double eyObj = sel.getEndY();
         final Double ezObj = sel.getEndZ();
-        final boolean hasEnd = (exObj != null && eyObj != null && ezObj != null);
+        boolean hasEnd = (exObj != null && eyObj != null && ezObj != null);
+        if (hasEnd && DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+            final double epsXY = 1e-4; // 0.1 mm (puoi mettere 1e-3 = 1 mm)
+            final double epsZ = 1e-4;
 
+            double dxEnd = exObj - hxObj;
+            double dyEnd = eyObj - hyObj;
+            double dzEnd = ezObj - (hzObj != null ? hzObj : ezObj); // se headZ null, usa ezObj
+
+            if (Math.abs(dxEnd) < epsXY && Math.abs(dyEnd) < epsXY && Math.abs(dzEnd) < epsZ) {
+                hasEnd = false; // forza ramo JET "!hasEnd"
+            }
+        }
         final double[] holeStart = new double[]{hx, hy, Double.isNaN(hz) ? 0.0 : hz};
         final double[] holeEnd = hasEnd ? new double[]{exObj, eyObj, ezObj} : holeStart;
 
@@ -248,34 +259,75 @@ public class PointService extends Service {
         // -------------------------
         // 4) If no END: degrade mode (no tilt/orientation guidance)
         // -------------------------
+
         if (!hasEnd) {
 
             // XY fallback: bit->head
             okXY = (distXYToHead <= DataSaved.Drill_tolleranza_XY);
 
-            okTilt = false;
-            okOri = false;
-
-            FrecciaUP = FrecciaRIGHT = FrecciaDOWN = FrecciaLEFT = false;
-            holePitchDeg = Double.NaN;
-            holeRollDeg = Double.NaN;
-
-            // "pe" as bit->head vector
+            // "pe" as bit->head vector (compat)
             double dx = mastBit[0] - hx;
             double dy = mastBit[1] - hy;
             pe = new double[]{dx, dy, distXYToHead};
-
             distAxis = distXYToHead;
 
-            // Start requires tilt/orientation too -> cannot be true without end
-            okStart = false;
+            // default
+            holePitchDeg = Double.NaN;
+            holeRollDeg = Double.NaN;
+            okOri = false; // senza END non ha senso, lo gestiamo per-mode
 
-            // Drill check: axisTol vs distAxis (qui è dist bit->head)
-            double axisTol = (DataSaved.Drill_tolleranza_Axis > 0) ? DataSaved.Drill_tolleranza_Axis : DataSaved.Drill_tolleranza_XY;
-            okDrill = (distAxis <= axisTol);
+            if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+                // In JET: target = bolla (0/0) anche se manca END
+                tri = DrillGuidance.computeTiltTrianglesToTargets(
+                        mastHead, mastBit,
+                        hdt_BOOM,
+                        0.0, 0.0,
+                        DataSaved.Drill_tolleranza_Angolo
+                );
+
+                // frecce
+                FrecciaUP = tri.up;
+                FrecciaRIGHT = tri.right;
+                FrecciaDOWN = tri.down;
+                FrecciaLEFT = tri.left;
+
+                // tilt ok quando nessuna freccia è richiesta
+                okTilt = !(FrecciaUP || FrecciaRIGHT || FrecciaDOWN || FrecciaLEFT);
+
+                // in jet l'orientamento lo ignoriamo
+                okOri = true;
+
+                // (se vuoi mostrare in UI i target)
+                holePitchDeg = 0.0;
+                holeRollDeg = 0.0;
+
+                // okStart / okDrill = XY + tilt
+                okStart = okXY && okTilt;
+
+
+                double axisTol = (DataSaved.Drill_tolleranza_Axis > 0)
+                        ? DataSaved.Drill_tolleranza_Axis
+                        : DataSaved.Drill_tolleranza_XY;
+
+                okDrill = (distAxis <= axisTol) && okTilt;
+               valoriTabella= tabellaValues();
+            } else {
+                // altri mode: senza END non faccio triangoli (come prima)
+                FrecciaUP = FrecciaRIGHT = FrecciaDOWN = FrecciaLEFT = false;
+
+                okTilt = false;
+                okStart = false;
+
+                double axisTol = (DataSaved.Drill_tolleranza_Axis > 0)
+                        ? DataSaved.Drill_tolleranza_Axis
+                        : DataSaved.Drill_tolleranza_XY;
+
+                okDrill = (distAxis <= axisTol);
+            }
 
             return;
         }
+
 
         // -------------------------
         // 5) Full match (END present)
@@ -303,10 +355,10 @@ public class PointService extends Service {
 
         // Pitch/Roll del mast e del foro (già calcolati da DrillGuidance)
         double mastPitch = tri.mastPitchDeg;
-        double mastRoll  = tri.mastRollDeg;
+        double mastRoll = tri.mastRollDeg;
 
         double holePitch = tri.holePitchDeg;
-        double holeRoll  = tri.holeRollDeg;
+        double holeRoll = tri.holeRollDeg;
 
 // Se il palo è verticale: guida verso "bolla" (pitch=0, roll=0)
         if (isHoleVerticalDeg(st.holeTiltDeg)) {
@@ -339,7 +391,7 @@ public class PointService extends Service {
         final boolean ignoreOri = (Double.isNaN(st.holeTiltDeg) || st.holeTiltDeg < 1.0);
         final boolean oriForStart = ignoreOri ? true : okOri;
 
-        switch (DataSaved.Drilling_Mode){
+        switch (DataSaved.Drilling_Mode) {
             case ROCKDRILL_MODE:
                 okStart = (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
                         && okZ                             // quota progetto testa
@@ -349,15 +401,15 @@ public class PointService extends Service {
 
             case JETGROUTING_MODE:
                 okStart = (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
-                        && okZ                             // quota progetto testa
-                        && okTilt  ;                        // inclinazione corretta
+                        // quota progetto testa
+                        && okTilt;                        // inclinazione corretta
 
                 break;
 
             case SOLARFARM_MODE:
                 okStart = (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
-                        && isInRangeAngle( normalizeAngle(NmeaListener.mch_Orientation+DataSaved.deltaGPS2), normalizeAngle(DataSaved.ALLINEAMENTO_AB),DataSaved.Drill_tolleranza_HDT)                         // quota progetto testa
-                        && okTilt  ;                        // inclinazione corretta
+                        && isInRangeAngle(normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2), normalizeAngle(DataSaved.ALLINEAMENTO_AB), DataSaved.Drill_tolleranza_HDT)                         // quota progetto testa
+                        && okTilt;                        // inclinazione corretta
                 break;
         }
 
@@ -406,7 +458,7 @@ public class PointService extends Service {
 
                 double bitZ = ExcavatorLib.toolEndCoord[2];
                 double headZ = sel.getHeadZ();
-                double endZ  = sel.getEndZ();
+                double endZ = sel.getEndZ();
 
                 if (vertical) {
                     double remainingZ = endZ - bitZ;
@@ -427,7 +479,7 @@ public class PointService extends Service {
                     double ax = sel.getEndX() - sel.getHeadX();
                     double ay = sel.getEndY() - sel.getHeadY();
                     double az = sel.getEndZ() - sel.getHeadZ();
-                    double L = Math.sqrt(ax*ax + ay*ay + az*az);
+                    double L = Math.sqrt(ax * ax + ay * ay + az * az);
 
                     double sClamped = Math.max(0.0, Math.min(L, s));
                     double remainingAxis = L - sClamped;
@@ -564,6 +616,7 @@ public class PointService extends Service {
         FrecciaRIGHT = (Math.abs(dR) > tolDeg) && (dR < 0);
         FrecciaLEFT = (Math.abs(dR) > tolDeg) && (dR > 0);
     }
+
     private static double distAlongAxisFromHead(
             double[] bit,  // [E,N,Z]
             double hx, double hy, double hz,
@@ -573,7 +626,7 @@ public class PointService extends Service {
         double ay = ey - hy;
         double az = ez - hz;
 
-        double L = Math.sqrt(ax*ax + ay*ay + az*az);
+        double L = Math.sqrt(ax * ax + ay * ay + az * az);
         if (L < 1e-9) return Double.NaN;
 
         // versore asse
@@ -587,11 +640,13 @@ public class PointService extends Service {
         double bz = bit[2] - hz;
 
         // proiezione scalare (metri lungo asse, 0=head, L=end)
-        return (bx*ux + by*uy + bz*uz);
+        return (bx * ux + by * uy + bz * uz);
     }
+
     public static boolean isTiltWithinTolerance() {
         return !(FrecciaUP || FrecciaLEFT || FrecciaDOWN || FrecciaRIGHT);
     }
+
     public static Point3D_Drill[] getAlignmentPointsById(String idA, String idB) {
 
         Point3D_Drill pA = null;
@@ -619,7 +674,98 @@ public class PointService extends Service {
 
         return new Point3D_Drill[]{pA, pB};
     }
+
     private boolean isInRangeAngle(double angle, double target, double deadband) {
         return Math.abs(angle - target) <= deadband;
     }
+
+    private String[] tabellaValues() {
+
+        String[] result = new String[24]; // esempio
+
+        if (Selected_Point3D_Drill == null)
+            return new String[24];
+
+        double drillbit = toolEndCoord != null ? toolEndCoord[2] : Double.NaN;
+
+        Double start1_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_1());
+        Double stop1_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_1());
+
+        Double start2_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_2());
+        Double stop2_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_2());
+
+        Double start3_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_3());
+        Double stop3_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_3());
+
+        Double start4_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStart_4());
+        Double stop4_drl = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_4());
+
+        Double start1_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_1());
+        Double stop1_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStop_1());
+
+        Double start2_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_2());
+        Double stop2_jet = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_2());
+
+        Double start3_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_3());
+        Double stop3_jet = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_3());
+
+        Double start4_jet = parseDoubleSafe(Selected_Point3D_Drill.getJetStart_4());
+        Double stop4_jet = parseDoubleSafe(Selected_Point3D_Drill.getDrlStop_4());
+
+        result[0] = formatDoubleOrEmpty(Math.abs(drillbit - start1_drl));
+        result[1] = formatDoubleOrEmpty(Math.abs(drillbit - stop1_drl));
+        result[2] = Selected_Point3D_Drill.getPr_1();
+
+        result[3] = formatDoubleOrEmpty(Math.abs(drillbit - start2_drl));
+        result[4] = formatDoubleOrEmpty(Math.abs(drillbit - stop2_drl));
+        result[5] = Selected_Point3D_Drill.getPr_2();
+
+        result[6] = formatDoubleOrEmpty(Math.abs(drillbit - start3_drl));
+        result[7] = formatDoubleOrEmpty(Math.abs(drillbit - stop3_drl));
+        result[8] = Selected_Point3D_Drill.getPr_3();
+
+        result[9] = formatDoubleOrEmpty(Math.abs(drillbit - start4_drl));
+        result[10] = formatDoubleOrEmpty(Math.abs(drillbit - stop4_drl));
+        result[11] = Selected_Point3D_Drill.getPr_4();
+
+        //jet
+        result[12] = formatDoubleOrEmpty(Math.abs(drillbit - start1_jet));
+        result[13] = formatDoubleOrEmpty(Math.abs(drillbit - stop1_jet));
+        result[14] = Selected_Point3D_Drill.getPr_j_1();
+
+        result[15] = formatDoubleOrEmpty(Math.abs(drillbit - start2_jet));
+        result[16] = formatDoubleOrEmpty(Math.abs(drillbit - stop2_jet));
+        result[17] = Selected_Point3D_Drill.getPr_j_2();
+
+        result[18] = formatDoubleOrEmpty(Math.abs(drillbit - start3_jet));
+        result[19] = formatDoubleOrEmpty(Math.abs(drillbit - stop3_jet));
+        result[20] = Selected_Point3D_Drill.getPr_j_3();
+
+        result[21] = formatDoubleOrEmpty(Math.abs(drillbit - start4_jet));
+        result[22] = formatDoubleOrEmpty(Math.abs(drillbit - stop3_jet));
+        result[23] = Selected_Point3D_Drill.getPr_j_4();
+
+        return result;
+    }
+
+    private static Double parseDoubleSafe(String s) {
+        if (s == null) return null;
+
+        s = s.trim();
+        if (s.isEmpty()) return null;
+
+        s = s.replace(',', '.'); // nel tuo progetto hai decimali con virgola
+
+        try {
+            return Double.parseDouble(s);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static String formatDoubleOrEmpty(Double d) {
+        if (d == null) return "";
+        return String.format(Locale.US, "%.3f", d);
+    }
 }
+

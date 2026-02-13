@@ -14,8 +14,11 @@ import androidx.annotation.Nullable;
 import packexcalib.exca.DataSaved;
 
 public class Drill_Bubble extends View {
+
+    private float bubbleScale = 1.0f;     // 1 = normale
+    private float bubbleOffsetY = 0f;     // spostamento verticale
     private float uiRotDeg = 0f;
-private float kH=0.8f,kB=1.35f,kD=0.95f;
+    private float kH = 0.8f, kB = 1.35f, kD = 0.95f;
 
     private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -43,9 +46,17 @@ private float kH=0.8f,kB=1.35f,kD=0.95f;
     private int triColor = 0xFF2E7D32;
     private int innerBgColor = 0x00000000;
 
-    public Drill_Bubble(Context context) { super(context); }
-    public Drill_Bubble(Context context, @Nullable AttributeSet attrs) { super(context, attrs); }
-    public Drill_Bubble(Context context, @Nullable AttributeSet attrs, int defStyleAttr) { super(context, attrs, defStyleAttr); }
+    public Drill_Bubble(Context context) {
+        super(context);
+    }
+
+    public Drill_Bubble(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public Drill_Bubble(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
 
     // ---------------- API ----------------
 
@@ -100,7 +111,10 @@ private float kH=0.8f,kB=1.35f,kD=0.95f;
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.save();
-        canvas.rotate(uiRotDeg, getWidth()*0.5f, getHeight()*0.5f);
+        canvas.rotate(uiRotDeg, getWidth() * 0.5f, getHeight() * 0.5f);
+        // Applica scala e traslazione
+        canvas.translate(0, bubbleOffsetY);
+        canvas.scale(bubbleScale, bubbleScale, getWidth()*0.5f, getHeight()*0.5f + bubbleOffsetY);
 
         float w = getWidth();
         float h = getHeight();
@@ -173,10 +187,10 @@ private float kH=0.8f,kB=1.35f,kD=0.95f;
         p.setStyle(Paint.Style.FILL);
         p.setColor(triColor);
 
-        if (triUp)    canvas.drawPath(triangleWide(cx, cy - r, height, halfBase, 180), p);
+        if (triUp) canvas.drawPath(triangleWide(cx, cy - r, height, halfBase, 180), p);
         if (triRight) canvas.drawPath(triangleWide(cx + r, cy, height, halfBase, 270), p);
-        if (triDown)  canvas.drawPath(triangleWide(cx, cy + r, height, halfBase,   0), p);
-        if (triLeft)  canvas.drawPath(triangleWide(cx - r, cy, height, halfBase,  90), p);
+        if (triDown) canvas.drawPath(triangleWide(cx, cy + r, height, halfBase, 0), p);
+        if (triLeft) canvas.drawPath(triangleWide(cx - r, cy, height, halfBase, 90), p);
     }
 
     private Path triangleWide(float tx, float ty, float height, float halfBase, float angDeg) {
@@ -203,14 +217,14 @@ private float kH=0.8f,kB=1.35f,kD=0.95f;
         // direzione schermo: 0° = su
         double a = Math.toRadians(screenAngleDeg);
         float dirX = (float) Math.sin(a);
-        float dirY = (float)  -Math.cos(a);
+        float dirY = (float) -Math.cos(a);
 
         float halfLen = Math.max(18f, rInner + 4f);
 
         float tailX = cx - dirX * halfLen;
         float tailY = cy - dirY * halfLen;
-        float tipX  = cx + dirX * halfLen;
-        float tipY  = cy + dirY * halfLen;
+        float tipX = cx + dirX * halfLen;
+        float tipY = cy + dirY * halfLen;
 
         // unit dir
         float ux = tipX - tailX;
@@ -224,7 +238,7 @@ private float kH=0.8f,kB=1.35f,kD=0.95f;
         float py = ux;
 
         float shaftW = Math.max(26f, rInner * 0.95f);
-        float halfW  = shaftW * 0.5f;
+        float halfW = shaftW * 0.5f;
         float headLen = Math.max(26f, rInner * 0.55f);
 
         float baseCx = tipX - ux * headLen;
@@ -286,7 +300,7 @@ private float kH=0.8f,kB=1.35f,kD=0.95f;
     }
 
     private void drawCenterText(Canvas canvas, float cx, float cy, float rInner) {
-        canvas.rotate(-uiRotDeg,getWidth()*0.5f,getHeight()*0.5f);
+        canvas.rotate(-uiRotDeg, getWidth() * 0.5f, getHeight() * 0.5f);
         String txt = distTextValue != null ? distTextValue : "";
 
         float textSize = Math.max(18f, rInner * 0.50f);
@@ -300,15 +314,34 @@ private float kH=0.8f,kB=1.35f,kD=0.95f;
         float textY = cy - (fm.ascent + fm.descent) / 2f;
 
         canvas.drawText(txt, cx, textY, p);
-        canvas.rotate(uiRotDeg,getWidth()*0.5f,getHeight()*0.5f);
+        canvas.rotate(uiRotDeg, getWidth() * 0.5f, getHeight() * 0.5f);
     }
+
     public void setUiRotationDeg(float deg) {
         uiRotDeg = ((deg % 360f) + 360f) % 360f;
         invalidate();
     }
-    public void setTriMeasure(float kH,float kB,float kD){
-        this.kH=kH;
-        this.kB=kB;
-        this.kD=kD;
+
+    public void setTriMeasure(float kH, float kB, float kD) {
+        this.kH = kH;
+        this.kB = kB;
+        this.kD = kD;
+    }
+    /**
+     * Ridimensiona e sposta la bubble.
+     * @param scale 1 = normale, 0.8 = più piccola, 0.6 = molto piccola
+     * @param offsetY positivo = più in basso, negativo = più in alto
+     */
+    public void setBubbleTransform(float scale, float offsetY) {
+        this.bubbleScale = scale <= 0 ? 1.0f : scale;
+        this.bubbleOffsetY = offsetY;
+        invalidate();
+    }
+
+    /** Ripristina bubble normale */
+    public void resetBubbleTransform() {
+        this.bubbleScale = 1.0f;
+        this.bubbleOffsetY = 0f;
+        invalidate();
     }
 }
