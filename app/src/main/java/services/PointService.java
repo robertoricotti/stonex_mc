@@ -6,8 +6,6 @@ import static packexcalib.exca.ExcavatorLib.coordTool;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
-import static utils.MyTypes.JETGROUTING_MODE;
-import static utils.MyTypes.ROCKDRILL_MODE;
 import static utils.MyTypes.SOLARFARM_MODE;
 
 import android.app.Service;
@@ -15,7 +13,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -197,7 +194,7 @@ public class PointService extends Service {
         // -------------------------
         final Double hxObj = sel.getHeadX();
         final Double hyObj = sel.getHeadY();
-        final Double hzObj = sel.getHeadZ(); // può essere null: okStart richiede Z
+        final Double hzObj = sel.getHeadZ(); // può essere null o 0 -> "quota non significativa"
 
         if (hxObj == null || hyObj == null) {
             resetOutputs();
@@ -215,29 +212,28 @@ public class PointService extends Service {
 
         final double hx = hxObj;
         final double hy = hyObj;
-        final double hz = (hzObj != null) ? hzObj : Double.NaN;
+
+        // Z "valida" solo se esiste e != 0 (come richiesto: 0 o null => ignora okZ)
+        final boolean zValid = (hzObj != null && Math.abs(hzObj) > 1e-9);
+        final double hz = zValid ? hzObj : Double.NaN;
 
         // -------------------------
-        // 2) End availability
+        // 2) End availability (serve per inclinati / asse foro)
         // -------------------------
         final Double exObj = sel.getEndX();
         final Double eyObj = sel.getEndY();
         final Double ezObj = sel.getEndZ();
+
         boolean hasEnd = (exObj != null && eyObj != null && ezObj != null);
-        if (hasEnd && DataSaved.Drilling_Mode == JETGROUTING_MODE) {
-            final double epsXY = 1e-4; // 0.1 mm (puoi mettere 1e-3 = 1 mm)
-            final double epsZ = 1e-4;
 
-            double dxEnd = exObj - hxObj;
-            double dyEnd = eyObj - hyObj;
-            double dzEnd = ezObj - (hzObj != null ? hzObj : ezObj); // se headZ null, usa ezObj
-
-            if (Math.abs(dxEnd) < epsXY && Math.abs(dyEnd) < epsXY && Math.abs(dzEnd) < epsZ) {
-                hasEnd = false; // forza ramo JET "!hasEnd"
+        // Se END coincide con HEAD (punto), trattalo come "noEnd"
+        if (hasEnd && (Math.abs(exObj - hxObj) < 1e-6) && (Math.abs(eyObj - hyObj) < 1e-6)) {
+            // se anche Z coincide o non è valida, è un punto
+            double hzForCompare = (hzObj != null) ? hzObj : ezObj;
+            if (!zValid || Math.abs(ezObj - hzForCompare) < 1e-6) {
+                hasEnd = false;
             }
         }
-        final double[] holeStart = new double[]{hx, hy, Double.isNaN(hz) ? 0.0 : hz};
-        final double[] holeEnd = hasEnd ? new double[]{exObj, eyObj, ezObj} : holeStart;
 
         // -------------------------
         // 3) Always compute "bit -> head" XY (+Z if possible)
@@ -247,275 +243,212 @@ public class PointService extends Service {
             double dyh = mastBit[1] - hy;
             distXYToHead = Math.sqrt(dxh * dxh + dyh * dyh);
 
-            if (!Double.isNaN(hz) && !Double.isNaN(mastBit[2])) {
+            if (zValid && !Double.isNaN(mastBit[2])) {
                 dzToHead = mastBit[2] - hz;
                 dist3DToHead = Math.sqrt(distXYToHead * distXYToHead + dzToHead * dzToHead);
                 okZ = (Math.abs(dzToHead) <= DataSaved.Drill_tolleranza_Z);
             } else {
                 dzToHead = Double.NaN;
                 dist3DToHead = Double.NaN;
-                okZ = false;
+                okZ = true; // ✅ Z ignorata => non deve bloccare
             }
         }
 
-        // -------------------------
-        // 4) If no END: degrade mode (no tilt/orientation guidance)
-        // -------------------------
+        // Default flags
+        FrecciaUP = FrecciaRIGHT = FrecciaDOWN = FrecciaLEFT = false;
+        holePitchDeg = Double.NaN;
+        holeRollDeg = Double.NaN;
+        st = null;
+        tri = null;
 
-        if (!hasEnd) {
+        // -------------------------
+        // 4) Determine "hole type"
+        // -------------------------
+        // - Inclinato: se ho END e tilt significativo
+        // - Verticale: altrimenti
+        boolean inclined = false;
+        double holeTiltDeg = Double.NaN;
 
-            // XY fallback: bit->head
+        if (hasEnd) {
+            // calcola tilt dall'asse foro (0 verticale, 90 orizzontale)
+            double dx = exObj - hxObj;
+            double dy = eyObj - hyObj;
+            double dz = ezObj - (zValid ? hzObj : ezObj);
+
+            double horiz = Math.sqrt(dx * dx + dy * dy);
+            double vert = Math.abs(dz);
+
+            if (horiz < 1e-12 && vert < 1e-12) {
+                holeTiltDeg = 0.0;
+            } else {
+                holeTiltDeg = Math.toDegrees(Math.atan2(horiz, vert));
+            }
+
+            inclined = holeTiltDeg >= 1.0; // tua soglia "verticale"
+        } else {
+            inclined = false; // punto => verticale
+        }
+
+        // -------------------------
+        // 5) Compute okXY and distAxis
+        // -------------------------
+        // - Verticale/punto: okXY = bit->testa
+        // - Inclinato: okXY = bit->ASSE (PlanError)
+        okXY = false;
+        distAxis = Double.NaN;
+
+        if (!inclined) {
             okXY = (distXYToHead <= DataSaved.Drill_tolleranza_XY);
+            distAxis = distXYToHead;
 
-            // "pe" as bit->head vector (compat)
+            // compat pe = vettore bit->head
             double dx = mastBit[0] - hx;
             double dy = mastBit[1] - hy;
             pe = new double[]{dx, dy, distXYToHead};
-            distAxis = distXYToHead;
 
-            // default
-            holePitchDeg = Double.NaN;
-            holeRollDeg = Double.NaN;
-            okOri = false; // senza END non ha senso, lo gestiamo per-mode
-
-            if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
-                tabellaValues();
-                // In JET: target = bolla (0/0) anche se manca END
-                tri = DrillGuidance.computeTiltTrianglesToTargets(
-                        mastHead, mastBit,
-                        hdt_BOOM,
-                        0.0, 0.0,
-                        DataSaved.Drill_tolleranza_Angolo
-                );
-
-                // frecce
-                FrecciaUP = tri.up;
-                FrecciaRIGHT = tri.right;
-                FrecciaDOWN = tri.down;
-                FrecciaLEFT = tri.left;
-
-                // tilt ok quando nessuna freccia è richiesta
-                okTilt = !(FrecciaUP || FrecciaRIGHT || FrecciaDOWN || FrecciaLEFT);
-
-                // in jet l'orientamento lo ignoriamo
-                okOri = true;
-
-                // (se vuoi mostrare in UI i target)
-                holePitchDeg = 0.0;
-                holeRollDeg = 0.0;
-
-                // okStart / okDrill = XY + tilt
-                okStart = okXY && okTilt;
-
-
-                double axisTol = (DataSaved.Drill_tolleranza_Axis > 0)
-                        ? DataSaved.Drill_tolleranza_Axis
-                        : DataSaved.Drill_tolleranza_XY;
-
-                okDrill = (distAxis <= axisTol) && okTilt;
-
-            } else {
-                // altri mode: senza END non faccio triangoli (come prima)
-                FrecciaUP = FrecciaRIGHT = FrecciaDOWN = FrecciaLEFT = false;
-
-                okTilt = false;
-                okStart = false;
-
-                double axisTol = (DataSaved.Drill_tolleranza_Axis > 0)
-                        ? DataSaved.Drill_tolleranza_Axis
-                        : DataSaved.Drill_tolleranza_XY;
-
-                okDrill = (distAxis <= axisTol);
-            }
-
-            return;
-        }
-
-
-        // -------------------------
-        // 5) Full match (END present)
-        // -------------------------
-        st = DrillMatch.matchMastToHole(
-                mastHead, mastBit,
-                holeStart, holeEnd,
-                DataSaved.Drill_tolleranza_XY,
-                DataSaved.Drill_tolleranza_Angolo
-        );
-
-        okXY = st.xyInRange;          // qui = bit->ASSE
-        okTilt = st.tiltInRange;
-        okOri = st.orientationInRange;
-
-        // -------------------------
-        // 6) Triangles (pitch/roll guidance)
-        // -------------------------
-        tri = DrillGuidance.computeTiltTriangles(
-                mastHead, mastBit,
-                holeStart, holeEnd,
-                hdt_BOOM,
-                DataSaved.Drill_tolleranza_Angolo
-        );
-
-        // Pitch/Roll del mast e del foro (già calcolati da DrillGuidance)
-        double mastPitch = tri.mastPitchDeg;
-        double mastRoll = tri.mastRollDeg;
-
-        double holePitch = tri.holePitchDeg;
-        double holeRoll = tri.holeRollDeg;
-
-// Se il palo è verticale: guida verso "bolla" (pitch=0, roll=0)
-        if (isHoleVerticalDeg(st.holeTiltDeg)) {
-            setTrianglesToReachTargets(mastPitch, mastRoll, 0.0, 0.0, DataSaved.Drill_tolleranza_Angolo);
         } else {
-            // Palo inclinato: guida verso i target del foro
-            setTrianglesToReachTargets(mastPitch, mastRoll, holePitch, holeRoll, DataSaved.Drill_tolleranza_Angolo);
-        }
+            // asse foro in XY (linea head->end)
+            PlanError.Result per = PlanError.calcPlanErrorToAxisXY(
+                    mastBit[0], mastBit[1],
+                    hxObj, hyObj,
+                    exObj, eyObj,
+                    false
+            );
+            pe = new double[]{per.errE, per.errN, per.dist};
+            distAxis = per.dist;
 
-
-        holePitchDeg = tri.holePitchDeg;
-        holeRollDeg = tri.holeRollDeg;
-
-        // -------------------------
-        // 7) Plan error bit->axis (XY) + distAxis
-        // -------------------------
-        PlanError.Result per = PlanError.calcPlanErrorToAxisXY(
-                mastBit[0], mastBit[1],
-                holeStart[0], holeStart[1],
-                holeEnd[0], holeEnd[1],
-                false // retta infinita consigliata per "in asse"
-        );
-
-        pe = new double[]{per.errE, per.errN, per.dist};
-        distAxis = per.dist;
-
-        // -------------------------
-        // 8) OK_START logic (inizio): bit su testa + tilt + ori (se inclinato) + Z
-        // -------------------------
-        final boolean ignoreOri = (Double.isNaN(st.holeTiltDeg) || st.holeTiltDeg < 1.0);
-        final boolean oriForStart = ignoreOri ? true : okOri;
-
-        switch (DataSaved.Drilling_Mode) {
-            case ROCKDRILL_MODE:
-                okStart = (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
-                        && okZ                             // quota progetto testa
-                        && okTilt                          // inclinazione corretta
-                        && oriForStart;                    // azimut se significativo
-                break;
-
-            case JETGROUTING_MODE:
-                okStart = (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
-                        // quota progetto testa
-                        && okTilt;                        // inclinazione corretta
-
-                break;
-
-            case SOLARFARM_MODE:
-                okStart = (distXYToHead <= DataSaved.Drill_tolleranza_XY) // bit sulla testa in pianta
-                        && isInRangeAngle(normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2), normalizeAngle(DataSaved.ALLINEAMENTO_AB), DataSaved.Drill_tolleranza_HDT)                         // quota progetto testa
-                        && okTilt;                        // inclinazione corretta
-                break;
+            okXY = (distAxis <= DataSaved.Drill_tolleranza_XY);
         }
 
         // -------------------------
-        // 9) OK_DRILL logic (discesa): solo distanza bit->asse
+        // 6) Compute tilt/orientation + arrows
         // -------------------------
-        double axisTol = (DataSaved.Drill_tolleranza_Axis > 0) ? DataSaved.Drill_tolleranza_Axis : DataSaved.Drill_tolleranza_XY;
-        okDrill = (distAxis <= axisTol);
+        // Regole richieste:
+        // - Verticale/punto: okTilt guida verso bolla (0/0), okOri:
+        //     - SOLARFARM: orientamento = ALLINEAMENTO_AB
+        //     - JET + ROCK: okOri = true
+        // - Inclinato: SEMPRE: okTilt + okOri (bearing foro) + bit sulla testa + okZ (se Z valida)
+        okTilt = false;
+        okOri = false;
+
+        if (!inclined) {
+            // guida verso bolla sempre (target 0/0)
+            tri = DrillGuidance.computeTiltTrianglesToTargets(
+                    mastHead, mastBit,
+                    hdt_BOOM,
+                    0.0, 0.0,
+                    DataSaved.Drill_tolleranza_Angolo
+            );
+
+            FrecciaUP = tri.up;
+            FrecciaRIGHT = tri.right;
+            FrecciaDOWN = tri.down;
+            FrecciaLEFT = tri.left;
+
+            okTilt = !Double.isNaN(tri.deltaPitchDeg) && !Double.isNaN(tri.deltaRollDeg)
+                    && Math.abs(tri.deltaPitchDeg) <= DataSaved.Drill_tolleranza_Angolo
+                    && Math.abs(tri.deltaRollDeg) <= DataSaved.Drill_tolleranza_Angolo;
+
+            holePitchDeg = 0.0;
+            holeRollDeg = 0.0;
+
+            // orientamento:
+            if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+                okOri = isInRangeAngle(
+                        normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2),
+                        normalizeAngle(DataSaved.ALLINEAMENTO_AB),
+                        DataSaved.Drill_tolleranza_HDT
+                );
+            } else {
+                okOri = true; // JET + ROCK
+            }
+
+        } else {
+            // Inclinato: match completo verso asse foro
+            final double[] holeStart = new double[]{hxObj, hyObj, (zValid ? hzObj : 0.0)};
+            final double[] holeEnd = new double[]{exObj, eyObj, ezObj};
+
+            st = DrillMatch.matchMastToHole(
+                    mastHead, mastBit,
+                    holeStart, holeEnd,
+                    DataSaved.Drill_tolleranza_XY,
+                    DataSaved.Drill_tolleranza_Angolo,
+                    DataSaved.Drill_tolleranza_HDT
+            );
+
+            okTilt = st.tiltInRange;
+            okOri = st.orientationInRange;
+
+            // triangoli verso target foro (non bolla)
+            tri = DrillGuidance.computeTiltTriangles(
+                    mastHead, mastBit,
+                    holeStart, holeEnd,
+                    hdt_BOOM,
+                    DataSaved.Drill_tolleranza_Angolo
+            );
+
+            FrecciaUP = tri.up;
+            FrecciaRIGHT = tri.right;
+            FrecciaDOWN = tri.down;
+            FrecciaLEFT = tri.left;
+
+            holePitchDeg = tri.holePitchDeg;
+            holeRollDeg = tri.holeRollDeg;
+        }
+
+        // -------------------------
+        // 7) OK_START / OK_DRILL rules (pulite e consistenti)
+        // -------------------------
+        // Richiesta:
+        // - Verticale/punto: se Z nulla/0 => ignora okZ.
+        //   OK se XY ok e orientamento ok (solo solarfarm), + tilt ok (bolla) per stabilità.
+        //
+        // - Inclinato: SEMPRE OK se:
+        //      bit sulla testa (XY) + okZ (se valida) + okTilt + okOri
+        //
+        // Nota: "bit sulla testa" in entrambi i casi è distXYToHead <= tolXY (non distAxis).
+        final boolean bitOnHeadXY = (distXYToHead <= DataSaved.Drill_tolleranza_XY);
+        final boolean zOkForStart = okZ; // già true se z non valida
+
+        if (!inclined) {
+            // verticale/punto: non richiedere okZ se z non valida (già true)
+            // orientamento: solarfarm, altrimenti true
+            // tilt: guida bolla
+            okStart = bitOnHeadXY && okTilt && okOri;
+        } else {
+            okStart = bitOnHeadXY && zOkForStart && okTilt && okOri;
+        }
+
+        // OK_DRILL: durante discesa usa distanza dall'asse (se inclinato) o dalla testa (se verticale),
+        // e richiede tilt/orientamento solo per inclinati (come tua regola).
+        double axisTol = (DataSaved.Drill_tolleranza_Axis > 0)
+                ? DataSaved.Drill_tolleranza_Axis
+                : DataSaved.Drill_tolleranza_XY;
+
+        if (!inclined) {
+            okDrill = (distAxis <= axisTol) && okOri; // ori solo solarfarm ha senso, negli altri è true
+        } else {
+            okDrill = (distAxis <= axisTol) && okTilt && okOri;
+        }
+
+        // -------------------------
+        // 8) Debug (opzionale)
+        // -------------------------
         if (isDrilling) {
-            boolean vertical = false;
-            double tiltProj = 0.0;
-            if (sel != null && sel.getTilt() != null) {
-                tiltProj = sel.getTilt();
-                vertical = tiltProj < 1.0;
-            }
-
             Log.d("DRILL_GUIDE", "------------------------------");
-
-            // 1) Stato generale
-            Log.d("DRILL_GUIDE", "OK_DRILL=" + okDrill +
-                    "  OK_XY=" + okXY +
-                    "  OK_TILT=" + okTilt +
-                    "  OK_ORI=" + okOri);
-
-            // 2) Tipo palo
-            Log.d("DRILL_GUIDE", "HOLE_TILT_PROJ=" + tiltProj +
-                    " deg  VERTICAL=" + vertical);
-
-            // 3) Discostamento laterale
-            Log.d("DRILL_GUIDE", String.format(
-                    "AXIS_ERR_XY=%.3f m   (errE=%.3f , errN=%.3f)",
-                    distAxis, pe[0], pe[1]
-            ));
-
-            // 4) Distanza dalla testa (utile all’inizio)
-            Log.d("DRILL_GUIDE", String.format(
-                    "DIST_TO_HEAD_XY=%.3f m   DZ_TO_HEAD=%.3f m   DIST3D=%.3f m",
-                    distXYToHead, dzToHead, dist3DToHead
-            ));
-
-            // 5) Profondità / avanzamento
-            if (sel != null &&
-                    sel.getHeadZ() != null &&
-                    sel.getEndZ() != null &&
-                    ExcavatorLib.toolEndCoord != null) {
-
-                double bitZ = ExcavatorLib.toolEndCoord[2];
-                double headZ = sel.getHeadZ();
-                double endZ = sel.getEndZ();
-
-                if (vertical) {
-                    double remainingZ = endZ - bitZ;
-                    PointService.remainingZ = remainingZ;
-                    PointService.remainingAxis = Double.NaN;
-                    Log.d("DRILL_GUIDE", String.format(
-                            "DEPTH_VERTICAL: bitZ=%.3f  endZ=%.3f  REMAIN_Z=%.3f m",
-                            bitZ, endZ, remainingZ
-                    ));
-                } else {
-                    // avanzamento lungo asse
-                    double s = distAlongAxisFromHead(
-                            ExcavatorLib.toolEndCoord,
-                            sel.getHeadX(), sel.getHeadY(), sel.getHeadZ(),
-                            sel.getEndX(), sel.getEndY(), sel.getEndZ()
-                    );
-
-                    double ax = sel.getEndX() - sel.getHeadX();
-                    double ay = sel.getEndY() - sel.getHeadY();
-                    double az = sel.getEndZ() - sel.getHeadZ();
-                    double L = Math.sqrt(ax * ax + ay * ay + az * az);
-
-                    double sClamped = Math.max(0.0, Math.min(L, s));
-                    double remainingAxis = L - sClamped;
-                    PointService.remainingAxis = remainingAxis;
-                    PointService.remainingZ = Double.NaN;
-                    Log.d("DRILL_GUIDE", String.format(
-                            "DEPTH_INCLINED: ADV=%.3f / %.3f m   REMAIN_AXIS=%.3f m",
-                            sClamped, L, remainingAxis
-                    ));
-                }
-            }
-
-            // 6) Angoli mast vs progetto
-            if (st != null) {
-                Log.d("DRILL_GUIDE", String.format(
-                        "TILT: mast=%.2f°  hole=%.2f°  OK=%s",
-                        st.mastTiltDeg, st.holeTiltDeg, okTilt
-                ));
-
-                Log.d("DRILL_GUIDE", String.format(
-                        "ORI: mast=%.2f°  hole=%.2f°  d=%.2f°  OK=%s",
-                        st.mastBearingDeg, st.holeBearingDeg, st.dBearingDeg, okOri
-                ));
-            }
-
-            // 7) Frecce pitch/roll
+            Log.d("DRILL_GUIDE", "INCLINED=" + inclined + "  hasEnd=" + hasEnd + "  zValid=" + zValid);
+            Log.d("DRILL_GUIDE", "OK_START=" + okStart + "  OK_DRILL=" + okDrill +
+                    "  OK_XY=" + okXY + "  OK_TILT=" + okTilt + "  OK_ORI=" + okOri + "  OK_Z=" + okZ);
+            Log.d("DRILL_GUIDE", String.format(Locale.US,
+                    "DIST_TO_HEAD_XY=%.3f  DIST_AXIS=%.3f  DZ_TO_HEAD=%s",
+                    distXYToHead, distAxis, Double.isNaN(dzToHead) ? "NaN" : String.format(Locale.US, "%.3f", dzToHead)));
             Log.d("DRILL_GUIDE", "ARROWS  UP=" + FrecciaUP +
                     " DOWN=" + FrecciaDOWN +
                     " LEFT=" + FrecciaLEFT +
                     " RIGHT=" + FrecciaRIGHT);
         }
-
     }
+
 
     private void resetOutputs() {
         // Match principali
@@ -687,7 +620,7 @@ public class PointService extends Service {
         String[] result = new String[24]; // esempio
 
         if (Selected_Point3D_Drill == null)
-           return;
+            return;
 
         if (countTabella % 10 == 0) {
             double drillbit = toolEndCoord != null ? toolEndCoord[2] : Double.NaN;
@@ -748,7 +681,7 @@ public class PointService extends Service {
             result[21] = formatDoubleOrEmpty(Math.abs(drillbit - start4_jet));
             result[22] = formatDoubleOrEmpty(Math.abs(drillbit - stop4_jet));
             result[23] = Selected_Point3D_Drill.getPr_j_4();
-           valoriTabella=result;
+            valoriTabella = result;
 
         }
 

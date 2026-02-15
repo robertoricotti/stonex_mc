@@ -80,7 +80,7 @@ public class Drill_TopView extends View {
     private int activePointerId = INVALID_POINTER_ID;
     private int colorTarget_Alto=Color.CYAN;
     private int colorTarget_Basso=Color.YELLOW;
-    private int colorDashed_Line=Color.CYAN;
+    private int colorDashed_Line=Color.BLUE;
     private boolean isBitOnHoleHead=false;
     private int coloreCroce=Color.YELLOW;
 
@@ -714,7 +714,7 @@ public class Drill_TopView extends View {
         // 2) dashed oltre head (b -> esteso)
         ensureDashEffect();
         paint.setPathEffect(dashEffect);
-        paint.setColor(dashedColor);
+        paint.setColor(colorDashed_Line);
         paint.setStrokeWidth(Math.max(2f, scala * 0.045f));
         canvas.drawLine(b.x, b.y, x2, y2, paint);
 

@@ -52,7 +52,8 @@ public final class DrillMatch {
             double[] mastHead, double[] mastBit,
             double[] holeStart, double[] holeEnd,
             double xyTolMeters,
-            double angleTolDeg
+            double angleTolDeg,
+            double hdtTolDeg
     ) {
         // Validazione
         if (!is3(mastHead) || !is3(mastBit) || !is3(holeStart) || !is3(holeEnd)) {
@@ -96,7 +97,7 @@ public final class DrillMatch {
 
             if (!Double.isNaN(mastBearing) && !Double.isNaN(holeBearing)) {
                 dBearing = angleDiffDeg(mastBearing, holeBearing);
-                orientationInRange = dBearing <= angleTolDeg;
+                orientationInRange = dBearing <= hdtTolDeg;
             } else {
                 orientationInRange = false;
             }

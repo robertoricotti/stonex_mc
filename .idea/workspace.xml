@@ -7,7 +7,32 @@
       </config>
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_grada.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_lista_lavori.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_report_prj.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_abortisce.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_back.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_clear.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
         </config>
@@ -22,7 +47,17 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_normal_stop.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_refresh.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_start_drill.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
         </config>
@@ -413,6 +448,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_invert_colors.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_languages.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -475,14 +515,19 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 da fare i report">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 todo dialog aggiungi aste">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/btn_abortisce.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/btn_normal_stop.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/btn_start_drill.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/assets/Jet_Template.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/Jet_Template.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/VerticalTargetIndicatorView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/VerticalTargetIndicatorView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/DrillMatch.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/DrillMatch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -715,14 +760,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00060" summary="4.0.16 official release">
-      <option name="closed" value="true" />
-      <created>1766139158310</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1766139158310</updated>
     </task>
     <task id="LOCAL-00061" summary="4.0.17 official release">
       <option name="closed" value="true" />
@@ -1108,7 +1145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771005919091</updated>
     </task>
-    <option name="localTasksCounter" value="109" />
+    <task id="LOCAL-00109" summary="4.1.0 todo dialog aggiungi aste">
+      <option name="closed" value="true" />
+      <created>1771024176823</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1771024176823</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1124,7 +1169,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.0 inizio DRILL" />
     <MESSAGE value="4.1.0 inizio DRILL iredes" />
     <MESSAGE value="4.0.15 pre release" />
     <MESSAGE value="4.0.15 RELEASE" />
@@ -1149,14 +1193,15 @@
     <MESSAGE value="4.1.0 pre drill routine" />
     <MESSAGE value="4.1.0 da fare 3 drill options" />
     <MESSAGE value="4.1.0 da fare i report" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 da fare i report" />
+    <MESSAGE value="4.1.0 todo dialog aggiungi aste" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 todo dialog aggiungi aste" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1770997352577" />
+            <CheckInfo lastCheckTimestamp="1771174290267" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1166,7 +1211,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1770997352577" />
+            <CheckInfo lastCheckTimestamp="1771174290264" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1176,7 +1221,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1770997352578" />
+            <CheckInfo lastCheckTimestamp="1771174290267" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

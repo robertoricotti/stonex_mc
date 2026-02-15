@@ -119,7 +119,7 @@ public class VerticalTargetIndicatorView extends View {
 
         } else {
             color = colorDown;
-            targetPaint.setColor(colorUp);
+            targetPaint.setColor(colorDown);
 
         }
         barPaint.setColor(color);

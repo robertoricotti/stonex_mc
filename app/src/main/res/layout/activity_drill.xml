@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintGuide_percent="0.92"/>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/centro"
         android:orientation="horizontal"
@@ -36,7 +37,7 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.92"/>
+        app:layout_constraintGuide_percent="0.93"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -142,7 +143,7 @@
             android:background="@drawable/custom_background_test3d_box_grigino"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/baseline_play_circle_filled_96"
+            app:srcCompat="@drawable/btn_start_drill"
             />
 
         <ImageView
@@ -155,7 +156,7 @@
             android:background="@drawable/custom_background_test3d_box_blu"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/normal_stop"
+            app:srcCompat="@drawable/btn_normal_stop"
             app:tint="@color/white"
             />
 
@@ -170,7 +171,7 @@
             android:background="@drawable/custom_background_test3d_rosso"
             android:padding="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/abortisce"
+            app:srcCompat="@drawable/btn_abortisce"
             app:tint="@color/white"
 
             />
@@ -526,6 +527,16 @@
         android:textStyle="bold"
         android:gravity="left"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/centro"/>
+    <TextView
+        android:layout_margin="5dp"
+        android:id="@+id/diration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="right"
+        app:layout_constraintRight_toLeftOf="@id/cent_v"
         app:layout_constraintTop_toBottomOf="@id/centro"/>
     <TextView
         android:layout_margin="5dp"

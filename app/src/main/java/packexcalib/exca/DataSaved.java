@@ -40,6 +40,7 @@ public class DataSaved {
     public static double PassoGriglia;
     public static String DredgeFileName;
     public static int EnableMapping;
+    public static  int Drill_Antenna_Mounting;
 
 
     //settaggi idraulici
