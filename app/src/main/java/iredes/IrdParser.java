@@ -13,7 +13,7 @@ import java.util.List;
 import services.ReadProjectService;
 
 public class IrdParser {
-
+    private static final String NS_JET = "urn:custom:jet:treatment:v1";
     private static final String NS_DR = "http://www.iredes.org/xml/DrillRig";
     private static final String NS_IR = "http://www.iredes.org/xml";
 
@@ -82,6 +82,7 @@ public class IrdParser {
 
                 // heading/depth/length
                 p.recomputeDerived();
+                parseJetTreatmentIfPresent(holeEl, p);
 
                 if (p.getId() != null || p.getRowId() != null ||
                         p.getHeadX() != null || p.getEndX() != null) {
@@ -163,4 +164,69 @@ public class IrdParser {
             return null;
         }
     }
+    private static void parseJetTreatmentIfPresent(Element holeEl, Point3D_Drill p) {
+        Element treatmentEl = firstChild(holeEl, NS_JET, "Treatment");
+        if (treatmentEl == null) return;
+
+        NodeList children = treatmentEl.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node n = children.item(i);
+            if (n.getNodeType() != Node.ELEMENT_NODE) continue;
+
+            Element el = (Element) n;
+            String key = el.getLocalName(); // es: "drlStart_1"
+            if (key == null) key = el.getNodeName();
+            String val = emptyToNull(el.getTextContent());
+            if (val == null) continue;
+
+            applyJetField(p, key, val);
+        }
+    }
+
+    private static void applyJetField(Point3D_Drill p, String key, String value) {
+        // Normalizza eventuali spazi
+        key = key.trim();
+
+        switch (key) {
+            // ---- DRILL 1..4 ----
+            case "drlStart_1": p.setDrlStart_1(value); break;
+            case "drlStop_1":  p.setDrlStop_1(value);  break;
+            case "pr_1":       p.setPr_1(value);       break;
+
+            case "drlStart_2": p.setDrlStart_2(value); break;
+            case "drlStop_2":  p.setDrlStop_2(value);  break;
+            case "pr_2":       p.setPr_2(value);       break;
+
+            case "drlStart_3": p.setDrlStart_3(value); break;
+            case "drlStop_3":  p.setDrlStop_3(value);  break;
+            case "pr_3":       p.setPr_3(value);       break;
+
+            case "drlStart_4": p.setDrlStart_4(value); break;
+            case "drlStop_4":  p.setDrlStop_4(value);  break;
+            case "pr_4":       p.setPr_4(value);       break;
+
+            // ---- JET 1..4 ----
+            case "jetStart_1": p.setJetStart_1(value); break;
+            case "jetStop_1":  p.setJetStop_1(value);  break;
+            case "pr_j_1":     p.setPr_j_1(value);     break;
+
+            case "jetStart_2": p.setJetStart_2(value); break;
+            case "jetStop_2":  p.setJetStop_2(value);  break;
+            case "pr_j_2":     p.setPr_j_2(value);     break;
+
+            case "jetStart_3": p.setJetStart_3(value); break;
+            case "jetStop_3":  p.setJetStop_3(value);  break;
+            case "pr_j_3":     p.setPr_j_3(value);     break;
+
+            case "jetStart_4": p.setJetStart_4(value); break;
+            case "jetStop_4":  p.setJetStop_4(value);  break;
+            case "pr_j_4":     p.setPr_j_4(value);     break;
+
+            default:
+                // Tag sconosciuto: lo ignoriamo (così puoi estendere senza rompere)
+                Log.w("IRD-JET", "Tag JET non gestito: " + key + " = " + value);
+                break;
+        }
+    }
+
 }

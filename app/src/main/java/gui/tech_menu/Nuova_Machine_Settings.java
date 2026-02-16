@@ -3,6 +3,8 @@ package gui.tech_menu;
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
 import static packexcalib.exca.DataSaved.isCanOpen;
+import static utils.MyTypes.AT_BODY;
+import static utils.MyTypes.AT_BOOM;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
@@ -10,7 +12,13 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JETGROUTING_MODE;
 import static utils.MyTypes.JOYSTICKS;
+import static utils.MyTypes.MAST_FORWARD;
+import static utils.MyTypes.MAST_LEFT;
+import static utils.MyTypes.MAST_RIGHT;
+import static utils.MyTypes.ROCKDRILL_MODE;
+import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
 
@@ -53,6 +61,7 @@ public class Nuova_Machine_Settings extends BaseClass {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
     CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2,ckJ,ckRock,ckJet,ckSolar;
+    CheckBox ckBody,ckBoom,ckAtLeft,ckAtFwd,ckAtRight;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
@@ -64,7 +73,7 @@ public class Nuova_Machine_Settings extends BaseClass {
     Dialog_CanBaud dialogCanBaud;
     Dialog_Swing_Boom dialogSwingBoom;
     Dialog_Wheel_Steer dialogWheelSteer;
-    LinearLayout linear_1, linear_2, linear_3,lay_drilmode;
+    LinearLayout linear_1, linear_2, linear_3,lay_drilmode,lay_antmount,lay_ant_orient;
     int small, bigg;
 
     @Override
@@ -143,11 +152,58 @@ public class Nuova_Machine_Settings extends BaseClass {
         toDamping = findViewById(R.id.toDamping);
         can1bd = findViewById(R.id.toCan1);
         can2bd = findViewById(R.id.toCan2);
+        lay_antmount=findViewById(R.id.lay_antmount);
+        lay_ant_orient=findViewById(R.id.lay_ant_orient);
+        ckBody=findViewById(R.id.ckBody);
+        ckBoom=findViewById(R.id.ckBoom);
+        ckAtLeft=findViewById(R.id.ckAtLeft);
+        ckAtFwd=findViewById(R.id.ckAtFwd);
+        ckAtRight=findViewById(R.id.ckAtRight);
+
+
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
 
     }
 
     private void onClick() {
+        ckBody.setOnClickListener(view -> {
+            ckBody.setChecked(true);
+            ckBoom.setChecked(false);
+            DataSaved.Drill_Antenna_Mounting=AT_BODY;
+            MyData.push("M"+machineSel+"Drill_Antenna_Mounting",AT_BODY);
+        });
+        ckBoom.setOnClickListener(view -> {
+            ckBody.setChecked(false);
+            ckBoom.setChecked(true);
+            DataSaved.Drill_Antenna_Mounting=AT_BOOM;
+            MyData.push("M"+machineSel+"Drill_Antenna_Mounting",AT_BOOM);
+        });
+
+        ckAtLeft.setOnClickListener(view -> {
+            ckAtLeft.setChecked(true);
+            ckAtFwd.setChecked(false);
+            ckAtRight.setChecked(false);
+            DataSaved.Drill_Mast_Position=MAST_LEFT;
+            MyData.push("M"+machineSel+"Drill_Mast_Position",MAST_LEFT);
+        });
+        ckAtFwd.setOnClickListener(view -> {
+            ckAtLeft.setChecked(false);
+            ckAtFwd.setChecked(true);
+            ckAtRight.setChecked(false);
+            DataSaved.Drill_Mast_Position=MAST_FORWARD;
+            MyData.push("M"+machineSel+"Drill_Mast_Position",MAST_FORWARD);
+        });
+        ckAtRight.setOnClickListener(view -> {
+            ckAtLeft.setChecked(false);
+            ckAtFwd.setChecked(false);
+            ckAtRight.setChecked(true);
+            DataSaved.Drill_Mast_Position=MAST_RIGHT;
+            MyData.push("M"+machineSel+"Drill_Mast_Position",MAST_RIGHT);
+        });
+
+
+
+
         can1bd.setOnClickListener(view -> {
             if (!dialogCanBaud.dialog.isShowing()) {
                 dialogCanBaud.show(1);
@@ -577,8 +633,17 @@ public class Nuova_Machine_Settings extends BaseClass {
     public void updateUI() {
         if(DataSaved.isWL==DRILL){
             lay_drilmode.setVisibility(View.VISIBLE);
+            lay_ant_orient.setVisibility(View.VISIBLE);
+            lay_antmount.setVisibility(View.VISIBLE);
+            if(DataSaved.Drill_Antenna_Mounting.equals(AT_BODY)){
+                lay_ant_orient.setVisibility(View.INVISIBLE);
+            }else if(DataSaved.Drill_Antenna_Mounting.equals(AT_BOOM)){
+                lay_ant_orient.setVisibility(View.VISIBLE);
+            }
         }else {
             lay_drilmode.setVisibility(View.GONE);
+            lay_ant_orient.setVisibility(View.GONE);
+            lay_antmount.setVisibility(View.GONE);
         }
         if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER||DataSaved.isWL==DRILL) {
             toCanopen.setVisibility(View.VISIBLE);
@@ -701,29 +766,55 @@ public class Nuova_Machine_Settings extends BaseClass {
                 break;
             case 10:
                 //DRILL
-                tvMast.setVisibility(View.VISIBLE);
-                drillEnc.setVisibility(View.VISIBLE);
-                toExtraSensor.setVisibility(View.GONE);
-                tvFrame.setVisibility(View.VISIBLE);
-                if (DataSaved.Extra_Heading > 0) {
-                    tvSwing.setVisibility(View.VISIBLE);
-                    tvSwing.setText("SWING BOOM");
-                } else {
-                    tvSwing.setVisibility(View.GONE);
-                    tvSwing.setText("SWING BOOM");
-                }
-                tvBoom1.setVisibility(View.VISIBLE);
-                tvBoom1.setText("BOOM 1");
-                tvBoom2.setVisibility(View.VISIBLE);
-                tvStick.setVisibility(View.VISIBLE);
-                tvStick.setText("MAST LINK");
+                if(DataSaved.Drill_Antenna_Mounting.equals(AT_BODY)) {
+                    tvMast.setVisibility(View.VISIBLE);
+                    drillEnc.setVisibility(View.VISIBLE);
+                    tvFrame.setVisibility(View.VISIBLE);
+                    toExtraSensor.setVisibility(View.GONE);
+                    if (DataSaved.Extra_Heading > 0) {
+                        tvSwing.setVisibility(View.VISIBLE);
+                        tvSwing.setText("SWING BOOM");
+                    } else {
+                        tvSwing.setVisibility(View.GONE);
+                        tvSwing.setText("SWING BOOM");
+                    }
+                    tvBoom1.setVisibility(View.VISIBLE);
+                    tvBoom1.setText("BOOM 1");
+                    tvBoom2.setVisibility(View.VISIBLE);
+                    tvStick.setVisibility(View.VISIBLE);
+                    tvStick.setText("MAST LINK");
 
-                tvLink.setVisibility(View.VISIBLE);
-                tvLink.setText("TOOL ΔX ΔY ΔZ");
-                tvTilt.setVisibility(View.GONE);
-                tvXYZ.setVisibility(View.VISIBLE);
-                tvBoom1.setBackgroundTintList(getColorStateList(R.color.bg_stonex_blue));
-                tvBoom1.setTextColor(getColor(R.color.white));
+                    tvLink.setVisibility(View.VISIBLE);
+                    tvLink.setText("TOOL ΔX ΔY ΔZ");
+                    tvTilt.setVisibility(View.GONE);
+                    tvXYZ.setVisibility(View.VISIBLE);
+                    tvBoom1.setBackgroundTintList(getColorStateList(R.color.bg_stonex_blue));
+                    tvBoom1.setTextColor(getColor(R.color.white));
+                }else {
+                    tvMast.setVisibility(View.VISIBLE);
+                    drillEnc.setVisibility(View.VISIBLE);
+                    tvFrame.setVisibility(View.GONE);
+                    toExtraSensor.setVisibility(View.GONE);
+                    if (DataSaved.Extra_Heading > 0) {
+                        tvSwing.setVisibility(View.GONE);
+                        tvSwing.setText("SWING BOOM");
+                    } else {
+                        tvSwing.setVisibility(View.GONE);
+                        tvSwing.setText("SWING BOOM");
+                    }
+                    tvBoom1.setVisibility(View.GONE);
+                    tvBoom1.setText("BOOM 1");
+                    tvBoom2.setVisibility(View.GONE);
+                    tvStick.setVisibility(View.GONE);
+                    tvStick.setText("MAST LINK");
+
+                    tvLink.setVisibility(View.VISIBLE);
+                    tvLink.setText("TOOL ΔX ΔY ΔZ");
+                    tvTilt.setVisibility(View.GONE);
+                    tvXYZ.setVisibility(View.GONE);
+                    tvBoom1.setBackgroundTintList(getColorStateList(R.color.bg_stonex_blue));
+                    tvBoom1.setTextColor(getColor(R.color.white));
+                }
                 break;
 
 
@@ -908,10 +999,14 @@ public class Nuova_Machine_Settings extends BaseClass {
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);
         ckMach.setChecked(MyData.get_Int("drwaMachieSchema") == 1);
         techInfo.setText(MyData.get_String("techInfo"));
-        ckRock.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == 0);
-        ckJet.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == 1);
-        ckSolar.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == 2);
-
+        ckRock.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == ROCKDRILL_MODE);
+        ckJet.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == JETGROUTING_MODE);
+        ckSolar.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == SOLARFARM_MODE);
+        ckBody.setChecked(MyData.get_String("M"+machineSel+"Drill_Antenna_Mounting").endsWith(AT_BODY));
+        ckBoom.setChecked(MyData.get_String("M"+machineSel+"Drill_Antenna_Mounting").endsWith(AT_BOOM));
+        ckAtLeft.setChecked(MyData.get_String("M"+machineSel+"Drill_Mast_Position").endsWith(MAST_LEFT));
+        ckAtFwd.setChecked(MyData.get_String("M"+machineSel+"Drill_Mast_Position").endsWith(MAST_FORWARD));
+        ckAtRight.setChecked(MyData.get_String("M"+machineSel+"Drill_Mast_Position").endsWith(MAST_RIGHT));
     }
 
     private void en_dis(boolean b) {

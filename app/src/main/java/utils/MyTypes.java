@@ -42,5 +42,13 @@ public class MyTypes {
     public static final int MC_3D_EASY_AUTO=4;
     public static final int MC_3D_PRO_AUTO=5;
 
+    public static final String AT_BODY="BODY";
+    public static final String AT_BOOM="BOOM";
+
+    public static final String MAST_LEFT="LEFT";
+    public static final String MAST_FORWARD ="FORWARD";
+    public static final String MAST_RIGHT="RIGHT";
+    public static final String MAST_BACKWARD="BACKWARD";
+
 
 }

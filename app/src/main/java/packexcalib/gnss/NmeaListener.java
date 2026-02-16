@@ -144,6 +144,7 @@ public class NmeaListener {
 
                         case "$GNGGA":
                         case "$GPGGA":
+
                             if (DataSaved.my_comPort != 0) {
                                 try {
 

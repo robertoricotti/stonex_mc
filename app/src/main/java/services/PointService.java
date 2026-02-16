@@ -6,6 +6,7 @@ import static packexcalib.exca.ExcavatorLib.coordTool;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
+import static utils.MyTypes.JETGROUTING_MODE;
 import static utils.MyTypes.SOLARFARM_MODE;
 
 import android.app.Service;
@@ -434,6 +435,9 @@ public class PointService extends Service {
         // -------------------------
         // 8) Debug (opzionale)
         // -------------------------
+        if(DataSaved.Drilling_Mode==JETGROUTING_MODE) {
+            tabellaValues();
+        }
         if (isDrilling) {
             Log.d("DRILL_GUIDE", "------------------------------");
             Log.d("DRILL_GUIDE", "INCLINED=" + inclined + "  hasEnd=" + hasEnd + "  zValid=" + zValid);

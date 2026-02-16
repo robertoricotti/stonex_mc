@@ -474,12 +474,105 @@
                     android:orientation="vertical"
                     tools:layout_editor_absoluteX="16dp"
                     tools:layout_editor_absoluteY="84dp">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/_____cancel_text"
+                        />
+                    <LinearLayout
+                        android:id="@+id/lay_antmount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginVertical="5dp"
+                        >
+                        <CheckBox
+                            android:id="@+id/ckBody"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:text="ANTENNA AT BODY"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:ems="12"
+                            android:textStyle="bold|italic"
+                            />
+                        <CheckBox
+                            android:id="@+id/ckBoom"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:text="ANTENNA AT BOOM"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:ems="12"
+                            android:textStyle="bold|italic"
+                            />
+
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/_____cancel_text"
+                        />
+                    <LinearLayout
+                        android:id="@+id/lay_ant_orient"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginVertical="5dp">
+                        <CheckBox
+                            android:id="@+id/ckAtLeft"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:text="LEFT OF THE MACHINE"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:ems="12"
+                            android:textStyle="bold|italic"
+                            />
+                        <CheckBox
+                            android:id="@+id/ckAtFwd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:text="FRONT OF THE MACHINE"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:ems="12"
+                            android:textStyle="bold|italic"
+                            />
+                        <CheckBox
+                            android:id="@+id/ckAtRight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:text="RIGHT OF THE MACHINE"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:ems="12"
+                            android:textStyle="bold|italic"
+                            />
+
+
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/_____cancel_text"
+                        />
                     <LinearLayout
                         android:id="@+id/lay_drilmode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:layout_marginVertical="5dp">
                         <CheckBox
                             android:id="@+id/ckRock"
                             android:layout_width="wrap_content"
@@ -515,7 +608,11 @@
                             />
 
                     </LinearLayout>
-
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/_____cancel_text"
+                        />
                     <TextView
                         android:id="@+id/toxyz"
                         android:layout_width="wrap_content"

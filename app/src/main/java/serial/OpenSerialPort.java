@@ -59,9 +59,12 @@ public class OpenSerialPort {
                                 SerialPortManager.instance().sendCommand("CONFIG UNDULATION AUTO\r\n");
                                 SerialPortManager.instance().sendCommand("GNHDT 0.05\r\n");
                                 SerialPortManager.instance().sendCommand("GPHDT 0.05\r\n");
-                                SerialPortManager.instance().sendCommand("GNGGA 1.0\r\n");
-                                SerialPortManager.instance().sendCommand("GPGGA 1.0\r\n");
-                                SerialPortManager.instance().sendCommand("GAGSV 1.0\r\n");
+                                SerialPortManager.instance().sendCommand("GNGGA 0.05\r\n");
+                                SerialPortManager.instance().sendCommand("GPGGA 0.05\r\n");
+                                SerialPortManager.instance().sendCommand("GPGST 1.0\r\n");
+                                SerialPortManager.instance().sendCommand("GPRMC 0.1\r\n");
+                                SerialPortManager.instance().sendCommand("GNRMC 0.1\r\n");
+                                SerialPortManager.instance().sendCommand("GAGSV 10.0\r\n");
                                 SerialPortManager.instance().sendCommand("SAVECONFIG\r\n");
                             } else {
                                 SerialPortManager.instance().sendCommand("CONFIG UNDULATION AUTO\r\n");

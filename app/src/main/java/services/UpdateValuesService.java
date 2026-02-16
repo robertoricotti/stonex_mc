@@ -247,6 +247,8 @@ public class UpdateValuesService extends Service {
                     String Rotary_Mount = MyData.get_String("M" + i + "Rotary_Mount");
                     String numeroAste = MyData.get_String("M" + i + "numeroAste");
                     String Rotary_Diam = MyData.get_String("M" + i + "Rotary_Diam");
+                    String Drill_Antenna_Mounting = MyData.get_String("M" + i + "Drill_Antenna_Mounting");
+                    String Drill_Mast_Position = MyData.get_String("M" + i + "Drill_Mast_Position");
 
                     if (nameM == null) {
                         MyData.push("M" + i + "_Name", ("DEFAULT " + i).toUpperCase());
@@ -644,6 +646,12 @@ public class UpdateValuesService extends Service {
 
                     if (Rotary_Diam == null) {
                         MyData.push("M" + i + "Rotary_Diam", "0.3");
+                    }
+                    if (Drill_Antenna_Mounting == null) {
+                        MyData.push("M" + i + "Drill_Antenna_Mounting", "BODY");
+                    }
+                    if (Drill_Mast_Position == null) {
+                        MyData.push("M" + i + "Drill_Mast_Position", "FORWARD");
                     }
 
 
@@ -1639,6 +1647,16 @@ public class UpdateValuesService extends Service {
                 }
                 try {
                     DataSaved.Rotary_Diam = MyData.get_Double("M" + indexMach + "Rotary_Diam");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Rotary_Diam: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Drill_Mast_Position = MyData.get_String("M" + indexMach + "Drill_Mast_Position");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Rotary_Diam: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Drill_Antenna_Mounting = MyData.get_String("M" + indexMach + "Drill_Antenna_Mounting");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Rotary_Diam: " + e.getMessage());
                 }

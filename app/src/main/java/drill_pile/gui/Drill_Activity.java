@@ -418,7 +418,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         });
         playpause.setOnClickListener(view -> {
+            if (DataSaved.Drilling_Mode == JETGROUTING_MODE&&!isDrilling ) {
+                clearTable();
+                setupTabella();
 
+            }
             if (PointService.okStart) {
                 if (!isDrilling) {
                     play = true;
@@ -427,11 +431,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
                 }
             }
-            if (DataSaved.Drilling_Mode == JETGROUTING_MODE && !isDrilling) {
-                clearTable();
-                setupTabella();
 
-            }
 
         });
 
@@ -628,7 +628,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         // =========================
         // 10) Tabella JET: aggiorna quando cambia hole
         // =========================
-        if (DataSaved.Drilling_Mode == JETGROUTING_MODE && tableDepthInfo != null) {
+       /* if (DataSaved.Drilling_Mode == JETGROUTING_MODE && tableDepthInfo != null) {
 
             String newHoleId = (sel != null) ? sel.getId() : null;
 
@@ -652,7 +652,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 clearTable();
                 setupTabella();
             }
-        }
+        }*/
 
         // =========================
         // 11) Enable/Disable pulsanti in base a drill state + okStart

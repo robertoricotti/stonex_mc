@@ -13,6 +13,8 @@ import static packexcalib.exca.Sensors_Decoder.Deg_stick;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.FMI_SENS;
+import static utils.MyTypes.JETGROUTING_MODE;
+import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.TSM_ANGOLARI;
 
@@ -23,6 +25,7 @@ import packexcalib.gnss.NmeaListener;
 
 
 public class Sensors_Decoder_Drill {
+    static int rowRoll,rawPitch;
     public static long EncRevolution;
     public static double RopeLen;
     static double yaw;
@@ -41,17 +44,25 @@ public class Sensors_Decoder_Drill {
 
     public static void decode(int id, byte[] data) {
         try {
-            if (id == 0x18F || id == 0x190) {
-                //TODO Encoder connesso 8192 count per revolution = 0x2000
-                long revolution = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]});
-                if (DataSaved.lrRotary == -1) {
-                    K = (long) Math.pow(2, 32);
-                    EncRevolution = K - revolution;
-                } else {
-                    EncRevolution = revolution;
+            if(DataSaved.Drilling_Mode==SOLARFARM_MODE){
+                if(id==0x189){
+                    long rowEnc=PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[0],data[1],data[2],data[3]});
+                    double rowRope=rowEnc*0.0001;
+                    RopeLen=rowRope*DataSaved.lrRotary;
                 }
-                RopeLen = calculateRopeLength(EncRevolution, DataSaved.Rotary_Diam);
+            }else {
+                if (id == 0x18F || id == 0x190) {
+                    //TODO Encoder connesso 8192 count per revolution = 0x2000
+                    long revolution = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]});
+                    if (DataSaved.lrRotary == -1) {
+                        K = (long) Math.pow(2, 32);
+                        EncRevolution = K - revolution;
+                    } else {
+                        EncRevolution = revolution;
+                    }
+                    RopeLen = calculateRopeLength(EncRevolution, DataSaved.Rotary_Diam);
 
+                }
             }
             if (DataSaved.isExtensionBoom > 0) {
                 if (id == 0x188) {
@@ -139,7 +150,7 @@ public class Sensors_Decoder_Drill {
                             }
 
                             if (DataSaved.lrFrame == 0) {
-                                Deg_Boom_Roll = 0;
+                                Deg_Boom_Roll = 0d;
                             }
 
                             break;
@@ -149,6 +160,72 @@ public class Sensors_Decoder_Drill {
                             double[] dat = TiltEncript.encriptTSM_Tool(data, DataSaved.lrTool);
                             Deg_Tool_Pitch = dat[0];
                             Deg_Tool_Roll = dat[1];
+                            break;
+
+                        case 0x1A0:
+                             rowRoll=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0],data[1]});
+                             switch (DataSaved.lrTool){
+                                 case 0:
+                                     //OFF
+                                     Deg_Tool_Roll=0;
+                                     Deg_Tool_Pitch=0;
+                                     break;
+
+                                 case 1:
+
+                                     //LEFT
+                                     Deg_Tool_Roll=-rawPitch;
+                                     break;
+
+                                 case 2:
+                                     //RIGHT
+                                     Deg_Tool_Roll=rawPitch;
+                                     break;
+                                 case 3:
+                                     //FWD TODO
+                                     Deg_Tool_Roll=-rowRoll;
+
+                                     break;
+                                 case 4:
+                                     //BACKWD
+                                     Deg_Tool_Roll=rowRoll;
+                                     break;
+
+                             }
+
+
+                            break;
+
+                        case 0x2A0:
+                            rawPitch=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0],data[1]});
+                            switch (DataSaved.lrTool){
+                                case 0:
+                                    //OFF
+                                    Deg_Tool_Roll=0;
+                                    Deg_Tool_Pitch=0;
+                                    break;
+
+                                case 1:
+                                    //LEFT
+                                    Deg_Tool_Pitch=rowRoll;
+                                    break;
+
+                                case 2:
+                                    //RIGHT
+                                    Deg_Tool_Pitch=-rowRoll;
+                                    break;
+                                case 3:
+                                    //FWD TODO
+                                    Deg_Tool_Pitch=-rawPitch;
+
+                                    break;
+                                case 4:
+                                    //BACKWD
+                                    Deg_Tool_Pitch=rawPitch;
+                                    break;
+
+                            }
+
                             break;
 
                     }

@@ -40,7 +40,8 @@ public class DataSaved {
     public static double PassoGriglia;
     public static String DredgeFileName;
     public static int EnableMapping;
-    public static  int Drill_Antenna_Mounting;
+    public static  String Drill_Antenna_Mounting="BODY";
+    public static  String Drill_Mast_Position="FORWARD";
 
 
     //settaggi idraulici
@@ -81,7 +82,7 @@ public class DataSaved {
     public static int REVERSE_LEFT;
     public static int REVERSE_RIGHT;
     public static int REVERSE_SS;
-    public static int ANTENNA_MOUNTING;
+
 
 
     public static int Wheel_Steer_Rev;

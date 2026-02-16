@@ -25,11 +25,13 @@ import com.van.jni.VanCmd;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serial;
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import kotlin.ExposedCopyVisibility;
 import packexcalib.exca.DataSaved;
+import serial.SerialPortManager;
 
 
 public class MyDeviceManager {
@@ -127,6 +129,7 @@ public class MyDeviceManager {
 
 
     }
+
 
     public static void hideBar(Context context) {
 
