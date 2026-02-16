@@ -25,7 +25,7 @@ import packexcalib.gnss.NmeaListener;
 
 
 public class Sensors_Decoder_Drill {
-    static int rowRoll,rawPitch;
+    static double rowRoll,rawPitch;
     public static long EncRevolution;
     public static double RopeLen;
     static double yaw;
@@ -163,7 +163,8 @@ public class Sensors_Decoder_Drill {
                             break;
 
                         case 0x1A0:
-                             rowRoll=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0],data[1]});
+                             rowRoll=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0],data[1]})*0.01d;
+
                              switch (DataSaved.lrTool){
                                  case 0:
                                      //OFF
@@ -182,13 +183,13 @@ public class Sensors_Decoder_Drill {
                                      Deg_Tool_Roll=rawPitch;
                                      break;
                                  case 3:
-                                     //FWD TODO
-                                     Deg_Tool_Roll=-rowRoll;
+                                     //FWD
+                                     Deg_Tool_Roll=rowRoll;
 
                                      break;
                                  case 4:
                                      //BACKWD
-                                     Deg_Tool_Roll=rowRoll;
+                                     Deg_Tool_Roll=-rowRoll;
                                      break;
 
                              }
@@ -197,7 +198,7 @@ public class Sensors_Decoder_Drill {
                             break;
 
                         case 0x2A0:
-                            rawPitch=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0],data[1]});
+                            rawPitch=PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[0],data[1]})*0.01d;
                             switch (DataSaved.lrTool){
                                 case 0:
                                     //OFF
@@ -207,12 +208,12 @@ public class Sensors_Decoder_Drill {
 
                                 case 1:
                                     //LEFT
-                                    Deg_Tool_Pitch=rowRoll;
+                                    Deg_Tool_Pitch=-rowRoll;
                                     break;
 
                                 case 2:
                                     //RIGHT
-                                    Deg_Tool_Pitch=-rowRoll;
+                                    Deg_Tool_Pitch=rowRoll;
                                     break;
                                 case 3:
                                     //FWD TODO

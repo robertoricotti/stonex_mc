@@ -8,6 +8,7 @@ import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.CanSender.GNSS_MSG;
 import static services.CanService.nmeaSTX_Disc;
+import static utils.MyTypes.AT_BOOM;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.SMC;
 import static utils.MyTypes.SOLARFARM_MODE;
@@ -152,7 +153,7 @@ public class Dialog_Drill_GNSS {
         progressBar.setVisibility(View.INVISIBLE);
         indexMach = MyData.get_Int("MachineSelected");
         DataSaved.radioMode = MyData.get_Int("M" + indexMach + "radioMode");
-        if(DataSaved.Drilling_Mode==SOLARFARM_MODE){
+        if(DataSaved.Drilling_Mode==SOLARFARM_MODE||DataSaved.Drill_Antenna_Mounting.equals(AT_BOOM)){
             layEnc.setVisibility(View.INVISIBLE);
         }else {
             layEnc.setVisibility(View.VISIBLE);

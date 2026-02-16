@@ -244,14 +244,14 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         ((Drill_TopView) topViewCanvas).setTargetScale(1.25f);
         ((Drill_TopView) topViewCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
         ((Drill_Bubble) bubbleCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
+        ((Drill_Bubble) bubbleCanvas).resetBubbleTransform();
         if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
             addEmptyRows(4, 4);
-            ((Drill_Bubble) bubbleCanvas).setBubbleTransform(0.65f, 115f);
+            //((Drill_Bubble) bubbleCanvas).setBubbleTransform(0.65f, 115f);
             tableDepthInfo.setVisibility(View.VISIBLE);
-            centro.setGuidelinePercent(0.5f);
+            centro.setGuidelinePercent(0.49f);
         } else {
 
-            ((Drill_Bubble) bubbleCanvas).resetBubbleTransform();
             tableDepthInfo.setVisibility(View.GONE);
             centro.setGuidelinePercent(0.08f);
         }

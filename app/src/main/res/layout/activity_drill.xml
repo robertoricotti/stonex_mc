@@ -25,7 +25,7 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.5"/>
+        app:layout_constraintGuide_percent="0.49"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/cent_v"
         android:orientation="vertical"
@@ -358,7 +358,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bassa"
         app:layout_constraintRight_toLeftOf="@id/cent_v"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/alta">
+        app:layout_constraintTop_toBottomOf="@id/centro">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -552,6 +552,7 @@
         android:id="@+id/tabellaPunto"
         android:layout_width="0dp"
         android:layout_height="0dp"
+
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/cent_v"
         app:layout_constraintTop_toBottomOf="@id/alta"

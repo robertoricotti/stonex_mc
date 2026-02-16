@@ -1,6 +1,5 @@
 package services;
 
-import static packexcalib.exca.DataSaved.gpsOk;
 import static packexcalib.exca.DataSaved.offsetH;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
@@ -49,9 +48,9 @@ public class CanService extends Service {
     public static int SteerConnected, isAuto;
     public static int m;
     public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
-    public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser, flagDefault;
+    public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser, flagDefault,toolOK;
     CanFileReceiver receiver = new CanFileReceiver();
-    public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc;
+    public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc,toolDisc;
     public static boolean CanServiceState = false;
     int dlc;
 
@@ -65,11 +64,13 @@ public class CanService extends Service {
         bucketDisc = true;
         tiltDisc = true;
         stickDisc = true;
+        toolDisc=true;
         frameOK = false;
         boom1OK = false;
         boom2OK = false;
         stickOK = false;
         bucketOK = false;
+        toolOK=false;
         flagLaser = false;
         tiltOK = false;
         ECU_Connected = false;
@@ -96,6 +97,9 @@ public class CanService extends Service {
         if (DataSaved.lrTilt != 0) {
             handler_tl.postDelayed(timeoutRunnable_tl, 3000);
         }
+        if (DataSaved.lrTool != 0) {
+            handler_tool.postDelayed(timeoutRunnable_tool, 3000);
+        }
         handler_ECU_Connected.postDelayed(timeoutRunnable_ECU_Connected, 3000);
         handler_steer.postDelayed(timeoutRunnable_steer, 3000);
         handler_CASE_Connected.postDelayed(timeoutRunnable_CASE_Connected, 3000);
@@ -109,7 +113,7 @@ public class CanService extends Service {
     }
 
     public void OnCan(int channel, byte[] msg, int dlc, int id) {
-        if(DataSaved.isCanOpen==JOYSTICKS){
+        if (DataSaved.isCanOpen == JOYSTICKS) {
 
             return;
         }
@@ -221,7 +225,7 @@ public class CanService extends Service {
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
                             handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
                         }
-                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL ) {
+                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL) {
                             if (id == 0x181) {
                                 frameOK = true;
                                 handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
@@ -305,7 +309,7 @@ public class CanService extends Service {
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
                             handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
                         }
-                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL ) {
+                        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DRILL) {
                             if (id == 897) {
                                 frameOK = true;
                                 handler_frameOK.removeCallbacks(timeoutRunnable_frameOK);
@@ -326,10 +330,16 @@ public class CanService extends Service {
                                 handler_stickOK.removeCallbacks(timeoutRunnable_stickOK);
                                 handler_stickOK.postDelayed(timeoutRunnable_stickOK, 3000);
                             }
-                            if (id == 901) {
+                            if (id == 901||id==0x2A0) {
                                 bucketOK = true;
                                 handler_bucketOK.removeCallbacks(timeoutRunnable_bucketOK);
                                 handler_bucketOK.postDelayed(timeoutRunnable_bucketOK, 3000);
+                            }
+                            if (id == 901||id==0x2A0) {
+                                toolOK = true;
+                                toolDisc=false;
+                                handler_tool.removeCallbacks(timeoutRunnable_tool);
+                                handler_tool.postDelayed(timeoutRunnable_tool, 3000);
                             }
                             if (id == 902) {
                                 tiltOK = true;
@@ -363,10 +373,15 @@ public class CanService extends Service {
                                 handler_st.removeCallbacks(timeoutRunnable_st);
                                 handler_st.postDelayed(timeoutRunnable_st, 3000);
                             }
-                            if ((id == 901) && DataSaved.lrBucket != 0) {
+                            if ((id == 901||id==0x2A0) && DataSaved.lrBucket != 0) {
                                 bucketDisc = false;
                                 handler_bk.removeCallbacks(timeoutRunnable_bk);
                                 handler_bk.postDelayed(timeoutRunnable_bk, 3000);
+                            }
+                            if ((id == 901||id==0x2A0) && DataSaved.lrTool != 0) {
+                                toolDisc = false;
+                                handler_tool.removeCallbacks(timeoutRunnable_tool);
+                                handler_tool.postDelayed(timeoutRunnable_tool, 3000);
                             }
                             if ((id == 902 || id == 90181738) && DataSaved.lrTilt != 0) {
                                 tiltOK = true;
@@ -404,6 +419,8 @@ public class CanService extends Service {
                         }
                         if (id == 0X195) {
                             bucketOK = true;
+                            toolOK = true;
+                            toolDisc=false;
                             handler_bucketOK.removeCallbacks(timeoutRunnable_bucketOK);
                             handler_bucketOK.postDelayed(timeoutRunnable_bucketOK, 3000);
                         }
@@ -685,6 +702,15 @@ public class CanService extends Service {
         @Override
         public void run() {
             bucketDisc = true;
+
+        }
+    };
+    private final Handler handler_tool= new Handler();
+    private final Runnable timeoutRunnable_tool = new Runnable() {
+        @Override
+        public void run() {
+            toolDisc = true;
+            toolOK=false;
 
         }
     };

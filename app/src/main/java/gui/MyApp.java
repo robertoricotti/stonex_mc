@@ -13,6 +13,7 @@ import static services.CanService.stickDisc;
 import static services.CanService.stickOK;
 import static services.CanService.tiltDisc;
 import static services.CanService.tiltOK;
+import static services.CanService.toolOK;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
@@ -855,7 +856,7 @@ git push
                     (!boom1OK) && DataSaved.lrBoom1 != 0,
                     (!boom2OK) && DataSaved.lrBoom2 != 0,
                     (!stickOK) && DataSaved.lrStick != 0,
-                    (!bucketOK) && DataSaved.lrTool != 0,
+                    (!toolOK) && DataSaved.lrTool != 0,
                    false, false, false
 
             });
