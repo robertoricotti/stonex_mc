@@ -54,7 +54,6 @@ import gui.draw_class.MyColorClass;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.LocalizationFactory;
-import serial.SerialPortManager;
 import services.ReadProjectService;
 import utils.CanFileTransfer;
 import utils.FullscreenActivity;
@@ -102,8 +101,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
         init();
         onClick();
         startUpdating();
-        DataSaved.xyz_yxz=0;
-        MyData.push("xyz",String.valueOf(DataSaved.xyz_yxz));
+
 
     }
 
@@ -185,12 +183,12 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
     public void onClick() {
 
-     /*   textP.setOnClickListener(view -> {
-            //TODO
+        textP.setOnClickListener(view -> {
+
             DataSaved.xyz_yxz+=1;
             DataSaved.xyz_yxz=DataSaved.xyz_yxz%2;
             MyData.push("xyz",String.valueOf(DataSaved.xyz_yxz));
-        });*/
+        });
         addSurf.setOnClickListener(view -> {
             if(!dialogAddSurfaces.dialog.isShowing()){
                 dialogAddSurfaces.show();
@@ -617,7 +615,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
                 try {
 
-                  /*  if(DataSaved.isWL==DRILL){
+                    if(DataSaved.isWL==DRILL){
                         textP.setVisibility(View.VISIBLE);
                         addSurf.setVisibility(View.GONE);
                         if(DataSaved.xyz_yxz==0){
@@ -628,7 +626,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                     }else {
                         addSurf.setVisibility(View.VISIBLE);
                         textP.setVisibility(View.GONE);
-                    }*/
+                    }
                     String s1 = "";
                     s1 = MyData.get_String("LastSP");
                     if (s1 == null) {

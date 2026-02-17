@@ -967,16 +967,15 @@ public class ReadProjectService extends Service {
 
                                     break;
                                 case "ird":
-                                    //TODO parsare IREDES
                                     parserStatus = "Reading Points...";
-                                    DataSaved.drill_points = IrdParser.parseIrd(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor);
+                                    DataSaved.drill_points = IrdParser.parseIrd(DataSaved.progettoSelected_POINT, 0, conversionFactor);
                                     break;
                                 case "xlsx":
                                 case "xls":
                                     parserStatus = "Reading Points..."+"\n...WAIT...";
                                     DataSaved.drill_points = JetXlsxParser.parseJetXlsx(
                                             DataSaved.progettoSelected_POINT,
-                                            DataSaved.xyz_yxz,
+                                            0,
                                             conversionFactor
                                     );
 

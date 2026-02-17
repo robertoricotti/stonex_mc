@@ -7,6 +7,7 @@ import static packexcalib.exca.ExcavatorLib.correctToolPitch;
 import static packexcalib.exca.ExcavatorLib.correctToolRoll;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
+import static services.PointService.AB_REVERSED;
 import static services.PointService.getAlignmentPointsById;
 import static services.PointService.valoriTabella;
 import static utils.MyMCUtils.projectPointOnAxis3D;
@@ -55,6 +56,7 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
+    static double mHdT=0;
     private boolean running = false;
     private long startTime = 0L;
     TableLayout tableDepthInfo;
@@ -521,7 +523,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         mastTilt = MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll);
 
         // Debug tilt info pitch/roll raw
-        String s = String.format(Locale.US, "Y: %7.2f°\nX: %7.2f°", correctToolPitch, correctToolRoll);
+        String s = String.format(Locale.US, "Y: %7.1f °\nX: %7.1f °", correctToolPitch, correctToolRoll);
         tiltInfo.setText(s.replace(",", "."));
 
         txttiltActual.setText(String.format(Locale.US, "%.1f°", mastTilt).replace(",", "."));
@@ -556,10 +558,12 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
 
             double gpsHdt = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+            mHdT=gpsHdt;
             txthdtActual.setText(String.format(Locale.US, "%.1f°", gpsHdt).replace(",", "."));
 
 
         } else {
+            mHdT=mastHDT;
             // ROCK / JET: actual = mastHDT, target = hole bearing (se inclinato) ma okOri già gestito dal service
             txthdtActual.setText(String.format(Locale.US, "%.1f°", mastHDT).replace(",", "."));
 
@@ -575,12 +579,26 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             txthdt.setTextColor(Color.WHITE);
             txthdt.setBackgroundColor(getColor(R.color.verde_sfondo_scuro));
             txthdtActual.setBackgroundColor(getColor(R.color.verde_sfondo_scuro));
+            imgHdt.setImageResource(R.drawable.straight_96);
             imgHdt.setBackgroundColor(getColor(R.color.verde_sfondo_scuro));
         } else {
             txthdtActual.setTextColor(Color.WHITE);
             txthdt.setTextColor(Color.WHITE);
             txthdt.setBackgroundColor(getColor(R.color._____cancel_text));
             txthdtActual.setBackgroundColor(getColor(R.color._____cancel_text));
+            double diff = signedAngleDiff(mHdT, targetHdt);
+
+// Se sei in reverse, inverti il target di 180°
+// (così la direzione rimane coerente visivamente)
+            if (AB_REVERSED) {
+                diff = signedAngleDiff(mHdT, normalizeAngle(targetHdt + 180.0));
+            }
+
+            if (diff > 0) {
+                imgHdt.setImageResource(R.drawable.outline_rotate_right_96);
+            } else {
+                imgHdt.setImageResource(R.drawable.outline_rotate_left_96);
+            }
             imgHdt.setBackgroundColor(getColor(R.color._____cancel_text));
         }
         if (PointService.okTilt) {
@@ -1854,6 +1872,15 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     private static double safeBitZ(double[] toolEndCoord) {
         if (toolEndCoord == null || toolEndCoord.length < 3) return Double.NaN;
         return toolEndCoord[2];
+    }
+    private double signedAngleDiff(double current, double target) {
+
+        double diff = target - current;
+
+        // normalizza in range -180..+180
+        diff = ((diff + 180) % 360 + 360) % 360 - 180;
+
+        return diff;
     }
 
 }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.stx_dig.R;
 
 import packexcalib.exca.DataSaved;
+import utils.FullscreenActivity;
 import utils.MyData;
 
 public class Dialog_Add_Rod {
@@ -55,6 +56,7 @@ public class Dialog_Add_Rod {
         findView();
         init();
         onClick();
+        FullscreenActivity.setFullScreen(dialog);
 
     }
 

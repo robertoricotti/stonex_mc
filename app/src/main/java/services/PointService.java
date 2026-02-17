@@ -43,6 +43,7 @@ import utils.DistToPoint;
  * 4) sleep senza Math.abs e ciclo più stabile
  */
 public class PointService extends Service {
+    public static boolean AB_REVERSED=false;
     int countTabella = 0;
     public static String[] valoriTabella;
 
@@ -355,11 +356,20 @@ public class PointService extends Service {
 
             // orientamento:
             if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
-                okOri = isInRangeAngle(
-                        normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2),
-                        normalizeAngle(DataSaved.ALLINEAMENTO_AB),
+
+                double ori = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+                double ab = normalizeAngle(DataSaved.ALLINEAMENTO_AB);
+
+                OrientationResult res = checkLineOrientation(
+                        ori,
+                        ab,
                         DataSaved.Drill_tolleranza_HDT
                 );
+
+                okOri = res.inTolerance;
+                AB_REVERSED = res.reverse;
+
+                // ora puoi usare isReverse per UI, frecce, logica, ecc.
             } else {
                 okOri = true; // JET + ROCK
             }
@@ -618,6 +628,20 @@ public class PointService extends Service {
     private boolean isInRangeAngle(double angle, double target, double deadband) {
         return Math.abs(angle - target) <= deadband;
     }
+    private boolean isInRangeLine(double angle, double target, double deadband) {
+
+        double diff = angle - target;
+
+        // normalizza in -180..+180
+        diff = ((diff + 180) % 360 + 360) % 360 - 180;
+
+        // simmetria linea (AB == BA)
+        diff = Math.abs(diff);
+        if (diff > 90) diff = 180 - diff;
+
+        return diff <= deadband;
+    }
+
 
     private void tabellaValues() {
         countTabella++;
@@ -710,5 +734,38 @@ public class PointService extends Service {
         if (d == null) return "";
         return String.format(Locale.US, "%.3f", d);
     }
+    private OrientationResult checkLineOrientation(double angle, double target, double deadband) {
+
+        // normalizza differenza angolare in range -180..+180
+        double diff = angle - target;
+        diff = ((diff + 180) % 360 + 360) % 360 - 180;
+
+        boolean reverse = false;
+
+        // Se differenza > 90° significa che stai guardando nella direzione opposta
+        if (Math.abs(diff) > 90) {
+            reverse = true;
+
+            // riporta differenza sulla linea (simmetria 180°)
+            if (diff > 0)
+                diff = diff - 180;
+            else
+                diff = diff + 180;
+        }
+
+        boolean inTol = Math.abs(diff) <= deadband;
+
+        return new OrientationResult(inTol, reverse);
+    }
+    public static class OrientationResult {
+        public boolean inTolerance;
+        public boolean reverse;
+
+        public OrientationResult(boolean inTolerance, boolean reverse) {
+            this.inTolerance = inTolerance;
+            this.reverse = reverse;
+        }
+    }
+
 }
 

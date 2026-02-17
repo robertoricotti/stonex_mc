@@ -181,6 +181,7 @@ public class CanSender extends Service {
                 bucketDisc = false;
                 tiltDisc = false;
                 stickDisc = false;
+                toolDisc = false;
                 frameOK = true;
                 boom1OK = true;
                 boom2OK = true;
@@ -188,6 +189,7 @@ public class CanSender extends Service {
                 bucketOK = true;
                 flagLaser = true;
                 tiltOK = true;
+                toolOK = true;
                 final DPadMapperLeft currentLeft = DPadHelper.getInstance().getLeft();
                 final DPadMapperRight currentRight = DPadHelper.getInstance().getRight();
                 switch (DataSaved.isWL) {

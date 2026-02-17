@@ -48,6 +48,8 @@ public class DrillCSVParser {
                 if (t.size() >= 2) {
                     Point3D_Drill p = parseRow(t, headerMap, xyz, conversionFactor);
                     if (p != null) out.add(p);
+                    ReadProjectService.parserStatus = "Reading Points..."+"\n"+out.size();
+
                 }
                 line = nextNonEmptyLine(br);
             }
@@ -62,7 +64,7 @@ public class DrillCSVParser {
     // -----------------------------
     private static Point3D_Drill parseRow(List<String> t, Map<String, Integer> headerMap, int xyz, double conv) {
         // Se abbiamo header affidabile, proviamo mapping per nome.
-        // Altrimenti usiamo fallback posizionale per formati tipo il CSV che hai allegato.
+        // Altrimenti usiamo fallback posizionale per vari formati CSV (lungo e point-only).
         boolean useHeader = headerMap != null && !headerMap.isEmpty();
 
         Point3D_Drill p = new Point3D_Drill();
@@ -71,38 +73,41 @@ public class DrillCSVParser {
             String row = getByKeys(t, headerMap, "row");
             String hole = getByKeys(t, headerMap, "hole", "id", "name");
 
-            Double startE = getDoubleByKeys(t, headerMap, "start point easting", "start easting");
-            Double startN = getDoubleByKeys(t, headerMap, "start point northing", "start northing");
-            Double startZ = getDoubleByKeys(t, headerMap, "start point elev", "start elev", "start elevation");
+            Double startE = getDoubleByKeys(t, headerMap, "start point easting", "start easting", "e head", "easting head");
+            Double startN = getDoubleByKeys(t, headerMap, "start point northing", "start northing", "n head", "northing head");
+            Double startZ = getDoubleByKeys(t, headerMap, "start point elev", "start elev", "start elevation", "z head", "elev head");
 
-            Double endE = getDoubleByKeys(t, headerMap, "end point easting", "end easting");
-            Double endN = getDoubleByKeys(t, headerMap, "end point northing", "end northing");
-            Double endZ = getDoubleByKeys(t, headerMap, "end point elev", "end elev", "end elevation");
+            Double endE = getDoubleByKeys(t, headerMap, "end point easting", "end easting", "e end", "easting end");
+            Double endN = getDoubleByKeys(t, headerMap, "end point northing", "end northing", "n end", "northing end");
+            Double endZ = getDoubleByKeys(t, headerMap, "end point elev", "end elev", "end elevation", "z end", "elev end");
 
             Double depth = getDoubleByKeys(t, headerMap, "depth");
             Double length = getDoubleByKeys(t, headerMap, "length");
-
-            Double bearing = getDoubleByKeys(t, headerMap, "bearing", "heading", "azimuth");
-            Double incl = getDoubleByKeys(t, headerMap, "inclination", "tilt", "slope");
-
             Double deltaDist = getDoubleByKeys(t, headerMap, "delta distance", "delta", "delta dist");
 
             p.setRowId(row);
             p.setId((row != null && hole != null) ? (row + "-" + hole) : (hole != null ? hole : row));
 
-// coordinate testa/fine
+            // Coordinate testa/fine
             Double[] head = applyXyzSwap(startE, startN, startZ, xyz, conv);
             Double[] end  = applyXyzSwap(endE, endN, endZ, xyz, conv);
 
-            if (head != null) { p.setHeadX(head[0]); p.setHeadY(head[1]); p.setHeadZ(head[2]); }
-            if (end  != null) { p.setEndX(end[0]);  p.setEndY(end[1]);  p.setEndZ(end[2]);  }
+            if (head != null) {
+                p.setHeadX(head[0]); p.setHeadY(head[1]); p.setHeadZ(head[2]);
+            }
+            if (end != null) {
+                p.setEndX(end[0]); p.setEndY(end[1]); p.setEndZ(end[2]);
+            }
 
-// Depth/Length dal file (convertiti) se presenti -> li teniamo come override se vuoi
+            // Se manca End nel file con header, ma abbiamo almeno Head, possiamo lasciare End null
+            // (i derivati verranno null). Se invece vuoi target-point: copia End=Head qui.
+
+            // Depth/Length dal file (convertiti) se presenti -> override
             if (depth != null)  p.setDepth(depth * conv);
             if (length != null) p.setLength(length * conv);
             if (p.getLength() == null && deltaDist != null) p.setLength(deltaDist * conv);
 
-// Calcola i derivati geometrici (depth/length se mancano)
+            // Calcola derivati geometrici (depth/length se mancano)
             Double keepDepth  = p.getDepth();
             Double keepLength = p.getLength();
 
@@ -111,61 +116,94 @@ public class DrillCSVParser {
             if (keepDepth != null)  p.setDepth(keepDepth);
             if (keepLength != null) p.setLength(keepLength);
 
-// ✅ Bearing e Tilt SEMPRE calcolati (non dal file)
+            // Bearing e Tilt SEMPRE calcolati da coordinate (non dal file)
             p.setHeadingDeg(computeBearingDeg(p));
             p.setTilt(computeTiltDeg(p));
 
-
         } else {
-            // Fallback POSIZIONALE (il tuo CSV allegato)
-            // t: 0 Row, 1 Hole, 2 StartE, 3 StartN, 4 StartZ, 5 EndE, 6 EndN, 7 EndZ, 8 Bearing, 9 Inclination, 10 DeltaDistance, 11 extra, 12 extra
-            if (t.size() < 11) return null;
+            // -----------------------------
+            // Fallback POSIZIONALE
+            // -----------------------------
 
-            String row = safeTrim(t.get(0));
-            String hole = safeTrim(t.get(1));
+            // Caso 1) CSV point-only (senza header):
+            // t: 0 ID, 1 E, 2 N, 3 Z, 4 Description (opzionale)
+            // Esempio: 16496,323903.5179,1155714.3900,479.4549,NE
+            if (t.size() >= 4 && t.size() < 11) {
 
-            Double startE = parseDoubleSafe(t.get(2));
-            Double startN = parseDoubleSafe(t.get(3));
-            Double startZ = parseDoubleSafe(t.get(4));
+                String id = safeTrim(t.get(0));
+                Double e = (t.size() >= 2) ? parseDoubleSafe(t.get(1)) : null;
+                Double n = (t.size() >= 3) ? parseDoubleSafe(t.get(2)) : null;
+                Double z = (t.size() >= 4) ? parseDoubleSafe(t.get(3)) : null;
+                String desc = (t.size() >= 5) ? safeTrim(t.get(4)) : null;
 
-            Double endE = parseDoubleSafe(t.get(5));
-            Double endN = parseDoubleSafe(t.get(6));
-            Double endZ = parseDoubleSafe(t.get(7));
+                if (id == null || e == null || n == null || z == null) return null;
 
-            Double bearing = parseDoubleSafe(t.get(8));
-            Double incl = parseDoubleSafe(t.get(9));
-            Double deltaDist = parseDoubleSafe(t.get(10));
+                p.setRowId(null);
+                p.setId(id);
+                p.setDescription(desc);
 
-            p.setRowId(row);
-            // id univoco consigliato:
-            p.setId((row != null && hole != null) ? (row + "-" + hole) : (hole != null ? hole : row));
+                Double[] head = applyXyzSwap(e, n, z, xyz, conv);
+                if (head != null) {
+                    p.setHeadX(head[0]); p.setHeadY(head[1]); p.setHeadZ(head[2]);
 
-            Double[] head = applyXyzSwap(startE, startN, startZ, xyz, conv);
-            Double[] end  = applyXyzSwap(endE, endN, endZ, xyz, conv);
+                    // ✅ Target-point: End = Head
+                    p.setEndX(head[0]); p.setEndY(head[1]); p.setEndZ(head[2]);
+                }
 
-            if (head != null) { p.setHeadX(head[0]); p.setHeadY(head[1]); p.setHeadZ(head[2]); }
-            if (end != null)  { p.setEndX(end[0]);  p.setEndY(end[1]);  p.setEndZ(end[2]);  }
+                p.setDiameter(null);
 
-            // heading e tilt dal file
-            if (bearing != null) p.setHeadingDeg(bearing);
-            if (incl != null) p.setTilt(incl);
+            } else {
+                // Caso 2) formato lungo (il tuo CSV "completo"):
+                // t: 0 Row, 1 Hole, 2 StartE, 3 StartN, 4 StartZ, 5 EndE, 6 EndN, 7 EndZ,
+                //    8 Bearing, 9 Inclination, 10 DeltaDistance, 11 extra, 12 extra
+                if (t.size() < 11) return null;
 
-            // se vuoi valorizzare length anche se end manca:
-            if (deltaDist != null) p.setLength(deltaDist * conv);
+                String row = safeTrim(t.get(0));
+                String hole = safeTrim(t.get(1));
 
-            // diameter: qui non è chiaro quali siano le ultime colonne; le lasciamo null
-            p.setDiameter(null);
+                Double startE = parseDoubleSafe(t.get(2));
+                Double startN = parseDoubleSafe(t.get(3));
+                Double startZ = parseDoubleSafe(t.get(4));
+
+                Double endE = parseDoubleSafe(t.get(5));
+                Double endN = parseDoubleSafe(t.get(6));
+                Double endZ = parseDoubleSafe(t.get(7));
+
+                Double deltaDist = parseDoubleSafe(t.get(10));
+
+                p.setRowId(row);
+                p.setId((row != null && hole != null) ? (row + "-" + hole) : (hole != null ? hole : row));
+
+                Double[] head = applyXyzSwap(startE, startN, startZ, xyz, conv);
+                Double[] end  = applyXyzSwap(endE, endN, endZ, xyz, conv);
+
+                if (head != null) { p.setHeadX(head[0]); p.setHeadY(head[1]); p.setHeadZ(head[2]); }
+                if (end  != null) { p.setEndX(end[0]);  p.setEndY(end[1]);  p.setEndZ(end[2]);  }
+
+                // Se vuoi valorizzare length anche se end manca:
+                if (deltaDist != null) p.setLength(deltaDist * conv);
+
+                p.setDiameter(null);
+            }
+
+            // In fallback NON usiamo bearing/incl dal file: li calcoliamo sempre da coordinate
+            // (se le coordinate ci sono).
+            p.recomputeDerived();
+            p.setHeadingDeg(computeBearingDeg(p));
+            p.setTilt(computeTiltDeg(p));
         }
 
-        // se hai abbastanza coordinate, garantisci coerenza derivati
+        // Final consistency pass (anche per il ramo header)
         p.recomputeDerived();
         p.setHeadingDeg(computeBearingDeg(p));
         p.setTilt(computeTiltDeg(p));
 
-        // scarta righe completamente vuote
+        // Scarta righe completamente vuote
         if (p.getId() == null && p.getHeadX() == null && p.getEndX() == null) return null;
+
         return p;
     }
+
 
     // -----------------------------
     // Utils: header mapping

@@ -87,6 +87,7 @@ public class IrdParser {
                 if (p.getId() != null || p.getRowId() != null ||
                         p.getHeadX() != null || p.getEndX() != null) {
                     out.add(p);
+                    ReadProjectService.parserStatus = "Reading Points..."+"\n"+out.size();
                 }
             }
 
