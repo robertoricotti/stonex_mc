@@ -19,6 +19,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -92,6 +93,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     Dialog_AutoSnap dialogAutoSnap;
     Dialog_InfoPoint dialogInfoPoint;
     Dialog_DrillSet dialogDrillSet;
+    Dialog_Add_Rod dialogAddRod;
     Guideline cent_v, side, centro;
     public static boolean showCroce;
 
@@ -176,6 +178,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         dialogAutoSnap = new Dialog_AutoSnap(this);
         dialogInfoPoint = new Dialog_InfoPoint(this);
         dialogDrillSet = new Dialog_DrillSet(this);
+        dialogAddRod=new Dialog_Add_Rod(this);
         try {
             if (MyData.get_String("showCroce") != null) {
                 showCroce = Boolean.parseBoolean(MyData.get_String("showCroce"));
@@ -409,10 +412,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             }
         });
         drilltool.setOnClickListener(view -> {
-            Intent i = new Intent(this, Drill_Rod_Activity.class);
-            i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
-            startActivity(i);
-            finish();
+           if(!dialogAddRod.dialog.isShowing()){
+               dialogAddRod.show();
+           }
         });
         folders.setOnClickListener(view -> {
 
@@ -700,7 +702,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         textInfo.setText(setTesto());
         float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
         rotBus = rotBus % 360;
-        compass.setRotation(rotBus);
+        compass.setRotation(rotBus+(90 * DataSaved.Drill_Screen));
         if (DataSaved.gpsOk && errorCode == 0) {
 
             Status.setImageTintList(ColorStateList.valueOf(Color.DKGRAY));
@@ -1036,7 +1038,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     private static String fmtM(double v) {
         if (Double.isNaN(v) || Double.isInfinite(v)) return "";
-        return String.format(Locale.US, "%.3f", v).replace(",", ".");
+        return Utils.readSensorCalibration(String.valueOf(v).replace(",","."));
+
     }
 
     private void initTollerances() {
@@ -1345,6 +1348,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     null
             );
         } catch (IOException e) {
+
             throw new RuntimeException(e);
         }
 

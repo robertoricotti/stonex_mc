@@ -98,15 +98,15 @@ public class Dialog_InfoPoint {
                             ExcavatorLib.coordTool[0], ExcavatorLib.coordTool[1],
                             ExcavatorLib.toolEndCoord[0], ExcavatorLib.toolEndCoord[1]);
 
-                    actualAzimut.setText(String.format("%.2f",masAzimut));
-                    actualPitch.setText(String.format("%.2f",ExcavatorLib.correctToolPitch));
-                    actualRoll.setText(String.format("%.2f",ExcavatorLib.correctToolRoll));
-                    actualTilt.setText(String.format("%.2f", MyMCUtils.calculateTotalTilt(ExcavatorLib.correctToolPitch,ExcavatorLib.correctToolRoll)));
+                    actualAzimut.setText(String.format("%.2f",masAzimut).replace(",","."));
+                    actualPitch.setText(String.format("%.2f",ExcavatorLib.correctToolPitch).replace(",","."));
+                    actualRoll.setText(String.format("%.2f",ExcavatorLib.correctToolRoll).replace(",","."));
+                    actualTilt.setText(String.format("%.2f", MyMCUtils.calculateTotalTilt(ExcavatorLib.correctToolPitch,ExcavatorLib.correctToolRoll)).replace(",","."));
 
-                    targetAzimut.setText(String.format("%.2f",DataSaved.Selected_Point3D_Drill.getHeadingDeg()));
-                    targetPitch.setText(String.format("%.2f", PointService.holePitchDeg));
-                    targetRoll.setText(String.format("%.2f", PointService.holeRollDeg));
-                    targetTilt.setText(String.format("%.2f", MyMCUtils.calculateTotalTilt(PointService.holePitchDeg,PointService.holeRollDeg)));
+                    targetAzimut.setText(String.format("%.2f",DataSaved.Selected_Point3D_Drill.getHeadingDeg()).replace(",","."));
+                    targetPitch.setText(String.format("%.2f", PointService.holePitchDeg).replace(",","."));
+                    targetRoll.setText(String.format("%.2f", PointService.holeRollDeg).replace(",","."));
+                    targetTilt.setText(String.format("%.2f", MyMCUtils.calculateTotalTilt(PointService.holePitchDeg,PointService.holeRollDeg)).replace(",","."));
 
 
 

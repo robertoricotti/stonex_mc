@@ -403,6 +403,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_add_rod.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_autosnap.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -515,15 +520,15 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 TODO= implementazione encoder per SOLAR, implementazione Antenna at Boom, implementazione drill time duration nel report, implementazione Penetration rate">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate, dialog add aste">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_Add_Rod.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_add_rod.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/Jet_Template.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/Jet_Template.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_InfoPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_InfoPoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Drill_GNSS.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Drill_GNSS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CloseAppDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/CloseAppDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/serial/OpenSerialPort.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/serial/OpenSerialPort.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -533,7 +538,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -562,9 +567,9 @@
         <option value="valueResourceFile" />
         <option value="Interface" />
         <option value="Enum" />
-        <option value="layoutResourceFile" />
         <option value="resourceFile" />
         <option value="Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -755,14 +760,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00063" summary="4.1.0 in progress">
-      <option name="closed" value="true" />
-      <created>1766832318010</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1766832318010</updated>
     </task>
     <task id="LOCAL-00064" summary="4.1.0 in progress">
       <option name="closed" value="true" />
@@ -1148,7 +1145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771263552353</updated>
     </task>
-    <option name="localTasksCounter" value="112" />
+    <task id="LOCAL-00112" summary="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate, dialog add aste">
+      <option name="closed" value="true" />
+      <created>1771282607087</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1771282607087</updated>
+    </task>
+    <option name="localTasksCounter" value="113" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1164,7 +1169,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.0.15 pre release" />
     <MESSAGE value="4.0.15 RELEASE" />
     <MESSAGE value="4.0.15 voglioa di thomas" />
     <MESSAGE value="4.0.16 NFR USA TEST" />
@@ -1189,7 +1193,8 @@
     <MESSAGE value="4.1.0 da fare i report" />
     <MESSAGE value="4.1.0 todo dialog aggiungi aste" />
     <MESSAGE value="4.1.0 TODO= implementazione encoder per SOLAR, implementazione Antenna at Boom, implementazione drill time duration nel report, implementazione Penetration rate" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 TODO= implementazione encoder per SOLAR, implementazione Antenna at Boom, implementazione drill time duration nel report, implementazione Penetration rate" />
+    <MESSAGE value="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate, dialog add aste" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate, dialog add aste" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

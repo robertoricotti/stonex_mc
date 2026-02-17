@@ -99,6 +99,7 @@ public class CloseAppDialog {
                 SerialPortManager.instance().close();
 
 
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
