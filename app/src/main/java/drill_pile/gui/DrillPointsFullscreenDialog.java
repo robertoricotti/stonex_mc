@@ -602,13 +602,20 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
 
         }
 
+        //Definisce la larghezza delle celle/colonne
         private static TextView makeCell(Context ctx, String text, boolean bold, String column) {
             TextView tv = new TextView(ctx);
 
             int widthDp;
             if ("Description".equals(column)) {
                 widthDp = 180;
-            } else if ("Row".equals(column) || "Hole".equals(column)) {
+            } else if ("Row".equals(column)) {
+                widthDp = 60;
+            } else if ( "Tilt".equals(column)) {
+                widthDp = 65;
+            }else if ("Hole".equals(column)) {
+                widthDp = 110;
+            }else if ( "Diameter".equals(column)||"Bearing".equals(column)) {
                 widthDp = 90;
             } else {
                 widthDp = 150;

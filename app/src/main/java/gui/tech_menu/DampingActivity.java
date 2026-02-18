@@ -14,7 +14,7 @@ import static services.CanService.tiltDisc;
 import static services.CanService.tiltOK;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.TSM_ACC;
-import static utils.MyTypes.TSM_ANGOLARI;
+
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -204,7 +204,7 @@ public class DampingActivity extends BaseClass {
 
     public void save() {
 
-        if (DataSaved.isCanOpen == TSM_ANGOLARI || DataSaved.isCanOpen == TSM_ACC) {
+        if ( DataSaved.isCanOpen == TSM_ACC) {
             for (int i = 0; i < 50000; i++) {
                 if (i == 1) {
                     isSend = true;
@@ -313,7 +313,7 @@ public class DampingActivity extends BaseClass {
     }
 
     private void readAll(){
-        if (DataSaved.isCanOpen == TSM_ACC || DataSaved.isCanOpen == TSM_ANGOLARI) {
+        if (DataSaved.isCanOpen == TSM_ACC ) {
             readTSM();
 
         }

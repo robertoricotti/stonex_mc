@@ -8,7 +8,6 @@ import static packexcalib.exca.ExcavatorLib.correctToolRoll;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
 import static services.PointService.AB_REVERSED;
-import static services.PointService.getAlignmentPointsById;
 import static services.PointService.valoriTabella;
 import static utils.MyMCUtils.projectPointOnAxis3D;
 import static utils.MyTypes.JETGROUTING_MODE;
@@ -20,7 +19,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,7 +38,6 @@ import java.util.Locale;
 
 import DPAD.DPadHelper;
 import gui.BaseClass;
-import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
@@ -56,7 +53,8 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
-    static double mHdT=0;
+    public static int previousState;
+    static double mHdT = 0;
     private boolean running = false;
     private long startTime = 0L;
     TableLayout tableDepthInfo;
@@ -86,7 +84,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
     ImageView digMenu, drilltool, Status, folders, playpause, lineReference, tiposnap, imgHdt,
-            zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt;
+            zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
     TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual, diration;
@@ -171,6 +169,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         imgHdt = findViewById(R.id.imgHdt);
         imgTilt = findViewById(R.id.imgTilt);
         tableDepthInfo = findViewById(R.id.tableDepthInfo);
+        mostratesto = findViewById(R.id.mostratesto);
 
 
     }
@@ -180,7 +179,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         dialogAutoSnap = new Dialog_AutoSnap(this);
         dialogInfoPoint = new Dialog_InfoPoint(this);
         dialogDrillSet = new Dialog_DrillSet(this);
-        dialogAddRod=new Dialog_Add_Rod(this);
+        dialogAddRod = new Dialog_Add_Rod(this);
         try {
             if (MyData.get_String("showCroce") != null) {
                 showCroce = Boolean.parseBoolean(MyData.get_String("showCroce"));
@@ -263,21 +262,23 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         switch (DataSaved.temaSoftware) {
             case 0:
                 tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                tiposnap.setImageTintList(getColorStateList(R.color.Bg_yellow));
+                tiposnap.setImageTintList(getColorStateList(R.color.light_yellow));
                 uomesure.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                uomesure.setTextColor(getColor(R.color.Bg_yellow));
+                uomesure.setTextColor(getColor(R.color.light_yellow));
                 puntatore.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                puntatore.setImageTintList(getColorStateList(R.color.Bg_yellow));
+                puntatore.setImageTintList(getColorStateList(R.color.light_yellow));
                 zoom_P.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                zoom_P.setImageTintList(getColorStateList(R.color.Bg_yellow));
+                zoom_P.setImageTintList(getColorStateList(R.color.light_yellow));
                 zoom_M.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                zoom_M.setImageTintList(getColorStateList(R.color.Bg_yellow));
+                zoom_M.setImageTintList(getColorStateList(R.color.light_yellow));
                 zoom_C.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                zoom_C.setImageTintList(getColorStateList(R.color.Bg_yellow));
+                zoom_C.setImageTintList(getColorStateList(R.color.light_yellow));
                 drillSet.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                drillSet.setImageTintList(getColorStateList(R.color.Bg_yellow));
+                drillSet.setImageTintList(getColorStateList(R.color.light_yellow));
                 infoPoint.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                infoPoint.setImageTintList(getColorStateList(R.color.Bg_yellow));
+                infoPoint.setImageTintList(getColorStateList(R.color.light_yellow));
+                mostratesto.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
+                mostratesto.setImageTintList(getColorStateList(R.color.light_yellow));
 
                 ((Drill_TopView) topViewCanvas).setColorTarget_Alto(Color.CYAN);
                 ((Drill_TopView) topViewCanvas).setColorTarget_Basso(Color.YELLOW);
@@ -307,6 +308,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 drillSet.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 infoPoint.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
                 infoPoint.setImageTintList(getColorStateList(R.color.colorStonexBlue));
+                mostratesto.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
+                mostratesto.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 ((Drill_TopView) topViewCanvas).setColorTarget_Alto(Color.BLUE);
                 ((Drill_TopView) topViewCanvas).setColorTarget_Basso(getResources().getColor(R.color.bg));
                 ((Drill_TopView) topViewCanvas).setColoreCroce(getResources().getColor(R.color.bg));
@@ -326,6 +329,12 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void onClick() {
+        mostratesto.setOnClickListener(view -> {
+            DataSaved.ShowText += 1;
+            DataSaved.ShowText = DataSaved.ShowText % 2;
+            MyData.push("Mostra_Testo", String.valueOf(DataSaved.ShowText));
+
+        });
         tiposnap.setOnClickListener(view -> {
             if (!dialogAutoSnap.dialog.isShowing()) {
                 dialogAutoSnap.show();
@@ -386,21 +395,48 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         });
 
         lineReference.setOnClickListener(view -> {
-            DataSaved.isDefiningAB = !DataSaved.isDefiningAB;
+
+            previousState = DataSaved.isAutoSnap;
+
 
             if (DataSaved.isDefiningAB) {
-                // reset provvisorio
-                DataSaved.alignAId = null;
-                DataSaved.alignBId = null;
-                // toast: "Pick point A"
-                new CustomToast(Drill_Activity.this, "Pick point A").show_alert();
-            } else {
-                // toast: "Alignment selection canceled"
-                new CustomToast(Drill_Activity.this, "Alignment selection canceled").show_long();
-            }
 
-            // invalidate topview se serve
-            // topView.invalidate();
+                // --- Già in modalità definizione → chiedi se abortire ---
+                new android.app.AlertDialog.Builder(Drill_Activity.this)
+                        .setTitle("Cancel Alignment")
+                        .setMessage("Alignment definition is in progress.\nDo you want to abort?")
+                        .setNegativeButton("No", null)
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            previousState = 0;
+                            DataSaved.isDefiningAB = false;
+                            DataSaved.alignAId = null;
+                            DataSaved.alignBId = null;
+
+                            new CustomToast(Drill_Activity.this,
+                                    "Alignment selection canceled")
+                                    .show_long();
+                        })
+                        .show();
+
+            } else {
+
+                // --- Non attivo → chiedi se iniziare ---
+                new android.app.AlertDialog.Builder(Drill_Activity.this)
+                        .setTitle("Define Alignment AB")
+                        .setMessage("Do you want to start defining alignment AB?")
+                        .setNegativeButton("No", null)
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            DataSaved.isAutoSnap = 2;
+                            DataSaved.isDefiningAB = true;
+                            DataSaved.alignAId = null;
+                            DataSaved.alignBId = null;
+
+                            new CustomToast(Drill_Activity.this,
+                                    "Pick point A")
+                                    .show_alert();
+                        })
+                        .show();
+            }
         });
 
 
@@ -414,15 +450,15 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             }
         });
         drilltool.setOnClickListener(view -> {
-           if(!dialogAddRod.dialog.isShowing()){
-               dialogAddRod.show();
-           }
+            if (!dialogAddRod.dialog.isShowing()) {
+                dialogAddRod.show();
+            }
         });
         folders.setOnClickListener(view -> {
 
         });
         playpause.setOnClickListener(view -> {
-            if (DataSaved.Drilling_Mode == JETGROUTING_MODE&&!isDrilling ) {
+            if (DataSaved.Drilling_Mode == JETGROUTING_MODE && !isDrilling) {
                 clearTable();
                 setupTabella();
 
@@ -447,7 +483,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         // 0) Allineamento AB (SOLARFARM)
         // =========================
         if (DataSaved.alignAId != null && DataSaved.alignBId != null) {
-            Point3D_Drill[] pab = getAlignmentPointsById(DataSaved.alignAId, DataSaved.alignBId);
+            Point3D_Drill[] pab = getAlignmentPointsByKey(DataSaved.alignAId, DataSaved.alignBId);
+
             if (pab != null && pab.length >= 2 && pab[0] != null && pab[1] != null
                     && pab[0].getHeadX() != null && pab[0].getHeadY() != null
                     && pab[1].getHeadX() != null && pab[1].getHeadY() != null) {
@@ -558,12 +595,12 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
 
             double gpsHdt = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
-            mHdT=gpsHdt;
+            mHdT = gpsHdt;
             txthdtActual.setText(String.format(Locale.US, "%.1f°", gpsHdt).replace(",", "."));
 
 
         } else {
-            mHdT=mastHDT;
+            mHdT = mastHDT;
             // ROCK / JET: actual = mastHDT, target = hole bearing (se inclinato) ma okOri già gestito dal service
             txthdtActual.setText(String.format(Locale.US, "%.1f°", mastHDT).replace(",", "."));
 
@@ -620,14 +657,20 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         // =========================
         if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
 
-            if (DataSaved.isAutoSnap == 2) {
+           /* if (DataSaved.isAutoSnap == 2) {
                 lineReference.setVisibility(View.VISIBLE);
             } else {
                 lineReference.setVisibility(View.INVISIBLE);
-            }
+            }*/
 
             if (DataSaved.isDefiningAB) {
-                lineReference.setBackground(getDrawable(R.drawable.custom_background_test3d_box_giallo));
+                if (DataSaved.alignAId == null && DataSaved.alignBId == null) {
+                    lineReference.setBackground(getDrawable(R.drawable.custom_background_test3d_box_gpsok));
+                }
+                if (DataSaved.alignAId != null && DataSaved.alignBId == null) {
+                    lineReference.setBackground(getDrawable(R.drawable.custom_background_test3d_box_giallo));
+                }
+
             } else {
                 lineReference.setBackground(getDrawable(R.drawable.custom_background_test3d_box_grigino));
             }
@@ -720,7 +763,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         textInfo.setText(setTesto());
         float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
         rotBus = rotBus % 360;
-        compass.setRotation(rotBus+(90 * DataSaved.Drill_Screen));
+        compass.setRotation(rotBus + (90 * DataSaved.Drill_Screen));
         if (DataSaved.gpsOk && errorCode == 0) {
 
             Status.setImageTintList(ColorStateList.valueOf(Color.DKGRAY));
@@ -984,7 +1027,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         if (vertical) {
             // ✅ testo: quanto manca al fondo in Z
-            double remainingZ =bit[2]- ezObj  ;  // >0 manca ancora
+            double remainingZ = bit[2] - ezObj;  // >0 manca ancora
             txtdepth.setText(fmtM((remainingZ)));
 
             // Frecce: se remainingZ > tol => devi scendere (down)
@@ -1032,13 +1075,13 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // ✅ testo: remainingAxis (metri lungo asse)
             txtdepth.setText(fmtM((remainingAxisRaw)));
 
-            if (remainingAxisRaw  > tol) {
+            if (remainingAxisRaw > tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
                 quotaIndicator.setRotation(0);
                 txtdepth.setBackgroundColor(colorDown);
                 quotaIndicator.setBackgroundColor(colorDown);
 
-            } else if (remainingAxisRaw  < -tol) {
+            } else if (remainingAxisRaw < -tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
                 quotaIndicator.setRotation(180);
                 txtdepth.setBackgroundColor(colorUp);
@@ -1056,7 +1099,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     private static String fmtM(double v) {
         if (Double.isNaN(v) || Double.isInfinite(v)) return "";
-        return Utils.readSensorCalibration(String.valueOf(v).replace(",","."));
+        return Utils.readSensorCalibration(String.valueOf(v).replace(",", "."));
 
     }
 
@@ -1873,6 +1916,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (toolEndCoord == null || toolEndCoord.length < 3) return Double.NaN;
         return toolEndCoord[2];
     }
+
     private double signedAngleDiff(double current, double target) {
 
         double diff = target - current;
@@ -1881,6 +1925,51 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         diff = ((diff + 180) % 360 + 360) % 360 - 180;
 
         return diff;
+    }
+
+    private Point3D_Drill[] getAlignmentPointsByKey(String aKey, String bKey) {
+
+        if (aKey == null || bKey == null) return null;
+
+        Point3D_Drill A = null;
+        Point3D_Drill B = null;
+
+        for (Point3D_Drill p : DataSaved.drill_points) {   // <-- usa la tua lista reale
+            String pk = buildPointKey(p);
+
+            if (pk == null) continue;
+
+            if (pk.equalsIgnoreCase(aKey.trim())) {
+                A = p;
+            }
+
+            if (pk.equalsIgnoreCase(bKey.trim())) {
+                B = p;
+            }
+
+            if (A != null && B != null) break;
+        }
+
+        if (A == null || B == null) return null;
+
+        return new Point3D_Drill[]{A, B};
+    }
+
+    private String buildPointKey(Point3D_Drill p) {
+        if (p == null) return null;
+
+        String row = p.getRowId();
+        String id = p.getId();
+
+        row = (row == null) ? "" : row.trim();
+        id = (id == null) ? "" : id.trim();
+
+        if (id.isEmpty()) return null;
+
+        if (!row.isEmpty()) {
+            return row + "-" + id;
+        }
+        return id;
     }
 
 }

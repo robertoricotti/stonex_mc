@@ -145,10 +145,24 @@ public class PointService extends Service {
                         // auto-selezione solo se non drilling
                         if (!isDrilling) {
                             if (DataSaved.filtered_drill_points != null && !DataSaved.filtered_drill_points.isEmpty()) {
-                                Selected_Point3D_Drill = findNearestDrillPoint(
-                                        toolEndCoord[0], toolEndCoord[1],
-                                        DataSaved.filtered_drill_points
-                                );
+
+                                boolean isBA = AB_REVERSED; // o come si chiama il tuo boolean
+
+                                if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+
+                                    Selected_Point3D_Drill = findNearestDrillPointSolarAligned(
+                                            toolEndCoord[0], toolEndCoord[1],
+                                            DataSaved.filtered_drill_points,
+                                            DataSaved.ALLINEAMENTO_AB,
+                                            isBA
+                                    );
+
+                                } else {
+                                    Selected_Point3D_Drill = findNearestDrillPointPlain(
+                                            toolEndCoord[0], toolEndCoord[1],
+                                            DataSaved.filtered_drill_points
+                                    );
+                                }
                             }
                         }
                         break;
@@ -516,6 +530,78 @@ public class PointService extends Service {
         return null;
     }
 
+    public static Point3D_Drill findNearestDrillPointSolarAligned(
+            double x0,
+            double y0,
+            List<Point3D_Drill> points,
+            Double allineamentoABDeg,
+            boolean isBA   // true = BA, false = AB
+    ) {
+        if (points == null || points.isEmpty()) return null;
+
+        if (allineamentoABDeg == null) {
+            return findNearestDrillPointPlain(x0, y0, points);
+        }
+
+        // Direzione effettiva (AB o BA)
+        double bearing = normalizeAngle(allineamentoABDeg + (isBA ? 180.0 : 0.0));
+        double brad = Math.toRadians(bearing);
+
+        // versore direzione (X=Est, Y=Nord)
+        double ux = Math.sin(brad);
+        double uy = Math.cos(brad);
+
+        // tolleranza laterale: quanto devo essere vicino alla linea per considerare i pali della mia fila
+        final double LINE_TOL = 2.0; // metri (tuning)
+
+        Point3D_Drill best = null;
+        double bestAbsAlong = Double.MAX_VALUE;
+        double bestPerp = Double.MAX_VALUE;
+
+        boolean foundOnLine = false;
+
+        for (Point3D_Drill p : points) {
+            if (p == null || p.getHeadX() == null || p.getHeadY() == null) continue;
+
+            // SOLO TODO
+            Integer status = p.getStatus();
+            boolean isTodo = (status == null || status == 0);
+            if (!isTodo) continue;
+
+            double vx = p.getHeadX() - x0;
+            double vy = p.getHeadY() - y0;
+
+            // distanza perpendicolare alla retta che passa per (x0,y0) con direzione u
+            double perp = Math.abs(ux * vy - uy * vx);
+
+            // posizione lungo asse
+            double along = ux * vx + uy * vy;
+
+            // prima fase: preferisco punti sulla linea
+            if (perp <= LINE_TOL) {
+                foundOnLine = true;
+
+                double absAlong = Math.abs(along);
+
+                // criterio: più vicino lungo asse (davanti o dietro) => midpoint automatico
+                // tie-break: più centrato (perp min)
+                if (absAlong < bestAbsAlong || (Math.abs(absAlong - bestAbsAlong) < 1e-6 && perp < bestPerp)) {
+                    bestAbsAlong = absAlong;
+                    bestPerp = perp;
+                    best = p;
+                }
+            }
+        }
+
+        // Se ho trovato qualcosa sulla mia linea, ritorno quello
+        if (foundOnLine && best != null) return best;
+
+        // Altrimenti fallback: nearest assoluto TODO
+        return findNearestDrillPointPlain(x0, y0, points);
+    }
+
+
+
     public static Point3D_Drill findNearestDrillPoint(
             double bucketEst,
             double bucketNord,
@@ -523,30 +609,112 @@ public class PointService extends Service {
     ) {
         if (filteredPoints == null || filteredPoints.isEmpty()) return null;
 
+        // SOLARFARM + allineamento definito: snap "per linea (rowId)"
+        if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+            return findNearestDrillPointSolarByRow(bucketEst, bucketNord, filteredPoints);
+        }
+
+        // Default: nearest in assoluto
+        return findNearestDrillPointPlain(bucketEst, bucketNord, filteredPoints);
+    }
+
+    private static Point3D_Drill findNearestDrillPointPlain(
+            double bucketEst,
+            double bucketNord,
+            List<Point3D_Drill> filteredPoints
+    ) {
         Point3D_Drill nearest = null;
         double minDistance = Double.MAX_VALUE;
 
         for (Point3D_Drill p : filteredPoints) {
-            if (p == null) continue;
-            if (p.getHeadX() == null || p.getHeadY() == null) continue;
+            if (p == null || p.getHeadX() == null || p.getHeadY() == null) continue;
 
-            // Se NON è TODO, non è selezionabile: saltalo subito
             Integer status = p.getStatus();
             boolean isTodo = (status == null || status == 0);
             if (!isTodo) continue;
 
-            // distanza in XY dalla testa foro
-            double d = new DistToPoint(bucketEst, bucketNord, 0,
-                    p.getHeadX(), p.getHeadY(), 0).getDist_to_point();
-
+            double d = dist2D(bucketEst, bucketNord, p.getHeadX(), p.getHeadY());
             if (d < minDistance) {
                 minDistance = d;
                 nearest = p;
             }
         }
-
-        return nearest; // null se non c'è alcun TODO vicino
+        return nearest;
     }
+    private static Point3D_Drill findNearestDrillPointSolarByRow(
+            double bucketEst,
+            double bucketNord,
+            List<Point3D_Drill> points
+    ) {
+        // 1) trova la row più vicina (tra i TODO)
+        String bestRow = null;
+        double bestRowDist = Double.MAX_VALUE;
+
+        // memorizza anche il candidato migliore per riga (così eviti doppio loop pesante)
+        java.util.HashMap<String, Point3D_Drill> bestPointPerRow = new java.util.HashMap<>();
+        java.util.HashMap<String, Double> bestPointDistPerRow = new java.util.HashMap<>();
+
+        for (Point3D_Drill p : points) {
+            if (p == null || p.getHeadX() == null || p.getHeadY() == null) continue;
+
+            Integer status = p.getStatus();
+            boolean isTodo = (status == null || status == 0);
+            if (!isTodo) continue;
+
+            String row = (p.getRowId() == null) ? "" : p.getRowId().trim();
+            if (row.isEmpty()) row = "__NO_ROW__"; // fallback
+
+            double d = dist2D(bucketEst, bucketNord, p.getHeadX(), p.getHeadY());
+
+            // best point per row
+            Double curBest = bestPointDistPerRow.get(row);
+            if (curBest == null || d < curBest) {
+                bestPointDistPerRow.put(row, d);
+                bestPointPerRow.put(row, p);
+            }
+        }
+
+        // se non ci sono TODO
+        if (bestPointPerRow.isEmpty()) return null;
+
+        // 2) scegli la row con punto più vicino (equivale a distanza minima alla row)
+        for (java.util.Map.Entry<String, Double> e : bestPointDistPerRow.entrySet()) {
+            if (e.getValue() < bestRowDist) {
+                bestRowDist = e.getValue();
+                bestRow = e.getKey();
+            }
+        }
+
+        if (bestRow == null) return null;
+
+        // 3) ritorna il punto TODO più vicino su quella row
+        return bestPointPerRow.get(bestRow);
+    }
+    private static double dist2D(double x1, double y1, double x2, double y2) {
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     private static boolean isHoleVerticalDeg(double holeTiltDeg) {

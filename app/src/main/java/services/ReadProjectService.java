@@ -1196,27 +1196,50 @@ public class ReadProjectService extends Service {
         }
     }
 
-    public static AlignmentPair findAlignmentPoints(List<Point3D_Drill> points, String idA, String idB) {
-        if (points == null || points.isEmpty()) return new AlignmentPair(null, null);
-        if (idA == null || idA.trim().isEmpty()) return new AlignmentPair(null, null);
-        if (idB == null || idB.trim().isEmpty()) return new AlignmentPair(null, null);
+    public static AlignmentPair findAlignmentPoints(
+            List<Point3D_Drill> points,
+            String aKey,
+            String bKey) {
 
-        String a = idA.trim();
-        String b = idB.trim();
+        if (points == null || aKey == null || bKey == null) return null;
 
-        Point3D_Drill pA = null, pB = null;
+        Point3D_Drill A = null;
+        Point3D_Drill B = null;
+
+        String ak = aKey.trim();
+        String bk = bKey.trim();
 
         for (Point3D_Drill p : points) {
-            if (p == null || p.getId() == null) continue;
-            String pid = p.getId().trim();
 
-            if (pA == null && pid.equalsIgnoreCase(a)) pA = p;
-            if (pB == null && pid.equalsIgnoreCase(b)) pB = p;
+            String pk = buildPointKey(p);
+            if (pk == null) continue;
 
-            if (pA != null && pB != null) break;
+            if (pk.equalsIgnoreCase(ak)) A = p;
+            if (pk.equalsIgnoreCase(bk)) B = p;
+
+            if (A != null && B != null) break;
         }
 
-        return new AlignmentPair(pA, pB);
+        if (A == null || B == null) return null;
+
+        return new AlignmentPair(A, B);
+    }
+
+    private static String buildPointKey(Point3D_Drill p) {
+        if (p == null) return null;
+
+        String row = p.getRowId();
+        String id  = p.getId();
+
+        row = (row == null) ? "" : row.trim();
+        id  = (id == null) ? "" : id.trim();
+
+        if (id.isEmpty()) return null;
+
+        if (!row.isEmpty()) {
+            return row + "-" + id;
+        }
+        return id;
     }
 
     private void restoreAlignmentFromState() {

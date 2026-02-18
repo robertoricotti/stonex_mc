@@ -144,6 +144,10 @@ public class DrawDXF_Drill_Point {
         paint.setStrokeWidth(stroke);
         paint.setColor(strokeColor);
         canvas.drawCircle(headX, headY, rHead, paint);
+        // 🔴 Se sto definendo AB e questo punto è A: cerchio rosso attorno
+        if (isAlignA(point)) {
+            drawRedRing(canvas, paint, headX, headY, rHead * 1.55f, scala);
+        }
 
         // puntino testa
         paint.setStyle(Paint.Style.FILL);
@@ -233,6 +237,10 @@ public class DrawDXF_Drill_Point {
             paint.setStrokeWidth(stroke);
             paint.setColor(blueStroke);
             canvas.drawCircle(headX, headY, rHead, paint);
+            if (isAlignA(point)) {
+                drawRedRing(canvas, paint, headX, headY, rHead * 1.55f, scala);
+            }
+
 
             // puntino centrale
             paint.setStyle(Paint.Style.FILL);
@@ -271,6 +279,10 @@ public class DrawDXF_Drill_Point {
             paint.setStrokeWidth(stroke);
             paint.setColor(blueStroke);
             canvas.drawCircle(headX, headY, rHead, paint);
+            if (isAlignA(point)) {
+                drawRedRing(canvas, paint, headX, headY, rHead * 1.55f, scala);
+            }
+
             if (txt) {
                 canvas.rotate(-uiDeg,headX,headY);
                 float offX = 6f;
@@ -352,6 +364,9 @@ public class DrawDXF_Drill_Point {
         paint.setStrokeWidth(stroke);
         paint.setColor(blueStroke);
         canvas.drawCircle(headX, headY, rHead, paint);
+        if (isAlignA(point)) {
+            drawRedRing(canvas, paint, headX, headY, rHead * 1.55f, scala);
+        }
 
         // 3) highlight per effetto “cilindro” (leggero)
         // linea sottile lungo l'asse (sopra), molto trasparente
@@ -408,6 +423,48 @@ public class DrawDXF_Drill_Point {
             // sfondo chiaro → linee scure
             return android.graphics.Color.argb(180, 40, 40, 40); // grigio scuro
         }
+    }
+//Helpers nuovi
+private static boolean isAlignA(Point3D_Drill p) {
+    if (p == null) return false;
+    if (!DataSaved.isDefiningAB) return false;
+
+    String aKey = DataSaved.alignAId;
+    if (aKey == null || aKey.trim().isEmpty()) return false;
+
+    String pk = pointKey(p);
+    if (pk == null) return false;
+
+    return pk.equalsIgnoreCase(aKey.trim());
+}
+    private static String pointKey(Point3D_Drill p) {
+        if (p == null) return null;
+
+        String row = p.getRowId();
+        String id  = p.getId();
+
+        row = (row == null) ? null : row.trim();
+        id  = (id == null) ? null : id.trim();
+
+        if (id == null || id.isEmpty()) return null;
+
+        if (row != null && !row.isEmpty()) {
+            return row + "-" + id;
+        }
+        return id;
+    }
+
+
+    private static void drawRedRing(Canvas canvas, Paint paint, float cx, float cy, float radius, float scala) {
+        // anello rosso visibile, scalato
+        float ringStroke = Math.max(2.5f, (float)(0.06 * scala));
+
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(ringStroke);
+        paint.setColor(android.graphics.Color.argb(230, 255, 0, 0)); // rosso
+
+        canvas.drawCircle(cx, cy, radius, paint);
     }
 
 }

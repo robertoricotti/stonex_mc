@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -19,14 +18,13 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+
 import dxf.DrawDXF_Drill_Point;
-import dxf.DrawLines;
 import gui.draw_class.MyColorClass;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.NmeaListener;
-import services.PointService;
 import services.ReadProjectService;
 
 
@@ -34,7 +32,7 @@ public class Drill_TopView extends View {
     private float uiRotDeg = 0f;
     private android.graphics.DashPathEffect dashEffect;
     private float lastDashScala = -1f;
-    private float targetScale=1.0f;
+    private float targetScale = 1.0f;
     private final android.graphics.Matrix drawMatrix = new android.graphics.Matrix();
     private final android.graphics.Matrix invDrawMatrix = new android.graphics.Matrix();
     private final float[] tmpPt = new float[2];
@@ -54,7 +52,7 @@ public class Drill_TopView extends View {
 
     // salva parametri usati per la cache (così eviti rebuild inutili)
     private float lastScaleFactor = -1;
-    private float lastUiRotDeg=Float.NaN;
+    private float lastUiRotDeg = Float.NaN;
     private float lastOffsetX = Float.NaN, lastOffsetY = Float.NaN;
     private double lastRot = Double.NaN;
     private double lastToolE = Double.NaN, lastToolN = Double.NaN;
@@ -78,11 +76,11 @@ public class Drill_TopView extends View {
     float ancorPX, ancorPY;
     private static final int INVALID_POINTER_ID = -1;
     private int activePointerId = INVALID_POINTER_ID;
-    private int colorTarget_Alto=Color.CYAN;
-    private int colorTarget_Basso=Color.YELLOW;
-    private int colorDashed_Line=Color.BLUE;
-    private boolean isBitOnHoleHead=false;
-    private int coloreCroce=Color.YELLOW;
+    private int colorTarget_Alto = Color.CYAN;
+    private int colorTarget_Basso = Color.YELLOW;
+    private int colorDashed_Line = Color.BLUE;
+    private boolean isBitOnHoleHead = false;
+    private int coloreCroce = Color.YELLOW;
 
 
     public Drill_TopView(Context context) {
@@ -122,7 +120,7 @@ public class Drill_TopView extends View {
             }
             rotationAngle = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
             rotationAngleBoom = (rotationAngle + Math.toRadians(extraHeading));
-            rotationAngle=rotationAngleBoom;
+            rotationAngle = rotationAngleBoom;
 
             originPointTool = new PointF(getWidth() * 0.5f, getHeight() * 0.7f);
 
@@ -159,7 +157,7 @@ public class Drill_TopView extends View {
             }
 
             drawDrillPoints();
-            if(DataSaved.Selected_Point3D_Drill!=null){
+            if (DataSaved.Selected_Point3D_Drill != null) {
                 drawSelectedPoint(DataSaved.Selected_Point3D_Drill);
             }
 
@@ -167,13 +165,13 @@ public class Drill_TopView extends View {
 
             PointF toolScreen = new PointF(toolX, toolY);
             drawTarget(toolScreen, colorTarget_Basso,
-                    Math.max(18f, scala * 0.55f)*targetScale,
-                    Math.max(11f,  scala * 0.28f)*targetScale,
-                    Math.max(13f, scala * 0.38f)*targetScale,
+                    Math.max(18f, scala * 0.55f) * targetScale,
+                    Math.max(11f, scala * 0.28f) * targetScale,
+                    Math.max(13f, scala * 0.38f) * targetScale,
                     true
             );
             paint.setStrokeWidth(Math.max(1f, scala * 0.002f));
-            if(showCroce) {
+            if (showCroce) {
 
                 float stroke = Math.max(0.8f, scala * 0.001f) * targetScale;
                 float arm = 100f * targetScale;
@@ -185,12 +183,11 @@ public class Drill_TopView extends View {
                 canvas.drawLine(toolX, toolY, toolX + arm, toolY, paint); // destra
                 canvas.drawLine(toolX, toolY, toolX - arm, toolY, paint); // sinistra
                 canvas.drawLine(toolX, toolY, toolX, toolY + arm, paint); // dietro
-                canvas.drawLine(toolX, toolY, toolX, toolY - arm*0.5f, paint); // avanti
+                canvas.drawLine(toolX, toolY, toolX, toolY - arm * 0.5f, paint); // avanti
 
                 // 👇 triangolo in testa (verso avanti = Y negativo)
-                drawCrossDirectionTriangle(canvas, paint, toolX, toolY - arm*0.5f, stroke, targetScale);
+                drawCrossDirectionTriangle(canvas, paint, toolX, toolY - arm * 0.5f, stroke, targetScale);
             }
-
 
 
             // 2) target ciano: drillhead (si muove rispetto al tool)
@@ -198,14 +195,13 @@ public class Drill_TopView extends View {
             drawTarget(headScreen, colorTarget_Alto,
 
 
-                    Math.max(22f, scala * 0.65f)*targetScale,
-                    Math.max(0f, scala * 0.00f)*targetScale,
-                    Math.max(16f, scala * 0.5f)*targetScale,
+                    Math.max(22f, scala * 0.65f) * targetScale,
+                    Math.max(0f, scala * 0.00f) * targetScale,
+                    Math.max(16f, scala * 0.5f) * targetScale,
                     false
 
 
             );
-
 
 
             // dashed più “profondo”: stesso colore ma alpha (trasparente)
@@ -213,13 +209,13 @@ public class Drill_TopView extends View {
 
             // se sei in OK totale, fallo verde anche nella guida
 
-            if (isBitOnHoleHead ) {
+            if (isBitOnHoleHead) {
 
                 dashed = Color.argb(140, 0, 255, 0);
             }
 
-            drawGuidelineExtended(toolScreen, headScreen, colorDashed_Line, dashed,shouldDrawDashedForSelected());
-            if(isBitOnHoleHead) {
+            drawGuidelineExtended(toolScreen, headScreen, colorDashed_Line, dashed, shouldDrawDashedForSelected());
+            if (isBitOnHoleHead) {
                 paint.setColor(Color.DKGRAY);
                 paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f));
                 canvas.drawLine(toolX, toolY, toolX + 10f, toolY, paint);//destra
@@ -261,7 +257,7 @@ public class Drill_TopView extends View {
                         toolEast,
                         toolNord,
                         scala,
-                        rotationAngle,true,uiRotDeg
+                        rotationAngle, DataSaved.ShowText == 1, uiRotDeg
                 );
             }
         } catch (Exception e) {
@@ -277,9 +273,10 @@ public class Drill_TopView extends View {
             }
         }
     }
-    private void drawSelectedPoint(Point3D_Drill point3DDrill){
 
-        double size=0.3;
+    private void drawSelectedPoint(Point3D_Drill point3DDrill) {
+
+        double size = 0.3;
         DrawDXF_Drill_Point.drawSelected(canvas,
                 paint,
                 point3DDrill,
@@ -288,7 +285,7 @@ public class Drill_TopView extends View {
                 toolEast,
                 toolNord,
                 scala,
-                rotationAngle,true,size,uiRotDeg
+                rotationAngle, DataSaved.ShowText == 1, size, uiRotDeg
         );
     }
 
@@ -340,9 +337,6 @@ public class Drill_TopView extends View {
     }
 
 
-
-
-
     private float clamp(float value, float min, float max) {
         return Math.max(min, Math.min(value, max));
     }
@@ -389,12 +383,11 @@ public class Drill_TopView extends View {
     }
 
 
-
     // Implementazione della classe interna per il trascinamento
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public void onLongPress(@NonNull MotionEvent e) {
-            if (DataSaved.isAutoSnap != 2&&!DataSaved.isDefiningAB) {
+            if (DataSaved.isAutoSnap != 2 && !DataSaved.isDefiningAB) {
                 return; // picking attivo solo in manuale
             }
 
@@ -402,36 +395,41 @@ public class Drill_TopView extends View {
             if (hit == null) return;
 
             // --- DEFINIZIONE AB ---
+            // --- DEFINIZIONE AB ---
             if (DataSaved.isDefiningAB) {
-                String id = (hit.getId() == null) ? null : hit.getId().trim();
-                if (id == null || id.isEmpty()) return;
+
+                String key = buildPointKey(hit); // <-- ROW-ID se esiste, altrimenti solo ID
+                if (key == null || key.isEmpty()) return;
 
                 // 1° punto -> A
-                if (DataSaved.alignAId == null || DataSaved.alignAId.isEmpty()) {
-                    DataSaved.alignAId = id;
-                    // feedback UI (toast/snackbar a piacere)
-                    // new CustomToast(getContext(), "A set: " + id).show_alert();
+                if (DataSaved.alignAId == null || DataSaved.alignAId.trim().isEmpty()) {
+                    DataSaved.alignAId = key;
+
+                    // feedback
+                    // new CustomToast(getContext(), "A set: " + key).show_alert();
+
                     invalidate();
                     return;
                 }
 
                 // 2° punto -> B (evita A==B)
-                if (id.equalsIgnoreCase(DataSaved.alignAId)) {
+                if (key.equalsIgnoreCase(DataSaved.alignAId.trim())) {
                     // new CustomToast(getContext(), "Pick a different point for B").show_alert();
                     return;
                 }
 
-                DataSaved.alignBId = id;
+                DataSaved.alignBId = key;
 
                 // Persistenza + uscita modalità
                 persistAlignmentAB(DataSaved.alignAId, DataSaved.alignBId);
 
                 DataSaved.isDefiningAB = false;
-
+                DataSaved.isAutoSnap = Drill_Activity.previousState;
                 // new CustomToast(getContext(), "Alignment set: A=" + DataSaved.alignAId + " B=" + DataSaved.alignBId).show_alert();
                 invalidate();
                 return;
             }
+
 
             // --- COMPORTAMENTO STANDARD: selezione punto ---
             if (isSamePoint(hit, DataSaved.Selected_Point3D_Drill)) {
@@ -530,26 +528,37 @@ public class Drill_TopView extends View {
     public void setColorTarget_Basso(int colorTarget_Basso) {
         this.colorTarget_Basso = colorTarget_Basso;
     }
+
     public void setColorDashed_Line(int colorDashed_Line) {
         this.colorDashed_Line = colorDashed_Line;
     }
-    public void setBitOnHoleHead(boolean isBitOnHoleHead){
-        this.isBitOnHoleHead=isBitOnHoleHead;
+
+    public void setBitOnHoleHead(boolean isBitOnHoleHead) {
+        this.isBitOnHoleHead = isBitOnHoleHead;
     }
-    public void setColoreCroce(int coloreCroce){
-        this.coloreCroce=coloreCroce;
+
+    public void setColoreCroce(int coloreCroce) {
+        this.coloreCroce = coloreCroce;
     }
+
     // --- Picking cache ---
     private static class ScreenPt {
         float x, y;
         int index; // indice in filtered_drill_points
     }
+
     private static long key(int cx, int cy) {
         return (((long) cx) << 32) ^ (cy & 0xffffffffL);
     }
 
-    private int cellX(float x) { return (int) Math.floor(x / gridCellPx); }
-    private int cellY(float y) { return (int) Math.floor(y / gridCellPx); }
+    private int cellX(float x) {
+        return (int) Math.floor(x / gridCellPx);
+    }
+
+    private int cellY(float y) {
+        return (int) Math.floor(y / gridCellPx);
+    }
+
     private void ensurePickCache() {
         if (DataSaved.filtered_drill_points == null) return;
 
@@ -563,7 +572,7 @@ public class Drill_TopView extends View {
         if (!pickCacheDirty && !changed) return;
         lastUiRotDeg = uiRotDeg;
         pickCacheDirty = false;
-        lastScaleFactor = (float)DataSaved.scale_Factor3D;
+        lastScaleFactor = (float) DataSaved.scale_Factor3D;
         lastOffsetX = offsetX;
         lastOffsetY = offsetY;
         lastRot = rotationAngle;
@@ -612,10 +621,12 @@ public class Drill_TopView extends View {
             bucket.add(idx); // idx in screenPts
         }
     }
+
     private Point3D_Drill pickPoint(float touchX_view, float touchY_view) {
 
         if (DataSaved.isAutoSnap != 2) return null;
-        if (DataSaved.filtered_drill_points == null || DataSaved.filtered_drill_points.isEmpty()) return null;
+        if (DataSaved.filtered_drill_points == null || DataSaved.filtered_drill_points.isEmpty())
+            return null;
 
         // touch in view coords -> local coords (quelle usate da worldToScreen e draw)
         tmpPt[0] = touchX_view;
@@ -643,7 +654,7 @@ public class Drill_TopView extends View {
                     ScreenPt sp = screenPts.get(bucket.get(b));
                     float dx = sp.x - xLocal;
                     float dy = sp.y - yLocal;
-                    float d2 = dx*dx + dy*dy;
+                    float d2 = dx * dx + dy * dy;
                     if (d2 < bestD2) {
                         bestD2 = d2;
                         bestIndex = sp.index;
@@ -669,17 +680,19 @@ public class Drill_TopView extends View {
     private static boolean safeEq(Object x, Object y) {
         return (x == y) || (x != null && x.equals(y));
     }
+
     private void ensureDashEffect() {
         // pattern proporzionale alla scala, ma con minimi
         float dash = Math.max(10f, scala * 0.25f);
-        float gap  = Math.max(8f,  scala * 0.18f);
+        float gap = Math.max(8f, scala * 0.18f);
 
         if (dashEffect == null || lastDashScala != scala) {
             dashEffect = new android.graphics.DashPathEffect(new float[]{dash, gap}, 0f);
             lastDashScala = scala;
         }
     }
-    private void drawGuidelineExtended(PointF a, PointF b, int solidColor, int dashedColor,boolean drawDashed) {
+
+    private void drawGuidelineExtended(PointF a, PointF b, int solidColor, int dashedColor, boolean drawDashed) {
         float dx = b.x - a.x;
         float dy = b.y - a.y;
         float len = (float) Math.hypot(dx, dy);
@@ -765,6 +778,7 @@ public class Drill_TopView extends View {
         if (bp) return b;
         return Float.POSITIVE_INFINITY;
     }
+
     private boolean shouldDrawDashedForSelected() {
         Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
         if (sel == null) return false;
@@ -787,6 +801,7 @@ public class Drill_TopView extends View {
     public void setTargetScale(float targetScale) {
         this.targetScale = targetScale;
     }
+
     public void setUiRotationDeg(float deg) {
         uiRotDeg = ((deg % 360f) + 360f) % 360f;
 
@@ -810,7 +825,7 @@ public class Drill_TopView extends View {
                         DataSaved.alignAId,
                         DataSaved.alignBId
                 );
-
+        Log.d("AB_DEBUG", "A=" + DataSaved.alignAId + " B=" + DataSaved.alignBId);
         if (ab == null || !ab.isValid()) return;
         if (ab.A.getHeadX() == null || ab.A.getHeadY() == null) return;
         if (ab.B.getHeadX() == null || ab.B.getHeadY() == null) return;
@@ -866,6 +881,7 @@ public class Drill_TopView extends View {
         double diffY = (worldN - bucketNord) * scala;
         return (float) (bucketY - diffX * Math.sin(rotationAngle) - diffY * Math.cos(rotationAngle));
     }
+
     private void drawDirectionTriangle(Canvas canvas, Paint paint,
                                        float ax, float ay, float bx, float by,
                                        float strokeMain) {
@@ -925,6 +941,7 @@ public class Drill_TopView extends View {
         paint.setColor(android.graphics.Color.argb(240, 255, 255, 120));
         canvas.drawPath(p, paint);
     }
+
     private void drawCrossDirectionTriangle(Canvas canvas, Paint paint,
                                             float tipX, float tipY,
                                             float stroke, float scale) {
@@ -965,6 +982,24 @@ public class Drill_TopView extends View {
         paint.setColor(android.graphics.Color.argb(220, 0, 0, 0));
         canvas.drawPath(path, paint);
     }
+
+    private String buildPointKey(Point3D_Drill p) {
+        if (p == null) return null;
+
+        String row = p.getRowId();  // nel tuo getter torna "" se null
+        String id = p.getId();
+
+        row = (row == null) ? "" : row.trim();
+        id = (id == null) ? "" : id.trim();
+
+        if (id.isEmpty()) return null;
+
+        if (!row.isEmpty()) {
+            return row + "-" + id;
+        }
+        return id;
+    }
+
 
 }
 

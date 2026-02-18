@@ -52,6 +52,7 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="0.00"
+            android:textStyle="bold"
             android:paddingVertical="10dp"
             android:textColor="@color/blue"
             android:textSize="22sp" />
@@ -73,6 +74,7 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="0.00"
+            android:textStyle="bold"
             android:paddingVertical="10dp"
             android:textColor="@color/blue"
             android:textSize="22sp" />
@@ -94,6 +96,7 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="0.00"
+            android:textStyle="bold"
             android:paddingVertical="10dp"
             android:textColor="@color/blue"
             android:textSize="22sp" />
@@ -114,6 +117,7 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="0.00"
+            android:textStyle="bold"
             android:paddingVertical="10dp"
             android:textColor="@color/blue"
             android:textSize="22sp" />
@@ -148,6 +152,7 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="0.00"
+            android:textStyle="bold"
             android:paddingVertical="10dp"
             android:textColor="@color/black"
             android:textSize="22sp" />
@@ -169,6 +174,7 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="0.00"
+            android:textStyle="bold"
             android:paddingVertical="10dp"
             android:textColor="@color/black"
             android:textSize="22sp" />
@@ -190,6 +196,7 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="0.00"
+            android:textStyle="bold"
             android:paddingVertical="10dp"
             android:textColor="@color/black"
             android:textSize="22sp" />
@@ -210,6 +217,7 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="0.00"
+            android:textStyle="bold"
             android:paddingVertical="10dp"
             android:textColor="@color/black"
             android:textSize="22sp" />

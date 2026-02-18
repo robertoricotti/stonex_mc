@@ -3,7 +3,6 @@ package gui.tech_menu;
 import static services.CanService.flagDefault;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.TSM_ACC;
-import static utils.MyTypes.TSM_ANGOLARI;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -406,7 +405,7 @@ public class CanOpenTSM extends BaseClass {
             cbBK.setChecked(CanService.bucketOK);
             cbTL.setChecked(CanService.tiltOK);
             cbDEF.setChecked(flagDefault);
-            if(DataSaved.isCanOpen==TSM_ACC||DataSaved.isCanOpen==TSM_ANGOLARI) {
+            if(DataSaved.isCanOpen==TSM_ACC) {
                 if (isSend) {
                     gotoCanOpen.setVisibility(View.INVISIBLE);
                     backToNova.setVisibility(View.INVISIBLE);

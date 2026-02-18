@@ -10,7 +10,6 @@ import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.TSM_ACC;
-import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
@@ -128,7 +127,7 @@ public class CanService extends Service {
 
             if (channel == 1) {
 
-                if (DataSaved.isCanOpen == TSM_ACC || DataSaved.isCanOpen == TSM_ANGOLARI || DataSaved.isCanOpen == FMI_SENS) {
+                if (DataSaved.isCanOpen == TSM_ACC ||  DataSaved.isCanOpen == FMI_SENS) {
                     if (id == 0x581) {
                         DataSaved.damp_Fr = msg[4];
                     }

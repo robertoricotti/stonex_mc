@@ -9,12 +9,11 @@ import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.TSM_ACC;
-import static utils.MyTypes.TSM_ANGOLARI;
 import static utils.MyTypes.WHEELLOADER;
+
 
 import android.util.Log;
 
-import gui.gps.NmeaGenerator;
 import packexcalib.gnss.NmeaListener;
 import utils.MyMCUtils;
 
@@ -163,7 +162,6 @@ public class Sensors_Decoder {
                             ExcavatorLib.Excavator();
                             break;
 
-                        case TSM_ANGOLARI:
                         case TSM_ACC:
 
                             countTiltRot++;
@@ -208,13 +206,18 @@ public class Sensors_Decoder {
                                     break;
 
                                 case 0x387:
+                                    //double [] mout=TiltEncript.encriptTSM_Boom(data, 1);
+                                    //Log.w("TestTSM","387:  Pitch:"+String.format("%.2f",mout[0])+"    Roll:"+String.format("%.2f",mout[1]));
                                     Deg_boom2 = TiltEncript.encriptTSM_Boom(data, DataSaved.lrBoom2)[0];
 
                                     break;
 
                                 case 0x384:
+                                   // double [] moutS=TiltEncript.encriptTSM_Boom(data, 1);
+                                    //Log.d("TestTSM","384:  Pitch:"+String.format("%.2f",moutS[0])+"    Roll:"+String.format("%.2f",moutS[1]));
                                     double[] out1 = TiltEncript.encriptTSM_Boom(data, DataSaved.lrStick);
                                     Deg_stick = out1[0];
+
                                     if (DataSaved.Extra_Heading > 0) {
                                         Deg_Boom_Roll = out1[1];
                                     } else {
@@ -224,6 +227,7 @@ public class Sensors_Decoder {
                                     if (DataSaved.lrFrame == 0) {
                                         Deg_Boom_Roll = 0;
                                     }
+
 
                                     break;
 

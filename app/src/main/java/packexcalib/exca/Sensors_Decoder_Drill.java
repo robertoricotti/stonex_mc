@@ -16,7 +16,6 @@ import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.JETGROUTING_MODE;
 import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.TSM_ACC;
-import static utils.MyTypes.TSM_ANGOLARI;
 
 import android.util.Log;
 
@@ -122,7 +121,6 @@ public class Sensors_Decoder_Drill {
 
                     break;
 
-                case TSM_ANGOLARI:
                 case TSM_ACC:
                     switch (id & 0x1FFFFFFF) {
                         case 0x381:

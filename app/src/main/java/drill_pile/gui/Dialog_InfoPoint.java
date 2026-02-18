@@ -19,6 +19,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import services.PointService;
+import utils.FullscreenActivity;
 import utils.MyMCUtils;
 
 public class Dialog_InfoPoint {
@@ -61,6 +62,7 @@ public class Dialog_InfoPoint {
         findView();
         onClick();
         startUpdatingCoordinates();
+        FullscreenActivity.setFullScreen(dialog);
 
     }
 
@@ -93,7 +95,11 @@ public class Dialog_InfoPoint {
 
                 try {
                     // Update coord TextView with new coordinates
-                    titolo.setText(DataSaved.Selected_Point3D_Drill.getRowId()+"-"+DataSaved.Selected_Point3D_Drill.getId());
+                    if(!DataSaved.Selected_Point3D_Drill.getRowId().isEmpty()) {
+                        titolo.setText(DataSaved.Selected_Point3D_Drill.getRowId() + "-" + DataSaved.Selected_Point3D_Drill.getId());
+                    }else {
+                        titolo.setText( DataSaved.Selected_Point3D_Drill.getId());
+                    }
                     double masAzimut= My_LocationCalc.calcBearingXY(
                             ExcavatorLib.coordTool[0], ExcavatorLib.coordTool[1],
                             ExcavatorLib.toolEndCoord[0], ExcavatorLib.toolEndCoord[1]);
