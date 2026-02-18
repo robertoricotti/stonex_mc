@@ -173,6 +173,8 @@ public class Nuova_Machine_Settings extends BaseClass {
             MyData.push("M"+machineSel+"Drill_Antenna_Mounting",AT_BODY);
         });
         ckBoom.setOnClickListener(view -> {
+            DataSaved.L_Boom1=0;
+            MyData.push("M"+machineSel+"_LengthBoom1","0.0");
             ckBody.setChecked(false);
             ckBoom.setChecked(true);
             DataSaved.Drill_Antenna_Mounting=AT_BOOM;

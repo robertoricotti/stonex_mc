@@ -58,9 +58,6 @@ public class Boom1Calib extends BaseClass {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boom1_calib);
-
-
-
         findView();
         init();
         onClick();

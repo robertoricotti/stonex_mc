@@ -1780,7 +1780,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     private void addRow(String tipo, String inizio, String fine, String pr) {
 
         TableRow row = new TableRow(this);
-        row.setPadding(2, 2, 2, 2);
+        row.setPadding(1, 1, 1, 1);
         row.setBackgroundColor(MyColorClass.colorSfondo);
 
         row.addView(createCell(tipo, true, 1f));      // Tipo
@@ -1806,7 +1806,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         tv.setLayoutParams(params);
         tv.setText(text != null ? text : "");
         tv.setGravity(Gravity.CENTER);
-        tv.setPadding(2, 2, 2, 2);
+        tv.setPadding(1, 1, 1, 1);
         tv.setTextColor(MyColorClass.colorConstraint);
         tv.setBackgroundResource(R.drawable.cell_border);
         tv.setTextSize(18f);

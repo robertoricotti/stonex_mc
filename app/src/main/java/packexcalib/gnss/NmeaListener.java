@@ -10,6 +10,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import packexcalib.exca.DataSaved;
@@ -252,9 +255,9 @@ public class NmeaListener {
                         case "$GPRMC":
                         case "$GNRMC":
                             if (DataSaved.my_comPort != 0) {
-                                date_time_dmy = dateTimeFromRMC(NmeaInput[1], FORMAT_DDMMYYYY);
-                                date_time_ymd = dateTimeFromRMC(NmeaInput[1], FORMAT_YYYYMMDD);
-                                date_time_iso = dateTimeFromRMC(NmeaInput[1], FORMAT_ISO);
+                                date_time_dmy = dateTimeFromRMC(NMEA0183, FORMAT_DDMMYYYY);
+                                date_time_ymd = dateTimeFromRMC(NMEA0183, FORMAT_YYYYMMDD);
+                                date_time_iso = dateTimeFromRMC(NMEA0183, FORMAT_ISO);
 
                             }
                             break;
@@ -612,32 +615,33 @@ public class NmeaListener {
             throw new IllegalArgumentException("CAN data must be exactly 8 bytes");
         }
 
-        // ---- DATE (d0..d3) little-endian U32 ----
+        // ---- DATE d0..d3 : DDMMYYYY (U32 LE) ----
         long dateValue = ByteBuffer
                 .wrap(canData, 0, 4)
                 .order(ByteOrder.LITTLE_ENDIAN)
                 .getInt() & 0xFFFFFFFFL;
 
-        int day = (int) (dateValue / 1_000_000);
+        int day   = (int) (dateValue / 1_000_000);
         int month = (int) ((dateValue / 10_000) % 100);
-        int year = (int) (dateValue % 10_000);
+        int year  = (int) (dateValue % 10_000);
 
-        // ---- TIME (d4..d7) little-endian U32 ----
+        // ---- TIME d4..d7 : HHMMSSmmm (U32 LE) ----
         long timeValue = ByteBuffer
                 .wrap(canData, 4, 4)
                 .order(ByteOrder.LITTLE_ENDIAN)
                 .getInt() & 0xFFFFFFFFL;
 
-        int hour = (int) (timeValue / 10_000_000);
-        int minute = (int) ((timeValue / 100_000) % 100);
-        int second = (int) ((timeValue / 1_000) % 100);
+        int hour        = (int) (timeValue / 10_000_000);
+        int minute      = (int) ((timeValue / 100_000) % 100);
+        int second      = (int) ((timeValue / 1_000) % 100);
         int millisecond = (int) (timeValue % 1_000);
 
-        // ---- LocalDateTime UTC ----
-        LocalDateTime dateTime = LocalDateTime.of(
+        // ---- UTC ZonedDateTime ----
+        ZonedDateTime zdt = ZonedDateTime.of(
                 year, month, day,
                 hour, minute, second,
-                millisecond * 1_000_000
+                millisecond * 1_000_000,
+                ZoneOffset.UTC
         );
 
         DateTimeFormatter formatter;
@@ -648,7 +652,7 @@ public class NmeaListener {
                 break;
 
             case FORMAT_ISO:
-                formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
                 break;
 
             case FORMAT_DDMMYYYY:
@@ -657,47 +661,11 @@ public class NmeaListener {
                 break;
         }
 
-        return dateTime.format(formatter);
+        return zdt.format(formatter);
     }
 
-    public static String dateTimeFromZDA(String zda, int formatType) {
 
-        if (zda == null || !zda.contains("ZDA")) {
-            throw new IllegalArgumentException("Invalid ZDA sentence");
-        }
 
-        String[] f = zda.split(",");
-
-        if (f.length < 5 || f[1].isEmpty()) {
-            throw new IllegalArgumentException("ZDA missing date/time");
-        }
-
-        // ---- TIME hhmmss.sss ----
-        String t = f[1];
-
-        int hour = Integer.parseInt(t.substring(0, 2));
-        int minute = Integer.parseInt(t.substring(2, 4));
-        int second = Integer.parseInt(t.substring(4, 6));
-
-        int millisecond = 0;
-        if (t.contains(".")) {
-            String ms = t.substring(t.indexOf('.') + 1);
-            millisecond = Integer.parseInt(String.format("%-3s", ms).replace(' ', '0'));
-        }
-
-        // ---- DATE ----
-        int day = Integer.parseInt(f[2]);
-        int month = Integer.parseInt(f[3]);
-        int year = Integer.parseInt(f[4]);
-
-        LocalDateTime dateTime = LocalDateTime.of(
-                year, month, day,
-                hour, minute, second,
-                millisecond * 1_000_000
-        );
-
-        return formatDateTime(dateTime, formatType);
-    }
 
     public static String dateTimeFromRMC(String rmc, int formatType) {
 
@@ -711,9 +679,8 @@ public class NmeaListener {
             throw new IllegalArgumentException("RMC missing valid date/time");
         }
 
-        // ---- TIME hhmmss.sss ----
+        // TIME hhmmss.sss
         String t = f[1];
-
         int hour = Integer.parseInt(t.substring(0, 2));
         int minute = Integer.parseInt(t.substring(2, 4));
         int second = Integer.parseInt(t.substring(4, 6));
@@ -721,47 +688,56 @@ public class NmeaListener {
         int millisecond = 0;
         if (t.contains(".")) {
             String ms = t.substring(t.indexOf('.') + 1);
-            millisecond = Integer.parseInt(String.format("%-3s", ms).replace(' ', '0'));
+            millisecond = Integer.parseInt((ms + "000").substring(0, 3));
         }
 
-        // ---- DATE ddmmyy ----
+        // DATE ddmmyy
         String d = f[9];
-
         int day = Integer.parseInt(d.substring(0, 2));
         int month = Integer.parseInt(d.substring(2, 4));
         int year = 2000 + Integer.parseInt(d.substring(4, 6));
 
-        LocalDateTime dateTime = LocalDateTime.of(
+        ZonedDateTime zdt = ZonedDateTime.of(
                 year, month, day,
                 hour, minute, second,
-                millisecond * 1_000_000
+                millisecond * 1_000_000,
+                ZoneOffset.UTC
         );
+        ZonedDateTime local = zdt.withZoneSameInstant(ZoneId.systemDefault());
 
-        return formatDateTime(dateTime, formatType);
+        return formatDateTime(local, formatType);
     }
 
-    private static String formatDateTime(
-            LocalDateTime dateTime,
-            int formatType
-    ) {
+
+    public static String formatDateTime(ZonedDateTime zdt, int formatType) {
+
+        if (zdt == null) return "";
+
         DateTimeFormatter formatter;
 
         switch (formatType) {
+
+            case FORMAT_DDMMYYYY:
+                // es: 18/02/2026 14:32:10
+                formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                break;
+
             case FORMAT_YYYYMMDD:
-                formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                // es: 2026-02-18 14:32:10
+                formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 break;
 
             case FORMAT_ISO:
-                formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                // es: 2026-02-18T14:32:10+01:00
+                formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
                 break;
 
-            case FORMAT_DDMMYYYY:
             default:
-                formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS");
-                break;
+                throw new IllegalArgumentException("Unknown formatType: " + formatType);
         }
 
-        return dateTime.format(formatter);
+        return zdt.format(formatter);
     }
+
 
 }
