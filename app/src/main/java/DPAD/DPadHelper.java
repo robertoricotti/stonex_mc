@@ -6,7 +6,7 @@ public class DPadHelper {
     private DPadMapperLeft left = new DPadMapperLeft(0, 0, 0, 0, 0);
     private DPadMapperRight right = new DPadMapperRight(0, 0, 0, 0, 0);
     private double[] xyz = new double[]{0, 0, 0};
-    private Step step = Step.CM5;
+    private Step step = Step.CM2;
     private DPadHelper() {}
 
     public static DPadHelper getInstance() {

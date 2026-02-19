@@ -95,6 +95,7 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = new Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        FullscreenActivity.setFullScreen(dialog);
         return dialog;
     }
 

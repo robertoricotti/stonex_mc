@@ -20,6 +20,7 @@ import DPAD.DPadMapperLeft;
 import DPAD.DPadMapperRight;
 import DPAD.DPadState;
 import DPAD.T16000MProfile;
+import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 import utils.MyDeviceManager;
 
@@ -299,7 +300,7 @@ public class BaseClass extends AppCompatActivity {
             }
 
             double heading = helper.normalize180(newLeftX) + delta;
-            newXYZ = Exca_Quaternion.endPoint(helper.getXYZ(), 0, 0, helper.getStep().meters, heading);
+            newXYZ = Exca_Quaternion.endPoint(helper.getXYZ(), 0, 0, helper.getStep().meters, heading+ DataSaved.deltaGPS2);
         }
 
         helper.setLeft(newLeftX, newLeftY, newLeftYaw, newLeftHatX, newLeftHatY);
