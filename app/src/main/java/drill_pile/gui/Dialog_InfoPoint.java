@@ -14,7 +14,10 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
+import java.util.List;
+
 import gui.tech_menu.DampingActivity;
+import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
@@ -26,7 +29,7 @@ public class Dialog_InfoPoint {
     Activity activity;
     public Dialog dialog;
     ImageView close;
-    TextView actualAzimut, actualPitch, actualRoll, actualTilt, targetAzimut, targetPitch, targetRoll, targetTilt,titolo;
+    TextView actualAzimut, actualPitch, actualRoll, actualTilt, targetAzimut, targetPitch, targetRoll, targetTilt,titolo,titoloUP;
     private boolean isUpdating = false;
     private Handler handler;
 
@@ -55,12 +58,13 @@ public class Dialog_InfoPoint {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 0.75);
+        int width = (int) (displayMetrics.widthPixels * 0.8);
         int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
         findView();
         onClick();
+        init();
         startUpdatingCoordinates();
         FullscreenActivity.setFullScreen(dialog);
 
@@ -77,6 +81,24 @@ public class Dialog_InfoPoint {
         targetRoll = dialog.findViewById(R.id.targetRoll);
         targetTilt = dialog.findViewById(R.id.targetTilt);
         titolo=dialog.findViewById(R.id.titolo);
+        titoloUP=dialog.findViewById(R.id.titoloUP);
+
+    }
+    private void init(){
+        int[] stati=getPointStatus(DataSaved.drill_points);
+        // Update coord TextView with new coordinates
+
+        String tit="TOTAL:"+DataSaved.drill_points.size()+"  -  TO DO:"+stati[0]+"  -  DONE:"+stati[2]+"  -  REFUSED:"+stati[1];
+        String mid="";
+        if(!DataSaved.Selected_Point3D_Drill.getRowId().isEmpty()) {
+            mid=DataSaved.Selected_Point3D_Drill.getRowId() + "-" + DataSaved.Selected_Point3D_Drill.getId();
+
+        }else {
+            mid=DataSaved.Selected_Point3D_Drill.getId();
+
+        }
+        titoloUP.setText(tit);
+        titolo.setText(mid);
 
     }
 
@@ -94,12 +116,7 @@ public class Dialog_InfoPoint {
             public void run() {
 
                 try {
-                    // Update coord TextView with new coordinates
-                    if(!DataSaved.Selected_Point3D_Drill.getRowId().isEmpty()) {
-                        titolo.setText(DataSaved.Selected_Point3D_Drill.getRowId() + "-" + DataSaved.Selected_Point3D_Drill.getId());
-                    }else {
-                        titolo.setText( DataSaved.Selected_Point3D_Drill.getId());
-                    }
+
                     double masAzimut= My_LocationCalc.calcBearingXY(
                             ExcavatorLib.coordTool[0], ExcavatorLib.coordTool[1],
                             ExcavatorLib.toolEndCoord[0], ExcavatorLib.toolEndCoord[1]);
@@ -142,5 +159,30 @@ public class Dialog_InfoPoint {
                 handler.removeCallbacksAndMessages(null);
             }
         }
+    }
+
+    private int[] getPointStatus(List<Point3D_Drill> points) {
+        int todo = 0;
+        int aborted = 0;
+        int done = 0;
+
+        for (Point3D_Drill p : points) {
+            switch (p.getStatus()) {
+                case 0:
+                    todo++;
+                    break;
+                case -1:
+                    aborted++;
+                    break;
+                case 1:
+                    done++;
+                    break;
+                default:
+                    // eventuale gestione stato sconosciuto
+                    break;
+            }
+        }
+
+        return new int[]{todo, aborted, done};
     }
 }

@@ -478,7 +478,7 @@ public class Drill_TopView extends View {
 
             DataSaved.scale_Factor3D *= detector.getScaleFactor();
             // Limita il fattore di scala
-            DataSaved.scale_Factor3D = Math.max(0.4f, Math.min(DataSaved.scale_Factor3D, 6.5f));
+            DataSaved.scale_Factor3D = Math.max(0.1f, Math.min(DataSaved.scale_Factor3D, 6.5f));
             invalidate();
             return true;
         }

@@ -301,6 +301,7 @@ public class DXFParser_20 {
                                 currentDrillPoint = new Point3D_Drill(null);
                                 currentDrillPoint.setId(String.valueOf(drillPointNr));
                                 drillPointNr++;
+                                ReadProjectService.parserStatus = "Reading Points..."+"\n"+drillPointNr;
                                 lastZeroValue = "POINT";
                                 break;
 
@@ -641,6 +642,7 @@ public class DXFParser_20 {
                         }
                     }
                     if (currentDrillPoint != null) {
+                        currentDrillPoint.setTilt(0.0d);
                         switch (code) {
                             case "10":
                                 currentDrillPoint.setHeadX(safeDouble(value, conversionFactor));
@@ -657,6 +659,7 @@ public class DXFParser_20 {
                                 currentDrillPoint.setEndZ(safeDouble(value, conversionFactor));
                                 break;
                         }
+                        currentDrillPoint.recomputeDerived();
                     }
 
                     // --------------------------
@@ -1117,5 +1120,21 @@ public class DXFParser_20 {
                                       double cosA, double sinA) {
         transformPoint(l.start, ins, bx, by, bz, cosA, sinA);
         transformPoint(l.end, ins, bx, by, bz, cosA, sinA);
+    }
+    private static Double computeTiltFromEndpoints(Point3D_Drill p) {
+        if (p.getHeadX() == null || p.getHeadY() == null || p.getHeadZ() == null ||
+                p.getEndX() == null || p.getEndY() == null || p.getEndZ() == null) {
+            return null;
+        }
+
+        double dx = p.getEndX() - p.getHeadX();
+        double dy = p.getEndY() - p.getHeadY();
+        double dz = p.getEndZ() - p.getHeadZ();
+
+        double horiz = Math.sqrt(dx * dx + dy * dy);
+        double vert = Math.abs(dz);
+
+        if (horiz == 0 && vert == 0) return 0.0;
+        return Math.toDegrees(Math.atan2(horiz, vert)); // 0 verticale, 90 orizzontale
     }
 }

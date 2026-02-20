@@ -526,16 +526,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/mastantennaschema.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DXFData.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DXFData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_AutoSnap.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_AutoSnap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_InfoPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_InfoPoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillGuidance.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillGuidance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DXFParser_20.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DXFParser_20.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DxfBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DxfBlock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Mast_Antenna.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Mast_Antenna.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_mast_antenna.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_mast_antenna.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_infopoint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_infopoint.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -771,14 +770,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00069" summary="4.1.0 NFR calcolo drillLib">
-      <option name="closed" value="true" />
-      <created>1768241056239</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1768241056239</updated>
     </task>
     <task id="LOCAL-00070" summary="4.1.0 NFR calcolo drillLib">
       <option name="closed" value="true" />
@@ -1164,7 +1155,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771522697160</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL-00118" summary="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate">
+      <option name="closed" value="true" />
+      <created>1771586259531</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1771586259531</updated>
+    </task>
+    <option name="localTasksCounter" value="119" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1212,7 +1211,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1771504733579" />
+            <CheckInfo lastCheckTimestamp="1771597417281" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1222,7 +1221,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1771504733579" />
+            <CheckInfo lastCheckTimestamp="1771597417281" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1232,7 +1231,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1771504733580" />
+            <CheckInfo lastCheckTimestamp="1771597417281" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

@@ -390,35 +390,82 @@ public class PointService extends Service {
 
         } else {
             // Inclinato: match completo verso asse foro
-            final double[] holeStart = new double[]{hxObj, hyObj, (zValid ? hzObj : 0.0)};
-            final double[] holeEnd = new double[]{exObj, eyObj, ezObj};
 
-            st = DrillMatch.matchMastToHole(
-                    mastHead, mastBit,
-                    holeStart, holeEnd,
-                    DataSaved.Drill_tolleranza_XY,
-                    DataSaved.Drill_tolleranza_Angolo,
-                    DataSaved.Drill_tolleranza_HDT
-            );
+            // Costruisci asse foro (attenzione: zValid può essere false)
+            double[] holeStart = new double[]{hxObj, hyObj, (zValid ? hzObj : 0.0)};
+            double[] holeEnd   = new double[]{exObj, eyObj, ezObj};
 
-            okTilt = st.tiltInRange;
-            okOri = st.orientationInRange;
+            // ✅ Normalizza verso: vogliamo sempre un asse "dall'alto verso il basso"
+            // (se END è più alto di START, scambia)
+            if (!Double.isNaN(holeStart[2]) && !Double.isNaN(holeEnd[2]) && holeEnd[2] > holeStart[2]) {
+                double[] tmp = holeStart;
+                holeStart = holeEnd;
+                holeEnd = tmp;
+            }
 
-            // triangoli verso target foro (non bolla)
-            tri = DrillGuidance.computeTiltTriangles(
-                    mastHead, mastBit,
-                    holeStart, holeEnd,
-                    hdt_BOOM,
-                    DataSaved.Drill_tolleranza_Angolo
-            );
+            // Se per qualche motivo start==end (asse degenerato), degrada a verticale/punto (bolla)
+            double dx = holeEnd[0] - holeStart[0];
+            double dy = holeEnd[1] - holeStart[1];
+            double dz = holeEnd[2] - holeStart[2];
+            double norm2 = dx*dx + dy*dy + dz*dz;
 
-            FrecciaUP = tri.up;
-            FrecciaRIGHT = tri.right;
-            FrecciaDOWN = tri.down;
-            FrecciaLEFT = tri.left;
+            if (norm2 < 1e-10) {
+                // fallback: guida a bolla
+                tri = DrillGuidance.computeTiltTrianglesToTargets(
+                        mastHead, mastBit,
+                        hdt_BOOM,
+                        0.0, 0.0,
+                        DataSaved.Drill_tolleranza_Angolo
+                );
 
-            holePitchDeg = tri.holePitchDeg;
-            holeRollDeg = tri.holeRollDeg;
+                FrecciaUP = tri.up;
+                FrecciaRIGHT = tri.right;
+                FrecciaDOWN = tri.down;
+                FrecciaLEFT = tri.left;
+
+                okTilt = !Double.isNaN(tri.deltaPitchDeg) && !Double.isNaN(tri.deltaRollDeg)
+                        && Math.abs(tri.deltaPitchDeg) <= DataSaved.Drill_tolleranza_Angolo
+                        && Math.abs(tri.deltaRollDeg) <= DataSaved.Drill_tolleranza_Angolo;
+
+                okOri = true; // oppure mantieni la logica solarfarm se vuoi, ma qui sei in "inclinato" degenerato
+                holePitchDeg = 0.0;
+                holeRollDeg = 0.0;
+
+            } else {
+                // Match completo verso asse foro
+                st = DrillMatch.matchMastToHole(
+                        mastHead, mastBit,
+                        holeStart, holeEnd,
+                        DataSaved.Drill_tolleranza_XY,
+                        DataSaved.Drill_tolleranza_Angolo,
+                        DataSaved.Drill_tolleranza_HDT
+                );
+
+                // Guardie: st può essere null in caso di errori interni
+                if (st != null) {
+                    okTilt = st.tiltInRange;
+                    okOri  = st.orientationInRange;
+                } else {
+                    okTilt = false;
+                    okOri  = false;
+                }
+
+                // ✅ Triangoli verso target foro (non bolla)
+                tri = DrillGuidance.computeTiltTriangles(
+                        mastHead, mastBit,
+                        holeStart, holeEnd,
+                        hdt_BOOM,
+                        DataSaved.Drill_tolleranza_Angolo
+                );
+
+                FrecciaUP = tri.up;
+                FrecciaRIGHT = tri.right;
+                FrecciaDOWN = tri.down;
+                FrecciaLEFT = tri.left;
+
+                holePitchDeg = tri.holePitchDeg;
+                holeRollDeg  = tri.holeRollDeg;
+            }
         }
 
         // -------------------------

@@ -360,11 +360,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         });
         zoom_P.setOnClickListener(view -> {
             DataSaved.scale_Factor3D *= kostant;
-            DataSaved.scale_Factor3D = Math.max(0.4f, Math.min(DataSaved.scale_Factor3D, 6.5f));
+            DataSaved.scale_Factor3D = Math.max(0.1f, Math.min(DataSaved.scale_Factor3D, 6.5f));
         });
         zoom_M.setOnClickListener(view -> {
             DataSaved.scale_Factor3D /= kostant;
-            DataSaved.scale_Factor3D = Math.max(0.4f, Math.min(DataSaved.scale_Factor3D, 6.5f));
+            DataSaved.scale_Factor3D = Math.max(0.1f, Math.min(DataSaved.scale_Factor3D, 6.5f));
         });
         zoom_C.setOnClickListener(view -> {
             Drill_TopView.offsetX = 0;

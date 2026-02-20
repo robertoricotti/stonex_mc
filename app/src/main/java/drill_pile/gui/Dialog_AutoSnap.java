@@ -16,6 +16,9 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.stx_dig.R;
 
+import java.util.List;
+
+import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
 import utils.FullscreenActivity;
@@ -80,11 +83,18 @@ public class Dialog_AutoSnap {
             DataSaved.isAutoSnap=0;
             checkStatus(DataSaved.isAutoSnap);
             FragmentManager fm = activity.getSupportFragmentManager();
+            String pointSiz="";
+            if(DataSaved.drill_points==null){
+                pointSiz="No Points";
+            }else {
+                int[] stati=getPointStatus(DataSaved.drill_points);
+                pointSiz="TOTAL:"+DataSaved.drill_points.size()+"   DONE:"+stati[2]+"   REFUSED:"+stati[1];
+            }
 
             if (fm.findFragmentByTag("drill_grid") != null) return;
 
             DrillPointsFullscreenDialog
-                    .newInstance("Drill Pattern", ReadProjectService.conversionFactor)
+                    .newInstance("Drill Pattern "+pointSiz, ReadProjectService.conversionFactor)
                     .show(fm, "drill_grid");
             dialog.dismiss();
         });
@@ -133,5 +143,29 @@ public class Dialog_AutoSnap {
         } catch (Exception e) {
             MyData.push("isAutosnap",String.valueOf(0));
         }
+    }
+    private int[] getPointStatus(List<Point3D_Drill> points) {
+        int todo = 0;
+        int aborted = 0;
+        int done = 0;
+
+        for (Point3D_Drill p : points) {
+            switch (p.getStatus()) {
+                case 0:
+                    todo++;
+                    break;
+                case -1:
+                    aborted++;
+                    break;
+                case 1:
+                    done++;
+                    break;
+                default:
+                    // eventuale gestione stato sconosciuto
+                    break;
+            }
+        }
+
+        return new int[]{todo, aborted, done};
     }
 }

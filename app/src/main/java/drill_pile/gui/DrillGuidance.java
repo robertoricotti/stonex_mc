@@ -171,32 +171,30 @@ public final class DrillGuidance {
         double dN = bit[1] - head[1];
         double dZ = bit[2] - head[2];
 
-        // "verticale utile": positiva se bit è sotto la testa
-        double vert = -dZ; // = headZ - bitZ
-
-        // Se il vettore mast è troppo piccolo, non posso stimare pitch/roll.
-// In JET è meglio considerare "in bolla" (0/0) piuttosto che NaN (che spegne tutto).
         double norm2 = dE*dE + dN*dN + dZ*dZ;
-        if (norm2 < 1e-10) { // soglia ~ (0.00001 m)^2
+        if (norm2 < 1e-10) {
             return new double[]{0.0, 0.0};
         }
 
-// Se vert ~ 0, evita divisioni instabili
-        if (Math.abs(vert) < 1e-6) {
-            vert = (vert >= 0) ? 1e-6 : -1e-6;
-        }
+        // "verticale utile": positiva se bit è sotto la testa
+        double vert = -dZ; // headZ - bitZ
 
-        // Ruota XY mondo -> frame macchina (forward/right) usando heading
         double h = Math.toRadians(headingDeg);
 
-        // heading=0 => forward=N, right=E
         double forward =  Math.cos(h) * dN + Math.sin(h) * dE;
         double right   = -Math.sin(h) * dN + Math.cos(h) * dE;
 
-        // Pitch: positivo se forward positivo (bit avanti)
-        double pitch = Math.toDegrees(Math.atan2(forward, vert));
+        // Se il vettore è "capovolto" (bit sopra head), ribaltalo per mantenere vert >= 0
+        if (vert <= 0) {
+            vert = -vert;
+            forward = -forward;
+            right = -right;
+        }
 
-        // Roll: positivo se bit va a sinistra (right negativo) => atan2(-right, vert)
+        // Evita instabilità vicino a 0 (ora vert è sempre >= 0)
+        if (vert < 1e-6) vert = 1e-6;
+
+        double pitch = Math.toDegrees(Math.atan2(forward, vert));
         double roll  = Math.toDegrees(Math.atan2(-right, vert));
 
         return new double[]{pitch, roll};
