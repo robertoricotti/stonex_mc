@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gui.draw_class.MyColorClass;
+import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
 
@@ -20,6 +21,7 @@ public class DXFParser_20 {
 
     // Colori associati ai layer (nome layer -> colore ARGB)
     static Map<String, Integer> layerColors = new HashMap<>();
+    static long drillPointNr = 0;
 
     public static DXFData parseDXF(String filePath, double conversionFactor) {
         DXFData dxfData = new DXFData();
@@ -57,7 +59,9 @@ public class DXFParser_20 {
             Point3D p2 = null;
             Point3D p3 = null;
             Point3D p4 = null;
+            Point3D_Drill currentDrillPoint = null;
             Point3D currentPoint = null;
+
             Circle currentCircle = null;
             Arc currentArc = null;
             Line currentLine = null;
@@ -117,6 +121,13 @@ public class DXFParser_20 {
                                     addPointToContainer(dxfData, currentBlock, currentPoint);
                                 }
                                 currentPoint = null;
+                            }
+                            //Chiudi DRILLPOINT se attiva
+                            if (currentDrillPoint != null) {
+                                if(currentDrillPoint.getHeadX()!=null&&currentDrillPoint.getHeadY()!=null){
+                                    addDrillPointToContainer(dxfData,currentBlock,currentDrillPoint);
+                                }
+                                currentDrillPoint = null;
                             }
 
                             // Chiudi TEXT se attivo
@@ -287,6 +298,9 @@ public class DXFParser_20 {
                             case "POINT":
                                 currentPoint = new Point3D(0, 0, 0);
                                 currentPoint.setFilename(filePath);
+                                currentDrillPoint = new Point3D_Drill(null);
+                                currentDrillPoint.setId(String.valueOf(drillPointNr));
+                                drillPointNr++;
                                 lastZeroValue = "POINT";
                                 break;
 
@@ -571,7 +585,8 @@ public class DXFParser_20 {
                             case "90":
                                 try {
                                     lwExpectedVertexCount = Integer.parseInt(value.trim());
-                                } catch (NumberFormatException ignore) { }
+                                } catch (NumberFormatException ignore) {
+                                }
                                 break;
 
                             case "10": {
@@ -622,6 +637,24 @@ public class DXFParser_20 {
                                 break;
                             case "30":
                                 currentPoint.z = safeDouble(value, conversionFactor);
+                                break;
+                        }
+                    }
+                    if (currentDrillPoint != null) {
+                        switch (code) {
+                            case "10":
+                                currentDrillPoint.setHeadX(safeDouble(value, conversionFactor));
+                                currentDrillPoint.setEndX(safeDouble(value, conversionFactor));
+                                break;
+                            case "20":
+                                currentDrillPoint.setHeadY(safeDouble(value, conversionFactor));
+                                currentDrillPoint.setEndY(safeDouble(value, conversionFactor));
+
+                                break;
+                            case "30":
+
+                                currentDrillPoint.setHeadZ(safeDouble(value, conversionFactor));
+                                currentDrillPoint.setEndZ(safeDouble(value, conversionFactor));
                                 break;
                         }
                     }
@@ -795,6 +828,7 @@ public class DXFParser_20 {
                     }
                     if (filePath.equals(DataSaved.progettoSelected_POINT)) {
                         isFinishedPOINT = true;
+                        drillPointNr=0;
                     }
                 }
             }
@@ -809,13 +843,15 @@ public class DXFParser_20 {
             }
             if (filePath.equals(DataSaved.progettoSelected_POINT)) {
                 isFinishedPOINT = true;
+                drillPointNr=0;
             }
             e.printStackTrace();
             Log.e("ErroDXF", Log.getStackTraceString(e));
         } finally {
             try {
                 if (br != null) br.close();
-            } catch (IOException ignore) {}
+            } catch (IOException ignore) {
+            }
         }
 
         if (filePath.equals(DataSaved.progettoSelected)) {
@@ -826,6 +862,7 @@ public class DXFParser_20 {
         }
         if (filePath.equals(DataSaved.progettoSelected_POINT)) {
             isFinishedPOINT = true;
+            drillPointNr=0;
         }
 
         explodeBlocks(dxfData);
@@ -863,6 +900,10 @@ public class DXFParser_20 {
     private static void addPointToContainer(DXFData data, DxfBlock block, Point3D p) {
         if (block != null) block.addPoint(p);
         else data.addPoint(p);
+    }
+    private static void addDrillPointToContainer(DXFData data,DxfBlock block,Point3D_Drill point3DDrill){
+        if(block!=null) block.addPointDrill(point3DDrill);
+        else data.addDrill_points(point3DDrill);
     }
 
     private static void addTextToContainer(DXFData data, DxfBlock block, DxfText t) {

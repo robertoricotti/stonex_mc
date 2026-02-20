@@ -450,9 +450,15 @@ public class Nuova_Machine_Settings extends BaseClass {
                 startActivity(new Intent(this, LinkageCalib.class));
                 finish();
             } else if(DataSaved.isWL==DRILL){
-                en_dis(false);
-                startActivity(new Intent(this, DrillToolCalib.class));
-                finish();
+                if(DataSaved.Drill_Antenna_Mounting.equals(AT_BODY)) {
+                    en_dis(false);
+                    startActivity(new Intent(this, DrillToolCalib.class));
+                    finish();
+                }else {
+                    en_dis(false);
+                    startActivity(new Intent(this, Mast_Antenna.class));
+                    finish();
+                }
             }else {
                 en_dis(false);
                 startActivity(new Intent(this, Tilt_Blade.class));

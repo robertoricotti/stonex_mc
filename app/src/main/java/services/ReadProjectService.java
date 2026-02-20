@@ -948,10 +948,11 @@ public class ReadProjectService extends Service {
                             DataSaved.Selected_Point3D_Drill = null;
 
                             switch (fileExtensionPOINT.toLowerCase()) {
-                               /* case "dxf":
+                                case "dxf":
                                     parserStatus = "Reading Points...";
-                                    //TODO DXFPOINTS
-                                    break;*/
+                                    dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                    DataSaved.drill_points=dxfDataPoint.getDrill_points();
+                                    break;
                                 case "xml":
                                     //TODO CGPOINTS
                                     parserStatus = "Reading Points...";

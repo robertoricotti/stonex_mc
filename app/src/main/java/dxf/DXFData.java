@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
 
@@ -19,6 +20,7 @@ public class DXFData implements Serializable {
     private List<Face3D> faces; // FACE3D
     private List<Polyline> polylines;//POLYLINE
     private List<Point3D> points;//POINT
+    private List<Point3D_Drill> drill_points;//DRILL POINT
     private List<Polyline_2D> polylines_2D;//LWPOLYLINE
     private List<DxfText> texts;//TEXT
     private List<Arc> arcs;//ARC
@@ -32,6 +34,7 @@ public class DXFData implements Serializable {
         faces = new ArrayList<>();
         polylines = new ArrayList<>();
         points = new ArrayList<>();
+        drill_points=new ArrayList<>();
         polylines_2D = new ArrayList<>();
         texts = new ArrayList<>();
         arcs = new ArrayList<>();
@@ -158,6 +161,14 @@ public class DXFData implements Serializable {
 
     public List<DxfInsert> getInserts() {
         return inserts;
+    }
+
+    public List<Point3D_Drill> getDrill_points() {
+        return drill_points;
+    }
+
+    public void addDrill_points(Point3D_Drill point3DDrill){
+        drill_points.add(point3DDrill);
     }
 
 }

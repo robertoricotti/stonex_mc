@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import iredes.Point3D_Drill;
+
 public class DxfBlock implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -13,6 +15,7 @@ public class DxfBlock implements Serializable {
     private List<Polyline> polylines = new ArrayList<>();
     private List<Polyline_2D> polylines2D = new ArrayList<>();
     private List<Point3D> points = new ArrayList<>();
+    private List<Point3D_Drill> point3DDrills=new ArrayList<>();
     private List<Circle> circles = new ArrayList<>();
     private List<Arc> arcs = new ArrayList<>();
     private List<DxfText> texts = new ArrayList<>();
@@ -43,6 +46,7 @@ public class DxfBlock implements Serializable {
     public List<Polyline> getPolylines() { return polylines; }
     public List<Polyline_2D> getPolylines2D() { return polylines2D; }
     public List<Point3D> getPoints() { return points; }
+    public List<Point3D_Drill> getPoint3DDrills() { return point3DDrills; }
     public List<Circle> getCircles() { return circles; }
     public List<Arc> getArcs() { return arcs; }
     public List<DxfText> getTexts() { return texts; }
@@ -52,6 +56,7 @@ public class DxfBlock implements Serializable {
     public void addPolyline(Polyline p) { polylines.add(p); }
     public void addPolyline2D(Polyline_2D p) { polylines2D.add(p); }
     public void addPoint(Point3D p) { points.add(p); }
+    public void addPointDrill(Point3D_Drill p) { point3DDrills.add(p); }
     public void addCircle(Circle c) { circles.add(c); }
     public void addArc(Arc a) { arcs.add(a); }
     public void addText(DxfText t) { texts.add(t); }

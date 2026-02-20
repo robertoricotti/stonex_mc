@@ -122,7 +122,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 ckPoly.setVisibility(View.VISIBLE);}else {
                     ckPoly.setVisibility(View.INVISIBLE);
                 }
-                if(fileExtension.equalsIgnoreCase("csv")||
+                if(fileExtension.equalsIgnoreCase("dxf")||
+                        fileExtension.equalsIgnoreCase("csv")||
                         fileExtension.equalsIgnoreCase("xml")||
                         fileExtension.equalsIgnoreCase("ird")||
                         fileExtension.equalsIgnoreCase("xls")||
