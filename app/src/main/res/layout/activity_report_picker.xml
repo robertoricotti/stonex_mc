@@ -48,6 +48,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"/>
         <ImageView
+            android:visibility="invisible"
             android:id="@+id/setClock"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -58,6 +59,7 @@
             app:tint="@color/white"
             app:srcCompat="@drawable/baseline_access_time_96" />
         <TextView
+            android:visibility="invisible"
             android:id="@+id/tvUtcOffset"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

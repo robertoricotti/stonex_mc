@@ -15,7 +15,7 @@ public class ProjectReportXlsxWriter {
 
     public static final String[] HEADER = new String[] {
             "Machine",
-            "Hole-ID", "Hole-N", "Hole-E", "Hole-Z",
+            "Hole-ID", "Hole-N", "Hole-E", "Hole-Z","Hole-End-N", "Hole-End-E", "Hole-End-Z",
             "Hole-Bearing", "Hole-Tilt", "Hole-Depth", "Hole-Length",
             "Start-Time", "End-Time", "Duration",
             "Start-dN", "Start-dE", "Start-dZ",
@@ -57,6 +57,7 @@ public class ProjectReportXlsxWriter {
         public String holeId;
 
         public Double holeN, holeE, holeZ;
+        public Double holeEndN, holeEndE, holeEndZ;
         public Double holeBearing, holeTilt, holeDepth, holeLength;
 
         public String startTimeIso;
@@ -151,6 +152,10 @@ public class ProjectReportXlsxWriter {
             setNum(row, c++, r.holeN, numStyle);
             setNum(row, c++, r.holeE, numStyle);
             setNum(row, c++, r.holeZ, numStyle);
+
+            setNum(row, c++, r.holeEndN, numStyle);
+            setNum(row, c++, r.holeEndE, numStyle);
+            setNum(row, c++, r.holeEndZ, numStyle);
 
             setNum(row, c++, r.holeBearing, numStyle);
             setNum(row, c++, r.holeTilt, numStyle);
@@ -322,20 +327,29 @@ public class ProjectReportXlsxWriter {
     private static String durationHHmmssSSS(String startIso, String endIso) {
         if (startIso == null || startIso.isEmpty() || endIso == null || endIso.isEmpty()) return "";
 
-        LocalDateTime a = LocalDateTime.parse(startIso, ISO_FMT);
-        LocalDateTime b = LocalDateTime.parse(endIso, ISO_FMT);
+        // accetta sia "yyyy-MM-ddTHH:mm:ss" che "yyyy-MM-dd HH:mm:ss"
+        String s0 = startIso.trim().replace(' ', 'T');
+        String s1 = endIso.trim().replace(' ', 'T');
 
-        long ms = Duration.between(a, b).toMillis();
-        if (ms < 0) ms = 0;
+        try {
+            LocalDateTime a = LocalDateTime.parse(s0, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            LocalDateTime b = LocalDateTime.parse(s1, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
-        long hours = ms / 3_600_000;
-        ms %= 3_600_000;
-        long minutes = ms / 60_000;
-        ms %= 60_000;
-        long seconds = ms / 1_000;
-        long millis = ms % 1_000;
+            long ms = Duration.between(a, b).toMillis();
+            if (ms < 0) ms = 0;
 
-        return String.format(Locale.US, "%02d:%02d:%02d.%03d", hours, minutes, seconds, millis);
+            long hours = ms / 3_600_000;
+            ms %= 3_600_000;
+            long minutes = ms / 60_000;
+            ms %= 60_000;
+            long seconds = ms / 1_000;
+            long millis = ms % 1_000;
+
+            return String.format(Locale.US, "%02d:%02d:%02d.%03d", hours, minutes, seconds, millis);
+        } catch (Exception e) {
+            // se stringhe malformate, non bloccare la riga del report
+            return "";
+        }
     }
 
     private static void setText(Row row, int col, String val, CellStyle style) {
@@ -445,25 +459,28 @@ public class ProjectReportXlsxWriter {
         sh.setColumnWidth(2, 14 * 256); // Hole-N
         sh.setColumnWidth(3, 14 * 256); // Hole-E
         sh.setColumnWidth(4, 12 * 256); // Hole-Z
+        sh.setColumnWidth(5, 14 * 256); // Hole End-N
+        sh.setColumnWidth(6, 14 * 256); // Hole End-E
+        sh.setColumnWidth(7, 12 * 256); // Hole End-Z
 
         // Angoli/quote
-        sh.setColumnWidth(5, 14 * 256); // Bearing
-        sh.setColumnWidth(6, 12 * 256); // Tilt
-        sh.setColumnWidth(7, 12 * 256); // Depth
-        sh.setColumnWidth(8, 12 * 256); // Length
+        sh.setColumnWidth(8, 14 * 256); // Bearing
+        sh.setColumnWidth(9, 12 * 256); // Tilt
+        sh.setColumnWidth(10, 12 * 256); // Depth
+        sh.setColumnWidth(11, 12 * 256); // Length
 
         // Time
-        sh.setColumnWidth(9,  24 * 256); // Start-Time
-        sh.setColumnWidth(10, 24 * 256); // End-Time
-        sh.setColumnWidth(11, 14 * 256); // Duration
+        sh.setColumnWidth(12,  24 * 256); // Start-Time
+        sh.setColumnWidth(13, 24 * 256); // End-Time
+        sh.setColumnWidth(14, 14 * 256); // Duration
 
         // Deltas
-        for (int i = 12; i <= 20; i++) {
+        for (int i = 15; i <= 23; i++) {
             sh.setColumnWidth(i, 12 * 256);
         }
 
-        sh.setColumnWidth(21, 24 * 256); // AVG rate
-        sh.setColumnWidth(22, 12 * 256); // State
+        sh.setColumnWidth(24, 24 * 256); // AVG rate
+        sh.setColumnWidth(25, 12 * 256); // State
     }
 
 }

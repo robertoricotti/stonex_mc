@@ -34,7 +34,11 @@ import androidx.constraintlayout.widget.Guideline;
 import com.example.stx_dig.R;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
 
 import DPAD.DPadHelper;
 import gui.BaseClass;
@@ -53,6 +57,7 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
+    static double[] StartForo,FineForo;
     public static int previousState;
     static double mHdT = 0;
     private boolean running = false;
@@ -1393,7 +1398,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         // HoleId uniforme: SOLO ID (se hai già buildHoleId ok, ma deve tornare point.getId())
         currentHoleId = buildHoleId(Selected_Point3D_Drill);
-        startIso = NmeaListener.date_time_Y_M_D;
+        startIso = NmeaListener.date_time_Y_M_D;// Es. 2025-02-22 17:45:52
 
         // Stato runtime (in memoria)
         Selected_Point3D_Drill.setStatus(0); // TODO
@@ -1412,7 +1417,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             throw new RuntimeException(e);
         }
-
+        StartForo=toolEndCoord;
+        FineForo=toolEndCoord;
         isDrilling = true;
         refreshAfterStateChange();
     }
@@ -1427,7 +1433,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         // Stato runtime (in memoria)
         p.setStatus(1); // DONE
-
+        FineForo=toolEndCoord;
         // 1) Persistenza STATE (CSV)
         try {
             ReadProjectService.stateStore.upsertAndSave(
@@ -1451,6 +1457,10 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             row.holeN = p.getHeadY();
             row.holeE = p.getHeadX();
             row.holeZ = p.getHeadZ();
+            row.holeEndN = p.getEndY();
+            row.holeEndE = p.getEndX();
+            row.holeEndZ = p.getEndZ();
+
 
             // Bearing/tilt/profondità/lunghezza se disponibili (o calcola con recomputeDerived)
             // Se non sei sicuro che siano calcolati:
@@ -1465,7 +1475,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             row.startTimeIso = startIso;
             row.endTimeIso = endIso;
 
-            // TODO: questi li colleghiamo dopo (quando mi dici da dove arrivano)
+
             row.startdN = Start_dN;
             row.startdE = Start_dE;
             row.startdZ = Start_dZ;
@@ -1474,7 +1484,18 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             row.enddZ = End_dZ;
             row.dTilt = delta_Tilt;
             row.dBearing = delta_Bearing;
-            row.avgPenetrationRate = null;
+            if(samePoint(
+                    p.getHeadX(), p.getHeadY(), p.getHeadZ(),
+                    p.getEndX(),  p.getEndY(),  p.getEndZ(),
+                    1e-6
+            )){
+                //palo solare
+                row.avgPenetrationRate =
+                        penetrationRateMmPerSecVerticalDownOnly(startIso, endIso, StartForo[2], FineForo[2]);
+            }else {
+                row.avgPenetrationRate =
+                        penetrationRateMmPerSecAlongAxisForwardOnly(startIso, endIso, StartForo, FineForo, new double[]{p.getHeadX(),p.getHeadY(),p.getHeadZ()}, new double[]{p.getEndX(),p.getEndY(),p.getEndZ()});
+            }
 
             row.state = "DONE";
 
@@ -1503,7 +1524,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         // Stato runtime (in memoria)
         p.setStatus(-1); // ABORTED (nel tuo modello è -1)
-
+        FineForo=toolEndCoord;
         // 1) Persistenza STATE (CSV)
         try {
             ReadProjectService.stateStore.upsertAndSave(
@@ -1528,6 +1549,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             row.holeN = p.getHeadY();
             row.holeE = p.getHeadX();
             row.holeZ = p.getHeadZ();
+            row.holeEndN = p.getEndY();
+            row.holeEndE = p.getEndX();
+            row.holeEndZ = p.getEndZ();
 
             row.holeBearing = p.getHeadingDeg();
             row.holeTilt = p.getTilt();
@@ -1546,7 +1570,20 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             row.enddZ = End_dZ;
             row.dTilt = delta_Tilt;
             row.dBearing = delta_Bearing;
-            row.avgPenetrationRate = null;
+
+
+            if(samePoint(
+                    p.getHeadX(), p.getHeadY(), p.getHeadZ(),
+                    p.getEndX(),  p.getEndY(),  p.getEndZ(),
+                    1e-6
+            )){
+                //palo solare
+                row.avgPenetrationRate =
+                        penetrationRateMmPerSecVerticalDownOnly(startIso, endIso, StartForo[2], FineForo[2]);
+            }else {
+                row.avgPenetrationRate =
+                        penetrationRateMmPerSecAlongAxisForwardOnly(startIso, endIso, StartForo, FineForo, new double[]{p.getHeadX(),p.getHeadY(),p.getHeadZ()}, new double[]{p.getEndX(),p.getEndY(),p.getEndZ()});
+            }
 
             row.state = "ABORTED";
 
@@ -1972,4 +2009,94 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         return id;
     }
 
+
+    public static double penetrationRateMmPerSecAlongAxisForwardOnly(
+            String startIso,
+            String endIso,
+            double[] startENZ,   // posizione tool a START foro [E,N,Z]
+            double[] endENZ,     // posizione tool a END foro   [E,N,Z]
+            double[] holeHeadENZ, // testa palo/foro [E,N,Z]
+            double[] holeEndENZ   // fine palo/foro  [E,N,Z]
+    ) {
+        if (startIso == null || endIso == null) return Double.NaN;
+        if (startENZ == null || endENZ == null || holeHeadENZ == null || holeEndENZ == null) return Double.NaN;
+        if (startENZ.length < 3 || endENZ.length < 3 || holeHeadENZ.length < 3 || holeEndENZ.length < 3) return Double.NaN;
+
+        // 1) tempo (accetta " " o "T")
+        String s0 = startIso.trim().replace(' ', 'T');
+        String s1 = endIso.trim().replace(' ', 'T');
+
+        final LocalDateTime a, b;
+        try {
+            a = LocalDateTime.parse(s0, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            b = LocalDateTime.parse(s1, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        } catch (Exception e) {
+            return Double.NaN;
+        }
+
+        long ms = Duration.between(a, b).toMillis();
+        if (ms <= 0) return Double.NaN;
+
+        // 2) asse foro (head -> end) come versore u
+        double ax = holeEndENZ[0] - holeHeadENZ[0];
+        double ay = holeEndENZ[1] - holeHeadENZ[1];
+        double az = holeEndENZ[2] - holeHeadENZ[2];
+
+        double L = Math.sqrt(ax*ax + ay*ay + az*az);
+        if (L < 1e-9) return Double.NaN; // asse degenerato
+
+        double ux = ax / L, uy = ay / L, uz = az / L;
+
+        // 3) progress lungo asse: proj( end-start , u )
+        double dx = endENZ[0] - startENZ[0];
+        double dy = endENZ[1] - startENZ[1];
+        double dz = endENZ[2] - startENZ[2];
+
+        double progressM = dx*ux + dy*uy + dz*uz; // metri lungo asse (positivo = avanti)
+        if (Double.isNaN(progressM) || Double.isInfinite(progressM)) return Double.NaN;
+
+        // ✅ ignora qualsiasi ritorno/riavvicinamento: solo avanti
+        if (progressM <= 0) return 0.0;
+
+        double progressMm = progressM * 1000.0;
+        return progressMm / (ms / 1000.0);
+    }
+    public static double penetrationRateMmPerSecVerticalDownOnly(
+            String startIso, String endIso,
+            double startZ, double endZ
+    ) {
+        if (startIso == null || endIso == null) return Double.NaN;
+
+        String s0 = startIso.trim().replace(' ', 'T');
+        String s1 = endIso.trim().replace(' ', 'T');
+
+        final LocalDateTime a, b;
+        try {
+            a = LocalDateTime.parse(s0, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            b = LocalDateTime.parse(s1, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        } catch (Exception e) {
+            return Double.NaN;
+        }
+
+        long ms = Duration.between(a, b).toMillis();
+        if (ms <= 0) return Double.NaN;
+
+        double downM = (startZ - endZ); // positivo se scendi
+        if (downM <= 0) return 0.0;
+
+        return (downM * 1000.0) / (ms / 1000.0);
+    }
+    private static boolean samePoint(Double x1, Double y1, Double z1,
+                                     Double x2, Double y2, Double z2,
+                                     double tol) {
+
+        if (x1 == null || y1 == null || z1 == null ||
+                x2 == null || y2 == null || z2 == null) {
+            return false;
+        }
+
+        return Math.abs(x1 - x2) <= tol &&
+                Math.abs(y1 - y2) <= tol &&
+                Math.abs(z1 - z2) <= tol;
+    }
 }
