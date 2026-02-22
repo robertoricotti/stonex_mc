@@ -27,6 +27,7 @@ import iredes.Point3D_IR;
 import iredes.RigStatus_IR;
 
 public class DataSaved {
+    public static int UTC_Offset;
     public static int Unit_Of_Measure;
     public static int Drill_Screen;
     public static int Drilling_Mode;

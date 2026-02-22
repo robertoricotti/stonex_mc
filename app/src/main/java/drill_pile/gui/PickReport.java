@@ -17,6 +17,7 @@ import android.os.storage.StorageManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,19 +42,25 @@ import java.util.Map;
 
 import cloud.S3ManagerSingleton;
 import cloud.WebSocketPlugin;
+import gui.BaseClass;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
+import packexcalib.exca.DataSaved;
+import packexcalib.gnss.UtcOffset;
 import utils.MyData;
 import utils.NetworkUtils;
 import utils.UsbReceiver;
 
 
-public class PickReport extends AppCompatActivity {
+public class PickReport extends BaseClass {
+    List<UtcOffset> offsets;
+    int selectedOffsetMinutes;
+
     private final BroadcastReceiver usbReceiver = new UsbReceiver();
     String path = Environment.getExternalStorageDirectory().toString() + folderPath + "/Exported";
-    ImageView back,usb_remove,status;
-    TextView titolone;
+    ImageView back,usb_remove,status,setClock;
+    TextView titolone,tvUtcOffset;
 
     RecyclerView recyclerView;
     ReportFileAdapter reportFileAdapter;
@@ -71,6 +78,7 @@ public class PickReport extends AppCompatActivity {
         usbPath = MyData.get_String("_usbPath");
         unmount = false;
         updateUI();
+        offsets = getAllUtcOffsets();
     }
     @Override
     protected void onResume() {
@@ -97,10 +105,13 @@ public class PickReport extends AppCompatActivity {
         titolone = findViewById(R.id.titolone);
         usb_remove=findViewById(R.id.usb_remove);
         status=findViewById(R.id.status);
+        setClock=findViewById(R.id.setClock);
+        tvUtcOffset=findViewById(R.id.tvUtcOffset);
 
     }
 
     private void init() {
+        tvUtcOffset.setText(formatOffset(DataSaved.UTC_Offset));
         s3Manager = S3ManagerSingleton.getInstance(this);
         arrayFiles = new ArrayList<>();
         path = Environment.getExternalStorageDirectory().toString() + folderPath + "/Exported";
@@ -140,6 +151,9 @@ public class PickReport extends AppCompatActivity {
     }
 
     private void onClick() {
+        setClock.setOnClickListener(view -> {
+            showUtcPopupMenu(view);
+        });
         status.setOnClickListener(view -> {
             if (NetworkUtils.isInternetAvailable(this)) {
 
@@ -413,6 +427,69 @@ public class PickReport extends AppCompatActivity {
                     s3BasePath + name
             );
         }
+    }
+    public static List<UtcOffset> getAllUtcOffsets() {
+
+        List<UtcOffset> list = new ArrayList<>();
+
+        int[] special = { 15, 30, 45 };
+
+        for (int h = -12; h <= 14; h++) {
+
+            // ore intere
+            list.add(new UtcOffset(
+                    String.format("UTC%+03d:00", h),
+                    h * 60
+            ));
+
+            // mezze / quarti (solo dove esistono davvero)
+            if (h >= -11 && h <= 12) {
+                for (int m : special) {
+                    list.add(new UtcOffset(
+                            String.format("UTC%+03d:%02d", h, m),
+                            h * 60 + m
+                    ));
+                }
+            }
+        }
+
+        return list;
+    }
+    private void showUtcPopupMenu(View anchor) {
+
+        PopupMenu popup = new PopupMenu(this, anchor);
+
+        for (int i = 0; i < offsets.size(); i++) {
+            popup.getMenu().add(
+                    0,
+                    i,
+                    i,
+                    offsets.get(i).label
+            );
+        }
+
+        popup.setOnMenuItemClickListener(item -> {
+
+            UtcOffset sel = offsets.get(item.getItemId());
+
+            int selectedOffsetMinutes = sel.minutes; // il numero intero che ti serve
+
+            // Salva con MyData
+            MyData.push("UTC_Offset", String.valueOf(selectedOffsetMinutes));
+            DataSaved.UTC_Offset=selectedOffsetMinutes;
+
+            // Aggiorna TextView
+            tvUtcOffset.setText(sel.label);
+
+            return true;
+        });
+
+        popup.show();
+    }
+    private String formatOffset(int minutes) {
+        int h = minutes / 60;
+        int m = Math.abs(minutes % 60);
+        return String.format("UTC%+03d:%02d", h, m);
     }
 
 }

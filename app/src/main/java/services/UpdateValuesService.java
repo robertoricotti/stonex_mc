@@ -746,6 +746,7 @@ public class UpdateValuesService extends Service {
                 }
 
                 String licenza = MyData.get_String("licenza");
+                String UTC_Offset = MyData.get_String("UTC_Offset");
                 String coordOrder = MyData.get_String("coordOrder");
                 String screenOr = MyData.get_String("screenOr");
                 String wifiSSID = MyData.get_String("wifiSSID");
@@ -828,6 +829,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (coordOrder == null) {
                         MyData.push("coordOrder", "0");
+                    }
+                    if (UTC_Offset == null) {
+                        MyData.push("UTC_Offset", "0");
                     }
                     if (screenOr == null) {
                         MyData.push("screenOr", "0");
@@ -1156,6 +1160,11 @@ public class UpdateValuesService extends Service {
                     DataSaved.coordOrder = MyData.get_Int("coordOrder");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di coordOrder: " + e.getMessage());
+                }
+                try {
+                    DataSaved.UTC_Offset = MyData.get_Int("UTC_Offset");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di UTC_Offset: " + e.getMessage());
                 }
 
                 try {

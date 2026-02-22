@@ -1,5 +1,6 @@
 package gui.dialogs_user_settings;
 
+import static drill_pile.gui.PickReport.getAllUtcOffsets;
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static utils.MyTypes.DRILL;
@@ -13,7 +14,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +24,9 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import java.util.List;
+
+import gui.BaseClass;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
@@ -29,6 +35,7 @@ import gui.dialogs_and_toast.Dialog_InfoApp;
 import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Sensors_Decoder;
+import packexcalib.gnss.UtcOffset;
 import services.CanService;
 import services.UpdateValuesService;
 import utils.LanguageSetter;
@@ -36,7 +43,9 @@ import utils.MyData;
 import utils.Utils;
 import utils.WifiHelper;
 
-public class Nuova_User_Settings extends AppCompatActivity {
+public class Nuova_User_Settings extends BaseClass {
+    List<UtcOffset> offsets;
+    int selectedOffsetMinutes;
     // Variabili di supporto
     static int miocoloreBenna, miocoloreStick;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -53,7 +62,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
     Dialog_InfoApp dialogInfoApp;
     DialogColors dialogColors;
     TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue, tvVert, tvAng, stepValue, tvoffstep;
-    TextView tvVertValue,tvZValueR;
+    TextView tvVertValue,tvZValueR,tvUtcOffset;
     ImageView imgLocale, imgLse, imgCutFill, but_piu, but_meno, but_piu_db, but_meno_db, but_piu_an, but_meno_an;
     String intLang = "";
     int indexAudioSelected;
@@ -77,7 +86,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
         init();
         onClick();
         updateUI();
-
+        offsets = getAllUtcOffsets();
 
     }
 
@@ -101,7 +110,7 @@ public class Nuova_User_Settings extends AppCompatActivity {
         but_piu_auto_zR=findViewById(R.id.but_piu_auto_zR);
         but_meno_auto_zR=findViewById(R.id.but_meno_auto_zR);
         tvZValueR=findViewById(R.id.tvZValueR);
-
+        tvUtcOffset=findViewById(R.id.tvUtcOffset);
         tvAXYValue = findViewById(R.id.tvAXYValue);
         tvWINDOWValue = findViewById(R.id.tvWINDOWValue);
         tvAngAutoValue = findViewById(R.id.tvAngAutoValue);
@@ -156,10 +165,14 @@ public class Nuova_User_Settings extends AppCompatActivity {
     private void init() {
         intLang = MyData.get_String("language");
         indexAudioSelected = MyData.get_Int("indexAudioSystem");
+        tvUtcOffset.setText(formatOffset(DataSaved.UTC_Offset));
 
     }
 
     private void onClick() {
+        tvUtcOffset.setOnClickListener(view -> {
+            showUtcPopupMenu(view);
+        });
         but_meno_bkc.setOnClickListener(view -> {
             miocoloreBenna = normalizeIndex(miocoloreBenna - 1);
 
@@ -727,5 +740,41 @@ public class Nuova_User_Settings extends AppCompatActivity {
         coloreBoom.setBackgroundColor(MyColorClass.colorStick);
     }
 
+    private void showUtcPopupMenu(View anchor) {
+
+        PopupMenu popup = new PopupMenu(this, anchor);
+
+        for (int i = 0; i < offsets.size(); i++) {
+            popup.getMenu().add(
+                    0,
+                    i,
+                    i,
+                    offsets.get(i).label
+            );
+        }
+
+        popup.setOnMenuItemClickListener(item -> {
+
+            UtcOffset sel = offsets.get(item.getItemId());
+
+            int selectedOffsetMinutes = sel.minutes; // il numero intero che ti serve
+
+            // Salva con MyData
+            MyData.push("UTC_Offset", String.valueOf(selectedOffsetMinutes));
+            DataSaved.UTC_Offset=selectedOffsetMinutes;
+
+            // Aggiorna TextView
+            tvUtcOffset.setText(sel.label);
+
+            return true;
+        });
+
+        popup.show();
+    }
+    private String formatOffset(int minutes) {
+        int h = minutes / 60;
+        int m = Math.abs(minutes % 60);
+        return String.format("UTC%+03d:%02d", h, m);
+    }
 
 }

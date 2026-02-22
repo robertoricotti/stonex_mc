@@ -185,6 +185,8 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             isApollo = true;
             folderPath = "/StonexMC_V4";
             MyApp.DEVICE_SN=MyDeviceManager.getDeviceSN(this);
+            NmeaListener.initFromSystemTime();
+
 
 
         } else {
@@ -465,6 +467,7 @@ git push
                         @SuppressLint({"SetTextI18n", "DefaultLocale"})
                         @Override
                         public void run() {
+
                             try {
                                 if (DataSaved.isWL ==DRILL) {
                                     DataSaved.lrBucket=DataSaved.lrTool;

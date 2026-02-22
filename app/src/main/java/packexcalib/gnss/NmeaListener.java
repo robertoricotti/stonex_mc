@@ -20,12 +20,15 @@ import packexcalib.exca.PLC_DataTypes_LittleEndian;
 
 
 public class NmeaListener {
-    public static String date_time_dmy = "";
-    public static String date_time_ymd = "";
-    public static String date_time_iso = "";
-    public static final int FORMAT_DDMMYYYY = 0;
-    public static final int FORMAT_YYYYMMDD = 1;
-    public static final int FORMAT_ISO = 2;
+    private static final DateTimeFormatter YMD =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    private static final DateTimeFormatter DMY =
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    public static String date_time_Y_M_D = "";
+    public static String date_time_D_M_Y = "";
+
+
     static CoordinateXYZ coordinateXYZLLQ, coordinateXYZJKT, coordinateXYZ_1, coordinateXYZ, coord, coordUTM;
     public static double tmpQuotaUTM;
     static double tmpQuotaLOC;
@@ -255,10 +258,8 @@ public class NmeaListener {
                         case "$GPRMC":
                         case "$GNRMC":
                             if (DataSaved.my_comPort != 0) {
-                                date_time_dmy = dateTimeFromRMC(NMEA0183, FORMAT_DDMMYYYY);
-                                date_time_ymd = dateTimeFromRMC(NMEA0183, FORMAT_YYYYMMDD);
-                                date_time_iso = dateTimeFromRMC(NMEA0183, FORMAT_ISO);
-
+                                date_time_D_M_Y = dateTimeFromRMC(NMEA0183, 0);
+                                date_time_Y_M_D = dateTimeFromRMC(NMEA0183, 1);
                             }
                             break;
 
@@ -338,9 +339,34 @@ public class NmeaListener {
                 tmpGeoidSeparator = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[4], data[5], data[6], data[7]}) * 0.001;
                 break;
             case 0x18FF0B10:
-                date_time_dmy = parseCanDateTime(data, FORMAT_DDMMYYYY);
-                date_time_ymd = parseCanDateTime(data, FORMAT_YYYYMMDD);
-                date_time_iso = parseCanDateTime(data, FORMAT_ISO);
+                try {
+                    String s0=String.format("%02d",(int)data[0]);
+                    String s1=String.format("%02d",(int)data[1]);
+                    String s2=String.format("%02d",(int)data[2]);
+                    String s3=String.format("%02d",(int)data[3]);
+                    String s4=String.format("%02d",(int)data[4]);
+                    String s5=String.format("%02d",(int)data[5]);
+                    String s6=String.format("%02d",(int)data[6]);
+                    String s7=String.format("%02d",(int)data[7]);
+                    String mData=s0+"-"+s1+"-"+s2+s3;
+                    String mHour=s4+":"+s5+":"+s6;
+                    LocalDateTime result=GnssUtcOffsetConverter.applyOffset(
+                            mData,
+                            mHour,
+                            0
+                    );
+
+                    date_time_D_M_Y= result.format(
+                            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+                    );
+                    date_time_Y_M_D= result.format(
+                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    );
+                } catch (Exception ignored) {
+
+                }
+
+
                 break;
 
             case 0x18FF0D10:
@@ -609,59 +635,18 @@ public class NmeaListener {
         }
     }
 
-    public static String parseCanDateTime(byte[] canData, int formatType) {
+    public static String parseCanDateTime(byte[] canData) {
 
         if (canData == null || canData.length != 8) {
             throw new IllegalArgumentException("CAN data must be exactly 8 bytes");
         }
 
-        // ---- DATE d0..d3 : DDMMYYYY (U32 LE) ----
-        long dateValue = ByteBuffer
-                .wrap(canData, 0, 4)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .getInt() & 0xFFFFFFFFL;
-
-        int day   = (int) (dateValue / 1_000_000);
-        int month = (int) ((dateValue / 10_000) % 100);
-        int year  = (int) (dateValue % 10_000);
-
-        // ---- TIME d4..d7 : HHMMSSmmm (U32 LE) ----
-        long timeValue = ByteBuffer
-                .wrap(canData, 4, 4)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .getInt() & 0xFFFFFFFFL;
-
-        int hour        = (int) (timeValue / 10_000_000);
-        int minute      = (int) ((timeValue / 100_000) % 100);
-        int second      = (int) ((timeValue / 1_000) % 100);
-        int millisecond = (int) (timeValue % 1_000);
-
-        // ---- UTC ZonedDateTime ----
-        ZonedDateTime zdt = ZonedDateTime.of(
-                year, month, day,
-                hour, minute, second,
-                millisecond * 1_000_000,
-                ZoneOffset.UTC
-        );
 
         DateTimeFormatter formatter;
 
-        switch (formatType) {
-            case FORMAT_YYYYMMDD:
-                formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-                break;
 
-            case FORMAT_ISO:
-                formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-                break;
 
-            case FORMAT_DDMMYYYY:
-            default:
-                formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS");
-                break;
-        }
-
-        return zdt.format(formatter);
+        return null;
     }
 
 
@@ -717,20 +702,17 @@ public class NmeaListener {
 
         switch (formatType) {
 
-            case FORMAT_DDMMYYYY:
+            case 0:
                 // es: 18/02/2026 14:32:10
                 formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
                 break;
 
-            case FORMAT_YYYYMMDD:
+            case 1:
                 // es: 2026-02-18 14:32:10
                 formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 break;
 
-            case FORMAT_ISO:
-                // es: 2026-02-18T14:32:10+01:00
-                formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-                break;
+
 
             default:
                 throw new IllegalArgumentException("Unknown formatType: " + formatType);
@@ -739,5 +721,11 @@ public class NmeaListener {
         return zdt.format(formatter);
     }
 
+    public static void initFromSystemTime() {
 
+        LocalDateTime now = LocalDateTime.now(); // ora del tablet
+
+        date_time_Y_M_D = now.format(YMD);
+        date_time_D_M_Y = now.format(DMY);
+    }
 }

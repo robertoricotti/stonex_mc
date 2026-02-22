@@ -47,7 +47,26 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
-
+        <ImageView
+            android:id="@+id/setClock"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            app:tint="@color/white"
+            app:srcCompat="@drawable/baseline_access_time_96" />
+        <TextView
+            android:id="@+id/tvUtcOffset"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:ems="7"
+            android:gravity="center"
+            android:textStyle="bold|italic"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            />
         <ImageView
             android:id="@+id/usb_remove"
             android:layout_width="wrap_content"

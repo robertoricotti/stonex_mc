@@ -360,7 +360,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                datetim.setText(NmeaListener.date_time_iso);
+                datetim.setText(NmeaListener.date_time_Y_M_D);
                 // Update coord TextView with new coordinates
                 try {
                     if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){

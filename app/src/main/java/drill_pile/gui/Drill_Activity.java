@@ -1393,7 +1393,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         // HoleId uniforme: SOLO ID (se hai già buildHoleId ok, ma deve tornare point.getId())
         currentHoleId = buildHoleId(Selected_Point3D_Drill);
-        startIso = NmeaListener.date_time_iso;
+        startIso = NmeaListener.date_time_Y_M_D;
 
         // Stato runtime (in memoria)
         Selected_Point3D_Drill.setStatus(0); // TODO
@@ -1423,7 +1423,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         final iredes.Point3D_Drill p = Selected_Point3D_Drill; // snapshot
         final String holeId = buildHoleId(p);
-        final String endIso = NmeaListener.date_time_iso;
+        final String endIso = NmeaListener.date_time_Y_M_D;
 
         // Stato runtime (in memoria)
         p.setStatus(1); // DONE
@@ -1499,7 +1499,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         final iredes.Point3D_Drill p = Selected_Point3D_Drill; // snapshot
         final String holeId = buildHoleId(p);
-        final String endIso = NmeaListener.date_time_iso;
+        final String endIso = NmeaListener.date_time_Y_M_D;
 
         // Stato runtime (in memoria)
         p.setStatus(-1); // ABORTED (nel tuo modello è -1)
@@ -1717,7 +1717,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (p == null || p.getId() == null || p.getId().trim().isEmpty()) return;
 
         final String holeId = p.getId().trim();
-        final String nowIso = NmeaListener.date_time_iso;
+        final String nowIso = NmeaListener.date_time_Y_M_D;
 
         // 1) Runtime
         p.setStatus(0); // TODO

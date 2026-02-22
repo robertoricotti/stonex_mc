@@ -335,7 +335,7 @@ public class Dialog_Drill_GNSS {
             public void run() {
                 // Update coord TextView with new coordinates
                 try {
-                    datetim.setText(NmeaListener.date_time_iso);
+                    datetim.setText(NmeaListener.date_time_Y_M_D);
                     if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){
                         textViewPW.setText("");
                     }else {
