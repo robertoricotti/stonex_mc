@@ -1,6 +1,5 @@
 package services;
 
-import static services.CanService.*;
 import static gui.MyApp.hAlarm;
 import static gui.MyApp.isApollo;
 import static gui.MyApp.licenseType;
@@ -37,7 +36,22 @@ import static packexcalib.gnss.NmeaListener.mLon_1;
 import static serial.SerialReadThread.serialEmpty;
 import static services.CanService.Dozer_Auto_Main;
 import static services.CanService.Grader_Auto_SS;
+import static services.CanService.boom1Disc;
+import static services.CanService.boom1OK;
+import static services.CanService.boom2Disc;
+import static services.CanService.boom2OK;
+import static services.CanService.bucketDisc;
+import static services.CanService.bucketOK;
+import static services.CanService.flagLaser;
+import static services.CanService.frameDisc;
+import static services.CanService.frameOK;
 import static services.CanService.nmeaSTX_Disc;
+import static services.CanService.stickDisc;
+import static services.CanService.stickOK;
+import static services.CanService.tiltDisc;
+import static services.CanService.tiltOK;
+import static services.CanService.toolDisc;
+import static services.CanService.toolOK;
 import static services.TriangleService.ctOffGrid;
 import static services.TriangleService.ltOffGrid;
 import static services.TriangleService.rtOffGrid;
@@ -57,6 +71,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,7 +99,8 @@ import utils.MyMCUtils;
 
 public class CanSender extends Service {
     public static byte GNSS_MSG = 0x01;
-
+     int heartbitTerzeParti = 0;
+    byte MUX=0x01;
     //private long lastCall = 0;
     public final static double MAX_SCALE = 0.3;
     static boolean sending;
@@ -195,7 +211,8 @@ public class CanSender extends Service {
                 switch (DataSaved.isWL) {
                     case EXCAVATOR:
 
-                        HEADING = currentLeft.getLeftAxisX();;
+                        HEADING = currentLeft.getLeftAxisX();
+                        ;
                         Deg_stick = currentLeft.getLeftAxisY();
                         Deg_bucket = currentRight.getRightAxisX();
                         Deg_Benna_W_Tilt = currentRight.getRightAxisX();
@@ -236,9 +253,10 @@ public class CanSender extends Service {
 
                     case DOZER:
                     case DOZER_SIX:
-                        HEADING = currentRight.getRightHatX();;
+                        HEADING = currentRight.getRightHatX();
+                        ;
                         Deg_roll = currentRight.getRightAxisX();
-                        Deg_pitch=currentRight.getRightAxisY()*-1;
+                        Deg_pitch = currentRight.getRightAxisY() * -1;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
                         DataSaved.demoZ = DPadHelper.getInstance().getZ();
@@ -247,9 +265,10 @@ public class CanSender extends Service {
 
 
                     case GRADER:
-                        HEADING = currentRight.getRightHatX();;
+                        HEADING = currentRight.getRightHatX();
+                        ;
                         Deg_roll = currentRight.getRightAxisX();
-                        Deg_pitch=currentRight.getRightAxisY()*-1;
+                        Deg_pitch = currentRight.getRightAxisY() * -1;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
                         DataSaved.demoZ = DPadHelper.getInstance().getZ();
@@ -264,8 +283,8 @@ public class CanSender extends Service {
                         Deg_Boom_Roll = Deg_roll;
                         Deg_Tool_Pitch = currentRight.getRightAxisX();
                         Deg_Tool_Roll = currentRight.getRightHatX();
-                        double len=0;
-                        len=MyMCUtils.myscaleD(currentLeft.getLeftYaw(),-180,180,-6,6);
+                        double len = 0;
+                        len = MyMCUtils.myscaleD(currentLeft.getLeftYaw(), -180, 180, -6, 6);
                         Sensors_Decoder_Drill.RopeLen = len;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
@@ -1151,7 +1170,6 @@ public class CanSender extends Service {
         sending = !sending;
         switch (DataSaved.Interface_Type) {
             case 255:
-
                 try {
                     // output 3e PARTI
                     byte[] left, cent, right;
@@ -1185,7 +1203,7 @@ public class CanSender extends Service {
                             dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
                             break;
                     }
-                    ;
+
                     left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_SX * 1000), (short) -32768, (short) 32767));
                     cent = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_CT * 1000), (short) -32768, (short) 32767));
                     right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_DX * 1000), (short) -32768, (short) 32767));
@@ -1210,10 +1228,19 @@ public class CanSender extends Service {
                     dtmBW = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[4] * 1000));
                     byte[] heading = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (ExcavatorLib.hdt_LAMA * 100));
                     byte working = 0;
+                    heartbitTerzeParti++;
+                    heartbitTerzeParti = heartbitTerzeParti %255;
+
+                    if(heartbitTerzeParti%2==0){
+                        MUX=0x01;
+                    }else {
+                        MUX=0x03;
+                    }
+
                     if (MyApp.visibleActivity instanceof My3DActivity) {
                         working = 1;
                     }
-
+                    Log.d("CounterTerze", heartbitTerzeParti +"   MUX:"+MUX);
 
                     MyDeviceManager.CanWrite(sending, 1, 0x812, 8,
                             new byte[]{
