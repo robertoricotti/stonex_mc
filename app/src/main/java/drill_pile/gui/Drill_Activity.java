@@ -38,7 +38,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.Objects;
 
 import DPAD.DPadHelper;
 import gui.BaseClass;
@@ -57,7 +56,7 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
-    static double[] StartForo,FineForo;
+    static double[] StartForo, FineForo;
     public static int previousState;
     static double mHdT = 0;
     private boolean running = false;
@@ -85,7 +84,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     public static boolean isDrilling = false;
     int flip = 0;
     float rotationCont;
-
+    Dialog_Raggio_Drill dialogRaggioDrill;
     Dialog_Drill_GNSS dialogDrillGnss;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
     ImageView digMenu, drilltool, Status, folders, playpause, lineReference, tiposnap, imgHdt,
@@ -180,6 +179,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void init() {
+        dialogRaggioDrill=new Dialog_Raggio_Drill(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogAutoSnap = new Dialog_AutoSnap(this);
         dialogInfoPoint = new Dialog_InfoPoint(this);
@@ -334,6 +334,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void onClick() {
+        uomesure.setOnClickListener(view -> {
+            if(!dialogRaggioDrill.dialog.isShowing()){
+                dialogRaggioDrill.show();
+            }
+        });
         mostratesto.setOnClickListener(view -> {
             DataSaved.ShowText += 1;
             DataSaved.ShowText = DataSaved.ShowText % 2;
@@ -601,7 +606,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             double gpsHdt = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
             mHdT = gpsHdt;
-            txthdtActual.setText(String.format(Locale.US, "%.1f°", gpsHdt).replace(",", "."));
+            txthdtActual.setText(String.format(Locale.US, "%.1f°", (targetHdt - gpsHdt)).replace(",", "."));
 
 
         } else {
@@ -1417,8 +1422,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             throw new RuntimeException(e);
         }
-        StartForo=toolEndCoord;
-        FineForo=toolEndCoord;
+        StartForo = toolEndCoord;
+        FineForo = toolEndCoord;
         isDrilling = true;
         refreshAfterStateChange();
     }
@@ -1433,7 +1438,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         // Stato runtime (in memoria)
         p.setStatus(1); // DONE
-        FineForo=toolEndCoord;
+        FineForo = toolEndCoord;
         // 1) Persistenza STATE (CSV)
         try {
             ReadProjectService.stateStore.upsertAndSave(
@@ -1484,17 +1489,17 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             row.enddZ = End_dZ;
             row.dTilt = delta_Tilt;
             row.dBearing = delta_Bearing;
-            if(samePoint(
+            if (samePoint(
                     p.getHeadX(), p.getHeadY(), p.getHeadZ(),
-                    p.getEndX(),  p.getEndY(),  p.getEndZ(),
+                    p.getEndX(), p.getEndY(), p.getEndZ(),
                     1e-6
-            )){
+            )) {
                 //palo solare
                 row.avgPenetrationRate =
                         penetrationRateMmPerSecVerticalDownOnly(startIso, endIso, StartForo[2], FineForo[2]);
-            }else {
+            } else {
                 row.avgPenetrationRate =
-                        penetrationRateMmPerSecAlongAxisForwardOnly(startIso, endIso, StartForo, FineForo, new double[]{p.getHeadX(),p.getHeadY(),p.getHeadZ()}, new double[]{p.getEndX(),p.getEndY(),p.getEndZ()});
+                        penetrationRateMmPerSecAlongAxisForwardOnly(startIso, endIso, StartForo, FineForo, new double[]{p.getHeadX(), p.getHeadY(), p.getHeadZ()}, new double[]{p.getEndX(), p.getEndY(), p.getEndZ()});
             }
 
             row.state = "DONE";
@@ -1524,7 +1529,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         // Stato runtime (in memoria)
         p.setStatus(-1); // ABORTED (nel tuo modello è -1)
-        FineForo=toolEndCoord;
+        FineForo = toolEndCoord;
         // 1) Persistenza STATE (CSV)
         try {
             ReadProjectService.stateStore.upsertAndSave(
@@ -1572,17 +1577,17 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             row.dBearing = delta_Bearing;
 
 
-            if(samePoint(
+            if (samePoint(
                     p.getHeadX(), p.getHeadY(), p.getHeadZ(),
-                    p.getEndX(),  p.getEndY(),  p.getEndZ(),
+                    p.getEndX(), p.getEndY(), p.getEndZ(),
                     1e-6
-            )){
+            )) {
                 //palo solare
                 row.avgPenetrationRate =
                         penetrationRateMmPerSecVerticalDownOnly(startIso, endIso, StartForo[2], FineForo[2]);
-            }else {
+            } else {
                 row.avgPenetrationRate =
-                        penetrationRateMmPerSecAlongAxisForwardOnly(startIso, endIso, StartForo, FineForo, new double[]{p.getHeadX(),p.getHeadY(),p.getHeadZ()}, new double[]{p.getEndX(),p.getEndY(),p.getEndZ()});
+                        penetrationRateMmPerSecAlongAxisForwardOnly(startIso, endIso, StartForo, FineForo, new double[]{p.getHeadX(), p.getHeadY(), p.getHeadZ()}, new double[]{p.getEndX(), p.getEndY(), p.getEndZ()});
             }
 
             row.state = "ABORTED";
@@ -2019,8 +2024,10 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             double[] holeEndENZ   // fine palo/foro  [E,N,Z]
     ) {
         if (startIso == null || endIso == null) return Double.NaN;
-        if (startENZ == null || endENZ == null || holeHeadENZ == null || holeEndENZ == null) return Double.NaN;
-        if (startENZ.length < 3 || endENZ.length < 3 || holeHeadENZ.length < 3 || holeEndENZ.length < 3) return Double.NaN;
+        if (startENZ == null || endENZ == null || holeHeadENZ == null || holeEndENZ == null)
+            return Double.NaN;
+        if (startENZ.length < 3 || endENZ.length < 3 || holeHeadENZ.length < 3 || holeEndENZ.length < 3)
+            return Double.NaN;
 
         // 1) tempo (accetta " " o "T")
         String s0 = startIso.trim().replace(' ', 'T');
@@ -2042,7 +2049,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         double ay = holeEndENZ[1] - holeHeadENZ[1];
         double az = holeEndENZ[2] - holeHeadENZ[2];
 
-        double L = Math.sqrt(ax*ax + ay*ay + az*az);
+        double L = Math.sqrt(ax * ax + ay * ay + az * az);
         if (L < 1e-9) return Double.NaN; // asse degenerato
 
         double ux = ax / L, uy = ay / L, uz = az / L;
@@ -2052,7 +2059,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         double dy = endENZ[1] - startENZ[1];
         double dz = endENZ[2] - startENZ[2];
 
-        double progressM = dx*ux + dy*uy + dz*uz; // metri lungo asse (positivo = avanti)
+        double progressM = dx * ux + dy * uy + dz * uz; // metri lungo asse (positivo = avanti)
         if (Double.isNaN(progressM) || Double.isInfinite(progressM)) return Double.NaN;
 
         // ✅ ignora qualsiasi ritorno/riavvicinamento: solo avanti
@@ -2061,6 +2068,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         double progressMm = progressM * 1000.0;
         return progressMm / (ms / 1000.0);
     }
+
     public static double penetrationRateMmPerSecVerticalDownOnly(
             String startIso, String endIso,
             double startZ, double endZ
@@ -2086,6 +2094,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         return (downM * 1000.0) / (ms / 1000.0);
     }
+
     private static boolean samePoint(Double x1, Double y1, Double z1,
                                      Double x2, Double y2, Double z2,
                                      double tol) {

@@ -486,7 +486,8 @@ git push
                                     NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
                                     NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
                                     NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
-                                    NmeaListener.initFromSystemTime();
+
+                                    Log.d("RaggioDXF",DataSaved.Raggio_Drill+"");
 
                                 }
 

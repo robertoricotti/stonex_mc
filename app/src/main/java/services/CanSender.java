@@ -55,6 +55,7 @@ import static services.CanService.toolOK;
 import static services.TriangleService.ctOffGrid;
 import static services.TriangleService.ltOffGrid;
 import static services.TriangleService.rtOffGrid;
+import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
@@ -489,6 +490,7 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
+
             if (DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
                 if (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0) {
                     if (!(MyApp.visibleActivity instanceof My3DActivity)) {
@@ -519,7 +521,7 @@ public class CanSender extends Service {
             } else {
                 MyDeviceManager.CanWrite(true, 0, 0, 2, new byte[]{1, 0});
             }
-            if (DataSaved.isCanOpen == 5) {
+            if (DataSaved.isCanOpen == DEMO_BAG) {
                 startCanopen++;
                 if (startCanopen == 2) {
                     if (isApollo) {
@@ -531,7 +533,9 @@ public class CanSender extends Service {
                     startCanopen = 0;
                 }
             }
-
+            if(DataSaved.my_comPort==4){
+                NmeaListener.initFromSystemTime();
+            }
         }
 
 

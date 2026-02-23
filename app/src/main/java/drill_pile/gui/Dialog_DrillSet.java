@@ -25,6 +25,7 @@ import gui.dialogs_and_toast.CustomToast;
 import gui.tech_menu.Nuova_Machine_Settings;
 import packexcalib.exca.DataSaved;
 import services.UpdateValuesService;
+import utils.FullscreenActivity;
 import utils.MyData;
 import utils.Utils;
 
@@ -71,6 +72,7 @@ public class Dialog_DrillSet {
         dialog.show();
         findView();
         onClick();
+        FullscreenActivity.setFullScreen(dialog);
 
     }
 

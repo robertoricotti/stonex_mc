@@ -43,6 +43,7 @@ import utils.DistToPoint;
  * 4) sleep senza Math.abs e ciclo più stabile
  */
 public class PointService extends Service {
+    static double mRaggio;
     public static boolean AB_REVERSED=false;
     int countTabella = 0;
     public static String[] valoriTabella;
@@ -94,6 +95,7 @@ public class PointService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "Created");
+        mRaggio=0;
         valoriTabella = new String[24];
         triangleHelper = new TriangleHelper();
         lastPosition = new double[]{0, 0, 0};
@@ -116,6 +118,7 @@ public class PointService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mRaggio=0;
         stopPointLoop();
         Log.d(TAG, "Destroyed");
     }
@@ -133,7 +136,7 @@ public class PointService extends Service {
 
             try {
                 // Aggiorna posizione “filtrata” (FIX: clone)
-                updateCurrentPosition(ExcavatorLib.toolEndCoord, 1000);
+                updateCurrentPosition(ExcavatorLib.toolEndCoord, DataSaved.Raggio_Drill);
 
                 // --- autosnap / selezione punto ---
                 switch (DataSaved.isAutoSnap) {
@@ -563,13 +566,16 @@ public class PointService extends Service {
     private void updateCurrentPosition(double[] position, double raggio) {
         if (position == null || position.length < 3) return;
 
+Log.d("mRaggio",mRaggio+"   "+DataSaved.Raggio_Drill);
         double r = raggio / 4.0;
         r = Math.min(r, 30.0);
 
-        if (DistToPoint.dist2D(position, lastPosition) > r) {
+        if (DistToPoint.dist2D(position, lastPosition) > r||mRaggio!=DataSaved.Raggio_Drill) {//aggiorna ogni 3 metri
             lastPosition = position.clone(); // <--- FIX CRITICO
             triangleHelper.updatePointRaius(lastPosition, raggio);
+            mRaggio=DataSaved.Raggio_Drill;
         }
+
     }
 
     @Override

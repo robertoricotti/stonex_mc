@@ -747,6 +747,7 @@ public class UpdateValuesService extends Service {
 
                 String licenza = MyData.get_String("licenza");
                 String UTC_Offset = MyData.get_String("UTC_Offset");
+                String Raggio_Drill = MyData.get_String("Raggio_Drill");
                 String coordOrder = MyData.get_String("coordOrder");
                 String screenOr = MyData.get_String("screenOr");
                 String wifiSSID = MyData.get_String("wifiSSID");
@@ -832,6 +833,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (UTC_Offset == null) {
                         MyData.push("UTC_Offset", "0");
+                    }
+                    if (Raggio_Drill == null) {
+                        MyData.push("Raggio_Drill", "1000.0");
                     }
                     if (screenOr == null) {
                         MyData.push("screenOr", "0");
@@ -1165,6 +1169,11 @@ public class UpdateValuesService extends Service {
                     DataSaved.UTC_Offset = MyData.get_Int("UTC_Offset");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di UTC_Offset: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Raggio_Drill = MyData.get_Double("Raggio_Drill");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Raggio_Drill: " + e.getMessage());
                 }
 
                 try {
