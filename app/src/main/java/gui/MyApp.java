@@ -185,7 +185,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             isApollo = true;
             folderPath = "/StonexMC_V4";
             MyApp.DEVICE_SN=MyDeviceManager.getDeviceSN(this);
-            NmeaListener.initFromSystemTime();
+
 
 
 
@@ -486,7 +486,7 @@ git push
                                     NmeaListener.NmeaStandard(NmeaGenerator.generateGPGGA());
                                     NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
                                     NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
-
+                                    NmeaListener.initFromSystemTime();
 
                                 }
 

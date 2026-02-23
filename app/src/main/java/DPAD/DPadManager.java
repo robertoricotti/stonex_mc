@@ -7,6 +7,19 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+/**
+ * DPadManager "definitivo":
+ * - Supporta device FISICI (JOYSTICK/GAMEPAD) e device VIRTUALI (DPAD / overlay)
+ * - Routing LEFT/RIGHT SEMPRE basato su throttle (<0.5 = LEFT, >=0.5 = RIGHT)
+ * - Non richiede device.isVirtual() per filtrare
+ * - Accetta MotionEvent anche se l'evento arriva con source diverso (joystick/gamepad/dpad)
+ * - Gestisce anche hat/dpad via assi (AXIS_HAT_X / AXIS_HAT_Y) se MotionEventAdapter li mappa
+ *
+ * NOTE IMPORTANTI:
+ * - Se su un controller fisico il throttle non esiste o viene mappato su un asse diverso,
+ *   il routing LEFT/RIGHT dipenderà da T16000MProfile.throttle(axisData).
+ *   In tal caso aggiungi mapping fallback nel profilo (AXIS_Z/RZ/GAS/BRAKE ecc.).
+ */
 public class DPadManager {
 
     public interface Listener {
@@ -18,11 +31,6 @@ public class DPadManager {
     }
 
     private static final String TAG = "DPadManager";
-
-    // Slot stabili per il routing su device fisici
-    private static final int INVALID_ID = -1;
-    private int leftDeviceId = INVALID_ID;
-    private int rightDeviceId = INVALID_ID;
 
     private final InputManager inputManager;
     private final DPadProfile profile;
@@ -50,75 +58,98 @@ public class DPadManager {
         isStarted = false;
     }
 
+    /**
+     * Da chiamare da Activity.dispatchGenericMotionEvent(...)
+     */
     public boolean handleMotionEvent(MotionEvent event) {
-        if (event == null || event.getActionMasked() != MotionEvent.ACTION_MOVE) {
+        if (event == null) return false;
+
+        final int action = event.getActionMasked();
+        if (action != MotionEvent.ACTION_MOVE && action != MotionEvent.ACTION_HOVER_MOVE) {
             return false;
         }
 
         final InputDevice device = event.getDevice();
-        final int source = event.getSource();
-        if (!isControllerMotion(device)) return false;
+        if (!isControllerDevice(device)) return false;
+
+        // Verifica anche la sorgente dell'EVENTO (non solo del device)
+        final int src = event.getSource();
+        if (!isControllerSource(src)) return false;
 
         final T16000MProfile.AxisData axisData = MotionEventAdapter.createAxisData(event);
-        if (axisData == null) {
-            return false;
-        }
+        if (axisData == null) return false;
 
         final DPadState state = createDPadState(axisData);
 
-        if (listener == null) {
-            // Evento gestito, ma nessun listener registrato
-            return true;
-        }
+        final Listener l = listener;
+        if (l == null) return true;
 
-        final int side = resolveSide(device, state);
-        if (side == Side.LEFT) {
-            listener.onStateLeftUpdated(state);
+        // Routing richiesto: SOLO throttle
+        if (state.getThrottle() < 0.5) {
+            l.onStateLeftUpdated(state);
         } else {
-            listener.onStateRightUpdated(state);
+            l.onStateRightUpdated(state);
         }
 
         return true;
     }
 
-    /** Da chiamare da Activity.onKeyDown(...) */
     public boolean handleKeyDown(int keyCode, KeyEvent event) {
         if (event == null) return false;
 
         final InputDevice device = event.getDevice();
-        final int source = event.getSource();
         if (!isControllerDevice(device)) return false;
 
+        // KeyEvent: molti controller riportano SOURCE_KEYBOARD -> non bloccare qui
+        if (!isControllerKeyEvent(event, device)) return false;
 
-        if (listener != null) {
-            listener.onButtonDown(keyCode);
-        }
+        final Listener l = listener;
+        if (l != null) l.onButtonDown(keyCode);
         return true;
     }
 
-    /** Da chiamare da Activity.onKeyUp(...) */
     public boolean handleKeyUp(int keyCode, KeyEvent event) {
         if (event == null) return false;
 
         final InputDevice device = event.getDevice();
-        final int source = event.getSource();
         if (!isControllerDevice(device)) return false;
 
+        if (!isControllerKeyEvent(event, device)) return false;
 
-        if (listener != null) {
-            listener.onButtonUp(keyCode);
-        }
+        final Listener l = listener;
+        if (l != null) l.onButtonUp(keyCode);
         return true;
+    }
+
+    /** KeyEvent: source può essere KEYBOARD anche per gamepad. */
+    private static boolean isControllerKeyEvent(KeyEvent event, InputDevice device) {
+        // 1) se Android lo marca correttamente, ok
+        if (event.isFromSource(InputDevice.SOURCE_GAMEPAD)
+                || event.isFromSource(InputDevice.SOURCE_JOYSTICK)
+                || event.isFromSource(InputDevice.SOURCE_DPAD)) {
+            return true;
+        }
+
+        // 2) fallback: se il DEVICE è un controller, accetta comunque
+        // (molti dongle/driver fanno passare i pulsanti come KEYBOARD)
+        if (device != null) {
+            int ds = device.getSources();
+            if (((ds & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
+                    || ((ds & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)
+                    || ((ds & InputDevice.SOURCE_DPAD) == InputDevice.SOURCE_DPAD)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void release() {
         stop();
         listener = null;
-        leftDeviceId = INVALID_ID;
-        rightDeviceId = INVALID_ID;
     }
 
-    // ---------------- Metodi privati ----------------
+    // ---------------- Privati ----------------
 
     private DPadState createDPadState(T16000MProfile.AxisData axisData) {
         return new DPadState(
@@ -133,121 +164,63 @@ public class DPadManager {
     }
 
     /**
-     * Riconoscimento device:
-     * - NON richiede più device.isVirtual()
-     * - accetta joystick/gamepad/dpad purché abbia almeno AXIS_X e AXIS_Y
+     * Riconosce un dispositivo come "controller" se ha sorgenti tipiche.
+     * Non filtra per isVirtual(): deve funzionare per entrambi.
      */
     private static boolean isControllerDevice(InputDevice device) {
         if (device == null) return false;
         final int sources = device.getSources();
+
         return ((sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)
                 || ((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
                 || ((sources & InputDevice.SOURCE_DPAD) == InputDevice.SOURCE_DPAD);
     }
 
-    private static boolean isControllerMotion(InputDevice device) {
-        if (!isControllerDevice(device)) return false;
-
-        // Per motion usa SOURCE_JOYSTICK come sorgente “vera” degli assi
-        final InputDevice.MotionRange x = device.getMotionRange(MotionEvent.AXIS_X, InputDevice.SOURCE_JOYSTICK);
-        final InputDevice.MotionRange y = device.getMotionRange(MotionEvent.AXIS_Y, InputDevice.SOURCE_JOYSTICK);
-
-        // Fallback: alcuni device espongono assi anche su SOURCE_GAMEPAD
-        final InputDevice.MotionRange x2 = (x != null) ? x : device.getMotionRange(MotionEvent.AXIS_X, InputDevice.SOURCE_GAMEPAD);
-        final InputDevice.MotionRange y2 = (y != null) ? y : device.getMotionRange(MotionEvent.AXIS_Y, InputDevice.SOURCE_GAMEPAD);
-
-        return x2 != null && y2 != null;
-    }
-
-
     /**
-     * Routing:
-     * - Virtual: mantiene workaround storico basato sul throttle.
-     * - Fisico: assegna in modo stabile (primo device = LEFT, secondo = RIGHT).
-     *   Se i due slot sono già occupati, fallback sul throttle senza riassegnare.
+     * Riconosce se la sorgente dell'evento è compatibile.
+     * Alcuni overlay/virtuali arrivano come DPAD, altri come GAMEPAD/JOYSTICK.
      */
-    private int resolveSide(InputDevice device, DPadState state) {
-        final int id = device.getId();
-
-        if (id == leftDeviceId) return Side.LEFT;
-        if (id == rightDeviceId) return Side.RIGHT;
-
-        if (device.isVirtual()) {
-            final int side = (state != null && state.getThrottle() < 0.5) ? Side.LEFT : Side.RIGHT;
-
-            // opzionale: blocca l'id allo slot appena possibile, per stabilizzare anche i virtual
-            if (side == Side.LEFT && leftDeviceId == INVALID_ID) leftDeviceId = id;
-            if (side == Side.RIGHT && rightDeviceId == INVALID_ID) rightDeviceId = id;
-
-            return side;
-        }
-
-        // Device fisici: assegnazione stabile per id
-        if (leftDeviceId == INVALID_ID) {
-            leftDeviceId = id;
-            Log.d(TAG, "Assigned device " + id + " to LEFT: " + safeName(device));
-            return Side.LEFT;
-        }
-        if (rightDeviceId == INVALID_ID) {
-            rightDeviceId = id;
-            Log.d(TAG, "Assigned device " + id + " to RIGHT: " + safeName(device));
-            return Side.RIGHT;
-        }
-
-        // Troppi device: fallback
-        return (state != null && state.getThrottle() < 0.5) ? Side.LEFT : Side.RIGHT;
+    private static boolean isControllerSource(int src) {
+        return ((src & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)
+                || ((src & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
+                || ((src & InputDevice.SOURCE_DPAD) == InputDevice.SOURCE_DPAD);
     }
 
     private static String safeName(InputDevice device) {
         try {
-            return device.getName();
+            return device != null ? device.getName() : "null";
         } catch (Throwable t) {
             return "unknown";
         }
     }
 
-    private static final class Side {
-        private static final int LEFT = 0;
-        private static final int RIGHT = 1;
-        private Side() {}
-    }
+    // ---------------- Input device listener ----------------
 
     private final InputManager.InputDeviceListener deviceListener =
             new InputManager.InputDeviceListener() {
                 @Override
                 public void onInputDeviceAdded(int deviceId) {
-                    // opzionale: qui potresti loggare o inizializzare qualcosa
-                    // Log.d(TAG, "Device added: " + deviceId);
+                    // opzionale debug
+                    InputDevice dev = InputDevice.getDevice(deviceId);
+                    Log.d(TAG, "Device added: " + deviceId + " name=" + safeName(dev)
+                            + " virtual=" + (dev != null && dev.isVirtual())
+                            + " sources=" + (dev != null ? dev.getSources() : 0));
                 }
 
                 @Override
                 public void onInputDeviceRemoved(int deviceId) {
-                    // Libera lo slot se stacchi uno dei due device assegnati
-                    boolean wasAssigned = false;
-                    if (deviceId == leftDeviceId) {
-                        leftDeviceId = INVALID_ID;
-                        wasAssigned = true;
-                    }
-                    if (deviceId == rightDeviceId) {
-                        rightDeviceId = INVALID_ID;
-                        wasAssigned = true;
-                    }
-
-                    if (wasAssigned) {
-                        Log.d(TAG, "Device removed (was assigned): " + deviceId);
-                    } else {
-                        Log.d(TAG, "Device removed: " + deviceId);
-                    }
-
-                    if (listener != null) {
-                        listener.onStateDisconnected();
-                    }
+                    Log.d(TAG, "Device removed: " + deviceId);
+                    final Listener l = listener;
+                    if (l != null) l.onStateDisconnected();
                 }
 
                 @Override
                 public void onInputDeviceChanged(int deviceId) {
-                    // opzionale: se cambia e vuoi ricalcolare, puoi anche invalidare gli slot
-                    // Log.d(TAG, "Device changed: " + deviceId);
+                    // opzionale debug
+                    InputDevice dev = InputDevice.getDevice(deviceId);
+                    Log.d(TAG, "Device changed: " + deviceId + " name=" + safeName(dev)
+                            + " virtual=" + (dev != null && dev.isVirtual())
+                            + " sources=" + (dev != null ? dev.getSources() : 0));
                 }
             };
 }

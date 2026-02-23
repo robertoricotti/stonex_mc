@@ -21,7 +21,7 @@ public class ProjectReportXlsxWriter {
             "Start-dN", "Start-dE", "Start-dZ",
             "End-dN", "End-dE", "End-dZ",
             "d-Tilt", "d-Bearing",
-            "AVG-Penetration Rate",
+            "AVG-Penetration Rate mm/S",
             "State"
     };
 
@@ -475,12 +475,12 @@ public class ProjectReportXlsxWriter {
         sh.setColumnWidth(14, 14 * 256); // Duration
 
         // Deltas
-        for (int i = 15; i <= 23; i++) {
+        for (int i = 15; i <= 22; i++) {
             sh.setColumnWidth(i, 12 * 256);
         }
 
-        sh.setColumnWidth(24, 24 * 256); // AVG rate
-        sh.setColumnWidth(25, 12 * 256); // State
+        sh.setColumnWidth(23, 30 * 256); // AVG rate
+        sh.setColumnWidth(24, 12 * 256); // State
     }
 
 }

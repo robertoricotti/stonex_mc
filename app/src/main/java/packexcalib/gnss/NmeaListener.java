@@ -258,8 +258,11 @@ public class NmeaListener {
                         case "$GPRMC":
                         case "$GNRMC":
                             if (DataSaved.my_comPort != 0) {
-                                date_time_D_M_Y = dateTimeFromRMC(NMEA0183, 0);
-                                date_time_Y_M_D = dateTimeFromRMC(NMEA0183, 1);
+                                LocalDateTime result = dateTimeFromRMCToLocalDateTime(NMEA0183, DataSaved.UTC_Offset);
+
+                                date_time_D_M_Y = result.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+                                date_time_Y_M_D = result.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
                             }
                             break;
 
@@ -353,7 +356,7 @@ public class NmeaListener {
                     LocalDateTime result=GnssUtcOffsetConverter.applyOffset(
                             mData,
                             mHour,
-                            0
+                            DataSaved.UTC_Offset
                     );
 
                     date_time_D_M_Y= result.format(
@@ -635,62 +638,41 @@ public class NmeaListener {
         }
     }
 
-    public static String parseCanDateTime(byte[] canData) {
 
-        if (canData == null || canData.length != 8) {
-            throw new IllegalArgumentException("CAN data must be exactly 8 bytes");
-        }
-
-
-        DateTimeFormatter formatter;
-
-
-
-        return null;
-    }
-
-
-
-
-    public static String dateTimeFromRMC(String rmc, int formatType) {
-
+    public static LocalDateTime dateTimeFromRMCToLocalDateTime(String rmc, int offsetMinutes) {
         if (rmc == null || !rmc.contains("RMC")) {
             throw new IllegalArgumentException("Invalid RMC sentence");
         }
-
         String[] f = rmc.split(",");
-
         if (f.length < 10 || !"A".equals(f[2])) {
             throw new IllegalArgumentException("RMC missing valid date/time");
         }
 
-        // TIME hhmmss.sss
         String t = f[1];
         int hour = Integer.parseInt(t.substring(0, 2));
         int minute = Integer.parseInt(t.substring(2, 4));
         int second = Integer.parseInt(t.substring(4, 6));
 
         int millisecond = 0;
-        if (t.contains(".")) {
-            String ms = t.substring(t.indexOf('.') + 1);
+        int dot = t.indexOf('.');
+        if (dot >= 0) {
+            String ms = t.substring(dot + 1);
             millisecond = Integer.parseInt((ms + "000").substring(0, 3));
         }
 
-        // DATE ddmmyy
         String d = f[9];
         int day = Integer.parseInt(d.substring(0, 2));
         int month = Integer.parseInt(d.substring(2, 4));
-        int year = 2000 + Integer.parseInt(d.substring(4, 6));
+        int yy = Integer.parseInt(d.substring(4, 6));
+        int year = (yy >= 80) ? (1900 + yy) : (2000 + yy);
 
-        ZonedDateTime zdt = ZonedDateTime.of(
-                year, month, day,
-                hour, minute, second,
-                millisecond * 1_000_000,
-                ZoneOffset.UTC
+        // UTC -> LocalDateTime
+        LocalDateTime utcLdt = LocalDateTime.of(
+                year, month, day, hour, minute, second, millisecond * 1_000_000
         );
-        ZonedDateTime local = zdt.withZoneSameInstant(ZoneId.systemDefault());
 
-        return formatDateTime(local, formatType);
+        // offset "meccanico"
+        return utcLdt.plusMinutes(offsetMinutes);
     }
 
 
