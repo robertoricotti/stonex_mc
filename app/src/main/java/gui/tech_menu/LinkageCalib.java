@@ -94,11 +94,11 @@ public class LinkageCalib extends BaseClass {
 
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
 
-        if (indexMeasure == 4 || indexMeasure == 5) {
+
             numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
-        } else {
+
             numberDialog = new CustomNumberDialog(this, -1);
-        }
+
 
         lengthL1.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_LengthL1")));
         lengthL2.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_LengthL2")));

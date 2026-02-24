@@ -112,11 +112,11 @@ public class Boom1Calib extends BaseClass {
         indexMachineSelected = MyData.get_Int( "MachineSelected");
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
 
-        if (indexMeasure == 4 || indexMeasure == 5) {
+
             numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
-        } else {
+
             numberDialog = new CustomNumberDialog(this, -1);
-        }
+
 
         lengthBoom1.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_LengthBoom1")));
         textBoom1.setText(getResources().getString(R.string.units) + Utils.getMetriSimbol());

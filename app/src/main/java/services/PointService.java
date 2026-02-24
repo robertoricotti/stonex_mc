@@ -566,7 +566,7 @@ public class PointService extends Service {
     private void updateCurrentPosition(double[] position, double raggio) {
         if (position == null || position.length < 3) return;
 
-Log.d("mRaggio",mRaggio+"   "+DataSaved.Raggio_Drill);
+
         double r = raggio / 4.0;
         r = Math.min(r, 30.0);
 

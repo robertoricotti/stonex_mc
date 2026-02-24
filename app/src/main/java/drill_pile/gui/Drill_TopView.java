@@ -2,6 +2,9 @@ package drill_pile.gui;
 
 import static drill_pile.gui.Drill_Activity.showCroce;
 import static services.ReadProjectService.persistAlignmentAB;
+import static utils.MyTypes.MAST_FORWARD;
+import static utils.MyTypes.MAST_LEFT;
+import static utils.MyTypes.MAST_RIGHT;
 import static utils.MyTypes.SOLARFARM_MODE;
 
 import android.annotation.SuppressLint;
@@ -29,6 +32,8 @@ import services.ReadProjectService;
 
 
 public class Drill_TopView extends View {
+    int coloreCingolo;
+    private boolean drawMachineSchema = false;
     private float uiRotDeg = 0f;
     private android.graphics.DashPathEffect dashEffect;
     private float lastDashScala = -1f;
@@ -98,6 +103,11 @@ public class Drill_TopView extends View {
         if (offsetY == 0) {
             offsetY = 0;
         }
+        if(DataSaved.temaSoftware==0){
+            coloreCingolo=Color.LTGRAY;
+        }else {
+            coloreCingolo=Color.DKGRAY;
+        }
 
 
     }
@@ -161,9 +171,19 @@ public class Drill_TopView extends View {
                 drawSelectedPoint(DataSaved.Selected_Point3D_Drill);
             }
 
+            PointF toolScreen = new PointF(toolX, toolY);
+            //0)MCH Frame
+            if (drawMachineSchema) {
+                // qui metti i tuoi flag reali (da dove li prendi tu)
+                boolean mastSX = DataSaved.Drill_Mast_Position.equals(MAST_LEFT); // esempio
+                boolean mastFW = DataSaved.Drill_Mast_Position.equals(MAST_FORWARD); // esempio
+                boolean mastDX = DataSaved.Drill_Mast_Position.equals(MAST_RIGHT); // esempio
+
+                drawMachineSchemaNearTool(canvas, paint, toolScreen, mastSX, mastFW, mastDX);
+            }
             // 1) target giallo: drillbit (fisso sullo schermo)
 
-            PointF toolScreen = new PointF(toolX, toolY);
+
             drawTarget(toolScreen, colorTarget_Basso,
                     Math.max(18f, scala * 0.55f) * targetScale,
                     Math.max(11f, scala * 0.28f) * targetScale,
@@ -241,9 +261,6 @@ public class Drill_TopView extends View {
                 Log.e("DrillDraw", "filtered_drill_points == null");
                 return;
             }
-            Log.i("DrillDraw", "filtered_drill_points size = " + DataSaved.filtered_drill_points.size());
-
-            int col = myParseColor(Color.WHITE);
 
             for (Point3D_Drill point : DataSaved.filtered_drill_points) {
                 if (point == null) continue;
@@ -1000,7 +1017,114 @@ public class Drill_TopView extends View {
         return id;
     }
 
+/// //machine schema
 
+
+    public void setDrawMachineSchema(boolean v) {
+        drawMachineSchema = v;
+        invalidate();
+    }
+    private void drawMachineSchemaNearTool(
+            Canvas canvas,
+            Paint paint,
+            PointF toolScreen,
+            boolean mastSX,
+            boolean mastFW,
+            boolean mastDX
+    ) {
+        // --- dimensioni base (in px nel canvas già trasformato da drawMatrix) ---
+        float s = targetScale;                 // usa la tua scala UI
+        float bodyW = 90f * s;
+        float bodyH = 85f * s;
+
+        float trackW = 35f * s;
+        float gap = -25f * s;
+        float trackStroke = 4.5f * s;
+
+        // ingombro totale orizzontale dello schema (cingolo + gap + corpo + gap + cingolo)
+        float totalW = bodyW + 2f * (gap + trackW);
+        // un margine dal target
+        float margin = 35f * s;
+
+        // offset macchina rispetto al target (frame DISPLAY: X destra, Y giù)
+        float offX = 0f;
+        float offY = 0f;
+
+        // Priorità: se più flag attivi, sommiamo (es: SX+FW => diagonale).
+        // Se invece sono mutuamente esclusivi nel tuo UI, andrà comunque bene.
+        if (mastSX) offX += (totalW * 0.5f + margin);   // macchina a DESTRA del target
+        if (mastDX) offX -= (totalW * 0.5f + margin);   // macchina a SINISTRA del target
+        if (mastFW) offY += (bodyH * 0.5f + 70f * s);   // macchina SOTTO al target (come la tua immagine)
+
+        // --- pivot schema = punto blu (fulcro dell’icona) ---
+        // Il blu nella tua immagine è vicino al bordo alto del corpo (~20% dall’alto).
+        // Quindi: se conosci pivot, il corpo lo piazziamo relativo a pivot.
+        float pivotX = toolScreen.x + offX;
+        float pivotY = toolScreen.y + offY;
+
+        // corpo: pivot ~20% dall’alto
+        float bodyTop = pivotY - bodyH * 0.20f;
+        float bodyLeft = pivotX - bodyW * 0.5f;
+        float bodyRight = bodyLeft + bodyW;
+        float bodyBottom = bodyTop + bodyH;
+
+        // cingoli (stessa altezza del corpo + extra)
+        float trackH = bodyH + 55f * s;
+        float trackTop = bodyTop - 45f * s;
+        float trackBottom = trackTop + trackH;
+
+        float leftTrackLeft = bodyLeft - gap - trackW;
+        float leftTrackRight = leftTrackLeft + trackW;
+
+        float rightTrackLeft = bodyRight + gap;
+        float rightTrackRight = rightTrackLeft + trackW;
+
+        float corner = 10f * s;
+
+        // --- salva stato paint ---
+        Paint.Style oldStyle = paint.getStyle();
+        int oldColor = paint.getColor();
+        float oldStroke = paint.getStrokeWidth();
+        Paint.Cap oldCap = paint.getStrokeCap();
+
+        paint.setAntiAlias(true);
+
+        // --- cingoli neri ---
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(coloreCingolo);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeWidth(trackStroke);
+
+        canvas.drawRoundRect(leftTrackLeft, trackTop, leftTrackRight, trackBottom, corner, corner, paint);
+        canvas.drawRoundRect(rightTrackLeft, trackTop, rightTrackRight, trackBottom, corner, corner, paint);
+
+        // --- corpo macchina ---
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(MyColorClass.colorStick);
+        canvas.drawRoundRect(bodyLeft, bodyTop, bodyRight, bodyBottom,5f,5f, paint);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(coloreCingolo);
+        canvas.drawRoundRect(bodyLeft, bodyTop, bodyRight, bodyBottom,5f,5f, paint);
+
+        // --- punto blu (fulcro icona) ---
+        //float dotR = 12f * s;
+        //paint.setColor(Color.BLUE);
+        //canvas.drawCircle(pivotX, pivotY, dotR, paint);
+
+        // --- ripristina paint ---
+        paint.setStyle(oldStyle);
+        paint.setColor(oldColor);
+        paint.setStrokeWidth(oldStroke);
+        paint.setStrokeCap(oldCap);
+    }
+    private float metersToPx(float meters) {
+        // 1 metro nel mondo = quanto vale in pixel sul canvas con la drawMatrix corrente?
+        // Metodo robusto: trasformo un vettore (0,0)->(1,0) con la matrice.
+        float[] pts = new float[]{0f, 0f, 1f, 0f};
+        drawMatrix.mapPoints(pts);
+        float pxPerMeter = (float) Math.hypot(pts[2] - pts[0], pts[3] - pts[1]);
+        return meters * pxPerMeter;
+    }
 }
 
 

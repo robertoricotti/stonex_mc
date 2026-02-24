@@ -101,6 +101,8 @@ import utils.MyMCUtils;
 public class CanSender extends Service {
     public static byte GNSS_MSG = 0x01;
      int heartbitTerzeParti = 0;
+    int heartbitTerzeParti_1 = 0;
+    int heartbitTerzeParti_2 = 0;
     byte MUX=0x01;
     //private long lastCall = 0;
     public final static double MAX_SCALE = 0.3;
@@ -1208,185 +1210,108 @@ public class CanSender extends Service {
                             break;
                     }
 
-                    left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_SX * 1000), (short) -32768, (short) 32767));
-                    cent = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_CT * 1000), (short) -32768, (short) 32767));
-                    right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_DX * 1000), (short) -32768, (short) 32767));
-
-                    boolean[] outSurf = new boolean[]{
-                            ltOffGrid,//128
-                            ctOffGrid,//64
-                            rtOffGrid,//32
-                            false, false, false, false, false
-
-                    };
-
-                    byte[] sinistra = new byte[4], centro = new byte[4], destra = new byte[4];
-                    sinistra = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (ExcavatorLib.bucketLeftCoord[2] * 1000));
-                    centro = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (ExcavatorLib.bucketCoord[2] * 1000));
-                    destra = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (ExcavatorLib.bucketRightCoord[2] * 1000));
-                    byte[] dtmSx = new byte[4], dtmCx = new byte[4], dtmDx = new byte[4], dtmFW = new byte[4], dtmBW = new byte[4];
-                    dtmSx = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[0] * 1000));
-                    dtmCx = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[1] * 1000));
-                    dtmDx = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[2] * 1000));
-                    dtmFW = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[3] * 1000));
-                    dtmBW = PLC_DataTypes_LittleEndian.S32_to_bytes((int) (TriangleService.quoteDTM[4] * 1000));
-                    byte[] heading = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (ExcavatorLib.hdt_LAMA * 100));
-                    byte working = 0;
-                    heartbitTerzeParti++;
-                    heartbitTerzeParti = heartbitTerzeParti %255;
-
-                    if(heartbitTerzeParti%2==0){
-                        MUX=0x01;
+                    if(ltOffGrid){
+                        left=new byte[]{0x0, (byte) 0x80};
                     }else {
-                        MUX=0x03;
+                        left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_SX * 1000), (short) -32768, (short) 32767));
                     }
 
-                    if (MyApp.visibleActivity instanceof My3DActivity) {
-                        working = 1;
+                    if(ctOffGrid){
+                        cent=new byte[]{0x0, (byte) 0x80};
+                    }else {
+                        cent = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_CT * 1000), (short) -32768, (short) 32767));
                     }
-                    Log.d("CounterTerze", heartbitTerzeParti +"   MUX:"+MUX);
 
-                    MyDeviceManager.CanWrite(sending, 1, 0x812, 8,
-                            new byte[]{
+                    if(rtOffGrid){
+                        right=new byte[]{0x0, (byte) 0x80};
+                    }else {
+                        right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_DX * 1000), (short) -32768, (short) 32767));
+
+                    }
+
+                    byte[]mainfall=PLC_DataTypes_LittleEndian.S16_to_bytes(TriangleService.Mainfall_Value);
+                    byte[]offset=PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (DataSaved.offsetH* 1000), (short) -32768, (short) 32767));
+                    byte[]dgm_left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.DGM_Letf * 1000), (short) -32768, (short) 32767));
+                    byte[]dgm_right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.DGM_Right * 1000), (short) -32768, (short) 32767));
+                    heartbitTerzeParti++;
+
+                    if(DataSaved.gpsOk) {
+                        if (heartbitTerzeParti % 2 == 0) {
+                            heartbitTerzeParti_1++;
+                            heartbitTerzeParti_1 = heartbitTerzeParti_1 % 255;
+                            MUX = 0x01;
+                            MyDeviceManager.CanWrite(sending, 1, 0x154, 8, new byte[]{
+                                    MUX,
+                                    (byte) heartbitTerzeParti_1,
                                     left[0],
                                     left[1],
-                                    cent[0],
-                                    cent[1],
                                     right[0],
                                     right[1],
-                                    (byte) PLC_DataTypes_LittleEndian.Encode_8_bool(outSurf),
-                                    (byte) working
-
-                            }
-                    );
-
-
-                    MyDeviceManager.CanWrite(sending, 1, 0x814, 8,
-                            new byte[]{
-                                    dist[0],
-                                    dist[1],
-                                    satN,
-                                    qFix,
-                                    Cq[0],
-                                    Cq[1],
-                                    heading[0],
-                                    heading[1]
-
-
-                            }
-                    );
+                                    mainfall[0],
+                                    mainfall[1]
+                            });
+                        } else {
+                            heartbitTerzeParti_2++;
+                            heartbitTerzeParti_2 = heartbitTerzeParti_2 % 255;
+                            MUX = 0x03;
+                            MyDeviceManager.CanWrite(!sending, 1, 0x154, 8, new byte[]{
+                                    MUX,
+                                    (byte) heartbitTerzeParti_2,
+                                    dgm_left[0],
+                                    dgm_left[1],
+                                    dgm_right[0],
+                                    dgm_right[1],
+                                    offset[0],
+                                    offset[1]
 
 
-                    MyDeviceManager.CanWrite(sending, 1, 0x816, 8,
-                            new byte[]{
-                                    sinistra[0], sinistra[1], sinistra[2], sinistra[3],
-                                    centro[0], centro[1], centro[2], centro[3],
+                            });
+                        }
+                    }else {
+                        MyDeviceManager.CanWrite(sending,1,0x154,8,new byte[]{
+                                0x01,
+                                (byte) heartbitTerzeParti_1,
+                                0x0,
+                                (byte) 0x80,
+                                0x0,
+                                (byte) 0x80,
+                                0x0,
+                                (byte) 0x80
+                        });
+                        MyDeviceManager.CanWrite(sending,1,0x154,8,new byte[]{
+                                0x03,
+                                (byte) heartbitTerzeParti_2,
+                                0x0,
+                                (byte) 0x80,
+                                0x0,
+                                (byte) 0x80,
+                                0x0,
+                                (byte) 0x80
+                        });
+                    }
 
-                            }
-                    );
 
-                    MyDeviceManager.CanWrite(sending, 1, 0x818, 8,
-                            new byte[]{
-                                    destra[0], destra[1], destra[2], destra[3],
-                                    dtmSx[0], dtmSx[1], dtmSx[2], dtmSx[3],
-
-                            }
-                    );
-                    MyDeviceManager.CanWrite(sending, 1, 0x820, 8,
-                            new byte[]{
-                                    dtmCx[0], dtmCx[1], dtmCx[2], dtmCx[3],
-                                    dtmDx[0], dtmDx[1], dtmDx[2], dtmDx[3],
-                            }
-                    );
-
-                    MyDeviceManager.CanWrite(sending, 1, 0x822, 8,
-                            new byte[]{
-                                    dtmFW[0], dtmFW[1], dtmFW[2], dtmFW[3],
-                                    dtmBW[0], dtmBW[1], dtmBW[2], dtmBW[3],
-                            }
-                    );
                 } catch (Exception e) {
-                    MyDeviceManager.CanWrite(sending, 1, 0x812, 8,
-                            new byte[]{
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF
-
-                            }
-                    );
-
-
-                    MyDeviceManager.CanWrite(sending, 1, 0x814, 8,
-                            new byte[]{
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF
-
-
-                            }
-                    );
-
-
-                    MyDeviceManager.CanWrite(sending, 1, 0x816, 8,
-                            new byte[]{
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF
-                            }
-                    );
-
-                    MyDeviceManager.CanWrite(sending, 1, 0x818, 8,
-                            new byte[]{
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF
-                            }
-                    );
-                    MyDeviceManager.CanWrite(sending, 1, 0x820, 8,
-                            new byte[]{
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF
-                            }
-                    );
-
-                    MyDeviceManager.CanWrite(sending, 1, 0x822, 8,
-                            new byte[]{
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF,
-                                    (byte) 0xFF
-                            }
-                    );
+                    MyDeviceManager.CanWrite(sending,1,0x154,8,new byte[]{
+                            0x01,
+                            (byte) heartbitTerzeParti_1,
+                            0x0,
+                            (byte) 0x80,
+                            0x0,
+                            (byte) 0x80,
+                            0x0,
+                            (byte) 0x80
+                    });
+                    MyDeviceManager.CanWrite(sending,1,0x154,8,new byte[]{
+                            0x03,
+                            (byte) heartbitTerzeParti_2,
+                            0x0,
+                            (byte) 0x80,
+                            0x0,
+                            (byte) 0x80,
+                            0x0,
+                            (byte) 0x80
+                    });
                 }
 
                 break;

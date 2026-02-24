@@ -1,0 +1,4 @@
+pyinstaller --noconsole --onefile stx_hole_converter.py --icon=stx_icon.ico ^
+  --add-data "templates\Jet_Template.xlsx;templates" ^
+  --add-data "templates\Rock_Template.xlsx;templates" ^
+  --add-data "templates\Solar_Template.xlsx;templates"

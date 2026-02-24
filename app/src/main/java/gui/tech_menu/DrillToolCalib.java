@@ -18,6 +18,7 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
+import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import packexcalib.exca.DataSaved;
@@ -37,6 +38,7 @@ public class DrillToolCalib extends BaseClass {
     int indexMachineSelected;
     int indexMeasure;
     CustomNumberDialog numberDialog;
+    CustomNumberDialogFtIn numberDialogFtIn;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
     double myStep = 0.001;
@@ -55,6 +57,7 @@ public class DrillToolCalib extends BaseClass {
     private void findView() {
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
         indexMachineSelected = MyData.get_Int("MachineSelected");
+        numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
         numberDialog = new CustomNumberDialog(this, -1);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogDrillGnss=new Dialog_Drill_GNSS(this);
@@ -86,6 +89,33 @@ public class DrillToolCalib extends BaseClass {
     }
 
     private void onClick() {
+        deltaX.setOnClickListener(view -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(deltaX);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(deltaX);
+            }
+        });
+        deltaY.setOnClickListener(view -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(deltaY);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(deltaY);
+            }
+        });
+        deltaZ.setOnClickListener(view -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(deltaZ);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(deltaZ);
+            }
+        });
         gpsdebugg.setOnClickListener(view -> {
             if(DataSaved.isWL==DRILL){
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
@@ -144,8 +174,22 @@ public class DrillToolCalib extends BaseClass {
             DataSaved.Tool_Delta_Z -= myStep;
             updateTxt();
         });
+        numberDialog.dialog.setOnDismissListener(dialog -> {
 
+            updateOnClose();
+            updateTxt();
+
+
+        });
+        numberDialogFtIn.dialog.setOnDismissListener(dialog -> {
+
+            updateOnClose();
+            updateTxt();
+
+
+        });
     }
+
 
     public void updateUI() {
         switch (indexMeasure) {
@@ -238,4 +282,5 @@ public class DrillToolCalib extends BaseClass {
             return false;
         });
     }
+
 }

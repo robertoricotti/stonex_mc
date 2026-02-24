@@ -107,11 +107,11 @@ public class FrameCalib extends BaseClass {
 
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
 
-        if (indexMeasure == 4 || indexMeasure == 5) {
+
             numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
-        } else {
+
             numberDialog = new CustomNumberDialog(this, -1);
-        }
+
         MyData.push("M" + indexMachineSelected + "useYawFrame", "0");//Temporary RR
         useYawF.setChecked(!MyData.get_String("M" + indexMachineSelected + "useYawFrame").equals("0"));
         lengthPitch.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_LengthPitch")));

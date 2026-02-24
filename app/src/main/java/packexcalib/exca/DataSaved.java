@@ -32,18 +32,18 @@ public class DataSaved {
     public static int Unit_Of_Measure;
     public static int Drill_Screen;
     public static int Drilling_Mode;
-    public static boolean isDefiningAB=false;
+    public static boolean isDefiningAB = false;
     public static String alignAId = null;
     public static String alignBId = null;
-    public static double ALLINEAMENTO_AB=0;
+    public static double ALLINEAMENTO_AB = 0;
     //Dragaggio
     public static double HighThreshold;
     public static double LowThreshold;
     public static double PassoGriglia;
     public static String DredgeFileName;
     public static int EnableMapping;
-    public static  String Drill_Antenna_Mounting="BODY";
-    public static  String Drill_Mast_Position="FORWARD";
+    public static String Drill_Antenna_Mounting = "BODY";
+    public static String Drill_Mast_Position = "FORWARD";
 
 
     //settaggi idraulici
@@ -55,7 +55,7 @@ public class DataSaved {
     public static double tolleranza_XY;
     public static double tolleranza_Slope;
     public static int Use_Blade_Pitch;
-
+    public static double Mainfall_Distance;
 
     public static int minSpeedLeftUP;
     public static int maxSpeedLeftUP;
@@ -84,7 +84,6 @@ public class DataSaved {
     public static int REVERSE_LEFT;
     public static int REVERSE_RIGHT;
     public static int REVERSE_SS;
-
 
 
     public static int Wheel_Steer_Rev;
@@ -172,7 +171,6 @@ public class DataSaved {
     public static double L_Boom2;
 
     public static double L_Stick;
-
 
 
     public static double L1;
@@ -315,13 +313,9 @@ public class DataSaved {
     public static RigStatus_IR rigStatus;
 
 
-
     // ---- RAW POINT CLOUD / ASSIST ----
     public static List<Point3D_IR> rawPoints = new ArrayList<>();
     public static List<Point3D_IR> filteredRawPoints = new ArrayList<>();
-
-
-
 
 
     //MC
@@ -355,7 +349,7 @@ public class DataSaved {
     public static List<Polyline> filteredPolylinesGL_2D = new ArrayList<>();
     public static List<Point3D> points = new ArrayList<>();
     public static List<Point3D_Drill> drill_points = new ArrayList<>();
-    public static List<Point3D_Drill> filtered_drill_points=new ArrayList<>();
+    public static List<Point3D_Drill> filtered_drill_points = new ArrayList<>();
     public static List<Point3D> filteredPoints = new ArrayList<>();
     public static List<Arc> arcs = new ArrayList<>();
     public static List<Circle> circles = new ArrayList<>();
@@ -437,10 +431,10 @@ public class DataSaved {
 
 
     //to test canvas
-    public static double cutWorldX_1 ;
-    public static double cutWorldY_1 ;
+    public static double cutWorldX_1;
+    public static double cutWorldY_1;
 
-    public static double cutWorldX_2 ;
-    public static double cutWorldY_2 ;
+    public static double cutWorldX_2;
+    public static double cutWorldY_2;
 
 }

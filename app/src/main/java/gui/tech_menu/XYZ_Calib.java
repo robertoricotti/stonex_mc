@@ -23,6 +23,7 @@ import com.example.stx_dig.R;
 
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
+import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import packexcalib.exca.DataSaved;
@@ -42,6 +43,7 @@ public class XYZ_Calib extends BaseClass {
     int indexMachineSelected;
     int indexMeasure;
     CustomNumberDialog numberDialog;
+    CustomNumberDialogFtIn numberDialogFtIn;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
     ImageView wlwl, imgupsx, imgupdx, imgdwdx, aaaa;
@@ -100,7 +102,11 @@ public class XYZ_Calib extends BaseClass {
         gpsDebug = findViewById(R.id.gpsdebugg);
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
         indexMachineSelected = MyData.get_Int("MachineSelected");
-        numberDialog = new CustomNumberDialog(this, -1);
+
+            numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
+
+            numberDialog = new CustomNumberDialog(this, -1);
+
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogDrillGnss =new Dialog_Drill_GNSS(this);
         updateTxt();
@@ -121,7 +127,7 @@ public class XYZ_Calib extends BaseClass {
             }
         });
         update.setOnClickListener(view -> {
-            Log.d("CalledUPF", "Called");
+
             MyData.push("M" + indexMachineSelected + "_OffsetGPSX", Utils.writeMetri(dx.getText().toString().replace(",", ".")));
             MyData.push("M" + indexMachineSelected + "_OffsetGPSY", Utils.writeMetri(dY.getText().toString().replace(",", ".")));
             MyData.push("M" + indexMachineSelected + "_OffsetGPSZ", Utils.writeMetri(dZ.getText().toString().replace(",", ".")));
@@ -186,37 +192,68 @@ public class XYZ_Calib extends BaseClass {
 
 
         dx.setOnClickListener(view -> {
-            if (!numberDialog.dialog.isShowing())
-                numberDialog.show(dx);
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(dx);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(dx);
+            }
 
 
         });
         dY.setOnClickListener(view -> {
 
-            if (!numberDialog.dialog.isShowing())
-                numberDialog.show(dY);
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(dY);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(dY);
+            }
 
         });
         dZ.setOnClickListener(view -> {
-
-            if (!numberDialog.dialog.isShowing())
-                numberDialog.show(dZ);
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(dZ);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(dZ);
+            }
 
         });
         dHdt.setOnClickListener(view -> {
 
-            if (!numberDialog.dialog.isShowing())
-                numberDialog.show(dHdt);
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(dHdt);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(dHdt);
+            }
 
         });
         dist.setOnClickListener(view -> {
 
-            if (!numberDialog.dialog.isShowing())
-                numberDialog.show(dist);
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(dist);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(dist);
+            }
 
         });
         numberDialog.dialog.setOnDismissListener(dialog -> {
-            Log.d("NumberDialog", "Dialog chiusa");
+
+            updateOnClose();
+            updateTxt();
+
+
+        });
+        numberDialogFtIn.dialog.setOnDismissListener(dialog -> {
+
             updateOnClose();
             updateTxt();
 

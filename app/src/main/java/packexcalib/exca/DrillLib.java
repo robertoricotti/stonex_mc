@@ -7,6 +7,9 @@ import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 import static packexcalib.exca.Sensors_Decoder_Drill.RopeLen;
 import static utils.MyTypes.AT_BODY;
 import static utils.MyTypes.AT_BOOM;
+import static utils.MyTypes.MAST_FORWARD;
+import static utils.MyTypes.MAST_LEFT;
+import static utils.MyTypes.MAST_RIGHT;
 
 
 import java.util.Arrays;
@@ -17,6 +20,7 @@ public class DrillLib {
     public static double[] coordBoomLink_1,coordTool_DeltaZ,coordBoomLink_Final;
     public static double [] coorX=new double[3],coorY=new double[3],coorMart=new double[3];
     static double Z_Totale;
+    public static double[] Drill_Fixed_Point=new double[3];
 
     public static void Drill(){
 
@@ -106,6 +110,8 @@ public class DrillLib {
 
                     toolEndCoord=Exca_Quaternion.endPoint(coordTool,correctToolPitch-90,correctToolRoll,Z_Totale,hdt_BOOM);
 
+                    Drill_Fixed_Point=coordMiniPitch;
+
                     Log.d("coordTool", Arrays.toString(coordTool));
 
                     Log.d("toolEndCoord", Arrays.toString(toolEndCoord));
@@ -133,7 +139,19 @@ public class DrillLib {
                     Z_Totale=DataSaved.Tool_Delta_Z+RopeLen+DataSaved.drill_First_Rod_Len+(DataSaved.numeroAste*DataSaved.drill_Rod_Len)+DataSaved.drill_Bit_Len;
                     coordTool=coorX;
                     toolEndCoord=Exca_Quaternion.endPoint(coordTool,correctToolPitch-90,correctToolRoll,Z_Totale,hdt_BOOM);
+                    switch (DataSaved.Drill_Mast_Position){
+                        case MAST_LEFT :
+                            Drill_Fixed_Point=Exca_Quaternion.endPoint(toolEndCoord,0,0,2,hdt_BOOM+90);
+                            break;
 
+                        case MAST_FORWARD:
+                            Drill_Fixed_Point=Exca_Quaternion.endPoint(toolEndCoord,0,0,2,hdt_BOOM+90);
+                            break;
+
+                        case MAST_RIGHT:
+                            Drill_Fixed_Point=Exca_Quaternion.endPoint(toolEndCoord,0,0,2,hdt_BOOM-90);
+                            break;
+                    }
                 }catch (Exception e) {
                     Log.e("DrillLib",Log.getStackTraceString(e));
                 }

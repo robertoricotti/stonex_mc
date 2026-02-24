@@ -578,9 +578,10 @@
 
         <!-- Tabella -->
         <TableLayout
+            android:gravity="center"
             android:id="@+id/tableDepthInfo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="1dp"
             android:background="@android:color/black"
             android:stretchColumns="1,2,3"

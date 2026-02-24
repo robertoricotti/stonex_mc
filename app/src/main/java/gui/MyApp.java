@@ -14,6 +14,7 @@ import static services.CanService.stickOK;
 import static services.CanService.tiltDisc;
 import static services.CanService.tiltOK;
 import static services.CanService.toolOK;
+import static services.PointService.valoriTabella;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
@@ -487,10 +488,8 @@ git push
                                     NmeaListener.NmeaStandard(NmeaGenerator.generateGPHDT());
                                     NmeaListener.NmeaStandard(NmeaGenerator.generateLLQ());
 
-                                    Log.d("RaggioDXF",DataSaved.Raggio_Drill+"");
 
                                 }
-
 
                                 errori();
                                 if (DataSaved.useYawFrame == 1 && DataSaved.driftStep > 0) {

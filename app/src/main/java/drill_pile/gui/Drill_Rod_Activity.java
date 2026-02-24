@@ -54,11 +54,11 @@ public class Drill_Rod_Activity extends BaseClass {
     private void findView(){
         indexMachine= MyData.get_Int("MachineSelected");
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
-        if (indexMeasure == 4 || indexMeasure == 5) {
+
             numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
-        } else {
+
             numberDialog = new CustomNumberDialog(this, -1);
-        }
+
         save=findViewById(R.id.save);
         titolo=findViewById(R.id.titolo);
         gpsDebug=findViewById(R.id.gpsdebugg);

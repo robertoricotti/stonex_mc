@@ -107,11 +107,11 @@ public class TiltCalib extends BaseClass {
         } catch (Exception e) {
             currentBucket = 1;
         }
-        if (indexMeasure == 4 || indexMeasure == 5) {
+
             numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
-        } else {
+
             numberDialog = new CustomNumberDialog(this, -1);
-        }
+
 
         tiltLength.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Tilt_Length" + currentBucket)));
 

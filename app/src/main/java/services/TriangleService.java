@@ -4,8 +4,6 @@ import static packexcalib.exca.DataSaved.polylines;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
-import static packexcalib.exca.ExcavatorLib.correctPitch;
-import static packexcalib.exca.ExcavatorLib.correctRoll;
 import static packexcalib.exca.ExcavatorLib.hdt_LAMA;
 import static packexcalib.exca.ExcavatorLib.yawSensor;
 
@@ -55,7 +53,9 @@ import utils.DistToPoint;
 import utils.MyData;
 
 public class TriangleService extends Service {
-    public static int segnoLinea=1;
+    public static double DGM_Letf, DGM_Right;
+    public static short Mainfall_Value = 0;
+    public static int segnoLinea = 1;
     public static double[] quoteDTM;
     public static double orientamentoFreccia;
     static boolean startSort;
@@ -107,7 +107,7 @@ public class TriangleService extends Service {
                     break;
             }
         } catch (Exception e) {
-            conversionFactor=1;
+            conversionFactor = 1;
         }
         super.onCreate();
         posL = new double[3];
@@ -177,6 +177,13 @@ public class TriangleService extends Service {
 
                         quota3D_DX = quotas[2] - (DataSaved.offsetH * -1);
 
+                        if(DataSaved.Interface_Type==255) {
+                            double QuotaMedia = (minZ + maxZ) / 2.0d;
+
+                            DGM_Letf = bucketLeftCoord[2] - QuotaMedia;
+                            DGM_Right = bucketRightCoord[2] - QuotaMedia;
+                        }
+
                         switch (DataSaved.bucketEdge) {
                             case -1:
                                 Line_Avanti = IntersectionFinder.Intersections(bucketLeftCoord, 0);
@@ -238,7 +245,7 @@ public class TriangleService extends Service {
 
                             case 2:
 
-                                Point3D referencePoint=new Point3D(bucketCoord[0], bucketCoord[1], 0);
+                                Point3D referencePoint = new Point3D(bucketCoord[0], bucketCoord[1], 0);
 
                                 if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
 
@@ -284,7 +291,7 @@ public class TriangleService extends Service {
                                         closestSegment = findClosestSegment(referencePoint, lockedSegments);
                                     }
 
-                                    double refE = 0,refN=0;
+                                    double refE = 0, refN = 0;
                                     // salva i risultati
                                     DataSaved.nearestSegment = closestSegment;
                                     DataSaved.selectedPoly_OFFSET = closestSegment != null ? closestSegment.getPolyline() : null;
@@ -294,34 +301,34 @@ public class TriangleService extends Service {
                                         dist3D_SX = Math.abs(new DistToLine(bucketLeftCoord[0], bucketLeftCoord[1],
                                                 closestSegment.getStart().getX(), closestSegment.getStart().getY(),
                                                 closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
-                                        refE=bucketLeftCoord[0];
-                                        refN=bucketLeftCoord[1];
+                                        refE = bucketLeftCoord[0];
+                                        refN = bucketLeftCoord[1];
 
                                     } else if (DataSaved.bucketEdge == 0 && closestSegment != null) {
                                         dist3D_CT = Math.abs(new DistToLine(bucketCoord[0], bucketCoord[1],
                                                 closestSegment.getStart().getX(), closestSegment.getStart().getY(),
                                                 closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
-                                        refE=bucketCoord[0];
-                                        refN=bucketCoord[1];
+                                        refE = bucketCoord[0];
+                                        refN = bucketCoord[1];
                                     } else if (DataSaved.bucketEdge == 1 && closestSegment != null) {
                                         dist3D_DX = Math.abs(new DistToLine(bucketRightCoord[0], bucketRightCoord[1],
                                                 closestSegment.getStart().getX(), closestSegment.getStart().getY(),
                                                 closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
-                                        refE=bucketRightCoord[0];
-                                        refN=bucketRightCoord[1];
+                                        refE = bucketRightCoord[0];
+                                        refN = bucketRightCoord[1];
                                     }
 
                                     Point3D p = closestSegment.getClosestPoint(bucketLeftCoord[0], bucketLeftCoord[1]);
                                     double dE = p.getX() - refE;
                                     double dN = p.getY() - refN;
-                                    double yawRad = Math.toRadians(ExcavatorLib.hdt_BOOM+yawSensor);
+                                    double yawRad = Math.toRadians(ExcavatorLib.hdt_BOOM + yawSensor);
                                     double latX = Math.cos(yawRad);
                                     double latY = -Math.sin(yawRad);
                                     double lateral = dE * latX + dN * latY;
-                                    if(lateral>0){
-                                        segnoLinea=-1;
-                                    }else {
-                                        segnoLinea=1;
+                                    if (lateral > 0) {
+                                        segnoLinea = -1;
+                                    } else {
+                                        segnoLinea = 1;
                                     }
 
                                     Segment seg = DataSaved.nearestSegment;
@@ -345,15 +352,11 @@ public class TriangleService extends Service {
                                             );
                                     DataSaved.cutWorldX_2 = cut2.getX();
                                     DataSaved.cutWorldY_2 = cut2.getY();
-                                }
-                                else {
+                                } else {
                                     DataSaved.isAutoSnap = 0;
                                 }
 
                                 break;
-
-
-
 
 
                         }
@@ -525,8 +528,8 @@ public class TriangleService extends Service {
         double[] newPositionC = new double[]{positions[1][0], positions[1][1], positions[1][2]};
         double[] newPositionR = new double[]{positions[2][0], positions[2][1], positions[2][2]};
 
-        double[] newPositionFW = Exca_Quaternion.endPoint(bucketCoord,0,0,0.5,hdt_LAMA);
-        double[] newPositionBW = Exca_Quaternion.endPoint(bucketCoord,0,0,0.5,hdt_LAMA+180);
+        double[] newPositionFW = Exca_Quaternion.endPoint(bucketCoord, 0, 0, DataSaved.Mainfall_Distance, hdt_LAMA);
+        double[] newPositionBW = Exca_Quaternion.endPoint(bucketCoord, 0, 0, DataSaved.Mainfall_Distance, hdt_LAMA + 180);
         rilettura++;
         // Controlla se è necessario aggiornare i triangoli nel raggio
         double r = DataSaved.RaggioDXF / 4;
@@ -547,7 +550,7 @@ public class TriangleService extends Service {
             }
         }
 
-        double [] mQuoDTM=new double[]{
+        double[] mQuoDTM = new double[]{
                 triangleHelper.calculateZ(newPositionL),
                 triangleHelper.calculateZ(newPositionC),
                 triangleHelper.calculateZ(newPositionR),
@@ -557,15 +560,16 @@ public class TriangleService extends Service {
         double deltaZL = triangleHelper.calculateDeltaZ(newPositionL);
         double deltaZC = triangleHelper.calculateDeltaZ(newPositionC);
         double deltaZR = triangleHelper.calculateDeltaZ(newPositionR);
-        posL = new double[]{newPositionL[0], newPositionL[1],mQuoDTM[0] };
-        posC = new double[]{newPositionC[0], newPositionC[1],mQuoDTM[1] };
-        posR = new double[]{newPositionR[0], newPositionR[1],mQuoDTM[2] };
+        posL = new double[]{newPositionL[0], newPositionL[1], mQuoDTM[0]};
+        posC = new double[]{newPositionC[0], newPositionC[1], mQuoDTM[1]};
+        posR = new double[]{newPositionR[0], newPositionR[1], mQuoDTM[2]};
 
-        quoteDTM=mQuoDTM;
+        quoteDTM = mQuoDTM;
 
         ltOffGrid = deltaZL == Double.MIN_VALUE;
         ctOffGrid = deltaZC == Double.MIN_VALUE;
         rtOffGrid = deltaZR == Double.MIN_VALUE;
+        Mainfall_Value = calculateSlopePercentShort(newPositionC, newPositionFW);
 
         return new double[]{deltaZL, deltaZC, deltaZR};
     }
@@ -797,11 +801,11 @@ public class TriangleService extends Service {
                                 if (parts.length > 0 && !parts[0].trim().isEmpty())
                                     pointNumber = Integer.parseInt(parts[0].trim());
                                 if (parts.length > 1 && !parts[1].trim().isEmpty())
-                                    northing = Double.parseDouble(parts[1].trim())*conversionFactor;
+                                    northing = Double.parseDouble(parts[1].trim()) * conversionFactor;
                                 if (parts.length > 2 && !parts[2].trim().isEmpty())
-                                    easting = Double.parseDouble(parts[2].trim())*conversionFactor;
+                                    easting = Double.parseDouble(parts[2].trim()) * conversionFactor;
                                 if (parts.length > 3 && !parts[3].trim().isEmpty())
-                                    elevation = Double.parseDouble(parts[3].trim())*conversionFactor;
+                                    elevation = Double.parseDouble(parts[3].trim()) * conversionFactor;
                                 if (parts.length > 4)
                                     description = parts[4].trim();
                                 if (parts.length > 5 && !parts[5].trim().isEmpty())
@@ -858,6 +862,38 @@ public class TriangleService extends Service {
                 }
             }
         }
+    }
+
+
+    public static short calculateSlopePercentShort(double[] newPositionC, double[] newPositionFW) {
+
+        if (newPositionC == null || newPositionFW == null
+                || newPositionC.length < 3 || newPositionFW.length < 3) {
+            throw new IllegalArgumentException("Gli array devono contenere almeno 3 valori (X,Y,Z)");
+        }
+
+        double deltaX = newPositionFW[0] - newPositionC[0];
+        double deltaY = newPositionFW[1] - newPositionC[1];
+        double deltaZ = newPositionFW[2] - newPositionC[2];
+
+        // Distanza orizzontale (XY)
+        double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        if (horizontalDistance == 0) {
+            return 0; // evita divisione per zero
+        }
+
+        // Pendenza percentuale
+        double slopePercent = (deltaZ / horizontalDistance) * 100.0;
+
+        // 2 decimali → moltiplico ×100 e arrotondo
+        int scaled = (int) Math.round(slopePercent * 100.0);
+
+        // Clamp nei limiti dello short (-32768 a 32767)
+        if (scaled > Short.MAX_VALUE) scaled = Short.MAX_VALUE;
+        if (scaled < Short.MIN_VALUE) scaled = Short.MIN_VALUE;
+
+        return (short) scaled;
     }
 
     @Override

@@ -251,6 +251,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         bubbleCanvas = new Drill_Bubble(this);
         bubble.addView(bubbleCanvas);
         ((Drill_TopView) topViewCanvas).setTargetScale(1.25f);
+        ((Drill_TopView) topViewCanvas).setDrawMachineSchema(DataSaved.drwaMachieSchema==1);
         ((Drill_TopView) topViewCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
         ((Drill_Bubble) bubbleCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
         ((Drill_Bubble) bubbleCanvas).resetBubbleTransform();

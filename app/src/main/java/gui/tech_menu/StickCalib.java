@@ -106,11 +106,11 @@ public class StickCalib extends BaseClass {
 
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
 
-        if (indexMeasure == 4 || indexMeasure == 5) {
+
             numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
-        } else {
+
             numberDialog = new CustomNumberDialog(this, -1);
-        }
+
 
         lengthStick.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_LengthStick")));
         laserV.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_LaserVStick")));

@@ -61,9 +61,9 @@ public class Nuova_User_Settings extends BaseClass {
     Dialog_Drill_GNSS dialogDrillGnss;
     Dialog_InfoApp dialogInfoApp;
     DialogColors dialogColors;
-    TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue, tvVert, tvAng, stepValue, tvoffstep;
+    TextView tvBrightValue, tvUomValue, tvAngValue, tvAudioValue, tvHAlarmValue, tvVert, tvAng, stepValue, tvoffstep,tvMainfallValue;
     TextView tvVertValue,tvZValueR,tvUtcOffset;
-    ImageView imgLocale, imgLse, imgCutFill, but_piu, but_meno, but_piu_db, but_meno_db, but_piu_an, but_meno_an;
+    ImageView imgLocale, imgLse, imgCutFill, but_piu, but_meno, but_piu_db, but_meno_db, but_piu_an, but_meno_an,but_meno_mainfall,but_piu_ang_mainfall;
     String intLang = "";
     int indexAudioSelected;
     double myStep, myStepAngle;
@@ -106,6 +106,10 @@ public class Nuova_User_Settings extends BaseClass {
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogInfoApp = new Dialog_InfoApp(this);
+
+        tvMainfallValue=findViewById(R.id.tvMainfallValue);
+        but_meno_mainfall=findViewById(R.id.but_meno_mainfall);
+        but_piu_ang_mainfall=findViewById(R.id.but_piu_ang_mainfall);
 
         but_piu_auto_zR=findViewById(R.id.but_piu_auto_zR);
         but_meno_auto_zR=findViewById(R.id.but_meno_auto_zR);
@@ -422,6 +426,34 @@ public class Nuova_User_Settings extends BaseClass {
             DataSaved.lock3dRotation = DataSaved.lock3dRotation % 2;
             MyData.push("lock3dRotation", String.valueOf(DataSaved.lock3dRotation));
         });
+
+
+        /// //////////////////////////////
+        but_piu_ang_mainfall.setOnClickListener(view -> {
+            DataSaved.Mainfall_Distance += myStep;
+            MyData.push("Mainfall_Distance", String.valueOf(DataSaved.Mainfall_Distance));
+
+        });
+        but_meno_mainfall.setOnClickListener(view -> {
+            if (DataSaved.Mainfall_Distance > 0) {
+                DataSaved.Mainfall_Distance -= myStep;
+            }
+            if (DataSaved.Mainfall_Distance <= myStep) DataSaved.Mainfall_Distance = myStep;
+            MyData.push("Mainfall_Distance", String.valueOf(DataSaved.Mainfall_Distance));
+        });
+        /// //////////////////////////////////
+
+        setupAutoRepeat(but_piu_ang_mainfall,()->{
+            DataSaved.Mainfall_Distance += myStep;
+            MyData.push("Mainfall_Distance", String.valueOf(DataSaved.Mainfall_Distance));
+        });
+        setupAutoRepeat(but_meno_mainfall,()->{
+            if (DataSaved.Mainfall_Distance > 0) {
+                DataSaved.Mainfall_Distance -= myStep;
+            }
+            if (DataSaved.Mainfall_Distance <= myStep) DataSaved.Mainfall_Distance = myStep;
+            MyData.push("Mainfall_Distance", String.valueOf(DataSaved.Mainfall_Distance));
+        });
     }
 
     public void updateUI() {
@@ -544,7 +576,7 @@ public class Nuova_User_Settings extends BaseClass {
                     tvAXYValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
-
+                    tvMainfallValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Mainfall_Distance)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
 
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -559,6 +591,7 @@ public class Nuova_User_Settings extends BaseClass {
                     tvAXYValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvMainfallValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Mainfall_Distance)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
 
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -574,6 +607,7 @@ public class Nuova_User_Settings extends BaseClass {
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvMainfallValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Mainfall_Distance)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
 
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -588,6 +622,7 @@ public class Nuova_User_Settings extends BaseClass {
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvMainfallValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Mainfall_Distance)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
 
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -603,6 +638,7 @@ public class Nuova_User_Settings extends BaseClass {
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvMainfallValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Mainfall_Distance)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
 
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -617,6 +653,7 @@ public class Nuova_User_Settings extends BaseClass {
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvMainfallValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Mainfall_Distance)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
 
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -631,6 +668,7 @@ public class Nuova_User_Settings extends BaseClass {
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvMainfallValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Mainfall_Distance)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
 
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
@@ -645,6 +683,7 @@ public class Nuova_User_Settings extends BaseClass {
                     tvAXYValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.tolleranza_XY)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
                     tvAngAutoValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.tolleranza_Slope))) + Utils.getGradiSimbol());
                     tvWINDOWValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.HYDRAULIC_WINDOW)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+                    tvMainfallValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.Mainfall_Distance)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
 
                     tvAngValue.setText(Utils.readAngoloLITE((String.valueOf(DataSaved.deadbandFlatAngle))) + Utils.getGradiSimbol());
                     tvVertValue.setText(Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.deadbandH)) + "  " + Utils.getMetriSimbol().replace("[", "").replace("]", ""));
