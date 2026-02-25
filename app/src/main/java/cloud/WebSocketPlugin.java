@@ -25,9 +25,12 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
@@ -36,7 +39,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import gui.MyApp;
-import gui.projects.Remote_Activity;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -45,62 +47,146 @@ import okhttp3.WebSocketListener;
 import utils.MyData;
 import utils.MyDeviceManager;
 
+
 public class WebSocketPlugin {
-    public static boolean isAuthenticated;
-    private WebSocket webSocket;
+
+    // ---- Public state ----
+    public static volatile boolean isAuthenticated;
+
+    // ---- URLs ----
+    private static final String WS_URL_IT = "wss://licensemc.stonexpositioning.com/api/v1/ws";
     private static final String WS_URL_US = "wss://licensemc-us.stonexpositioning.com/api/v1/ws";
-    private static final String WS_URL = "wss://licensemc.stonexpositioning.com/api/v1/ws";
+
+    // ---- Crypto ----
     private static final String SECRET_KEY_BASE64 = "Q6E2ZK3g1/XSO4VXxMGNehYmQUaJv8+M26j+xqlsgFs=";
-
-    private static final String DEVICE_SN = MyDeviceManager.getDeviceSN(MyApp.visibleActivity);//passare
-
-    private static final String MAC_ADDRESS = MyDeviceManager.getMacAddress(MyApp.visibleActivity).trim().toLowerCase();//passare
-
-    private static final String FIRMWARE_VERSION=MyDeviceManager.getBuildVersion(MyApp.visibleActivity).trim().toUpperCase();
-
-    private static S3ManagerSingleton s3ManagerSingleton;
-
-    private static WebSocketPlugin instance;
-
-    private final int MAX_TRY_CONNECTION = 3;
-    private int currentTry = 0;
 
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    private WebSocketPlugin() {
-    }
+    // ---- Singleton ----
+    private static volatile WebSocketPlugin instance;
 
     public static WebSocketPlugin getWebSocketPluginInstance(Context context) {
         if (instance == null) {
             synchronized (WebSocketPlugin.class) {
-                instance = new WebSocketPlugin();
+                if (instance == null)
+                    instance = new WebSocketPlugin(context.getApplicationContext());
             }
         }
-        s3ManagerSingleton = S3ManagerSingleton.getInstance(context);
         return instance;
     }
 
+    // ---- Internals ----
+    private enum Region {IT, US}
+
+    private final Context appContext;
+    private final OkHttpClient client;
+    private final ScheduledExecutorService scheduler;
+
+    private volatile WebSocket activeWs;
+    private volatile Region activeRegion = Region.IT;
+
+
+    private final AtomicBoolean connecting = new AtomicBoolean(false);
+    private final AtomicBoolean authed = new AtomicBoolean(false);
+
+
+    private static final int MAX_TRIES_PER_REGION = 3;
+    private final AtomicInteger triesOnCurrentRegion = new AtomicInteger(0);
+
+    private static final int AUTH_TIMEOUT_MS = 7000;
+
+    private volatile ScheduledFuture<?> authTimeoutFuture;
+
+    private final Object wsLock = new Object();
+
+    private final S3ManagerSingleton s3ManagerSingleton;
+
+    private WebSocketPlugin(Context context) {
+        this.appContext = context;
+        this.client = new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).build();
+        this.scheduler = Executors.newSingleThreadScheduledExecutor();
+        this.s3ManagerSingleton = S3ManagerSingleton.getInstance(context);
+    }
+
+
     public void start() {
-        if(isApollo){
+        if (!isApollo) {
+            parseCode("");
+            return;
+        }
+
+        if (authed.get()) return;
+
+        if (!connecting.compareAndSet(false, true)) return;
+
+        // reset state
+        isAuthenticated = false;
+        triesOnCurrentRegion.set(0);
+        activeRegion = Region.IT;
+
+        closeActiveWs();
+        connect(activeRegion);
+    }
 
 
-        OkHttpClient client = new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).build();
+    public void sendCommand(String command, Map<String, Object> payload) {
+        WebSocket ws = activeWs;
+        if (ws == null || !authed.get()) {
+            Log.e("WebSocketPlugin", "WebSocket not authenticated/connected.");
+            return;
+        }
 
-        Request request = new Request.Builder().url(WS_URL).build();
+        try {
+            JSONObject message = new JSONObject();
+            message.put("type", command);
+            message.put("timeStamp", System.currentTimeMillis());
 
-        client.newWebSocket(request, new WebSocketListener() {
+            if (payload != null) {
+                for (Map.Entry<String, Object> entry : payload.entrySet()) {
+                    message.put(entry.getKey(), entry.getValue());
+                }
+            }
+
+            boolean ok = ws.send(message.toString());
+            if (!ok) Log.e("WebSocketPlugin", "sendCommand failed (send returned false).");
+        } catch (Exception e) {
+            Log.e("WebSocketPlugin", "sendCommand exception: " + e.getMessage());
+        }
+    }
+
+
+    public void stop() {
+        authed.set(false);
+        isAuthenticated = false;
+        connecting.set(false);
+        cancelAuthTimeout();
+        closeActiveWs();
+
+        // scheduler.shutdownNow();
+    }
+
+    private void connect(Region region) {
+        activeRegion = region;
+
+        Request request = new Request.Builder().url(region == Region.IT ? WS_URL_IT : WS_URL_US).build();
+
+        WebSocket ws = client.newWebSocket(request, new WebSocketListener() {
+
             @Override
-            public void onOpen(WebSocket ws, Response response) {
-                webSocket = ws;
-                currentTry = 0;
-                try {
+            public void onOpen(WebSocket webSocket, Response response) {
+                synchronized (wsLock) {
+                    activeWs = webSocket;
+                }
 
+                scheduleAuthTimeout(region, webSocket);
+
+                try {
                     JSONObject payload = new JSONObject();
-                    payload.put("serial_number", DEVICE_SN);
-                    payload.put("mac_address", MAC_ADDRESS);
-                    payload.put("firmware", FIRMWARE_VERSION);
+                    payload.put("serial_number", MyDeviceManager.getDeviceSN(MyApp.visibleActivity));
+                    payload.put("mac_address", MyDeviceManager.getMacAddress(MyApp.visibleActivity).trim().toLowerCase());
+                    payload.put("firmware", MyDeviceManager.getBuildVersion(MyApp.visibleActivity).trim().toUpperCase());
                     payload.put("timeStamp", System.currentTimeMillis());
 
                     JSONObject encryptedMessage = encryptAndSign(payload);
@@ -111,121 +197,170 @@ public class WebSocketPlugin {
                     message.put("encrypted", encryptedMessage.getString("encrypted"));
                     message.put("hmac", encryptedMessage.getString("hmac"));
 
-                    ws.send(message.toString());
-
+                    webSocket.send(message.toString());
                 } catch (Exception e) {
-                    e.printStackTrace();
-
+                    Log.e("WebSocketPlugin", "onOpen auth build/send error: " + e.getMessage());
+                    // fallback
+                    failAndFallback(region, webSocket);
                 }
             }
 
             @Override
-            public void onMessage(WebSocket ws, String text) {
-
+            public void onMessage(WebSocket webSocket, String text) {
                 try {
                     JSONObject response = new JSONObject(text);
                     String status = response.optString("status");
 
                     switch (status) {
-                        case "authenticated":
-                            //Log.d("TestM", "Authentication successful. Sending update request...");
+                        case "authenticated": {
+                            // stop timeout
+                            cancelAuthTimeout();
+
+                            authed.set(true);
+                            isAuthenticated = true;
+                            connecting.set(false);
+
+                            // donne la socket au S3 manager
+                            s3ManagerSingleton.setWebSocket(webSocket);
 
                             JSONObject update = new JSONObject();
                             update.put("type", "check_updates");
                             update.put("timeStamp", System.currentTimeMillis());
                             update.put("licenceID", activationCode);
-                            //Log.d("TYestSend", update.toString());
-                            ws.send(update.toString());
-                            s3ManagerSingleton.setWebSocket(ws);
-
+                            webSocket.send(update.toString());
                             break;
+                        }
 
-                        case "update_available":
+                        case "update_available": {
                             JSONObject data = response.optJSONObject("data");
-
                             if (data != null) {
-
-                                decryptAndAcknowledge(ws, data);
-
+                                decryptAndAcknowledge(webSocket, data);
                             } else {
                                 cancellaJson();
-                                delayedSend(ws, new JSONObject().put("status", "restore_ack").put("type", "restore_ack").put("activated", true).put("timeStamp", System.currentTimeMillis()), 2000);
+                                delayedSend(webSocket, new JSONObject().put("status", "restore_ack").put("type", "restore_ack").put("activated", true).put("timeStamp", System.currentTimeMillis()), 2000);
                             }
-
                             break;
+                        }
 
                         case "no_updates":
-                            //Log.d("TestM", "No update available for the device.");
+                            // rien
                             break;
 
                         case "command":
-                            handleCommand(ws, response);
-                            //Log.d("TestM", response.toString());
+                            handleCommand(webSocket, response);
                             break;
 
                         default:
-                            Log.e("TestM", "Unrecognized response: " + text);
-
+                            Log.e("WebSocketPlugin", "Unrecognized response: " + text);
                             break;
                     }
+
                 } catch (Exception e) {
-                    Log.e("TestM", "Error reading response: " + e.getMessage());
+                    Log.e("WebSocketPlugin", "onMessage parse error: " + e.getMessage());
                 }
             }
 
             @Override
-            public void onClosed(WebSocket ws, int code, String reason) {
-                //Log.d("TestM", "Connection closed.");
+            public void onClosed(WebSocket webSocket, int code, String reason) {
+                if (!authed.get()) {
+                    Log.e("WebSocketPlugin", "onClosed before auth. code=" + code + " reason=" + reason);
+                    failAndFallback(region, webSocket);
+                }
             }
 
             @Override
-            public void onFailure(WebSocket ws, Throwable t, Response response) {
-                webSocket = null;
-                s3ManagerSingleton.shutdown();
-                //Log.d("TestM", "WebSocket error: " + t.getMessage());
-
-                // have to retry max 3 times
-                if (currentTry < MAX_TRY_CONNECTION) {
-                    try {
-                        Thread.sleep(3000);
-                        currentTry++;
-                        start();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
+            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                Log.e("WebSocketPlugin", "onFailure (" + region + "): " + (t != null ? t.getMessage() : "null"));
+                if (!authed.get()) {
+                    failAndFallback(region, webSocket);
+                } else {
+                    authed.set(false);
+                    isAuthenticated = false;
+                    connecting.set(false);
+                    cancelAuthTimeout();
                 }
             }
         });
-    }else {parseCode("");}
+
+        synchronized (wsLock) {
+            activeWs = ws;
+        }
     }
 
-    public void sendCommand(String command, Map<String, Object> payload) {
-        if (this.webSocket == null) {
-            System.err.println("WebSocket is not connected.");
+    private void failAndFallback(Region region, WebSocket ws) {
+        cancelAuthTimeout();
+        safeClose(ws);
+
+        if (authed.get()) return;
+
+        int tries = triesOnCurrentRegion.incrementAndGet();
+
+        if (tries < MAX_TRIES_PER_REGION) {
+            scheduleConnect(region, 3000);
             return;
         }
 
-        JSONObject message = new JSONObject();
-        try {
-            message.put("type", command);
-            message.put("timeStamp", System.currentTimeMillis());
+        triesOnCurrentRegion.set(0);
 
-            if (payload != null) {
-                for (Map.Entry<String, Object> entry : payload.entrySet()) {
-                    message.put(entry.getKey(), entry.getValue());
-                }
-            }
-
-            webSocket.send(message.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (region == Region.IT) {
+            scheduleConnect(Region.US, 0);
+        } else {
+            scheduleConnect(Region.IT, 5000);
         }
     }
+
+    private void scheduleConnect(Region region, int delayMs) {
+        scheduler.schedule(() -> {
+            if (authed.get()) {
+                connecting.set(false);
+                return;
+            }
+            connect(region);
+        }, delayMs, TimeUnit.MILLISECONDS);
+    }
+
+    private void scheduleAuthTimeout(Region region, WebSocket ws) {
+        cancelAuthTimeout();
+        authTimeoutFuture = scheduler.schedule(() -> {
+            if (authed.get()) return;
+            Log.e("WebSocketPlugin", "AUTH TIMEOUT (" + region + ")");
+            failAndFallback(region, ws);
+        }, AUTH_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+    }
+
+    private void cancelAuthTimeout() {
+        ScheduledFuture<?> f = authTimeoutFuture;
+        if (f != null) {
+            f.cancel(false);
+            authTimeoutFuture = null;
+        }
+    }
+
+    private void closeActiveWs() {
+        WebSocket ws;
+        synchronized (wsLock) {
+            ws = activeWs;
+            activeWs = null;
+        }
+        safeClose(ws);
+    }
+
+    private void safeClose(WebSocket ws) {
+        if (ws == null) return;
+        try {
+            ws.close(1000, "closing");
+        } catch (Exception ignored) {
+        }
+    }
+
+    // =========================
+    // Crypto / Protocol
+    // =========================
 
     private JSONObject encryptAndSign(JSONObject data) throws Exception {
         byte[] iv = new byte[12];
         SecureRandom.getInstanceStrong().nextBytes(iv);
+
         byte[] secretKey = Base64.decode(SECRET_KEY_BASE64, Base64.DEFAULT);
 
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
@@ -253,7 +388,7 @@ public class WebSocketPlugin {
         byte[] encrypted = Base64.decode(encryptedBase64, Base64.DEFAULT);
 
         MessageDigest sha = MessageDigest.getInstance("SHA-256");
-        byte[] key = sha.digest((DEVICE_SN + "9448d53e2f962c3ab6bd6a50dc48427a").getBytes());
+        byte[] key = sha.digest((MyDeviceManager.getDeviceSN(MyApp.visibleActivity) + "9448d53e2f962c3ab6bd6a50dc48427a").getBytes());
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
@@ -265,49 +400,32 @@ public class WebSocketPlugin {
         String stringa = new String(decrypted, StandardCharsets.UTF_8);
         parseCode(stringa);
 
-        //Log.w("TestM", "Decrypted data: " + new String(decrypted, StandardCharsets.UTF_8));
-
         delayedSend(ws, new JSONObject().put("status", "activation_ack").put("type", "activation_ack").put("activated", true).put("timeStamp", System.currentTimeMillis()), 2000);
     }
 
     private void handleCommand(WebSocket ws, JSONObject response) throws Exception {
         isAuthenticated = false;
+
         String type = response.optString("type");
         JSONObject license = response.optJSONObject("license");
 
         if ("activate SW license".equals(type) && license != null) {
             decryptAndAcknowledge(ws, license);
-            delayedSend(ws,
-                    new JSONObject().put("status", "ack")
-                            .put("type", "activation SW")
-                            .put("activated", true)
-                            .put("timeStamp", System.currentTimeMillis()), 2000);
+            delayedSend(ws, new JSONObject().put("status", "ack").put("type", "activation SW").put("activated", true).put("timeStamp", System.currentTimeMillis()), 2000);
 
         } else if ("restore SW license".equals(type)) {
-            Log.e("TestM", "Restoring license...");
-            //TODO CANCELLA JSON
+            Log.e("WebSocketPlugin", "Restoring license...");
             cancellaJson();
-            delayedSend(ws,
-                    new JSONObject().put("status", "ack")
-                            .put("type", "restore SW")
-                            .put("restored", true)
-                            .put("timeStamp", System.currentTimeMillis()), 2000);
+            delayedSend(ws, new JSONObject().put("status", "ack").put("type", "restore SW").put("restored", true).put("timeStamp", System.currentTimeMillis()), 2000);
+
         } else if ("temp_credentials".equals(type)) {
             JSONObject credentials = response.optJSONObject("data");
-            //Log.d("TestM", "Received temp credentials: " + credentials);
             isAuthenticated = true;
-            if (credentials == null) {
-                return;
-            }
-            //Log.d("TestM", "Setting AWS credentials...");
-            s3ManagerSingleton.setS3Credentials(
-                    credentials.getString("region"),
-                    credentials.getString("accessKeyId"),
-                    credentials.getString("secretAccessKey"),
-                    credentials.getString("sessionToken"),
-                    credentials.getString("bucketName"),
-                    credentials.getLong("expiration")
-            );
+
+            if (credentials == null) return;
+
+            s3ManagerSingleton.setS3Credentials(credentials.getString("region"), credentials.getString("accessKeyId"), credentials.getString("secretAccessKey"), credentials.getString("sessionToken"), credentials.getString("bucketName"), credentials.getLong("expiration"));
+
             delayedSend(ws, new JSONObject().put("status", "ack").put("type", "temp_credentials_ack").put("saved", true).put("timeStamp", System.currentTimeMillis()), 2000);
         }
     }
@@ -326,24 +444,24 @@ public class WebSocketPlugin {
         return buffer.array();
     }
 
+
     private void delayedSend(WebSocket ws, JSONObject json, int delayMillis) {
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
+        scheduler.schedule(() -> {
+            try {
                 ws.send(json.toString());
+            } catch (Exception ignored) {
             }
-        }, delayMillis);
+        }, delayMillis, TimeUnit.MILLISECONDS);
     }
 
     public void parseCode(String jsonString) {
-        if(isApollo) {
+        if (isApollo) {
             try {
-                // Crea oggetto JSON
                 JSONObject jsonObject = new JSONObject(jsonString);
 
-                // Estrae e popola i campi
                 activationCode = jsonObject.getString("activationCode");
                 MyData.push("licenza", activationCode);
+
                 restoreCode = jsonObject.getString("restoreCode");
                 String deviceSN = jsonObject.getString("deviceSN");
                 licenseType = jsonObject.getInt("licenseType");
@@ -352,21 +470,17 @@ public class WebSocketPlugin {
                 long timestamp = jsonObject.getLong("timestamp");
                 MyApp.expiry = jsonObject.getString("expiry");
 
-                // Percorso della cartella
                 String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Config";
-
-                // Crea la cartella se non esiste
                 File directory = new File(pathL);
                 if (!directory.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
                     directory.mkdirs();
                 }
 
-                // File di output JSON
                 File outputFile = new File(directory, "License.json");
 
-                // Scrive direttamente il JSON nel file
                 FileWriter writer = new FileWriter(outputFile);
-                writer.write(jsonObject.toString()); // salva il JSON intero
+                writer.write(jsonObject.toString());
                 writer.close();
 
             } catch (JSONException e) {
@@ -374,29 +488,24 @@ public class WebSocketPlugin {
                 restoreCode = "none";
                 licenseType = -1;
             } catch (IOException e) {
-                Log.e("MyPath", "1+ " + e.getMessage());
+                Log.e("WebSocketPlugin", "parseCode IO: " + e.getMessage());
             }
-        }else {
-            activationCode="0123456789";
-            licenseType=MC_3D_PRO_AUTO;
+        } else {
+            activationCode = "0123456789";
+            licenseType = MC_3D_PRO_AUTO;
             MyData.push("licenza", activationCode);
-            Log.d("AcT",licenseType+"  "+activationCode);
+            Log.d("WebSocketPlugin", licenseType + "  " + activationCode);
         }
     }
 
-    public void cancellaJson(){
+    public void cancellaJson() {
         try {
-            // Percorso della cartella
             String pathL = Environment.getExternalStorageDirectory().toString() + folderPath + "/Config/License.json";
-
-            // File di output JSON
             File myFile = new File(pathL);
+            //noinspection ResultOfMethodCallIgnored
             myFile.delete();
         } catch (Exception e) {
-            Log.e("Err",e.getMessage());
+            Log.e("WebSocketPlugin", "cancellaJson: " + e.getMessage());
         }
-
     }
 }
-
-

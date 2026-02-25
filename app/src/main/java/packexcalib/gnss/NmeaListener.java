@@ -117,7 +117,6 @@ public class NmeaListener {
                             Est1 = coordinateXYZLLQ.getEasting();
                             mChar = coordinateXYZLLQ.getLetter();
                             mZone = coordinateXYZLLQ.getZone();
-                            Log.d("Calling", coordinateXYZLLQ.getNorthing() + "  " + coordinateXYZLLQ.getEasting() + "  " + coordinateXYZLLQ.getQuota());
                         } catch (Exception ignored) {
 
                         }

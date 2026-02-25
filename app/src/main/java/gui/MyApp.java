@@ -14,14 +14,12 @@ import static services.CanService.stickOK;
 import static services.CanService.tiltDisc;
 import static services.CanService.tiltOK;
 import static services.CanService.toolOK;
-import static services.PointService.valoriTabella;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
-
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -62,7 +60,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import cloud.S3ManagerSingleton;
+import drill_pile.gui.Drill_Activity;
 import drill_pile.gui.Drill_MainPage;
+import drill_pile.gui.Drill_Rod_Activity;
 import drill_pile.gui.Ecu_Sensors_Activity;
 import drill_pile.gui.PickReport;
 import event_bus.SerialEvent;
@@ -70,7 +70,6 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketCalib;
 import gui.buckets.BucketCalibTilt;
 import gui.buckets.BucketChooserActivity;
-import drill_pile.gui.Drill_Rod_Activity;
 import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.DebugExcavatorActivity;
 import gui.debug_ecu.Serial_Msg_Debug;
@@ -82,7 +81,6 @@ import gui.digging_excavator.Digging3D_DXF;
 import gui.digging_excavator.DiggingProfile;
 import gui.digging_excavator.Digging_CutAndFill1D;
 import gui.digging_excavator.Digging_CutAndFill2D;
-import drill_pile.gui.Drill_Activity;
 import gui.gps.NmeaGenerator;
 import gui.gps.Nuovo_Gps;
 import gui.grading_dozergrader.Grading3D_DXF;
@@ -121,6 +119,7 @@ import gui.tech_menu.XYZ_Calib;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
+import packexcalib.gnss.CzechGridShiftTransformer;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.NmeaListener;
 import services.CanSender;
@@ -133,7 +132,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
-    public static  int MAX_NUMERO_FACCE=5000;
+    public static int MAX_NUMERO_FACCE = 5000;
     public static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio
     public static boolean isAlto, isBasso, isCentro;
@@ -155,6 +154,10 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static GridShiftTransformer heposTransformer;
     public static String gridFile_GR_dE = "";
     public static String gridFile_GR_dN = "";
+    public static CzechGridShiftTransformer cz_Q1;
+    public static CzechGridShiftTransformer cz_Q3;
+    public static String table_yx_3_v1710_Q1 = "";
+    public static String table_yx_3_v1710_Q3 = "";
     public static String DEVICE_SN = "";
     public static Activity visibleActivity;
     public static String Actualactivity;
@@ -176,8 +179,8 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     @Override
     public void onCreate() {
         super.onCreate();
-        if(Build.BRAND.equals("MEGA_1")){
-            MAX_NUMERO_FACCE=10000;
+        if (Build.BRAND.equals("MEGA_1")) {
+            MAX_NUMERO_FACCE = 10000;
         }
         UpdateValuesService.isUpodating = true;
         registerActivityLifecycleCallbacks(this);
@@ -185,9 +188,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         if (Build.BRAND.equals("MEGA_1") || Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             isApollo = true;
             folderPath = "/StonexMC_V4";
-            MyApp.DEVICE_SN=MyDeviceManager.getDeviceSN(this);
-
-
+            MyApp.DEVICE_SN = MyDeviceManager.getDeviceSN(this);
 
 
         } else {
@@ -257,10 +258,10 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         }
 
 
+
         myCrash();
 
     }
-
 
 
     public void myCrash() {
@@ -470,8 +471,8 @@ git push
                         public void run() {
 
                             try {
-                                if (DataSaved.isWL ==DRILL) {
-                                    DataSaved.lrBucket=DataSaved.lrTool;
+                                if (DataSaved.isWL == DRILL) {
+                                    DataSaved.lrBucket = DataSaved.lrTool;
                                 }
                                 if (DataSaved.my_comPort == 4) {
 
@@ -719,22 +720,21 @@ git push
             ((KOMATSU_Activity) activity).updateUI();
         } else if (activity instanceof CASE_Activity) {
             ((CASE_Activity) activity).updateUI();
-        }else if (activity instanceof MastLinkCalib) {
+        } else if (activity instanceof MastLinkCalib) {
             ((MastLinkCalib) activity).updateUI();
-        }else if (activity instanceof DrillEncoder) {
+        } else if (activity instanceof DrillEncoder) {
             ((DrillEncoder) activity).updateUI();
-        }else if (activity instanceof DrillToolCalib) {
+        } else if (activity instanceof DrillToolCalib) {
             ((DrillToolCalib) activity).updateUI();
-        }else if (activity instanceof ToolSensor) {
+        } else if (activity instanceof ToolSensor) {
             ((ToolSensor) activity).updateUI();
-        }else if (activity instanceof DampingActivity) {
+        } else if (activity instanceof DampingActivity) {
             ((DampingActivity) activity).updateUI();
-        }else if (activity instanceof Drill_Rod_Activity) {
+        } else if (activity instanceof Drill_Rod_Activity) {
             ((Drill_Rod_Activity) activity).updateUI();
-        }
-        else if (activity instanceof Drill_Activity) {
+        } else if (activity instanceof Drill_Activity) {
             ((Drill_Activity) activity).updateUI();
-        }else if (activity instanceof PickReport) {
+        } else if (activity instanceof PickReport) {
             ((PickReport) activity).updateUI();
         }
 
@@ -837,7 +837,7 @@ git push
     }
 
     private void errori() {
-        if (DataSaved.isWL ==EXCAVATOR||DataSaved.isWL==WHEELLOADER) {
+        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
             errorCode = PLC_DataTypes_BigEndian.Encode_8_bool_be(new boolean[]{
                     (!frameOK) && DataSaved.lrFrame != 0,
                     (!boom1OK) && DataSaved.lrBoom1 != 0,
@@ -847,20 +847,20 @@ git push
                     (!tiltOK) && DataSaved.lrTilt != 0, false, false
 
             });
-        } else if(DataSaved.isWL ==DOZER||DataSaved.isWL==DOZER_SIX||DataSaved.isWL==GRADER) {
+        } else if (DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
             errorCode = PLC_DataTypes_BigEndian.Encode_8_bool_be(new boolean[]{
                     tiltDisc && DataSaved.lrBucket != 0,
                     false,
                     false, false, false, false, false, false
             });
-        }else if (DataSaved.isWL ==DRILL) {
+        } else if (DataSaved.isWL == DRILL) {
             errorCode = PLC_DataTypes_BigEndian.Encode_8_bool_be(new boolean[]{
                     (!frameOK) && DataSaved.lrFrame != 0,
                     (!boom1OK) && DataSaved.lrBoom1 != 0,
                     (!boom2OK) && DataSaved.lrBoom2 != 0,
                     (!stickOK) && DataSaved.lrStick != 0,
                     (!toolOK) && DataSaved.lrTool != 0,
-                   false, false, false
+                    false, false, false
 
             });
         }
@@ -1002,9 +1002,6 @@ git push
             }
         });
     }
-
-
-
 
 
 }

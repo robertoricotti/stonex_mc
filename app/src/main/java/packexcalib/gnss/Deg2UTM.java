@@ -1,6 +1,8 @@
 package packexcalib.gnss;
 
 
+import static gui.MyApp.cz_Q1;
+import static gui.MyApp.cz_Q3;
 import static gui.MyApp.heposTransformer;
 import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._NONE;
@@ -33,7 +35,8 @@ import services.ReadProjectService;
  ***************************************/
 
 public class Deg2UTM {
-
+    // prepara un buffer input riusabile (static)
+    private static final ProjCoordinate inWgs = new ProjCoordinate();
     // ====== lettori geoide (cache condivisa per tutte le istanze) ======
     private static GeoideInterpolation UGF_READER;
     private static String UGF_PATH_LOADED;
@@ -404,17 +407,33 @@ public class Deg2UTM {
                             geoidError = false;
                         }
 
-                        if (crs.equals("150580")) {
+                        if (crs.equals("150580")&&heposTransformer != null) {
 
-                            if (heposTransformer != null) {
-
-                                shifted = heposTransformer.transform(Lat, Lon, q);
+                            shifted = heposTransformer.transform(Lat, Lon, q);
                                 Easting = shifted.x;
                                 Northing = shifted.y + 2000000;
                                 Quota = shifted.z;
 
+
+                        } else if (crs.equals("150581")&& cz_Q1 != null) {
+                            if (wgsToUtm != null && result != null) {
+                                inWgs.x = Lon; inWgs.y = Lat; inWgs.z = q;
+                                wgsToUtm.transform(inWgs, result);
+                                cz_Q1.applyInPlace(result);   // <-- no array!
+                                Easting = result.x;
+                                Northing = result.y;
+                                Quota = q;
                             }
-                        }  else {
+                        } else if (crs.equals("150582")&& cz_Q3 != null) {
+                            if (wgsToUtm != null && result != null) {
+                                inWgs.x = Lon; inWgs.y = Lat; inWgs.z = q;
+                                wgsToUtm.transform(inWgs, result);
+                                cz_Q3.applyInPlace(result);
+                                Easting = result.x;
+                                Northing = result.y;
+                                Quota = q;
+                            }
+                        } else {
                             if (wgsToUtm != null && result != null) {
                                 wgsToUtm.transform(new ProjCoordinate(Lon, Lat, q), result);
                                 Easting = result.x;

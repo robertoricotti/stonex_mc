@@ -1,6 +1,8 @@
 package services;
 
 
+import static gui.MyApp.cz_Q1;
+import static gui.MyApp.cz_Q3;
 import static gui.MyApp.gridFile_GR_dE;
 import static gui.MyApp.gridFile_GR_dN;
 import static gui.MyApp.heposTransformer;
@@ -41,6 +43,7 @@ import org.locationtech.proj4j.UnsupportedParameterException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -73,6 +76,7 @@ import iredes.Point3D_Drill;
 import landxml.LandXMLData;
 import landxml.LandXMLParser;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.CzechGridShiftTransformer;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.LocalizationFactory;
 import packexcalib.gnss.LocalizationModel;
@@ -332,26 +336,53 @@ public class ReadProjectService extends Service {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
-                else {
+                } else {
                     ////////
-                    try {
-                        result = new ProjCoordinate();
-                        resultWgs = new ProjCoordinate();
-                        crsFactory = new CRSFactory();
-                        ctFactory = new CoordinateTransformFactory();
-                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
-                        try {
-                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
-                        } catch (InvalidValueException | UnknownAuthorityCodeException |UnsupportedParameterException e) {
+                    switch (s) {
+                        case "5514" -> initBase5514Proj4j();
+                        case "150581" -> {
+                            initBase5514Proj4j(); // crea WGS84, UTM(5514 base), wgsToUtm ecc.
 
-                            Log.e("GridShift", Log.getStackTraceString(e));
+                            if (cz_Q1 == null) {
+                                try (InputStream is = MyApp.visibleActivity.getAssets().open("table_yx_3_v1710_Q1.gsb")) {
+                                    cz_Q1 = new CzechGridShiftTransformer(is);
+                                } catch (Exception e) {
+                                    Log.e("GridShiftCZ", Log.getStackTraceString(e));
+                                    cz_Q1 = null;
+                                }
+                            }
                         }
-                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
-                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
-                    } catch (Exception e) {
-                    }
+                        case "150582" -> {
+                            initBase5514Proj4j();
+                            if (cz_Q3 == null) {
+                                try (InputStream is = MyApp.visibleActivity.getAssets().open("table_yx_3_v1710_Q3.gsb")) {
+                                    cz_Q3 = new CzechGridShiftTransformer(is);
+                                } catch (Exception e) {
+                                    Log.e("GridShiftCZ", Log.getStackTraceString(e));
+                                    cz_Q3 = null;
+                                }
+                            }
+                        }
+                        default -> {
+                            try {
+                                result = new ProjCoordinate();
+                                resultWgs = new ProjCoordinate();
+                                crsFactory = new CRSFactory();
+                                ctFactory = new CoordinateTransformFactory();
+                                WGS84 = crsFactory.createFromName("epsg:" + "4326");
+                                try {
+                                    UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
+                                } catch (InvalidValueException | UnknownAuthorityCodeException |
+                                         UnsupportedParameterException e) {
 
+                                    Log.e("GridShift", Log.getStackTraceString(e));
+                                }
+                                wgsToUtm = ctFactory.createTransform(WGS84, UTM);
+                                utmToWgs = ctFactory.createTransform(UTM, WGS84);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
                     ///////////
                 }
             }
@@ -385,6 +416,32 @@ public class ReadProjectService extends Service {
 
 
             MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
+        }
+    }
+
+    private static void initBase5514Proj4j() {
+        try {
+            result = new ProjCoordinate();
+            resultWgs = new ProjCoordinate();
+            crsFactory = new CRSFactory();
+            ctFactory = new CoordinateTransformFactory();
+            WGS84 = crsFactory.createFromName("epsg:" + "4326");
+            try {
+                String epsg5514 =
+                        "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
+                                "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
+                                "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
+                                "+units=m +no_defs";
+                UTM=crsFactory.createFromParameters("EPSG:5514",epsg5514);
+
+            } catch (InvalidValueException | UnknownAuthorityCodeException |
+                     UnsupportedParameterException e) {
+
+                Log.e("GridShift", Log.getStackTraceString(e));
+            }
+            wgsToUtm = ctFactory.createTransform(WGS84, UTM);
+            utmToWgs = ctFactory.createTransform(UTM, WGS84);
+        } catch (Exception e) {
         }
     }
 
