@@ -74,6 +74,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -100,10 +101,10 @@ import utils.MyMCUtils;
 
 public class CanSender extends Service {
     public static byte GNSS_MSG = 0x01;
-     int heartbitTerzeParti = 0;
+    int heartbitTerzeParti = 0;
     int heartbitTerzeParti_1 = 0;
     int heartbitTerzeParti_2 = 0;
-    byte MUX=0x01;
+    byte MUX = 0x01;
     //private long lastCall = 0;
     public final static double MAX_SCALE = 0.3;
     static boolean sending;
@@ -215,7 +216,6 @@ public class CanSender extends Service {
                     case EXCAVATOR:
 
                         HEADING = currentLeft.getLeftAxisX();
-                        ;
                         Deg_stick = currentLeft.getLeftAxisY();
                         Deg_bucket = currentRight.getRightAxisX();
                         Deg_Benna_W_Tilt = currentRight.getRightAxisX();
@@ -350,9 +350,9 @@ public class CanSender extends Service {
             try {
                 if (isTech) {
                     isTechCount++;
-                    if (isTechCount >= 600) {
+                    if (isTechCount >= 900) {
                         isTechCount = 0;
-                        isTech = false;//Tech LogIn dosabled after 5 minutes inside a Work Activity
+                        isTech = false;//Tech LogIn dosabled after 8 minutes inside a Work Activity
                         isTech2 = false;
                     }
                 }
@@ -535,7 +535,7 @@ public class CanSender extends Service {
                     startCanopen = 0;
                 }
             }
-            if(DataSaved.my_comPort==4){
+            if (DataSaved.my_comPort == 4) {
                 NmeaListener.initFromSystemTime();
             }
         }
@@ -604,283 +604,294 @@ public class CanSender extends Service {
         dirCase_R = (byte) 0xF2;
         dirCase_L = (byte) 0xF2;
 
-        if (My3DActivity.diaolgGainHydro == null ||
-                My3DActivity.diaolgGainHydro.dialog == null ||
-                My3DActivity.diaolgGainHydro.dialog.isShowing()) {
+        try {
+            if (My3DActivity.diaolgGainHydro == null ||
+                    My3DActivity.diaolgGainHydro.dialog == null ||
+                    My3DActivity.diaolgGainHydro.dialog.isShowing()) {
 
-            QL = 0;
-            QC = 0;
-            QR = 0;
-            GroundSlope = correctRoll;
-            valueKomL = 0;
-            valueKomR = 0;
-            valueCATL = 0;
-            valueCATR = 0;
-            valueCASE_L = 0;
-            valueCASE_R = 0;
-            valueJDL = 20000;
-            valueJDR = 20000;
-            valueJDSS = 20000;
-            dirCAT_L = (byte) 0xF2;
-            dirCAT_R = (byte) 0xF2;
-            dirCAT_SS = (byte) 0xF2;
-            dirCase_R = (byte) 0xF2;
-            dirCase_L = (byte) 0xF2;
-
-
-        } else {
+                QL = 0;
+                QC = 0;
+                QR = 0;
+                GroundSlope = correctRoll;
+                valueKomL = 0;
+                valueKomR = 0;
+                valueCATL = 0;
+                valueCATR = 0;
+                valueCASE_L = 0;
+                valueCASE_R = 0;
+                valueJDL = 20000;
+                valueJDR = 20000;
+                valueJDSS = 20000;
+                dirCAT_L = (byte) 0xF2;
+                dirCAT_R = (byte) 0xF2;
+                dirCAT_SS = (byte) 0xF2;
+                dirCase_R = (byte) 0xF2;
+                dirCase_L = (byte) 0xF2;
 
 
-            switch (DataSaved.isWL) {
-                case EXCAVATOR:
-                case WHEELLOADER:
-                    OUTPUT_HYDRO = "";
-                    QL = 0;
-                    QC = 0;
-                    QR = 0;
-                    GroundSlope = correctRoll;
-                    valueKomL = 0;
-                    valueKomR = 0;
-                    valueCATL = 0;
-                    valueCATR = 0;
-                    valueCASE_L = 0;
-                    valueCASE_R = 0;
-                    valueJDL = 20000;
-                    valueJDR = 20000;
-                    valueJDSS = 20000;
-                    dirCAT_L = (byte) 0xF2;
-                    dirCAT_R = (byte) 0xF2;
-                    dirCAT_SS = (byte) 0xF2;
-                    dirCase_R = (byte) 0xF2;
-                    dirCase_L = (byte) 0xF2;
-                    break;
-                case GRADER:
-                    //GRADER
-
-                    switch (HYDRAULIC_CONTROL_POINT_GRADER) {
-                        case 0:
-                            QL = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_SX;
-                            QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
-                            QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
-
-                            handleLamaGrader(TriangleService.quota3D_CT, QC, TriangleService.quota3D_DX, QR, ctOffGrid, rtOffGrid);
-                            break;
-
-                        case 1:
-                            QL = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_SX;
-                            QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
-                            QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
-                            handleLamaGrader(TriangleService.quota3D_CT, QC, TriangleService.quota3D_SX, QL, ctOffGrid, ltOffGrid);
-                            break;
-
-                        case 2://left right
-                            QL = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_SX;
-                            QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
-                            QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
-                            handleLamaGrader(TriangleService.quota3D_SX, QL, TriangleService.quota3D_DX, QR, ltOffGrid, rtOffGrid);
-                            break;
-                    }
-                    handleSideShift(DataSaved.bucketEdge, DataSaved.line_Offset);
-                    break;
-
-                case DOZER:
-                case DOZER_SIX:
-                    valueJDSS = 20000;
-                    //DOZER
-
-                    QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
-                    if (!isInRange(DataSaved.tolleranza_ZL, TriangleService.quota3D_CT) && Math.abs(TriangleService.quota3D_CT) < DataSaved.HYDRAULIC_WINDOW) {
-
-                        if (TriangleService.quota3D_CT < -DataSaved.tolleranza_ZL) {
-
-                            dirCAT_L = (byte) 0xF2;
-                            valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP) & 0xFF;
-                            valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255) & 0xFF;
-
-                            dirCase_L = (byte) 0xF2;
-                            valueCASE_L = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP) & 0xFF;
-                            valueCASE_L = (byte) MyMCUtils.limitInt(valueCASE_L, 0, 250) & 0xFF;
+            } else {
 
 
-                            valueKomL = (int) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
-                            valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
-                            valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP) & 0xFF;
-                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
-                            valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
-                            valueJDL = MyMCUtils.limitIntJDL(TriangleService.quota3D_CT, valueJDL, 20000, 30000);
-
-
-                        } else if (TriangleService.quota3D_CT > DataSaved.tolleranza_ZL) {
-                            dirCAT_L = (byte) 0xF1;
-                            valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW) & 0xFF;
-                            valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255) & 0xFF;
-
-                            dirCase_L = (byte) 0xF1;
-                            valueCASE_L = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW) & 0xFF;
-                            valueCASE_L = (byte) MyMCUtils.limitInt(valueCASE_L, 0, 250) & 0xFF;
-
-                            valueKomL = (int) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
-                            valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
-                            valueKomL = valueKomL * -1;
-
-
-                            valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW) & 0xFF;
-                            valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
-
-                            valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
-                            valueJDL = MyMCUtils.limitIntJDL(TriangleService.quota3D_CT, valueJDL, 10000, 20000);
-                        }
-                    } else {
+                switch (DataSaved.isWL) {
+                    case EXCAVATOR:
+                    case WHEELLOADER:
+                        OUTPUT_HYDRO = "";
+                        QL = 0;
+                        QC = 0;
+                        QR = 0;
+                        GroundSlope = correctRoll;
                         valueKomL = 0;
+                        valueKomR = 0;
                         valueCATL = 0;
+                        valueCATR = 0;
                         valueCASE_L = 0;
+                        valueCASE_R = 0;
                         valueJDL = 20000;
-                        dirCAT_L = (byte) 0xF2;
-                        dirCAT_SS = (byte) 0xF2;
-                        dirCase_L = (byte) 0xF2;
-                    }
-                    switch (HYDRAULIC_CONTROL_POINT_DOZER) {
-                        case 0://CENTER RIGHT
-                            GroundSlope = MyMCUtils.bladeSlope(TriangleService.posC, TriangleService.posR);
-                            QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
-                            QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
-                            if (Math.abs(TriangleService.quota3D_CT) > 0.05) {
-                                controlloPendenza();
-
-                            } else {
-
-                                if (!isInRange(DataSaved.tolleranza_ZR, TriangleService.quota3D_DX) && Math.abs(TriangleService.quota3D_DX) < DataSaved.HYDRAULIC_WINDOW) {
-                                    if (TriangleService.quota3D_DX < -DataSaved.tolleranza_ZR) {
-
-                                        dirCAT_R = (byte) 0xF2;
-                                        valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, minSpeedRightUP, maxSpeedRightUP) & 0xFF;
-                                        valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
-
-                                        dirCase_R = (byte) 0xF2;
-                                        valueCASE_R = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, minSpeedRightUP, maxSpeedRightUP) & 0xFF;
-                                        valueCASE_R = (byte) MyMCUtils.limitInt(valueCASE_R, 0, 250);
-
-                                        valueKomR = (int) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightUP, DataSaved.maxSpeedRightUP);
-                                        valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
-
-                                        valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightUP, DataSaved.maxSpeedRightUP) & 0xFF;
-                                        valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
-                                        valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
-
-
-                                    } else if (TriangleService.quota3D_DX > DataSaved.tolleranza_ZR) {
-                                        dirCAT_R = (byte) 0xF1;
-                                        valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
-                                        valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
-
-
-                                        dirCase_R = (byte) 0xF1;
-                                        valueCASE_R = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
-                                        valueCASE_R = (byte) MyMCUtils.limitInt(valueCASE_R, 0, 250);
-
-                                        valueKomR = (int) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW);
-                                        valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
-                                        valueKomR = valueKomR * -1;
-
-
-                                        valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
-                                        valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
-
-                                        valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
-                                    }
-                                } else {
-                                    valueKomR = 0;
-                                    valueCATR = 0;
-                                    valueCASE_R = 0;
-                                    valueJDR = 20000;
-                                    dirCAT_R = (byte) 0xF2;
-                                    dirCase_R = (byte) 0xF2;
-                                    dirCAT_SS = (byte) 0xF2;
-                                }
-                            }
-
-                            break;
-
-                        case 1://CENTER LEFT
-                            GroundSlope = MyMCUtils.bladeSlope(TriangleService.posL, TriangleService.posC);
-                            QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
-                            QL = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_SX;
-                            if (Math.abs(TriangleService.quota3D_CT) > 0.05) {
-                                controlloPendenza();
-                            } else {
-                                if (!isInRange(DataSaved.tolleranza_ZR, TriangleService.quota3D_SX) && Math.abs(TriangleService.quota3D_SX) < DataSaved.HYDRAULIC_WINDOW) {
-                                    if (TriangleService.quota3D_SX < -DataSaved.tolleranza_ZR) {
-
-                                        dirCAT_R = (byte) 0xF1;
-                                        valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, minSpeedRightUP, maxSpeedRightUP) & 0xFF;
-                                        valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
-
-                                        dirCase_R = (byte) 0xF1;
-                                        valueCASE_R = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, minSpeedRightUP, maxSpeedRightUP) & 0xFF;
-                                        valueCASE_R = (byte) MyMCUtils.limitInt(valueCASE_R, 0, 250);
-
-                                        valueKomR = (int) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightUP, DataSaved.maxSpeedRightUP);
-                                        valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
-                                        valueKomR = valueKomR * -1;
-
-                                        valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightUP, DataSaved.maxSpeedRightUP) & 0xFF;
-                                        valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
-                                        valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
-                                        valueJDR = 40000 - valueJDR;
-
-
-                                    } else if (TriangleService.quota3D_SX > DataSaved.tolleranza_ZR) {
-                                        dirCAT_R = (byte) 0xF2;
-                                        valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
-                                        valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
-
-                                        dirCase_R = (byte) 0xF2;
-                                        valueCASE_R = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
-                                        valueCASE_R = (byte) MyMCUtils.limitInt(valueCASE_R, 0, 250);
-
-                                        valueKomR = (int) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW);
-                                        valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
-
-                                        valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
-                                        valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
-                                        valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
-
-                                        valueJDR = 40000 - valueJDR;
-                                    }
-                                } else {
-                                    valueKomR = 0;
-                                    valueCATR = 0;
-                                    valueCASE_R = 0;
-                                    valueJDR = 20000;
-                                    dirCAT_R = (byte) 0xF2;
-                                    dirCase_R = (byte) 0xF2;
-                                    dirCAT_SS = (byte) 0xF2;
-                                }
-                            }
-                            break;
-
-                    }
-
-
-                    if (!Grader_Auto_SS) {
-                        valueCATSS = 0;
+                        valueJDR = 20000;
                         valueJDSS = 20000;
+                        dirCAT_L = (byte) 0xF2;
+                        dirCAT_R = (byte) 0xF2;
                         dirCAT_SS = (byte) 0xF2;
-                    }
+                        dirCase_R = (byte) 0xF2;
+                        dirCase_L = (byte) 0xF2;
+                        break;
+                    case GRADER:
+                        //GRADER
+
+                        switch (HYDRAULIC_CONTROL_POINT_GRADER) {
+                            case 0:
+                                QL = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_SX;
+                                QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
+                                QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
+
+                                handleLamaGrader(TriangleService.quota3D_CT, QC, TriangleService.quota3D_DX, QR, ctOffGrid, rtOffGrid);
+                                break;
+
+                            case 1:
+                                QL = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_SX;
+                                QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
+                                QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
+                                handleLamaGrader(TriangleService.quota3D_CT, QC, TriangleService.quota3D_SX, QL, ctOffGrid, ltOffGrid);
+                                break;
+
+                            case 2://left right
+                                QL = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_SX;
+                                QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
+                                QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
+                                handleLamaGrader(TriangleService.quota3D_SX, QL, TriangleService.quota3D_DX, QR, ltOffGrid, rtOffGrid);
+                                break;
+                        }
+                        handleSideShift(DataSaved.bucketEdge, DataSaved.line_Offset);
+                        break;
+
+                    case DOZER:
+                    case DOZER_SIX:
+                        valueJDSS = 20000;
+                        //DOZER
+
+                        QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
+                        if (!isInRange(DataSaved.tolleranza_ZL, TriangleService.quota3D_CT) && Math.abs(TriangleService.quota3D_CT) < DataSaved.HYDRAULIC_WINDOW) {
+
+                            if (TriangleService.quota3D_CT < -DataSaved.tolleranza_ZL) {
+
+                                dirCAT_L = (byte) 0xF2;
+                                valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP) & 0xFF;
+                                valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255) & 0xFF;
+
+                                dirCase_L = (byte) 0xF2;
+                                valueCASE_L = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP) & 0xFF;
+                                valueCASE_L = (byte) MyMCUtils.limitInt(valueCASE_L, 0, 250) & 0xFF;
 
 
-                    if (prepLeft) {
-                        if (Dozer_Auto_Main) {
+                                valueKomL = (int) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP);
+                                valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
+                                valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftUP, DataSaved.maxSpeedLeftUP) & 0xFF;
+                                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 30000);
+                                valueJDL = MyMCUtils.limitInt(valueJDL, 20000, 30000);
+                                valueJDL = MyMCUtils.limitIntJDL(TriangleService.quota3D_CT, valueJDL, 20000, 30000);
 
-                            if (Math.abs(TriangleService.quota3D_CT) > DataSaved.HYDRAULIC_WINDOW || ctOffGrid) {
+
+                            } else if (TriangleService.quota3D_CT > DataSaved.tolleranza_ZL) {
+                                dirCAT_L = (byte) 0xF1;
+                                valueCATL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW) & 0xFF;
+                                valueCATL = (byte) MyMCUtils.limitInt(valueCATL, 0, 255) & 0xFF;
+
+                                dirCase_L = (byte) 0xF1;
+                                valueCASE_L = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW) & 0xFF;
+                                valueCASE_L = (byte) MyMCUtils.limitInt(valueCASE_L, 0, 250) & 0xFF;
+
+                                valueKomL = (int) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW);
+                                valueKomL = (int) MyMCUtils.limitInt(valueKomL, 0, 255);
+                                valueKomL = valueKomL * -1;
+
+
+                                valueJDL = (byte) MyMCUtils.myscaleD(Math.abs(QC), 0, MAX_SCALE, DataSaved.minSpeedLeftDW, DataSaved.maxSpeedLeftDW) & 0xFF;
+                                valueJDL = (int) MyMCUtils.myscaleD(valueJDL, 0, 255, 20000, 10000);
+
+                                valueJDL = MyMCUtils.limitInt(valueJDL, 10000, 20000);
+                                valueJDL = MyMCUtils.limitIntJDL(TriangleService.quota3D_CT, valueJDL, 10000, 20000);
+                            }
+                        } else {
+                            valueKomL = 0;
+                            valueCATL = 0;
+                            valueCASE_L = 0;
+                            valueJDL = 20000;
+                            dirCAT_L = (byte) 0xF2;
+                            dirCAT_SS = (byte) 0xF2;
+                            dirCase_L = (byte) 0xF2;
+                        }
+                        switch (HYDRAULIC_CONTROL_POINT_DOZER) {
+                            case 0://CENTER RIGHT
+                                GroundSlope = MyMCUtils.bladeSlope(TriangleService.posC, TriangleService.posR);
+                                QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
+                                QR = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_DX;
+                                if (Math.abs(TriangleService.quota3D_CT) > 0.05) {
+                                    controlloPendenza();
+
+                                } else {
+
+                                    if (!isInRange(DataSaved.tolleranza_ZR, TriangleService.quota3D_DX) && Math.abs(TriangleService.quota3D_DX) < DataSaved.HYDRAULIC_WINDOW) {
+                                        if (TriangleService.quota3D_DX < -DataSaved.tolleranza_ZR) {
+
+                                            dirCAT_R = (byte) 0xF2;
+                                            valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, minSpeedRightUP, maxSpeedRightUP) & 0xFF;
+                                            valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
+
+                                            dirCase_R = (byte) 0xF2;
+                                            valueCASE_R = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, minSpeedRightUP, maxSpeedRightUP) & 0xFF;
+                                            valueCASE_R = (byte) MyMCUtils.limitInt(valueCASE_R, 0, 250);
+
+                                            valueKomR = (int) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightUP, DataSaved.maxSpeedRightUP);
+                                            valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
+
+                                            valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightUP, DataSaved.maxSpeedRightUP) & 0xFF;
+                                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
+                                            valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
+
+
+                                        } else if (TriangleService.quota3D_DX > DataSaved.tolleranza_ZR) {
+                                            dirCAT_R = (byte) 0xF1;
+                                            valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
+                                            valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
+
+
+                                            dirCase_R = (byte) 0xF1;
+                                            valueCASE_R = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
+                                            valueCASE_R = (byte) MyMCUtils.limitInt(valueCASE_R, 0, 250);
+
+                                            valueKomR = (int) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW);
+                                            valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
+                                            valueKomR = valueKomR * -1;
+
+
+                                            valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(QR), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
+                                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
+
+                                            valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
+                                        }
+                                    } else {
+                                        valueKomR = 0;
+                                        valueCATR = 0;
+                                        valueCASE_R = 0;
+                                        valueJDR = 20000;
+                                        dirCAT_R = (byte) 0xF2;
+                                        dirCase_R = (byte) 0xF2;
+                                        dirCAT_SS = (byte) 0xF2;
+                                    }
+                                }
+
+                                break;
+
+                            case 1://CENTER LEFT
+                                GroundSlope = MyMCUtils.bladeSlope(TriangleService.posL, TriangleService.posC);
+                                QC = MyMCUtils.ledder(GAIN_LEFT) * TriangleService.quota3D_CT;
+                                QL = MyMCUtils.ledder(GAIN_RIGHT) * TriangleService.quota3D_SX;
+                                if (Math.abs(TriangleService.quota3D_CT) > 0.05) {
+                                    controlloPendenza();
+                                } else {
+                                    if (!isInRange(DataSaved.tolleranza_ZR, TriangleService.quota3D_SX) && Math.abs(TriangleService.quota3D_SX) < DataSaved.HYDRAULIC_WINDOW) {
+                                        if (TriangleService.quota3D_SX < -DataSaved.tolleranza_ZR) {
+
+                                            dirCAT_R = (byte) 0xF1;
+                                            valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, minSpeedRightUP, maxSpeedRightUP) & 0xFF;
+                                            valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
+
+                                            dirCase_R = (byte) 0xF1;
+                                            valueCASE_R = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, minSpeedRightUP, maxSpeedRightUP) & 0xFF;
+                                            valueCASE_R = (byte) MyMCUtils.limitInt(valueCASE_R, 0, 250);
+
+                                            valueKomR = (int) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightUP, DataSaved.maxSpeedRightUP);
+                                            valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
+                                            valueKomR = valueKomR * -1;
+
+                                            valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightUP, DataSaved.maxSpeedRightUP) & 0xFF;
+                                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 30000);
+                                            valueJDR = MyMCUtils.limitInt(valueJDR, 20000, 30000);
+                                            valueJDR = 40000 - valueJDR;
+
+
+                                        } else if (TriangleService.quota3D_SX > DataSaved.tolleranza_ZR) {
+                                            dirCAT_R = (byte) 0xF2;
+                                            valueCATR = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
+                                            valueCATR = (byte) MyMCUtils.limitInt(valueCATR, 0, 255);
+
+                                            dirCase_R = (byte) 0xF2;
+                                            valueCASE_R = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
+                                            valueCASE_R = (byte) MyMCUtils.limitInt(valueCASE_R, 0, 250);
+
+                                            valueKomR = (int) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW);
+                                            valueKomR = (int) MyMCUtils.limitInt(valueKomR, 0, 255);
+
+                                            valueJDR = (byte) MyMCUtils.myscaleD(Math.abs(QL), 0, MAX_SCALE, DataSaved.minSpeedRightDW, DataSaved.maxSpeedRightDW) & 0xFF;
+                                            valueJDR = (int) MyMCUtils.myscaleD(valueJDR, 0, 255, 20000, 10000);
+                                            valueJDR = MyMCUtils.limitInt(valueJDR, 10000, 20000);
+
+                                            valueJDR = 40000 - valueJDR;
+                                        }
+                                    } else {
+                                        valueKomR = 0;
+                                        valueCATR = 0;
+                                        valueCASE_R = 0;
+                                        valueJDR = 20000;
+                                        dirCAT_R = (byte) 0xF2;
+                                        dirCase_R = (byte) 0xF2;
+                                        dirCAT_SS = (byte) 0xF2;
+                                    }
+                                }
+                                break;
+
+                        }
+
+
+                        if (!Grader_Auto_SS) {
+                            valueCATSS = 0;
+                            valueJDSS = 20000;
+                            dirCAT_SS = (byte) 0xF2;
+                        }
+
+
+                        if (prepLeft) {
+                            if (Dozer_Auto_Main) {
+
+                                if (Math.abs(TriangleService.quota3D_CT) > DataSaved.HYDRAULIC_WINDOW || ctOffGrid) {
+                                    valueKomL = 0;
+                                    valueCATL = 0;
+                                    valueCASE_L = 0;
+                                    valueJDL = 20000;
+                                    dirCAT_L = (byte) 0xF2;
+                                    dirCase_L = (byte) 0xF2;
+                                }
+
+                            } else {
+
                                 valueKomL = 0;
                                 valueCATL = 0;
                                 valueCASE_L = 0;
                                 valueJDL = 20000;
                                 dirCAT_L = (byte) 0xF2;
                                 dirCase_L = (byte) 0xF2;
-                            }
 
+                            }
                         } else {
 
                             valueKomL = 0;
@@ -891,41 +902,42 @@ public class CanSender extends Service {
                             dirCase_L = (byte) 0xF2;
 
                         }
-                    } else {
-
-                        valueKomL = 0;
-                        valueCATL = 0;
-                        valueCASE_L = 0;
-                        valueJDL = 20000;
-                        dirCAT_L = (byte) 0xF2;
-                        dirCase_L = (byte) 0xF2;
-
-                    }
 
 
-                    if (prepRight) {
-                        if (Dozer_Auto_Main) {
-                            if (HYDRAULIC_CONTROL_POINT_DOZER == 0) {
-                                if (rtOffGrid) {
-                                    valueKomR = 0;
-                                    valueCATR = 0;
-                                    valueCASE_R = 0;
-                                    valueJDR = 20000;
-                                    dirCAT_R = (byte) 0xF2;
-                                    dirCase_R = (byte) 0xF2;
+                        if (prepRight) {
+                            if (Dozer_Auto_Main) {
+                                if (HYDRAULIC_CONTROL_POINT_DOZER == 0) {
+                                    if (rtOffGrid) {
+                                        valueKomR = 0;
+                                        valueCATR = 0;
+                                        valueCASE_R = 0;
+                                        valueJDR = 20000;
+                                        dirCAT_R = (byte) 0xF2;
+                                        dirCase_R = (byte) 0xF2;
+                                    }
                                 }
-                            }
-                            if (HYDRAULIC_CONTROL_POINT_DOZER == 1) {
-                                if (ltOffGrid) {
-                                    valueKomR = 0;
-                                    valueCATR = 0;
-                                    valueCASE_R = 0;
-                                    valueJDR = 20000;
-                                    dirCAT_R = (byte) 0xF2;
-                                    dirCase_R = (byte) 0xF2;
+                                if (HYDRAULIC_CONTROL_POINT_DOZER == 1) {
+                                    if (ltOffGrid) {
+                                        valueKomR = 0;
+                                        valueCATR = 0;
+                                        valueCASE_R = 0;
+                                        valueJDR = 20000;
+                                        dirCAT_R = (byte) 0xF2;
+                                        dirCase_R = (byte) 0xF2;
+                                    }
                                 }
-                            }
 
+                            } else {
+
+                                valueKomR = 0;
+                                valueCATR = 0;
+                                valueCASE_R = 0;
+                                valueJDR = 20000;
+                                dirCAT_R = (byte) 0xF2;
+                                dirCase_R = (byte) 0xF2;
+
+
+                            }
                         } else {
 
                             valueKomR = 0;
@@ -935,23 +947,16 @@ public class CanSender extends Service {
                             dirCAT_R = (byte) 0xF2;
                             dirCase_R = (byte) 0xF2;
 
-
                         }
-                    } else {
+                        break;
+                }
 
-                        valueKomR = 0;
-                        valueCATR = 0;
-                        valueCASE_R = 0;
-                        valueJDR = 20000;
-                        dirCAT_R = (byte) 0xF2;
-                        dirCase_R = (byte) 0xF2;
 
-                    }
-                    break;
             }
-
-
+        } catch (Exception ignored) {
+            Log.e("CAN_2_OUT",Log.getStackTraceString(ignored));
         }
+
 
         invioMessaggiDozer();
 
@@ -1177,6 +1182,19 @@ public class CanSender extends Service {
         switch (DataSaved.Interface_Type) {
             case 255:
                 try {
+
+                    short multMainfall = 1;
+                    if (DataSaved.OEM_REV_MAINFALL == 1) {
+                        multMainfall = -1;
+                    }
+                    int multUpDw = 1;
+                    if (DataSaved.OEM_REV_UPDW == 1) {
+                        multUpDw = -1;
+                    }
+                    int multSS = 1;
+                    if (DataSaved.OEM_REV_SS == 1) {
+                        multSS = -1;
+                    }
                     // output 3e PARTI
                     byte[] left, cent, right;
                     byte[] dist = new byte[2];
@@ -1200,46 +1218,46 @@ public class CanSender extends Service {
 
                     switch (DataSaved.bucketEdge) {
                         case -1:
-                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
+                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000 * multSS), (short) -32768, (short) 32767));
                             break;
                         case 0:
-                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
+                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000 * multSS), (short) -32768, (short) 32767));
                             break;
                         case 1:
-                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000), (short) -32768, (short) 32767));
+                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000 * multSS), (short) -32768, (short) 32767));
                             break;
                     }
 
-                    if(ltOffGrid){
-                        left=new byte[]{0x0, (byte) 0x80};
-                    }else {
-                        left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_SX * 1000), (short) -32768, (short) 32767));
+                    if (ltOffGrid) {
+                        left = new byte[]{0x0, (byte) 0x80};
+                    } else {
+                        left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_SX * 1000 * multUpDw), (short) -32768, (short) 32767));
                     }
 
-                    if(ctOffGrid){
-                        cent=new byte[]{0x0, (byte) 0x80};
-                    }else {
-                        cent = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_CT * 1000), (short) -32768, (short) 32767));
+                    if (ctOffGrid) {
+                        cent = new byte[]{0x0, (byte) 0x80};
+                    } else {
+                        cent = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_CT * 1000 * multUpDw), (short) -32768, (short) 32767));
                     }
 
-                    if(rtOffGrid){
-                        right=new byte[]{0x0, (byte) 0x80};
-                    }else {
-                        right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_DX * 1000), (short) -32768, (short) 32767));
+                    if (rtOffGrid) {
+                        right = new byte[]{0x0, (byte) 0x80};
+                    } else {
+                        right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.quota3D_DX * 1000 * multUpDw), (short) -32768, (short) 32767));
 
                     }
-
-                    byte[]mainfall=PLC_DataTypes_LittleEndian.S16_to_bytes(TriangleService.Mainfall_Value);
-                    byte[]offset=PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (DataSaved.offsetH* 1000), (short) -32768, (short) 32767));
-                    byte[]dgm_left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.DGM_Letf * 1000), (short) -32768, (short) 32767));
-                    byte[]dgm_right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.DGM_Right * 1000), (short) -32768, (short) 32767));
+                    byte[] mainfall = PLC_DataTypes_LittleEndian.S16_to_bytes( (short) (TriangleService.Mainfall_Value * multMainfall));
+                    byte[] offset = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (DataSaved.offsetH * 1000), (short) -32768, (short) 32767));
+                    byte[] dgm_left = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.DGM_Letf * 1000 * multUpDw), (short) -32768, (short) 32767));
+                    byte[] dgm_right = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.DGM_Right * 1000 * multUpDw), (short) -32768, (short) 32767));
                     heartbitTerzeParti++;
 
-                    if(DataSaved.gpsOk) {
+                    if (DataSaved.gpsOk) {
                         if (heartbitTerzeParti % 2 == 0) {
                             heartbitTerzeParti_1++;
                             heartbitTerzeParti_1 = heartbitTerzeParti_1 % 255;
                             MUX = 0x01;
+
                             MyDeviceManager.CanWrite(sending, 1, 0x154, 8, new byte[]{
                                     MUX,
                                     (byte) heartbitTerzeParti_1,
@@ -1250,10 +1268,12 @@ public class CanSender extends Service {
                                     mainfall[0],
                                     mainfall[1]
                             });
+
                         } else {
                             heartbitTerzeParti_2++;
                             heartbitTerzeParti_2 = heartbitTerzeParti_2 % 255;
                             MUX = 0x03;
+
                             MyDeviceManager.CanWrite(!sending, 1, 0x154, 8, new byte[]{
                                     MUX,
                                     (byte) heartbitTerzeParti_2,
@@ -1266,9 +1286,10 @@ public class CanSender extends Service {
 
 
                             });
+
                         }
-                    }else {
-                        MyDeviceManager.CanWrite(sending,1,0x154,8,new byte[]{
+                    } else {
+                        MyDeviceManager.CanWrite(sending, 1, 0x154, 8, new byte[]{
                                 0x01,
                                 (byte) heartbitTerzeParti_1,
                                 0x0,
@@ -1278,7 +1299,7 @@ public class CanSender extends Service {
                                 0x0,
                                 (byte) 0x80
                         });
-                        MyDeviceManager.CanWrite(sending,1,0x154,8,new byte[]{
+                        MyDeviceManager.CanWrite(sending, 1, 0x154, 8, new byte[]{
                                 0x03,
                                 (byte) heartbitTerzeParti_2,
                                 0x0,
@@ -1292,7 +1313,7 @@ public class CanSender extends Service {
 
 
                 } catch (Exception e) {
-                    MyDeviceManager.CanWrite(sending,1,0x154,8,new byte[]{
+                    MyDeviceManager.CanWrite(sending, 1, 0x154, 8, new byte[]{
                             0x01,
                             (byte) heartbitTerzeParti_1,
                             0x0,
@@ -1302,7 +1323,7 @@ public class CanSender extends Service {
                             0x0,
                             (byte) 0x80
                     });
-                    MyDeviceManager.CanWrite(sending,1,0x154,8,new byte[]{
+                    MyDeviceManager.CanWrite(sending, 1, 0x154, 8, new byte[]{
                             0x03,
                             (byte) heartbitTerzeParti_2,
                             0x0,

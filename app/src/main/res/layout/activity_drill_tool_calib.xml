@@ -84,7 +84,7 @@
         app:layout_constraintTop_toBottomOf="@id/h1"
         app:layout_constraintBottom_toTopOf="@id/h30"
         app:layout_constraintRight_toLeftOf="@id/v60"
-        android:src="@drawable/tool_delta_x"
+        android:src="@drawable/nuovo_tool_delta_x"
 
 
         />

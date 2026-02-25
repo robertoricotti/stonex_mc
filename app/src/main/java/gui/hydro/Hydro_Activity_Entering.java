@@ -88,8 +88,9 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
 
                     break;
                 case 255:
-                    //to_calib.setEnabled(false);
-                    new CustomToast(this,"OEM Can Out Enabled").show_alert();
+                    to_calib.setEnabled(false);
+                    startActivity(new Intent(Hydro_Activity_Entering.this, OEM_Activity.class));
+                    finish();
                     break;
             }
 

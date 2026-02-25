@@ -22,6 +22,8 @@ import com.cpdevice.cpcomm.proto.CPVxProtocolProxy;
 import com.cpdevice.cpcomm.proto.Protocol;
 import com.cpdevice.cpcomm.proto.SocketCanProxy;
 
+import java.util.Arrays;
+
 import packexcalib.exca.DataSaved;
 
 /**
@@ -308,7 +310,9 @@ public class CPCanHelper {
                                 if (id > 2047) {
                                     mSocketCanProxy_2.sendCanFrame(id | ISocketCanFrame.CAN_EFF_FLAG, data.length, data);
                                 } else {
+
                                     mSocketCanProxy_2.sendCanFrame(id, data.length, data);
+
                                 }
 
 
@@ -322,6 +326,7 @@ public class CPCanHelper {
                     if (mProxy != null) {
                         if (mProxy.isConnected()) {
                             boolean t = id > 2047;
+
                             mProxy.sendCanFrame(channel.ordinal(), id, t, false, data.length, data);
                         }
                     }

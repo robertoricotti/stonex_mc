@@ -224,6 +224,11 @@ public class UpdateValuesService extends Service {
                     String REVERSE_SS = MyData.get_String("M" + i + "REVERSE_SS");
                     String Use_Blade_Pitch = MyData.get_String("M" + i + "Use_Blade_Pitch");
 
+                    //OEM
+                    String OEM_REV_MAINFALL = MyData.get_String("M" + i + "OEM_REV_MAINFALL");
+                    String OEM_REV_UPDW = MyData.get_String("M" + i + "OEM_REV_UPDW");
+                    String OEM_REV_SS = MyData.get_String("M" + i + "OEM_REV_SS");
+                    //
 
                     String minSpeedRightUP = MyData.get_String("M" + i + "minSpeedRightUP");
                     String maxSpeedRightUP = MyData.get_String("M" + i + "maxSpeedRightUP");
@@ -576,6 +581,20 @@ public class UpdateValuesService extends Service {
                     if (REVERSE_SS == null) {
                         MyData.push("M" + i + "REVERSE_SS", "0");
                     }
+
+                    /// /
+                    if (OEM_REV_MAINFALL == null) {
+                        MyData.push("M" + i + "OEM_REV_MAINFALL", "0");
+                    }
+                    if (OEM_REV_UPDW == null) {
+                        MyData.push("M" + i + "OEM_REV_UPDW", "0");
+                    }
+                    if (OEM_REV_SS == null) {
+                        MyData.push("M" + i + "OEM_REV_SS", "0");
+                    }
+
+
+
                     if (Use_Blade_Pitch == null) {
                         MyData.push("M" + i + "Use_Blade_Pitch", "1");
                     }
@@ -1568,6 +1587,21 @@ public class UpdateValuesService extends Service {
 
 
                 /// ///////
+                try {
+                    DataSaved.OEM_REV_MAINFALL = MyData.get_Int("M" + indexMach + "OEM_REV_MAINFALL");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di OEM_REV_MAINFALL: " + e.getMessage());
+                }
+                try {
+                    DataSaved.OEM_REV_UPDW = MyData.get_Int("M" + indexMach + "OEM_REV_UPDW");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di OEM_REV_UPDW: " + e.getMessage());
+                }
+                try {
+                    DataSaved.OEM_REV_SS = MyData.get_Int("M" + indexMach + "OEM_REV_SS");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di OEM_REV_SS: " + e.getMessage());
+                }
 
 
                 try {

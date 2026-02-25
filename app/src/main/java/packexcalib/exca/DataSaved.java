@@ -84,6 +84,10 @@ public class DataSaved {
     public static int REVERSE_LEFT;
     public static int REVERSE_RIGHT;
     public static int REVERSE_SS;
+    public static int OEM_REV_MAINFALL;
+    public static int OEM_REV_UPDW;
+    public static int OEM_REV_SS;
+
 
 
     public static int Wheel_Steer_Rev;
