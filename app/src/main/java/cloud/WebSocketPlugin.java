@@ -48,7 +48,7 @@ import utils.MyDeviceManager;
 public class WebSocketPlugin {
     public static boolean isAuthenticated;
     private WebSocket webSocket;
-
+    private static final String WS_URL_US = "wss://licensemc-us.stonexpositioning.com/api/v1/ws";
     private static final String WS_URL = "wss://licensemc.stonexpositioning.com/api/v1/ws";
     private static final String SECRET_KEY_BASE64 = "Q6E2ZK3g1/XSO4VXxMGNehYmQUaJv8+M26j+xqlsgFs=";
 
@@ -85,6 +85,7 @@ public class WebSocketPlugin {
     public void start() {
         if(isApollo){
 
+
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).build();
 
         Request request = new Request.Builder().url(WS_URL).build();
@@ -114,6 +115,7 @@ public class WebSocketPlugin {
 
                 } catch (Exception e) {
                     e.printStackTrace();
+
                 }
             }
 
