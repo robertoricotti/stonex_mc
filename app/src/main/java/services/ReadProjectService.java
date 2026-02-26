@@ -339,9 +339,11 @@ public class ReadProjectService extends Service {
                 } else {
                     ////////
                     switch (s) {
+                        case "5513" -> initBase5513Proj4j();
                         case "5514" -> initBase5514Proj4j();
+                        //case "150583" -> initBase5514Proj4j();
                         case "150581" -> {
-                            initBase5514Proj4j(); // crea WGS84, UTM(5514 base), wgsToUtm ecc.
+                            initBaseKrovakGRS80Proj4j(); // crea WGS84, UTM(5514 base), wgsToUtm ecc.
 
                             if (cz_Q1 == null) {
                                 try (InputStream is = MyApp.visibleActivity.getAssets().open("table_yx_3_v1710_Q1.gsb")) {
@@ -353,7 +355,7 @@ public class ReadProjectService extends Service {
                             }
                         }
                         case "150582" -> {
-                            initBase5514Proj4j();
+                            initBaseKrovakGRS80Proj4j();
                             if (cz_Q3 == null) {
                                 try (InputStream is = MyApp.visibleActivity.getAssets().open("table_yx_3_v1710_Q3.gsb")) {
                                     cz_Q3 = new CzechGridShiftTransformer(is);
@@ -433,6 +435,44 @@ public class ReadProjectService extends Service {
                                 "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
                                 "+units=m +no_defs";
                 UTM=crsFactory.createFromParameters("EPSG:5514",epsg5514);
+
+            } catch (InvalidValueException | UnknownAuthorityCodeException |
+                     UnsupportedParameterException e) {
+
+                Log.e("GridShift", Log.getStackTraceString(e));
+            }
+            wgsToUtm = ctFactory.createTransform(WGS84, UTM);
+            utmToWgs = ctFactory.createTransform(UTM, WGS84);
+        } catch (Exception e) {
+        }
+    }
+    private static void initBaseKrovakGRS80Proj4j() {
+        result = new ProjCoordinate();
+        crsFactory = new CRSFactory();
+        ctFactory = new CoordinateTransformFactory();
+        WGS84 = crsFactory.createFromName("epsg:4326");
+
+        String krovakGRS80 =
+                "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
+                        "+k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs";
+
+        UTM = crsFactory.createFromParameters("KROVAK_GRS80", krovakGRS80);
+        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
+    }
+    private static void initBase5513Proj4j() {
+        try {
+            result = new ProjCoordinate();
+            resultWgs = new ProjCoordinate();
+            crsFactory = new CRSFactory();
+            ctFactory = new CoordinateTransformFactory();
+            WGS84 = crsFactory.createFromName("epsg:" + "4326");
+            try {
+                String epsg5513 =
+                        "+proj=krovak +axis=swu +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
+                                "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
+                                "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
+                                "+units=m +no_defs";
+                UTM=crsFactory.createFromParameters("EPSG:5514",epsg5513);
 
             } catch (InvalidValueException | UnknownAuthorityCodeException |
                      UnsupportedParameterException e) {

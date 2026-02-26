@@ -63,7 +63,37 @@ public final class CzechGridShiftTransformer {
             dX[i] = b;
         }
     }
+    public double[] debugShift(double E, double N) {
+        int col = (int)Math.floor((E - wLon) / step);
+        int row = (int)Math.floor((N - sLat) / step);
 
+        if (col < 0 || col >= cols - 1 || row < 0 || row >= rows - 1) {
+            return new double[]{Double.NaN, Double.NaN}; // out of bounds
+        }
+
+        int i00 = row * cols + col;
+        int i10 = i00 + 1;
+        int i01 = i00 + cols;
+        int i11 = i01 + 1;
+
+        float dy00 = dY[i00], dy10 = dY[i10], dy01 = dY[i01], dy11 = dY[i11];
+        float dx00 = dX[i00], dx10 = dX[i10], dx01 = dX[i01], dx11 = dX[i11];
+
+        if (dy00 == 9999f || dy10 == 9999f || dy01 == 9999f || dy11 == 9999f ||
+                dx00 == 9999f || dx10 == 9999f || dx01 == 9999f || dx11 == 9999f) {
+            return new double[]{Double.NaN, Double.NaN}; // nodata
+        }
+
+        double e0 = wLon + col * step;
+        double n0 = sLat + row * step;
+        double t = (E - e0) / step;
+        double u = (N - n0) / step;
+
+        double dYb = (1 - t)*(1 - u)*dy00 + t*(1 - u)*dy10 + (1 - t)*u*dy01 + t*u*dy11;
+        double dXb = (1 - t)*(1 - u)*dx00 + t*(1 - u)*dx10 + (1 - t)*u*dx01 + t*u*dx11;
+
+        return new double[]{dXb, dYb};
+    }
     /** Versione zero-alloc: applica shift in-place su ProjCoordinate (x=E, y=N) */
     public void applyInPlace(ProjCoordinate en) {
         final double E = en.x;

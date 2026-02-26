@@ -29,6 +29,7 @@ import org.locationtech.proj4j.UnsupportedParameterException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -188,7 +189,9 @@ public class SpTestActivity extends Activity {
                     double Easting, Northing, Quota;
                     coordinateXYZ=Deg2UTM.trasform(lat,lon,h,_UTM);
                     switch (DataSaved.S_CRS){
+
                         case "5514":
+                        case "150583":
                             CRSFactory crsFactory = new CRSFactory();
                             CoordinateReferenceSystem wgs84 = crsFactory.createFromName("epsg:4326");
 
@@ -207,8 +210,46 @@ public class SpTestActivity extends Activity {
                             ProjCoordinate in = new ProjCoordinate(lon, lat);
                             ProjCoordinate out = new ProjCoordinate();
                             t.transform(in, out);
-                            Easting = out.x;
-                            Northing = out.y ;
+                            if(DataSaved.S_CRS.equals("5514")) {
+                                Easting = out.x;
+                                Northing = out.y;
+                            }else {
+                                Easting = -out.x;
+                                Northing = -out.y;
+                            }
+                            Quota = ramoGeoide(lat, lon, h);
+                            sE = String.format("%.3f", Easting).replace(",", ".");
+                            sN = String.format("%.3f", Northing).replace(",", ".");
+                            sH = String.format("%.3f", Quota).replace(",", ".");
+                            etEst.setText(sE);
+                            etNord.setText(sN);
+                            etZ.setText(sH);
+                            MyData.push("Test_sLat", String.format("%.9f", lat));
+                            MyData.push("Test_sLon", String.format("%.9f", lon));
+                            MyData.push("Test_sHll", String.format("%.3f", h));
+                            updateLLQ();
+                            break;
+                        case "5513":
+                            CRSFactory crsFactory5513 = new CRSFactory();
+                            CoordinateReferenceSystem wgs845513 = crsFactory5513.createFromName("epsg:4326");
+
+                            String epsg5513 =
+                                    "+proj=krovak +axis=swu +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
+                                            "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
+                                            "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
+                                            "+units=m +no_defs";
+
+                            CoordinateReferenceSystem sjtsk5513 = crsFactory5513.createFromParameters("EPSG:5514", epsg5513);
+
+                            CoordinateTransformFactory ctFactory5513 = new CoordinateTransformFactory();
+                            CoordinateTransform t5513 = ctFactory5513.createTransform(wgs845513, sjtsk5513);
+
+                            // input: lon,lat (EPSG:4326)
+                            ProjCoordinate in5513 = new ProjCoordinate(lon, lat);
+                            ProjCoordinate out5513 = new ProjCoordinate();
+                            t5513.transform(in5513, out5513);
+                            Easting = out5513.x;
+                            Northing = out5513.y;
                             Quota = ramoGeoide(lat, lon, h);
                             sE = String.format("%.3f", Easting).replace(",", ".");
                             sN = String.format("%.3f", Northing).replace(",", ".");
@@ -241,14 +282,14 @@ public class SpTestActivity extends Activity {
                             break;
                         case "150581":
                             ensureCzechTransformsReady();
-                            if (wgsTo5514Base == null || czQ1 == null) {
+                            if (wgsToKrovakGRS80 == null || czQ1 == null) {
                                 toast("CZ grid Q1 non disponibile (assets mancanti?)");
                                 break;
                             }
 
                             ProjCoordinate in1 = new ProjCoordinate(lon, lat);
                             ProjCoordinate out1 = new ProjCoordinate();
-                            wgsTo5514Base.transform(in1, out1);
+                            wgsToKrovakGRS80.transform(in1, out1);
 
                             // Applica griglia v1710 Quadrant 1 (in metri su E/N)
                             // Se la tua CzechGridShiftTransformer al momento accetta double[],
@@ -276,14 +317,14 @@ public class SpTestActivity extends Activity {
 
                         case "150582":
                             ensureCzechTransformsReady();
-                            if (wgsTo5514Base == null || czQ3 == null) {
+                            if (wgsToKrovakGRS80 == null || czQ3 == null) {
                                 toast("CZ grid Q3 non disponibile (assets mancanti?)");
                                 break;
                             }
 
                             ProjCoordinate in3 = new ProjCoordinate(lon, lat);
                             ProjCoordinate out3 = new ProjCoordinate();
-                            wgsTo5514Base.transform(in3, out3);
+                            wgsToKrovakGRS80.transform(in3, out3);
 
                             // Applica griglia v1710 Quadrant 3
                             double[] en3 = { out3.x, out3.y };
@@ -392,7 +433,66 @@ public class SpTestActivity extends Activity {
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+    private static CoordinateTransform wgsToKrovakGRS80;
 
+    private void ensureCzechTransformsReady() {
+        Log.d("CZ", "ensureCzechTransformsReady() start");
+
+        try {
+            if (wgsToKrovakGRS80 == null) {
+                Log.d("CZ", "init wgsToKrovakGRS80...");
+                CRSFactory crsFactory = new CRSFactory();
+                CoordinateReferenceSystem wgs84 = crsFactory.createFromName("epsg:4326");
+
+                String krovakGRS80 =
+                        "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
+                                "+k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs";
+
+                CoordinateReferenceSystem krovak = crsFactory.createFromParameters("KROVAK_GRS80", krovakGRS80);
+                CoordinateTransformFactory ctFactory = new CoordinateTransformFactory();
+                wgsToKrovakGRS80 = ctFactory.createTransform(wgs84, krovak);
+
+                Log.d("CZ", "wgsToKrovakGRS80 OK");
+            }
+
+        } catch (Exception e) {
+            Log.e("CZ", "ERRORE init wgsToKrovakGRS80", e);
+        }
+
+        try {
+            if (czQ1 == null) {
+                Log.d("CZ", "loading asset Q1...");
+                // DEBUG: lista assets root
+                String[] list = getAssets().list("");
+                Log.d("CZ", "assets root = " + java.util.Arrays.toString(list));
+
+                try (InputStream is = getAssets().open("table_yx_3_v1710_Q1.gsb")) {
+                    czQ1 = new CzechGridShiftTransformer(is);
+                }
+                Log.d("CZ", "czQ1 OK");
+            }
+        } catch (Exception e) {
+            Log.e("CZ", "ERRORE open/parse Q1", e);
+        }
+
+        try {
+            if (czQ3 == null) {
+                Log.d("CZ", "loading asset Q3...");
+                String[] list = getAssets().list("");
+                Log.d("CZ", "assets root = " + java.util.Arrays.toString(list));
+
+                try (InputStream is = getAssets().open("table_yx_3_v1710_Q3.gsb")) {
+                    czQ3 = new CzechGridShiftTransformer(is);
+                }
+                Log.d("CZ", "czQ3 OK");
+            }
+        } catch (Exception e) {
+            Log.e("CZ", "ERRORE open/parse Q3", e);
+        }
+
+        Log.d("CZ", "ensure done: wgsToKrovakGRS80=" + (wgsToKrovakGRS80 != null)
+                + " czQ1=" + (czQ1 != null) + " czQ3=" + (czQ3 != null));
+    }
     private void init() {
         try {
 
@@ -604,32 +704,7 @@ public class SpTestActivity extends Activity {
         }
 
     }
-    private void ensureCzechTransformsReady() {
-        try {
-            if (wgsTo5514Base == null) {
-                CRSFactory crsFactory = new CRSFactory();
-                CoordinateReferenceSystem wgs84 = crsFactory.createFromName("epsg:4326");
-                CoordinateReferenceSystem sjtsk5514 = crsFactory.createFromParameters("EPSG:5514", EPSG5514_BASE);
 
-                CoordinateTransformFactory ctFactory = new CoordinateTransformFactory();
-                wgsTo5514Base = ctFactory.createTransform(wgs84, sjtsk5514);
-            }
-
-            if (czQ1 == null) {
-                try (var is = getAssets().open("table_yx_3_v1710_Q1.gsb")) {
-                    czQ1 = new CzechGridShiftTransformer(is);
-                }
-            }
-            if (czQ3 == null) {
-                try (var is = getAssets().open("table_yx_3_v1710_Q3.gsb")) {
-                    czQ3 = new CzechGridShiftTransformer(is);
-                }
-            }
-        } catch (Exception e) {
-            Log.e("GridShiftCZ", Log.getStackTraceString(e));
-            // se fallisce, lasci null e gestisci sotto con toast/log
-        }
-    }
     @Override
     public void onBackPressed() {
 

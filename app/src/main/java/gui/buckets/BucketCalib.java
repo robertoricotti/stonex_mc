@@ -267,24 +267,33 @@ public class BucketCalib extends BaseClass {
     private void onLongClick() {
         offsetZero.setOnLongClickListener((View v) -> {
             offsetZero.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
-            if (DataSaved.L1 > 0) {
-                DataSaved.offsetBucket = ExcavatorLib.bennaSimulata;
-            } else {
-                DataSaved.offsetBucket = Sensors_Decoder.Deg_bucket;
+            if(DataSaved.lrBucket!=0) {
+
+                if (DataSaved.L1 > 0) {
+                    DataSaved.offsetBucket = ExcavatorLib.bennaSimulata;
+                } else {
+                    DataSaved.offsetBucket = Sensors_Decoder.Deg_bucket;
+                }
+            }else {
+                DataSaved.offsetBucket =-90;
             }
             return true;
         });
 
         offsetZeroFlat.setOnLongClickListener((View v) -> {
             offsetZeroFlat.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
-
+            if(DataSaved.lrBucket!=0) {
                 DataSaved.offsetFlat = ExcavatorLib.correctBucket;
                 if (DataSaved.offsetFlat > -90) {
                     DataSaved.flat = 90 - Math.abs(DataSaved.offsetFlat);
                 } else {
                     DataSaved.flat = Math.abs(DataSaved.offsetFlat) - 90;
                 }
+            }else {
+                DataSaved.offsetFlat =0;
+                DataSaved.flat = 90;
 
+            }
 
             return true;
         });
