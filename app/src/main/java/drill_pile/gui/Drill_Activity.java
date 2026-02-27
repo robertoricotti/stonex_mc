@@ -179,7 +179,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void init() {
-        dialogRaggioDrill=new Dialog_Raggio_Drill(this);
+        dialogRaggioDrill = new Dialog_Raggio_Drill(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogAutoSnap = new Dialog_AutoSnap(this);
         dialogInfoPoint = new Dialog_InfoPoint(this);
@@ -251,7 +251,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         bubbleCanvas = new Drill_Bubble(this);
         bubble.addView(bubbleCanvas);
         ((Drill_TopView) topViewCanvas).setTargetScale(1.25f);
-        ((Drill_TopView) topViewCanvas).setDrawMachineSchema(DataSaved.drwaMachieSchema==1);
+        ((Drill_TopView) topViewCanvas).setDrawMachineSchema(DataSaved.drwaMachieSchema == 1);
         ((Drill_TopView) topViewCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
         ((Drill_Bubble) bubbleCanvas).setUiRotationDeg(90 * DataSaved.Drill_Screen);
         ((Drill_Bubble) bubbleCanvas).resetBubbleTransform();
@@ -336,7 +336,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     private void onClick() {
         uomesure.setOnClickListener(view -> {
-            if(!dialogRaggioDrill.dialog.isShowing()){
+            if (!dialogRaggioDrill.dialog.isShowing()) {
                 dialogRaggioDrill.show();
             }
         });
@@ -551,13 +551,18 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             startTimer();
             diration.setText(getElapsedTime());
         } else {
-            side.setGuidelinePercent(1.0f);
+            if(DataSaved.Drilling_Mode==SOLARFARM_MODE){
+                side.setGuidelinePercent(0.93f);
+                setIndicator();
+            }else {
+            side.setGuidelinePercent(1.0f);}
             // a riposo: se okStart puoi mostrare "READY" (cross-only)
             ((Drill_Bubble) bubbleCanvas).setCrossOnly(PointService.okStart);
             stopTimer();
             diration.setText("");
             // aggiorna anche la freccia quota “pre-drill”
             settaFreccia();
+
         }
 
         // =========================

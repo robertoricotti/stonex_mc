@@ -256,8 +256,7 @@ public class CanSender extends Service {
 
                     case DOZER:
                     case DOZER_SIX:
-                        HEADING = currentRight.getRightHatX();
-                        ;
+                        HEADING = currentLeft.getLeftAxisX();
                         Deg_roll = currentRight.getRightAxisX();
                         Deg_pitch = currentRight.getRightAxisY() * -1;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
@@ -268,7 +267,7 @@ public class CanSender extends Service {
 
 
                     case GRADER:
-                        HEADING = currentRight.getRightHatX();
+                        HEADING =currentLeft.getLeftAxisX();
                         ;
                         Deg_roll = currentRight.getRightAxisX();
                         Deg_pitch = currentRight.getRightAxisY() * -1;

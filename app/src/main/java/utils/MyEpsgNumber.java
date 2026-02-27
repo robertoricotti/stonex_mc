@@ -2323,10 +2323,7 @@ public class MyEpsgNumber {
     public final static int EUROPE__6_W_TO_0_W_AND_ETRS89_BY_COUNTRY__ETRS89__UTM_ZONE_30N__25830 = 25830;
 
     public final static int EUROPE__6_W_TO_0_W_AND_ETRS89_BY_COUNTRY__ETRS89__UTM_ZONE_30N__N_E__3042 = 3042;
-
-    public final static int EUROPE__CZECHOSLOVAKIA__S_JTSK__FERRO__KROVAK__2065 = 2065;
-
-    public final static int EUROPE__CZECHOSLOVAKIA__S_JTSK__KROVAK__5513 = 5513;
+    public final static int CZECHOSLOVAKIA__S_JTSK__FERRO__KROVAK__2065 = 2065;
 
     public final static int EUROPE__ESTONIA__LATVIA__LITHUANIA__ETRS89__TM_BALTIC93__25884 = 25884;
 

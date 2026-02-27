@@ -401,7 +401,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         });
         tvBoom1.setOnClickListener(view -> {
 
-            if (DataSaved.isWL == WHEELLOADER || DataSaved.isWL == EXCAVATOR || DataSaved.isWL == DRILL) {
+            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == DRILL) {
                 en_dis(false);
                 startActivity(new Intent(this, Boom1Calib.class));
                 finish();
