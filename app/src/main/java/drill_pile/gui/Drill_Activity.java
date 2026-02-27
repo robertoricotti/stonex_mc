@@ -544,7 +544,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         // =========================
         if (isDrilling) {
             side.setGuidelinePercent(0.93f);
-
             ((Drill_Bubble) bubbleCanvas).setCrossOnly(false); // durante drill: mostra sempre frecce/guida
             setIndicator();
             setFrecciaDrill(); // se lo usi; altrimenti puoi rimuoverlo
@@ -555,7 +554,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 side.setGuidelinePercent(0.93f);
                 setIndicator();
             }else {
-            side.setGuidelinePercent(1.0f);}
+            side.setGuidelinePercent(1.0f);
+            }
             // a riposo: se okStart puoi mostrare "READY" (cross-only)
             ((Drill_Bubble) bubbleCanvas).setCrossOnly(PointService.okStart);
             stopTimer();
