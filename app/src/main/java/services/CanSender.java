@@ -249,6 +249,7 @@ public class CanSender extends Service {
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
                         DataSaved.demoZ = DPadHelper.getInstance().getZ();
                         Deg_pitch = (currentRight.getRightHatY() * -1) * 0.5;
+                        Deg_roll = currentRight.getRightHatX();
                         Deg_tilt = currentRight.getRightHatX();
                         Deg_Boom_Roll = Deg_roll;
                         ExcavatorLib.Excavator();
