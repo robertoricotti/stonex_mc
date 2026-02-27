@@ -43,6 +43,7 @@ import utils.DistToPoint;
  * 4) sleep senza Math.abs e ciclo più stabile
  */
 public class PointService extends Service {
+    public static double Solar_Delta_X=0.0d,Solar_Delta_Y=0.0d;
     static double mRaggio;
     public static boolean AB_REVERSED=false;
     int countTabella = 0;
@@ -177,6 +178,27 @@ public class PointService extends Service {
 
                 // --- guida (ok + frecce + plan error) ---
                 computeGuidance();
+                if(DataSaved.Drilling_Mode==SOLARFARM_MODE) {
+                    try {
+                        if (Selected_Point3D_Drill != null && toolEndCoord != null) {
+                            MovementDelta.Delta result = MovementDelta.calculateDelta(
+                                    toolEndCoord[0], toolEndCoord[1],   // target
+                                    Selected_Point3D_Drill.getEndX(), Selected_Point3D_Drill.getEndY()    // destinazione
+                            );
+                            if(!AB_REVERSED) {
+                                Solar_Delta_X = result.deltaX;
+                                Solar_Delta_Y = result.deltaY;
+                            }else {
+                                Solar_Delta_X = -result.deltaX;
+                                Solar_Delta_Y = -result.deltaY;
+                            }
+                        }
+                    } catch (Exception e) {
+                        Solar_Delta_X=0;
+                        Solar_Delta_Y=0;
+                    }
+
+                }
 
             } catch (Throwable t) {
                 // non far morire il servizio
@@ -987,6 +1009,35 @@ public class PointService extends Service {
             this.reverse = reverse;
         }
     }
+    public class MovementDelta {
 
+        public static class Delta {
+            public final double deltaX; // linea verde
+            public final double deltaY; // linea viola
+            public final double distance; // linea blu (opzionale)
+
+            public Delta(double deltaX, double deltaY, double distance) {
+                this.deltaX = deltaX;
+                this.deltaY = deltaY;
+                this.distance = distance;
+            }
+        }
+
+        public static Delta calculateDelta(
+                double xTarget, double yTarget,
+                double xDest, double yDest) {
+
+            // Delta con segno secondo le tue regole
+            double deltaX = xTarget - xDest; // negativo se a sinistra
+            double deltaY = yTarget - yDest; // negativo se oltre (sopra)
+
+            // Lunghezza linea blu (distanza euclidea)
+            double distance = Math.sqrt(
+                    Math.pow(deltaX, 2) + Math.pow(deltaY, 2)
+            );
+
+            return new Delta(deltaY, deltaX, distance);
+        }
+    }
 }
 

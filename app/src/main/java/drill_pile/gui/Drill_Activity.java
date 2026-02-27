@@ -8,6 +8,8 @@ import static packexcalib.exca.ExcavatorLib.correctToolRoll;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
 import static services.PointService.AB_REVERSED;
+import static services.PointService.Solar_Delta_X;
+import static services.PointService.Solar_Delta_Y;
 import static services.PointService.valoriTabella;
 import static utils.MyMCUtils.projectPointOnAxis3D;
 import static utils.MyTypes.JETGROUTING_MODE;
@@ -19,6 +21,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -57,6 +60,7 @@ import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
     static double[] StartForo, FineForo;
+
     public static int previousState;
     static double mHdT = 0;
     private boolean running = false;
@@ -704,34 +708,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             lineReference.setVisibility(View.INVISIBLE);
         }
 
-        // =========================
-        // 10) Tabella JET: aggiorna quando cambia hole
-        // =========================
-       /* if (DataSaved.Drilling_Mode == JETGROUTING_MODE && tableDepthInfo != null) {
 
-            String newHoleId = (sel != null) ? sel.getId() : null;
-
-            if (newHoleId == null) {
-                // nessun hole selezionato -> tieni righe vuote
-                clearTable();
-                addEmptyRows(4, 4);
-                currentHoleId = null;
-
-            } else if (currentHoleId == null || !currentHoleId.equals(newHoleId)) {
-                // hole cambiato -> ricrea tabella
-                currentHoleId = newHoleId;
-
-                clearTable();
-                // se vuoi SEMPRE 8 righe presenti:
-                addEmptyRows(4, 4);
-
-                // se vuoi popolarle con i valori (se li hai già aggiornati da service)
-                // NB: setupTabella() aggiunge righe, quindi se la vuoi "sovrascrivere"
-                // devi prima clearare di nuovo o chiamarla al posto di addEmptyRows.
-                clearTable();
-                setupTabella();
-            }
-        }*/
 
         // =========================
         // 11) Enable/Disable pulsanti in base a drill state + okStart
@@ -770,6 +747,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         // =========================
         // 12) Invalidate canvases
         // =========================
+
+
         topViewCanvas.invalidate();
         bubbleCanvas.invalidate();
     }

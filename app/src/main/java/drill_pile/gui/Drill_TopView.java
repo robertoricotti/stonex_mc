@@ -1039,7 +1039,7 @@ public class Drill_TopView extends View {
 
         float trackW = 35f * s;
         float gap = -25f * s;
-        float trackStroke = 4.5f * s;
+        float trackStroke = 4f * s;
 
         // ingombro totale orizzontale dello schema (cingolo + gap + corpo + gap + cingolo)
         float totalW = bodyW + 2f * (gap + trackW);
@@ -1090,8 +1090,10 @@ public class Drill_TopView extends View {
         paint.setAntiAlias(true);
 
         // --- cingoli neri ---
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(coloreCingolo);
+        paint.setAlpha(128);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(trackStroke);
 
@@ -1099,11 +1101,14 @@ public class Drill_TopView extends View {
         canvas.drawRoundRect(rightTrackLeft, trackTop, rightTrackRight, trackBottom, corner, corner, paint);
 
         // --- corpo macchina ---
+
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(MyColorClass.colorStick);
+        paint.setAlpha(128);
         canvas.drawRoundRect(bodyLeft, bodyTop, bodyRight, bodyBottom,5f,5f, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(coloreCingolo);
+        paint.setAlpha(128);
         canvas.drawRoundRect(bodyLeft, bodyTop, bodyRight, bodyBottom,5f,5f, paint);
 
         // --- punto blu (fulcro icona) ---
@@ -1112,19 +1117,13 @@ public class Drill_TopView extends View {
         //canvas.drawCircle(pivotX, pivotY, dotR, paint);
 
         // --- ripristina paint ---
+        paint.setAlpha(255);
         paint.setStyle(oldStyle);
         paint.setColor(oldColor);
         paint.setStrokeWidth(oldStroke);
         paint.setStrokeCap(oldCap);
     }
-    private float metersToPx(float meters) {
-        // 1 metro nel mondo = quanto vale in pixel sul canvas con la drawMatrix corrente?
-        // Metodo robusto: trasformo un vettore (0,0)->(1,0) con la matrice.
-        float[] pts = new float[]{0f, 0f, 1f, 0f};
-        drawMatrix.mapPoints(pts);
-        float pxPerMeter = (float) Math.hypot(pts[2] - pts[0], pts[3] - pts[1]);
-        return meters * pxPerMeter;
-    }
+
 }
 
 
