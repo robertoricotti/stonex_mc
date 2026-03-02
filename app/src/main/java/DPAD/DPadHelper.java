@@ -76,4 +76,16 @@ public class DPadHelper {
         if (a < -180) a += 360;
         return a;
     }
+    public static String getMarcia(Step step){
+
+        return switch (step) {
+            case CM2 -> "1";
+            case CM5 -> "2";
+            case CM10 -> "3";
+            case CM20 -> "4";
+            case CM25 -> "5";
+            case CM30 -> "6";
+            default -> "N";
+        };
+    }
 }

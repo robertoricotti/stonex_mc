@@ -13,6 +13,7 @@ import static services.PointService.Solar_Delta_Y;
 import static services.PointService.valoriTabella;
 import static utils.MyMCUtils.projectPointOnAxis3D;
 import static utils.MyTypes.JETGROUTING_MODE;
+import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.ROCKDRILL_MODE;
 import static utils.MyTypes.SOLARFARM_MODE;
 
@@ -95,7 +96,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual, diration;
+    TextView marcia,idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual, diration;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
@@ -135,7 +136,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void findView() {
-
+        marcia=findViewById(R.id.marcia);
         diration = findViewById(R.id.diration);
         divisorioC = findViewById(R.id.divisorioC);
         divisorioDx = findViewById(R.id.divisorioDx);
@@ -183,6 +184,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void init() {
+
         dialogRaggioDrill = new Dialog_Raggio_Drill(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogAutoSnap = new Dialog_AutoSnap(this);
@@ -493,6 +495,12 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     public void updateUI() {
+        if(DataSaved.isCanOpen==JOYSTICKS){
+            marcia.setVisibility(View.VISIBLE);
+            marcia.setText(DPadHelper.getMarcia(DPadHelper.getInstance().getStep()));
+        }else {
+            marcia.setVisibility(View.GONE);
+        }
 
         // =========================
         // 0) Allineamento AB (SOLARFARM)

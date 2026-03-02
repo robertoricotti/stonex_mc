@@ -18,6 +18,7 @@ import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -99,7 +100,7 @@ public class My3DActivity extends BaseClass {
     int initialFunction = 0;
     int indexAudioSystem;
     static float vol;
-    TextView titolo;
+    TextView titolo,marcia;
     SeekBar seekRed;
     SeekBar seekGreen;
     SeekBar seekBlue;
@@ -222,6 +223,7 @@ public class My3DActivity extends BaseClass {
     }
 
     private void findView() {
+        marcia=findViewById(R.id.marcia);
         navigatorHDT = findViewById(R.id.navigatorHDT);
         navigatorHDT.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
         panel1 = findViewById(R.id.panel1D);
@@ -851,6 +853,12 @@ public class My3DActivity extends BaseClass {
     }
 
     public void updateUI() {
+        if(DataSaved.isCanOpen==JOYSTICKS){
+            marcia.setVisibility(View.VISIBLE);
+            marcia.setText(DPadHelper.getMarcia(DPadHelper.getInstance().getStep()));
+        }else {
+            marcia.setVisibility(View.GONE);
+        }
         if (glVista3d == 2) {
             btn_zoomP.setAlpha(0.3f);
             btn_zoomM.setAlpha(0.3f);
