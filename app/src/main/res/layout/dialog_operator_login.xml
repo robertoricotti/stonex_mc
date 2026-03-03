@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/sfondo_bottone_bianco">
+    <TextView
+        android:id="@+id/tit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:background="@color/transparent"
+        android:text="Operator Id"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <EditText
+        android:id="@+id/nomeOp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:textSize="34sp"
+        android:gravity="center"
+        android:hint="Operator Name"
+        android:focusableInTouchMode="false"
+        app:layout_constraintTop_toBottomOf="@id/tit"
+        app:layout_constraintBottom_toTopOf="@+id/conferma"
+
+        />
+    <Button
+        android:id="@+id/conferma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/esci"
+        android:layout_marginBottom="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:backgroundTint="@color/_____cancel_text"
+        android:text="Log-in"/>
+    <Button
+        android:id="@+id/esci"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/conferma"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:backgroundTint="@color/red"
+        android:text="Exit"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

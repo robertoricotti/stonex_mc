@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Point3D_Drill implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    // 0 = da fare, 1 = fatto, -1 = abortito
+    // 0 = da fare, 1 = fatto, -1 = abortito , -2 rifiutato
     private Integer status;  // nullable, default 0 consigliato
 
     // Identificativi / metadati

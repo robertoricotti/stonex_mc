@@ -22,6 +22,8 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JETGROUTING_MODE;
+import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
@@ -1090,7 +1092,7 @@ public class ReadProjectService extends Service {
                                     break;
                             }
 
-                            generaReport(extractProjectName(DataSaved.progettoSelected_POINT), "");
+                            generaReport(extractProjectName(DataSaved.progettoSelected_POINT), "Stonex");
                             generaState(extractProjectName(DataSaved.progettoSelected_POINT));
                             applyStateToParsedPoints();
                             restoreAlignmentFromState();   // <--- QUESTO
@@ -1099,6 +1101,10 @@ public class ReadProjectService extends Service {
 
                     } else {
                         isFinishedPOINT = true;
+                        if (mettiPunti && DataSaved.progettoSelected_POINT != null && !DataSaved.progettoSelected_POINT.isEmpty()) {
+                            generaReport(extractProjectName(DataSaved.progettoSelected_POINT), "Stonex");
+                            generaState(extractProjectName(DataSaved.progettoSelected_POINT)); // opzionale se stateStore ti serve sempre
+                        }
                     }
                     if (!DataSaved.lastProjectNamePOLY.equals(nomeProgettoPOLY)) {
                         isFinishedPOLY = false;
@@ -1170,14 +1176,18 @@ public class ReadProjectService extends Service {
     }
 
     private void generaReport(String projectFolderName, String companyName) {
-
+        ProjectReportXlsxWriter.ReportType rt =
+                (DataSaved.Drilling_Mode == SOLARFARM_MODE) ? ProjectReportXlsxWriter.ReportType.SOLARFARM
+                        : (DataSaved.Drilling_Mode == JETGROUTING_MODE) ? ProjectReportXlsxWriter.ReportType.JETGROUTING
+                        : ProjectReportXlsxWriter.ReportType.ROCKDRILL;
         File outDir = new File(Environment.getExternalStorageDirectory().toString() + "/StonexMC_V4" + "/Exported/" + projectFolderName + "_OUT");
 
         reportXlsxWriter = new ProjectReportXlsxWriter(
                 outDir,
                 projectFolderName,
                 DataSaved.machineName,
-                MyApp.DEVICE_SN
+                MyApp.DEVICE_SN,
+                rt
         );
 
         LinkedHashMap<String, String> pre = new LinkedHashMap<>();

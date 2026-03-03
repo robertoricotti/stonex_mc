@@ -488,6 +488,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_operator_login.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_point_poly.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -545,18 +550,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 Implementazione CZ completata OK">
-      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 primo giorno conexpo">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_Operator_Login.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_operator_login.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/Jet_Template.ird" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/Jet_Template.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/Jet_Template.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillPointsFullscreenDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillPointsFullscreenDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportXlsxWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportXlsxWriter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXF_Drill_Point.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/Point3D_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/Point3D_Drill.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -566,7 +567,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=512DS96403000001)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -795,14 +796,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00087" summary="4.1.0 pick point ok">
-      <option name="closed" value="true" />
-      <created>1769204580021</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1769204580021</updated>
     </task>
     <task id="LOCAL-00088" summary="4.1.0 pre drill routine">
       <option name="closed" value="true" />
@@ -1188,7 +1181,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772455404154</updated>
     </task>
-    <option name="localTasksCounter" value="136" />
+    <task id="LOCAL-00136" summary="4.1.0 primo giorno conexpo">
+      <option name="closed" value="true" />
+      <created>1772507096317</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1772507096318</updated>
+    </task>
+    <option name="localTasksCounter" value="137" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1204,7 +1205,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.0.16 FMI_IMPLEMENT" />
     <MESSAGE value="4.0.16 FMI_IMPLEMENT changeID" />
     <MESSAGE value="4.0.16 FMI_IMPLEMENT linea tratt" />
     <MESSAGE value="4.0.16 pre-release" />
@@ -1229,14 +1229,15 @@
     <MESSAGE value="4.1.0 PRIMA DI RIMUOVERE PROJ4J" />
     <MESSAGE value="4.1.0 Implementazione CZ completata da testare i grigliati" />
     <MESSAGE value="4.1.0 Implementazione CZ completata OK" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 Implementazione CZ completata OK" />
+    <MESSAGE value="4.1.0 primo giorno conexpo" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 primo giorno conexpo" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1772453565450" />
+            <CheckInfo lastCheckTimestamp="1772543101401" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1246,7 +1247,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1772453565460" />
+            <CheckInfo lastCheckTimestamp="1772543101454" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1256,7 +1257,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1772453565449" />
+            <CheckInfo lastCheckTimestamp="1772543101455" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">
