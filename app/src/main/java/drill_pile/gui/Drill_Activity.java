@@ -1504,6 +1504,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         // chiusura UI
         isDrilling = false;
+        DataSaved.numeroAste=0;
+        int mchint = MyData.get_Int("MachineSelected");
+        MyData.push("M" +  mchint+ "numeroAste", "0");
 
         refreshAfterStateChange();
         if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
@@ -1591,6 +1594,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         }
 
         isDrilling = false;
+        DataSaved.numeroAste=0;
+        int mchint = MyData.get_Int("MachineSelected");
+        MyData.push("M" +  mchint+ "numeroAste", "0");
 
         refreshAfterStateChange();
         if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
@@ -1635,6 +1641,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         switch (mode) {
             case ROCKDRILL_MODE:
+            case SOLARFARM_MODE:
                 if (play && !isDrilling) {
                     Start_dE = Math.abs(Selected_Point3D_Drill.getHeadX() - toolEndCoord[0]);
                     Start_dN = Math.abs(Selected_Point3D_Drill.getHeadY() - toolEndCoord[1]);
@@ -1709,7 +1716,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 }
                 break;
 
-            case SOLARFARM_MODE:
+            case 987:
                 //TODO il delta bearing va sulla linea selezionata, non sulla testa Mast
                 if (play && !isDrilling) {
                     Start_dE = Math.abs(Selected_Point3D_Drill.getHeadX() - toolEndCoord[0]);
@@ -2101,4 +2108,20 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 Math.abs(y1 - y2) <= tol &&
                 Math.abs(z1 - z2) <= tol;
     }
+    //TODO
+    /**
+     * AGGIUNGERE STATO TO-DO ABORTED REFUSED DONE
+     * REFUSED apre dialog per commento
+     * ABORTED può essere continuato e posso snappare su quello
+     * add HOLE CODE (description field) after HOLE-ID EMBEDMENT
+     * OPERATOR namE VIVO STATICO PUBBLICO RISCRIVERE OGNI SESSIONE
+     * PER ROCK IL NUMERO DELLE ASTE
+     * FUNCTION TO DEFINE THE TEXT TO SHOW ID+DESCRIPTON+Z ETC
+     * PDF EXPORT SU REPORT XLS
+     * ICON STONEX IN FILE REPORT SIA PDF CHE XLS
+     * Priorità bassa AUTO REFUSAL
+     * password personalizzabile
+     * opertor password per funzione di azzeramento
+     */
+
 }

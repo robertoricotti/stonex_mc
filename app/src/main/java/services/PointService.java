@@ -28,6 +28,7 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.NmeaListener;
 import packexcalib.surfcreator.TriangleHelper;
 import utils.DistToPoint;
+import utils.Utils;
 
 /**
  * PointService "robusto" per guida:
@@ -627,7 +628,7 @@ public class PointService extends Service {
         double uy = Math.cos(brad);
 
         // tolleranza laterale: quanto devo essere vicino alla linea per considerare i pali della mia fila
-        final double LINE_TOL = 2.0; // metri (tuning)
+        final double LINE_TOL = 1.0; // metri (tuning)
 
         Point3D_Drill best = null;
         double bestAbsAlong = Double.MAX_VALUE;
@@ -674,25 +675,6 @@ public class PointService extends Service {
         // Altrimenti fallback: nearest assoluto TODO
         return findNearestDrillPointPlain(x0, y0, points);
     }
-
-
-
-    public static Point3D_Drill findNearestDrillPoint(
-            double bucketEst,
-            double bucketNord,
-            List<Point3D_Drill> filteredPoints
-    ) {
-        if (filteredPoints == null || filteredPoints.isEmpty()) return null;
-
-        // SOLARFARM + allineamento definito: snap "per linea (rowId)"
-        if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
-            return findNearestDrillPointSolarByRow(bucketEst, bucketNord, filteredPoints);
-        }
-
-        // Default: nearest in assoluto
-        return findNearestDrillPointPlain(bucketEst, bucketNord, filteredPoints);
-    }
-
     private static Point3D_Drill findNearestDrillPointPlain(
             double bucketEst,
             double bucketNord,
@@ -716,55 +698,6 @@ public class PointService extends Service {
         }
         return nearest;
     }
-    private static Point3D_Drill findNearestDrillPointSolarByRow(
-            double bucketEst,
-            double bucketNord,
-            List<Point3D_Drill> points
-    ) {
-        // 1) trova la row più vicina (tra i TODO)
-        String bestRow = null;
-        double bestRowDist = Double.MAX_VALUE;
-
-        // memorizza anche il candidato migliore per riga (così eviti doppio loop pesante)
-        java.util.HashMap<String, Point3D_Drill> bestPointPerRow = new java.util.HashMap<>();
-        java.util.HashMap<String, Double> bestPointDistPerRow = new java.util.HashMap<>();
-
-        for (Point3D_Drill p : points) {
-            if (p == null || p.getHeadX() == null || p.getHeadY() == null) continue;
-
-            Integer status = p.getStatus();
-            boolean isTodo = (status == null || status == 0);
-            if (!isTodo) continue;
-
-            String row = (p.getRowId() == null) ? "" : p.getRowId().trim();
-            if (row.isEmpty()) row = "__NO_ROW__"; // fallback
-
-            double d = dist2D(bucketEst, bucketNord, p.getHeadX(), p.getHeadY());
-
-            // best point per row
-            Double curBest = bestPointDistPerRow.get(row);
-            if (curBest == null || d < curBest) {
-                bestPointDistPerRow.put(row, d);
-                bestPointPerRow.put(row, p);
-            }
-        }
-
-        // se non ci sono TODO
-        if (bestPointPerRow.isEmpty()) return null;
-
-        // 2) scegli la row con punto più vicino (equivale a distanza minima alla row)
-        for (java.util.Map.Entry<String, Double> e : bestPointDistPerRow.entrySet()) {
-            if (e.getValue() < bestRowDist) {
-                bestRowDist = e.getValue();
-                bestRow = e.getKey();
-            }
-        }
-
-        if (bestRow == null) return null;
-
-        // 3) ritorna il punto TODO più vicino su quella row
-        return bestPointPerRow.get(bestRow);
-    }
     private static double dist2D(double x1, double y1, double x2, double y2) {
         double dx = x2 - x1;
         double dy = y2 - y1;
@@ -772,119 +705,9 @@ public class PointService extends Service {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private static boolean isHoleVerticalDeg(double holeTiltDeg) {
-        return !Double.isNaN(holeTiltDeg) && holeTiltDeg < 1.0; // tua soglia
-    }
-
-    private static void setTrianglesToReachTargets(double mastPitch, double mastRoll,
-                                                   double targetPitch, double targetRoll,
-                                                   double tolDeg) {
-        double dP = mastPitch - targetPitch;
-        double dR = mastRoll - targetRoll;
-
-        // stessa logica di DrillGuidance: se mast < target => UP/RIGHT
-        FrecciaUP = (Math.abs(dP) > tolDeg) && (dP < 0);
-        FrecciaDOWN = (Math.abs(dP) > tolDeg) && (dP > 0);
-
-        FrecciaRIGHT = (Math.abs(dR) > tolDeg) && (dR < 0);
-        FrecciaLEFT = (Math.abs(dR) > tolDeg) && (dR > 0);
-    }
-
-    private static double distAlongAxisFromHead(
-            double[] bit,  // [E,N,Z]
-            double hx, double hy, double hz,
-            double ex, double ey, double ez
-    ) {
-        double ax = ex - hx;
-        double ay = ey - hy;
-        double az = ez - hz;
-
-        double L = Math.sqrt(ax * ax + ay * ay + az * az);
-        if (L < 1e-9) return Double.NaN;
-
-        // versore asse
-        double ux = ax / L;
-        double uy = ay / L;
-        double uz = az / L;
-
-        // vettore head->bit
-        double bx = bit[0] - hx;
-        double by = bit[1] - hy;
-        double bz = bit[2] - hz;
-
-        // proiezione scalare (metri lungo asse, 0=head, L=end)
-        return (bx * ux + by * uy + bz * uz);
-    }
-
     public static boolean isTiltWithinTolerance() {
         return !(FrecciaUP || FrecciaLEFT || FrecciaDOWN || FrecciaRIGHT);
     }
-
-    public static Point3D_Drill[] getAlignmentPointsById(String idA, String idB) {
-
-        Point3D_Drill pA = null;
-        Point3D_Drill pB = null;
-
-        if (DataSaved.drill_points == null || DataSaved.drill_points.isEmpty())
-            return new Point3D_Drill[]{null, null};
-
-        for (Point3D_Drill p : DataSaved.drill_points) {
-            if (p == null || p.getId() == null) continue;
-
-            String pid = p.getId().trim();
-
-            if (idA != null && pid.equalsIgnoreCase(idA.trim())) {
-                pA = p;
-            }
-
-            if (idB != null && pid.equalsIgnoreCase(idB.trim())) {
-                pB = p;
-            }
-
-            // se trovati entrambi esco prima
-            if (pA != null && pB != null) break;
-        }
-
-        return new Point3D_Drill[]{pA, pB};
-    }
-
-    private boolean isInRangeAngle(double angle, double target, double deadband) {
-        return Math.abs(angle - target) <= deadband;
-    }
-    private boolean isInRangeLine(double angle, double target, double deadband) {
-
-        double diff = angle - target;
-
-        // normalizza in -180..+180
-        diff = ((diff + 180) % 360 + 360) % 360 - 180;
-
-        // simmetria linea (AB == BA)
-        diff = Math.abs(diff);
-        if (diff > 90) diff = 180 - diff;
-
-        return diff <= deadband;
-    }
-
 
     private void tabellaValues() {
         countTabella++;
@@ -975,7 +798,7 @@ public class PointService extends Service {
 
     private static String formatDoubleOrEmpty(Double d) {
         if (d == null) return "";
-        return String.format(Locale.US, "%.3f", d);
+        return Utils.readUnitOfMeasureLITE(String.valueOf(d));
     }
     private OrientationResult checkLineOrientation(double angle, double target, double deadband) {
 

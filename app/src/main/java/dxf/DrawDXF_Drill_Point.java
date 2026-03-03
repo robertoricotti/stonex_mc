@@ -43,8 +43,8 @@ public class DrawDXF_Drill_Point {
             fillColor = android.graphics.Color.argb(190, 0, 200, 0);      // verde (fill)
             strokeColor = android.graphics.Color.argb(230, 0, 140, 0);    // verde scuro (stroke)
         } else if (isAborted) {
-            fillColor = android.graphics.Color.argb(190, 255, 0, 255);    // magenta (fill)
-            strokeColor = android.graphics.Color.argb(230, 180, 0, 180);  // magenta scuro (stroke)
+            fillColor = android.graphics.Color.argb(190, 255, 0, 0);    // magenta (fill)
+            strokeColor = android.graphics.Color.argb(230, 250, 0, 55);  // magenta scuro (stroke)
         } else {
             fillColor = MyColorClass.colorConstraint;
             strokeColor = MyColorClass.colorConstraint;

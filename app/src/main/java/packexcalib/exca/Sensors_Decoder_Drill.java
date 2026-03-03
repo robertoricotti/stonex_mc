@@ -25,7 +25,6 @@ import packexcalib.gnss.NmeaListener;
 
 public class Sensors_Decoder_Drill {
     static double rowRoll,rawPitch;
-    public static long EncRevolution;
     public static double RopeLen;
     static double yaw;
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
@@ -38,7 +37,7 @@ public class Sensors_Decoder_Drill {
     static short Gx;
     static short Gy;
     static short Gz;
-    static long K = (long) Math.pow(2, 32);
+    static long K = 0x02000000;
 
 
     public static void decode(int id, byte[] data) {
@@ -51,15 +50,10 @@ public class Sensors_Decoder_Drill {
                 }
             }else {
                 if (id == 0x18F || id == 0x190) {
-                    //TODO Encoder connesso 8192 count per revolution = 0x2000
+                    //TODO Encoder connesso 8192 count per revolution FULL SCALE= 0x20000000(536870912)
                     long revolution = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]});
-                    if (DataSaved.lrRotary == -1) {
-                        K = (long) Math.pow(2, 32);
-                        EncRevolution = K - revolution;
-                    } else {
-                        EncRevolution = revolution;
-                    }
-                    RopeLen = calculateRopeLength(EncRevolution, DataSaved.Rotary_Diam);
+                    RopeLen=ropeLenSignedFromAbsolute(revolution,DataSaved.Rotary_Diam,DataSaved.lrRotary);
+
 
                 }
             }
@@ -384,13 +378,24 @@ public class Sensors_Decoder_Drill {
         return a;
     }
 
-    public static double calculateRopeLength(long encoderCounts, double pulleyDiameter) {
-        final double COUNTS_PER_REV = 8192.0;
 
-        double revolutions = encoderCounts / COUNTS_PER_REV;
+
+    public static double ropeLenSignedFromAbsolute(long rawU32, double pulleyDiameter, int lrRotary) {
+        final long K = 0x02000000L;        // 0..0x01FFFFFF
+        final long MASK = K - 1;           // 0x01FFFFFF
+        final long HALF = K / 2;           // 0x01000000
+        final double CPR = 8192.0;
+
+        long raw = rawU32 & MASK;
+
+        // centra: [-HALF, +HALF)
+        long signedCounts = (raw >= HALF) ? (raw - K) : raw;
+
+        // reverse = inverti segno
+        if (lrRotary == -1) signedCounts = -signedCounts;
+
         double circumference = Math.PI * pulleyDiameter;
-
-        return revolutions * circumference;
+        return (signedCounts / CPR) * circumference;
     }
 
 }

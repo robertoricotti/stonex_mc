@@ -129,8 +129,8 @@ public class ProjectReportXlsxWriter {
                 dataStyle = makeRowFillStyle(wb, IndexedColors.LIGHT_GREEN.getIndex(), false);
                 numStyle  = makeRowFillStyle(wb, IndexedColors.LIGHT_GREEN.getIndex(), true);
             } else if (aborted) {
-                dataStyle = makeRowFillStyle(wb, IndexedColors.ROSE.getIndex(), false);
-                numStyle  = makeRowFillStyle(wb, IndexedColors.ROSE.getIndex(), true);
+                dataStyle = makeRowFillStyle(wb, IndexedColors.RED.getIndex(), false);
+                numStyle  = makeRowFillStyle(wb, IndexedColors.RED.getIndex(), true);
             } else if (reopened) {
                 dataStyle = makeRowFillStyle(wb, IndexedColors.LIGHT_TURQUOISE.getIndex(), false); // ciano
                 numStyle  = makeRowFillStyle(wb, IndexedColors.LIGHT_TURQUOISE.getIndex(), true);

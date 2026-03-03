@@ -221,7 +221,7 @@ public class CanSender extends Service {
                         Deg_Benna_W_Tilt = currentRight.getRightAxisX();
                         Deg_boom1 = currentRight.getRightAxisY() * -1;
                         Deg_Roto = currentLeft.getLeftYaw();
-                        NmeaListener.roof_Orientation = currentRight.getRightYaw();
+                        NmeaListener.roof_Orientation = currentRight.getRightYaw()+HEADING;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
                         DataSaved.demoZ = DPadHelper.getInstance().getZ();
@@ -287,7 +287,7 @@ public class CanSender extends Service {
                         Deg_Tool_Pitch = currentRight.getRightAxisX();
                         Deg_Tool_Roll = currentRight.getRightHatX();
                         double len = 0;
-                        len = MyMCUtils.myscaleD(currentLeft.getLeftYaw(), -180, 180, -6, 6);
+                        len = MyMCUtils.myscaleD(currentLeft.getLeftYaw(), -180, 180, -28, 28);
                         Sensors_Decoder_Drill.RopeLen = len;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
@@ -363,57 +363,13 @@ public class CanSender extends Service {
             }
 
             try {
-                if (licenseType > MC_2D) {
-                    switch (DataSaved.my_comPort) {
-                        case 0:
-                            if (DataSaved.gpsType == 0) {
-                                double vrms = 0;
-                                try {
-                                    vrms = Double.parseDouble(NmeaListener.VRMS_);
-                                } catch (NumberFormatException e) {
-                                    vrms = 0.002;
-                                }
-                                if (!nmeaSTX_Disc) {
-                                    if (NmeaListener.ggaQuality.equals("4") && vrms < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt_1 != 999.999) {
-                                        DataSaved.gpsOk = true;
-                                    } else {
-                                        DataSaved.gpsOk = false;
-                                        connections++;
-                                    }
-                                } else {
-                                    DataSaved.gpsOk = false;
-                                    connections++;
-                                }
-
-                                if (connections == 20) {
-                                    byte speed = 0;
-                                    switch (DataSaved.reqSpeed) {
-                                        case 0:
-                                            speed = 5;
-                                            break;
-                                        case 1:
-                                            speed = 4;
-                                            break;
-                                        case 2:
-                                            speed = 3;
-                                            break;
-                                        case 3:
-                                            speed = 0;
-                                            break;
-
-                                    }
-                                    if (DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)) {
-                                        GNSS_MSG = 0x03;
-                                    } else {
-                                        GNSS_MSG = 0x01;
-                                    }
-
-
-                                    MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
-                                    connections = 0;
-                                }
-                            } else if (DataSaved.gpsType == 3) {
-                                try {
+                if(DataSaved.isCanOpen==JOYSTICKS){
+                    DataSaved.gpsOk=true;
+                }else {
+                    if (licenseType > MC_2D) {
+                        switch (DataSaved.my_comPort) {
+                            case 0:
+                                if (DataSaved.gpsType == 0) {
                                     double vrms = 0;
                                     try {
                                         vrms = Double.parseDouble(NmeaListener.VRMS_);
@@ -421,32 +377,80 @@ public class CanSender extends Service {
                                         vrms = 0.002;
                                     }
                                     if (!nmeaSTX_Disc) {
-                                        DataSaved.gpsOk = NmeaListener.ggaQuality.equals("4") && vrms < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt_1 != 999.999;
+                                        if (NmeaListener.ggaQuality.equals("4") && vrms < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt_1 != 999.999) {
+                                            DataSaved.gpsOk = true;
+                                        } else {
+                                            DataSaved.gpsOk = false;
+                                            connections++;
+                                        }
                                     } else {
                                         DataSaved.gpsOk = false;
+                                        connections++;
+                                    }
+
+                                    if (connections == 20) {
+                                        byte speed = 0;
+                                        switch (DataSaved.reqSpeed) {
+                                            case 0:
+                                                speed = 5;
+                                                break;
+                                            case 1:
+                                                speed = 4;
+                                                break;
+                                            case 2:
+                                                speed = 3;
+                                                break;
+                                            case 3:
+                                                speed = 0;
+                                                break;
+
+                                        }
+                                        if (DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)) {
+                                            GNSS_MSG = 0x03;
+                                        } else {
+                                            GNSS_MSG = 0x01;
+                                        }
+
+
+                                        MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
+                                        connections = 0;
+                                    }
+                                } else if (DataSaved.gpsType == 3) {
+                                    try {
+                                        double vrms = 0;
+                                        try {
+                                            vrms = Double.parseDouble(NmeaListener.VRMS_);
+                                        } catch (NumberFormatException e) {
+                                            vrms = 0.002;
+                                        }
+                                        if (!nmeaSTX_Disc) {
+                                            DataSaved.gpsOk = NmeaListener.ggaQuality.equals("4") && vrms < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt_1 != 999.999;
+                                        } else {
+                                            DataSaved.gpsOk = false;
+
+                                        }
+                                    } catch (Exception ignored) {
 
                                     }
-                                } catch (Exception ignored) {
+
+
+                                    MyDeviceManager.CanWrite(true, 0, 0x718, 8, new byte[]{0x0, 0x4, (byte) 0x58, 0x0, 0x0, 0x0, (byte) 0x5C});//Leica frame request
 
                                 }
+                                break;
+                            case 1:
+                            case 2:
+                            case 3:
 
-
-                                MyDeviceManager.CanWrite(true, 0, 0x718, 8, new byte[]{0x0, 0x4, (byte) 0x58, 0x0, 0x0, 0x0, (byte) 0x5C});//Leica frame request
-
-                            }
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-
-                            DataSaved.gpsOk = gpsStat(NmeaListener.ggaQuality, Quota1, serialEmpty);
-                            break;
-                        case 4:
-                            DataSaved.gpsOk = true;
-                            break;
+                                DataSaved.gpsOk = gpsStat(NmeaListener.ggaQuality, Quota1, serialEmpty);
+                                break;
+                            case 4:
+                                DataSaved.gpsOk = true;
+                                break;
+                        }
+                    } else {
+                        DataSaved.gpsOk = true;
                     }
-                } else {
-                    DataSaved.gpsOk = true;
                 }
 
 

@@ -528,7 +528,7 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
                 rowRoot.setBackgroundColor(Color.argb(100, 0, 200, 0));
             } else if (s == -1) {
                 // ABORTED magenta (soft)
-                rowRoot.setBackgroundColor(Color.argb(100, 255, 0, 255));
+                rowRoot.setBackgroundColor(Color.argb(100, 200, 0, 0));
             } else {
                 // TODO / default
                 rowRoot.setBackgroundColor(Color.TRANSPARENT);
