@@ -161,8 +161,8 @@ public class SpTestActivity extends Activity {
                     double lat = Double.parseDouble(etLat.getText().toString().replace(",", "."));
                     double lon = Double.parseDouble(etLon.getText().toString().replace(",", "."));
                     double h = Double.parseDouble(etH.getText().toString().replace(",", "."));
-                    double[] out = new double[3];
-                    localizationFactory.toLocalFast(lat, lon, h, out);
+                    double[] out = new double[4];
+                    localizationFactory.toLocalFastWithHeadingDelta(lat, lon, h, out);
                     double Hq = ramoGeoide(lat, lon, out[2]);
                     sE = String.format("%.3f", out[0]).replace(",", ".");
                     sN = String.format("%.3f", out[1]).replace(",", ".");

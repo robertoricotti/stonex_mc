@@ -16,9 +16,13 @@ import java.util.Locale;
  *
  * - CSD: Transverse Mercator con lon0, k0, FE/ FN dai numeri del blocco.
  * - Ellissoide: GRS80 se nome contiene ETRS/EUREF/GRS80, altrimenti WGS84.
- * - GTR/GRD/TPF: ignorati se i rispettivi flag == 0 (come negli esempi incollati).
+ * - GTR/GRD/TPF: ignorati se i rispettivi flag == 0 (come negli esempi).
  *
  * Thread-safe: usa ThreadLocal per i buffer PROJ.
+ *
+ * Heading delta:
+ * - out[3] = delta (gradi) da sommare a HDT True (0=N,90=E) per ottenere heading GRID (TM/UTM).
+ * - delta = -gamma, dove gamma è la convergenza meridiana nel punto.
  */
 public final class LeicaLokLocalization implements LocalizationModel {
 
@@ -31,13 +35,20 @@ public final class LeicaLokLocalization implements LocalizationModel {
     private final ThreadLocal<ProjCoordinate> tlGeo  = ThreadLocal.withInitial(ProjCoordinate::new);
     private final ThreadLocal<ProjCoordinate> tlProj = ThreadLocal.withInitial(ProjCoordinate::new);
 
-    // ---- Config ricavata dal LOK ----
+    // ---- Config ricavata dal LOK (solo diagnostica/riuso) ----
+    @SuppressWarnings("unused")
     private final String csdName;
+    @SuppressWarnings("unused")
     private final String ellpsUsed;  // WGS84 o GRS80
+    @SuppressWarnings("unused")
     private final double lon0Deg;
+    @SuppressWarnings("unused")
     private final double lat0Deg;
+    @SuppressWarnings("unused")
     private final double k0;
+    @SuppressWarnings("unused")
     private final double falseE;
+    @SuppressWarnings("unused")
     private final double falseN;
 
     private LeicaLokLocalization(CoordinateTransform geoToProj,
@@ -48,7 +59,7 @@ public final class LeicaLokLocalization implements LocalizationModel {
                                  double k0,
                                  double falseE, double falseN) {
         this.geoToProj = geoToProj;
-        this.projToGeo=projToGeo;
+        this.projToGeo = projToGeo;
         this.csdName = csdName;
         this.ellpsUsed = ellpsUsed;
         this.lon0Deg = lon0Deg;
@@ -71,16 +82,16 @@ public final class LeicaLokLocalization implements LocalizationModel {
 
             // Riga 1: commento // SBG Loc file (ignorato)
             // Riga 2: versione (int) -> ignorabile
-            int version = tk.nextIntOrDefault(1);
+            tk.nextIntOrDefault(1);
 
             // Riga 3: nome/datum di comodo, es. "EUREF89 UTM 33 N"
-            String headerName = tk.nextLineTrim(); // può contenere spazi
+            String headerName = tk.nextLineTrim();
 
             // --------- GTR (7-parameter) ----------
             tk.skipUntilStartsWith("// Gtr from local");
-            int gtrFlag = tk.nextIntOrDefault(0); // 0=off, 1=on
+            int gtrFlag = tk.nextIntOrDefault(0);
             tk.skipUntilStartsWith("// Gtr data");
-            // 7 numeri + nome datum: DX DY DZ RX RY RZ SCALE  +  datum string
+            // 7 numeri + nome datum
             double gtrDX = tk.nextDoubleOrZero();
             double gtrDY = tk.nextDoubleOrZero();
             double gtrDZ = tk.nextDoubleOrZero();
@@ -88,26 +99,24 @@ public final class LeicaLokLocalization implements LocalizationModel {
             double gtrRY = tk.nextDoubleOrZero();
             double gtrRZ = tk.nextDoubleOrZero();
             double gtrScale = tk.nextDoubleOrDefault(1.0);
-            String  gtrDatum = tk.nextLineTrim(); // es. "None"
-            // In questo primo cut non applichiamo GTR se gtrFlag==0 (tipico nei tuoi esempi)
+            String  gtrDatum = tk.nextLineTrim();
 
             // --------- CSD (projection) ----------
             tk.skipUntilStartsWith("// Csd data");
-            String csdName = tk.nextLineTrim(); // es. "UTM 33 N"
-            int csdType  = tk.nextIntOrDefault(2); // spesso 2 = Transverse Mercator
-            int csdCode  = tk.nextIntOrDefault(0); // opzionale
+            String csdName = tk.nextLineTrim();
+            int csdType  = tk.nextIntOrDefault(2);
+            tk.nextIntOrDefault(0); // csdCode (unused)
 
-            // La maggioranza dei .lok Leica elenca 8 double dopo:
-            // [0]=lat0(rad), [1]=FE (a volte con segno), [2]=lon0(rad), [3]=k0,
-            // [4]=FN, [5..7] riservati/zero.
-            double v0 = tk.nextDoubleOrZero(); // lat0 (rad)
-            double v1 = tk.nextDoubleOrZero(); // FE  (può essere -500000)
-            double v2 = tk.nextDoubleOrZero(); // lon0 (rad)
-            double v3 = tk.nextDoubleOrDefault(1.0); // k0
-            double v4 = tk.nextDoubleOrZero(); // FN
-            double v5 = tk.nextDoubleOrZero();
-            double v6 = tk.nextDoubleOrZero();
-            double v7 = tk.nextDoubleOrZero();
+            // Vettore 8 double:
+            // [0]=lat0(rad), [1]=FE, [2]=lon0(rad), [3]=k0, [4]=FN, [5..7]=0
+            double v0 = tk.nextDoubleOrZero();          // lat0 (rad)
+            double v1 = tk.nextDoubleOrZero();          // FE (a volte con segno)
+            double v2 = tk.nextDoubleOrZero();          // lon0 (rad)
+            double v3 = tk.nextDoubleOrDefault(1.0);    // k0
+            double v4 = tk.nextDoubleOrZero();          // FN
+            tk.nextDoubleOrZero();
+            tk.nextDoubleOrZero();
+            tk.nextDoubleOrZero();
 
             // --------- GRD/TPF (non usati qui) ----------
             tk.skipUntilStartsWith("// Grd data");
@@ -116,53 +125,48 @@ public final class LeicaLokLocalization implements LocalizationModel {
             tk.skipUntilStartsWith("// Use tpf");
             int tpfFlag = tk.nextIntOrDefault(0);
             tk.skipUntilStartsWith("// Tpf data");
-            // (ignoriamo eventuali righe successive)
 
-            // ---- Ellissoide: scegli GRS80 per ETRS/EUREF/GRS80, altrimenti WGS84
+            // ---- Ellissoide
             String ellps = chooseEllps(headerName, csdName, gtrDatum);
 
             // ---- Mappa CSD -> TM
-            if (csdType != 2) {
-                // Nei tuoi esempi (UTM/MTM) è sempre 2 (Transverse Mercator).
-                // Se trovi altro: qui potresti estendere.
-                csdType = 2;
-            }
+            if (csdType != 2) csdType = 2;
 
             double lat0Deg = Math.toDegrees(v0);
             double lon0Deg = Math.toDegrees(v2);
             double k0 = v3;
-            double FE = Math.abs(v1); // normalizzo easting a valore positivo
+            double FE = Math.abs(v1);
             double FN = v4;
 
-            // Alcuni .lok scambiano FE/FN o usano segni: fallback prudente
-            // Se FE==0 e |v4|~500000, prendi FE=abs(v4) e FN=v1
+            // Fallback prudente FE/FN
             if (FE == 0.0 && Math.abs(v4) > 100000 && Math.abs(v4) < 1000000) {
                 FE = Math.abs(v4);
                 FN = v1;
             }
 
-            // Default TM sensata se lon0==0 e il nome "UTM xx N"
+            // Default UTM se manca lon0
             if (Math.abs(lon0Deg) < 1e-12 && csdName.toUpperCase(Locale.ROOT).contains("UTM")) {
-                // Estrai zona da nome
                 int zone = extractUtmZone(csdName);
                 if (zone >= 1 && zone <= 60) {
-                    lon0Deg = zone * 6 - 183; // classico UTM lon0
+                    lon0Deg = zone * 6 - 183;
                 }
                 if (k0 == 0.0) k0 = 0.9996;
                 if (FE == 0.0) FE = 500000.0;
-                // FN resta 0 in emisfero nord
             }
 
             String projDef = String.format(Locale.US,
                     "+proj=tmerc +lat_0=%.10f +lon_0=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs",
                     lat0Deg, lon0Deg, (k0==0.0?1.0:k0), FE, FN, ellps);
 
-            CoordinateReferenceSystem wgs = CRS_FACTORY.createFromParameters("WGS84", "+proj=longlat +datum=WGS84 +no_defs");
+            CoordinateReferenceSystem wgs = CRS_FACTORY.createFromParameters(
+                    "WGS84", "+proj=longlat +datum=WGS84 +no_defs"
+            );
             CoordinateReferenceSystem proj = CRS_FACTORY.createFromParameters("LOK_TM", projDef);
             CoordinateTransform geoToProj = CT_FACTORY.createTransform(wgs, proj);
             CoordinateTransform projToGeo = CT_FACTORY.createTransform(proj, wgs);
 
-            return new LeicaLokLocalization(geoToProj,projToGeo, csdName, ellps, lon0Deg, lat0Deg, k0, FE, FN);
+            return new LeicaLokLocalization(geoToProj, projToGeo,
+                    csdName, ellps, lon0Deg, lat0Deg, k0, FE, FN);
         }
     }
 
@@ -175,8 +179,8 @@ public final class LeicaLokLocalization implements LocalizationModel {
         final ProjCoordinate p = tlProj.get();
         g.x = lon; g.y = lat; // PROJ4J: x=lon, y=lat
         geoToProj.transform(g, p);
-        out[0] = p.x;   // Est
-        out[1] = p.y;   // Nord
+        out[0] = p.x;   // Est (grid)
+        out[1] = p.y;   // Nord (grid)
         out[2] = h;     // quota ellissoidale (il .lok non contiene fitting quota)
     }
 
@@ -194,6 +198,45 @@ public final class LeicaLokLocalization implements LocalizationModel {
         out[2] = H;   // quota ellissoidale (nessuna correzione in .lok)
     }
 
+    /**
+     * Convergenza meridiana γ (gradi) nel punto, calcolata numericamente:
+     * azimut (0=N,90=E) del vettore True-North espresso in coordinate proiettate.
+     */
+    private double meridianConvergenceDeg(double latDeg, double lonDeg) {
+        final double eps = 1e-5; // ~1.1 m
+
+        final ProjCoordinate g = tlGeo.get();
+        final ProjCoordinate p = tlProj.get();
+
+        // punto base
+        g.x = lonDeg;
+        g.y = latDeg;
+        geoToProj.transform(g, p);
+        final double E1 = p.x;
+        final double N1 = p.y;
+
+        // punto leggermente a nord
+        g.x = lonDeg;
+        g.y = latDeg + eps;
+        geoToProj.transform(g, p);
+        final double dE = p.x - E1;
+        final double dN = p.y - N1;
+
+        double gammaRad = Math.atan2(dE, dN); // 0=N, 90=E
+        return Math.toDegrees(gammaRad);
+    }
+
+    /**
+     * out[3] = delta (gradi) da sommare all’HDT True per ottenere heading grid TM/UTM.
+     * True -> Grid: H_grid = H_true - gamma  => delta = -gamma
+     */
+    @Override
+    public void toLocalFastWithHeadingDelta(double lat, double lon, double h, double[] out) {
+        toLocalFast(lat, lon, h, out);
+        if (out.length > 3) {
+            out[3] = -meridianConvergenceDeg(lat, lon);
+        }
+    }
 
     // =====================================================================
     // Helpers
@@ -209,11 +252,9 @@ public final class LeicaLokLocalization implements LocalizationModel {
     }
 
     private static int extractUtmZone(String csdName) {
-        // es. "UTM 33 N" -> 33
         String u = csdName.toUpperCase(Locale.ROOT);
         int idx = u.indexOf("UTM");
         if (idx < 0) return -1;
-        // cerca un numero dopo "UTM"
         for (int i = idx+3; i < u.length(); i++) {
             if (Character.isDigit(u.charAt(i))) {
                 int j = i;
@@ -229,13 +270,8 @@ public final class LeicaLokLocalization implements LocalizationModel {
     // Reader che salta commenti `//` e fornisce next-as-* con default
     private static final class LokTokens {
         private final BufferedReader br;
-        private String buffered;
 
         LokTokens(BufferedReader br) { this.br = br; }
-
-        String nextLineRaw() throws IOException {
-            return br.readLine();
-        }
 
         String nextLineTrim() throws IOException {
             String s = br.readLine();
@@ -251,7 +287,6 @@ public final class LeicaLokLocalization implements LocalizationModel {
                 String t = s.trim();
                 if (t.startsWith(marker)) return;
             }
-            // se non trovato, non esplodere: il file potrebbe essere minimale
         }
 
         int nextIntOrDefault(int def) throws IOException {
@@ -267,12 +302,7 @@ public final class LeicaLokLocalization implements LocalizationModel {
         double nextDoubleOrDefault(double def) throws IOException {
             String s = nextLineTrim();
             if (s.isEmpty()) return def;
-            try {
-                // I .lok usano notazione scientifica C (es. 9.9960000000000004e-001)
-                return Double.parseDouble(s);
-            } catch (Exception e) {
-                return def;
-            }
+            try { return Double.parseDouble(s); } catch (Exception e) { return def; }
         }
     }
 }

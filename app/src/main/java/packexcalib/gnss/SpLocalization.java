@@ -35,6 +35,7 @@ public final class SpLocalization implements LocalizationModel {
     // 4-parametri
     private final boolean use4;
     private final double Cx, Cy, CaCCW, Ck, Orgx, Orgy; // CaCCW = -Ca(SurPad)
+    private final double cosA, sinA; // precompute
     private final double x0, y0; // pivot locali = Org + Cx/Cy
 
     // Height fitting
@@ -42,7 +43,7 @@ public final class SpLocalization implements LocalizationModel {
     private final double a0, a1, a2, a3, a4, a5;
 
     // Reusable buffers
-    private final ThreadLocal<ProjCoordinate> tlGeo = ThreadLocal.withInitial(ProjCoordinate::new);
+    private final ThreadLocal<ProjCoordinate> tlGeo  = ThreadLocal.withInitial(ProjCoordinate::new);
     private final ThreadLocal<ProjCoordinate> tlProj = ThreadLocal.withInitial(ProjCoordinate::new);
 
     private SpLocalization(CoordinateTransform geoToProj,
@@ -50,16 +51,22 @@ public final class SpLocalization implements LocalizationModel {
                            boolean use4, double Cx, double Cy, double CaCCW, double Ck, double Orgx, double Orgy,
                            boolean useHF, double a0, double a1, double a2, double a3, double a4, double a5) {
         this.geoToProj = geoToProj;
-        this.projToGeo=projToGeo;
+        this.projToGeo = projToGeo;
+
         this.use4 = use4;
         this.Cx = Cx;
         this.Cy = Cy;
-        this.CaCCW = CaCCW; // già convertito a CCW
+        this.CaCCW = CaCCW;
         this.Ck = Ck;
         this.Orgx = Orgx;   // N origine proiezione (SurPad)
         this.Orgy = Orgy;   // E origine proiezione (SurPad)
+
+        this.cosA = Math.cos(CaCCW);
+        this.sinA = Math.sin(CaCCW);
+
         this.x0 = Orgx + Cx; // Nord locale al pivot
         this.y0 = Orgy + Cy; // Est  locale al pivot
+
         this.useHF = useHF;
         this.a0 = a0;
         this.a1 = a1;
@@ -71,7 +78,17 @@ public final class SpLocalization implements LocalizationModel {
 
     // ------------------- Factory -------------------
     public static SpLocalization fromSpFile(File f) throws Exception {
-        DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        // anti-XXE (best effort)
+        try {
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        } catch (Throwable ignored) {}
+        dbf.setXIncludeAware(false);
+        dbf.setExpandEntityReferences(false);
+
+        DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(f);
         Element head = doc.getDocumentElement();
 
@@ -84,18 +101,18 @@ public final class SpLocalization implements LocalizationModel {
         double lon0deg = (Math.abs(cmRaw) > 10 ? cmRaw : Math.toDegrees(cmRaw));
         int type = (int) d(txt(proj, "Type", "0"));
         double tk = d(txt(proj, "TK", "1"));
-        double Tx = d(txt(proj, "Tx", "0"));   // false northing (UTM Nord emisfero N = 0)
-        double Ty = d(txt(proj, "Ty", "0"));   // false easting  (UTM = 500000)
+        double Tx = d(txt(proj, "Tx", "0"));   // false northing
+        double Ty = d(txt(proj, "Ty", "0"));   // false easting
         int south = (int) d(txt(proj, "South", "0"));
 
         // Fallback lon_0 da Type UTM-band se CentralMeridian = 0
         if (Math.abs(lon0deg) < 1e-9 && type >= 220 && type <= 230) {
-            lon0deg = (type - 218) * 6 - 3; // 220→9°, 221→15°, etc.
+            lon0deg = (type - 218) * 6 - 3;
         }
         // emisfero sud: aggiungi false northing se serve
         if (south == 1 && Tx < 5_000_000) Tx += 10_000_000;
 
-        // LCC 2SP (Type 162) parametri (in SP sono in radianti)
+        // LCC 2SP (Type 162) parametri
         double refLat = d(txt(proj, "ReferenceLatitude", "0"));
         double par1 = d(txt(proj, "Parallel1", "0"));
         double par2 = d(txt(proj, "Parallel2", "0"));
@@ -141,103 +158,17 @@ public final class SpLocalization implements LocalizationModel {
                         "+proj=laea +lat_0=%.10f +lon_0=%.10f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs",
                         lat0, lon0deg, Ty, Tx, ellps);
                 break;
-            case 12000:
-            case 12001:
-            case 12002:
-            case 12003:
-            case 12004:
-            case 12005:
-            case 12006:
-            case 12007:
-            case 12008:
-            case 12009:
-            case 12010:
-            case 12011:
-            case 12012:
-            case 12013:
-            case 12014:
-            case 12015:
-            case 12016:
-            case 12017:
-            case 12018:
-            case 12019:
-
-                // Japanese Plane Rectangular Coordinate System (JGD2011)
-                // Basato su Transverse Mercator, ellissoide GRS80
-                // Parametri già forniti nel file .SP in radianti
-                double lon0JGD = radOrDegToDeg(cmRaw);
-                double lat0JGD = radOrDegToDeg(refLat);
-                double kJGD = (tk == 0.0 ? 0.9999 : tk);
-
-                projDef = String.format(Locale.US,
-                        "+proj=tmerc +lat_0=%.10f +lon_0=%.10f +k_0=%.6f +x_0=%.3f +y_0=%.3f +ellps=GRS80 +units=m +no_defs",
-                        lat0JGD, lon0JGD, kJGD, Ty, Tx);
-                break;
-
-            case 10800:
-            case 10801:
-            case 10802:
-            case 10803:
-            case 10804:
-            case 10805:
-            case 10806:
-            case 10807:
-            case 10808:
-            case 10809:
-            case 10900:
-            case 10901:
-            case 10902:
-            case 10903:
-            case 10904:
-            case 10905:
-            case 10906:
-            case 10907:
-            case 10908:
-            case 10909:
-            case 10880:
-            case 10881:
-            case 10882:
-            case 10883:
-            case 10884:
-            case 10885:
-            case 10886:
-            case 10887:
-            case 10888:
-            case 10889:
-            case 10890:
-            case 10891:
-            case 10892:
-            case 10893:
-            case 10894:
-            case 10895:
-            case 10896:
-            case 10897:
-            case 10898:
-            case 10899:
-
-                // Canada MTM zones (NAD83 / CSRS)
-                double lon0MTM = radOrDegToDeg(cmRaw);
-                double lat0MTM = radOrDegToDeg(refLat);
-                double kMTM = (tk == 0.0 ? 0.9999 : tk);
-                double fe = Ty; // 304800 m (984250 ft)
-                double fn = Tx;
-
-                projDef = String.format(Locale.US,
-                        "+proj=tmerc +lat_0=%.10f +lon_0=%.10f +k_0=%.6f +x_0=%.3f +y_0=%.3f +ellps=GRS80 +units=m +no_defs",
-                        lat0MTM, lon0MTM, kMTM, fe, fn);
-                break;
-
 
             default: // Transverse Mercator (UTM-like o custom)
                 projDef = String.format(Locale.US,
                         "+proj=tmerc +lat_0=0 +lon_0=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs",
                         lon0deg, tk, Ty, Tx, ellps);
                 break;
-
         }
 
-
-        CoordinateReferenceSystem wgs84 = CRS_FACTORY.createFromParameters("WGS84", "+proj=longlat +datum=WGS84 +no_defs");
+        CoordinateReferenceSystem wgs84 = CRS_FACTORY.createFromParameters(
+                "WGS84", "+proj=longlat +datum=WGS84 +no_defs"
+        );
         CoordinateReferenceSystem projected = CRS_FACTORY.createFromParameters("SP_PROJ", projDef);
         CoordinateTransform geoToProj = CT_FACTORY.createTransform(wgs84, projected);
         CoordinateTransform projToGeo = CT_FACTORY.createTransform(projected, wgs84);
@@ -273,7 +204,8 @@ public final class SpLocalization implements LocalizationModel {
             a5 = d(txt(hf, "a5", "0"));
         }
 
-        return new SpLocalization(geoToProj,projToGeo, use4, Cx, Cy, CaCCW, Ck, Orgx, Orgy,
+        return new SpLocalization(geoToProj, projToGeo,
+                use4, Cx, Cy, CaCCW, Ck, Orgx, Orgy,
                 useHF, a0, a1, a2, a3, a4, a5);
     }
 
@@ -295,10 +227,6 @@ public final class SpLocalization implements LocalizationModel {
             double dN = N - Orgx;
 
             // Rotazione CCW (CaCCW) + scala
-            double cosA = Math.cos(CaCCW);
-            double sinA = Math.sin(CaCCW);
-
-            // Applica su vettore [dE, dN]
             double Ep = dE * cosA - dN * sinA;
             double Np = dE * sinA + dN * cosA;
 
@@ -309,16 +237,16 @@ public final class SpLocalization implements LocalizationModel {
 
         double Z = h;
         if (useHF) {
-            // Fitting definito su locali: Z = h - (a0 + a1*dx + a2*dy + a3*dx*dx + a4*dy*dy + a5*dx*dy)
-            double dx = N - (Orgx + Cx); // rispetto al pivot locale (Nord)
-            double dy = E - (Orgy + Cy); // rispetto al pivot locale (Est)
+            // Z = h - (a0 + a1*dx + a2*dy + a3*dx^2 + a4*dy^2 + a5*dx*dy)
+            double dx = N - (Orgx + Cx);
+            double dy = E - (Orgy + Cy);
             double dh = a0 + a1 * dx + a2 * dy + a3 * dx * dx + a4 * dy * dy + a5 * dx * dy;
             Z = h - dh;
         }
 
-        out[0] = E; // Est
-        out[1] = N; // Nord
-        out[2] = Z; // Quota
+        out[0] = E;
+        out[1] = N;
+        out[2] = Z;
     }
 
     @Override
@@ -329,7 +257,7 @@ public final class SpLocalization implements LocalizationModel {
         double e = E;
         double n = N;
 
-// 1️⃣ Inverso dell'Height fitting (usa E,N locali)
+        // 1) Inverso Height fitting (usa E,N locali)
         double hEll = H;
         if (useHF) {
             double dx = n - (Orgx + Cx);
@@ -338,15 +266,12 @@ public final class SpLocalization implements LocalizationModel {
             hEll = H + dh;
         }
 
-// 2️⃣ Inverso del 4-parametri (rotazione / scala / traslazione)
+        // 2) Inverso 4-parametri
         if (use4) {
             double dE = (e - (Orgy + Cy)) / Ck;
             double dN = (n - (Orgx + Cx)) / Ck;
 
-            double cosA = Math.cos(CaCCW);
-            double sinA = Math.sin(CaCCW);
-
-            // rotazione inversa (CCW invertita)
+            // rotazione inversa
             double Ei = dE * cosA + dN * sinA;
             double Ni = -dE * sinA + dN * cosA;
 
@@ -354,16 +279,57 @@ public final class SpLocalization implements LocalizationModel {
             n = Orgx + Ni;
         }
 
-        // 3️⃣ Inverso proiezione: locale → WGS84
+        // 3) Inverso proiezione: proj → WGS84
         p.x = e;
         p.y = n;
         projToGeo.transform(p, g);
 
-        out[0] = g.y; // lat
-        out[1] = g.x; // lon
-        out[2] = hEll; // ellipsoid height
+        out[0] = g.y;   // lat
+        out[1] = g.x;   // lon
+        out[2] = hEll;  // ellipsoid height
     }
 
+    /**
+     * Convergenza meridiana γ (gradi) nel punto, calcolata numericamente:
+     * azimut (0=N,90=E) del vettore True-North espresso in coordinate proiettate.
+     */
+    private double meridianConvergenceDeg(double latDeg, double lonDeg) {
+        final double eps = 1e-5; // ~1.1 m
+
+        ProjCoordinate g = tlGeo.get();
+        ProjCoordinate p = tlProj.get();
+
+        // punto base
+        g.x = lonDeg;
+        g.y = latDeg;
+        geoToProj.transform(g, p);
+        final double E1 = p.x;
+        final double N1 = p.y;
+
+        // punto leggermente a nord
+        g.x = lonDeg;
+        g.y = latDeg + eps;
+        geoToProj.transform(g, p);
+        final double dE = p.x - E1;
+        final double dN = p.y - N1;
+
+        double gammaRad = Math.atan2(dE, dN); // 0=N, 90=E
+        return Math.toDegrees(gammaRad);
+    }
+
+    /**
+     * out[3] = delta (gradi) da sommare all’HDT true per avere heading locale.
+     * True → Grid: -γ ; Grid → Local: -CaCCWdeg  => delta = -(γ + CaCCWdeg)
+     */
+    @Override
+    public void toLocalFastWithHeadingDelta(double lat, double lon, double h, double[] out) {
+        toLocalFast(lat, lon, h, out);
+        if (out.length > 3) {
+            double gammaDeg = meridianConvergenceDeg(lat, lon);
+            double caDeg = Math.toDegrees(this.CaCCW);
+            out[3] = -(gammaDeg + caDeg);
+        }
+    }
 
     // ------------------- Helpers -------------------
     private static double d(String s) {
@@ -383,9 +349,7 @@ public final class SpLocalization implements LocalizationModel {
     }
 
     private static double radOrDegToDeg(double v) {
-        // Heuristica: in SP questi valori sono quasi sempre in radianti.
         if (Math.abs(v) <= Math.PI + 1e-9) return Math.toDegrees(v);
-        return v; // già in gradi
+        return v;
     }
-
 }

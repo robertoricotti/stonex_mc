@@ -6,12 +6,8 @@ import static packexcalib.gnss.CRS_Strings._UTM;
 
 import android.util.Log;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -28,7 +24,7 @@ public class NmeaListener {
     public static String date_time_Y_M_D = "";
     public static String date_time_D_M_Y = "";
 
-
+    public static double AGGIUNTA_HDT;
     static CoordinateXYZ coordinateXYZLLQ, coordinateXYZJKT, coordinateXYZ_1, coordinateXYZ, coord, coordUTM;
     public static double tmpQuotaUTM;
     static double tmpQuotaLOC;
@@ -131,7 +127,7 @@ public class NmeaListener {
                                 mch_Hdt = 999.999;
 
                             } else {
-                                mch_Hdt = Double.parseDouble(NmeaInput[1]);
+                                mch_Hdt = wrap360(Double.parseDouble(NmeaInput[1])+AGGIUNTA_HDT);
                                 mch_Orientation = mch_Hdt;
                             }
                         } catch (Exception e) {
@@ -216,7 +212,7 @@ public class NmeaListener {
                                     if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
                                         mch_Hdt = 999.999;
                                     } else {
-                                        mch_Hdt = Double.parseDouble(NmeaInput[1]);
+                                        mch_Hdt = wrap360(Double.parseDouble(NmeaInput[1])+AGGIUNTA_HDT);
                                         mch_Orientation = mch_Hdt;
 
 
@@ -301,7 +297,7 @@ public class NmeaListener {
                 if (mch_Orientation == 655.35) {
                     mch_Hdt_1 = 999.999;
                 } else {
-                    mch_Hdt_1 = mch_Orientation;
+                    mch_Hdt_1 = wrap360(mch_Orientation+AGGIUNTA_HDT);
                 }
                 if (DataSaved.portView < 2) {
                     if (DataSaved.my_comPort == 0) {
@@ -342,26 +338,26 @@ public class NmeaListener {
                 break;
             case 0x18FF0B10:
                 try {
-                    String s0=String.format("%02d",(int)data[0]);
-                    String s1=String.format("%02d",(int)data[1]);
-                    String s2=String.format("%02d",(int)data[2]);
-                    String s3=String.format("%02d",(int)data[3]);
-                    String s4=String.format("%02d",(int)data[4]);
-                    String s5=String.format("%02d",(int)data[5]);
-                    String s6=String.format("%02d",(int)data[6]);
-                    String s7=String.format("%02d",(int)data[7]);
-                    String mData=s0+"-"+s1+"-"+s2+s3;
-                    String mHour=s4+":"+s5+":"+s6;
-                    LocalDateTime result=GnssUtcOffsetConverter.applyOffset(
+                    String s0 = String.format("%02d", (int) data[0]);
+                    String s1 = String.format("%02d", (int) data[1]);
+                    String s2 = String.format("%02d", (int) data[2]);
+                    String s3 = String.format("%02d", (int) data[3]);
+                    String s4 = String.format("%02d", (int) data[4]);
+                    String s5 = String.format("%02d", (int) data[5]);
+                    String s6 = String.format("%02d", (int) data[6]);
+                    String s7 = String.format("%02d", (int) data[7]);
+                    String mData = s0 + "-" + s1 + "-" + s2 + s3;
+                    String mHour = s4 + ":" + s5 + ":" + s6;
+                    LocalDateTime result = GnssUtcOffsetConverter.applyOffset(
                             mData,
                             mHour,
                             DataSaved.UTC_Offset
                     );
 
-                    date_time_D_M_Y= result.format(
+                    date_time_D_M_Y = result.format(
                             DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
                     );
-                    date_time_Y_M_D= result.format(
+                    date_time_Y_M_D = result.format(
                             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                     );
                 } catch (Exception ignored) {
@@ -694,7 +690,6 @@ public class NmeaListener {
                 break;
 
 
-
             default:
                 throw new IllegalArgumentException("Unknown formatType: " + formatType);
         }
@@ -708,5 +703,10 @@ public class NmeaListener {
 
         date_time_Y_M_D = now.format(YMD);
         date_time_D_M_Y = now.format(DMY);
+    }
+    static double wrap360(double a){
+        a %= 360.0;
+        if (a < 0) a += 360.0;
+        return a;
     }
 }

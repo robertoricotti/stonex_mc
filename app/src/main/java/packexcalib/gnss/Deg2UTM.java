@@ -9,11 +9,9 @@ import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.UpdateValuesService.result;
 import static services.UpdateValuesService.shifted;
-
 import static services.UpdateValuesService.wgsToUtm;
 
 import android.util.Log;
-
 
 import org.locationtech.proj4j.ProjCoordinate;
 
@@ -57,7 +55,7 @@ public class Deg2UTM {
     private static int Zone;
     private static char Letter;
 
-
+    static double[] out = new double[4];
     public static boolean geoidError;
 
     // buffer riusabile per UGF
@@ -66,7 +64,7 @@ public class Deg2UTM {
     public static CoordinateXYZ trasform(double Lat, double Lon, double Z, String crs) {
 
 
-        if (DataSaved.my_comPort==4) {
+        if (DataSaved.my_comPort == 4) {
 
             Northing = Lat;
             Easting = Lon;
@@ -79,13 +77,15 @@ public class Deg2UTM {
                     Northing = Lat;
                     Easting = Lon;
                     Quota = Z;
+                    NmeaListener.AGGIUNTA_HDT = 0;
                     break;
                 case _NONE:
 
-                    double[] out = new double[3];
-                    ReadProjectService.model.toLocalFast(Lat, Lon, Z, out);
+
+                    ReadProjectService.model.toLocalFastWithHeadingDelta(Lat, Lon, Z, out);
                     Easting = out[0];
                     Northing = out[1];
+                    NmeaListener.AGGIUNTA_HDT =out[3];;//questo è solo il delta?
 
 
                     try {
@@ -195,7 +195,7 @@ public class Deg2UTM {
 
                     break;
                 case _UTM:
-
+                    NmeaListener.AGGIUNTA_HDT = 0;
 
                     Easting = 0.5 * Math.log((1 + Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)) / (1 - Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) * 0.9996 * 6399593.625 / Math.pow((1 + Math.pow(0.0820944379, 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)), 0.5) * (1 + Math.pow(0.0820944379, 2) / 2 * Math.pow((0.5 * Math.log((1 + Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)) / (1 - Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)))), 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2) / 3) + 500000;
                     Northing = (Math.atan(Math.tan(Lat * Math.PI / 180) / Math.cos((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) - Lat * Math.PI / 180) * 0.9996 * 6399593.625 / Math.sqrt(1 + 0.006739496742 * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) * (1 + 0.006739496742 / 2 * Math.pow(0.5 * Math.log((1 + Math.cos(Lat * Math.PI / 180) * Math.sin((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) / (1 - Math.cos(Lat * Math.PI / 180) * Math.sin((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)))), 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) + 0.9996 * 6399593.625 * (Lat * Math.PI / 180 - 0.005054622556 * (Lat * Math.PI / 180 + Math.sin(2 * Lat * Math.PI / 180) / 2) + 4.258201531e-05 * (3 * (Lat * Math.PI / 180 + Math.sin(2 * Lat * Math.PI / 180) / 2) + Math.sin(2 * Lat * Math.PI / 180) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) / 4 - 1.674057895e-07 * (5 * (3 * (Lat * Math.PI / 180 + Math.sin(2 * Lat * Math.PI / 180) / 2) + Math.sin(2 * Lat * Math.PI / 180) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) / 4 + Math.sin(2 * Lat * Math.PI / 180) * Math.pow(Math.cos(Lat * Math.PI / 180), 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) / 3);
@@ -307,8 +307,8 @@ public class Deg2UTM {
                     break;
 
 
-
-                    default:
+                default:
+                    NmeaListener.AGGIUNTA_HDT=0;
 
                     // ====== ramo con geoide + trasformazione ======
                     try {
@@ -407,26 +407,30 @@ public class Deg2UTM {
                             geoidError = false;
                         }
 
-                        if (crs.equals("150580")&&heposTransformer != null) {
+                        if (crs.equals("150580") && heposTransformer != null) {
 
                             shifted = heposTransformer.transform(Lat, Lon, q);
-                                Easting = shifted.x;
-                                Northing = shifted.y + 2000000;
-                                Quota = shifted.z;
+                            Easting = shifted.x;
+                            Northing = shifted.y + 2000000;
+                            Quota = shifted.z;
 
 
-                        } else if (crs.equals("150581")&& cz_Q1 != null) {
+                        } else if (crs.equals("150581") && cz_Q1 != null) {
                             if (wgsToUtm != null && result != null) {
-                                inWgs.x = Lon; inWgs.y = Lat; inWgs.z = q;
+                                inWgs.x = Lon;
+                                inWgs.y = Lat;
+                                inWgs.z = q;
                                 wgsToUtm.transform(inWgs, result);
                                 cz_Q1.applyInPlace(result);   // <-- no array!
                                 Easting = result.x;
                                 Northing = result.y;
                                 Quota = q;
                             }
-                        } else if (crs.equals("150582")&& cz_Q3 != null) {
+                        } else if (crs.equals("150582") && cz_Q3 != null) {
                             if (wgsToUtm != null && result != null) {
-                                inWgs.x = Lon; inWgs.y = Lat; inWgs.z = q;
+                                inWgs.x = Lon;
+                                inWgs.y = Lat;
+                                inWgs.z = q;
                                 wgsToUtm.transform(inWgs, result);
                                 cz_Q3.applyInPlace(result);
                                 Easting = result.x;
@@ -523,7 +527,6 @@ public class Deg2UTM {
     private static int computeUtmZone(double Lon) {
         return (int) Math.floor(Lon / 6 + 31);
     }
-
 
 
 }

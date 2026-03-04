@@ -28,7 +28,7 @@ public final class CarlsonLocalization implements LocalizationModel {
     private final double[] xyz0;     // ECEF origine
     private final double[][] Renu;   // rotazione ECEF->ENU (3x3)
 
-    // ===== Similarità XY =====  (Xloc, Yloc) = s * R(θ) * [E N]^T + t
+    // ===== Similarità XY: (Xloc, Yloc) = s * R(θ) * [E N]^T + t
     private final double s, cosT, sinT, tx, ty;
 
     // ===== Modello ΔZ =====
@@ -36,20 +36,23 @@ public final class CarlsonLocalization implements LocalizationModel {
     private final double E0, N0;                    // centro per dE,dN
     private final double k0,k1,k2,k3,k4,k5;         // coeff. polinomio
     private final double polyRadiusM;               // raggio di validità termini quadratici
-    private final boolean planeOutsideRadius;       // fuori raggio usa solo piano k0+k1*dE+k2*dN
+
+    // ===== Scratch per path hot (zero alloc) =====
+    private final ThreadLocal<double[]> tlXyz = ThreadLocal.withInitial(() -> new double[3]);
+    private final ThreadLocal<double[]> tlEnu = ThreadLocal.withInitial(() -> new double[3]);
 
     private CarlsonLocalization(double lat0Deg, double lon0Deg, double h0,
-                                   double[] xyz0, double[][] Renu,
-                                   double s, double cosT, double sinT, double tx, double ty,
-                                   boolean useZ, double E0, double N0,
-                                   double k0, double k1, double k2, double k3, double k4, double k5,
-                                   double polyRadiusM, boolean planeOutsideRadius) {
+                                double[] xyz0, double[][] Renu,
+                                double s, double cosT, double sinT, double tx, double ty,
+                                boolean useZ, double E0, double N0,
+                                double k0, double k1, double k2, double k3, double k4, double k5,
+                                double polyRadiusM) {
         this.lat0Deg = lat0Deg; this.lon0Deg = lon0Deg; this.h0 = h0;
         this.xyz0 = xyz0; this.Renu = Renu;
         this.s = s; this.cosT = cosT; this.sinT = sinT; this.tx = tx; this.ty = ty;
         this.useZ = useZ; this.E0 = E0; this.N0 = N0;
         this.k0 = k0; this.k1 = k1; this.k2 = k2; this.k3 = k3; this.k4 = k4; this.k5 = k5;
-        this.polyRadiusM = polyRadiusM; this.planeOutsideRadius = planeOutsideRadius;
+        this.polyRadiusM = polyRadiusM;
     }
 
     // =====================================================================
@@ -69,7 +72,7 @@ public final class CarlsonLocalization implements LocalizationModel {
 
         // Proiezione tutti i punti in ENU
         final int n = pts.size();
-        double[] E = new double[n], N = new double[n], U = new double[n];
+        double[] E = new double[n], N = new double[n];
         double[] X = new double[n], Y = new double[n], Z = new double[n], Hell = new double[n];
         boolean[] useH = new boolean[n], useV = new boolean[n];
 
@@ -78,7 +81,7 @@ public final class CarlsonLocalization implements LocalizationModel {
             RawPoint p = pts.get(i);
             geoToEcef(p.lat, p.lon, p.hEll, xyz);
             ecefToEnu(xyz, xyz0, Renu, enu);
-            E[i] = enu[0]; N[i] = enu[1]; U[i] = enu[2];
+            E[i] = enu[0]; N[i] = enu[1];
             X[i] = p.xLocal; Y[i] = p.yLocal; Z[i] = p.zLocal; Hell[i] = p.hEll;
             useH[i] = p.useH; useV[i] = p.useV;
         }
@@ -96,12 +99,12 @@ public final class CarlsonLocalization implements LocalizationModel {
             double[] dZ = new double[n];
             double[] w  = new double[n];
             for (int i=0;i<n;i++){ dZ[i] = Z[i] - Hell[i]; w[i] = useV[i] ? 1.0 : 0.0; }
-            double[] coeff = fitPoly2DZ_Ridge(E, N, dZ, w, E0, N0, 1e-12); // ridge molto piccolo
+            double[] coeff = fitPoly2DZ_Ridge(E, N, dZ, w, E0, N0, 1e-12);
             k0=coeff[0]; k1=coeff[1]; k2=coeff[2]; k3=coeff[3]; k4=coeff[4]; k5=coeff[5];
             useZ = true;
         }
 
-        // === Guard-rail per i termini quadratici della quota ===
+        // Guard-rail raggio (per termini quadratici quota)
         double maxBL = 0.0;
         List<Integer> idxH = indicesTrue(useH);
         for (int i=0;i<idxH.size();i++){
@@ -119,7 +122,7 @@ public final class CarlsonLocalization implements LocalizationModel {
                 lat0, lon0, h0, xyz0, Renu,
                 sim.s, sim.cosT, sim.sinT, sim.tx, sim.ty,
                 useZ, E0, N0, k0, k1, k2, k3, k4, k5,
-                polyRadius, true
+                polyRadius
         );
     }
 
@@ -128,10 +131,12 @@ public final class CarlsonLocalization implements LocalizationModel {
     // =====================================================================
     @Override
     public void toLocalFast(double latDeg, double lonDeg, double hEll, double[] out) {
-        // Geo -> ECEF -> ENU
-        double[] xyz = geoToEcef(latDeg, lonDeg, hEll);
-        double[] enu = new double[3];
+        // Geo -> ECEF -> ENU (zero alloc)
+        double[] xyz = tlXyz.get();
+        double[] enu = tlEnu.get();
+        geoToEcef(latDeg, lonDeg, hEll, xyz);
         ecefToEnu(xyz, xyz0, Renu, enu);
+
         double E = enu[0], N = enu[1];
 
         // Similarità 2D
@@ -167,11 +172,12 @@ public final class CarlsonLocalization implements LocalizationModel {
             hEll = Zloc - dZ;
         }
 
-        // ENU -> ECEF -> Geo
-        double[] ecef = new double[3];
-        enuToEcef(Ex, Nx, 0.0, xyz0, Renu, ecef);
+        // ENU -> ECEF -> Geo (zero alloc)
+        double[] ecef = tlXyz.get(); // riuso buffer
+        double U = hEll - h0;        // migliore coerenza geometrica che U=0
+        enuToEcef(Ex, Nx, U, xyz0, Renu, ecef);
 
-        double[] llh = new double[3];
+        double[] llh = tlEnu.get(); // riuso buffer come [lat,lon,h] temporaneo
         ecefToGeo(ecef[0], ecef[1], ecef[2], llh);
 
         out[0] = llh[0];  // lat
@@ -179,28 +185,43 @@ public final class CarlsonLocalization implements LocalizationModel {
         out[2] = hEll;    // quota ellissoidale
     }
 
+    /**
+     * Delta (gradi) da sommare all'HDT True per ottenere heading locale.
+     * Per Carlson è costante.
+     */
+    public double headingOffsetDeg() {
+        double thetaRad = Math.atan2(this.sinT, this.cosT);
+        return -Math.toDegrees(thetaRad);
+    }
+
+    @Override
+    public void toLocalFastWithHeadingDelta(double lat, double lon, double h, double[] out) {
+        toLocalFast(lat, lon, h, out);
+        if (out.length > 3) out[3] = headingOffsetDeg();
+    }
+
     // =====================================================================
     // ENU / ECEF / GEO
     // =====================================================================
-    private static double[] geoToEcef(double latDeg, double lonDeg, double h) {
+    private static void geoToEcef(double latDeg, double lonDeg, double h, double[] out) {
         double lat = Math.toRadians(latDeg), lon = Math.toRadians(lonDeg);
         double s = Math.sin(lat), c = Math.cos(lat);
         double N = A / Math.sqrt(1 - E2*s*s);
-        double x = (N + h) * c * Math.cos(lon);
-        double y = (N + h) * c * Math.sin(lon);
-        double z = (N*(1 - E2) + h) * s;
-        return new double[]{x,y,z};
+        out[0] = (N + h) * c * Math.cos(lon);
+        out[1] = (N + h) * c * Math.sin(lon);
+        out[2] = (N*(1 - E2) + h) * s;
     }
-    private static void geoToEcef(double latDeg, double lonDeg, double h, double[] out) {
-        double[] t = geoToEcef(latDeg, lonDeg, h);
-        out[0]=t[0]; out[1]=t[1]; out[2]=t[2];
+
+    private static double[] geoToEcef(double latDeg, double lonDeg, double h) {
+        double[] out = new double[3];
+        geoToEcef(latDeg, lonDeg, h, out);
+        return out;
     }
 
     private static double[][] enuRotation(double lat0Deg, double lon0Deg) {
         double lat = Math.toRadians(lat0Deg), lon = Math.toRadians(lon0Deg);
         double sL = Math.sin(lat), cL = Math.cos(lat);
         double sO = Math.sin(lon), cO = Math.cos(lon);
-        // R * (ECEF - xyz0) = ENU
         return new double[][]{
                 { -sO,            cO,           0 },
                 { -sL*cO,        -sL*sO,       cL },
@@ -216,7 +237,6 @@ public final class CarlsonLocalization implements LocalizationModel {
     }
 
     private static void enuToEcef(double E, double N, double U, double[] xyz0, double[][] R, double[] out) {
-        // Usa le colonne di R^T
         double dx = R[0][0]*E + R[1][0]*N + R[2][0]*U;
         double dy = R[0][1]*E + R[1][1]*N + R[2][1]*U;
         double dz = R[0][2]*E + R[1][2]*N + R[2][2]*U;
@@ -263,7 +283,6 @@ public final class CarlsonLocalization implements LocalizationModel {
 
         Er/=wsum; Nr/=wsum; Xr/=wsum; Yr/=wsum;
 
-        // centra
         double Sxx=0, Sxy=0, Syx=0, Syy=0, Srr=0;
         for (int i=0;i<n;i++){
             if (!use[i]) continue;
@@ -275,17 +294,15 @@ public final class CarlsonLocalization implements LocalizationModel {
         }
         if (Srr < 1e-12) throw new IllegalStateException("Configurazione H quasi-degenerata.");
 
-        // rotazione (Horn 2D): theta = atan2(Sxy - Syx, Sxx + Syy)
+        // theta = atan2(Sxy - Syx, Sxx + Syy)
         double c1 = Sxx + Syy;
         double s1 = Sxy - Syx;
         double rnorm = Math.hypot(c1, s1);
         double cosT = (rnorm>0)? c1/rnorm : 1.0;
         double sinT = (rnorm>0)? s1/rnorm : 0.0;
 
-        // scala: s = trace(R^T * H) / Σ||r'||^2  = rnorm / Srr
         double s = rnorm / Srr;
 
-        // traslazione: t = t̄ - s R r̄
         double tx = Xr - s*( cosT*Er - sinT*Nr );
         double ty = Yr - s*( sinT*Er + cosT*Nr );
 
@@ -293,7 +310,7 @@ public final class CarlsonLocalization implements LocalizationModel {
     }
 
     // =====================================================================
-    // Fit ΔZ con ridge (robusto a quasi-singolarità)
+    // Fit ΔZ con ridge
     // =====================================================================
     private static double[] fitPoly2DZ_Ridge(double[] E, double[] N, double[] dZ, double[] w,
                                              double E0, double N0, double lambda){
@@ -315,14 +332,13 @@ public final class CarlsonLocalization implements LocalizationModel {
                 }
             }
         }
-        if (used < 3) { // fallback: solo offset medio
+        if (used < 3) {
             double num=0, den=0;
             for (int i=0;i<dZ.length;i++){ num += w[i]*dZ[i]; den += w[i]; }
             double k0 = (den>0)? num/den : 0.0;
             return new double[]{k0,0,0,0,0,0};
         }
 
-        // Ridge (solo sui termini quadratici, ma va bene anche uniforme)
         for (int i=0;i<m;i++) ATA[i][i] += lambda;
 
         return solveNxN(ATA, ATb);
@@ -364,7 +380,7 @@ public final class CarlsonLocalization implements LocalizationModel {
     private static List<Integer> indicesTrue(boolean[] a){ List<Integer> L=new ArrayList<>(); for(int i=0;i<a.length;i++) if(a[i]) L.add(i); return L; }
 
     // =====================================================================
-    // Parser LOC (Carlson / CubeA / SurvCE)
+    // Parser LOC (hardening anti-XXE)
     // =====================================================================
     private static final class RawPoint {
         final double lat, lon, hEll, xLocal, yLocal, zLocal;
@@ -377,8 +393,20 @@ public final class CarlsonLocalization implements LocalizationModel {
 
     private static List<RawPoint> parseLocFile(File file) throws Exception {
         List<RawPoint> out = new ArrayList<>();
-        DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        // anti-XXE
+        try {
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        } catch (Throwable ignored) {}
+        dbf.setXIncludeAware(false);
+        dbf.setExpandEntityReferences(false);
+
+        DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(file);
+
         NodeList records = doc.getElementsByTagName("record");
         for (int i=0;i<records.getLength();i++){
             Element rec = (Element) records.item(i);
