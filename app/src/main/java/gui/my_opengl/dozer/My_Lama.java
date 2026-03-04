@@ -7,7 +7,6 @@ import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
 import static packexcalib.exca.ExcavatorLib.correctPitch;
 import static packexcalib.exca.ExcavatorLib.correctRoll;
-import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.hdt_LAMA;
 import static packexcalib.exca.ExcavatorLib.startXYZ;
 import static services.TriangleService.getProjectedPointOnSegment3D;
@@ -210,7 +209,7 @@ public class My_Lama {
         fw = Exca_Quaternion.endPoint(origin, 0, 0, 50, hdt_LAMA);
         bw = Exca_Quaternion.endPoint(origin, 0, 0, 15, hdt_LAMA + 180);
         lt = Exca_Quaternion.endPoint(origin, correctRoll, 0, 10, hdt_LAMA + 270);
-        rt = Exca_Quaternion.endPoint(origin, -correctRoll, 0, 10, hdt_BOOM + 90);
+        rt = Exca_Quaternion.endPoint(origin, -correctRoll, 0, 10, hdt_LAMA + 90);
 
         P0 = pTransform(p0, DataSaved.glL_AnchorView, scale);
         P1 = pTransform(p1, DataSaved.glL_AnchorView, scale);

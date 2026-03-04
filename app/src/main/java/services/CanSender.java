@@ -15,6 +15,7 @@ import static packexcalib.exca.DataSaved.maxSpeedRightDW;
 import static packexcalib.exca.DataSaved.maxSpeedRightUP;
 import static packexcalib.exca.DataSaved.minSpeedRightDW;
 import static packexcalib.exca.DataSaved.minSpeedRightUP;
+import static packexcalib.exca.ExcavatorLib.correctPitch;
 import static packexcalib.exca.ExcavatorLib.correctRoll;
 import static packexcalib.exca.Sensors_Decoder.Deg_Benna_W_Tilt;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
@@ -257,9 +258,10 @@ public class CanSender extends Service {
 
                     case DOZER:
                     case DOZER_SIX:
+                        DataSaved.portView=3;
                         HEADING = currentLeft.getLeftAxisX();
                         Deg_roll = currentRight.getRightAxisX();
-                        Deg_pitch = currentRight.getRightAxisY() * -1;
+                        Deg_pitch = 0;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
                         DataSaved.demoZ = DPadHelper.getInstance().getZ();
@@ -269,9 +271,8 @@ public class CanSender extends Service {
 
                     case GRADER:
                         HEADING =currentLeft.getLeftAxisX();
-                        ;
                         Deg_roll = currentRight.getRightAxisX();
-                        Deg_pitch = currentRight.getRightAxisY() * -1;
+                        Deg_pitch = 0;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
                         DataSaved.demoZ = DPadHelper.getInstance().getZ();

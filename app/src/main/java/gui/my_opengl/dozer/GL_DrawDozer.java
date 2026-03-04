@@ -10,6 +10,7 @@ import static services.TriangleService.glPuntoTerra;
 import static services.TriangleService.glSegmentEnd;
 import static services.TriangleService.glSegmentPoint;
 import static services.TriangleService.glTerraPunto;
+import static utils.MyTypes.JOYSTICKS;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -90,12 +91,14 @@ public class GL_DrawDozer {
                 break;
         }
 
-        cover1.drawL(gl11, true);
-        cover2.drawL(gl11, true);
-        palo1.draw(gl11);
-        palo2.draw(gl11);
-        ant1.draw(gl11);
-        ant2.draw(gl11);
+        if(DataSaved.isCanOpen!=JOYSTICKS) {
+             cover1.drawL(gl11, true);
+            cover2.drawL(gl11, true);
+            palo1.draw(gl11);
+            palo2.draw(gl11);
+            ant1.draw(gl11);
+            ant2.draw(gl11);
+        }
 
 
         if (DataSaved.showAlign > 0) {

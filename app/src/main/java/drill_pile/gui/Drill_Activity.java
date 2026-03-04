@@ -1480,11 +1480,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // Angoli invariati
             final Double bearing = p.getHeadingDeg();
             final Double tilt    = p.getTilt();
-            final Double embedmentM = (p.getHeadZ() != null && FineForo != null && FineForo.length >= 3)
-                    ? (p.getHeadZ() - FineForo[2])
-                    : null;
+            final Double embedmentM = (StartForo != null && FineForo != null )
+                    ? (StartForo[2] - FineForo[2])
+                    : 0;
 
-            final Double embedmentUser = toUserUnitsMeters(embedmentM);
+            final Double embedmentUser = toUserUnitsMeters(Math.abs(embedmentM));
             final Double dTilt    = delta_Tilt;
             final Double dBearing = delta_Bearing;
 
@@ -2493,9 +2493,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
      * AGGIUNGERE STATO TO-DO ABORTED REFUSED DONE
      * REFUSED apre dialog per commento
      * ABORTED può essere continuato e posso snappare su quello
-     * add HOLE CODE (description field) after HOLE-ID EMBEDMENT
-     * OPERATOR namE VIVO STATICO PUBBLICO RISCRIVERE OGNI SESSIONE
-     * PER ROCK IL NUMERO DELLE ASTE
      * FUNCTION TO DEFINE THE TEXT TO SHOW ID+DESCRIPTON+Z ETC
      * PDF EXPORT SU REPORT XLS
      * ICON STONEX IN FILE REPORT SIA PDF CHE XLS

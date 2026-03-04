@@ -6,6 +6,9 @@ import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
 import static packexcalib.exca.ExcavatorLib.hdt_LAMA;
 import static packexcalib.exca.ExcavatorLib.yawSensor;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.GRADER;
 
 import android.app.Service;
 import android.content.Intent;
@@ -407,9 +410,9 @@ public class TriangleService extends Service {
                             DataSaved.GL_WHEEL = My_Wheel.puntiBenna();
                             break;
 
-                        case 2:
-                        case 3:
-                        case 4:
+                        case DOZER:
+                        case DOZER_SIX:
+                        case GRADER:
                             DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
                             DataSaved.GL_LAMA = My_Lama.puntiLama();
                             break;
