@@ -552,16 +552,10 @@
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 tentativo 5514">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Diaalog_Set_SP.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Diaalog_Set_SP.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/CarlsonLocalization.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/ProjectedLocLocalization.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/ExampleUsage.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/LocalizationFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/LocalizationFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/SpLocalization.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/SpLocalization.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -800,14 +794,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00092" summary="4.1.0 pre drill routine">
-      <option name="closed" value="true" />
-      <created>1769701049187</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1769701049187</updated>
     </task>
     <task id="LOCAL-00093" summary="4.1.0 pre drill routine">
       <option name="closed" value="true" />
@@ -1193,7 +1179,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772798868033</updated>
     </task>
-    <option name="localTasksCounter" value="141" />
+    <task id="LOCAL-00141" summary="4.1.0 tentativo 5514">
+      <option name="closed" value="true" />
+      <created>1772805887917</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1772805887917</updated>
+    </task>
+    <option name="localTasksCounter" value="142" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

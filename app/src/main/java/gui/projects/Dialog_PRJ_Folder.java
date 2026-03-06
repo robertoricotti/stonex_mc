@@ -3,6 +3,7 @@ package gui.projects;
 
 import static gui.MyApp.geoidAll;
 import static gui.dialogs_and_toast.Diaalog_Set_SP.getCrsCodeFromFileName;
+import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static utils.CanFileTransfer.sendFileViaCAN;
 import static utils.CanFileTransfer.sendFileViaSerial;
 import static utils.MyTypes.DOZER;
@@ -54,6 +55,7 @@ import gui.draw_class.MyColorClass;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.LocalizationFactory;
+import serial.SerialPortManager;
 import services.ReadProjectService;
 import services.UpdateValuesService;
 import utils.CanFileTransfer;
@@ -496,51 +498,54 @@ public class Dialog_PRJ_Folder extends BaseClass {
                             }else {
                                 MyData.push("crs", match);
                                 DataSaved.S_CRS = MyData.get_String("crs");
-
                                 ReadProjectService.startCRS();
 
                             }
                         }else {
                             //invia file SP
                             usaSP.setEnabled(false);
-                            MyData.push("CRS_ESTERNO", spAdapter.getSelectedFilePathAbs());
-                            MyData.push("crs", ".SP FILE");
-                            DataSaved.S_CRS = MyData.get_String("crs");
+                            if(MyData.get_String("crs").equals(_LOCAL_COORDINATES_FROM_GNSS)){
 
-                            /*
-                            switch (DataSaved.my_comPort) {
-                                case 0:
-                                    // Copia il file da assets a una directory accessibile
-
-                                    String filePath = spAdapter.getSelectedFilePathAbs();
-                                    sendFileViaCAN(filePath, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
-                                        @Override
-                                        public void onProgressUpdate(int percentage) {
-                                            perc = percentage;
-                                        }
-                                    });
-                                    break;
-                                case 1:
-                                case 2:
-                                    //send via serial
-                                    String filePathS = spAdapter.getSelectedFilePathAbs();
-                                    SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
-                                    Thread.sleep(500);
-                                    sendFileViaSerial(filePathS, new CanFileTransfer.ProgressCallback() {
-                                        @Override
-                                        public void onProgressUpdate(int percentage) {
-                                            perc = percentage;
-                                        }
-                                    });
-                                    break;
-                                default:
-                                    Thread.sleep(500);
-
-                                    break;
+                                MyData.push("crs", "_LOCAL_COORDINATES_FROM_GNSS");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                try {
+                                    switch (DataSaved.my_comPort) {
+                                        case 0:
+                                            // Copia il file da assets a una directory accessibile
+                                            String filePath = spAdapter.getSelectedFilePathAbs();
+                                            sendFileViaCAN(filePath, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
+                                                @Override
+                                                public void onProgressUpdate(int percentage) {
+                                                    perc = percentage;
+                                                }
+                                            });
+                                            break;
+                                        case 1:
+                                        case 2:
+                                            //send via serial
+                                            String filePathS = spAdapter.getSelectedFilePathAbs();
+                                            SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
+                                            Thread.sleep(500);
+                                            sendFileViaSerial(filePathS, new CanFileTransfer.ProgressCallback() {
+                                                @Override
+                                                public void onProgressUpdate(int percentage) {
+                                                    perc = percentage;
+                                                }
+                                            });
+                                            break;
 
 
+                                    }
+                                } catch (InterruptedException ignored) {
+
+                                }
+                                Log.d("TESTR","invia file SP "+DataSaved.S_CRS);
+                            }else {
+                                MyData.push("CRS_ESTERNO", spAdapter.getSelectedFilePathAbs());
+                                MyData.push("crs", ".SP FILE");
+                                DataSaved.S_CRS = MyData.get_String("crs");
+                                Log.d("TESTR","Usa file SP "+DataSaved.S_CRS);
                             }
-                            */
                             ReadProjectService.model = LocalizationFactory.fromFile(new File(spAdapter.getSelectedFilePathAbs()),
                                     UpdateValuesService.wgsToUtm,UpdateValuesService.utmToWgs);
                             usaSP.setEnabled(true);

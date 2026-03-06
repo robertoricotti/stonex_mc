@@ -22,6 +22,7 @@ import java.util.Objects;
 import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
+import utils.MyData;
 
 /*********************************************
  * Class to convert Latitude and Longitude
@@ -79,7 +80,7 @@ public class Deg2UTM {
                     Northing = Lat;
                     Easting = Lon;
                     Quota = Z;
-                    NmeaListener.AGGIUNTA_HDT = 0;
+                    NmeaListener.AGGIUNTA_HDT = DataSaved.DELTA_HDT_SMC;
                     break;
 
                 case _NONE:

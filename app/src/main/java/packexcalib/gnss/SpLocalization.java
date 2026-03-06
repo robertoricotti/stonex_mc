@@ -15,6 +15,8 @@ import java.util.Locale;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import packexcalib.exca.DataSaved;
+
 /**
  * SpLocalization (Stonex / SurPad / Cube .SP)
  *
@@ -231,6 +233,7 @@ public final class SpLocalization implements LocalizationModel {
 
         // SurPad: Ca da convertire in gradi e sommare direttamente all'HDT
         double headingDeltaDeg = use4 ? Math.toDegrees(CaRad) : 0.0;
+        DataSaved.DELTA_HDT_SMC=headingDeltaDeg;
 
         // ------------------ Height fitting ------------------
         Element hf = (Element) head.getElementsByTagName("CoordinateSystem_HeightFittingParameter").item(0);
