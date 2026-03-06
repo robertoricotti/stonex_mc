@@ -1,6 +1,9 @@
 package packexcalib.gnss;
 
+import org.locationtech.proj4j.CoordinateTransform;
+
 import java.io.File;
+import java.util.Locale;
 
 /**
  * Factory comoda per creare il modello giusto in base all'estensione del file.
@@ -8,11 +11,16 @@ import java.io.File;
 public final class LocalizationFactory {
     private LocalizationFactory() {}
 
-    public static LocalizationModel fromFile(File f) throws Exception {
-        String name = f.getName().toLowerCase();
-        if (name.endsWith(".loc")) return CarlsonLocalization.fromLocFile(f);
-        if (name.endsWith(".sp")) return SpLocalization.fromSpFile(f);
-        if (name.endsWith(".lok")) return LeicaLokLocalization.fromLokFile(f);
+    public static LocalizationModel fromFile(File f,
+                                             CoordinateTransform geoToProj,
+                                             CoordinateTransform projToGeo) throws Exception {
+        String name = f.getName().toLowerCase(Locale.ROOT);
+        if (name.endsWith(".sp")) {
+            return SpLocalization.fromSpFile(f);
+        }
+        if (name.endsWith(".loc")) {
+            return ProjectedLocLocalization.fromLocFile(f, geoToProj, projToGeo);
+        }
         throw new IllegalArgumentException("Formato non supportato: " + f.getName());
     }
 }

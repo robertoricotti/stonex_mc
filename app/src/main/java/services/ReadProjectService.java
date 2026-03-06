@@ -405,7 +405,21 @@ public class ReadProjectService extends Service {
                 String CRS_ESTERNO = MyData.get_String("CRS_ESTERNO");
                 if (CRS_ESTERNO != null) {
                     try {
-                        model = LocalizationFactory.fromFile(new File(CRS_ESTERNO));
+                        result = new ProjCoordinate();
+                        resultWgs = new ProjCoordinate();
+                        crsFactory = new CRSFactory();
+                        ctFactory = new CoordinateTransformFactory();
+                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
+                        try {
+                            UTM = crsFactory.createFromName("epsg:" + DataSaved.SECONDO_S_CRS);
+                        } catch (InvalidValueException | UnknownAuthorityCodeException |
+                                 UnsupportedParameterException e) {
+
+                            Log.e("GridShift", Log.getStackTraceString(e));
+                        }
+                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
+                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
+                        model = LocalizationFactory.fromFile(new File(CRS_ESTERNO),wgsToUtm,utmToWgs);
                     } catch (Exception e) {
                         Log.e("CRS_ESTERNO", Log.getStackTraceString(e));
                     }

@@ -49,6 +49,7 @@ import packexcalib.gnss.LocalizationFactory;
 import packexcalib.gnss.LocalizationModel;
 import serial.SerialPortManager;
 import services.ReadProjectService;
+import services.UpdateValuesService;
 import utils.CanFileTransfer;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -328,6 +329,8 @@ public class Diaalog_Set_SP {
 
                                 MyData.push("crs", match);
                                 DataSaved.S_CRS = MyData.get_String("crs");
+                                MyData.push("SECONDO_S_CRS",DataSaved.S_CRS);
+                                DataSaved.SECONDO_S_CRS=DataSaved.S_CRS;
                                 try {
                                     copyFromAssetsToFile(activity, selectedFolder + "/" + selectedFileName, new File(mPath, selectedFileName));
                                 } catch (Exception e) {
@@ -352,7 +355,8 @@ public class Diaalog_Set_SP {
                                 Log.e("testSP",Log.getStackTraceString(e));
                             }
 
-                            ReadProjectService.model = LocalizationFactory.fromFile(new File(selectedFolder+"/"+selectedFileName));
+                            ReadProjectService.model = LocalizationFactory.fromFile(new File(selectedFolder+"/"+selectedFileName),
+                                    UpdateValuesService.wgsToUtm,UpdateValuesService.utmToWgs);
                             usaSP.setEnabled(true);
                         }
 

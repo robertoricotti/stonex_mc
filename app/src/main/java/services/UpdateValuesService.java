@@ -826,6 +826,7 @@ public class UpdateValuesService extends Service {
                 String cq3d = MyData.get_String("_cq3d");
                 String arcodaMessageList = MyData.get_String("arcodaMessageList");
                 String crs = MyData.get_String("crs");
+                String SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
                 String xyz = MyData.get_String("xyz");
                 String Colore_Surf = MyData.get_String("Colore_Surf");
                 String Triangoli_Surf = MyData.get_String("Triangoli_Surf");
@@ -1027,6 +1028,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (crs == null) {
                         MyData.push("crs", "UTM");
+                    }
+                    if (SECONDO_S_CRS == null) {
+                        MyData.push("SECONDO_S_CRS", "32632");
                     }
                     if (xyz == null) {
                         MyData.push("xyz", "1");
@@ -2174,6 +2178,7 @@ public class UpdateValuesService extends Service {
                 }
 
                 DataSaved.S_CRS = MyData.get_String("crs");
+                DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
 
                 try {
                     DataSaved.xyz_yxz = MyData.get_Int("xyz");

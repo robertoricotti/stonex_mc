@@ -46,6 +46,8 @@ import packexcalib.gnss.LocalizationFactory;
 import packexcalib.gnss.LocalizationModel;
 import packexcalib.gnss.NmeaListener;
 import packexcalib.gnss.Ntv2GsbMetersGrid;
+import services.ReadProjectService;
+import services.UpdateValuesService;
 import utils.MyData;
 
 /**
@@ -122,6 +124,7 @@ public class SpTestActivity extends Activity {
         etEst.setText("");
         etNord.setText("");
         etZ.setText("");
+        btnToLocal.setText("→ Transform in Local (N, E ,Z)    origin:"+DataSaved.SECONDO_S_CRS);
 
         try {
 
@@ -327,8 +330,9 @@ public class SpTestActivity extends Activity {
     private void init() {
         try {
 
+            ReadProjectService.startCRS();
             File file = new File(MyData.get_String("CRS_ESTERNO"));
-            localizationFactory = LocalizationFactory.fromFile(file);
+            localizationFactory = LocalizationFactory.fromFile(file, UpdateValuesService.wgsToUtm,UpdateValuesService.utmToWgs);
 
             log("✅ File  successfully loaded");
             btnLoad.setText(MyData.get_String("CRS_ESTERNO"));

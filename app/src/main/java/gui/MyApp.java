@@ -258,7 +258,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         }
 
 
-
         myCrash();
 
     }
@@ -471,6 +470,7 @@ git push
                         public void run() {
 
                             try {
+                                Log.d("SECONDO_CRS", DataSaved.SECONDO_S_CRS);
                                 if (DataSaved.isWL == DRILL) {
                                     DataSaved.lrBucket = DataSaved.lrTool;
                                 }

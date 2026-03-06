@@ -55,6 +55,7 @@ import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.LocalizationFactory;
 import services.ReadProjectService;
+import services.UpdateValuesService;
 import utils.CanFileTransfer;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -540,7 +541,8 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
                             }
                             */
-                            ReadProjectService.model = LocalizationFactory.fromFile(new File(spAdapter.getSelectedFilePathAbs()));
+                            ReadProjectService.model = LocalizationFactory.fromFile(new File(spAdapter.getSelectedFilePathAbs()),
+                                    UpdateValuesService.wgsToUtm,UpdateValuesService.utmToWgs);
                             usaSP.setEnabled(true);
 
                         }
