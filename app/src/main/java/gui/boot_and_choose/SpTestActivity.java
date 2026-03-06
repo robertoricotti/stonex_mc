@@ -44,6 +44,7 @@ import packexcalib.gnss.GeoideInterpolation;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.LocalizationFactory;
 import packexcalib.gnss.LocalizationModel;
+import packexcalib.gnss.NmeaListener;
 import packexcalib.gnss.Ntv2GsbMetersGrid;
 import utils.MyData;
 
@@ -53,12 +54,6 @@ import utils.MyData;
  * diretta (Lat,Lon,H → E,N,Z) e inversa (E,N,Z → Lat,Lon,H).
  */
 public class SpTestActivity extends Activity {
-    // --- CRS 5514 base (quello che matcha epsg.io) ---
-    private static final String EPSG5514_BASE =
-            "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
-                    "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
-                    "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
-                    "+units=m +no_defs";
 
     // --- Cache griglie CZ (caricate da assets) ---
     private static CzechGridShiftTransformer czQ1;
@@ -89,7 +84,7 @@ public class SpTestActivity extends Activity {
     public static String sN, sE, sH, sLat, sLon, sHll;
     LocalizationModel localizationFactory;
     private EditText etLat, etLon, etH;
-    private EditText etEst, etNord, etZ;
+    private EditText etEst, etNord, etZ,etDH;
     private TextView tvOutput;
     private Button btnLoad, btnToLocal, btnToGeo, btn_Exit;
     int tempCom=0;
@@ -114,6 +109,7 @@ public class SpTestActivity extends Activity {
         etLat = findViewById(R.id.etLat);
         etLon = findViewById(R.id.etLon);
         etH = findViewById(R.id.etH);
+        etDH=findViewById(R.id.etDH);
         etEst = findViewById(R.id.etEst);
         etNord = findViewById(R.id.etNord);
         etZ = findViewById(R.id.etZ);
@@ -150,8 +146,6 @@ public class SpTestActivity extends Activity {
 
         btnToLocal.setOnClickListener(v -> {
 
-
-
             if (DataSaved.S_CRS.equals(_NONE)) {
                 if (localizationFactory == null) {
                     toast("Load  file .SP - .LOC");
@@ -161,233 +155,70 @@ public class SpTestActivity extends Activity {
                     double lat = Double.parseDouble(etLat.getText().toString().replace(",", "."));
                     double lon = Double.parseDouble(etLon.getText().toString().replace(",", "."));
                     double h = Double.parseDouble(etH.getText().toString().replace(",", "."));
+
                     double[] out = new double[4];
                     localizationFactory.toLocalFastWithHeadingDelta(lat, lon, h, out);
+
                     double Hq = ramoGeoide(lat, lon, out[2]);
-                    sE = String.format("%.3f", out[0]).replace(",", ".");
-                    sN = String.format("%.3f", out[1]).replace(",", ".");
-                    sH = String.format("%.3f", Hq).replace(",", ".");
+
+                    sE = String.format(Locale.US, "%.3f", out[0]);
+                    sN = String.format(Locale.US, "%.3f", out[1]);
+                    sH = String.format(Locale.US, "%.3f", Hq);
+
                     etEst.setText(sE);
                     etNord.setText(sN);
                     etZ.setText(sH);
-                    log(String.format("→ Locale: E=%.3f  N=%.3f  Z=%.3f", out[0], out[1], Hq).replaceAll(",", "."));
-                    MyData.push("Test_sLat",String.format("%.9f", lat));
-                    MyData.push("Test_sLon",String.format("%.9f", lon));
-                    MyData.push("Test_sHll",String.format("%.3f", h));
+                    etDH.setText(String.format(Locale.US, "%.3f", out[3]));
+
+                    log(String.format(Locale.US,
+                            "→ Locale: E=%.3f  N=%.3f  Z=%.3f  dHDT=%.3f",
+                            out[0], out[1], Hq, out[3]));
+
+                    MyData.push("Test_sLat", String.format(Locale.US, "%.9f", lat));
+                    MyData.push("Test_sLon", String.format(Locale.US, "%.9f", lon));
+                    MyData.push("Test_sHll", String.format(Locale.US, "%.3f", h));
                     updateLLQ();
+
                 } catch (Exception e) {
                     log("Error: " + e.getMessage());
                 }
-            }
-            else {
-                try {
 
+            } else {
+                try {
                     setEPSGLocal();
+
                     double lat = Double.parseDouble(etLat.getText().toString().replace(",", "."));
                     double lon = Double.parseDouble(etLon.getText().toString().replace(",", "."));
                     double h = Double.parseDouble(etH.getText().toString().replace(",", "."));
-                    double Easting, Northing, Quota;
-                    coordinateXYZ=Deg2UTM.trasform(lat,lon,h,_UTM);
-                    switch (DataSaved.S_CRS){
 
-                        case "5514":
-                        case "150583":
-                            CRSFactory crsFactory = new CRSFactory();
-                            CoordinateReferenceSystem wgs84 = crsFactory.createFromName("epsg:4326");
+                    coordinateXYZ = Deg2UTM.trasform(lat, lon, h, DataSaved.S_CRS);
 
-                            String epsg5514 =
-                                    "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
-                                            "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
-                                            "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
-                                            "+units=m +no_defs";
+                    double Easting = coordinateXYZ.getEasting();
+                    double Northing = coordinateXYZ.getNorthing();
+                    double Quota = coordinateXYZ.getQuota();
 
-                            CoordinateReferenceSystem sjtsk5514 = crsFactory.createFromParameters("EPSG:5514", epsg5514);
+                    sE = String.format(Locale.US, "%.3f", Easting);
+                    sN = String.format(Locale.US, "%.3f", Northing);
+                    sH = String.format(Locale.US, "%.3f", Quota);
 
-                            CoordinateTransformFactory ctFactory = new CoordinateTransformFactory();
-                            CoordinateTransform t = ctFactory.createTransform(wgs84, sjtsk5514);
+                    etEst.setText(sE);
+                    etNord.setText(sN);
+                    etZ.setText(sH);
+                    etDH.setText(String.format(Locale.US, "%.3f", NmeaListener.AGGIUNTA_HDT));
 
-                            // input: lon,lat (EPSG:4326)
-                            ProjCoordinate in = new ProjCoordinate(lon, lat);
-                            ProjCoordinate out = new ProjCoordinate();
-                            t.transform(in, out);
-                            if(DataSaved.S_CRS.equals("5514")) {
-                                Easting = out.x;
-                                Northing = out.y;
-                            }else {
-                                Easting = -out.x;
-                                Northing = -out.y;
-                            }
-                            Quota = ramoGeoide(lat, lon, h);
-                            sE = String.format("%.3f", Easting).replace(",", ".");
-                            sN = String.format("%.3f", Northing).replace(",", ".");
-                            sH = String.format("%.3f", Quota).replace(",", ".");
-                            etEst.setText(sE);
-                            etNord.setText(sN);
-                            etZ.setText(sH);
-                            MyData.push("Test_sLat", String.format("%.9f", lat));
-                            MyData.push("Test_sLon", String.format("%.9f", lon));
-                            MyData.push("Test_sHll", String.format("%.3f", h));
-                            updateLLQ();
-                            break;
-                        case "5513":
-                            CRSFactory crsFactory5513 = new CRSFactory();
-                            CoordinateReferenceSystem wgs845513 = crsFactory5513.createFromName("epsg:4326");
+                    log(String.format(Locale.US,
+                            "→ CRS %s: E=%.3f  N=%.3f  Z=%.3f  dHDT=%.3f",
+                            DataSaved.S_CRS, Easting, Northing, Quota, NmeaListener.AGGIUNTA_HDT));
 
-                            String epsg5513 =
-                                    "+proj=krovak +axis=swu +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
-                                            "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
-                                            "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
-                                            "+units=m +no_defs";
-
-                            CoordinateReferenceSystem sjtsk5513 = crsFactory5513.createFromParameters("EPSG:5514", epsg5513);
-
-                            CoordinateTransformFactory ctFactory5513 = new CoordinateTransformFactory();
-                            CoordinateTransform t5513 = ctFactory5513.createTransform(wgs845513, sjtsk5513);
-
-                            // input: lon,lat (EPSG:4326)
-                            ProjCoordinate in5513 = new ProjCoordinate(lon, lat);
-                            ProjCoordinate out5513 = new ProjCoordinate();
-                            t5513.transform(in5513, out5513);
-                            Easting = out5513.x;
-                            Northing = out5513.y;
-                            Quota = ramoGeoide(lat, lon, h);
-                            sE = String.format("%.3f", Easting).replace(",", ".");
-                            sN = String.format("%.3f", Northing).replace(",", ".");
-                            sH = String.format("%.3f", Quota).replace(",", ".");
-                            etEst.setText(sE);
-                            etNord.setText(sN);
-                            etZ.setText(sH);
-                            MyData.push("Test_sLat", String.format("%.9f", lat));
-                            MyData.push("Test_sLon", String.format("%.9f", lon));
-                            MyData.push("Test_sHll", String.format("%.3f", h));
-                            updateLLQ();
-                            break;
-                        case _150580:
-                            if (heposTransformer != null) {
-                                myshifted = heposTransformer.transform(lat, lon, h);
-                                Easting = myshifted.x;
-                                Northing = myshifted.y + 2000000;
-                                Quota = myshifted.z;
-                                sE = String.format("%.3f", Easting).replace(",", ".");
-                                sN = String.format("%.3f", Northing).replace(",", ".");
-                                sH = String.format("%.3f", Quota).replace(",", ".");
-                                etEst.setText(sE);
-                                etNord.setText(sN);
-                                etZ.setText(sH);
-                                MyData.push("Test_sLat", String.format("%.9f", lat));
-                                MyData.push("Test_sLon", String.format("%.9f", lon));
-                                MyData.push("Test_sHll", String.format("%.3f", h));
-                                updateLLQ();
-                            }
-                            break;
-                        case "150581":
-                            ensureCzechTransformsReady();
-                            if (wgsToKrovakGRS80 == null || czQ1 == null) {
-                                toast("CZ grid Q1 non disponibile (assets mancanti?)");
-                                break;
-                            }
-
-                            ProjCoordinate in1 = new ProjCoordinate(lon, lat);
-                            ProjCoordinate out1 = new ProjCoordinate();
-                            wgsToKrovakGRS80.transform(in1, out1);
-
-                            // Applica griglia v1710 Quadrant 1 (in metri su E/N)
-                            // Se la tua CzechGridShiftTransformer al momento accetta double[],
-                            // usa questo; se hai la versione applyInPlace(ProjCoordinate), ancora meglio.
-                            double[] en = { out1.x, out1.y };
-                            czQ1.applyInPlace(en);
-                            Easting = en[0];
-                            Northing = en[1];
-
-                            Quota = ramoGeoide(lat, lon, h);
-
-                            sE = String.format("%.3f", Easting).replace(",", ".");
-                            sN = String.format("%.3f", Northing).replace(",", ".");
-                            sH = String.format("%.3f", Quota).replace(",", ".");
-                            etEst.setText(sE);
-                            etNord.setText(sN);
-                            etZ.setText(sH);
-
-                            MyData.push("Test_sLat", String.format("%.9f", lat));
-                            MyData.push("Test_sLon", String.format("%.9f", lon));
-                            MyData.push("Test_sHll", String.format("%.3f", h));
-                            updateLLQ();
-                            break;
-
-
-                        case "150582":
-                            ensureCzechTransformsReady();
-                            if (wgsToKrovakGRS80 == null || czQ3 == null) {
-                                toast("CZ grid Q3 non disponibile (assets mancanti?)");
-                                break;
-                            }
-
-                            ProjCoordinate in3 = new ProjCoordinate(lon, lat);
-                            ProjCoordinate out3 = new ProjCoordinate();
-                            wgsToKrovakGRS80.transform(in3, out3);
-
-                            // Applica griglia v1710 Quadrant 3
-                            double[] en3 = { out3.x, out3.y };
-                            czQ3.applyInPlace(en3);
-                            Easting = en3[0];
-                            Northing = en3[1];
-
-                            Quota = ramoGeoide(lat, lon, h);
-
-                            sE = String.format("%.3f", Easting).replace(",", ".");
-                            sN = String.format("%.3f", Northing).replace(",", ".");
-                            sH = String.format("%.3f", Quota).replace(",", ".");
-                            etEst.setText(sE);
-                            etNord.setText(sN);
-                            etZ.setText(sH);
-
-                            MyData.push("Test_sLat", String.format("%.9f", lat));
-                            MyData.push("Test_sLon", String.format("%.9f", lon));
-                            MyData.push("Test_sHll", String.format("%.3f", h));
-                            updateLLQ();
-                            break;
-
-                        case _UTM:
-                            Easting =coordinateXYZ.getEasting();
-                            Northing = coordinateXYZ.getNorthing();
-                            Quota = ramoGeoide(lat, lon, h);
-                            sE = String.format("%.3f", Easting).replace(",", ".");
-                            sN = String.format("%.3f", Northing).replace(",", ".");
-                            sH = String.format("%.3f", Quota).replace(",", ".");
-                            etEst.setText(sE);
-                            etNord.setText(sN);
-                            etZ.setText(sH);
-                            MyData.push("Test_sLat", String.format("%.9f", lat));
-                            MyData.push("Test_sLon", String.format("%.9f", lon));
-                            MyData.push("Test_sHll", String.format("%.3f", h));
-                            updateLLQ();
-                            break;
-                        default:
-                            if (mywgsToUtm != null && myresult != null) {
-                                mywgsToUtm.transform(new ProjCoordinate(lon, lat, h), myresult);
-                                Easting = myresult.x;
-                                Northing = myresult.y;
-                                Quota = ramoGeoide(lat, lon, h);
-                                sE = String.format("%.3f", Easting).replace(",", ".");
-                                sN = String.format("%.3f", Northing).replace(",", ".");
-                                sH = String.format("%.3f", Quota).replace(",", ".");
-                                etEst.setText(sE);
-                                etNord.setText(sN);
-                                etZ.setText(sH);
-                                MyData.push("Test_sLat", String.format("%.9f", lat));
-                                MyData.push("Test_sLon", String.format("%.9f", lon));
-                                MyData.push("Test_sHll", String.format("%.3f", h));
-                                updateLLQ();
-                            }
-                            break;
-                    }
+                    MyData.push("Test_sLat", String.format(Locale.US, "%.9f", lat));
+                    MyData.push("Test_sLon", String.format(Locale.US, "%.9f", lon));
+                    MyData.push("Test_sHll", String.format(Locale.US, "%.3f", h));
+                    updateLLQ();
 
                 } catch (Exception e) {
                     log("Error: " + e.getMessage());
                 }
             }
-
-
         });
 
         btnToGeo.setOnClickListener(v -> {
@@ -517,20 +348,20 @@ public class SpTestActivity extends Activity {
 
     private void setEPSGLocal() {
         String s = MyData.get_String("crs");
-        if (!s.equals("UTM") && !s.equals(_NONE)) {
+        if (s == null) return;
+
+        if (!s.equals(_UTM) && !s.equals(_NONE)) {
+
             if (s.equals("150580")) {
                 try {
                     mycrsFactory = new CRSFactory();
                     myctFactory = new CoordinateTransformFactory();
                     myWGS84 = mycrsFactory.createFromName("epsg:4326");
 
-                    // >>> Non usare Proj4J per EGSA87 con griglia!
-                    // Inizializza il nostro trasformatore
                     if (heposTransformer == null) {
                         try {
                             File dEfile = new File(gridFile_GR_dE);
                             File dNfile = new File(gridFile_GR_dN);
-
                             heposTransformer = new GridShiftTransformer(dEfile, dNfile);
                         } catch (Exception e) {
                             Log.e("GridShift", Log.getStackTraceString(e));
@@ -539,33 +370,106 @@ public class SpTestActivity extends Activity {
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e("setEPSGLocal", Log.getStackTraceString(e));
                 }
+
             } else {
-                ////////
                 try {
                     myresult = new ProjCoordinate();
                     myresultWgs = new ProjCoordinate();
                     mycrsFactory = new CRSFactory();
                     myctFactory = new CoordinateTransformFactory();
-                    myWGS84 = mycrsFactory.createFromName("epsg:" + "4326");
-                    try {
-                        myUTM = mycrsFactory.createFromName("epsg:" + DataSaved.S_CRS);
+                    myWGS84 = mycrsFactory.createFromName("epsg:4326");
 
-                    } catch (UnsupportedParameterException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvalidValueException e) {
-                    } catch (UnknownAuthorityCodeException e) {
+                    switch (s) {
+                        case "5514": {
+                            String epsg5514 =
+                                    "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
+                                            "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
+                                            "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
+                                            "+units=m +no_defs";
+
+                            myUTM = mycrsFactory.createFromParameters("EPSG:5514", epsg5514);
+                            mywgsToUtm = myctFactory.createTransform(myWGS84, myUTM);
+                            myutmToWgs = myctFactory.createTransform(myUTM, myWGS84);
+                            break;
+                        }
+
+                        case "5513": {
+                            String epsg5513 =
+                                    "+proj=krovak +axis=swu +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
+                                            "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
+                                            "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
+                                            "+units=m +no_defs";
+
+                            myUTM = mycrsFactory.createFromParameters("EPSG:5513", epsg5513);
+                            mywgsToUtm = myctFactory.createTransform(myWGS84, myUTM);
+                            myutmToWgs = myctFactory.createTransform(myUTM, myWGS84);
+                            break;
+                        }
+
+                        case "150581": {
+                            String krovakGRS80 =
+                                    "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
+                                            "+k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs";
+
+                            myUTM = mycrsFactory.createFromParameters("KROVAK_GRS80", krovakGRS80);
+                            mywgsToUtm = myctFactory.createTransform(myWGS84, myUTM);
+                            myutmToWgs = myctFactory.createTransform(myUTM, myWGS84);
+
+                            if (czQ1 == null) {
+                                try (InputStream is = getAssets().open("table_yx_3_v1710_Q1.gsb")) {
+                                    czQ1 = new CzechGridShiftTransformer(is);
+                                } catch (Exception e) {
+                                    Log.e("GridShiftCZ", Log.getStackTraceString(e));
+                                    czQ1 = null;
+                                }
+                            }
+                            break;
+                        }
+
+                        case "150582": {
+                            String krovakGRS80 =
+                                    "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
+                                            "+k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs";
+
+                            myUTM = mycrsFactory.createFromParameters("KROVAK_GRS80", krovakGRS80);
+                            mywgsToUtm = myctFactory.createTransform(myWGS84, myUTM);
+                            myutmToWgs = myctFactory.createTransform(myUTM, myWGS84);
+
+                            if (czQ3 == null) {
+                                try (InputStream is = getAssets().open("table_yx_3_v1710_Q3.gsb")) {
+                                    czQ3 = new CzechGridShiftTransformer(is);
+                                } catch (Exception e) {
+                                    Log.e("GridShiftCZ", Log.getStackTraceString(e));
+                                    czQ3 = null;
+                                }
+                            }
+                            break;
+                        }
+
+                        default: {
+                            try {
+                                myUTM = mycrsFactory.createFromName("epsg:" + DataSaved.S_CRS);
+                            } catch (InvalidValueException | UnknownAuthorityCodeException |
+                                     UnsupportedParameterException e) {
+                                Log.e("GridShift", Log.getStackTraceString(e));
+                                myUTM = null;
+                            }
+
+                            if (myUTM != null) {
+                                mywgsToUtm = myctFactory.createTransform(myWGS84, myUTM);
+                                myutmToWgs = myctFactory.createTransform(myUTM, myWGS84);
+                            }
+                            break;
+                        }
                     }
-                    mywgsToUtm = myctFactory.createTransform(myWGS84, myUTM);
-                    myutmToWgs = myctFactory.createTransform(myUTM, myWGS84);
-                } catch (Exception e) {
-                }
 
-                ///////////
+                } catch (Exception e) {
+                    Log.e("setEPSGLocal", Log.getStackTraceString(e));
+                }
             }
         }
-
     }
 
     private double ramoGeoide(double Lat, double Lon, double Z) {

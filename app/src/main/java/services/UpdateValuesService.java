@@ -767,6 +767,7 @@ public class UpdateValuesService extends Service {
                 String licenza = MyData.get_String("licenza");
                 String UTC_Offset = MyData.get_String("UTC_Offset");
                 String Raggio_Drill = MyData.get_String("Raggio_Drill");
+                String Drill_Text_Mode=MyData.get_String("Drill_Text_Mode");
                 String Mainfall_Distance = MyData.get_String("Mainfall_Distance");
                 String coordOrder = MyData.get_String("coordOrder");
                 String screenOr = MyData.get_String("screenOr");
@@ -856,6 +857,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (Raggio_Drill == null) {
                         MyData.push("Raggio_Drill", "1000.0");
+                    }
+                    if (Drill_Text_Mode == null) {
+                        MyData.push("Drill_Text_Mode", "0");
                     }
                     if (Mainfall_Distance == null) {
                         MyData.push("Mainfall_Distance", "1.0");
@@ -1197,6 +1201,11 @@ public class UpdateValuesService extends Service {
                     DataSaved.Raggio_Drill = MyData.get_Double("Raggio_Drill");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Raggio_Drill: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Drill_Text_Mode = MyData.get_Int("Drill_Text_Mode");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Drill_Text_Mode: " + e.getMessage());
                 }
                 try {
                     DataSaved.Mainfall_Distance = MyData.get_Double("Mainfall_Distance");

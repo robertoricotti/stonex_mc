@@ -28,7 +28,6 @@ import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -36,7 +35,6 @@ import android.os.Looper;
 import android.util.Log;
 
 import org.locationtech.proj4j.CRSFactory;
-import org.locationtech.proj4j.CoordinateReferenceSystem;
 import org.locationtech.proj4j.CoordinateTransformFactory;
 import org.locationtech.proj4j.InvalidValueException;
 import org.locationtech.proj4j.ProjCoordinate;
@@ -82,7 +80,6 @@ import packexcalib.gnss.CzechGridShiftTransformer;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.LocalizationFactory;
 import packexcalib.gnss.LocalizationModel;
-import packexcalib.gnss.Ntv2GsbMetersGrid;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -106,6 +103,8 @@ public class ReadProjectService extends Service {
     public static boolean isFinishedDTM, isFinishedPOLY, isFinishedPOINT;
     public static double conversionFactor = 1;
     public static LocalizationModel model;
+    public static boolean CRS_IS_KROVAK_5514 = false;
+    public static boolean CRS_IS_KROVAK_5513 = false;
 
     public ReadProjectService() {
     }
@@ -250,7 +249,7 @@ public class ReadProjectService extends Service {
                     } else {
                         handler.postDelayed(this, 200); // Riprova ogni 200ms
                     }
-                } else if (DataSaved.isWL == DRILL ) {
+                } else if (DataSaved.isWL == DRILL) {
                     if (isFinishedPOINT) {
                         startCorrectActivityDrill();
                     } else {
@@ -339,12 +338,21 @@ public class ReadProjectService extends Service {
                         e.printStackTrace();
                     }
                 } else {
-                    ////////
+
+                    CRS_IS_KROVAK_5514 = false;
+                    CRS_IS_KROVAK_5513 = false;
                     switch (s) {
-                        case "5513" -> initBase5513Proj4j();
-                        case "5514" -> initBase5514Proj4j();
-                        //case "150583" -> initBase5514Proj4j();
-                        case "150581" -> {
+                        case "5513":
+                            initBase5513Proj4j();
+                            CRS_IS_KROVAK_5513 = true;
+                            break;
+                        case "5514":
+                            initBase5514Proj4j();
+                            CRS_IS_KROVAK_5514 = true;
+
+                            break;
+
+                        case "150581": {
                             initBaseKrovakGRS80Proj4j(); // crea WGS84, UTM(5514 base), wgsToUtm ecc.
 
                             if (cz_Q1 == null) {
@@ -356,7 +364,8 @@ public class ReadProjectService extends Service {
                                 }
                             }
                         }
-                        case "150582" -> {
+                        break;
+                        case "150582": {
                             initBaseKrovakGRS80Proj4j();
                             if (cz_Q3 == null) {
                                 try (InputStream is = MyApp.visibleActivity.getAssets().open("table_yx_3_v1710_Q3.gsb")) {
@@ -367,7 +376,9 @@ public class ReadProjectService extends Service {
                                 }
                             }
                         }
-                        default -> {
+                        break;
+
+                        default: {
                             try {
                                 result = new ProjCoordinate();
                                 resultWgs = new ProjCoordinate();
@@ -386,11 +397,11 @@ public class ReadProjectService extends Service {
                             } catch (Exception e) {
                             }
                         }
+                        break;
                     }
                     ///////////
                 }
-            }
-            else if (s.equals(_NONE)) {
+            } else if (s.equals(_NONE)) {
                 String CRS_ESTERNO = MyData.get_String("CRS_ESTERNO");
                 if (CRS_ESTERNO != null) {
                     try {
@@ -436,7 +447,7 @@ public class ReadProjectService extends Service {
                                 "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
                                 "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
                                 "+units=m +no_defs";
-                UTM=crsFactory.createFromParameters("EPSG:5514",epsg5514);
+                UTM = crsFactory.createFromParameters("EPSG:5514", epsg5514);
 
             } catch (InvalidValueException | UnknownAuthorityCodeException |
                      UnsupportedParameterException e) {
@@ -448,6 +459,7 @@ public class ReadProjectService extends Service {
         } catch (Exception e) {
         }
     }
+
     private static void initBaseKrovakGRS80Proj4j() {
         result = new ProjCoordinate();
         crsFactory = new CRSFactory();
@@ -461,6 +473,7 @@ public class ReadProjectService extends Service {
         UTM = crsFactory.createFromParameters("KROVAK_GRS80", krovakGRS80);
         wgsToUtm = ctFactory.createTransform(WGS84, UTM);
     }
+
     private static void initBase5513Proj4j() {
         try {
             result = new ProjCoordinate();
@@ -474,7 +487,7 @@ public class ReadProjectService extends Service {
                                 "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
                                 "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
                                 "+units=m +no_defs";
-                UTM=crsFactory.createFromParameters("EPSG:5514",epsg5513);
+                UTM = crsFactory.createFromParameters("EPSG:5514", epsg5513);
 
             } catch (InvalidValueException | UnknownAuthorityCodeException |
                      UnsupportedParameterException e) {
@@ -994,8 +1007,7 @@ public class ReadProjectService extends Service {
                         int lastIndexPOLY = nomeProgettoPOLY.lastIndexOf(".");
                         fileExtensionPOLY = nomeProgettoPOLY.substring(lastIndexPOLY + 1);
                         DataSaved.progettoSelected_POLY = nomeProgettoPOLY;
-                    }
-                    else {
+                    } else {
                         if (DataSaved.polylines != null) {
                             DataSaved.polylines.clear();
                         }
@@ -1050,7 +1062,7 @@ public class ReadProjectService extends Service {
                                 case "dxf":
                                     parserStatus = "Reading Points...";
                                     dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
-                                    DataSaved.drill_points=dxfDataPoint.getDrill_points();
+                                    DataSaved.drill_points = dxfDataPoint.getDrill_points();
                                     break;
                                 case "xml":
                                     //TODO CGPOINTS
@@ -1072,7 +1084,7 @@ public class ReadProjectService extends Service {
                                     break;
                                 case "xlsx":
                                 case "xls":
-                                    parserStatus = "Reading Points..."+"\n...WAIT...";
+                                    parserStatus = "Reading Points..." + "\n...WAIT...";
                                     DataSaved.drill_points = JetXlsxParser.parseJetXlsx(
                                             DataSaved.progettoSelected_POINT,
                                             0,
@@ -1337,10 +1349,10 @@ public class ReadProjectService extends Service {
         if (p == null) return null;
 
         String row = p.getRowId();
-        String id  = p.getId();
+        String id = p.getId();
 
         row = (row == null) ? "" : row.trim();
-        id  = (id == null) ? "" : id.trim();
+        id = (id == null) ? "" : id.trim();
 
         if (id.isEmpty()) return null;
 
@@ -1392,7 +1404,6 @@ public class ReadProjectService extends Service {
         String t = s.trim();
         return t.isEmpty() ? null : t;
     }
-
 
 
 }

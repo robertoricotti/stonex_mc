@@ -66,6 +66,14 @@
                 android:inputType="numberSigned|numberDecimal"
                 android:imeOptions="actionDone"
                 android:selectAllOnFocus="true"/>
+            <EditText
+                android:id="@+id/etDH"
+                android:hint="Delta HDT (°)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="false"
+                android:inputType="numberSigned|numberDecimal"
+                />
 
             <Button
                 android:id="@+id/btnTransform"

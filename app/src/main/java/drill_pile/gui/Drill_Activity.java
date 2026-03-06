@@ -5,6 +5,7 @@ import static packexcalib.exca.DataSaved.Selected_Point3D_Drill;
 import static packexcalib.exca.ExcavatorLib.coordTool;
 import static packexcalib.exca.ExcavatorLib.correctToolPitch;
 import static packexcalib.exca.ExcavatorLib.correctToolRoll;
+import static packexcalib.exca.ExcavatorLib.swing_boom_angle;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
 import static services.PointService.AB_REVERSED;
@@ -24,14 +25,17 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Guideline;
 
@@ -360,6 +364,30 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             MyData.push("Mostra_Testo", String.valueOf(DataSaved.ShowText));
 
         });
+        mostratesto.setOnLongClickListener(view -> {
+
+            String[] items = {
+                    Drill_Text_Mode.opt_0,
+                    Drill_Text_Mode.opt_1,
+                    Drill_Text_Mode.opt_2,
+                    Drill_Text_Mode.opt_3,
+                    Drill_Text_Mode.opt_4,
+                    Drill_Text_Mode.opt_5,
+                    Drill_Text_Mode.opt_6
+            };
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Drill Text Mode")
+                    .setItems(items, (dialog, which) -> {
+
+                        DataSaved.Drill_Text_Mode = which;
+                        MyData.push("Drill_Text_Mode", String.valueOf(which));
+
+                    })
+                    .show();
+
+            return true;
+        });
         tiposnap.setOnClickListener(view -> {
             if (!dialogAutoSnap.dialog.isShowing()) {
                 dialogAutoSnap.show();
@@ -463,8 +491,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                         .show();
             }
         });
-
-
         digMenu.setOnClickListener(view -> {
             startActivity(new Intent(this, Activity_Home_Page.class));
             finish();

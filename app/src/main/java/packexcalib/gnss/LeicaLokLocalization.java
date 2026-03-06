@@ -288,7 +288,7 @@ public final class LeicaLokLocalization implements LocalizationModel {
                 if (t.startsWith(marker)) return;
             }
         }
-
+        
         int nextIntOrDefault(int def) throws IOException {
             String s = nextLineTrim();
             if (s.isEmpty()) return def;

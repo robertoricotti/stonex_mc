@@ -1,6 +1,5 @@
 package packexcalib.gnss;
 
-
 import static gui.MyApp.cz_Q1;
 import static gui.MyApp.cz_Q3;
 import static gui.MyApp.heposTransformer;
@@ -24,17 +23,21 @@ import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
 
-
 /*********************************************
  * Class to convert Latitude and Longitude
- * in UTM
- *
- *
- ***************************************/
-
+ * in UTM / Project CRS
+ *********************************************/
 public class Deg2UTM {
-    // prepara un buffer input riusabile (static)
+
+    // buffer input WGS riusabile
     private static final ProjCoordinate inWgs = new ProjCoordinate();
+
+    // buffer riusabili per heading delta Krovak 5514
+    private static final ProjCoordinate krovakBaseWgs = new ProjCoordinate();
+    private static final ProjCoordinate krovakNorthWgs = new ProjCoordinate();
+    private static final ProjCoordinate krovakBaseProj = new ProjCoordinate();
+    private static final ProjCoordinate krovakNorthProj = new ProjCoordinate();
+
     // ====== lettori geoide (cache condivisa per tutte le istanze) ======
     private static GeoideInterpolation UGF_READER;
     private static String UGF_PATH_LOADED;
@@ -48,7 +51,7 @@ public class Deg2UTM {
     private static String GGF_PATH_LOADED;
     public static boolean ggfReady;
 
-    // ====== risultati (di istanza) ======
+    // ====== risultati ======
     private static double Easting;
     private static double Northing;
     private static double Quota;
@@ -62,7 +65,6 @@ public class Deg2UTM {
     private static final double[] quotaBuf = new double[1];
 
     public static CoordinateXYZ trasform(double Lat, double Lon, double Z, String crs) {
-
 
         if (DataSaved.my_comPort == 4) {
 
@@ -79,14 +81,13 @@ public class Deg2UTM {
                     Quota = Z;
                     NmeaListener.AGGIUNTA_HDT = 0;
                     break;
-                case _NONE:
 
+                case _NONE:
 
                     ReadProjectService.model.toLocalFastWithHeadingDelta(Lat, Lon, Z, out);
                     Easting = out[0];
                     Northing = out[1];
-                    NmeaListener.AGGIUNTA_HDT =out[3];;//questo è solo il delta?
-
+                    NmeaListener.AGGIUNTA_HDT = out[3];
 
                     try {
                         double q = out[2];
@@ -102,7 +103,6 @@ public class Deg2UTM {
                                         if (BIN_READER == null || !Objects.equals(BIN_PATH_LOADED, path)) {
                                             BIN_READER = new GeoidBinLite(new File(path));
                                             BIN_PATH_LOADED = path;
-                                            //Log.d("Deg2UTM", "BIN letto");
                                             binReady = true;
                                         }
                                         if (binReady && BIN_READER.isInGrid(Lat, Lon)) {
@@ -113,7 +113,6 @@ public class Deg2UTM {
                                             q = Z;
                                         }
                                     } catch (IOException e) {
-                                        //Log.e("Deg2UTM", "BIN load/use error", e);
                                         binReady = false;
                                         geoidError = true;
                                         q = Z;
@@ -125,7 +124,6 @@ public class Deg2UTM {
                                         if (GGF_READER == null || !Objects.equals(GGF_PATH_LOADED, path)) {
                                             GGF_READER = new GGFGeoide();
                                             GGF_READER.load(path);
-                                            //Log.d("Deg2UTM", "GGF letto");
                                             GGF_PATH_LOADED = path;
                                             ggfReady = true;
                                         }
@@ -138,7 +136,6 @@ public class Deg2UTM {
                                             q = Z;
                                         }
                                     } catch (Exception e) {
-                                        //Log.e("Deg2UTM", "GGF load/use error", e);
                                         ggfReady = false;
                                         geoidError = true;
                                         q = Z;
@@ -149,8 +146,7 @@ public class Deg2UTM {
                                     try {
                                         if (UGF_READER == null || !Objects.equals(UGF_PATH_LOADED, path)) {
                                             UGF_READER = new GeoideInterpolation(path);
-                                            UGF_READER.readHeader();            // una sola volta per path
-                                            // Log.d("Deg2UTM", "UGF letto");
+                                            UGF_READER.readHeader();
                                             UGF_PATH_LOADED = path;
                                             ugfReady = true;
                                         }
@@ -167,7 +163,6 @@ public class Deg2UTM {
                                             q = Z;
                                         }
                                     } catch (Exception e) {
-                                        //Log.e("Deg2UTM", "UGF load/use error", e);
                                         ugfReady = false;
                                         geoidError = true;
                                         q = Z;
@@ -186,14 +181,11 @@ public class Deg2UTM {
                         Quota = q;
 
                     } catch (Exception e) {
-                        //Log.e("Deg2UTM", "Transform error", e);
                         geoidError = true;
-
                     }
-                    //  Log.d("TestCRSSS",  Northing + "  " + Easting+ "  "+Quota);
-
 
                     break;
+
                 case _UTM:
                     NmeaListener.AGGIUNTA_HDT = 0;
 
@@ -216,7 +208,6 @@ public class Deg2UTM {
                                         if (BIN_READER == null || !Objects.equals(BIN_PATH_LOADED, path)) {
                                             BIN_READER = new GeoidBinLite(new File(path));
                                             BIN_PATH_LOADED = path;
-                                            //Log.d("Deg2UTM", "BIN letto");
                                             binReady = true;
                                         }
                                         if (binReady && BIN_READER.isInGrid(Lat, Lon)) {
@@ -227,7 +218,6 @@ public class Deg2UTM {
                                             q = Z;
                                         }
                                     } catch (IOException e) {
-                                        //Log.e("Deg2UTM", "BIN load/use error", e);
                                         binReady = false;
                                         geoidError = true;
                                         q = Z;
@@ -239,7 +229,6 @@ public class Deg2UTM {
                                         if (GGF_READER == null || !Objects.equals(GGF_PATH_LOADED, path)) {
                                             GGF_READER = new GGFGeoide();
                                             GGF_READER.load(path);
-                                            //Log.d("Deg2UTM", "GGF letto");
                                             GGF_PATH_LOADED = path;
                                             ggfReady = true;
                                         }
@@ -252,7 +241,6 @@ public class Deg2UTM {
                                             q = Z;
                                         }
                                     } catch (Exception e) {
-                                        //Log.e("Deg2UTM", "GGF load/use error", e);
                                         ggfReady = false;
                                         geoidError = true;
                                         q = Z;
@@ -263,8 +251,7 @@ public class Deg2UTM {
                                     try {
                                         if (UGF_READER == null || !Objects.equals(UGF_PATH_LOADED, path)) {
                                             UGF_READER = new GeoideInterpolation(path);
-                                            UGF_READER.readHeader();            // una sola volta per path
-                                            // Log.d("Deg2UTM", "UGF letto");
+                                            UGF_READER.readHeader();
                                             UGF_PATH_LOADED = path;
                                             ugfReady = true;
                                         }
@@ -281,7 +268,6 @@ public class Deg2UTM {
                                             q = Z;
                                         }
                                     } catch (Exception e) {
-                                        //Log.e("Deg2UTM", "UGF load/use error", e);
                                         ugfReady = false;
                                         geoidError = true;
                                         q = Z;
@@ -300,19 +286,14 @@ public class Deg2UTM {
                         Quota = q;
 
                     } catch (Exception e) {
-                        //Log.e("Deg2UTM", "Transform error", e);
                         geoidError = true;
-
                     }
                     break;
 
-
                 default:
-                    NmeaListener.AGGIUNTA_HDT=0;
+                    NmeaListener.AGGIUNTA_HDT = 0;
 
-                    // ====== ramo con geoide + trasformazione ======
                     try {
-
                         double q = Z;
 
                         final String path = MyApp.GEOIDE_PATH;
@@ -326,7 +307,6 @@ public class Deg2UTM {
                                         if (BIN_READER == null || !Objects.equals(BIN_PATH_LOADED, path)) {
                                             BIN_READER = new GeoidBinLite(new File(path));
                                             BIN_PATH_LOADED = path;
-                                            //Log.d("Deg2UTM", "BIN letto");
                                             binReady = true;
                                         }
                                         if (binReady && BIN_READER.isInGrid(Lat, Lon)) {
@@ -337,7 +317,6 @@ public class Deg2UTM {
                                             q = Z;
                                         }
                                     } catch (IOException e) {
-                                        //Log.e("Deg2UTM", "BIN load/use error", e);
                                         binReady = false;
                                         geoidError = true;
                                         q = Z;
@@ -349,7 +328,6 @@ public class Deg2UTM {
                                         if (GGF_READER == null || !Objects.equals(GGF_PATH_LOADED, path)) {
                                             GGF_READER = new GGFGeoide();
                                             GGF_READER.load(path);
-                                            //Log.d("Deg2UTM", "GGF letto");
                                             GGF_PATH_LOADED = path;
                                             ggfReady = true;
                                         }
@@ -362,7 +340,6 @@ public class Deg2UTM {
                                             q = Z;
                                         }
                                     } catch (Exception e) {
-                                        //Log.e("Deg2UTM", "GGF load/use error", e);
                                         ggfReady = false;
                                         geoidError = true;
                                         q = Z;
@@ -373,8 +350,7 @@ public class Deg2UTM {
                                     try {
                                         if (UGF_READER == null || !Objects.equals(UGF_PATH_LOADED, path)) {
                                             UGF_READER = new GeoideInterpolation(path);
-                                            UGF_READER.readHeader();            // una sola volta per path
-                                            // Log.d("Deg2UTM", "UGF letto");
+                                            UGF_READER.readHeader();
                                             UGF_PATH_LOADED = path;
                                             ugfReady = true;
                                         }
@@ -391,7 +367,6 @@ public class Deg2UTM {
                                             q = Z;
                                         }
                                     } catch (Exception e) {
-                                        //Log.e("Deg2UTM", "UGF load/use error", e);
                                         ugfReady = false;
                                         geoidError = true;
                                         q = Z;
@@ -414,18 +389,18 @@ public class Deg2UTM {
                             Northing = shifted.y + 2000000;
                             Quota = shifted.z;
 
-
                         } else if (crs.equals("150581") && cz_Q1 != null) {
                             if (wgsToUtm != null && result != null) {
                                 inWgs.x = Lon;
                                 inWgs.y = Lat;
                                 inWgs.z = q;
                                 wgsToUtm.transform(inWgs, result);
-                                cz_Q1.applyInPlace(result);   // <-- no array!
+                                cz_Q1.applyInPlace(result);
                                 Easting = result.x;
                                 Northing = result.y;
                                 Quota = q;
                             }
+
                         } else if (crs.equals("150582") && cz_Q3 != null) {
                             if (wgsToUtm != null && result != null) {
                                 inWgs.x = Lon;
@@ -437,49 +412,91 @@ public class Deg2UTM {
                                 Northing = result.y;
                                 Quota = q;
                             }
+
                         } else {
                             if (wgsToUtm != null && result != null) {
                                 wgsToUtm.transform(new ProjCoordinate(Lon, Lat, q), result);
                                 Easting = result.x;
                                 Northing = result.y;
                                 Quota = q;
-
                             }
                         }
+
+                        // SOLO QUI: aggiunta heading dinamica per EPSG:5514
+                        if ("5514".equals(crs)) {
+                            NmeaListener.AGGIUNTA_HDT = krovak5514HeadingDeltaDeg(Lat, Lon);
+                        }
+
                     } catch (Exception e) {
                         Log.e("GridShift", "Transform error", e);
                         geoidError = true;
+
                         if (wgsToUtm != null && result != null) {
                             wgsToUtm.transform(new ProjCoordinate(Lon, Lat, Z), result);
                             Easting = result.x;
                             Northing = result.y;
                             Quota = Z;
+                        }
 
+                        // fallback heading anche in caso di eccezione, solo per 5514
+                        if ("5514".equals(crs)) {
+                            try {
+                                NmeaListener.AGGIUNTA_HDT = krovak5514HeadingDeltaDeg(Lat, Lon);
+                            } catch (Exception ignored) {
+                                NmeaListener.AGGIUNTA_HDT = 0;
+                            }
                         }
                     }
                     break;
-
             }
+
             try {
                 Zone = computeUtmZone(Lon);
                 Letter = computeUtmLetter(Lat);
             } catch (Exception ignored) {
-
             }
-
         }
-
 
         return new CoordinateXYZ(Easting, Northing, Quota, Zone, Letter);
     }
 
+    /**
+     * Delta heading per EPSG:5514.
+     * Restituisce i gradi da sommare all'HDT true per allinearlo agli assi EN del sistema Krovak East North.
+     *
+     * Formula numerica:
+     * - proietta il punto
+     * - proietta un punto leggermente più a nord vero
+     * - calcola l'azimut del vero nord nel piano proiettato
+     *
+     * 0 = nord, 90 = est
+     */
+    private static double krovak5514HeadingDeltaDeg(double latDeg, double lonDeg) {
+        if (wgsToUtm == null) return 0.0;
+
+        final double epsDeg = 1e-5; // circa 1.1 m
+
+        // punto base
+        krovakBaseWgs.x = lonDeg;
+        krovakBaseWgs.y = latDeg;
+        krovakBaseWgs.z = 0.0;
+        wgsToUtm.transform(krovakBaseWgs, krovakBaseProj);
+
+        // punto leggermente più a nord vero
+        krovakNorthWgs.x = lonDeg;
+        krovakNorthWgs.y = latDeg + epsDeg;
+        krovakNorthWgs.z = 0.0;
+        wgsToUtm.transform(krovakNorthWgs, krovakNorthProj);
+
+        double dE = krovakNorthProj.x - krovakBaseProj.x;
+        double dN = krovakNorthProj.y - krovakBaseProj.y;
+
+        return Math.toDegrees(Math.atan2(dE, dN));
+    }
+
     private static char computeUtmLetter(double Lat) {
         char Letter;
-       /* char[] bands = {'C','D','E','F','G','H','J','K','L','M','N','P','Q','R','S','T','U','V','W','X'};
-        int idx = (int)Math.floor((Lat + 80.0)/8.0);
-        if (idx < 0) idx = 0;
-        if (idx >= bands.length) idx = bands.length - 1;
-        return bands[idx];*/
+
         if (Lat < -72)
             Letter = 'C';
         else if (Lat < -64)
@@ -527,6 +544,4 @@ public class Deg2UTM {
     private static int computeUtmZone(double Lon) {
         return (int) Math.floor(Lon / 6 + 31);
     }
-
-
 }

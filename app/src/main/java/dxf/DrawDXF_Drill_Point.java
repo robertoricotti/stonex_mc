@@ -3,16 +3,19 @@ package dxf;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import org.apache.poi.xdgf.util.Util;
+
 import gui.draw_class.MyColorClass;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
+import utils.Utils;
 
 public class DrawDXF_Drill_Point {
     public static void draw(Canvas canvas, Paint paint, Point3D_Drill point,
                             float bucketX, float bucketY,
                             double bucketEst, double bucketNord,
                             float scala, double rotationAngle,
-                            boolean txt,float uiDeg) {
+                            boolean txt, float uiDeg) {
 
         if (point == null) return;
         if (point.getHeadX() == null || point.getHeadY() == null) return;
@@ -157,16 +160,29 @@ public class DrawDXF_Drill_Point {
 
         // 3) Testo: SEMPRE se txt == true (anche senza fondo)
         if (txt) {
-            canvas.rotate(-uiDeg,headX,headY);
+            canvas.rotate(-uiDeg, headX, headY);
             String testo = point.getRowId() + "-" + point.getId();
-            if (point.getRowId() == null||point.getRowId().isEmpty()) {
+            if (point.getRowId() == null || point.getRowId().isEmpty()) {
                 testo = point.getId();
             }
+            testo = switch (DataSaved.Drill_Text_Mode) {
+                case 0 -> testo;
+                case 1 -> testo + "\n" + point.getDescription();
+                case 2 ->
+                        testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 3 ->
+                        testo + "\n" + point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 4 -> point.getDescription();
+                case 5 ->
+                        point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                default -> "?";
+            };
             paint.setTextSize(Math.max(18f, 0.22f * scala));
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(fillColor); // oppure fillColor, a gusto
             canvas.drawText(testo, headX + 3f, headY - 3f, paint);
-            canvas.rotate(uiDeg,headX,headY);
+            canvas.rotate(uiDeg, headX, headY);
         }
 
         paint.setStrokeWidth(10f);
@@ -177,7 +193,7 @@ public class DrawDXF_Drill_Point {
                                     float bucketX, float bucketY,
                                     double bucketEst, double bucketNord,
                                     float scala, double rotationAngle,
-                                    boolean txt, double size,float uiDeg) {
+                                    boolean txt, double size, float uiDeg) {
 
         if (point == null) return;
         if (point.getHeadX() == null || point.getHeadY() == null) return;
@@ -248,18 +264,31 @@ public class DrawDXF_Drill_Point {
             paint.setStrokeWidth(Math.max(1f, (float) (0.04 * scala)));
             canvas.drawPoint(headX, headY, paint);
             if (txt) {
-                canvas.rotate(-uiDeg,headX,headY);
+                canvas.rotate(-uiDeg, headX, headY);
                 float offX = 6f;
                 float offY = 6f;
                 String testo = point.getRowId() + "-" + point.getId();
-                if (point.getRowId() == null||point.getRowId().isEmpty()) {
+                if (point.getRowId() == null || point.getRowId().isEmpty()) {
                     testo = point.getId();
                 }
+                testo = switch (DataSaved.Drill_Text_Mode) {
+                    case 0 -> testo;
+                    case 1 -> testo + "\n" + point.getDescription();
+                    case 2 ->
+                            testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 3 ->
+                            testo + "\n" + point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 4 -> point.getDescription();
+                    case 5 ->
+                            point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    default -> "?";
+                };
                 paint.setTextSize(28);
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(MyColorClass.colorConstraint);
                 canvas.drawText(testo, headX + offX, headY - offY, paint);
-                canvas.rotate(uiDeg,headX,headY);
+                canvas.rotate(uiDeg, headX, headY);
             }
             return;
         }
@@ -284,18 +313,31 @@ public class DrawDXF_Drill_Point {
             }
 
             if (txt) {
-                canvas.rotate(-uiDeg,headX,headY);
+                canvas.rotate(-uiDeg, headX, headY);
                 float offX = 6f;
                 float offY = 6f;
                 String testo = point.getRowId() + "-" + point.getId();
-                if (point.getRowId() == null||point.getRowId().isEmpty()) {
+                if (point.getRowId() == null || point.getRowId().isEmpty()) {
                     testo = point.getId();
                 }
+                testo = switch (DataSaved.Drill_Text_Mode) {
+                    case 0 -> testo;
+                    case 1 -> testo + "\n" + point.getDescription();
+                    case 2 ->
+                            testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 3 ->
+                            testo + "\n" + point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 4 -> point.getDescription();
+                    case 5 ->
+                            point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    default -> "?";
+                };
                 paint.setTextSize(28);
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(MyColorClass.colorConstraint);
                 canvas.drawText(testo, headX + offX, headY - offY, paint);
-                canvas.rotate(uiDeg,headX,headY);
+                canvas.rotate(uiDeg, headX, headY);
             }
             return;
         }
@@ -388,15 +430,28 @@ public class DrawDXF_Drill_Point {
         float offX = 6f;
         float offY = 6f;
         String testo = point.getRowId() + "-" + point.getId();
-        if (point.getRowId() == null||point.getRowId().isEmpty()) {
+        if (point.getRowId() == null || point.getRowId().isEmpty()) {
             testo = point.getId();
         }
+        testo = switch (DataSaved.Drill_Text_Mode) {
+            case 0 -> testo;
+            case 1 -> testo + "\n" + point.getDescription();
+            case 2 ->
+                    testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+            case 3 ->
+                    testo + "\n" + point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+            case 4 -> point.getDescription();
+            case 5 ->
+                    point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+            case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+            default -> "?";
+        };
         paint.setTextSize(28);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(MyColorClass.colorConstraint);
-        canvas.rotate(-uiDeg,headX,headY);
+        canvas.rotate(-uiDeg, headX, headY);
         canvas.drawText(testo, headX + offX, headY - offY, paint);
-        canvas.rotate(uiDeg,headX,headY);
+        canvas.rotate(uiDeg, headX, headY);
 
 
         paint.setStrokeWidth(10f); // ripristino come fai tu altrove
@@ -424,27 +479,29 @@ public class DrawDXF_Drill_Point {
             return android.graphics.Color.argb(180, 40, 40, 40); // grigio scuro
         }
     }
-//Helpers nuovi
-private static boolean isAlignA(Point3D_Drill p) {
-    if (p == null) return false;
-    if (!DataSaved.isDefiningAB) return false;
 
-    String aKey = DataSaved.alignAId;
-    if (aKey == null || aKey.trim().isEmpty()) return false;
+    //Helpers nuovi
+    private static boolean isAlignA(Point3D_Drill p) {
+        if (p == null) return false;
+        if (!DataSaved.isDefiningAB) return false;
 
-    String pk = pointKey(p);
-    if (pk == null) return false;
+        String aKey = DataSaved.alignAId;
+        if (aKey == null || aKey.trim().isEmpty()) return false;
 
-    return pk.equalsIgnoreCase(aKey.trim());
-}
+        String pk = pointKey(p);
+        if (pk == null) return false;
+
+        return pk.equalsIgnoreCase(aKey.trim());
+    }
+
     private static String pointKey(Point3D_Drill p) {
         if (p == null) return null;
 
         String row = p.getRowId();
-        String id  = p.getId();
+        String id = p.getId();
 
         row = (row == null) ? null : row.trim();
-        id  = (id == null) ? null : id.trim();
+        id = (id == null) ? null : id.trim();
 
         if (id == null || id.isEmpty()) return null;
 
@@ -457,7 +514,7 @@ private static boolean isAlignA(Point3D_Drill p) {
 
     private static void drawRedRing(Canvas canvas, Paint paint, float cx, float cy, float radius, float scala) {
         // anello rosso visibile, scalato
-        float ringStroke = Math.max(2.5f, (float)(0.06 * scala));
+        float ringStroke = Math.max(2.5f, (float) (0.06 * scala));
 
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
