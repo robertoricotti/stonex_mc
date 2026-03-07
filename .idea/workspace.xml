@@ -550,13 +550,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 tentativo 5514">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/SpLocalization.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/SpLocalization.java" afterDir="false" />
-    </list>
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 tentativo 5514" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -794,14 +788,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00093" summary="4.1.0 pre drill routine">
-      <option name="closed" value="true" />
-      <created>1770309020540</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1770309020541</updated>
     </task>
     <task id="LOCAL-00094" summary="4.1.0 pre drill routine">
       <option name="closed" value="true" />
@@ -1187,7 +1173,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772805887917</updated>
     </task>
-    <option name="localTasksCounter" value="142" />
+    <task id="LOCAL-00142" summary="4.1.0 tentativo 5514">
+      <option name="closed" value="true" />
+      <created>1772825925289</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1772825925289</updated>
+    </task>
+    <option name="localTasksCounter" value="143" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
