@@ -29,6 +29,10 @@ import utils.MyData;
  * in UTM / Project CRS
  *********************************************/
 public class Deg2UTM {
+    private static final ProjCoordinate baseWgs = new ProjCoordinate();
+    private static final ProjCoordinate northWgs = new ProjCoordinate();
+    private static final ProjCoordinate baseProj = new ProjCoordinate();
+    private static final ProjCoordinate northProj = new ProjCoordinate();
 
     // buffer input WGS riusabile
     private static final ProjCoordinate inWgs = new ProjCoordinate();
@@ -188,7 +192,7 @@ public class Deg2UTM {
                     break;
 
                 case _UTM:
-                    NmeaListener.AGGIUNTA_HDT = 0;
+                    NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
 
                     Easting = 0.5 * Math.log((1 + Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)) / (1 - Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) * 0.9996 * 6399593.625 / Math.pow((1 + Math.pow(0.0820944379, 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)), 0.5) * (1 + Math.pow(0.0820944379, 2) / 2 * Math.pow((0.5 * Math.log((1 + Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)) / (1 - Math.cos(Lat * Math.PI / 180) * Math.sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)))), 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2) / 3) + 500000;
                     Northing = (Math.atan(Math.tan(Lat * Math.PI / 180) / Math.cos((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) - Lat * Math.PI / 180) * 0.9996 * 6399593.625 / Math.sqrt(1 + 0.006739496742 * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) * (1 + 0.006739496742 / 2 * Math.pow(0.5 * Math.log((1 + Math.cos(Lat * Math.PI / 180) * Math.sin((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) / (1 - Math.cos(Lat * Math.PI / 180) * Math.sin((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)))), 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) + 0.9996 * 6399593.625 * (Lat * Math.PI / 180 - 0.005054622556 * (Lat * Math.PI / 180 + Math.sin(2 * Lat * Math.PI / 180) / 2) + 4.258201531e-05 * (3 * (Lat * Math.PI / 180 + Math.sin(2 * Lat * Math.PI / 180) / 2) + Math.sin(2 * Lat * Math.PI / 180) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) / 4 - 1.674057895e-07 * (5 * (3 * (Lat * Math.PI / 180 + Math.sin(2 * Lat * Math.PI / 180) / 2) + Math.sin(2 * Lat * Math.PI / 180) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) / 4 + Math.sin(2 * Lat * Math.PI / 180) * Math.pow(Math.cos(Lat * Math.PI / 180), 2) * Math.pow(Math.cos(Lat * Math.PI / 180), 2)) / 3);
@@ -292,7 +296,7 @@ public class Deg2UTM {
                     break;
 
                 default:
-                    NmeaListener.AGGIUNTA_HDT = 0;
+                    NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
 
                     try {
                         double q = Z;
@@ -425,7 +429,7 @@ public class Deg2UTM {
 
                         // SOLO QUI: aggiunta heading dinamica per EPSG:5514
                         if ("5514".equals(crs)) {
-                            NmeaListener.AGGIUNTA_HDT = krovak5514HeadingDeltaDeg(Lat, Lon);
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
                         }
 
                     } catch (Exception e) {
@@ -442,7 +446,7 @@ public class Deg2UTM {
                         // fallback heading anche in caso di eccezione, solo per 5514
                         if ("5514".equals(crs)) {
                             try {
-                                NmeaListener.AGGIUNTA_HDT = krovak5514HeadingDeltaDeg(Lat, Lon);
+                                NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
                             } catch (Exception ignored) {
                                 NmeaListener.AGGIUNTA_HDT = 0;
                             }
@@ -472,28 +476,7 @@ public class Deg2UTM {
      *
      * 0 = nord, 90 = est
      */
-    private static double krovak5514HeadingDeltaDeg(double latDeg, double lonDeg) {
-        if (wgsToUtm == null) return 0.0;
 
-        final double epsDeg = 1e-5; // circa 1.1 m
-
-        // punto base
-        krovakBaseWgs.x = lonDeg;
-        krovakBaseWgs.y = latDeg;
-        krovakBaseWgs.z = 0.0;
-        wgsToUtm.transform(krovakBaseWgs, krovakBaseProj);
-
-        // punto leggermente più a nord vero
-        krovakNorthWgs.x = lonDeg;
-        krovakNorthWgs.y = latDeg + epsDeg;
-        krovakNorthWgs.z = 0.0;
-        wgsToUtm.transform(krovakNorthWgs, krovakNorthProj);
-
-        double dE = krovakNorthProj.x - krovakBaseProj.x;
-        double dN = krovakNorthProj.y - krovakBaseProj.y;
-
-        return Math.toDegrees(Math.atan2(dE, dN));
-    }
 
     private static char computeUtmLetter(double Lat) {
         char Letter;
@@ -544,5 +527,25 @@ public class Deg2UTM {
 
     private static int computeUtmZone(double Lon) {
         return (int) Math.floor(Lon / 6 + 31);
+    }
+    private static double gridHeadingDeltaDeg(double latDeg, double lonDeg) {
+
+        if (wgsToUtm == null) return 0.0;
+
+        final double epsDeg = 1e-5; // ~1 m
+
+        baseWgs.x = lonDeg;
+        baseWgs.y = latDeg;
+
+        northWgs.x = lonDeg;
+        northWgs.y = latDeg + epsDeg;
+
+        wgsToUtm.transform(baseWgs, baseProj);
+        wgsToUtm.transform(northWgs, northProj);
+
+        double dE = northProj.x - baseProj.x;
+        double dN = northProj.y - baseProj.y;
+
+        return Math.toDegrees(Math.atan2(dE, dN));
     }
 }

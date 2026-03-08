@@ -214,13 +214,9 @@ public class NmeaListener {
                                     } else {
                                         mch_Hdt = wrap360(Double.parseDouble(NmeaInput[1])+AGGIUNTA_HDT);
                                         mch_Orientation = mch_Hdt;
-
-
                                     }
 
-                                } catch (Exception e) {
-
-
+                                } catch (Exception ignored) {
                                 }
                                 if (DataSaved.portView < 2) {
                                     if (DataSaved.my_comPort == 1 || DataSaved.my_comPort == 2 || DataSaved.my_comPort == 3) {
@@ -424,7 +420,7 @@ public class NmeaListener {
             if (Double.isNaN(mch_Orientation)) {
                 mch_Hdt_1 = 999.999;
             } else {
-                mch_Hdt_1 = mch_Orientation;
+                mch_Hdt_1 = mch_Orientation+AGGIUNTA_HDT;
             }
             if (DataSaved.portView < 2) {
                 if (DataSaved.my_comPort == 0) {
@@ -668,33 +664,6 @@ public class NmeaListener {
 
         // offset "meccanico"
         return utcLdt.plusMinutes(offsetMinutes);
-    }
-
-
-    public static String formatDateTime(ZonedDateTime zdt, int formatType) {
-
-        if (zdt == null) return "";
-
-        DateTimeFormatter formatter;
-
-        switch (formatType) {
-
-            case 0:
-                // es: 18/02/2026 14:32:10
-                formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-                break;
-
-            case 1:
-                // es: 2026-02-18 14:32:10
-                formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                break;
-
-
-            default:
-                throw new IllegalArgumentException("Unknown formatType: " + formatType);
-        }
-
-        return zdt.format(formatter);
     }
 
     public static void initFromSystemTime() {
