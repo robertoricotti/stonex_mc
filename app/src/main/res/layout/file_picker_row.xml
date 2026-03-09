@@ -33,8 +33,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:gravity="center"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/txtcrs2"
             tools:text="1 MB" />
+        <TextView
+            android:id="@+id/txtcrs2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:buttonTint="@color/_____cancel_text"
+            android:gravity="center|left"
+            android:ems="20"
+            android:visibility="gone"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+
+            app:layout_constraintRight_toRightOf="parent" />
 
         <ImageView
             android:id="@+id/pointCk"

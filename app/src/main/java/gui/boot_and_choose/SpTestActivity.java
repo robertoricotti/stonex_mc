@@ -6,6 +6,14 @@ import static gui.MyApp.heposTransformer;
 import static packexcalib.gnss.CRS_Strings._150580;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
+import static services.UpdateValuesService.UTM;
+import static services.UpdateValuesService.WGS84;
+import static services.UpdateValuesService.crsFactory;
+import static services.UpdateValuesService.ctFactory;
+import static services.UpdateValuesService.result;
+import static services.UpdateValuesService.resultWgs;
+import static services.UpdateValuesService.utmToWgs;
+import static services.UpdateValuesService.wgsToUtm;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -450,7 +458,24 @@ public class SpTestActivity extends Activity {
                                 }
                             }
                             break;
+
                         }
+                        case "10002018":
+                            try {
+
+                                try {
+                                    myUTM = mycrsFactory.createFromParameters("cs2cs", "+proj=sterea +lat_0=52.156160556 +lon_0=5.387638889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +no_defs");
+                                } catch (InvalidValueException | UnknownAuthorityCodeException |
+                                         UnsupportedParameterException e) {
+                                    Log.e("NAPTRANS",Log.getStackTraceString(e));
+
+
+                                }
+                                mywgsToUtm = myctFactory.createTransform(myWGS84, myUTM);
+                                myutmToWgs = myctFactory.createTransform(myUTM, myWGS84);
+                            } catch (Exception e) {
+                            }
+                            break;
 
                         default: {
                             try {

@@ -314,7 +314,7 @@ public final class ProjectedLocLocalization implements LocalizationModel {
                                                                  double N,
                                                                  CoordinateTransform projToGeo,
                                                                  CoordinateTransform geoToProj) {
-        final double epsDeg = 1e-5;
+        final double epsDeg = 1e-4;
 
         ProjCoordinate p = new ProjCoordinate();
         ProjCoordinate g = new ProjCoordinate();

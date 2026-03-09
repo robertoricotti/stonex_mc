@@ -3570,7 +3570,7 @@ public class MyEpsgNumber {
     public final static int NETHERLANDS__OFFSHORE__ED50__TM_5_NE__23095 = 23095;
     public final static int NETHERLANDS__ONSHORE__AMERSFOORT__RD_NEW__28992 = 28992;
 
-    //public final static int RDNAPTRANS2018 = 28992;
+    public final static int RDNAPTRANS2018 = 10002018;
 
     public final static int NETHERLANDS__ONSHORE__AMERSFOORT__RD_OLD__28991 = 28991;
 

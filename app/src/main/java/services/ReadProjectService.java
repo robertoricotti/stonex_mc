@@ -377,6 +377,25 @@ public class ReadProjectService extends Service {
                             }
                         }
                         break;
+                        case "10002018":
+                            try {
+                                result = new ProjCoordinate();
+                                resultWgs = new ProjCoordinate();
+                                crsFactory = new CRSFactory();
+                                ctFactory = new CoordinateTransformFactory();
+                                WGS84 = crsFactory.createFromName("epsg:" + "4326");
+                                try {
+                                    UTM = crsFactory.createFromParameters("cs2cs", "+proj=sterea +lat_0=52.156160556 +lon_0=5.387638889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +no_defs");
+                                } catch (InvalidValueException | UnknownAuthorityCodeException |
+                                         UnsupportedParameterException e) {
+                                    Log.e("NAPTRANS",Log.getStackTraceString(e));
+
+                                }
+                                wgsToUtm = ctFactory.createTransform(WGS84, UTM);
+                                utmToWgs = ctFactory.createTransform(UTM, WGS84);
+                            } catch (Exception e) {
+                            }
+                            break;
 
                         default: {
                             try {
@@ -419,7 +438,7 @@ public class ReadProjectService extends Service {
                         }
                         wgsToUtm = ctFactory.createTransform(WGS84, UTM);
                         utmToWgs = ctFactory.createTransform(UTM, WGS84);
-                        model = LocalizationFactory.fromFile(new File(CRS_ESTERNO),wgsToUtm,utmToWgs);
+                        model = LocalizationFactory.fromFile(new File(CRS_ESTERNO), wgsToUtm, utmToWgs);
                     } catch (Exception e) {
                         Log.e("CRS_ESTERNO", Log.getStackTraceString(e));
                     }

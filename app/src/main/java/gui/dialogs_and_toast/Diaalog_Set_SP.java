@@ -3,14 +3,11 @@ package gui.dialogs_and_toast;
 import static gui.MyApp.geoidAll;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static services.CanSender.GNSS_MSG;
-import static utils.CanFileTransfer.sendFileViaCAN;
-import static utils.CanFileTransfer.sendFileViaSerial;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.util.Log;
@@ -42,11 +39,9 @@ import java.util.Collections;
 import java.util.List;
 
 import gui.MyApp;
-import gui.projects.Dialog_PRJ_Folder;
 import gui.projects.ProjectFileAdapter;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.LocalizationFactory;
-import packexcalib.gnss.LocalizationModel;
 import serial.SerialPortManager;
 import services.ReadProjectService;
 import services.UpdateValuesService;
@@ -57,9 +52,10 @@ import utils.MyDeviceManager;
 import utils.MyEpsgNumber;
 
 public class Diaalog_Set_SP {
+    private static final String ASSET_SP_ROOT = "sp_data";
     String mPath;
     List<ProjectFileAdapter.FileItem> arraySPOriginale = new ArrayList<>();
-   TextView geoidStatus;
+    TextView geoidStatus;
     CustomQwertyDialog customQwertyDialog;
     String mTesto;
     int perc = 0;
@@ -71,7 +67,7 @@ public class Diaalog_Set_SP {
     RecyclerView recyclerViewSP;
     ArrayList<ProjectFileAdapter.FileItem> arrayFiles, arraySP;
     EditText cercaSP;
-    ProjectFileAdapter spAdapter,remoteAdapter;
+    ProjectFileAdapter spAdapter, remoteAdapter;
     ProgressBar progressBar;
     boolean isUpdating = false;
     private Handler handler;
@@ -81,7 +77,6 @@ public class Diaalog_Set_SP {
     String selectedFolder;
     TextView inUso;
     private OnDialogDismissListener dismissListener;
-
 
 
     public interface OnDialogDismissListener {
@@ -103,7 +98,6 @@ public class Diaalog_Set_SP {
     public void show() {
 
 
-
         dialog.create();
         dialog.setContentView(R.layout.dialog_sp_folders);
         dialog.setCancelable(false);
@@ -120,7 +114,7 @@ public class Diaalog_Set_SP {
         });
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
-        customQwertyDialog = new CustomQwertyDialog(activity,null);
+        customQwertyDialog = new CustomQwertyDialog(activity, null);
         findView();
         init();
         onClick();
@@ -128,9 +122,9 @@ public class Diaalog_Set_SP {
 
     }
 
-    public void show(String mPath,ProjectFileAdapter remoteAdapter) {
-        this.mPath=mPath;
-        this.remoteAdapter=remoteAdapter;
+    public void show(String mPath, ProjectFileAdapter remoteAdapter) {
+        this.mPath = mPath;
+        this.remoteAdapter = remoteAdapter;
 
 
         dialog.create();
@@ -144,7 +138,7 @@ public class Diaalog_Set_SP {
         wlp.gravity = Gravity.CENTER;
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
-        customQwertyDialog = new CustomQwertyDialog(activity,null);
+        customQwertyDialog = new CustomQwertyDialog(activity, null);
         findView();
         init();
         onClick();
@@ -163,7 +157,7 @@ public class Diaalog_Set_SP {
         messaggio = dialog.findViewById(R.id.msg);
         spinner = dialog.findViewById(R.id.spinner);
         inUso = dialog.findViewById(R.id.tvSP);
-        geoidStatus=dialog.findViewById(R.id.geoidStatus);
+        geoidStatus = dialog.findViewById(R.id.geoidStatus);
 
 
     }
@@ -209,8 +203,8 @@ public class Diaalog_Set_SP {
 
             if (geoidAll == null || geoidAll.length == 0) {
                 new CustomToast(activity, "No Geoid Found").show_error();
-                MyData.push("geoidPath",null);
-                MyApp.GEOIDE_PATH=null;
+                MyData.push("geoidPath", null);
+                MyApp.GEOIDE_PATH = null;
 
                 return;
             }
@@ -228,19 +222,15 @@ public class Diaalog_Set_SP {
                     new CustomToast(activity, "Geoid: " + selectedItem).show_added();
 
                     if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
-                        MyData.push("geoidPath",null);
-                        MyApp.GEOIDE_PATH=null;
+                        MyData.push("geoidPath", null);
+                        MyApp.GEOIDE_PATH = null;
                     } else {
-                        MyData.push("geoidPath",selectedItem);
-                        MyApp.GEOIDE_PATH=selectedItem;
+                        MyData.push("geoidPath", selectedItem);
+                        MyApp.GEOIDE_PATH = selectedItem;
                     }
                 }
             });
         });
-
-
-
-
 
 
         cercaSP.setOnClickListener(view -> {
@@ -265,102 +255,63 @@ public class Diaalog_Set_SP {
                     try {
                         MyData.push("LastSP", selectedFileName);
                         inUso.setText(selectedFileName);
-                        String match=getCrsCodeFromFileName(selectedFileName);
+                        String match = getCrsCodeFromFileName(selectedFileName);
 
-                        MyData.push("CRS_ESTERNO", selectedFolder+"/"+selectedFileName);
-                        if(match!=null){
+                        MyData.push("CRS_ESTERNO", ASSET_SP_ROOT + "/" + selectedFolder + "/" + selectedFileName);
+                        if (match != null) {
 
-                            if(match.equals("UTM")){
+                            if (match.equals("UTM")) {
                                 //UTM autozone
 
                                 MyData.push("crs", "UTM");
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 try {
-                                    copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
+                                    copyFromAssetsToFile(activity, ASSET_SP_ROOT + "/" + selectedFolder + "/" + selectedFileName, new File(mPath, selectedFileName));
                                 } catch (Exception e) {
-                                    Log.e("testSP",Log.getStackTraceString(e));
+                                    Log.e("testSP", Log.getStackTraceString(e));
                                 }
 
                                 dialog.dismiss();
-                            }else if(match.equals("LOCAL")){
+                            } else if (match.equals("LOCAL")) {
                                 //LOCAL
-
                                 MyData.push("crs", "LOCAL");
                                 DataSaved.S_CRS = MyData.get_String("crs");
                                 try {
-                                    copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
+                                    copyFromAssetsToFile(activity, ASSET_SP_ROOT + "/" + selectedFolder + "/" + selectedFileName, new File(mPath, selectedFileName));
                                 } catch (Exception e) {
-                                    Log.e("testSP",Log.getStackTraceString(e));
+                                    Log.e("testSP", Log.getStackTraceString(e));
                                 }
-                               /* switch (DataSaved.my_comPort) {
-                                    case 0:
-                                        // Copia il file da assets a una directory accessibile
-                                        String filePath = copyAssetFileToTemp(folderPath, selectedFileName);
-                                        sendFileViaCAN(filePath, 0, 0x7DF, new CanFileTransfer.ProgressCallback() {
-                                            @Override
-                                            public void onProgressUpdate(int percentage) {
-                                                perc = percentage;
-                                            }
-                                        });
-                                        break;
-                                    case 1:
-                                    case 2:
-                                        //send via serial
-                                        String filePathS = copyAssetFileToTemp(folderPath, selectedFileName);
-                                        SerialPortManager.instance().sendCommand("SET,EXTERNAL.RECV_FILE,START\r\n");
-                                        Thread.sleep(500);
-                                        sendFileViaSerial(filePathS, new CanFileTransfer.ProgressCallback() {
-                                            @Override
-                                            public void onProgressUpdate(int percentage) {
-                                                perc = percentage;
-                                            }
-                                        });
-                                        break;
-                                    default:
-                                        Thread.sleep(500);
-
-                                        dialog.dismiss();
-                                        break;
-
-
-                                }*/
                                 dialog.dismiss();
                             } else {
-
                                 MyData.push("crs", match);
                                 DataSaved.S_CRS = MyData.get_String("crs");
-                                MyData.push("SECONDO_S_CRS",DataSaved.S_CRS);
-                                DataSaved.SECONDO_S_CRS=DataSaved.S_CRS;
                                 try {
-                                    copyFromAssetsToFile(activity, selectedFolder + "/" + selectedFileName, new File(mPath, selectedFileName));
+                                    copyFromAssetsToFile(activity, ASSET_SP_ROOT + "/" + selectedFolder + "/" + selectedFileName, new File(mPath, selectedFileName));
                                 } catch (Exception e) {
                                     Log.e("testSP", Log.getStackTraceString(e));
                                 }
                                 ReadProjectService.startCRS();
                                 dialog.dismiss();
                             }
-                        }else {
+                        } else {
 
                             //invia file SP
 
                             usaSP.setEnabled(false);
                             MyData.push("crs", ".SP FILE");
-
                             DataSaved.S_CRS = MyData.get_String("crs");
 
                             try {
-                                MyData.push("CRS_ESTERNO", selectedFolder+"/"+selectedFileName);
-                                copyFromAssetsToFile(activity,selectedFolder+"/"+selectedFileName,new File(mPath,selectedFileName));
+                                MyData.push("CRS_ESTERNO", ASSET_SP_ROOT + "/" + selectedFolder + "/" + selectedFileName);
+                                copyFromAssetsToFile(activity, ASSET_SP_ROOT + "/" + selectedFolder + "/" + selectedFileName, new File(mPath, selectedFileName));
                             } catch (Exception e) {
-                                Log.e("testSP",Log.getStackTraceString(e));
+                                Log.e("testSP", Log.getStackTraceString(e));
                             }
 
-                            ReadProjectService.model = LocalizationFactory.fromFile(new File(selectedFolder+"/"+selectedFileName),
-                                    UpdateValuesService.wgsToUtm,UpdateValuesService.utmToWgs);
+                            ReadProjectService.model = LocalizationFactory.fromFile(new File(ASSET_SP_ROOT + "/" + selectedFolder + "/" + selectedFileName),
+                                    UpdateValuesService.wgsToUtm, UpdateValuesService.utmToWgs);
                             usaSP.setEnabled(true);
                         }
-
-
 
 
                     } catch (Exception e) {
@@ -391,7 +342,7 @@ public class Diaalog_Set_SP {
 
         });
         dismiss.setOnClickListener(view -> {
-           // setupGNSS(DataSaved.S_CRS);
+            // setupGNSS(DataSaved.S_CRS);
 
             dialog.dismiss();
         });
@@ -417,7 +368,7 @@ public class Diaalog_Set_SP {
     private void sortFiles(String mPath) {
 
         AssetManager assetManager = activity.getApplicationContext().getAssets(); // Ottiene l'AssetManager
-        String folderPath = mPath; // Specifica la cartella all'interno di "assets" da cui vuoi leggere i file
+        String folderPath = ASSET_SP_ROOT + "/" + mPath;
 
         try {
             // Ottiene tutti i file all'interno della cartella specificata
@@ -431,7 +382,7 @@ public class Diaalog_Set_SP {
                     if (fileName.toLowerCase().endsWith(".sp")) {
                         // Aggiungi il file all'array con il parametro `isFolder` impostato su `false`
                         long fileSize = getFileSizeFromAssets(assetManager, folderPath + "/" + fileName);
-                        arraySP.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize,new File(fileName).getAbsolutePath()));
+                        arraySP.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize, new File(fileName).getAbsolutePath()));
                         arraySPOriginale.clear();
                         arraySPOriginale.addAll(arraySP);
                         spAdapter.notifyDataSetChanged();
@@ -467,23 +418,21 @@ public class Diaalog_Set_SP {
         List<String> cartelle = new ArrayList<>();
         AssetManager assetManager = activity.getApplicationContext().getAssets();
 
-
         try {
-            // Ottieni le directory principali all'interno di assets
-            String[] files = assetManager.list("");
+            String[] files = assetManager.list(ASSET_SP_ROOT);
 
             if (files != null) {
                 for (String file : files) {
-                    // Controlla se il file è una cartella
-                    if (isDirectory(assetManager, file) && file.equals(file.toUpperCase())) {
-                        cartelle.add(file); // Aggiungi solo le cartelle alla lista
+                    String fullPath = ASSET_SP_ROOT + "/" + file;
+                    if (isDirectory(assetManager, fullPath) && file.equals(file.toUpperCase())) {
+                        cartelle.add(file);
                     }
                 }
             }
         } catch (IOException e) {
             Log.e("MainActivity", "Errore durante la lettura delle cartelle da assets", e);
         }
-        // ✅ ORDINA IN ORDINE ALFABETICO
+
         Collections.sort(cartelle);
         return cartelle;
     }
@@ -518,7 +467,6 @@ public class Diaalog_Set_SP {
             }
         }
     }
-
 
 
     private void updateView() {
@@ -607,6 +555,7 @@ public class Diaalog_Set_SP {
         // Restituisce il percorso del file copiato
         return tempFile.getAbsolutePath();
     }
+
     public void copyFromAssetsToFile(Context context, String assetPath, File destinationFile) throws IOException {
         AssetManager assetManager = context.getAssets();
 
@@ -641,10 +590,6 @@ public class Diaalog_Set_SP {
     }
 
 
-
-
-
-
     private void setupGNSS(String crs) {
         byte speed = 0;
         switch (DataSaved.reqSpeed) {
@@ -664,9 +609,7 @@ public class Diaalog_Set_SP {
         }
 
 
-
-
-        MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
+        MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
         if (crs.equals(_NONE)) {
             //setup LLQ
 
@@ -695,14 +638,16 @@ public class Diaalog_Set_SP {
         }
 
     }
+
     public static String getCrsCodeFromFileName(String fileName) {
         if (fileName == null || !fileName.toLowerCase().endsWith(".sp")) {
             return null;
-        }else if (fileName.equals("UTM_AUTO_ZONE.SP")) {
+        } else if (fileName.equals("UTM_AUTO_ZONE.SP")) {
             return "UTM";
-        }else if (fileName.equals("LOCAL_COORDINATES_FROM_GNSS.SP")) {
+        } else if (fileName.equals("LOCAL_COORDINATES_FROM_GNSS.SP")) {
             return "LOCAL";
-        } {
+        }
+        {
 
             // Rimuove l'estensione .SP
             String methodName = fileName.substring(0, fileName.length() - 3);

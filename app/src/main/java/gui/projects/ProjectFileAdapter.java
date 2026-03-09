@@ -21,6 +21,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import packexcalib.exca.DataSaved;
+
 public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.ViewHolder> {
     private ArrayList<FileItem> files;
     private int selectedItem = -1;
@@ -69,6 +71,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
         ConstraintLayout constraintLayout = holder.panel;
         TextView textView = holder.nameTextView;
         TextView sizeTextView = holder.sizeTextView;
+        TextView txtcrs2=holder.txtcrs2;
         ImageView icon = holder.icon;
 
 
@@ -82,12 +85,18 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
             }
 
             sizeTextView.setText(formatSize(fileSize));
+            txtcrs2.setVisibility(View.GONE);
         } else {
             isFold = false;
             int lastIndex = nameFile.lastIndexOf(".");
             String fileExtension = nameFile.substring(lastIndex + 1).toLowerCase();
             icon.setImageResource(R.drawable.baseline_help_96);
-
+            if(fileExtension.equalsIgnoreCase("loc")){
+                txtcrs2.setVisibility(View.VISIBLE);
+                txtcrs2.setText("Origin: "+DataSaved.SECONDO_S_CRS);
+            }else {
+                txtcrs2.setVisibility(View.GONE);
+            }
             if (fileExtension.equalsIgnoreCase("pdf")) {
                 icon.setImageResource(R.drawable.document_pdf);
             } else if (fileExtension.equalsIgnoreCase("dxf")) {
@@ -145,6 +154,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
         public ConstraintLayout panel;
         public ImageView icon;
         public TextView sizeTextView;  // Aggiungi questo campo
+        public TextView txtcrs2;
 
         @SuppressLint("NotifyDataSetChanged")
         public ViewHolder(View itemView) {
@@ -153,6 +163,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
             nameTextView = itemView.findViewById(R.id.path_tv);
             panel = itemView.findViewById(R.id.panel);
             sizeTextView = itemView.findViewById(R.id.size_tv);
+            txtcrs2=itemView.findViewById(R.id.txtcrs2);
 
             icon.setOnClickListener((View v) -> {
                 if (selectedItem == getAdapterPosition()) {

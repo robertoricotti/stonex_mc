@@ -528,11 +528,12 @@ public class Deg2UTM {
     private static int computeUtmZone(double Lon) {
         return (int) Math.floor(Lon / 6 + 31);
     }
+
     private static double gridHeadingDeltaDeg(double latDeg, double lonDeg) {
 
         if (wgsToUtm == null) return 0.0;
 
-        final double epsDeg = 1e-5; // ~1 m
+        final double epsDeg = 1e-4; // ~11 m
 
         baseWgs.x = lonDeg;
         baseWgs.y = latDeg;

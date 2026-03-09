@@ -71,6 +71,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         ConstraintLayout constraintLayout = holder.panel;
         TextView textView = holder.nameTextView;
         TextView sizeTextView = holder.sizeTextView;
+        TextView txtcrs2=holder.txtcrs2;
         ImageView icon = holder.icon;
         CheckBox ckTrm = holder.ckTrm;
         CheckBox ckPoly = holder.ckPolyl;
@@ -84,6 +85,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             ckPoi.setVisibility(View.GONE);
             ckJson.setVisibility(View.GONE);
             sizeTextView.setVisibility(View.VISIBLE);
+            txtcrs2.setVisibility(View.GONE);
             icon.setImageResource(R.drawable.filled_f);
             sizeTextView.setText(formatSize(fileSize));
 
@@ -91,6 +93,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
 
             int lastIndex = nameFile.lastIndexOf(".");
             String fileExtension = nameFile.substring(lastIndex + 1).toLowerCase();
+            if(fileExtension.equalsIgnoreCase("loc")){
+                txtcrs2.setVisibility(View.VISIBLE);
+                txtcrs2.setText("Origin: "+DataSaved.SECONDO_S_CRS);
+            }else {
+                txtcrs2.setVisibility(View.GONE);
+            }
             if (DataSaved.isWL == EXCAVATOR ||
                     DataSaved.isWL == WHEELLOADER ||
                     DataSaved.isWL == DOZER_SIX ||
@@ -262,6 +270,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         public ConstraintLayout panel;
         public ImageView icon;
         public TextView sizeTextView;
+        public TextView txtcrs2;
 
         @SuppressLint("NotifyDataSetChanged")
         public ViewHolder(View itemView) {
@@ -274,6 +283,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             nameTextView = itemView.findViewById(R.id.path_tv);
             panel = itemView.findViewById(R.id.panel);
             sizeTextView = itemView.findViewById(R.id.size_tv);
+            txtcrs2=itemView.findViewById(R.id.txtcrs2);
+
             nameTextView.setOnClickListener((View v) -> {
                 if (selectedItem == -1) {
                     selectedItem = getAdapterPosition();
