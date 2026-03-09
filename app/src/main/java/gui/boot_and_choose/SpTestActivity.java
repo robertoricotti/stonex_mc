@@ -99,10 +99,6 @@ public class SpTestActivity extends Activity {
     private Button btnLoad, btnToLocal, btnToGeo, btn_Exit;
     int tempCom=0;
     int previousCom;
-    static final String _5514_param=
-            "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
-            "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 " +
-            "+units=m +no_defs";
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -132,7 +128,7 @@ public class SpTestActivity extends Activity {
         etEst.setText("");
         etNord.setText("");
         etZ.setText("");
-        btnToLocal.setText("→ Transform in Local (N, E ,Z)    origin:"+DataSaved.SECONDO_S_CRS);
+        btnToLocal.setText("→ Transform in Local (N, E ,Z");
 
         try {
 
@@ -460,22 +456,6 @@ public class SpTestActivity extends Activity {
                             break;
 
                         }
-                        case "10002018":
-                            try {
-
-                                try {
-                                    myUTM = mycrsFactory.createFromParameters("cs2cs", "+proj=sterea +lat_0=52.156160556 +lon_0=5.387638889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +no_defs");
-                                } catch (InvalidValueException | UnknownAuthorityCodeException |
-                                         UnsupportedParameterException e) {
-                                    Log.e("NAPTRANS",Log.getStackTraceString(e));
-
-
-                                }
-                                mywgsToUtm = myctFactory.createTransform(myWGS84, myUTM);
-                                myutmToWgs = myctFactory.createTransform(myUTM, myWGS84);
-                            } catch (Exception e) {
-                            }
-                            break;
 
                         default: {
                             try {

@@ -21,6 +21,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import gui.MyApp;
+import gui.dialogs_and_toast.Dialog_Set_Secondo_SP;
 import packexcalib.exca.DataSaved;
 
 public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.ViewHolder> {
@@ -28,7 +30,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
     private int selectedItem = -1;
     private boolean isFold = false;
     private boolean isCloudFolder=false;
-
+    private Dialog_Set_Secondo_SP dialogSetSecondoSp;
 
 
     private int filterType = 0; // 0 = tutti, 1 = solo cartelle, 2 = solo file
@@ -53,7 +55,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
         // Inflate the custom layout
         View contactView = inflater.inflate(R.layout.file_picker_row, parent, false);
-
+        dialogSetSecondoSp=new Dialog_Set_Secondo_SP(MyApp.visibleActivity);
         // Return a new holder instance
         return new ViewHolder(contactView);
     }
@@ -192,6 +194,11 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
                         new Dialog_PRJ_Folder(MyApp.visibleActivity).show(Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects/" + getSelectedFilePath());
                     }
                  */
+            });
+            txtcrs2.setOnClickListener(view -> {
+                if(!dialogSetSecondoSp.dialog.isShowing()){
+                    dialogSetSecondoSp.show();
+                }
             });
         }
     }

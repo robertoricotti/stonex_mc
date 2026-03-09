@@ -27,11 +27,14 @@ import com.example.stx_dig.R;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import gui.MyApp;
+import gui.dialogs_and_toast.Dialog_Set_Secondo_SP;
 import packexcalib.exca.DataSaved;
 import utils.MyData;
 
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHolder> {
     private ArrayList<FileItem> files;
+    private Dialog_Set_Secondo_SP dialogSetSecondoSp;
 
     // Variables to track the selected position for each checkbox type
     private int selectedCkTrmPosition = -1;
@@ -52,6 +55,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         contactView = inflater.inflate(R.layout.layer_picker_row, parent, false);
+        dialogSetSecondoSp=new Dialog_Set_Secondo_SP(MyApp.visibleActivity);
         return new ViewHolder(contactView);
     }
 
@@ -62,6 +66,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         String nameFile = fileItem.getName();
         boolean isFolder = fileItem.isFolder();
         long fileSize = fileItem.getSize();
+
 
         // Stringhe di confronto per selezionare automaticamente le checkbox
         String sTrm = DataSaved.progettoSelected;
@@ -96,6 +101,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             if(fileExtension.equalsIgnoreCase("loc")){
                 txtcrs2.setVisibility(View.VISIBLE);
                 txtcrs2.setText("Origin: "+DataSaved.SECONDO_S_CRS);
+
             }else {
                 txtcrs2.setVisibility(View.GONE);
             }
@@ -300,6 +306,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                     selectedItem = -1;
                 }
                 notifyDataSetChanged();
+            });
+
+            txtcrs2.setOnClickListener(view -> {
+                if(!dialogSetSecondoSp.dialog.isShowing()){
+                    dialogSetSecondoSp.show();
+                }
             });
         }
 

@@ -33,7 +33,7 @@ import packexcalib.exca.DataSaved;
  * Coordinate:
  * - proiezione SP -> grid E/N
  * - opzionale 4-parametri SP (Cx, Cy, Ca, Ck, Orgx, Orgy)
- * - opzionale height fitting
+ * - opzionale height fitting con origine x0/y0
  *
  * Heading:
  * - su indicazione SurPad, Ca è l'angolo da applicare direttamente all'HDT
@@ -62,9 +62,10 @@ public final class SpLocalization implements LocalizationModel {
     // Height fitting
     private final boolean useHF;
     private final double a0, a1, a2, a3, a4, a5;
+    private final double hfX0, hfY0;
 
     // buffer riusabili
-    private final ThreadLocal<ProjCoordinate> tlGeo  = ThreadLocal.withInitial(ProjCoordinate::new);
+    private final ThreadLocal<ProjCoordinate> tlGeo = ThreadLocal.withInitial(ProjCoordinate::new);
     private final ThreadLocal<ProjCoordinate> tlProj = ThreadLocal.withInitial(ProjCoordinate::new);
 
     private SpLocalization(CoordinateTransform geoToProj,
@@ -73,7 +74,8 @@ public final class SpLocalization implements LocalizationModel {
                            double Cx, double Cy, double CaRad, double Ck, double Orgx, double Orgy,
                            double headingDeltaDeg,
                            boolean useHF,
-                           double a0, double a1, double a2, double a3, double a4, double a5) {
+                           double a0, double a1, double a2, double a3, double a4, double a5,
+                           double hfX0, double hfY0) {
 
         this.geoToProj = geoToProj;
         this.projToGeo = projToGeo;
@@ -98,6 +100,8 @@ public final class SpLocalization implements LocalizationModel {
         this.a3 = a3;
         this.a4 = a4;
         this.a5 = a5;
+        this.hfX0 = hfX0; // origine Nord del polinomio quota
+        this.hfY0 = hfY0; // origine Est del polinomio quota
     }
 
     // ---------------------------------------------------------------------
@@ -120,8 +124,14 @@ public final class SpLocalization implements LocalizationModel {
             throw new IllegalArgumentException("SP non valido: root mancante");
         }
 
+        // In alcuni file la root è HEAD e i nodi utili stanno sotto CoordinateSystem.
+        Element cs = (Element) head.getElementsByTagName("CoordinateSystem").item(0);
+        if (cs == null) {
+            cs = head;
+        }
+
         // ------------------ Proiezione ------------------
-        Element proj = (Element) head.getElementsByTagName("CoordinateSystem_ProjectParameter").item(0);
+        Element proj = (Element) cs.getElementsByTagName("CoordinateSystem_ProjectParameter").item(0);
         if (proj == null) {
             throw new IllegalArgumentException("SP non valido: manca CoordinateSystem_ProjectParameter");
         }
@@ -147,16 +157,16 @@ public final class SpLocalization implements LocalizationModel {
         }
 
         double refLatRaw = d(txt(proj, "ReferenceLatitude", "0"));
-        double par1Raw   = d(txt(proj, "Parallel1", "0"));
-        double par2Raw   = d(txt(proj, "Parallel2", "0"));
-        double lat0deg   = radOrDegToDeg(refLatRaw);
-        double lat1deg   = radOrDegToDeg(par1Raw);
-        double lat2deg   = radOrDegToDeg(par2Raw);
+        double par1Raw = d(txt(proj, "Parallel1", "0"));
+        double par2Raw = d(txt(proj, "Parallel2", "0"));
+        double lat0deg = radOrDegToDeg(refLatRaw);
+        double lat1deg = radOrDegToDeg(par1Raw);
+        double lat2deg = radOrDegToDeg(par2Raw);
 
         double azRaw = d(txt(proj, "Azimuth", "0"));
         double azDeg = radOrDegToDeg(azRaw);
 
-        Element ell = (Element) head.getElementsByTagName("CoordinateSystem_EllipsoidParameter").item(0);
+        Element ell = (Element) cs.getElementsByTagName("CoordinateSystem_EllipsoidParameter").item(0);
         String ellName = ell != null ? txt(ell, "Name", "WGS 84") : "WGS 84";
         String ellUp = ellName.toUpperCase(Locale.ROOT);
         String ellps = (ellUp.contains("GRS80") || ellUp.contains("GRS 80")) ? "GRS80" : "WGS84";
@@ -211,7 +221,7 @@ public final class SpLocalization implements LocalizationModel {
         CoordinateTransform projToGeo = CT_FACTORY.createTransform(projected, wgs84);
 
         // ------------------ 4 parametri ------------------
-        Element four = (Element) head.getElementsByTagName("CoordinateSystem_FourParameter").item(0);
+        Element four = (Element) cs.getElementsByTagName("CoordinateSystem_FourParameter").item(0);
 
         boolean use4 = false;
         double Cx = 0, Cy = 0, CaRaw = 0, Ck = 1, Orgx = 0, Orgy = 0;
@@ -233,13 +243,14 @@ public final class SpLocalization implements LocalizationModel {
 
         // SurPad: Ca da convertire in gradi e sommare direttamente all'HDT
         double headingDeltaDeg = use4 ? Math.toDegrees(CaRad) : 0.0;
-        DataSaved.DELTA_HDT_SMC=headingDeltaDeg;
+        DataSaved.DELTA_HDT_SMC = headingDeltaDeg;
 
         // ------------------ Height fitting ------------------
-        Element hf = (Element) head.getElementsByTagName("CoordinateSystem_HeightFittingParameter").item(0);
+        Element hf = (Element) cs.getElementsByTagName("CoordinateSystem_HeightFittingParameter").item(0);
 
         boolean useHF = false;
         double a0 = 0, a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0;
+        double hfX0 = 0, hfY0 = 0;
 
         if (hf != null) {
             useHF = isTrue(txt(hf, "Use", "0"));
@@ -249,13 +260,15 @@ public final class SpLocalization implements LocalizationModel {
             a3 = d(txt(hf, "a3", "0"));
             a4 = d(txt(hf, "a4", "0"));
             a5 = d(txt(hf, "a5", "0"));
+            hfX0 = d(txt(hf, "x0", "0"));
+            hfY0 = d(txt(hf, "y0", "0"));
         }
 
         return new SpLocalization(
                 geoToProj, projToGeo,
                 use4, Cx, Cy, CaRad, Ck, Orgx, Orgy,
                 headingDeltaDeg,
-                useHF, a0, a1, a2, a3, a4, a5
+                useHF, a0, a1, a2, a3, a4, a5, hfX0, hfY0
         );
     }
 
@@ -279,9 +292,9 @@ public final class SpLocalization implements LocalizationModel {
             double dE = E - Orgy;
             double dN = N - Orgx;
 
-            // Applico la rotazione/similarità così come definita dal file SP
-            double Ep = dE * cosA - dN * sinA;
-            double Np = dE * sinA + dN * cosA;
+            // Formula corretta per il file SP
+            double Ep = dE * cosA + dN * sinA;
+            double Np = -dE * sinA + dN * cosA;
 
             E = (Orgy + Cy) + Ck * Ep;
             N = (Orgx + Cx) + Ck * Np;
@@ -289,8 +302,9 @@ public final class SpLocalization implements LocalizationModel {
 
         double Zloc = hEll;
         if (useHF) {
-            double dx = N - (Orgx + Cx);
-            double dy = E - (Orgy + Cy);
+            // Height fitting riferito a x0/y0 del file, non a Orgx+Cx / Orgy+Cy
+            double dx = N - hfX0; // north
+            double dy = E - hfY0; // east
             double dh = a0 + a1 * dx + a2 * dy + a3 * dx * dx + a4 * dy * dy + a5 * dx * dy;
             Zloc = hEll - dh;
         }
@@ -311,8 +325,8 @@ public final class SpLocalization implements LocalizationModel {
         // 1) inverso height fitting
         double hEll = Zloc;
         if (useHF) {
-            double dx = n - (Orgx + Cx);
-            double dy = e - (Orgy + Cy);
+            double dx = n - hfX0; // north
+            double dy = e - hfY0; // east
             double dh = a0 + a1 * dx + a2 * dy + a3 * dx * dx + a4 * dy * dy + a5 * dx * dy;
             hEll = Zloc + dh;
         }
@@ -322,8 +336,9 @@ public final class SpLocalization implements LocalizationModel {
             double dE = (e - (Orgy + Cy)) / Ck;
             double dN = (n - (Orgx + Cx)) / Ck;
 
-            double Ei = dE * cosA + dN * sinA;
-            double Ni = -dE * sinA + dN * cosA;
+            // inversa coerente della formula forward
+            double Ei = dE * cosA - dN * sinA;
+            double Ni = dE * sinA + dN * cosA;
 
             e = Orgy + Ei;
             n = Orgx + Ni;
@@ -363,6 +378,18 @@ public final class SpLocalization implements LocalizationModel {
         return use4;
     }
 
+    public boolean isUsingHeightFitting() {
+        return useHF;
+    }
+
+    public double getHfX0() {
+        return hfX0;
+    }
+
+    public double getHfY0() {
+        return hfY0;
+    }
+
     // ---------------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------------
@@ -372,8 +399,12 @@ public final class SpLocalization implements LocalizationModel {
         if (s.isEmpty()) return 0.0;
         s = s.replace(',', '.');
 
-        double v = Double.parseDouble(s);
-        return Double.isFinite(v) ? v : 0.0;
+        try {
+            double v = Double.parseDouble(s);
+            return Double.isFinite(v) ? v : 0.0;
+        } catch (Throwable t) {
+            return 0.0;
+        }
     }
 
     private static String txt(Element p, String tag, String def) {
