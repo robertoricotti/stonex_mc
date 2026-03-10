@@ -602,19 +602,56 @@ public class My_Benna {
             PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, scale);
             PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, scale);
 
-        } else {
-            //tilt
+        } else if (!DataSaved.isTiltRotator) {
+            // tilt normale - lascia il tuo codice attuale
             altezza = DataSaved.L_Bucket - (DataSaved.piccolaBucket * 0.95) - DataSaved.L_Tilt;
             altezzaAttacco = (float) (altezza * scale);
-            //raggioPivot= (float) (DataSaved.L_Tilt*0.15f*scale);
+
             pmB = Exca_Quaternion.endPoint(ExcavatorLib.bucketCoord, correctWTilt + 180, correctTilt, DataSaved.piccolaBucket * 0.9, mhdt + yawSensor);
             pmA = Exca_Quaternion.endPoint(pmB, correctWTilt + 180 - (DataSaved.flat * 0.5), correctTilt, altezza, mhdt + yawSensor);
-            paFront = (coordPivoTilt);
+
+            paFront = coordPivoTilt;
             paBack = Exca_Quaternion.endPoint(coordPivoTilt, ExcavatorLib.correctDeltaAngle + 90, Deg_Boom_Roll, larghezza_attacco * 0.5, mhdt);
             paFrontFront = Exca_Quaternion.endPoint(coordPivoTilt, ExcavatorLib.correctDeltaAngle + 90 + 180, Deg_Boom_Roll, larghezza_attacco * 0.5, mhdt);
+
             pmAH = coordST;
-            pmBH = Exca_Quaternion.endPoint(coordST, ExcavatorLib.correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, mhdt);//Exca_Quaternion.endPoint(pmAH,ExcavatorLib.correctDeltaAngle,Deg_Boom_Roll,altezza,mhdt);
+            pmBH = Exca_Quaternion.endPoint(coordST, ExcavatorLib.correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, mhdt);
+
             raggioPivot = (float) (DistToPoint.dist3D(pmA, pmBH) * scale);
+
+            PBASE = pTransform(pmB, DataSaved.glL_AnchorView, scale);
+            PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, scale);
+            P_A_Front = pTransform(paFront, DataSaved.glL_AnchorView, scale);
+            P_A_Back = pTransform(paBack, DataSaved.glL_AnchorView, scale);
+            P_A_FF = pTransform(paFrontFront, DataSaved.glL_AnchorView, scale);
+            PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, scale);
+            PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, scale);
+
+        } else {
+            // TILT ROTATOR
+            BucketFrame f = buildBucketFrameRototilt();
+
+            altezza = DataSaved.L_Bucket - (DataSaved.piccolaBucket * 0.95) - DataSaved.L_Tilt;
+            altezzaAttacco = (float) (altezza * scale);
+
+            double depthBack = DataSaved.piccolaBucket * 0.9;
+
+            // retro benna e parte alta, coerenti col frame locale
+            pmB = f.point(0.0, depthBack, 0.0);
+            pmA = f.point(0.0, depthBack, altezza);
+
+            // attacco sul pivot rototilt
+            paFront = coordPivoTilt;
+            paBack = add(coordPivoTilt, scale3(f.R, larghezza_attacco * 0.5));
+            paFrontFront = add(coordPivoTilt, scale3(f.R, -larghezza_attacco * 0.5));
+
+            // parte alta stick/tilt
+            pmAH = coordST;
+            pmBH = coordPivoTilt;
+
+            // raggio pivot stabile e rigido
+            raggioPivot = (float) (DistToPoint.dist3D(pmA, pmBH) * scale);
+
             PBASE = pTransform(pmB, DataSaved.glL_AnchorView, scale);
             PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, scale);
             P_A_Front = pTransform(paFront, DataSaved.glL_AnchorView, scale);
@@ -743,13 +780,10 @@ public class My_Benna {
 
     //costruzione frame locale
     private static BucketFrame buildBucketFrameRototilt() {
-        // centro tagliente come media dei due spigoli
         double[] O = scale3(add(bucketLeftCoord, bucketRightCoord), 0.5);
 
-        // asse laterale reale
         double[] R = normalize(sub(bucketRightCoord, bucketLeftCoord));
 
-        // asse verso il retro/pivot
         double[] backRaw = sub(coordPivoTilt, O);
         double[] B = projectOnPlane(backRaw, R);
         B = normalize(B);
@@ -760,16 +794,16 @@ public class My_Benna {
             B = normalize(B);
         }
 
-        // asse alto
-        double[] U = normalize(cross(R, B));
+        // QUI invertiamo la mano della terna
+        double[] U = normalize(cross(B, R));
 
         if (norm(U) < 1e-6) {
             U = new double[]{0.0, 0.0, 1.0};
         }
 
-        // ripulitura ortonormale finale
-        B = normalize(cross(U, R));
-        U = normalize(cross(R, B));
+        // ripulitura coerente con la nuova mano
+        B = normalize(cross(R, U));
+        U = normalize(cross(B, R));
 
         return new BucketFrame(O, R, B, U);
     }
