@@ -2,6 +2,7 @@ package packexcalib.exca;
 
 
 import static packexcalib.exca.DataSaved.L_Bucket;
+import static packexcalib.exca.DataSaved.isTiltRotator;
 import static packexcalib.exca.DataSaved.piccolaBucket;
 import static packexcalib.exca.DataSaved.puntiProfilo;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
@@ -168,15 +169,164 @@ public class ExcavatorLib {
                             bucketCoord = Exca_Quaternion.endPoint(coordST, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket, hdt_BOOM);
                             bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90);
                             bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270);
+
                         } else {
 
-                            yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(correctTilt - Deg_Boom_Roll, correctBucket, piccolaBucket, L_Bucket);
-                            yawSensor += Sensors_Decoder.Deg_Roto;
-                            yawSensor = MyMCUtils.wrap(yawSensor);
-                            coordPivoTilt = Exca_Quaternion.endPoint(coordST, correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, hdt_BOOM);
-                            bucketCoord = Exca_Quaternion.endPoint(coordPivoTilt, correctWTilt, correctTilt, DataSaved.piccolaBucket, hdt_BOOM + yawSensor);
-                            bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90 + yawSensor);
-                            bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, correctTilt, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270 + yawSensor);
+                            if (!isTiltRotator) {
+
+                                yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(
+                                        correctTilt - Deg_Boom_Roll,
+                                        correctBucket,
+                                        piccolaBucket,
+                                        L_Bucket
+                                );
+                                yawSensor = MyMCUtils.wrap(yawSensor);
+
+                                coordPivoTilt = Exca_Quaternion.endPoint(
+                                        coordST,
+                                        correctDeltaAngle,
+                                        Deg_Boom_Roll,
+                                        DataSaved.L_Tilt,
+                                        hdt_BOOM
+                                );
+
+                                bucketCoord = Exca_Quaternion.endPoint(
+                                        coordPivoTilt,
+                                        correctWTilt,
+                                        correctTilt,
+                                        DataSaved.piccolaBucket,
+                                        hdt_BOOM + yawSensor
+                                );
+
+                                bucketRightCoord = Exca_Quaternion.endPoint(
+                                        bucketCoord,
+                                        -correctTilt,
+                                        0,
+                                        DataSaved.W_Bucket * 0.5d,
+                                        hdt_BOOM + 90 + yawSensor
+                                );
+
+                                bucketLeftCoord = Exca_Quaternion.endPoint(
+                                        bucketCoord,
+                                        correctTilt,
+                                        0,
+                                        DataSaved.W_Bucket * 0.5d,
+                                        hdt_BOOM + 270 + yawSensor
+                                );
+
+                            }
+                            else {
+
+                                // =========================================
+                                // ROTOTILT - cinematica reale a frame rigido
+                                // =========================================
+
+                                // 1) Pivot tilt: sta sopra il roto, quindi rimane così
+                                coordPivoTilt = Exca_Quaternion.endPoint(
+                                        coordST,
+                                        correctDeltaAngle,
+                                        Deg_Boom_Roll,
+                                        DataSaved.L_Tilt,
+                                        hdt_BOOM
+                                );
+
+                                // -------------------------------------------------
+                                // 2) Frame base al pivot, coerente col tuo sistema
+                                // -------------------------------------------------
+                                org.apache.commons.math3.complex.Quaternion qBase = Exca_Quaternion.getOrientationQuaternion(
+                                        correctDeltaAngle,
+                                        Deg_Boom_Roll,
+                                        hdt_BOOM
+                                );
+
+                                // Assi locali base del gruppo sotto il pivot
+                                // +Y = asse longitudinale della tua endPoint
+                                double[] forward = normalize(Exca_Quaternion.rotateVector(qBase, 0, 1, 0));
+                                double[] right   = normalize(Exca_Quaternion.rotateVector(qBase, 1, 0, 0));
+                                double[] up      = normalize(Exca_Quaternion.rotateVector(qBase, 0, 0, 1));
+
+                                // -------------------------------------------------
+                                // 3) ROTO: attorno all'asse utensile locale
+                                // -------------------------------------------------
+                                double rotoDeg = MyMCUtils.wrap(Sensors_Decoder.Deg_Roto);
+
+                                right = rotateAroundAxis(right, forward, rotoDeg);
+                                up    = rotateAroundAxis(up, forward, rotoDeg);
+
+                                // ripulitura ortogonale
+                                right = normalize(right);
+                                up = normalize(cross(right, forward));
+                                right = normalize(cross(forward, up));
+
+                                // -------------------------------------------------
+                                // 4) TILT reale del gruppo
+                                // -------------------------------------------------
+                                // Questo è il tilt relativo vero: stessa logica che già usavi
+                                double tiltRel = correctTilt - Deg_Boom_Roll;
+
+                                forward = rotateAroundAxis(forward, right, tiltRel);
+                                up      = rotateAroundAxis(up, right, tiltRel);
+
+                                // ripulitura
+                                forward = normalize(forward);
+                                up = normalize(cross(right, forward));
+                                right = normalize(cross(forward, up));
+
+                                // -------------------------------------------------
+                                // 5) CURL reale benna
+                                // -------------------------------------------------
+                                // Molto importante:
+                                // usiamo la differenza tra asse bucket e asse pivot-tilt
+                                // come rotazione relativa del giunto benna sotto il pivot
+                                double curlRel = MyMCUtils.wrap(correctWTilt - correctDeltaAngle);
+
+                                forward = rotateAroundAxis(forward, right, curlRel);
+                                up      = rotateAroundAxis(up, right, curlRel);
+
+                                // ripulitura finale terna
+                                forward = normalize(forward);
+                                up = normalize(cross(right, forward));
+                                right = normalize(cross(forward, up));
+
+                                // -------------------------------------------------
+                                // 6) Punti veri della benna dallo stesso corpo rigido
+                                // -------------------------------------------------
+                                bucketCoord = add(coordPivoTilt, scale(forward, DataSaved.piccolaBucket));
+
+                                double halfW = DataSaved.W_Bucket * 0.5d;
+                                bucketRightCoord = add(bucketCoord, scale(right, halfW));
+                                bucketLeftCoord  = add(bucketCoord, scale(right, -halfW));
+
+                                // -------------------------------------------------
+                                // 7) yawSensor NON guida più la geometria rototilt
+                                // -------------------------------------------------
+                                yawSensor = 0;
+
+                                // -------------------------------------------------
+                                // 8) Debug quote: questo ti dirà subito se siamo giusti
+                                // -------------------------------------------------
+    /*
+    double distPivotCenter = DistToPoint.dist3D(coordPivoTilt, bucketCoord);
+    double distLeftRight = DistToPoint.dist3D(bucketLeftCoord, bucketRightCoord);
+
+    Log.d("ROTOTILT_KIN", "rotoDeg=" + rotoDeg
+            + " tiltRel=" + tiltRel
+            + " curlRel=" + curlRel);
+
+    Log.d("ROTOTILT_KIN", "pivotCenter=" + distPivotCenter
+            + " expected=" + DataSaved.piccolaBucket);
+
+    Log.d("ROTOTILT_KIN", "leftRight=" + distLeftRight
+            + " expected=" + DataSaved.W_Bucket);
+
+    Log.d("ROTOTILT_KIN", "pivot=[" + coordPivoTilt[0] + "," + coordPivoTilt[1] + "," + coordPivoTilt[2] + "]");
+    Log.d("ROTOTILT_KIN", "center=[" + bucketCoord[0] + "," + bucketCoord[1] + "," + bucketCoord[2] + "]");
+    Log.d("ROTOTILT_KIN", "left=[" + bucketLeftCoord[0] + "," + bucketLeftCoord[1] + "," + bucketLeftCoord[2] + "]");
+    Log.d("ROTOTILT_KIN", "right=[" + bucketRightCoord[0] + "," + bucketRightCoord[1] + "," + bucketRightCoord[2] + "]");
+    */
+                            }
+
+
                         }
 
 
@@ -579,7 +729,58 @@ public class ExcavatorLib {
         return out * Double.compare(sideC, 0);
 
 
+
+
+
     }
 
 
+    //utility
+
+    private static double[] add(double[] a, double[] b) {
+        return new double[]{a[0] + b[0], a[1] + b[1], a[2] + b[2]};
+    }
+
+    private static double[] sub(double[] a, double[] b) {
+        return new double[]{a[0] - b[0], a[1] - b[1], a[2] - b[2]};
+    }
+
+    private static double[] scale(double[] v, double s) {
+        return new double[]{v[0] * s, v[1] * s, v[2] * s};
+    }
+
+    private static double norm(double[] v) {
+        return Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+    }
+
+    private static double[] normalize(double[] v) {
+        double n = norm(v);
+        if (n < 1e-9) return new double[]{0,0,0};
+        return new double[]{v[0]/n, v[1]/n, v[2]/n};
+    }
+
+    private static double[] cross(double[] a, double[] b) {
+        return new double[]{
+                a[1]*b[2] - a[2]*b[1],
+                a[2]*b[0] - a[0]*b[2],
+                a[0]*b[1] - a[1]*b[0]
+        };
+    }
+    private static org.apache.commons.math3.complex.Quaternion axisAngleQuaternion(double[] axis, double angleDeg) {
+        double[] ax = normalize(axis);
+        double half = Math.toRadians(angleDeg) * 0.5;
+        double s = Math.sin(half);
+
+        return new org.apache.commons.math3.complex.Quaternion(
+                Math.cos(half),
+                ax[0] * s,
+                ax[1] * s,
+                ax[2] * s
+        );
+    }
+
+    private static double[] rotateAroundAxis(double[] v, double[] axis, double angleDeg) {
+        org.apache.commons.math3.complex.Quaternion q = axisAngleQuaternion(axis, angleDeg);
+        return normalize(Exca_Quaternion.rotateVector(q, v[0], v[1], v[2]));
+    }
 }

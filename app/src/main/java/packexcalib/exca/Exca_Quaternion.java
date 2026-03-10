@@ -38,4 +38,40 @@ public class Exca_Quaternion {
 
         return new double[]{endX, endY, endZ};
     }
+
+
+    public static Quaternion getOrientationQuaternion(double pitch, double roll, double hdt) {
+        double pitchRadians = Math.toRadians(roll);
+        double rollRadians = Math.toRadians(pitch);
+        double yawRadians = Math.toRadians(-hdt);
+
+        return new Quaternion(
+                Math.cos(yawRadians / 2) * Math.cos(pitchRadians / 2) * Math.cos(rollRadians / 2)
+                        + Math.sin(yawRadians / 2) * Math.sin(pitchRadians / 2) * Math.sin(rollRadians / 2),
+
+                Math.cos(yawRadians / 2) * Math.cos(pitchRadians / 2) * Math.sin(rollRadians / 2)
+                        - Math.sin(yawRadians / 2) * Math.sin(pitchRadians / 2) * Math.cos(rollRadians / 2),
+
+                Math.cos(yawRadians / 2) * Math.sin(pitchRadians / 2) * Math.cos(rollRadians / 2)
+                        + Math.sin(yawRadians / 2) * Math.cos(pitchRadians / 2) * Math.sin(rollRadians / 2),
+
+                Math.sin(yawRadians / 2) * Math.cos(pitchRadians / 2) * Math.cos(rollRadians / 2)
+                        - Math.cos(yawRadians / 2) * Math.sin(pitchRadians / 2) * Math.sin(rollRadians / 2)
+        );
+    }
+
+    public static double[] rotateVector(Quaternion q, double x, double y, double z) {
+        Quaternion v = new Quaternion(0, x, y, z);
+        Quaternion r = q.multiply(v).multiply(q.getConjugate());
+        return new double[]{r.getQ1(), r.getQ2(), r.getQ3()};
+    }
+
+    public static double[] endPoint_2(double[] startXYZ, double pitch, double roll, double len, double hdt) {
+        double[] dir = rotateVector(getOrientationQuaternion(pitch, roll, hdt), 0, len, 0);
+        return new double[]{
+                startXYZ[0] + dir[0],
+                startXYZ[1] + dir[1],
+                startXYZ[2] + dir[2]
+        };
+    }
 }
