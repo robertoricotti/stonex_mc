@@ -37,12 +37,6 @@ public class Deg2UTM {
     // buffer input WGS riusabile
     private static final ProjCoordinate inWgs = new ProjCoordinate();
 
-    // buffer riusabili per heading delta Krovak 5514
-    private static final ProjCoordinate krovakBaseWgs = new ProjCoordinate();
-    private static final ProjCoordinate krovakNorthWgs = new ProjCoordinate();
-    private static final ProjCoordinate krovakBaseProj = new ProjCoordinate();
-    private static final ProjCoordinate krovakNorthProj = new ProjCoordinate();
-
     // ====== lettori geoide (cache condivisa per tutte le istanze) ======
     private static GeoideInterpolation UGF_READER;
     private static String UGF_PATH_LOADED;
@@ -296,9 +290,10 @@ public class Deg2UTM {
                     break;
 
                 default:
-                    NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
+
 
                     try {
+
                         double q = Z;
 
                         final String path = MyApp.GEOIDE_PATH;
@@ -388,37 +383,75 @@ public class Deg2UTM {
                         }
 
                         if (crs.equals("150580") && heposTransformer != null) {
-
+                            NmeaListener.AGGIUNTA_HDT = GridShiftTransformer.getAggiuntaHDT();
                             shifted = heposTransformer.transform(Lat, Lon, q);
                             Easting = shifted.x;
                             Northing = shifted.y + 2000000;
                             Quota = shifted.z;
 
                         } else if (crs.equals("150581") && cz_Q1 != null) {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
                             if (wgsToUtm != null && result != null) {
                                 inWgs.x = Lon;
                                 inWgs.y = Lat;
                                 inWgs.z = q;
                                 wgsToUtm.transform(inWgs, result);
-                                cz_Q1.applyInPlace(result);
-                                Easting = result.x;
-                                Northing = result.y;
+
+                                // Base 5514:
+                                // result.x ~ -500000
+                                // result.y ~ -1088000
+                                //
+                                // Q1 vuole coordinate positive:
+                                double gx = -result.x;
+                                double gy = -result.y;
+
+                                double[] dbg = cz_Q1.debugShift(gx, gy);
+                                if (!Double.isNaN(dbg[0]) && !Double.isNaN(dbg[1])) {
+                                    // Dalle prove reali su SJTSK_FERRO_NO_V1710_GRID:
+                                    // il contributo corretto è dbg[1] (dY interpolato)
+                                    gx = gx - dbg[1];
+                                    gy = gy + dbg[1];
+                                }
+
+                                // ritorno alla convenzione runtime dell'app
+                                Easting = -gx;
+                                Northing = -gy;
                                 Quota = q;
                             }
 
-                        } else if (crs.equals("150582") && cz_Q3 != null) {
+                        } else if (crs.equals("150582") && cz_Q1 != null) {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
                             if (wgsToUtm != null && result != null) {
                                 inWgs.x = Lon;
                                 inWgs.y = Lat;
                                 inWgs.z = q;
                                 wgsToUtm.transform(inWgs, result);
-                                cz_Q3.applyInPlace(result);
-                                Easting = result.x;
-                                Northing = result.y;
+
+                                // Base 5514:
+                                // result.x ~ -500000
+                                // result.y ~ -1088000
+                                //
+                                // Q1 vuole coordinate positive:
+                                double gx = -result.x;
+                                double gy = -result.y;
+
+                                double[] dbg = cz_Q1.debugShift(gx, gy);
+                                if (!Double.isNaN(dbg[0]) && !Double.isNaN(dbg[1])) {
+                                    // Dalle prove reali su SJTSK_FERRO_NO_V1710_GRID:
+                                    // il contributo corretto è dbg[1] (dY interpolato)
+                                    gx = gx - dbg[1];
+                                    gy = gy + dbg[1];
+                                }
+
+                                // ritorno alla convenzione runtime dell'app
+                                Easting = gx;
+                                Northing = gy;
                                 Quota = q;
                             }
 
-                        } else {
+                        }
+                        else {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
                             if (wgsToUtm != null && result != null) {
                                 wgsToUtm.transform(new ProjCoordinate(Lon, Lat, q), result);
                                 Easting = result.x;
@@ -427,15 +460,11 @@ public class Deg2UTM {
                             }
                         }
 
-                        // SOLO QUI: aggiunta heading dinamica per EPSG:5514
-                        if ("5514".equals(crs)) {
-                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
-                        }
+
 
                     } catch (Exception e) {
                         Log.e("GridShift", "Transform error", e);
                         geoidError = true;
-
                         if (wgsToUtm != null && result != null) {
                             wgsToUtm.transform(new ProjCoordinate(Lon, Lat, Z), result);
                             Easting = result.x;
@@ -443,14 +472,7 @@ public class Deg2UTM {
                             Quota = Z;
                         }
 
-                        // fallback heading anche in caso di eccezione, solo per 5514
-                        if ("5514".equals(crs)) {
-                            try {
-                                NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
-                            } catch (Exception ignored) {
-                                NmeaListener.AGGIUNTA_HDT = 0;
-                            }
-                        }
+
                     }
                     break;
             }

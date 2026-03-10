@@ -17,28 +17,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.09" />
+        app:layout_constraintGuide_percent="0.07" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/centH"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.09" />
+        app:layout_constraintGuide_percent="0.07" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/centH2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.17" />
+        app:layout_constraintGuide_percent="0.16" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/lowH"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.91" />
+        app:layout_constraintGuide_percent="0.92" />
 
 
     <TextView
@@ -58,8 +58,8 @@
 
     <ImageView
         android:id="@+id/usaSP"
-        android:layout_width="40dp"
-        android:layout_height="0dp"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
         android:layout_marginVertical="2dp"
         android:background="@color/transparent"
         android:src="@drawable/btn_selection_ok"
@@ -95,7 +95,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:focusableInTouchMode="false"
-                android:textSize="22sp" />
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/startSerach"
@@ -177,8 +177,8 @@
         app:layout_constraintVertical_bias="0.0" />
     <ImageView
         android:id="@+id/dismiss"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/btn_close_web"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

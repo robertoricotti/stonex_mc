@@ -40,6 +40,7 @@ import java.util.List;
 
 import gui.MyApp;
 import gui.projects.ProjectFileAdapter;
+import packexcalib.exca.CreateUTMFiles;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.LocalizationFactory;
 import serial.SerialPortManager;
@@ -125,8 +126,6 @@ public class Diaalog_Set_SP {
     public void show(String mPath, ProjectFileAdapter remoteAdapter) {
         this.mPath = mPath;
         this.remoteAdapter = remoteAdapter;
-
-
         dialog.create();
         dialog.setContentView(R.layout.dialog_sp_folders);
         dialog.setCancelable(false);

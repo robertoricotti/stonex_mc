@@ -64,11 +64,11 @@ public final class CzechGridShiftTransformer {
         }
     }
     public double[] debugShift(double E, double N) {
-        int col = (int)Math.floor((E - wLon) / step);
-        int row = (int)Math.floor((N - sLat) / step);
+        int col = (int) Math.floor((E - wLon) / step);
+        int row = (int) Math.floor((nLat - N) / step);
 
         if (col < 0 || col >= cols - 1 || row < 0 || row >= rows - 1) {
-            return new double[]{Double.NaN, Double.NaN}; // out of bounds
+            return new double[]{Double.NaN, Double.NaN};
         }
 
         int i00 = row * cols + col;
@@ -79,18 +79,28 @@ public final class CzechGridShiftTransformer {
         float dy00 = dY[i00], dy10 = dY[i10], dy01 = dY[i01], dy11 = dY[i11];
         float dx00 = dX[i00], dx10 = dX[i10], dx01 = dX[i01], dx11 = dX[i11];
 
-        if (dy00 == 9999f || dy10 == 9999f || dy01 == 9999f || dy11 == 9999f ||
-                dx00 == 9999f || dx10 == 9999f || dx01 == 9999f || dx11 == 9999f) {
-            return new double[]{Double.NaN, Double.NaN}; // nodata
+        if (dy00 == NODATA || dy10 == NODATA || dy01 == NODATA || dy11 == NODATA ||
+                dx00 == NODATA || dx10 == NODATA || dx01 == NODATA || dx11 == NODATA) {
+            return new double[]{Double.NaN, Double.NaN};
         }
 
         double e0 = wLon + col * step;
-        double n0 = sLat + row * step;
-        double t = (E - e0) / step;
-        double u = (N - n0) / step;
+        double n0 = nLat - row * step;
 
-        double dYb = (1 - t)*(1 - u)*dy00 + t*(1 - u)*dy10 + (1 - t)*u*dy01 + t*u*dy11;
-        double dXb = (1 - t)*(1 - u)*dx00 + t*(1 - u)*dx10 + (1 - t)*u*dx01 + t*u*dx11;
+        double t = (E - e0) / step;
+        double u = (n0 - N) / step;
+
+        double dYb =
+                (1 - t) * (1 - u) * dy00 +
+                        t * (1 - u) * dy10 +
+                        (1 - t) * u * dy01 +
+                        t * u * dy11;
+
+        double dXb =
+                (1 - t) * (1 - u) * dx00 +
+                        t * (1 - u) * dx10 +
+                        (1 - t) * u * dx01 +
+                        t * u * dx11;
 
         return new double[]{dXb, dYb};
     }
@@ -186,5 +196,64 @@ public final class CzechGridShiftTransformer {
                 ((b[off+2] & 0xff) << 16) |
                 ((b[off+3] & 0xff) << 24);
         return Float.intBitsToFloat(bits);
+    }
+    public String debugCellDetailed(double E, double N) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("INPUT E=").append(E).append(" N=").append(N).append('\n');
+        sb.append("BOUNDS x=[").append(wLon).append(", ").append(eLon).append("] ")
+                .append("y=[").append(sLat).append(", ").append(nLat).append("] ")
+                .append("step=").append(step).append('\n');
+        sb.append("rows=").append(rows).append(" cols=").append(cols).append('\n');
+
+        // Variante A: righe da sud verso nord
+        int colA = (int) Math.floor((E - wLon) / step);
+        int rowA = (int) Math.floor((N - sLat) / step);
+
+        sb.append("A south->north: col=").append(colA).append(" row=").append(rowA).append('\n');
+        if (colA >= 0 && colA < cols - 1 && rowA >= 0 && rowA < rows - 1) {
+            int i00 = rowA * cols + colA;
+            int i10 = i00 + 1;
+            int i01 = i00 + cols;
+            int i11 = i01 + 1;
+
+            sb.append("A idx: i00=").append(i00)
+                    .append(" i10=").append(i10)
+                    .append(" i01=").append(i01)
+                    .append(" i11=").append(i11).append('\n');
+
+            sb.append("A dY: ").append(dY[i00]).append(", ").append(dY[i10]).append(", ")
+                    .append(dY[i01]).append(", ").append(dY[i11]).append('\n');
+            sb.append("A dX: ").append(dX[i00]).append(", ").append(dX[i10]).append(", ")
+                    .append(dX[i01]).append(", ").append(dX[i11]).append('\n');
+        } else {
+            sb.append("A out of bounds\n");
+        }
+
+        // Variante B: righe da nord verso sud
+        int colB = (int) Math.floor((E - wLon) / step);
+        int rowB = (int) Math.floor((nLat - N) / step);
+
+        sb.append("B north->south: col=").append(colB).append(" row=").append(rowB).append('\n');
+        if (colB >= 0 && colB < cols - 1 && rowB >= 0 && rowB < rows - 1) {
+            int i00 = rowB * cols + colB;
+            int i10 = i00 + 1;
+            int i01 = i00 + cols;
+            int i11 = i01 + 1;
+
+            sb.append("B idx: i00=").append(i00)
+                    .append(" i10=").append(i10)
+                    .append(" i01=").append(i01)
+                    .append(" i11=").append(i11).append('\n');
+
+            sb.append("B dY: ").append(dY[i00]).append(", ").append(dY[i10]).append(", ")
+                    .append(dY[i01]).append(", ").append(dY[i11]).append('\n');
+            sb.append("B dX: ").append(dX[i00]).append(", ").append(dX[i10]).append(", ")
+                    .append(dX[i01]).append(", ").append(dX[i11]).append('\n');
+        } else {
+            sb.append("B out of bounds\n");
+        }
+
+        return sb.toString();
     }
 }

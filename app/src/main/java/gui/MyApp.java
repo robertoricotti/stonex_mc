@@ -132,6 +132,8 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
+    public static volatile boolean TEST_MODE = false;
+    public static volatile boolean isCRSStarted=false;
     public static int MAX_NUMERO_FACCE = 5000;
     public static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio

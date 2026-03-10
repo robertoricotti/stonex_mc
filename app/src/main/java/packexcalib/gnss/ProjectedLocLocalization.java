@@ -17,82 +17,95 @@ import javax.xml.parsers.DocumentBuilderFactory;
 /**
  * Localizzazione da file .LOC appoggiata a un CRS proiettato di base.
  *
- * Modello:
- *   WGS84 -> CRS proiettato (grid E/N) -> similarità 2D -> sistema locale LOC
+ * Convenzioni adottate:
+ * - Input geo: lat/lon in gradi, quota ellissoidale
+ * - Output locale: E, N, Z
+ * - PROJ4J usa x=lon, y=lat
  *
- * Comportamento voluto:
- * - se cambi il CRS sorgente, cambia anche la rotazione finale
- * - il delta heading NON varia con la posizione GNSS corrente
- * - il delta heading è costante sul progetto:
+ * Semantica heading:
+ * - per coerenza col tuo uso macchina e con SpLocalization,
+ *   out[3] = Ca in gradi
+ * - quindi:
  *
- *      delta = gamma0 - theta
+ *     headingLocal = wrap360(headingTrue + out[3])
  *
- *   dove:
- *   - gamma0 = convergenza meridiana del CRS sorgente nel centro della rete LOC
- *   - theta  = rotazione CCW della similarità Grid -> Local
+ * dove headingTrue è l'HDT della doppia antenna GNSS.
  *
- * Convenzioni:
- * - headingTrue: 0=N, 90=E
- * - headingLocal = wrap360(headingTrue + delta)
+ * Modello XY stimato dal LOC:
+ * - grid -> local con stessa convenzione della classe SP
  *
- * Output locale:
- * - out[0] = E locale
- * - out[1] = N locale
- * - out[2] = Z locale
- * - out[3] = delta heading (gradi)
+ *     E_loc = (Orgy + Cy) + Ck * ( dE*cosA + dN*sinA )
+ *     N_loc = (Orgx + Cx) + Ck * (-dE*sinA + dN*cosA )
+ *
+ *     con:
+ *       dE = Egrid - Orgy
+ *       dN = Ngrid - Orgx
+ *
+ * Quota:
+ * - fit polinomiale tra quota ellissoidale e quota locale
+ * - in coordinate LOCALI:
+ *
+ *     dh = a0 + a1*dx + a2*dy + a3*dx^2 + a4*dy^2 + a5*dx*dy
+ *     dx = Nloc - x0
+ *     dy = Eloc - y0
+ *
+ *     Zloc = hEll - dh
  */
 public final class ProjectedLocLocalization implements LocalizationModel {
 
     private final CoordinateTransform geoToProj;
     private final CoordinateTransform projToGeo;
 
-    // Similarità 2D: Local = s * R(theta) * Grid + t
-    private final double s, cosT, sinT, tE, tN;
+    // 4 parametri in convenzione SP/CubeA
+    private final boolean use4;
+    private final double Cx, Cy, CaRad, Ck, Orgx, Orgy;
+    private final double cosA, sinA;
 
-    // Delta heading costante del progetto
-    private final double gamma0Deg;
+    // heading: per uso operativo = Ca in gradi
+    private final double headingDeltaDeg;
 
-    // Fit quota
-    private final boolean useZ;
-    private final double E0, N0;
-    private final double k0, k1, k2, k3, k4, k5;
-    private final double polyRadiusM;
+    // Height fitting
+    private final boolean useHF;
+    private final double a0, a1, a2, a3, a4, a5;
+    private final double hfX0, hfY0;
 
-    // Buffer riusabili
+    // buffer riusabili
     private final ThreadLocal<ProjCoordinate> tlGeo  = ThreadLocal.withInitial(ProjCoordinate::new);
     private final ThreadLocal<ProjCoordinate> tlProj = ThreadLocal.withInitial(ProjCoordinate::new);
 
     private ProjectedLocLocalization(CoordinateTransform geoToProj,
                                      CoordinateTransform projToGeo,
-                                     double s, double cosT, double sinT, double tE, double tN,
-                                     double gamma0Deg,
-                                     boolean useZ, double E0, double N0,
-                                     double k0, double k1, double k2, double k3, double k4, double k5,
-                                     double polyRadiusM) {
+                                     boolean use4,
+                                     double Cx, double Cy, double CaRad, double Ck, double Orgx, double Orgy,
+                                     double headingDeltaDeg,
+                                     boolean useHF,
+                                     double a0, double a1, double a2, double a3, double a4, double a5,
+                                     double hfX0, double hfY0) {
+
         this.geoToProj = geoToProj;
         this.projToGeo = projToGeo;
 
-        if (!Double.isFinite(s) || Math.abs(s) < 1e-12) {
-            throw new IllegalArgumentException("LOC: scala XY non valida (s=" + s + ")");
-        }
+        this.use4 = use4;
+        this.Cx = Cx;
+        this.Cy = Cy;
+        this.CaRad = CaRad;
+        this.Ck = (Double.isFinite(Ck) && Math.abs(Ck) > 1e-12) ? Ck : 1.0;
+        this.Orgx = Orgx; // North origin
+        this.Orgy = Orgy; // East origin
+        this.cosA = Math.cos(CaRad);
+        this.sinA = Math.sin(CaRad);
 
-        this.s = s;
-        this.cosT = cosT;
-        this.sinT = sinT;
-        this.tE = tE;
-        this.tN = tN;
-        this.gamma0Deg = gamma0Deg;
+        this.headingDeltaDeg = headingDeltaDeg;
 
-        this.useZ = useZ;
-        this.E0 = E0;
-        this.N0 = N0;
-        this.k0 = k0;
-        this.k1 = k1;
-        this.k2 = k2;
-        this.k3 = k3;
-        this.k4 = k4;
-        this.k5 = k5;
-        this.polyRadiusM = (Double.isFinite(polyRadiusM) && polyRadiusM > 0.0) ? polyRadiusM : 300.0;
+        this.useHF = useHF;
+        this.a0 = a0;
+        this.a1 = a1;
+        this.a2 = a2;
+        this.a3 = a3;
+        this.a4 = a4;
+        this.a5 = a5;
+        this.hfX0 = hfX0; // north locale
+        this.hfY0 = hfY0; // east locale
     }
 
     // ---------------------------------------------------------------------
@@ -112,12 +125,13 @@ public final class ProjectedLocLocalization implements LocalizationModel {
 
         final int n = pts.size();
 
-        double[] E = new double[n];
-        double[] N = new double[n];
-        double[] EL = new double[n];
-        double[] NL = new double[n];
-        double[] ZL = new double[n];
-        double[] Hell = new double[n];
+        double[] E = new double[n];      // projected East
+        double[] N = new double[n];      // projected North
+        double[] EL = new double[n];     // local East
+        double[] NL = new double[n];     // local North
+        double[] ZL = new double[n];     // local Z
+        double[] Hell = new double[n];   // ellipsoidal height
+
         boolean[] useH = new boolean[n];
         boolean[] useV = new boolean[n];
 
@@ -134,83 +148,81 @@ public final class ProjectedLocLocalization implements LocalizationModel {
 
             E[i] = p.x;
             N[i] = p.y;
+
             EL[i] = rp.eLocal;
             NL[i] = rp.nLocal;
             ZL[i] = rp.zLocal;
             Hell[i] = rp.hEll;
+
             useH[i] = rp.useH;
             useV[i] = rp.useV;
         }
 
-        // Fit orizzontale
-        Similarity sim = fitSimilarityWeighted(E, N, EL, NL, useH);
+        // ------------------ Fit 4 parametri ------------------
+        FourParam fp = fitFourParameters(E, N, EL, NL, useH);
 
-        // Centro rete per quota
-        double E0 = meanWeighted(E, useV);
-        double N0 = meanWeighted(N, useV);
-
-        // Centro rete per heading/convergenza: meglio sui punti orizzontali
-        double Eh = meanWeighted(E, useH);
-        double Nh = meanWeighted(N, useH);
-
-        // Calcolo una volta sola la convergenza nel centro della rete
-        double gamma0Deg = meridianConvergenceDegAtProjectedPoint(Eh, Nh, projToGeo, geoToProj);
-
-        // Fit quota
-        boolean useZ = false;
-        double k0 = 0, k1 = 0, k2 = 0, k3 = 0, k4 = 0, k5 = 0;
+        // ------------------ Fit quota ------------------
+        boolean useHF = false;
+        double a0 = 0, a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0;
+        double hfX0 = 0, hfY0 = 0;
 
         if (hasAny(useV)) {
-            double[] dZ = new double[n];
+            // origine polinomio in coordinate locali
+            hfX0 = meanWeighted(NL, useV); // north local
+            hfY0 = meanWeighted(EL, useV); // east local
+
+            double[] dH = new double[n];
             double[] w = new double[n];
+
             for (int i = 0; i < n; i++) {
-                dZ[i] = ZL[i] - Hell[i];
+                // Convenzione identica alla SP:
+                // Zloc = hEll - dh  => dh = hEll - Zloc
+                dH[i] = Hell[i] - ZL[i];
                 w[i] = useV[i] ? 1.0 : 0.0;
             }
 
-            double[] coeff = fitPoly2DZ_Ridge(E, N, dZ, w, E0, N0, 1e-12);
-            k0 = coeff[0];
-            k1 = coeff[1];
-            k2 = coeff[2];
-            k3 = coeff[3];
-            k4 = coeff[4];
-            k5 = coeff[5];
-            useZ = true;
+           /* double[] coeff = fitPoly2DLocal(EL, NL, dH, w, hfY0, hfX0, 1e-12);
+            a0 = coeff[0];
+            a1 = coeff[1];
+            a2 = coeff[2];
+            a3 = coeff[3];
+            a4 = coeff[4];
+            a5 = coeff[5];
+            useHF = true;*/
+            double[] coeff = fitPlaneLocal(EL, NL, dH, w, hfY0, hfX0);
+            a0 = coeff[0];
+            a1 = coeff[1];
+            a2 = coeff[2];
+            a3 = 0.0;
+            a4 = 0.0;
+            a5 = 0.0;
+            useHF = true;
+
         }
 
-        // Guard-rail per quota
-        double maxBL = 0.0;
-        List<Integer> idxH = indicesTrue(useH);
-        if (idxH.size() >= 2) {
-            for (int i = 0; i < idxH.size(); i++) {
-                int ii = idxH.get(i);
-                for (int j = i + 1; j < idxH.size(); j++) {
-                    int jj = idxH.get(j);
-                    double d = Math.hypot(E[ii] - E[jj], N[ii] - N[jj]);
-                    if (d > maxBL) maxBL = d;
-                }
-            }
-        }
-        double polyRadius = Math.max(300.0, 2.0 * maxBL);
+        // Per il tuo uso operativo:
+        // out[3] deve essere Ca in gradi
+        double headingDeltaDeg = Math.toDegrees(fp.CaRad);
 
         return new ProjectedLocLocalization(
                 geoToProj, projToGeo,
-                sim.s, sim.cosT, sim.sinT, sim.tE, sim.tN,
-                gamma0Deg,
-                useZ, E0, N0, k0, k1, k2, k3, k4, k5,
-                polyRadius
+                true,
+                fp.Cx, fp.Cy, fp.CaRad, fp.Ck, fp.Orgx, fp.Orgy,
+                headingDeltaDeg,
+                useHF,
+                a0, a1, a2, a3, a4, a5,
+                hfX0, hfY0
         );
     }
 
     // ---------------------------------------------------------------------
-    // Transform
+    // Trasformazioni
     // ---------------------------------------------------------------------
     @Override
     public void toLocalFast(double latDeg, double lonDeg, double hEll, double[] out) {
         ProjCoordinate g = tlGeo.get();
         ProjCoordinate p = tlProj.get();
 
-        // WGS84 -> CRS sorgente
         g.x = lonDeg;
         g.y = latDeg;
         g.z = hEll;
@@ -219,25 +231,27 @@ public final class ProjectedLocLocalization implements LocalizationModel {
         double E = p.x;
         double N = p.y;
 
-        // CRS sorgente -> locale LOC
-        double Eloc = s * (cosT * E - sinT * N) + tE;
-        double Nloc = s * (sinT * E + cosT * N) + tN;
+        if (use4) {
+            double dE = E - Orgy;
+            double dN = N - Orgx;
 
-        double Zloc = hEll;
-        if (useZ) {
-            double dE = E - E0;
-            double dN = N - N0;
-            double r = Math.hypot(dE, dN);
+            double Ep = dE * cosA + dN * sinA;
+            double Np = -dE * sinA + dN * cosA;
 
-            double dZ = (r <= polyRadiusM)
-                    ? (k0 + k1 * dE + k2 * dN + k3 * dE * dE + k4 * dN * dN + k5 * dE * dN)
-                    : (k0 + k1 * dE + k2 * dN);
-
-            Zloc = hEll + dZ;
+            E = (Orgy + Cy) + Ck * Ep;
+            N = (Orgx + Cx) + Ck * Np;
         }
 
-        out[0] = Eloc;
-        out[1] = Nloc;
+        double Zloc = hEll;
+        if (useHF) {
+            double dx = N - hfX0; // north local
+            double dy = E - hfY0; // east local
+            double dh = a0 + a1 * dx + a2 * dy + a3 * dx * dx + a4 * dy * dy + a5 * dx * dy;
+            Zloc = hEll - dh;
+        }
+
+        out[0] = E;
+        out[1] = N;
         out[2] = Zloc;
     }
 
@@ -246,200 +260,226 @@ public final class ProjectedLocLocalization implements LocalizationModel {
         ProjCoordinate p = tlProj.get();
         ProjCoordinate g = tlGeo.get();
 
-        // Inverso locale -> CRS sorgente
-        double E = ( cosT * (Eloc - tE) + sinT * (Nloc - tN)) / s;
-        double N = (-sinT * (Eloc - tE) + cosT * (Nloc - tN)) / s;
+        double e = Eloc;
+        double n = Nloc;
 
+        // 1) inverso height fitting
         double hEll = Zloc;
-        if (useZ) {
-            double dE = E - E0;
-            double dN = N - N0;
-            double r = Math.hypot(dE, dN);
-
-            double dZ = (r <= polyRadiusM)
-                    ? (k0 + k1 * dE + k2 * dN + k3 * dE * dE + k4 * dN * dN + k5 * dE * dN)
-                    : (k0 + k1 * dE + k2 * dN);
-
-            hEll = Zloc - dZ;
+        if (useHF) {
+            double dx = n - hfX0; // north local
+            double dy = e - hfY0; // east local
+            double dh = a0 + a1 * dx + a2 * dy + a3 * dx * dx + a4 * dy * dy + a5 * dx * dy;
+            hEll = Zloc + dh;
         }
 
-        // CRS sorgente -> WGS84
-        p.x = E;
-        p.y = N;
+        // 2) inverso 4 parametri
+        if (use4) {
+            double dE = (e - (Orgy + Cy)) / Ck;
+            double dN = (n - (Orgx + Cx)) / Ck;
+
+            double Ei = dE * cosA - dN * sinA;
+            double Ni = dE * sinA + dN * cosA;
+
+            e = Orgy + Ei;
+            n = Orgx + Ni;
+        }
+
+        // 3) projected -> geo
+        p.x = e;
+        p.y = n;
         p.z = hEll;
         projToGeo.transform(p, g);
 
-        out[0] = g.y;
-        out[1] = g.x;
+        out[0] = g.y; // lat
+        out[1] = g.x; // lon
         out[2] = hEll;
     }
 
     /**
-     * Rotazione della similarità Grid -> Local, in gradi CCW.
-     */
-    public double similarityThetaDeg() {
-        return Math.toDegrees(Math.atan2(this.sinT, this.cosT));
-    }
-
-    /**
-     * Convergenza fissata nel centro della rete di localizzazione.
-     */
-    public double gamma0Deg() {
-        return gamma0Deg;
-    }
-
-    /**
-     * Delta heading costante del progetto.
+     * out[3] = delta heading da sommare all'HDT true.
      *
-     * headingGrid  = headingTrue + gamma0
-     * headingLocal = headingGrid - theta
-     *              = headingTrue + gamma0 - theta
+     * Per coerenza con SP e con il tuo uso macchina:
+     * out[3] = CaDeg
      */
-    public double headingOffsetDeg() {
-        return gamma0Deg - similarityThetaDeg();
-    }
-
     @Override
     public void toLocalFastWithHeadingDelta(double latDeg, double lonDeg, double hEll, double[] out) {
         toLocalFast(latDeg, lonDeg, hEll, out);
         if (out.length > 3) {
-            out[3] = headingOffsetDeg();
+            out[3] = headingDeltaDeg;
         }
     }
 
     // ---------------------------------------------------------------------
-    // Convergenza meridiana nel centro rete
+    // Getter utili
     // ---------------------------------------------------------------------
-    private static double meridianConvergenceDegAtProjectedPoint(double E,
-                                                                 double N,
-                                                                 CoordinateTransform projToGeo,
-                                                                 CoordinateTransform geoToProj) {
-        final double epsDeg = 1e-4;
+    public boolean isUsingFourParameters() {
+        return use4;
+    }
 
-        ProjCoordinate p = new ProjCoordinate();
-        ProjCoordinate g = new ProjCoordinate();
-        ProjCoordinate p2 = new ProjCoordinate();
+    public boolean isUsingHeightFitting() {
+        return useHF;
+    }
 
-        // projected -> geo
-        p.x = E;
-        p.y = N;
-        projToGeo.transform(p, g);
+    public double getCx() {
+        return Cx;
+    }
 
-        double lonDeg = g.x;
-        double latDeg = g.y;
+    public double getCy() {
+        return Cy;
+    }
 
-        // punto base
-        g.x = lonDeg;
-        g.y = latDeg;
-        geoToProj.transform(g, p);
-        final double E1 = p.x;
-        final double N1 = p.y;
+    public double getCaRad() {
+        return CaRad;
+    }
 
-        // punto leggermente più a nord vero
-        g.x = lonDeg;
-        g.y = latDeg + epsDeg;
-        geoToProj.transform(g, p2);
+    public double getCaDeg() {
+        return Math.toDegrees(CaRad);
+    }
 
-        final double dE = p2.x - E1;
-        final double dN = p2.y - N1;
+    public double getCk() {
+        return Ck;
+    }
 
-        return Math.toDegrees(Math.atan2(dE, dN));
+    public double getOriginNorth() {
+        return Orgx;
+    }
+
+    public double getOriginEast() {
+        return Orgy;
+    }
+
+    public double getHeadingDeltaDeg() {
+        return headingDeltaDeg;
+    }
+
+    public double getA0() {
+        return a0;
+    }
+
+    public double getA1() {
+        return a1;
+    }
+
+    public double getA2() {
+        return a2;
+    }
+
+    public double getA3() {
+        return a3;
+    }
+
+    public double getA4() {
+        return a4;
+    }
+
+    public double getA5() {
+        return a5;
+    }
+
+    public double getHfX0() {
+        return hfX0;
+    }
+
+    public double getHfY0() {
+        return hfY0;
     }
 
     // ---------------------------------------------------------------------
-    // Similarità 2D
+    // Fit 4 parametri
     // ---------------------------------------------------------------------
-    private static final class Similarity {
-        final double s, cosT, sinT, tE, tN;
+    private static final class FourParam {
+        final double Cx, Cy, CaRad, Ck, Orgx, Orgy;
 
-        Similarity(double s, double cosT, double sinT, double tE, double tN) {
-            this.s = s;
-            this.cosT = cosT;
-            this.sinT = sinT;
-            this.tE = tE;
-            this.tN = tN;
+        FourParam(double Cx, double Cy, double CaRad, double Ck, double Orgx, double Orgy) {
+            this.Cx = Cx;
+            this.Cy = Cy;
+            this.CaRad = CaRad;
+            this.Ck = Ck;
+            this.Orgx = Orgx;
+            this.Orgy = Orgy;
         }
     }
 
-    private static Similarity fitSimilarityWeighted(double[] E, double[] N,
-                                                    double[] EL, double[] NL,
-                                                    boolean[] use) {
+    private static FourParam fitFourParameters(double[] E, double[] N,
+                                               double[] EL, double[] NL,
+                                               boolean[] use) {
         int n = E.length;
 
-        double wsum = 0.0, Er = 0.0, Nr = 0.0, ELr = 0.0, NLr = 0.0;
+        List<Integer> idx = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            double w = use[i] ? 1.0 : 0.0;
-            wsum += w;
-            Er += w * E[i];
-            Nr += w * N[i];
-            ELr += w * EL[i];
-            NLr += w * NL[i];
+            if (use[i]) idx.add(i);
         }
 
-        if (wsum < 2.0) {
+        if (idx.size() < 2) {
             throw new IllegalArgumentException("Punti orizzontali insufficienti nel LOC.");
         }
 
-        Er /= wsum;
-        Nr /= wsum;
-        ELr /= wsum;
-        NLr /= wsum;
+        // Fit lineare:
+        // EL = te + a*E + b*N
+        // NL = tn - b*E + a*N
+        double[][] ATA = new double[4][4];
+        double[] ATb = new double[4];
 
-        double Sxx = 0.0, Sxy = 0.0, Syx = 0.0, Syy = 0.0, Srr = 0.0;
-        for (int i = 0; i < n; i++) {
-            if (!use[i]) continue;
-
-            double e  = E[i]  - Er;
-            double nn = N[i]  - Nr;
-            double le = EL[i] - ELr;
-            double ln = NL[i] - NLr;
-
-            Sxx += e  * le;
-            Sxy += e  * ln;
-            Syx += nn * le;
-            Syy += nn * ln;
-            Srr += e * e + nn * nn;
+        for (int i : idx) {
+            addNormalEq(ATA, ATb, new double[]{E[i], N[i], 1.0, 0.0}, EL[i]);
+            addNormalEq(ATA, ATb, new double[]{N[i], -E[i], 0.0, 1.0}, NL[i]);
         }
 
-        if (Srr < 1e-12) {
-            throw new IllegalStateException("Configurazione H degenerata nel LOC.");
+        double[] x = solveNxN(ATA, ATb);
+
+        double a = x[0];
+        double b = x[1];
+        double te = x[2];
+        double tn = x[3];
+
+        double Ck = Math.hypot(a, b);
+        if (!Double.isFinite(Ck) || Ck < 1e-12) {
+            throw new IllegalStateException("LOC: scala XY non valida.");
         }
 
-        double c1 = Sxx + Syy;
-        double s1 = Sxy - Syx;
-        double rnorm = Math.hypot(c1, s1);
+        double CaRad = Math.atan2(b, a);
 
-        double cosT = (rnorm > 0.0) ? c1 / rnorm : 1.0;
-        double sinT = (rnorm > 0.0) ? s1 / rnorm : 0.0;
-        double s = rnorm / Srr;
+        // origine = baricentro dei punti projected usati
+        double Orgx = meanWeighted(N, use);
+        double Orgy = meanWeighted(E, use);
 
-        double tE = ELr - s * (cosT * Er - sinT * Nr);
-        double tN = NLr - s * (sinT * Er + cosT * Nr);
+        // Conversione nella stessa forma della SP
+        double Cy = te - Orgy + a * Orgy + b * Orgx;
+        double Cx = tn - Orgx - b * Orgy + a * Orgx;
 
-        return new Similarity(s, cosT, sinT, tE, tN);
+        return new FourParam(Cx, Cy, CaRad, Ck, Orgx, Orgy);
+    }
+
+    private static void addNormalEq(double[][] ATA, double[] ATb, double[] row, double obs) {
+        for (int r = 0; r < row.length; r++) {
+            ATb[r] += row[r] * obs;
+            for (int c = 0; c < row.length; c++) {
+                ATA[r][c] += row[r] * row[c];
+            }
+        }
     }
 
     // ---------------------------------------------------------------------
     // Fit quota
     // ---------------------------------------------------------------------
-    private static double[] fitPoly2DZ_Ridge(double[] E, double[] N, double[] dZ, double[] w,
-                                             double E0, double N0, double lambda) {
+    private static double[] fitPoly2DLocal(double[] EL, double[] NL, double[] dH, double[] w,
+                                           double y0, double x0, double lambda) {
         final int m = 6;
         double[][] ATA = new double[m][m];
         double[] ATb = new double[m];
         int used = 0;
 
-        for (int i = 0; i < E.length; i++) {
+        for (int i = 0; i < EL.length; i++) {
             double wi = w[i];
             if (wi <= 0.0) continue;
             used++;
 
-            double dE = E[i] - E0;
-            double dN = N[i] - N0;
-            double[] phi = {1.0, dE, dN, dE * dE, dN * dN, dE * dN};
+            double dx = NL[i] - x0; // north local
+            double dy = EL[i] - y0; // east local
+            double[] phi = {1.0, dx, dy, dx * dx, dy * dy, dx * dy};
 
             for (int r = 0; r < m; r++) {
-                ATb[r] += wi * phi[r] * dZ[i];
+                ATb[r] += wi * phi[r] * dH[i];
                 for (int c = 0; c < m; c++) {
                     ATA[r][c] += wi * phi[r] * phi[c];
                 }
@@ -448,8 +488,8 @@ public final class ProjectedLocLocalization implements LocalizationModel {
 
         if (used < 3) {
             double num = 0.0, den = 0.0;
-            for (int i = 0; i < dZ.length; i++) {
-                num += w[i] * dZ[i];
+            for (int i = 0; i < dH.length; i++) {
+                num += w[i] * dH[i];
                 den += w[i];
             }
             double k0 = (den > 0.0) ? num / den : 0.0;
@@ -476,7 +516,7 @@ public final class ProjectedLocLocalization implements LocalizationModel {
             }
 
             if (Math.abs(M[max][p]) < 1e-14) {
-                throw new IllegalStateException("Sistema singolare (fit quota).");
+                throw new IllegalStateException("Sistema singolare.");
             }
 
             if (max != p) {
@@ -500,9 +540,6 @@ public final class ProjectedLocLocalization implements LocalizationModel {
         return x;
     }
 
-    // ---------------------------------------------------------------------
-    // Util
-    // ---------------------------------------------------------------------
     private static double meanWeighted(double[] v, boolean[] use) {
         double s = 0.0;
         int k = 0;
@@ -518,12 +555,6 @@ public final class ProjectedLocLocalization implements LocalizationModel {
     private static boolean hasAny(boolean[] a) {
         for (boolean b : a) if (b) return true;
         return false;
-    }
-
-    private static List<Integer> indicesTrue(boolean[] a) {
-        List<Integer> out = new ArrayList<>();
-        for (int i = 0; i < a.length; i++) if (a[i]) out.add(i);
-        return out;
     }
 
     // ---------------------------------------------------------------------
@@ -569,7 +600,8 @@ public final class ProjectedLocLocalization implements LocalizationModel {
             String idLow = id.trim().toLowerCase(Locale.ROOT);
             if (!idLow.startsWith("point")) continue;
 
-            double lat = Double.NaN, lon = Double.NaN, hell = 0.0, e = 0.0, n = 0.0, z = 0.0;
+            double lat = Double.NaN, lon = Double.NaN, hell = 0.0;
+            double e = 0.0, n = 0.0, z = 0.0;
             boolean useH = true, useV = true;
 
             NodeList vals = rec.getElementsByTagName("value");
@@ -597,6 +629,9 @@ public final class ProjectedLocLocalization implements LocalizationModel {
                         hell = parseNum(val);
                         break;
 
+                    // LOC:
+                    // Local_X = East locale
+                    // Local_Y = North locale
                     case "Local_X":
                     case "LocalX":
                         e = parseNum(val);
@@ -639,9 +674,16 @@ public final class ProjectedLocLocalization implements LocalizationModel {
     }
 
     private static double parseNum(String s) {
+        if (s == null) return 0.0;
         s = s.trim().replace(',', '.');
-        double v = Double.parseDouble(s);
-        return Double.isFinite(v) ? v : 0.0;
+        if (s.isEmpty()) return 0.0;
+
+        try {
+            double v = Double.parseDouble(s);
+            return Double.isFinite(v) ? v : 0.0;
+        } catch (Throwable t) {
+            return 0.0;
+        }
     }
 
     private static boolean parseBoolYes(String v, boolean def) {
@@ -651,5 +693,41 @@ public final class ProjectedLocLocalization implements LocalizationModel {
         if ("yes".equalsIgnoreCase(v) || "true".equalsIgnoreCase(v) || "1".equals(v)) return true;
         if ("no".equalsIgnoreCase(v) || "false".equalsIgnoreCase(v) || "0".equals(v)) return false;
         return def;
+    }
+    private static double[] fitPlaneLocal(double[] EL, double[] NL, double[] dH, double[] w,
+                                          double y0, double x0) {
+        // Modello:
+        // dh = a0 + a1*dx + a2*dy
+        // dx = Nloc - x0
+        // dy = Eloc - y0
+
+        double[][] ATA = new double[3][3];
+        double[] ATb = new double[3];
+        int used = 0;
+
+        for (int i = 0; i < EL.length; i++) {
+            double wi = w[i];
+            if (wi <= 0.0) continue;
+            used++;
+
+            double dx = NL[i] - x0; // north local
+            double dy = EL[i] - y0; // east local
+
+            double[] phi = {1.0, dx, dy};
+
+            for (int r = 0; r < 3; r++) {
+                ATb[r] += wi * phi[r] * dH[i];
+                for (int c = 0; c < 3; c++) {
+                    ATA[r][c] += wi * phi[r] * phi[c];
+                }
+            }
+        }
+
+        if (used < 1) {
+            return new double[]{0.0, 0.0, 0.0};
+        }
+
+        double[] sol = solveNxN(ATA, ATb);
+        return new double[]{sol[0], sol[1], sol[2]};
     }
 }

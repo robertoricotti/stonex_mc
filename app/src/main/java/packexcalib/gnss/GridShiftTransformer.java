@@ -1,5 +1,7 @@
 package packexcalib.gnss;
 
+import static services.UpdateValuesService.wgsToUtm;
+
 import org.locationtech.proj4j.CRSFactory;
 import org.locationtech.proj4j.CoordinateReferenceSystem;
 import org.locationtech.proj4j.CoordinateTransform;
@@ -16,6 +18,10 @@ import java.util.StringTokenizer;
  *    tramite Helmert 7 param + proiezione + griglie dE/dN.
  */
 public class GridShiftTransformer {
+    private static final ProjCoordinate baseWgs = new ProjCoordinate();
+    private static final ProjCoordinate northWgs = new ProjCoordinate();
+    private static final ProjCoordinate baseProj = new ProjCoordinate();
+    private static final ProjCoordinate northProj = new ProjCoordinate();
 
     // -------------------------------
     // 1. HELMERT 7 PARAMETRI HEPOS
@@ -29,6 +35,7 @@ public class GridShiftTransformer {
     private static final double EZ = Math.toRadians(-0.151 / 3600.0);
 
     private static final double DS = -0.294e-6; // ppm -> unitless
+    private static double aggiuntaHDT;
 
     private static double[] helmert(double X, double Y, double Z) {
         double X2 = TX + (1 + DS) * (X + EZ * Y - EY * Z);
@@ -116,6 +123,8 @@ public class GridShiftTransformer {
     private final CoordinateTransform cartToGeo;  // cartesiano -> geodetico
     private final CoordinateTransform geoToTM87;  // geodetico -> EGSA87 proiettato
 
+
+
     public GridShiftTransformer(File dEfile, File dNfile) throws IOException {
         GridFile gridE = new GridFile(dEfile);
         GridFile gridN = new GridFile(dNfile);
@@ -168,8 +177,33 @@ public class GridShiftTransformer {
         // Step 5: correzioni da griglia
         double dE = dEInterp.interpolate(E, N);
         double dN = dNInterp.interpolate(E, N);
+        aggiuntaHDT=gridHeadingDeltaDeg(lat,lon);
 
         // Step 6: applica correzioni
         return new ProjCoordinate(E + dE, N + dN, geoEGSA.z);
+    }
+    private double gridHeadingDeltaDeg(double latDeg, double lonDeg) {
+
+        if (geoToTM87 == null) return 0.0;
+
+        final double epsDeg = 1e-4; // ~11 m
+
+        baseWgs.x = lonDeg;
+        baseWgs.y = latDeg;
+
+        northWgs.x = lonDeg;
+        northWgs.y = latDeg + epsDeg;
+
+        geoToTM87.transform(baseWgs, baseProj);
+        geoToTM87.transform(northWgs, northProj);
+
+        double dE = northProj.x - baseProj.x;
+        double dN = northProj.y - baseProj.y;
+
+        return Math.toDegrees(Math.atan2(dE, dN));
+    }
+
+    public static double getAggiuntaHDT() {
+        return aggiuntaHDT;
     }
 }

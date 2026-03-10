@@ -560,16 +560,23 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 da finire crs nederland">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Set_Secondo_SP.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_set_secondo_sp.xml" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 SP ok">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/CreateUTMFiles.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Diaalog_Set_SP.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Diaalog_Set_SP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Set_Secondo_SP.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Set_Secondo_SP.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectAdapter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectFileAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/ProjectFileAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/CoordinateTransformer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/SpLocalization.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/SpLocalization.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/CzechGridShiftTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/CzechGridShiftTransformer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/GridShiftTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/GridShiftTransformer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/ProjectedLocLocalization.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/ProjectedLocLocalization.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyEpsgNumber.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyEpsgNumber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_set_secondo_sp.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_set_secondo_sp.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -609,9 +616,9 @@
         <option value="Interface" />
         <option value="Enum" />
         <option value="resourceFile" />
-        <option value="Class" />
         <option value="layoutResourceFile" />
         <option value="Exception" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -809,14 +816,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00097" summary="4.1.0 da fare 3 drill options">
-      <option name="closed" value="true" />
-      <created>1770415825699</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1770415825700</updated>
     </task>
     <task id="LOCAL-00098" summary="4.1.0 da fare 3 drill options">
       <option name="closed" value="true" />
@@ -1202,7 +1201,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773057711161</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="4.1.0 SP ok">
+      <option name="closed" value="true" />
+      <created>1773098445844</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1773098445844</updated>
+    </task>
+    <option name="localTasksCounter" value="147" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1218,7 +1225,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.0.16 official release" />
     <MESSAGE value="4.0.17 official release" />
     <MESSAGE value="4.1.0 in progress" />
     <MESSAGE value="4.1.0 FMI Implementation done" />
@@ -1243,14 +1249,15 @@
     <MESSAGE value="4.1.0 tentativo 5514" />
     <MESSAGE value="4.1.0 tentativo aggiunta hdt" />
     <MESSAGE value="4.1.0 da finire crs nederland" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 da finire crs nederland" />
+    <MESSAGE value="4.1.0 SP ok" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 SP ok" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1773036925936" />
+            <CheckInfo lastCheckTimestamp="1773127541082" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1260,7 +1267,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1773036925935" />
+            <CheckInfo lastCheckTimestamp="1773127541083" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1270,7 +1277,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1773036925935" />
+            <CheckInfo lastCheckTimestamp="1773127541083" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

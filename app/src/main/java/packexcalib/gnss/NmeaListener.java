@@ -1,5 +1,6 @@
 package packexcalib.gnss;
 
+import static gui.MyApp.TEST_MODE;
 import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
@@ -16,6 +17,7 @@ import packexcalib.exca.PLC_DataTypes_LittleEndian;
 
 
 public class NmeaListener {
+
     private static final DateTimeFormatter YMD =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -59,7 +61,9 @@ public class NmeaListener {
 
     public static void NmeaStandard(String NMEA0183) {
 
-
+        if (TEST_MODE) {
+            return;
+        }
         try {
 
             myNmea = NMEA0183.substring(NMEA0183.indexOf("$") + 1, NMEA0183.indexOf("*"));
@@ -270,7 +274,9 @@ public class NmeaListener {
 
 
     public static void NmeaSTX(int id, byte[] data) {
-
+        if (TEST_MODE) {
+            return;
+        }
         switch (id) {
 
 
@@ -409,6 +415,9 @@ public class NmeaListener {
 
 
     public static void NmeaLeica(int id, byte[] data, int dlc) {
+        if (TEST_MODE) {
+            return;
+        }
         Can318PositionDecoder.Output o = posDecoder.feed(data, dlc);
 
         // o sarà != null quando ha finito di ricomporre il 3D (ultimo frame del blocco)

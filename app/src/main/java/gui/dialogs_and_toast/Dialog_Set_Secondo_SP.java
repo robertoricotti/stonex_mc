@@ -87,29 +87,29 @@ public class Dialog_Set_Secondo_SP {
 
     }
 
-    public void show() {
-
+    public void show(OnSpSelectedListener listener) {
+        this.onSpSelectedListener = listener;
 
         dialog.create();
         dialog.setContentView(R.layout.dialog_set_secondo_sp);
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
         if (window != null) {
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             WindowManager.LayoutParams wlp = window.getAttributes();
             wlp.gravity = Gravity.CENTER;
-            wlp.dimAmount = 0.7f; //  Offusca sfondo (0 = nessun dim, 1 = nero pieno)
-            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); //  Applica dim
+            wlp.dimAmount = 0.7f;
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             window.setAttributes(wlp);
         }
+
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
 
-        // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = (int) (displayMetrics.widthPixels * 0.75);
-        int height = (int) (displayMetrics.heightPixels *0.75);
+        int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
@@ -118,7 +118,6 @@ public class Dialog_Set_Secondo_SP {
         init();
         onClick();
         startUpdating();
-
     }
 
     public void show(String mPath, ProjectFileAdapter remoteAdapter) {
@@ -144,8 +143,8 @@ public class Dialog_Set_Secondo_SP {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 0.65);
-        int height = (int) (displayMetrics.heightPixels *0.5);
+        int width = (int) (displayMetrics.widthPixels * 0.75);
+        int height = (int) (displayMetrics.heightPixels *0.85);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
@@ -241,13 +240,10 @@ public class Dialog_Set_Secondo_SP {
                                     Log.e("testSP", Log.getStackTraceString(e));
                                 }
                                 ReadProjectService.startCRS();
-                            if(spAdapter!=null){
-                                spAdapter.notifyDataSetChanged();
+                            if (onSpSelectedListener != null) {
+                                onSpSelectedListener.onSpSelected();
                             }
-                            if(remoteAdapter!=null){
-                                remoteAdapter.notifyDataSetChanged();
-                            }
-                                dialog.dismiss();
+                            dialog.dismiss();
 
 
 
@@ -304,33 +300,30 @@ public class Dialog_Set_Secondo_SP {
     }
 
     private void sortFiles(String mPath) {
-
-        AssetManager assetManager = activity.getApplicationContext().getAssets(); // Ottiene l'AssetManager
+        AssetManager assetManager = activity.getApplicationContext().getAssets();
         String folderPath = ASSET_SP_ROOT + "/" + mPath;
 
         try {
-            // Ottiene tutti i file all'interno della cartella specificata
             String[] files = assetManager.list(folderPath);
 
             if (files != null) {
-                arraySP.clear(); // Pulisce la lista prima di aggiungere i nuovi file
+                arraySP.clear();
 
                 for (String fileName : files) {
-                    // Controlla se il file ha estensione ".SP"
                     if (fileName.toLowerCase().endsWith(".sp")) {
-                        // Aggiungi il file all'array con il parametro `isFolder` impostato su `false`
                         long fileSize = getFileSizeFromAssets(assetManager, folderPath + "/" + fileName);
-                        arraySP.add(new ProjectFileAdapter.FileItem(fileName, false, fileSize, new File(fileName).getAbsolutePath()));
-                        arraySPOriginale.clear();
-                        arraySPOriginale.addAll(arraySP);
-                        spAdapter.notifyDataSetChanged();
-
+                        arraySP.add(new ProjectFileAdapter.FileItem(
+                                fileName,
+                                false,
+                                fileSize,
+                                new File(fileName).getAbsolutePath()
+                        ));
                     }
                 }
 
-
-            } else {
-
+                arraySPOriginale.clear();
+                arraySPOriginale.addAll(arraySP);
+                spAdapter.notifyDataSetChanged();
             }
         } catch (IOException e) {
             Log.e("SpinnerTEST", "Errore durante la lettura dei file da assets", e);
@@ -610,5 +603,9 @@ public class Dialog_Set_Secondo_SP {
 
     }
 
+    private OnSpSelectedListener onSpSelectedListener;
+    public interface OnSpSelectedListener {
+        void onSpSelected();
+    }
 
 }

@@ -2,10 +2,10 @@ package services;
 
 
 import static gui.MyApp.cz_Q1;
-import static gui.MyApp.cz_Q3;
 import static gui.MyApp.gridFile_GR_dE;
 import static gui.MyApp.gridFile_GR_dN;
 import static gui.MyApp.heposTransformer;
+import static gui.MyApp.isCRSStarted;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static services.CanSender.GNSS_MSG;
 import static services.TriangleService.scanPNEZD;
@@ -103,8 +103,7 @@ public class ReadProjectService extends Service {
     public static boolean isFinishedDTM, isFinishedPOLY, isFinishedPOINT;
     public static double conversionFactor = 1;
     public static LocalizationModel model;
-    public static boolean CRS_IS_KROVAK_5514 = false;
-    public static boolean CRS_IS_KROVAK_5513 = false;
+
 
     public ReadProjectService() {
     }
@@ -310,6 +309,7 @@ public class ReadProjectService extends Service {
 
 
     public static void startCRS() {
+
         String s = MyData.get_String("crs");
 
         if (s != null) {
@@ -339,21 +339,18 @@ public class ReadProjectService extends Service {
                     }
                 } else {
 
-                    CRS_IS_KROVAK_5514 = false;
-                    CRS_IS_KROVAK_5513 = false;
+
                     switch (s) {
                         case "5513":
                             initBase5513Proj4j();
-                            CRS_IS_KROVAK_5513 = true;
                             break;
                         case "5514":
                             initBase5514Proj4j();
-                            CRS_IS_KROVAK_5514 = true;
-
                             break;
 
-                        case "150581": {
-                            initBaseKrovakGRS80Proj4j(); // crea WGS84, UTM(5514 base), wgsToUtm ecc.
+                        case "150581":
+                        case "150582": {
+                            initBase5514Proj4j(); // crea WGS84, UTM(5514 base), wgsToUtm ecc.
 
                             if (cz_Q1 == null) {
                                 try (InputStream is = MyApp.visibleActivity.getAssets().open("table_yx_3_v1710_Q1.gsb")) {
@@ -365,18 +362,7 @@ public class ReadProjectService extends Service {
                             }
                         }
                         break;
-                        case "150582": {
-                            initBaseKrovakGRS80Proj4j();
-                            if (cz_Q3 == null) {
-                                try (InputStream is = MyApp.visibleActivity.getAssets().open("table_yx_3_v1710_Q3.gsb")) {
-                                    cz_Q3 = new CzechGridShiftTransformer(is);
-                                } catch (Exception e) {
-                                    Log.e("GridShiftCZ", Log.getStackTraceString(e));
-                                    cz_Q3 = null;
-                                }
-                            }
-                        }
-                        break;
+
 
                         default: {
                             try {
@@ -446,6 +432,7 @@ public class ReadProjectService extends Service {
 
             MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
         }
+        isCRSStarted=true;
     }
 
     private static void initBase5514Proj4j() {
@@ -472,20 +459,6 @@ public class ReadProjectService extends Service {
             utmToWgs = ctFactory.createTransform(UTM, WGS84);
         } catch (Exception e) {
         }
-    }
-
-    private static void initBaseKrovakGRS80Proj4j() {
-        result = new ProjCoordinate();
-        crsFactory = new CRSFactory();
-        ctFactory = new CoordinateTransformFactory();
-        WGS84 = crsFactory.createFromName("epsg:4326");
-
-        String krovakGRS80 =
-                "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
-                        "+k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs";
-
-        UTM = crsFactory.createFromParameters("KROVAK_GRS80", krovakGRS80);
-        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
     }
 
     private static void initBase5513Proj4j() {

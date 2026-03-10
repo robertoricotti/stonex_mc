@@ -34,7 +34,6 @@ import utils.MyData;
 
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHolder> {
     private ArrayList<FileItem> files;
-    private Dialog_Set_Secondo_SP dialogSetSecondoSp;
 
     // Variables to track the selected position for each checkbox type
     private int selectedCkTrmPosition = -1;
@@ -55,7 +54,6 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         contactView = inflater.inflate(R.layout.layer_picker_row, parent, false);
-        dialogSetSecondoSp=new Dialog_Set_Secondo_SP(MyApp.visibleActivity);
         return new ViewHolder(contactView);
     }
 
@@ -309,9 +307,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             });
 
             txtcrs2.setOnClickListener(view -> {
-                if(!dialogSetSecondoSp.dialog.isShowing()){
-                    dialogSetSecondoSp.show();
-                }
+                Dialog_Set_Secondo_SP dialog = new Dialog_Set_Secondo_SP(MyApp.visibleActivity);
+                dialog.show(() -> {
+                    int pos = getBindingAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        notifyItemChanged(pos);
+                    } else {
+                        notifyDataSetChanged();
+                    }
+                });
             });
         }
 

@@ -30,7 +30,6 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
     private int selectedItem = -1;
     private boolean isFold = false;
     private boolean isCloudFolder=false;
-    private Dialog_Set_Secondo_SP dialogSetSecondoSp;
 
 
     private int filterType = 0; // 0 = tutti, 1 = solo cartelle, 2 = solo file
@@ -55,7 +54,6 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
         // Inflate the custom layout
         View contactView = inflater.inflate(R.layout.file_picker_row, parent, false);
-        dialogSetSecondoSp=new Dialog_Set_Secondo_SP(MyApp.visibleActivity);
         // Return a new holder instance
         return new ViewHolder(contactView);
     }
@@ -196,9 +194,15 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
                  */
             });
             txtcrs2.setOnClickListener(view -> {
-                if(!dialogSetSecondoSp.dialog.isShowing()){
-                    dialogSetSecondoSp.show();
-                }
+                Dialog_Set_Secondo_SP dialog = new Dialog_Set_Secondo_SP(MyApp.visibleActivity);
+                dialog.show(() -> {
+                    int pos = getBindingAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        notifyItemChanged(pos);
+                    } else {
+                        notifyDataSetChanged();
+                    }
+                });
             });
         }
     }
