@@ -28,6 +28,7 @@ import iredes.RigStatus_IR;
 import utils.MyData;
 
 public class DataSaved {
+    public static double Offset_Engcon=0;
     public static double DELTA_HDT_SMC;
     public static String SECONDO_S_CRS;
     public static int Drill_Text_Mode;

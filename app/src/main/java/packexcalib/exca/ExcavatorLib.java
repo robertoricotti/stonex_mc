@@ -41,7 +41,7 @@ public class ExcavatorLib {
     public static double msideC, msideCX, correctStick, correctPitch, correctToolRoll, correctToolPitch, correctDBStickAngle, quotaCentro, correctRoll, correctBucket, correctFlat, correctTilt, correctDeltaAngle, bennaSimulata, correctBoom1, correctBoom2, highestPoint, deg_Roll, Len_Roll, larghezzabenna, correctWTilt, correctEbubbleX, correctEbubbleY, startRX, startRY, startRZ,correctMastLink;
     public static double[] coordinateDZ, coordinateDX, coordinateDY, coordMiniPitch, coordB1, coordB2, coordST, coordiLSV, coordLSH, coordPivoTilt, coordTool;
     public static double[] toolEndCoord = new double[]{0, 0, 0};
-
+    public static double[] coordRotoCenter=new double[]{0, 0, 0};;
     public static double[] bucketCoord = new double[]{0, 0, 0};//centro benna
     public static double[] bucketLeftCoord = new double[]{0, 0, 0};
 
@@ -216,12 +216,11 @@ public class ExcavatorLib {
 
                             }
                             else {
-
                                 // =========================================
-                                // ROTOTILT - cinematica reale a frame rigido
+                                // ROTOTILT - cinematica reale con offset roto
                                 // =========================================
 
-                                // 1) Pivot tilt: sta sopra il roto, quindi rimane così
+                                // 1) Pivot tilt: asse tilt reale
                                 coordPivoTilt = Exca_Quaternion.endPoint(
                                         coordST,
                                         correctDeltaAngle,
@@ -230,8 +229,19 @@ public class ExcavatorLib {
                                         hdt_BOOM
                                 );
 
+                                // 2) Vero centro di rotazione del roto
+                                // Offset_Engcon = distanza "in avanti" rispetto al pivot tilt
+                                // Prima prova con +90. Se il verso fosse invertito, cambiare in -90.
+                                coordRotoCenter = Exca_Quaternion.endPoint(
+                                        coordPivoTilt,
+                                        correctDeltaAngle + 90.0,
+                                        Deg_Boom_Roll,
+                                        DataSaved.Offset_Engcon,
+                                        hdt_BOOM
+                                );
+
                                 // -------------------------------------------------
-                                // 2) Frame base al pivot, coerente col tuo sistema
+                                // 3) Frame base al centro roto, coerente col sistema
                                 // -------------------------------------------------
                                 org.apache.commons.math3.complex.Quaternion qBase = Exca_Quaternion.getOrientationQuaternion(
                                         correctDeltaAngle,
@@ -239,14 +249,14 @@ public class ExcavatorLib {
                                         hdt_BOOM
                                 );
 
-                                // Assi locali base del gruppo sotto il pivot
+                                // Assi locali base del gruppo sotto il roto
                                 // +Y = asse longitudinale della tua endPoint
                                 double[] forward = normalize(Exca_Quaternion.rotateVector(qBase, 0, 1, 0));
                                 double[] right   = normalize(Exca_Quaternion.rotateVector(qBase, 1, 0, 0));
                                 double[] up      = normalize(Exca_Quaternion.rotateVector(qBase, 0, 0, 1));
 
                                 // -------------------------------------------------
-                                // 3) ROTO: attorno all'asse utensile locale
+                                // 4) ROTO: attorno al suo vero asse
                                 // -------------------------------------------------
                                 double rotoDeg = MyMCUtils.wrap(Sensors_Decoder.Deg_Roto);
 
@@ -259,25 +269,23 @@ public class ExcavatorLib {
                                 right = normalize(cross(forward, up));
 
                                 // -------------------------------------------------
-                                // 4) TILT reale del gruppo
+                                // 5) TILT reale del gruppo
                                 // -------------------------------------------------
-                                // Questo è il tilt relativo vero: stessa logica che già usavi
                                 double tiltRel = correctTilt - Deg_Boom_Roll;
 
-                                forward = rotateAroundAxis(forward, right, tiltRel);
-                                up      = rotateAroundAxis(up, right, tiltRel);
+                                // tilt attorno all'asse up del gruppo
+                                forward = rotateAroundAxis(forward, up, tiltRel);
+                                right   = rotateAroundAxis(right,   up, tiltRel);
 
                                 // ripulitura
                                 forward = normalize(forward);
-                                up = normalize(cross(right, forward));
-                                right = normalize(cross(forward, up));
+                                right   = normalize(right);
+                                up      = normalize(cross(right, forward));
+                                right   = normalize(cross(forward, up));
 
                                 // -------------------------------------------------
-                                // 5) CURL reale benna
+                                // 6) CURL reale benna
                                 // -------------------------------------------------
-                                // Molto importante:
-                                // usiamo la differenza tra asse bucket e asse pivot-tilt
-                                // come rotazione relativa del giunto benna sotto il pivot
                                 double curlRel = MyMCUtils.wrap(correctWTilt - correctDeltaAngle);
 
                                 forward = rotateAroundAxis(forward, right, curlRel);
@@ -289,37 +297,44 @@ public class ExcavatorLib {
                                 right = normalize(cross(forward, up));
 
                                 // -------------------------------------------------
-                                // 6) Punti veri della benna dallo stesso corpo rigido
+                                // 7) Punti veri della benna
                                 // -------------------------------------------------
-                                bucketCoord = add(coordPivoTilt, scale(forward, DataSaved.piccolaBucket));
+                                // IMPORTANTISSIMO:
+                                // ora la benna parte dal vero centro roto, non dal pivot tilt
+                                bucketCoord = add(coordRotoCenter, scale(forward, DataSaved.piccolaBucket));
 
                                 double halfW = DataSaved.W_Bucket * 0.5d;
                                 bucketRightCoord = add(bucketCoord, scale(right, halfW));
                                 bucketLeftCoord  = add(bucketCoord, scale(right, -halfW));
 
                                 // -------------------------------------------------
-                                // 7) yawSensor NON guida più la geometria rototilt
+                                // 8) yawSensor NON guida la geometria rototilt
                                 // -------------------------------------------------
                                 yawSensor = 0;
 
                                 // -------------------------------------------------
-                                // 8) Debug quote: questo ti dirà subito se siamo giusti
+                                // 9) Debug quote
                                 // -------------------------------------------------
     /*
-    double distPivotCenter = DistToPoint.dist3D(coordPivoTilt, bucketCoord);
+    double distTiltToRoto = DistToPoint.dist3D(coordPivoTilt, coordRotoCenter);
+    double distRotoToCenter = DistToPoint.dist3D(coordRotoCenter, bucketCoord);
     double distLeftRight = DistToPoint.dist3D(bucketLeftCoord, bucketRightCoord);
 
     Log.d("ROTOTILT_KIN", "rotoDeg=" + rotoDeg
             + " tiltRel=" + tiltRel
             + " curlRel=" + curlRel);
 
-    Log.d("ROTOTILT_KIN", "pivotCenter=" + distPivotCenter
+    Log.d("ROTOTILT_KIN", "tiltToRoto=" + distTiltToRoto
+            + " expected=" + DataSaved.Offset_Engcon);
+
+    Log.d("ROTOTILT_KIN", "rotoToCenter=" + distRotoToCenter
             + " expected=" + DataSaved.piccolaBucket);
 
     Log.d("ROTOTILT_KIN", "leftRight=" + distLeftRight
             + " expected=" + DataSaved.W_Bucket);
 
-    Log.d("ROTOTILT_KIN", "pivot=[" + coordPivoTilt[0] + "," + coordPivoTilt[1] + "," + coordPivoTilt[2] + "]");
+    Log.d("ROTOTILT_KIN", "pivotTilt=[" + coordPivoTilt[0] + "," + coordPivoTilt[1] + "," + coordPivoTilt[2] + "]");
+    Log.d("ROTOTILT_KIN", "rotoCenter=[" + coordRotoCenter[0] + "," + coordRotoCenter[1] + "," + coordRotoCenter[2] + "]");
     Log.d("ROTOTILT_KIN", "center=[" + bucketCoord[0] + "," + bucketCoord[1] + "," + bucketCoord[2] + "]");
     Log.d("ROTOTILT_KIN", "left=[" + bucketLeftCoord[0] + "," + bucketLeftCoord[1] + "," + bucketLeftCoord[2] + "]");
     Log.d("ROTOTILT_KIN", "right=[" + bucketRightCoord[0] + "," + bucketRightCoord[1] + "," + bucketRightCoord[2] + "]");

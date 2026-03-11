@@ -32,6 +32,8 @@ import packexcalib.gnss.My_LocationCalc;
 import utils.DistToPoint;
 
 public class My_Benna {
+    public static double[] coneDown, coneUp;
+    static Point3DF coneDownF, coneUpF;
     static Point3DF P1_sx, P2_sx, P3_sx, P4_sx, P5_sx, P6_sx, P7_sx, P8_sx, PM1_sx, PM2_sx;
     static Point3DF P1_dx, P2_dx, P3_dx, P4_dx, P5_dx, P6_dx, P7_dx, P8_dx, PM1_dx, PM2_dx;
     static Point3DF PBASE, PBASE_ALTA;//punti attacco
@@ -211,13 +213,19 @@ public class My_Benna {
 
             double[] rightEdge = f.point(+halfW, 0.0, 0.0);
 
-            splA = add(p1, scale3(f.U, 0.05));
-            spcA = add(f.O, scale3(f.U, 0.05));
-            sprA = add(rightEdge, scale3(f.U, 0.05));
+// riferimento cono: verticale assoluto
+            double coneOffsetUp = 0.02;
+            double coneOffsetDown = 0.10;
 
-            splB = add(p1, scale3(f.U, -0.05));
-            spcB = add(f.O, scale3(f.U, -0.05));
-            sprB = add(rightEdge, scale3(f.U, -0.05));
+// punti superiori (origine cono)
+            splA = new double[]{p1[0],      p1[1],      p1[2] + coneOffsetUp};
+            spcA = new double[]{f.O[0],     f.O[1],     f.O[2] + coneOffsetUp};
+            sprA = new double[]{rightEdge[0], rightEdge[1], rightEdge[2] + coneOffsetUp};
+
+// punti inferiori (verso il basso assoluto)
+            splB = new double[]{p1[0],      p1[1],      p1[2] - coneOffsetDown};
+            spcB = new double[]{f.O[0],     f.O[1],     f.O[2] - coneOffsetDown};
+            sprB = new double[]{rightEdge[0], rightEdge[1], rightEdge[2] - coneOffsetDown};
         }
 
         double[] pos = new double[0];
@@ -237,6 +245,19 @@ public class My_Benna {
 
                 break;
         }
+        double coneLen = 10.0;
+
+        coneDown = new double[]{
+                pos[0],
+                pos[1],
+                pos[2] - coneLen
+        };
+
+        coneUp = new double[]{
+                pos[0],
+                pos[1],
+                pos[2] + coneLen
+        };
         if (DataSaved.lrTilt == 0) {
             fw = Exca_Quaternion.endPoint(pos, 0, 0, 50, mhdt);
             bw = Exca_Quaternion.endPoint(pos, 0, 0, 15, mhdt + 180);
@@ -250,26 +271,12 @@ public class My_Benna {
             rt = Exca_Quaternion.endPoint(pos, -correctTilt, 0, 10, mhdt + yawSensor + 90);
 
         } else {
-            BucketFrame f = buildBucketFrameRototilt();
-
-            double halfW = DistToPoint.dist3D(bucketLeftCoord, bucketRightCoord) * 0.5;
-
-            switch (DataSaved.bucketEdge) {
-                case -1:
-                    pos = f.point(-halfW, 0.0, 0.0);
-                    break;
-                case 1:
-                    pos = f.point(+halfW, 0.0, 0.0);
-                    break;
-                default:
-                    pos = f.O;
-                    break;
-            }
-
-            fw = add(pos, scale3(f.B, -50.0));
-            bw = add(pos, scale3(f.B, 15.0));
-            lt = add(pos, scale3(f.R, -10.0));
-            rt = add(pos, scale3(f.R, 10.0));
+            // ROTOTILT:
+            // croce verde classica sul piano orizzontale assoluto
+            fw = Exca_Quaternion.endPoint(pos, 0, 0, 50, mhdt);
+            bw = Exca_Quaternion.endPoint(pos, 0, 0, 15, mhdt + 180);
+            lt = Exca_Quaternion.endPoint(pos, 0, 0, 10, mhdt + 270);
+            rt = Exca_Quaternion.endPoint(pos, 0, 0, 10, mhdt + 90);
         }
         switch (DataSaved.isAutoSnap) {
             case 0:
@@ -390,6 +397,9 @@ public class My_Benna {
         bwF = pTransform(bw, DataSaved.glL_AnchorView, scale);
         ltF = pTransform(lt, DataSaved.glL_AnchorView, scale);
         rtF = pTransform(rt, DataSaved.glL_AnchorView, scale);
+
+        coneDownF = pTransform(coneDown, DataSaved.glL_AnchorView, scale);
+        coneUpF = pTransform(coneUp, DataSaved.glL_AnchorView, scale);
 
         P1_sx = pTransform(p1, DataSaved.glL_AnchorView, scale);
         P2_sx = pTransform(p2, DataSaved.glL_AnchorView, scale);
@@ -630,28 +640,21 @@ public class My_Benna {
         } else {
             // TILT ROTATOR
             BucketFrame f = buildBucketFrameRototilt();
-
             altezza = DataSaved.L_Bucket - (DataSaved.piccolaBucket * 0.95) - DataSaved.L_Tilt;
             altezzaAttacco = (float) (altezza * scale);
-
             double depthBack = DataSaved.piccolaBucket * 0.9;
-
             // retro benna e parte alta, coerenti col frame locale
             pmB = f.point(0.0, depthBack, 0.0);
             pmA = f.point(0.0, depthBack, altezza);
-
             // attacco sul pivot rototilt
             paFront = coordPivoTilt;
             paBack = add(coordPivoTilt, scale3(f.R, larghezza_attacco * 0.5));
             paFrontFront = add(coordPivoTilt, scale3(f.R, -larghezza_attacco * 0.5));
-
             // parte alta stick/tilt
             pmAH = coordST;
             pmBH = coordPivoTilt;
-
             // raggio pivot stabile e rigido
             raggioPivot = (float) (DistToPoint.dist3D(pmA, pmBH) * scale);
-
             PBASE = pTransform(pmB, DataSaved.glL_AnchorView, scale);
             PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, scale);
             P_A_Front = pTransform(paFront, DataSaved.glL_AnchorView, scale);

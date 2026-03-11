@@ -24,7 +24,8 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
-
+import static gui.my_opengl.exca.My_Benna.coneDownF;
+import static gui.my_opengl.exca.My_Benna.coneUpF;
 public class BennaRenderer {
     private FloatBuffer edgeBuffer;
     private int edgeCount;
@@ -218,7 +219,7 @@ public class BennaRenderer {
             gl.glLineWidth(3f);
             float[] c = GL_Methods.parseColorToGL(Color.GREEN);
             gl.glColor4f(c[0], c[1], c[2], 1);
-// Prepara buffer per le 4 linee
+
             float[] lineVertices = {
                     start.getX(), start.getY(), start.getZ(), fwF.getX(), fwF.getY(), fwF.getZ(),
                     start.getX(), start.getY(), start.getZ(), bwF.getX(), bwF.getY(), bwF.getZ(),
@@ -232,14 +233,15 @@ public class BennaRenderer {
             vertexBuffer.put(lineVertices);
             vertexBuffer.position(0);
 
-// Abilita e disegna
             gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
             gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
             gl.glDrawArrays(GL10.GL_LINES, 0, 8);
             gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 
         }
+
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+
     }
 
     private static class LineSegment {
