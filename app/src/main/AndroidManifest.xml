@@ -79,17 +79,23 @@
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
         <activity
+            android:name="gui.tech_menu.Tilt_Rot_Activity"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
             android:name="gui.hydro.OEM_Activity"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"  />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="gui.tech_menu.Mast_Antenna"
             android:autoRemoveFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"  />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service
             android:name="services.PointService"

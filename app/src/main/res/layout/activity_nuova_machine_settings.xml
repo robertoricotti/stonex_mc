@@ -742,6 +742,19 @@
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/toRoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/light_yellow"
+                        android:ems="15"
+                        android:visibility="gone"
+                        android:gravity="center"
+                        android:text="TILT ROTATOR"
+                        android:textColor="@color/_____cancel_text"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
 
                     <TextView

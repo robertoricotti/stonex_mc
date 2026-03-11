@@ -172,6 +172,9 @@ public class UpdateValuesService extends Service {
                     String swingLen = MyData.get_String("M" + i + "_Swing_Len");
                     String Drilling_Mode = MyData.get_String("M" + i + "Drilling_Mode");
 
+                    String Offset_Engcon_Forward = MyData.get_String("M" + i + "Offset_Engcon_Forward");
+                    String Offset_Engcon_Down = MyData.get_String("M" + i + "Offset_Engcon_Down");
+
 
                     String iswl = MyData.get_String("M" + i + "_isWL");
                     String enOUT = MyData.get_String("M" + i + "_enOUT");
@@ -409,6 +412,13 @@ public class UpdateValuesService extends Service {
                     }
                     if (Drilling_Mode == null) {
                         MyData.push("M" + i + "Drilling_Mode", "0");
+                    }
+
+                    if (Offset_Engcon_Forward == null) {
+                        MyData.push("M" + i + "Offset_Engcon_Forward", "0.1");
+                    }
+                    if (Offset_Engcon_Down == null) {
+                        MyData.push("M" + i + "Offset_Engcon_Down", "0.1");
                     }
 
                     //draw
@@ -1960,6 +1970,18 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Drilling_Mode: " + e.getMessage());
                 }
+
+                try {
+                    DataSaved.Offset_Engcon_Forward = MyData.get_Double("M" + indexMach + "Offset_Engcon_Forward");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Offset_Engcon_Forward: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Offset_Engcon_Down = MyData.get_Double("M" + indexMach + "Offset_Engcon_Down");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Offset_Engcon_Down: " + e.getMessage());
+                }
+
 
 
                 try {

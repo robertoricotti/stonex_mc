@@ -640,21 +640,26 @@ public class My_Benna {
         } else {
             // TILT ROTATOR
             BucketFrame f = buildBucketFrameRototilt();
+
             altezza = DataSaved.L_Bucket - (DataSaved.piccolaBucket * 0.95) - DataSaved.L_Tilt;
             altezzaAttacco = (float) (altezza * scale);
+
             double depthBack = DataSaved.piccolaBucket * 0.9;
-            // retro benna e parte alta, coerenti col frame locale
+
+            // parte inferiore benna coerente col frame inferiore
             pmB = f.point(0.0, depthBack, 0.0);
             pmA = f.point(0.0, depthBack, altezza);
-            // attacco sul pivot rototilt
+
+            // gruppo superiore resta sul giallo
             paFront = coordPivoTilt;
             paBack = add(coordPivoTilt, scale3(f.R, larghezza_attacco * 0.5));
             paFrontFront = add(coordPivoTilt, scale3(f.R, -larghezza_attacco * 0.5));
-            // parte alta stick/tilt
+
             pmAH = coordST;
             pmBH = coordPivoTilt;
-            // raggio pivot stabile e rigido
+
             raggioPivot = (float) (DistToPoint.dist3D(pmA, pmBH) * scale);
+
             PBASE = pTransform(pmB, DataSaved.glL_AnchorView, scale);
             PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, scale);
             P_A_Front = pTransform(paFront, DataSaved.glL_AnchorView, scale);
@@ -787,6 +792,7 @@ public class My_Benna {
 
         double[] R = normalize(sub(bucketRightCoord, bucketLeftCoord));
 
+        // il retro del gruppo inferiore punta verso il pivot tilt superiore
         double[] backRaw = sub(coordPivoTilt, O);
         double[] B = projectOnPlane(backRaw, R);
         B = normalize(B);
@@ -797,14 +803,12 @@ public class My_Benna {
             B = normalize(B);
         }
 
-        // QUI invertiamo la mano della terna
         double[] U = normalize(cross(B, R));
 
         if (norm(U) < 1e-6) {
             U = new double[]{0.0, 0.0, 1.0};
         }
 
-        // ripulitura coerente con la nuova mano
         B = normalize(cross(R, U));
         U = normalize(cross(B, R));
 
