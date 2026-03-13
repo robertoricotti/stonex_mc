@@ -565,24 +565,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 rototilt da testare 50%">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 rototilt da testare 80%">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer1_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer1_Tilt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2_Tilt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF_S.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF_S.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/BennaRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/BennaRenderer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/TiltCalib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/TiltCalib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Tilt_Rot_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Tilt_Rot_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_config_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_config_7.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_bucket_tilt_calib_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_bucket_tilt_calib_7.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_rot.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_rot.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -593,7 +580,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=512DS96403000001)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -827,14 +814,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00106" summary="4.1.0 da fare i report">
-      <option name="closed" value="true" />
-      <created>1770744499563</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
-      <option name="project" value="LOCAL" />
-      <updated>1770744499564</updated>
     </task>
     <task id="LOCAL-00107" summary="4.1.0 da fare i report">
       <option name="closed" value="true" />
@@ -1220,7 +1199,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773364316593</updated>
     </task>
-    <option name="localTasksCounter" value="155" />
+    <task id="LOCAL-00155" summary="4.1.0 rototilt da testare 80%">
+      <option name="closed" value="true" />
+      <created>1773406279921</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1773406279921</updated>
+    </task>
+    <option name="localTasksCounter" value="156" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1259,9 +1246,9 @@
     <MESSAGE value="4.1.0 SP ok" />
     <MESSAGE value="4.1.0 da testare a runtime" />
     <MESSAGE value="4.1.0 rototilt da finire di fixare.BIG ISSUE" />
-    <MESSAGE value="4.1.0 rototilt da testare 80%" />
     <MESSAGE value="4.1.0 rototilt da testare 50%" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 rototilt da testare 50%" />
+    <MESSAGE value="4.1.0 rototilt da testare 80%" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 rototilt da testare 80%" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

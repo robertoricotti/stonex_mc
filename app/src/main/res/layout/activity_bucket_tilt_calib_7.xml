@@ -72,22 +72,10 @@
       android:src="@drawable/save_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exit"
-        app:layout_constraintStart_toEndOf="@+id/load"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline89"/>
 
-    <ImageButton
-        android:id="@+id/load"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/yellow"
-        android:gravity="center"
-        android:padding="3dp"
-        android:src="@drawable/upload"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/save"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline89" />
+
 
     <ImageView
         android:id="@+id/exit"

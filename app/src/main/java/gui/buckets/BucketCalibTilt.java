@@ -1,42 +1,42 @@
 package gui.buckets;
 
-import static gui.MyApp.folderPath;
+import static packexcalib.exca.ExcavatorLib.coordPivoTilt;
+import static packexcalib.exca.ExcavatorLib.correctDeltaAngle;
+import static packexcalib.exca.ExcavatorLib.correctTilt;
+import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static packexcalib.exca.ExcavatorLib.yawSensor;
+import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static utils.Utils.isNumeric;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
-import com.opencsv.CSVWriter;
-
-import java.io.File;
-import java.io.FileWriter;
 
 import gui.BaseClass;
-import gui.MyApp;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.Exca_Quaternion;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Sensors_Decoder;
 import services.UpdateValuesService;
+import utils.DistToPoint;
 import utils.MyData;
+import utils.MyMCUtils;
 import utils.Utils;
 
 public class BucketCalibTilt extends BaseClass {
@@ -45,10 +45,9 @@ public class BucketCalibTilt extends BaseClass {
     Button minusTiltLevelAngle, plusTiltLevelAngle, setTiltLevelAngle;
     Button setFlatAngle, offsetZero, plusBuck, minusBuck;
     ImageView save, exit;
-    ImageView load;
     TextView offsetBucketAngle, offsetFlatAngle, offsetTiltLevelAngle;
     TextView bucketAngleTv, flatAngleTv, tiltLevelAngleTv;
-    CheckBox cbxOff, cbxLeft, cbxRight, cbTOff, cbTL, cbTR, top,topRev;
+    CheckBox cbxOff, cbxLeft, cbxRight, cbTOff, cbTL, cbTR, top, topRev;
     int indexBucket;
     int indexMachineSelected;
     CustomNumberDialog numberDialog;
@@ -89,8 +88,6 @@ public class BucketCalibTilt extends BaseClass {
         offsetZero = findViewById(R.id.offsetZero);
         save = findViewById(R.id.save);
         exit = findViewById(R.id.exit);
-        load = findViewById(R.id.load);
-        load.setVisibility(View.INVISIBLE);
         offsetBucketAngle = findViewById(R.id.bucketAngleOffset);
         offsetFlatAngle = findViewById(R.id.bucketAngleFlatOffset);
         offsetTiltLevelAngle = findViewById(R.id.tiltLevelAngleOffset);
@@ -129,16 +126,15 @@ public class BucketCalibTilt extends BaseClass {
     private void init() {
 
 
-
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
 
 
-            numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
+        numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
 
-            numberDialog = new CustomNumberDialog(this, -1);
+        numberDialog = new CustomNumberDialog(this, -1);
 
 
-        qwertyDialog = new CustomQwertyDialog(this,null);
+        qwertyDialog = new CustomQwertyDialog(this, null);
         indexBucket = getIntent().getExtras().getInt("indexBucket");
         indexMachineSelected = MyData.get_Int("MachineSelected");
         name.setText(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Name"));
@@ -183,7 +179,7 @@ public class BucketCalibTilt extends BaseClass {
     public void updateUI() {
 
         tinyBukt.setText(" (" + String.format("%.3f", DataSaved.piccolaBucket) + ")");
-        tiltLevelAngleTv.setText((getResources().getString(R.string.txt_tiltangle) + String.format("%.2f", ExcavatorLib.correctTilt) + " °").replace(",", "."));
+        tiltLevelAngleTv.setText((getResources().getString(R.string.txt_tiltangle) + String.format("%.2f", correctTilt) + " °").replace(",", "."));
         offsetTiltLevelAngle.setText((String.format("%.2f", DataSaved.offsetTilt) + " °").replace(",", "."));
         bucketAngleTv.setText(((getResources().getString(R.string.bucket_angle) + String.format("%.2f", ExcavatorLib.correctWTilt) + " °").replace(",", ".")));
         offsetBucketAngle.setText((String.format("%.2f", DataSaved.offsetDegWTilt) + " °").replace(",", "."));
@@ -205,7 +201,7 @@ public class BucketCalibTilt extends BaseClass {
             DataSaved.W_Bucket = 0;
         }
 
-        if (DataSaved.hasQuick == 1||DataSaved.L1<=0) {
+        if (DataSaved.hasQuick == 1 || DataSaved.L1 <= 0) {
             L4.setAlpha(0.5f);
             L4T.setAlpha(0.5f);
         } else {
@@ -236,7 +232,7 @@ public class BucketCalibTilt extends BaseClass {
         });
 
         L4.setOnClickListener((View v) -> {
-            if(DataSaved.hasQuick==0&&DataSaved.L1>0) {
+            if (DataSaved.hasQuick == 0 && DataSaved.L1 > 0) {
                 if (indexMeasure == 4 || indexMeasure == 5) {
                     if (!numberDialogFtIn.dialog.isShowing())
                         numberDialogFtIn.show(L4);
@@ -317,7 +313,6 @@ public class BucketCalibTilt extends BaseClass {
     }
 
     private void disableAll() {
-        load.setEnabled(false);
         save.setEnabled(false);
         exit.setEnabled(false);
     }
@@ -332,7 +327,7 @@ public class BucketCalibTilt extends BaseClass {
             }
             double a = DataSaved.L_Tilt;
             double c = DataSaved.L_Bucket;
-            double beta = ExcavatorLib.correctBucket - ExcavatorLib.correctDeltaAngle;
+            double beta = ExcavatorLib.correctBucket - correctDeltaAngle;
 
             DataSaved.piccolaBucket = Math.sqrt((a * a) + (c * c) - 2 * a * c * Math.cos(Math.toRadians(beta)));
 
@@ -345,18 +340,25 @@ public class BucketCalibTilt extends BaseClass {
             setTiltLevelAngle.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
             DataSaved.offsetTilt = Sensors_Decoder.Deg_tilt;
 
+            DataSaved.L_RotoToBucket=routine_LRoto();
+            try {
+                MyData.push("M" + indexMachineSelected + "L_RotoToBucket" + indexBucket, (String.valueOf(DataSaved.L_RotoToBucket)));
+            } catch (Exception ignored) {
+            }
+            Log.d("L_RotoToBucket",String.valueOf(DataSaved.L_RotoToBucket));
+
             return true;
         });
 
         setFlatAngle.setOnLongClickListener((View v) -> {
             setFlatAngle.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
 
-                DataSaved.offsetFlat = ExcavatorLib.correctBucket;
-                if (DataSaved.offsetFlat > -90) {
-                    DataSaved.flat = 90 - Math.abs(DataSaved.offsetFlat);
-                } else {
-                    DataSaved.flat = Math.abs(DataSaved.offsetFlat) - 90;
-                }
+            DataSaved.offsetFlat = ExcavatorLib.correctBucket;
+            if (DataSaved.offsetFlat > -90) {
+                DataSaved.flat = 90 - Math.abs(DataSaved.offsetFlat);
+            } else {
+                DataSaved.flat = Math.abs(DataSaved.offsetFlat) - 90;
+            }
 
             return true;
         });
@@ -375,7 +377,27 @@ public class BucketCalibTilt extends BaseClass {
         MyData.push("M" + indexMachineSelected + "_Tilt_piccolaBucket" + indexBucket, String.valueOf(DataSaved.piccolaBucket));
     }
 
+    private double routine_LRoto() {
+        // 2) centro perno di tilt all'altezza del centro di rotazione
+        double []coordRotoTop = Exca_Quaternion.endPoint(
+                coordPivoTilt,
+                correctDeltaAngle + 90,
+                Deg_Boom_Roll,
+                DataSaved.Offset_Engcon_Forward, hdt_BOOM
+        );
 
+        //3 centro rotazione ROTOTILT, ultimo punto della catena cinematica vincolata al BOOM
+
+        double[] coordRotoCenter = Exca_Quaternion.endPoint(
+                coordRotoTop,
+                correctDeltaAngle,
+                correctTilt,
+                DataSaved.Offset_Engcon_Down,
+                hdt_BOOM + yawSensor
+
+        );
+        return DistToPoint.dist3D(coordRotoCenter,ExcavatorLib.bucketCoord);
+    }
 
     @Override
     protected void onDestroy() {

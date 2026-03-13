@@ -37,6 +37,7 @@ public class Tilt_Rot_Activity extends BaseClass {
         init();
         onClick();
         updateUI();
+        updateCk();
 
     }
 
@@ -74,11 +75,13 @@ public class Tilt_Rot_Activity extends BaseClass {
             DataSaved.isTiltRotator += 1;
             DataSaved.isTiltRotator = DataSaved.isTiltRotator % 2;
             cbxEnTR.setChecked(DataSaved.isTiltRotator == 1);
+            updateCk();
         });
         cbxInvTR.setOnClickListener(view -> {
             DataSaved.revTiltRot += 1;
             DataSaved.revTiltRot = DataSaved.revTiltRot % 2;
             cbxInvTR.setChecked(DataSaved.revTiltRot == 1);
+            updateCk();
         });
         save.setOnClickListener(view -> {
             save.setEnabled(false);
@@ -152,6 +155,18 @@ public class Tilt_Rot_Activity extends BaseClass {
         deltaFW.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "Offset_Engcon_Forward")));
         deltaDW.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "Offset_Engcon_Down")));
         lroto.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "L_RotoToBucket" + indexBucket)));
+    }
+    private void updateCk(){
+        if(DataSaved.isTiltRotator==1){
+            cbxEnTR.setBackground(getDrawable(R.drawable.sfondo_bottone_selezionato));
+        }else {
+            cbxEnTR.setBackground(getDrawable(R.drawable.sfondo_bottone_trasparente));
+        }
+        if(DataSaved.revTiltRot==1){
+            cbxInvTR.setBackground(getDrawable(R.drawable.sfondo_bottone_selezionato));
+        }else {
+            cbxInvTR.setBackground(getDrawable(R.drawable.sfondo_bottone_trasparente));
+        }
     }
 
 
