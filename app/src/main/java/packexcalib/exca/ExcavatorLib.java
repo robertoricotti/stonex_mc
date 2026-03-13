@@ -26,7 +26,7 @@ import utils.DistToPoint;
 import utils.MyMCUtils;
 
 public class ExcavatorLib {
-
+    public static ToolFrame currentToolFrame;
     public static double hdt_BOOM, hdt_LAMA;
     static int lowerEdge;
     static double myRollLen, myPitchLen;
@@ -41,7 +41,8 @@ public class ExcavatorLib {
     public static double msideC, msideCX, correctStick, correctPitch, correctToolRoll, correctToolPitch, correctDBStickAngle, quotaCentro, correctRoll, correctBucket, correctFlat, correctTilt, correctDeltaAngle, bennaSimulata, correctBoom1, correctBoom2, highestPoint, deg_Roll, Len_Roll, larghezzabenna, correctWTilt, correctEbubbleX, correctEbubbleY, startRX, startRY, startRZ,correctMastLink;
     public static double[] coordinateDZ, coordinateDX, coordinateDY, coordMiniPitch, coordB1, coordB2, coordST, coordiLSV, coordLSH, coordPivoTilt, coordTool;
     public static double[] toolEndCoord = new double[]{0, 0, 0};
-    public static double[] coordRotoCenter=new double[]{0, 0, 0};;
+    public static double[] coordRotoCenter=new double[]{0, 0, 0};
+    public static double[] coordRotoTop=new double[]{0,0,0};
     public static double[] bucketCoord = new double[]{0, 0, 0};//centro benna
     public static double[] bucketLeftCoord = new double[]{0, 0, 0};
 
@@ -172,15 +173,16 @@ public class ExcavatorLib {
 
                         } else {
 
+
+                            yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(
+                                    correctTilt - Deg_Boom_Roll,
+                                    correctBucket,
+                                    piccolaBucket,
+                                    L_Bucket
+                            );
+                            yawSensor = MyMCUtils.wrap(yawSensor);
                             if (!isTiltRotator) {
 
-                                yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(
-                                        correctTilt - Deg_Boom_Roll,
-                                        correctBucket,
-                                        piccolaBucket,
-                                        L_Bucket
-                                );
-                                yawSensor = MyMCUtils.wrap(yawSensor);
 
                                 coordPivoTilt = Exca_Quaternion.endPoint(
                                         coordST,
@@ -216,15 +218,13 @@ public class ExcavatorLib {
 
                             }
                             else {
+
                                 // =========================================
-                                // ROTOTILT - cinematica reale
-                                // giallo = coordPivoTilt
-                                // verde  = coordRotoCenter
-                                // rosso  = delta locale giallo -> verde
-                                // blu    = piccolaBucket da verde a centro benna
+                                // ROTOTILT CINEMATICA CORRETTA
+                                // roto applicato al vettore reale
                                 // =========================================
 
-                                // 1) Pivot tilt superiore (giallo)
+                                // 1) pivot tilt
                                 coordPivoTilt = Exca_Quaternion.endPoint(
                                         coordST,
                                         correctDeltaAngle,
@@ -233,106 +233,54 @@ public class ExcavatorLib {
                                         hdt_BOOM
                                 );
 
-                                // 2) Frame superiore al pivot tilt
-                                org.apache.commons.math3.complex.Quaternion qTop =
-                                        Exca_Quaternion.getOrientationQuaternion(
-                                                correctDeltaAngle,
-                                                Deg_Boom_Roll,
-                                                hdt_BOOM
-                                        );
+                                // 2) centro perno di tilt all'altezza del centro di rotazione
+                                coordRotoTop=Exca_Quaternion.endPoint(
+                                        coordPivoTilt,
+                                        correctDeltaAngle+90,
+                                        Deg_Boom_Roll,
+                                        DataSaved.Offset_Engcon_Forward,hdt_BOOM
+                                );
 
-                                double[] forwardTop = normalize(Exca_Quaternion.rotateVector(qTop, 0, 1, 0));
-                                double[] rightTop   = normalize(Exca_Quaternion.rotateVector(qTop, 1, 0, 0));
-                                double[] upTop      = normalize(Exca_Quaternion.rotateVector(qTop, 0, 0, 1));
+                                //3 centro rotazione ROTOTILT, ultimo punto della catena cinematica vincolata al BOOM
 
-                                // ripulitura
-                                upTop = normalize(cross(rightTop, forwardTop));
-                                rightTop = normalize(cross(forwardTop, upTop));
+                                coordRotoCenter=Exca_Quaternion.endPoint(
+                                        coordRotoTop,
+                                        correctDeltaAngle,
+                                        correctTilt,
+                                        DataSaved.Offset_Engcon_Down,
+                                        hdt_BOOM+yawSensor
 
-                                // 3) Delta rossa: giallo -> verde
-                                // avanti locale + verso il basso locale
-                                double[] offForward = scale(forwardTop, DataSaved.Offset_Engcon_Forward);
-                                double[] offDown    = scale(upTop, -DataSaved.Offset_Engcon_Down);
+                                );
 
-                                coordRotoCenter = add3(coordPivoTilt, offForward, offDown);
+                                //4 centro benna
+                                bucketCoord = Exca_Quaternion.endPoint(
+                                        coordRotoCenter,
+                                        correctWTilt,
+                                        correctTilt,
+                                        DataSaved.L_RotoToBucket,
+                                        hdt_BOOM + yawSensor + Sensors_Decoder.Deg_Roto
+                                );
 
-                                // 4) Frame inferiore iniziale al centro roto
-                                double[] forward = forwardTop.clone();
-                                double[] right   = rightTop.clone();
-                                double[] up      = upTop.clone();
+                                //5 destra
+                                bucketRightCoord = Exca_Quaternion.endPoint(
+                                        bucketCoord,
+                                        -correctTilt,
+                                        0,
+                                        DataSaved.W_Bucket * 0.5d,
+                                        hdt_BOOM + yawSensor + Sensors_Decoder.Deg_Roto + 90
+                                );
+                                //6 sinistra
+                                bucketLeftCoord = Exca_Quaternion.endPoint(
+                                        bucketCoord,
+                                        correctTilt,
+                                        0,
+                                        DataSaved.W_Bucket * 0.5d,
+                                        hdt_BOOM + yawSensor + Sensors_Decoder.Deg_Roto + 270
+                                );
+                                //TODO da qui completare bucketCoord e spigoli, sapendo che la lunghezza del segmento è DataSaved.L_RotoToBucket
 
-                                // 5) ROTO: attorno al vero asse roto
-                                double rotoDeg = MyMCUtils.wrap(Sensors_Decoder.Deg_Roto);
-
-                                right = rotateAroundAxis(right, forward, rotoDeg);
-                                up    = rotateAroundAxis(up, forward, rotoDeg);
-
-                                // ripulitura
-                                right = normalize(right);
-                                up    = normalize(cross(right, forward));
-                                right = normalize(cross(forward, up));
-
-                                // 6) TILT reale del gruppo inferiore
-                                double tiltRel = correctTilt - Deg_Boom_Roll;
-
-                                // se sul campo il verso è invertito, inverti questa riga:
-                                // double tiltRel = -(correctTilt - Deg_Boom_Roll);
-
-                                forward = rotateAroundAxis(forward, up, tiltRel);
-                                right   = rotateAroundAxis(right,   up, tiltRel);
-
-                                // ripulitura
-                                forward = normalize(forward);
-                                right   = normalize(right);
-                                up      = normalize(cross(right, forward));
-                                right   = normalize(cross(forward, up));
-
-                                // 7) CURL reale benna
-                                double curlRel = MyMCUtils.wrap(correctWTilt - correctDeltaAngle);
-
-                                // se sul campo il verso è invertito, inverti questa riga:
-                                // double curlRel = -MyMCUtils.wrap(correctWTilt - correctDeltaAngle);
-
-                                forward = rotateAroundAxis(forward, right, curlRel);
-                                up      = rotateAroundAxis(up, right, curlRel);
-
-                                // ripulitura finale
-                                forward = normalize(forward);
-                                up      = normalize(cross(right, forward));
-                                right   = normalize(cross(forward, up));
-
-                                // 8) Centro benna e spigoli
-                                // blu: parte dal verde, NON dal giallo
-                                bucketCoord = add(coordRotoCenter, scale(forward, DataSaved.piccolaBucket));
-
-                                double halfW = DataSaved.W_Bucket * 0.5d;
-                                bucketRightCoord = add(bucketCoord, scale(right,  halfW));
-                                bucketLeftCoord  = add(bucketCoord, scale(right, -halfW));
-
-                                // 9) yawSensor non guida il rototilt
-                                yawSensor = 0;
-
-    /*
-    double distTiltToRoto = DistToPoint.dist3D(coordPivoTilt, coordRotoCenter);
-    double distRotoToCenter = DistToPoint.dist3D(coordRotoCenter, bucketCoord);
-    double distLeftRight = DistToPoint.dist3D(bucketLeftCoord, bucketRightCoord);
-
-    Log.d("ROTOTILT_KIN", "rotoDeg=" + rotoDeg
-            + " tiltRel=" + tiltRel
-            + " curlRel=" + curlRel);
-
-    Log.d("ROTOTILT_KIN", "tiltToRoto=" + distTiltToRoto
-            + " expected~=" + Math.sqrt(
-                    DataSaved.Offset_Engcon_Forward * DataSaved.Offset_Engcon_Forward +
-                    DataSaved.Offset_Engcon_Down * DataSaved.Offset_Engcon_Down));
-
-    Log.d("ROTOTILT_KIN", "rotoToCenter=" + distRotoToCenter
-            + " expected=" + DataSaved.piccolaBucket);
-
-    Log.d("ROTOTILT_KIN", "leftRight=" + distLeftRight
-            + " expected=" + DataSaved.W_Bucket);
-    */
                             }
+
 
 
                         }
@@ -678,6 +626,11 @@ public class ExcavatorLib {
 
     }
 
+    private static double[] rotateAroundAxisRaw(double[] v, double[] axis, double angleDeg) {
+        org.apache.commons.math3.complex.Quaternion q = axisAngleQuaternion(axis, angleDeg);
+        return Exca_Quaternion.rotateVector(q, v[0], v[1], v[2]);
+    }
+
 
     private static double mDist2Surf(double sideC, double slopeY) {
 
@@ -796,5 +749,23 @@ public class ExcavatorLib {
     private static double[] rotateAroundAxis(double[] v, double[] axis, double angleDeg) {
         org.apache.commons.math3.complex.Quaternion q = axisAngleQuaternion(axis, angleDeg);
         return normalize(Exca_Quaternion.rotateVector(q, v[0], v[1], v[2]));
+    }
+    public static class ToolFrame {
+        public double[] origin;   // centro benna
+        public double[] forward;  // direzione punta -> retro o viceversa, basta che sia coerente
+        public double[] right;    // lato dx benna
+        public double[] up;       // normale locale
+        public double[] rotoCenter;
+        public double[] tiltPivot;
+
+        public ToolFrame(double[] origin, double[] forward, double[] right, double[] up,
+                         double[] rotoCenter, double[] tiltPivot) {
+            this.origin = origin;
+            this.forward = forward;
+            this.right = right;
+            this.up = up;
+            this.rotoCenter = rotoCenter;
+            this.tiltPivot = tiltPivot;
+        }
     }
 }

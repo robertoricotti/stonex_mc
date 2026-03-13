@@ -7,8 +7,12 @@ import static gui.my_opengl.exca.My_Benna.rtF;
 import static gui.my_opengl.exca.My_Benna.start;
 
 import android.graphics.Color;
-import android.opengl.GLES11;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -17,15 +21,7 @@ import javax.microedition.khronos.opengles.GL11;
 import gui.my_opengl.GL_Methods;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
-// Inserisci prima questa classe nel tuo progetto Android OpenGL ES 1.0
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-import java.util.ArrayList;
-import static gui.my_opengl.exca.My_Benna.coneDownF;
-import static gui.my_opengl.exca.My_Benna.coneUpF;
 public class BennaRenderer {
     private FloatBuffer edgeBuffer;
     private int edgeCount;
@@ -59,8 +55,8 @@ public class BennaRenderer {
         addFiancataContour(0, 10, inputPoints);   // fiancata sinistra
         addFiancataContour(11, 21, inputPoints);  // fiancata destra
         addEdgeLine(inputPoints[3], inputPoints[14]);
-        addEdgeLine(inputPoints[0],inputPoints[11]);
-        addEdgeLine(inputPoints[4],inputPoints[15]);
+        addEdgeLine(inputPoints[0], inputPoints[11]);
+        addEdgeLine(inputPoints[4], inputPoints[15]);
         // Ricostruzione edgeBuffer con i nuovi contorni
         float[] edgeVertices = new float[edgeLines.size() * 6];
         for (int i = 0; i < edgeLines.size(); i++) {
@@ -103,7 +99,9 @@ public class BennaRenderer {
             addVertex(finalVertices, a);
             addVertex(finalVertices, b);
             addVertex(finalVertices, c);
-            outerIndices.add(ia); outerIndices.add(ib); outerIndices.add(ic);
+            outerIndices.add(ia);
+            outerIndices.add(ib);
+            outerIndices.add(ic);
 
             // Add back face (inner)
             short ia2 = currentIndex++;
@@ -112,7 +110,9 @@ public class BennaRenderer {
             addVertex(finalVertices, a2);
             addVertex(finalVertices, b2);
             addVertex(finalVertices, c2);
-            innerIndices.add(ic2); innerIndices.add(ib2); innerIndices.add(ia2); // reversed winding
+            innerIndices.add(ic2);
+            innerIndices.add(ib2);
+            innerIndices.add(ia2); // reversed winding
 
             // Add edges
           /*  addEdgeLine(a, b);
@@ -190,8 +190,12 @@ public class BennaRenderer {
         addVertex(vList, p1e);
 
         // Decide color by face normal later
-        outer.add(i0); outer.add(i1); outer.add(i2);
-        outer.add(i0); outer.add(i2); outer.add(i3);
+        outer.add(i0);
+        outer.add(i1);
+        outer.add(i2);
+        outer.add(i0);
+        outer.add(i2);
+        outer.add(i3);
 
         return (short) (startIndex + 4);
     }
@@ -215,7 +219,7 @@ public class BennaRenderer {
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, edgeBuffer);
         gl.glDrawArrays(GL10.GL_LINES, 0, edgeCount);
 
-        if(DataSaved.showAlign>0) {
+        if (DataSaved.showAlign > 0) {
             gl.glLineWidth(3f);
             float[] c = GL_Methods.parseColorToGL(Color.GREEN);
             gl.glColor4f(c[0], c[1], c[2], 1);
@@ -246,6 +250,7 @@ public class BennaRenderer {
 
     private static class LineSegment {
         Point3DF a, b;
+
         LineSegment(Point3DF a, Point3DF b) {
             this.a = a;
             this.b = b;
@@ -257,9 +262,6 @@ public class BennaRenderer {
             addEdgeLine(points[i], points[i + 1]);
         }
     }
-
-
-
 
 
 }

@@ -705,6 +705,7 @@ public class UpdateValuesService extends Service {
                         String offsettilA = MyData.get_String("M" + i + "_Tilt_Offset_Angle" + j);
 
                         String degwtilt = MyData.get_String("M" + i + "_Offset_DegWTilt" + j);
+                        String L_RotoToBucket=MyData.get_String("M"+i+"L_RotoToBucket"+j);
 
 
                         if (name == null) {
@@ -746,6 +747,9 @@ public class UpdateValuesService extends Service {
 
                         if (degwtilt == null) {
                             MyData.push("M" + i + "_Offset_DegWTilt" + j, "0");
+                        }
+                        if (L_RotoToBucket == null) {
+                            MyData.push("M" + i + "L_RotoToBucket" + j, "0");
                         }
 
                     }

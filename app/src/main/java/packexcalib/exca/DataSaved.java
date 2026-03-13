@@ -28,6 +28,7 @@ import iredes.RigStatus_IR;
 import utils.MyData;
 
 public class DataSaved {
+    public static double L_RotoToBucket;
     public static double Offset_Engcon_Forward;
     public static double Offset_Engcon_Down;
     public static double DELTA_HDT_SMC;

@@ -66,12 +66,19 @@ public class Tilt_Rot_Activity extends BaseClass {
     private void onClick(){
         save.setOnClickListener(view -> {
             save.setEnabled(false);
-            if(!deltaFW.getText().isEmpty()) {
-                MyData.push("M" + indexMachineSelected + "Offset_Engcon_Forward", Utils.writeMetri(deltaFW.getText().toString()));
-            }
-            if(!deltaDW.getText().isEmpty()) {
+                try {
+                    MyData.push("M" + indexMachineSelected + "Offset_Engcon_Forward", Utils.writeMetri(deltaFW.getText().toString()));
+
+                } catch (Exception ignored) {
+
+                }
+
+            try {
                 MyData.push("M" + indexMachineSelected + "Offset_Engcon_Down", Utils.writeMetri(deltaDW.getText().toString()));
+
+            } catch (Exception ignored) {
             }
+
             startService(new Intent(this, UpdateValuesService.class));
             startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
