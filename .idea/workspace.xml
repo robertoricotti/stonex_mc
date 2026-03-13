@@ -566,11 +566,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 rototilt da testare 80%">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Tilt_Rot_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Tilt_Rot_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_bucket_tilt_calib_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_bucket_tilt_calib_7.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_rot.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_rot.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -814,14 +810,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00107" summary="4.1.0 da fare i report">
-      <option name="closed" value="true" />
-      <created>1770933070244</created>
-      <option name="number" value="00107" />
-      <option name="presentableId" value="LOCAL-00107" />
-      <option name="project" value="LOCAL" />
-      <updated>1770933070244</updated>
     </task>
     <task id="LOCAL-00108" summary="4.1.0 da fare i report">
       <option name="closed" value="true" />
@@ -1207,7 +1195,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773406279921</updated>
     </task>
-    <option name="localTasksCounter" value="156" />
+    <task id="LOCAL-00156" summary="4.1.0 rototilt da testare 80%">
+      <option name="closed" value="true" />
+      <created>1773422081021</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1773422081021</updated>
+    </task>
+    <option name="localTasksCounter" value="157" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
