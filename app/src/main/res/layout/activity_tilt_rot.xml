@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -11,13 +10,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.09" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintBottom_toTopOf="@id/h1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/h1" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/h30"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.3633" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h66"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6366" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -25,18 +40,57 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9" />
+        app:layout_constraintGuide_percent="0.91" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/_____cancel_text"
+        app:layout_constraintBottom_toTopOf="@id/h90"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/h30"
-        app:layout_constraintBottom_toTopOf="@id/h30"
-        />
+        app:layout_constraintTop_toTopOf="@id/h90" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintBottom_toTopOf="@id/h30"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/h30" />
+
+    <CheckBox
+        android:id="@+id/cbxInvTR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        android:text="REVERSE  \nTILT ROT. "
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:ems="10"
+        app:layout_constraintBottom_toTopOf="@+id/h1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/guideline124"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/cbxEnTR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        android:text="ENABLE  \nTILT ROT. "
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:ems="10"
+        app:layout_constraintBottom_toTopOf="@+id/h1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guideline124"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/v60"
@@ -58,32 +112,35 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
+
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/h1"
-        app:layout_constraintBottom_toTopOf="@id/h30"
-        app:layout_constraintRight_toLeftOf="@id/v60"
         android:src="@drawable/roto1"
+        app:layout_constraintBottom_toTopOf="@id/h30"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/v60"
+        app:layout_constraintTop_toBottomOf="@id/h1" />
 
-
-        />
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/h30"
-        app:layout_constraintBottom_toTopOf="@id/h90"
-        app:layout_constraintRight_toLeftOf="@id/v60"
         android:paddingVertical="5dp"
         android:src="@drawable/roto2"
-        />
+        app:layout_constraintBottom_toTopOf="@id/h66"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/v60"
+        app:layout_constraintTop_toBottomOf="@id/h30" />
 
-
-
-
-
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingVertical="5dp"
+        android:src="@drawable/roto3"
+        app:layout_constraintBottom_toTopOf="@id/h90"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/v60"
+        app:layout_constraintTop_toBottomOf="@id/h66" />
     <ImageView
         android:id="@+id/save"
         android:layout_width="60dp"
@@ -103,22 +160,22 @@
         android:backgroundTint="@color/dark_gray"
         android:gravity="center"
         android:padding="5dp"
-        app:tint="@color/_____cancel_text"
         android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline124"
-        app:layout_constraintTop_toTopOf="@+id/h90" />
+        app:layout_constraintTop_toTopOf="@+id/h90"
+        app:tint="@color/_____cancel_text" />
 
     <TextView
         android:id="@+id/txtDeltaFW"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="Roto\nΔ-FWD"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
         android:gravity="center"
+        android:text="Roto\nΔ-FWD"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/h30"
         app:layout_constraintEnd_toStartOf="@+id/guideline125"
         app:layout_constraintStart_toStartOf="@+id/v60"
@@ -128,19 +185,28 @@
         android:id="@+id/txtDeltaDW"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="Roto\nΔ-DOWN"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h90"
+        android:text="Roto\nΔ-DOWN"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/h66"
         app:layout_constraintEnd_toStartOf="@+id/guideline125"
         app:layout_constraintStart_toStartOf="@+id/v60"
         app:layout_constraintTop_toTopOf="@+id/h30" />
-
-
-
-
+    <TextView
+        android:id="@+id/txtroto"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="Wheel To\nBucket"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/h90"
+        app:layout_constraintEnd_toStartOf="@+id/guideline125"
+        app:layout_constraintStart_toStartOf="@+id/v60"
+        app:layout_constraintTop_toTopOf="@+id/h66" />
 
 
     <EditText
@@ -149,6 +215,7 @@
         android:layout_height="wrap_content"
         android:digits="0123456789."
         android:focusableInTouchMode="false"
+        android:gravity="center"
         android:imeOptions="flagNoExtractUi|actionDone"
         android:inputType="numberSigned"
         android:maxLines="1"
@@ -156,15 +223,10 @@
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/h30"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/h1" />
-
-
-
-
 
 
     <EditText
@@ -173,6 +235,7 @@
         android:layout_height="wrap_content"
         android:digits="0123456789."
         android:focusableInTouchMode="false"
+        android:gravity="center"
         android:imeOptions="flagNoExtractUi|actionDone"
         android:inputType="numberSigned"
         android:maxLines="1"
@@ -180,13 +243,28 @@
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/h90"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/h66"
         app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/h30" />
-
-
+    <EditText
+        android:id="@+id/lroto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:digits="0123456789."
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/h90"
+        app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/h66" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

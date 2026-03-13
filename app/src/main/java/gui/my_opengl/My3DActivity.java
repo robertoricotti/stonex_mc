@@ -348,6 +348,10 @@ public class My3DActivity extends BaseClass {
     }
 
     private void onClick() {
+        marcia.setOnClickListener(view -> {
+            DataSaved.isTiltRotator+=1;
+            DataSaved.isTiltRotator=DataSaved.isTiltRotator%2;
+        });
         hydroPoint.setOnClickListener(view -> {
 
             if (DataSaved.isWL == GRADER) {

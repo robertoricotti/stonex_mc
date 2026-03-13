@@ -25,10 +25,9 @@ import iredes.Pattern_IR;
 import iredes.Point3D_Drill;
 import iredes.Point3D_IR;
 import iredes.RigStatus_IR;
-import utils.MyData;
 
 public class DataSaved {
-    public static double L_RotoToBucket;
+    public static double L_RotoToBucket=1.2;
     public static double Offset_Engcon_Forward;
     public static double Offset_Engcon_Down;
     public static double DELTA_HDT_SMC;
@@ -406,9 +405,9 @@ public class DataSaved {
     public static int useQuickSwitch;
     public static int priorityNet;
     public static String wifiSSID;
-    public static boolean isTiltRotator;
+    public static int isTiltRotator;
     public static double line_Offset;
-    public static int reverseRotator;
+    public static int revTiltRot;
     public static int isExtensionBoom;
     public static int showAlign;
 

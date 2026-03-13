@@ -224,7 +224,6 @@ public class CanSender extends Service {
                         Deg_Benna_W_Tilt = currentRight.getRightAxisX();
                         Deg_boom1 = currentRight.getRightAxisY() * -1;
                         Deg_Roto = currentLeft.getLeftYaw();
-                        isTiltRotator = DataSaved.lrTilt != 0;
                         NmeaListener.roof_Orientation = currentRight.getRightYaw()+HEADING;
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();

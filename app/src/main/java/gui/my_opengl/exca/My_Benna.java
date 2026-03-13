@@ -34,6 +34,11 @@ import packexcalib.gnss.My_LocationCalc;
 import utils.DistToPoint;
 
 public class My_Benna {
+    static Point3DF DBG_PIVO_TILT;
+    static Point3DF DBG_ROTO_TOP;
+    static Point3DF DBG_ROTO_CENTER;
+    static Point3DF DBG_BUCKET_CENTER;
+
 
     public static double[] coneDown, coneUp;
     static Point3DF coneDownF, coneUpF;
@@ -162,7 +167,7 @@ public class My_Benna {
             spcB = Exca_Quaternion.endPoint(bucketCoord, -90, 0, 0.05, mhdt);
             sprB = Exca_Quaternion.endPoint(bucketRightCoord, -90, 0, 0.05, mhdt);
 
-        } else if (!DataSaved.isTiltRotator) {
+        } else if (DataSaved.isTiltRotator!=1) {
             // TILT NORMALE
             flatLen = Math.sin(Math.toRadians(DataSaved.flat)) * DataSaved.piccolaBucket;
             flatTop = Math.max(0.18, flatLen * 0.8);
@@ -264,7 +269,7 @@ public class My_Benna {
             lt = Exca_Quaternion.endPoint(pos, Deg_Boom_Roll, 0, 10, mhdt + 270);
             rt = Exca_Quaternion.endPoint(pos, -Deg_Boom_Roll, 0, 10, mhdt + 90);
 
-        } else if (!DataSaved.isTiltRotator) {
+        } else if (DataSaved.isTiltRotator!=1) {
             fw = Exca_Quaternion.endPoint(pos, 0, 0, 50, mhdt + yawSensor);
             bw = Exca_Quaternion.endPoint(pos, 0, 0, 15, mhdt + yawSensor + 180);
             lt = Exca_Quaternion.endPoint(pos, correctTilt, 0, 10, mhdt + yawSensor + 270);
@@ -414,6 +419,11 @@ public class My_Benna {
         SPIG_CB = pTransform(spcB, DataSaved.glL_AnchorView, scale);
         SPIG_RB = pTransform(sprB, DataSaved.glL_AnchorView, scale);
 
+        DBG_PIVO_TILT   = pTransform(coordPivoTilt, DataSaved.glL_AnchorView, scale);
+        DBG_ROTO_TOP    = pTransform(ExcavatorLib.coordRotoTop, DataSaved.glL_AnchorView, scale);
+        DBG_ROTO_CENTER = pTransform(ExcavatorLib.coordRotoCenter, DataSaved.glL_AnchorView, scale);
+        DBG_BUCKET_CENTER = pTransform(bucketCoord, DataSaved.glL_AnchorView, scale);
+
         return new Point3DF[]{
                 P1_sx, PM2_sx, PM1_sx, P3_sx, P4_sx, P7_sx, P5_sx, P6_sx, P8_sx, P2_sx, P1_sx
         };
@@ -467,7 +477,7 @@ public class My_Benna {
             p5 = Exca_Quaternion.endPoint(p6, correctBucket + 90 + (90 - segments[2].angleDegrees), Deg_Boom_Roll, segments[2].length, mhdt);
             p7 = Exca_Quaternion.endPoint(p5, correctBucket + 90 + (90 - segments[3].angleDegrees), Deg_Boom_Roll, segments[3].length, mhdt);
 
-        } else if (!DataSaved.isTiltRotator) {
+        } else if (DataSaved.isTiltRotator!=1) {
             flatLen = Math.sin(Math.toRadians(DataSaved.flat)) * DataSaved.piccolaBucket;
             flatTop = Math.max(0.18, flatLen * 0.8);
 
@@ -574,7 +584,7 @@ public class My_Benna {
             PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, scale);
             PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, scale);
 
-        } else if (!DataSaved.isTiltRotator) {
+        } else if (DataSaved.isTiltRotator!=1) {
             altezza = DataSaved.L_Bucket - (DataSaved.piccolaBucket * 0.95) - DataSaved.L_Tilt;
             altezzaAttacco = (float) (altezza * scale);
 
@@ -667,7 +677,12 @@ public class My_Benna {
                 sx[0], sx[1], sx[2], sx[3], sx[4], sx[5], sx[6], sx[7], sx[8], sx[9], sx[10],
                 dx[0], dx[1], dx[2], dx[3], dx[4], dx[5], dx[6], dx[7], dx[8], dx[9], dx[10],
                 SPIG_C, SPIG_R, SPIG_L, SPIG_CB, SPIG_RB, SPIG_LB,
-                glLinePoint, glSegmentPoint, glSegmentEnd, glLinePunto, glPuntoTerra, glTerraPunto
+                glLinePoint, glSegmentPoint, glSegmentEnd, glLinePunto, glPuntoTerra, glTerraPunto,
+                // DEBUG ROTOTILT
+                DBG_PIVO_TILT,     // 34
+                DBG_ROTO_TOP,      // 35
+                DBG_ROTO_CENTER,   // 36
+                DBG_BUCKET_CENTER  // 37
         };
     }
 

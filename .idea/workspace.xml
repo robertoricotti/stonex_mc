@@ -566,7 +566,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 rototilt da testare 50%">
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer1_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer1_Tilt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2_Tilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/DrawDXF_Layer2_Tilt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF_S.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF_S.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/BennaRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/BennaRenderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Canvas_Crea_Superficie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/TiltCalib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/TiltCalib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Tilt_Rot_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Tilt_Rot_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_config_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_config_7.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_rot.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_tilt_rot.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -810,14 +827,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00105" summary="4.1.0 da fare i report">
-      <option name="closed" value="true" />
-      <created>1770654978594</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1770654978594</updated>
     </task>
     <task id="LOCAL-00106" summary="4.1.0 da fare i report">
       <option name="closed" value="true" />
@@ -1203,7 +1212,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773360620500</updated>
     </task>
-    <option name="localTasksCounter" value="154" />
+    <task id="LOCAL-00154" summary="4.1.0 rototilt da testare 50%">
+      <option name="closed" value="true" />
+      <created>1773364316593</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1773364316593</updated>
+    </task>
+    <option name="localTasksCounter" value="155" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1251,7 +1268,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1773265849719" />
+            <CheckInfo lastCheckTimestamp="1773396636746" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1261,7 +1278,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1773265849718" />
+            <CheckInfo lastCheckTimestamp="1773396636744" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1271,7 +1288,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1773265849718" />
+            <CheckInfo lastCheckTimestamp="1773396636745" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

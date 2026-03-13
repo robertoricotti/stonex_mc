@@ -3,13 +3,8 @@ package gui.tech_menu;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -17,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
@@ -102,7 +96,7 @@ public class TiltCalib extends BaseClass {
 
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
         try {
-            cbxInvTR.setChecked(DataSaved.reverseRotator == 1);
+            cbxInvTR.setChecked(DataSaved.revTiltRot == 1);
             currentBucket = MyData.get_Int("M" + indexMachineSelected+"BucketSelected");
         } catch (Exception e) {
             currentBucket = 1;
@@ -374,14 +368,14 @@ titolo.setText(getString(R.string.tilt_calibration)+" n:"+currentBucket);
 
     private void onCheckedChanged() {
         cbxInvTR.setOnClickListener(view -> {
-            DataSaved.reverseRotator += 1;
-            DataSaved.reverseRotator = DataSaved.reverseRotator % 2;
-            if (DataSaved.reverseRotator == 0) {
+            DataSaved.revTiltRot += 1;
+            DataSaved.revTiltRot = DataSaved.revTiltRot % 2;
+            if (DataSaved.revTiltRot == 0) {
                 cbxInvTR.setChecked(false);
-            } else if (DataSaved.reverseRotator == 1) {
+            } else if (DataSaved.revTiltRot == 1) {
                 cbxInvTR.setChecked(true);
             }
-            MyData.push("M" + indexMachineSelected + "revTiltRot", String.valueOf(DataSaved.reverseRotator));
+            MyData.push("M" + indexMachineSelected + "revTiltRot", String.valueOf(DataSaved.revTiltRot));
         });
         cbxOff.setOnCheckedChangeListener((CompoundButton c, boolean b) -> {
             if (cbxOff.isChecked()) {

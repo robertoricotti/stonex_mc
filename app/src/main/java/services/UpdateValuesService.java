@@ -3,7 +3,6 @@ package services;
 
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.EXCAVATOR;
-import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
@@ -121,6 +120,7 @@ public class UpdateValuesService extends Service {
                     }
                     String nameM = MyData.get_String("M" + i + "_Name");
                     String reverseRoto = MyData.get_String("M" + i + "revTiltRot");
+                    String isTiltRotator = MyData.get_String("M" + i + "isTiltRotator");
                     String lengthBoom1 = MyData.get_String("M" + i + "_LengthBoom1");
                     String offsetAngleBoom1 = MyData.get_String("M" + i + "_OffsetBoom1");
                     String mountPosBoom1 = MyData.get_String("M" + i + "_Boom1_MountPos");
@@ -263,6 +263,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (reverseRoto == null) {
                         MyData.push("M" + i + "revTiltRot", "0");
+                    }
+                    if (isTiltRotator == null) {
+                        MyData.push("M" + i + "isTiltRotator", "0");
                     }
                     if (lengthBoom1 == null) {
                         MyData.push("M" + i + "_LengthBoom1", "-1");
@@ -749,7 +752,7 @@ public class UpdateValuesService extends Service {
                             MyData.push("M" + i + "_Offset_DegWTilt" + j, "0");
                         }
                         if (L_RotoToBucket == null) {
-                            MyData.push("M" + i + "L_RotoToBucket" + j, "0");
+                            MyData.push("M" + i + "L_RotoToBucket" + j, "1.0");
                         }
 
                     }
@@ -1312,9 +1315,14 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di lrFrame: " + e.getMessage());
                 }
                 try {
-                    DataSaved.reverseRotator = MyData.get_Int("M" + indexMach + "revTiltRot");
+                    DataSaved.revTiltRot = MyData.get_Int("M" + indexMach + "revTiltRot");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di revTiltRot: " + e.getMessage());
+                }
+                try {
+                    DataSaved.isTiltRotator = MyData.get_Int("M" + indexMach + "isTiltRotator");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di isTiltRotator: " + e.getMessage());
                 }
 
                 try {
@@ -2155,6 +2163,11 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di offsetDegWTilt: " + e.getMessage());
                 }
 
+                try {
+                    DataSaved.L_RotoToBucket = MyData.get_Double("M" + indexMach + "L_RotoToBucket" + indexBucket);
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di L_RotoToBucket: " + e.getMessage());
+                }
                 try {
                     DataSaved.scale_Factor = MyData.get_Double("scaleFactor");
                 } catch (Exception e) {

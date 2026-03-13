@@ -35,6 +35,7 @@ import packexcalib.exca.ExcavatorLib;
 import services.TriangleService;
 
 public class DrawDXF_Layer1_Tilt extends View {
+    boolean hasTiltRoto=false;
 
     final float PIVOT_X = 0.50f;
     final float PIVOT_Y = 0.75f;
@@ -68,6 +69,7 @@ public class DrawDXF_Layer1_Tilt extends View {
         paint.setAntiAlias(true);
 
         try {
+            hasTiltRoto=DataSaved.isTiltRotator==1;
 
             Path path = new Path();
             scala = (int) (85 + DataSaved.scale_FactorVista1D);
@@ -182,7 +184,7 @@ public class DrawDXF_Layer1_Tilt extends View {
             //-------------------------------- DRAW STICK --------------------------------
             paint.setColor(MyColorClass.colorStick);
 
-            if(!DataSaved.isTiltRotator) {
+            if(!hasTiltRoto) {
                 path.moveTo(stick.get(0).x, stick.get(0).y);
                 for (int i = 1; i < stick.size(); i++) {
                     path.lineTo(stick.get(i).x, stick.get(i).y);

@@ -1,7 +1,5 @@
 package gui.draw_class;
 
-import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
-import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static services.TriangleService.tutteLinee;
 import static utils.MyTypes.EXCAVATOR;
@@ -15,7 +13,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -29,21 +26,20 @@ import java.util.Comparator;
 import java.util.List;
 
 import dxf.Point2D;
-import dxf.Point3D;
-import dxf.Segment;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import services.TriangleService;
 import utils.MyMCUtils;
 import utils.Utils;
 
-public class DrawDXF_Layer2_Tilt  extends View {
-float mFixedXX;
+public class DrawDXF_Layer2_Tilt extends View {
+    boolean hasTiltRoto = false;
+    float mFixedXX;
     final float PIVOT_X = 0.50f;
     final float PIVOT_Y = 0.65f;
     double height;
 
-    Paint paint,dashedPaint;
+    Paint paint, dashedPaint;
 
     int scala;
     private GestureDetector gestureDetector;
@@ -54,10 +50,11 @@ float mFixedXX;
     private int activePointerId = INVALID_POINTER_ID;
     public static float offsetX;
     public static float offsetY;
+
     public DrawDXF_Layer2_Tilt(Context context) {
         super(context);
         paint = new Paint();
-        dashedPaint=new Paint();
+        dashedPaint = new Paint();
         if (DataSaved.scale_FactorVista2D == 0) {
             DataSaved.scale_FactorVista2D = 1f;
         }
@@ -72,7 +69,7 @@ float mFixedXX;
         super.onDraw(canvas);
         paint.setAntiAlias(true);
         try {
-
+            hasTiltRoto=DataSaved.isTiltRotator==1;
 
             Path path = new Path();
             scala = (int) (85 + DataSaved.scale_FactorVista2D);
@@ -81,9 +78,9 @@ float mFixedXX;
             canvas.translate(offsetX, offsetY);
             //-------------------------------- INIT BUCKET --------------------------------
             double bucketWidth = DataSaved.W_Bucket * scala;
-            double mDist = (DataSaved.L_Bucket-DataSaved.L_Tilt)*Math.sin(Math.toRadians(Math.abs(ExcavatorLib.correctBucket))) ;
-            mDist= MyMCUtils.limitD(mDist,0.3,Double.MAX_VALUE);
-            double bucketHeight= mDist*scala;
+            double mDist = (DataSaved.L_Bucket - DataSaved.L_Tilt) * Math.sin(Math.toRadians(Math.abs(ExcavatorLib.correctBucket)));
+            mDist = MyMCUtils.limitD(mDist, 0.3, Double.MAX_VALUE);
+            double bucketHeight = mDist * scala;
 
             PointF left_top_bucket = new PointF();
             PointF right_bottom_bucket = new PointF();
@@ -158,18 +155,18 @@ float mFixedXX;
             PointF left_top_tilt = new PointF();
             PointF right_bottom_tilt = new PointF();
 
-            double ly = DataSaved.L_Tilt*scala;
+            double ly = DataSaved.L_Tilt * scala;
 
             left_top_tilt.x = ((bucket.get(1).x + bucket.get(2).x) / 2f) - stickWidth * 1.10f;
             left_top_tilt.y = ((bucket.get(1).y + bucket.get(2).y) / 2f) - (float) ly;
 
             right_bottom_tilt.x = ((bucket.get(1).x + bucket.get(2).x) / 2f) + stickWidth * 1.10f;
-            right_bottom_tilt.y = ((bucket.get(1).y + bucket.get(2).y) / 2f) ;
+            right_bottom_tilt.y = ((bucket.get(1).y + bucket.get(2).y) / 2f);
 
 
             //--------------------------------- DRAW STICK --------------------------------
-            if(DataSaved.isWL==EXCAVATOR) {
-                if (!DataSaved.isTiltRotator) {
+            if (DataSaved.isWL == EXCAVATOR) {
+                if (!hasTiltRoto) {
                     paint.setColor(MyColorClass.colorStick);
                     path.moveTo(stick.get(1).x, stick.get(1).y);
                     path.lineTo(stick.get(2).x, stick.get(2).y);
@@ -187,7 +184,7 @@ float mFixedXX;
             //--------------------------------- DRAW BUCKET --------------------------------
 
             //interno benna
-            if((ExcavatorLib.bucketCoord[2])<(ExcavatorLib.coordST[2])){
+            if ((ExcavatorLib.bucketCoord[2]) < (ExcavatorLib.coordST[2])) {
                 paint.setColor(MyColorClass.colorBucket);
                 path.moveTo(bucket.get(1).x, bucket.get(1).y);
                 path.lineTo(bucket.get(2).x, bucket.get(2).y);
@@ -216,7 +213,7 @@ float mFixedXX;
                 canvas.drawPath(path, paint);
                 path.reset();
                 paint.setStyle(Paint.Style.FILL);
-            }else {
+            } else {
                 paint.setColor(MyColorClass.colorBucket);
                 path.moveTo(bucket.get(1).x, bucket.get(1).y);
                 path.lineTo(bucket.get(2).x, bucket.get(2).y);
@@ -232,17 +229,17 @@ float mFixedXX;
             paint.setColor(MyColorClass.colorBucket);
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(Color.DKGRAY);
-            canvas.drawRoundRect(left_top_tilt.x, left_top_tilt.y, right_bottom_tilt.x, right_bottom_tilt.y,5f,5f, paint);
+            canvas.drawRoundRect(left_top_tilt.x, left_top_tilt.y, right_bottom_tilt.x, right_bottom_tilt.y, 5f, 5f, paint);
             paint.setColor(Color.GRAY);
             paint.setStyle(Paint.Style.STROKE);
-            canvas.drawRoundRect(left_top_tilt.x, left_top_tilt.y, right_bottom_tilt.x, right_bottom_tilt.y,5f,5f, paint);
+            canvas.drawRoundRect(left_top_tilt.x, left_top_tilt.y, right_bottom_tilt.x, right_bottom_tilt.y, 5f, 5f, paint);
             paint.setStyle(Paint.Style.FILL);
 
 
             //--------------------------------- DRAW SPIGOLO RIFERIMENTO --------------------------------
-            if(DataSaved.isLowerEdge){
+            if (DataSaved.isLowerEdge) {
                 paint.setColor(Color.RED);
-            }else {
+            } else {
                 paint.setColor(Color.BLUE);
             }
 
@@ -250,15 +247,15 @@ float mFixedXX;
 
             switch (edge) {
                 case -1:
-                    mFixedXX=bucket.get(4).x;
+                    mFixedXX = bucket.get(4).x;
                     canvas.drawCircle(bucket.get(4).x, bucket.get(4).y, (float) (8f), paint);
                     break;
                 case 0:
-                    mFixedXX=(bucket.get(3).x + bucket.get(4).x) / 2f;
+                    mFixedXX = (bucket.get(3).x + bucket.get(4).x) / 2f;
                     canvas.drawCircle((bucket.get(3).x + bucket.get(4).x) / 2f, (bucket.get(3).y + bucket.get(4).y) / 2f, (float) (8f), paint);
                     break;
                 case 1:
-                    mFixedXX=bucket.get(3).x;
+                    mFixedXX = bucket.get(3).x;
                     canvas.drawCircle(bucket.get(3).x, bucket.get(3).y, (float) (8f), paint);
                     break;
             }
@@ -272,16 +269,16 @@ float mFixedXX;
                 case -1:
                     float startX_ = bucket.get(4).x;
                     float startY_ = bucket.get(4).y;
-                    float stopY_ = (float) (startY_ + (TriangleService.quota3D_SX*scala));
-                    if(!TriangleService.ltOffGrid) {
-                        canvas.drawLine(startX_, startY_+1f, startX_, stopY_+1f, paint);
+                    float stopY_ = (float) (startY_ + (TriangleService.quota3D_SX * scala));
+                    if (!TriangleService.ltOffGrid) {
+                        canvas.drawLine(startX_, startY_ + 1f, startX_, stopY_ + 1f, paint);
                     }
                     break;
                 case 0:
                     float startX = (bucket.get(3).x + bucket.get(4).x) / 2f;
                     float startY = (bucket.get(3).y + bucket.get(4).y) / 2f;
                     float stopY = startY + (float) TriangleService.quota3D_CT * scala;
-                    if(!TriangleService.ctOffGrid) {
+                    if (!TriangleService.ctOffGrid) {
                         canvas.drawLine(startX, startY, startX, stopY, paint);
                     }
 
@@ -290,8 +287,8 @@ float mFixedXX;
                     float startX__ = bucket.get(3).x;
                     float startY__ = bucket.get(3).y;
                     float stopY__ = startY__ + (float) TriangleService.quota3D_DX * scala;
-                    if(!TriangleService.rtOffGrid) {
-                       canvas.drawLine(startX__, startY__+1f, startX__, stopY__+1f, paint);
+                    if (!TriangleService.rtOffGrid) {
+                        canvas.drawLine(startX__, startY__ + 1f, startX__, stopY__ + 1f, paint);
                     }
 
                     break;
@@ -327,11 +324,11 @@ float mFixedXX;
 
                 try {
                     paint.setColor(MyColorClass.colorGroundY);
-                    float x = fixedX - (float) sortedPoints0.get(i).getX()*scala;
-                    float y = fixedY - (float) sortedPoints0.get(i).getY()*scala;
+                    float x = fixedX - (float) sortedPoints0.get(i).getX() * scala;
+                    float y = fixedY - (float) sortedPoints0.get(i).getY() * scala;
                     if (i < sortedPoints0.size() - 1) {
-                        float xNext = fixedX - (float) sortedPoints0.get(i + 1).getX()*scala;
-                        float yNext = fixedY - (float) sortedPoints0.get(i + 1).getY()*scala;
+                        float xNext = fixedX - (float) sortedPoints0.get(i + 1).getX() * scala;
+                        float yNext = fixedY - (float) sortedPoints0.get(i + 1).getY() * scala;
                         canvas.drawLine(x, y, xNext, yNext, paint);
 
                     }
@@ -339,8 +336,8 @@ float mFixedXX;
                     if (DataSaved.offsetH != 0) {
                         paint.setColor(MyColorClass.colorOffsetLine);
                         if (i < sortedPoints0.size() - 1) {
-                            float xNext = fixedX - (float) sortedPoints0.get(i + 1).getX()*scala;
-                            float yNext = fixedY - (float) sortedPoints0.get(i + 1).getY()*scala;
+                            float xNext = fixedX - (float) sortedPoints0.get(i + 1).getX() * scala;
+                            float yNext = fixedY - (float) sortedPoints0.get(i + 1).getY() * scala;
                             canvas.drawLine(x, (float) (y + DataSaved.offsetH * scala), xNext, (float) (yNext + DataSaved.offsetH * scala), paint);
 
                         }
@@ -353,19 +350,19 @@ float mFixedXX;
                 //dietro
                 try {
                     paint.setColor(MyColorClass.colorGroundY);
-                    float x = fixedX + (float) sortedPoints1.get(i).getX()*scala;
-                    float y = fixedY - (float) sortedPoints1.get(i).getY()*scala;
-                    if (i < sortedPoints1.size() -1) {
-                        float xNext = fixedX + (float) sortedPoints1.get(i + 1).getX()*scala;
-                        float yNext = fixedY - (float) sortedPoints1.get(i + 1).getY()*scala;
+                    float x = fixedX + (float) sortedPoints1.get(i).getX() * scala;
+                    float y = fixedY - (float) sortedPoints1.get(i).getY() * scala;
+                    if (i < sortedPoints1.size() - 1) {
+                        float xNext = fixedX + (float) sortedPoints1.get(i + 1).getX() * scala;
+                        float yNext = fixedY - (float) sortedPoints1.get(i + 1).getY() * scala;
                         canvas.drawLine(x, y, xNext, yNext, paint);
                     }
 
                     if (DataSaved.offsetH != 0) {
                         paint.setColor(MyColorClass.colorOffsetLine);
                         if (i < sortedPoints1.size() - 1) {
-                            float xNext = fixedX + (float) sortedPoints1.get(i + 1).getX()*scala;
-                            float yNext = fixedY - (float) sortedPoints1.get(i + 1).getY()*scala;
+                            float xNext = fixedX + (float) sortedPoints1.get(i + 1).getX() * scala;
+                            float yNext = fixedY - (float) sortedPoints1.get(i + 1).getY() * scala;
                             canvas.drawLine(x, (float) (y + DataSaved.offsetH * scala), xNext, (float) (yNext + DataSaved.offsetH * scala), paint);
                         }
                     }
@@ -376,15 +373,15 @@ float mFixedXX;
             if (!sortedPoints0.isEmpty() && !sortedPoints1.isEmpty()) {
                 Point2D lastPoint0 = sortedPoints0.get(0);
                 Point2D firstPoint1 = sortedPoints1.get(0);
-                float xLast0 = fixedX - (float) lastPoint0.getX()*scala;
-                float yLast0 = fixedY - (float) lastPoint0.getY()*scala;
-                float xFirst1 = fixedX + (float) firstPoint1.getX()*scala;
-                float yFirst1 = fixedY - (float) firstPoint1.getY()*scala;
+                float xLast0 = fixedX - (float) lastPoint0.getX() * scala;
+                float yLast0 = fixedY - (float) lastPoint0.getY() * scala;
+                float xFirst1 = fixedX + (float) firstPoint1.getX() * scala;
+                float yFirst1 = fixedY - (float) firstPoint1.getY() * scala;
                 paint.setColor(MyColorClass.colorGroundY);
                 canvas.drawLine(xLast0, yLast0, xFirst1, yFirst1, paint);
-                if(DataSaved.offsetH != 0){
+                if (DataSaved.offsetH != 0) {
                     paint.setColor(MyColorClass.colorOffsetLine);
-                    canvas.drawLine(xLast0, (float) (yLast0+DataSaved.offsetH*scala), xFirst1, (float) (yFirst1+DataSaved.offsetH*scala), paint);
+                    canvas.drawLine(xLast0, (float) (yLast0 + DataSaved.offsetH * scala), xFirst1, (float) (yFirst1 + DataSaved.offsetH * scala), paint);
                 }
             }
 
@@ -475,7 +472,6 @@ float mFixedXX;
             if (DataSaved.isAutoSnap == 2) {
 
 
-
                 float dist = 0;
                 switch (DataSaved.bucketEdge) {
                     case -1:
@@ -490,7 +486,7 @@ float mFixedXX;
 
                 }
 
-                float x = mFixedXX - (dist*TriangleService.segnoLinea);
+                float x = mFixedXX - (dist * TriangleService.segnoLinea);
                 dashedPaint.setAntiAlias(true);
                 dashedPaint.setStyle(Paint.Style.STROKE);
                 dashedPaint.setColor(MyColorClass.colorConstraint);
@@ -605,15 +601,17 @@ float mFixedXX;
             invalidate();
             return true;
         }
+
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             // Ripristina il pan al doppio tap e lo zoom
-            offsetX=0;
-            offsetY=0;
+            offsetX = 0;
+            offsetY = 0;
             invalidate();
             return true;
         }
     }
+
     // Gestione dello zoom
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override

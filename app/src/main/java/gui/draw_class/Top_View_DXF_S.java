@@ -54,6 +54,7 @@ import packexcalib.gnss.NmeaListener;
 import utils.DistToPoint;
 
 public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callback{
+    boolean hasTiltRoto=false;
     float cingoliWidth;
     float cingoliHeight;
     List<PointF> arcPoints;
@@ -111,7 +112,7 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
         init(context);
     }
     private void init(Context context) {
-
+        hasTiltRoto=DataSaved.isTiltRotator==1;
 
 
         if (DataSaved.scale_Factor3D == 0) {
@@ -131,7 +132,7 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
 
         bucketWidth = DataSaved.W_Bucket * scala;
 
-        if (DataSaved.isTiltRotator) {
+        if (hasTiltRoto) {
             mRoll = 0;
         } else {
             mRoll = (float) (DataSaved.L_Roll * scala);
@@ -890,7 +891,7 @@ public class Top_View_DXF_S extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.DKGRAY);
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawCircle(rotatedCenterX, rotatedCenterY, radius, paint);
-        if (DataSaved.isTiltRotator && DataSaved.lrTilt != 0) {
+        if (hasTiltRoto && DataSaved.lrTilt != 0) {
 
             paint.setStyle(Paint.Style.FILL);
             paint.setTextSize(18f);

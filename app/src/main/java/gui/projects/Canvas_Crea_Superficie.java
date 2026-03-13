@@ -742,7 +742,7 @@ public class Canvas_Crea_Superficie extends View {
         paint.setColor(Color.DKGRAY);
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawCircle(rotatedCenterX, rotatedCenterY, radius, paint);
-        if (DataSaved.isTiltRotator && DataSaved.lrTilt != 0) {
+        if (DataSaved.isTiltRotator==1 && DataSaved.lrTilt != 0) {
 
             paint.setStyle(Paint.Style.FILL);
             paint.setTextSize(18f);

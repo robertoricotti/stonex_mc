@@ -359,6 +359,7 @@
         android:textAllCaps="true"
         android:textColor="@color/black"
         android:textSize="25sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/guideline149"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

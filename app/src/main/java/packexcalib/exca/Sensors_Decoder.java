@@ -12,8 +12,6 @@ import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
 
 
-import android.util.Log;
-
 import packexcalib.gnss.NmeaListener;
 import utils.MyMCUtils;
 
@@ -77,7 +75,6 @@ public class Sensors_Decoder {
                             countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
                                 countTiltRot = 0;
-                                DataSaved.isTiltRotator = true;
                                 if (PGNExtractor.extractPGN(id) == PGN_Tiltrotator) {
                                     double cost = (PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]}) * 100d) * 0.01d;
 
@@ -92,13 +89,13 @@ public class Sensors_Decoder {
                                     Deg_Roto = costa * (1d / 128d) - 0d;
 
                                 }
-                                if (DataSaved.reverseRotator == 1) {
+                                if (DataSaved.revTiltRot == 1) {
                                     Deg_Roto = Deg_Roto * -1;
                                 }
 
                             }
                             if (countTiltRot > 500) {
-                                DataSaved.isTiltRotator = false;
+
                             }
 
                             switch (id & 0x1FFFFFFF) {
@@ -167,7 +164,7 @@ public class Sensors_Decoder {
                             countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
                                 countTiltRot = 0;
-                                DataSaved.isTiltRotator = true;
+
 
                                 if (PGNExtractor.extractPGN(id) == PGN_Tiltrotator) {
                                     double cost = (PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]}) * 100d) * 0.01d;
@@ -183,14 +180,14 @@ public class Sensors_Decoder {
                                     Deg_Roto = costa * (1d / 128d) - 0d;
 
                                 }
-                                if (DataSaved.reverseRotator == 1) {
+                                if (DataSaved.revTiltRot == 1) {
                                     Deg_Roto = Deg_Roto * -1;
                                 }
 
 
                             }
                             if (countTiltRot > 500) {
-                                DataSaved.isTiltRotator = false;
+
                             }
                             //TSM gravity vector
                             switch (id & 0x1FFFFFFF) {
@@ -422,7 +419,7 @@ public class Sensors_Decoder {
                         break;
                     case 234868978:
                         if (DataSaved.lrTilt != 0) {
-                            DataSaved.isTiltRotator = true;
+
 
                             if (PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon) {
                                 double costa = (PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[0], data[1]}) * 100d) * 0.01d;
@@ -430,7 +427,7 @@ public class Sensors_Decoder {
                                 Deg_Roto = costa * (1d / 128d) - 0d;
 
                             }
-                            if (DataSaved.reverseRotator == 1) {
+                            if (DataSaved.revTiltRot == 1) {
                                 Deg_Roto = Deg_Roto * -1;
                             }
 
@@ -439,12 +436,12 @@ public class Sensors_Decoder {
                     case 0x2F0:
 
                         if (DataSaved.lrTilt != 0) {
-                            DataSaved.isTiltRotator = true;
+
                             int mRoto = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[1], data[2]});
 
                             Deg_Roto = mRoto * 1d;
                             Deg_Roto = Deg_Roto % 360;
-                            if (DataSaved.reverseRotator == 1) {
+                            if (DataSaved.revTiltRot == 1) {
                                 Deg_Roto = Deg_Roto * -1;
                             }
                         }
