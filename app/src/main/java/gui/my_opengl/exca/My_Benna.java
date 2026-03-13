@@ -7,6 +7,7 @@ import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
 import static packexcalib.exca.ExcavatorLib.coordPivoTilt;
 import static packexcalib.exca.ExcavatorLib.coordRotoCenter;
+import static packexcalib.exca.ExcavatorLib.coordRotoTop;
 import static packexcalib.exca.ExcavatorLib.coordST;
 import static packexcalib.exca.ExcavatorLib.correctBucket;
 import static packexcalib.exca.ExcavatorLib.correctDeltaAngle;
@@ -34,10 +35,7 @@ import packexcalib.gnss.My_LocationCalc;
 import utils.DistToPoint;
 
 public class My_Benna {
-    static Point3DF DBG_PIVO_TILT;
-    static Point3DF DBG_ROTO_TOP;
-    static Point3DF DBG_ROTO_CENTER;
-    static Point3DF DBG_BUCKET_CENTER;
+
 
 
     public static double[] coneDown, coneUp;
@@ -419,10 +417,7 @@ public class My_Benna {
         SPIG_CB = pTransform(spcB, DataSaved.glL_AnchorView, scale);
         SPIG_RB = pTransform(sprB, DataSaved.glL_AnchorView, scale);
 
-        DBG_PIVO_TILT   = pTransform(coordPivoTilt, DataSaved.glL_AnchorView, scale);
-        DBG_ROTO_TOP    = pTransform(ExcavatorLib.coordRotoTop, DataSaved.glL_AnchorView, scale);
-        DBG_ROTO_CENTER = pTransform(ExcavatorLib.coordRotoCenter, DataSaved.glL_AnchorView, scale);
-        DBG_BUCKET_CENTER = pTransform(bucketCoord, DataSaved.glL_AnchorView, scale);
+
 
         return new Point3DF[]{
                 P1_sx, PM2_sx, PM1_sx, P3_sx, P4_sx, P7_sx, P5_sx, P6_sx, P8_sx, P2_sx, P1_sx
@@ -584,7 +579,7 @@ public class My_Benna {
             PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, scale);
             PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, scale);
 
-        } else if (DataSaved.isTiltRotator!=1) {
+        } else if(DataSaved.isTiltRotator==0) {
             altezza = DataSaved.L_Bucket - (DataSaved.piccolaBucket * 0.95) - DataSaved.L_Tilt;
             altezzaAttacco = (float) (altezza * scale);
 
@@ -608,51 +603,32 @@ public class My_Benna {
             PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, scale);
             PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, scale);
 
-        } else {
-            // TILTROTATOR GRAFICO MIGLIORATO
-            // - staffa superiore aperta verso l'alto
-            // - perno più piccolo
-            // - collegamento inferiore più corto
+        }      else {
+            // ROTOTILT:
+            // 1) coordPivoTilt -> coordRotoTop      r = 0.10 m
+            // 2) coordRotoTop  -> coordRotoCenter   r = 0.22 m
+            // 3) coordST       -> coordPivoTilt     r = larghezza_attacco * 0.5f -> metà di quello
 
-            BucketFrame lower = buildBucketFrameRototilt();
-            UpperTiltFrame upper = buildUpperTiltFrame();
+            larghezza_attacco = 0.4f * scale;
+            raggioPivot = 0.10f * scale;
+            altezzaAttacco = 0f;
 
-            // proporzioni più compatte
-            double visualWidth = Math.max(0.12, Math.min(DataSaved.L_Stick * 0.07, 0.26));
-            double pinHalf = visualWidth * 0.55;
-            double upperRise = visualWidth * 0.42;
-            double upperNarrow = visualWidth * 0.30;
-            double lowerDrop = visualWidth * 0.36;
-            double lowerNarrow = visualWidth * 0.24;
+            // cilindro 1
+            PBASE      = pTransform(coordPivoTilt,   DataSaved.glL_AnchorView, scale);
+            PBASE_ALTA = pTransform(coordRotoTop,    DataSaved.glL_AnchorView, scale);
 
-            // questi due restano come punti principali di collegamento
-            pmAH = coordST;
-            pmBH = coordPivoTilt;
+            // cilindro 2
+            P_A_Front  = pTransform(coordRotoTop,    DataSaved.glL_AnchorView, scale);
+            P_A_Back   = pTransform(coordRotoCenter, DataSaved.glL_AnchorView, scale);
 
-            // asse perno superiore: piccolo e realistico
-            paFront = coordPivoTilt;
-            paBack = add(coordPivoTilt, scale3(upper.R, pinHalf));
-            paFrontFront = add(coordPivoTilt, scale3(upper.R, -pinHalf));
+            // cilindro 3
+            P_A_FF       = pTransform(coordST,         DataSaved.glL_AnchorView, scale);
+            PBASE_ALTA_H = pTransform(coordPivoTilt,   DataSaved.glL_AnchorView, scale);
 
-            // attacco inferiore verso la benna: più corto e meno aggressivo
-            double lowerBack = DataSaved.piccolaBucket * 0.55;
-            pmB = lower.point(0.0, lowerBack, 0.0);
-            pmA = lower.point(0.0, lowerBack, visualWidth * 0.30);
+            // riempimento sicurezza
+            PBASE_H = PBASE_ALTA_H;
 
-            altezza = DistToPoint.dist3D(pmA, pmB);
-            altezzaAttacco = (float) (altezza * scale);
-
-            // raggio perno più piccolo
-            raggioPivot = (float) (visualWidth * 0.18 * scale);
-
-            PBASE = pTransform(pmB, DataSaved.glL_AnchorView, scale);
-            PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, scale);
-            P_A_Front = pTransform(paFront, DataSaved.glL_AnchorView, scale);
-            P_A_Back = pTransform(paBack, DataSaved.glL_AnchorView, scale);
-            P_A_FF = pTransform(paFrontFront, DataSaved.glL_AnchorView, scale);
-            PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, scale);
-            PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, scale);
-        }
+    }
 
         return new float[]{
                 PBASE.getX(), PBASE.getY(), PBASE.getZ(),
@@ -678,11 +654,7 @@ public class My_Benna {
                 dx[0], dx[1], dx[2], dx[3], dx[4], dx[5], dx[6], dx[7], dx[8], dx[9], dx[10],
                 SPIG_C, SPIG_R, SPIG_L, SPIG_CB, SPIG_RB, SPIG_LB,
                 glLinePoint, glSegmentPoint, glSegmentEnd, glLinePunto, glPuntoTerra, glTerraPunto,
-                // DEBUG ROTOTILT
-                DBG_PIVO_TILT,     // 34
-                DBG_ROTO_TOP,      // 35
-                DBG_ROTO_CENTER,   // 36
-                DBG_BUCKET_CENTER  // 37
+
         };
     }
 
@@ -752,10 +724,16 @@ public class My_Benna {
     }
 
     private static BucketFrame buildBucketFrameRototilt() {
-        double[] O = scale3(add(bucketLeftCoord, bucketRightCoord), 0.5);
+        // Origine locale della benna = tagliente centrale
+        double[] O = bucketCoord;
+
+        // Asse destra/sinistra della benna
         double[] R = normalize(sub(bucketRightCoord, bucketLeftCoord));
 
-        double[] backRaw = sub(coordPivoTilt, O);
+        // Direzione "retro benna" = dal tagliente verso il centro attacco rototilt
+        double[] backRaw = sub(coordRotoCenter, O);
+
+        // Rendo B ortogonale a R
         double[] B = projectOnPlane(backRaw, R);
         B = normalize(B);
 
@@ -765,12 +743,14 @@ public class My_Benna {
             B = normalize(B);
         }
 
+        // Up coerente con terna destrorsa
         double[] U = normalize(cross(B, R));
 
         if (norm(U) < 1e-6) {
             U = new double[]{0.0, 0.0, 1.0};
         }
 
+        // Ri-ortonormalizzazione finale
         B = normalize(cross(R, U));
         U = normalize(cross(B, R));
 

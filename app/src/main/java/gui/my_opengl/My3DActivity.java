@@ -349,6 +349,7 @@ public class My3DActivity extends BaseClass {
 
     private void onClick() {
 
+
         hydroPoint.setOnClickListener(view -> {
 
             if (DataSaved.isWL == GRADER) {

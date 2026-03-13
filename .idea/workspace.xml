@@ -565,8 +565,13 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 rototilt da testare 80%">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 rototilt da testare 90%">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/BennaRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/BennaRenderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/GL_DrawExca.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/GL_DrawExca.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -576,7 +581,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=512DS96403000001)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -810,14 +815,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00108" summary="4.1.0 da fare i report">
-      <option name="closed" value="true" />
-      <created>1771005919090</created>
-      <option name="number" value="00108" />
-      <option name="presentableId" value="LOCAL-00108" />
-      <option name="project" value="LOCAL" />
-      <updated>1771005919091</updated>
     </task>
     <task id="LOCAL-00109" summary="4.1.0 todo dialog aggiungi aste">
       <option name="closed" value="true" />
@@ -1203,7 +1200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773422081021</updated>
     </task>
-    <option name="localTasksCounter" value="157" />
+    <task id="LOCAL-00157" summary="4.1.0 rototilt da testare 90%">
+      <option name="closed" value="true" />
+      <created>1773422612882</created>
+      <option name="number" value="00157" />
+      <option name="presentableId" value="LOCAL-00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1773422612883</updated>
+    </task>
+    <option name="localTasksCounter" value="158" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1219,7 +1224,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.0 NFR calcolo drillLib" />
     <MESSAGE value="4.1.0 NFR screen work" />
     <MESSAGE value="4.1.0 Working Page 70%" />
     <MESSAGE value="4.1.0 pick point ok" />
@@ -1244,7 +1248,8 @@
     <MESSAGE value="4.1.0 rototilt da finire di fixare.BIG ISSUE" />
     <MESSAGE value="4.1.0 rototilt da testare 50%" />
     <MESSAGE value="4.1.0 rototilt da testare 80%" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 rototilt da testare 80%" />
+    <MESSAGE value="4.1.0 rototilt da testare 90%" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 rototilt da testare 90%" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

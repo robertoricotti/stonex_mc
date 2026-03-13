@@ -345,7 +345,6 @@ public class BucketCalibTilt extends BaseClass {
                 MyData.push("M" + indexMachineSelected + "L_RotoToBucket" + indexBucket, (String.valueOf(DataSaved.L_RotoToBucket)));
             } catch (Exception ignored) {
             }
-            Log.d("L_RotoToBucket",String.valueOf(DataSaved.L_RotoToBucket));
 
             return true;
         });

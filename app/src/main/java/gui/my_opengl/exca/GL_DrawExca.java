@@ -15,6 +15,9 @@ import static gui.my_opengl.exca.My_Benna.rightSideIndices;
 import static gui.my_opengl.exca.My_Frame.R_Cingolo;
 import static packexcalib.exca.DataSaved.GL_BENNA;
 import static packexcalib.exca.DataSaved.GL_LAMA;
+import static packexcalib.exca.ExcavatorLib.coordPivoTilt;
+import static packexcalib.exca.ExcavatorLib.coordRotoCenter;
+import static packexcalib.exca.ExcavatorLib.coordRotoTop;
 import static services.TriangleService.glLinePunto;
 import static services.TriangleService.glPuntoTerra;
 import static services.TriangleService.glTerraPunto;
@@ -65,26 +68,74 @@ public class GL_DrawExca {
                 BoomsDrawer cingoli = new BoomsDrawer(DataSaved.GL_FRAME_BASE, My_Frame.cingoliChiari(), coloreAttacco, My_Frame.cingoliScuri(), coloreAttaccoScuro, My_Frame.bordiCingoli());
                 cingoli.draw(gl);
                 //
-                Cylinder cylinder = new Cylinder(new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
-                        new float[]{DataSaved.GL_ATTACCO[3], DataSaved.GL_ATTACCO[4], DataSaved.GL_ATTACCO[5]}, larghezza_attacco * 0.5f, (larghezza_attacco * 0.5f) * 0.5f,
-                        coloreAttacco, 12, true);
-                cylinder.draw(gl);
+
 
             if (DataSaved.lrTilt != 0) {
-                Cylinder cylinder1 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
-                        new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]}, raggioPivot, raggioPivot,
-                        coloreAttacco, 12, true);
-                cylinder1.draw(gl);
 
-                Cylinder cylinder2 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
-                        new float[]{DataSaved.GL_ATTACCO[12], DataSaved.GL_ATTACCO[13], DataSaved.GL_ATTACCO[14]}, raggioPivot, raggioPivot,
-                        coloreAttacco, 12, true);
-                cylinder2.draw(gl);
+                if (DataSaved.isTiltRotator == 1) {
+                    // ROTOTILT: 3 cilindri
 
-                Cylinder cylinder3 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[15], DataSaved.GL_ATTACCO[16], DataSaved.GL_ATTACCO[17]},
-                        new float[]{DataSaved.GL_ATTACCO[18], DataSaved.GL_ATTACCO[19], DataSaved.GL_ATTACCO[20]}, larghezza_attacco * 0.75f, ((larghezza_attacco * 0.5f) * 1.15f) * 0.5f,
-                        coloreAttacco, 8, true);
-                cylinder3.draw(gl);
+                    // 1) coordPivoTilt -> coordRotoTop
+                    Cylinder cyl1 = new Cylinder(
+                            new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
+                            new float[]{DataSaved.GL_ATTACCO[3], DataSaved.GL_ATTACCO[4], DataSaved.GL_ATTACCO[5]},
+                            0.10f * scale, 0.10f * scale,
+                            coloreAttacco, 16, true
+                    );
+                    cyl1.draw(gl);
+
+                    // 2) coordRotoTop -> coordRotoCenter
+                    Cylinder cyl2 = new Cylinder(
+                            new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                            new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]},
+                            0.22f * scale, 0.22f * scale,
+                            coloreAttacco, 16, true
+                    );
+                    cyl2.draw(gl);
+
+                    // 3) coordST -> coordPivoTilt
+                    Cylinder cyl3 = new Cylinder(
+                            new float[]{DataSaved.GL_ATTACCO[12], DataSaved.GL_ATTACCO[13], DataSaved.GL_ATTACCO[14]},
+                            new float[]{DataSaved.GL_ATTACCO[15], DataSaved.GL_ATTACCO[16], DataSaved.GL_ATTACCO[17]},
+                            larghezza_attacco * 0.75f, ((larghezza_attacco * 0.5f) * 1.15f) * 0.5f,
+                            coloreAttacco, 12, true
+                    );
+                    cyl3.draw(gl);
+
+                } else {
+                    // TILT NORMALE
+                    Cylinder cylinder = new Cylinder(
+                            new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
+                            new float[]{DataSaved.GL_ATTACCO[3], DataSaved.GL_ATTACCO[4], DataSaved.GL_ATTACCO[5]},
+                            larghezza_attacco * 0.5f, (larghezza_attacco * 0.5f) * 0.5f,
+                            coloreAttacco, 12, true
+                    );
+                    cylinder.draw(gl);
+
+                    Cylinder cylinder1 = new Cylinder(
+                            new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                            new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]},
+                            raggioPivot, raggioPivot,
+                            coloreAttacco, 12, true
+                    );
+                    cylinder1.draw(gl);
+
+                    Cylinder cylinder2 = new Cylinder(
+                            new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                            new float[]{DataSaved.GL_ATTACCO[12], DataSaved.GL_ATTACCO[13], DataSaved.GL_ATTACCO[14]},
+                            raggioPivot, raggioPivot,
+                            coloreAttacco, 12, true
+                    );
+                    cylinder2.draw(gl);
+
+                    Cylinder cylinder3 = new Cylinder(
+                            new float[]{DataSaved.GL_ATTACCO[15], DataSaved.GL_ATTACCO[16], DataSaved.GL_ATTACCO[17]},
+                            new float[]{DataSaved.GL_ATTACCO[18], DataSaved.GL_ATTACCO[19], DataSaved.GL_ATTACCO[20]},
+                            larghezza_attacco * 0.75f, ((larghezza_attacco * 0.5f) * 1.15f) * 0.5f,
+                            coloreAttacco, 8, true
+                    );
+                    cylinder3.draw(gl);
+                }
             }
 
             Cylinder boccolaStick = new Cylinder(p3tof(DataSaved.GL_STICK[0]),
@@ -184,22 +235,72 @@ public class GL_DrawExca {
 
 
                 if (DataSaved.lrTilt != 0) {
-                    Cylinder cylinder1 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
-                            new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]}, raggioPivot, raggioPivot,
-                            coloreAttacco, 12, true);
-                    cylinder1.draw(gl);
 
-                    Cylinder cylinder2 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
-                            new float[]{DataSaved.GL_ATTACCO[12], DataSaved.GL_ATTACCO[13], DataSaved.GL_ATTACCO[14]}, raggioPivot, raggioPivot,
-                            coloreAttacco, 12, true);
-                    cylinder2.draw(gl);
+                    if (DataSaved.isTiltRotator == 1) {
+                        // ROTOTILT: 3 cilindri
 
-                    Cylinder cylinder3 = new Cylinder(new float[]{DataSaved.GL_ATTACCO[15], DataSaved.GL_ATTACCO[16], DataSaved.GL_ATTACCO[17]},
-                            new float[]{DataSaved.GL_ATTACCO[18], DataSaved.GL_ATTACCO[19], DataSaved.GL_ATTACCO[20]}, larghezza_attacco * 0.75f, ((larghezza_attacco * 0.5f) * 1.15f) * 0.5f,
-                            coloreAttacco, 8, true);
-                    cylinder3.draw(gl);
+                        // 1) coordPivoTilt -> coordRotoTop
+                        Cylinder cyl1 = new Cylinder(
+                                new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
+                                new float[]{DataSaved.GL_ATTACCO[3], DataSaved.GL_ATTACCO[4], DataSaved.GL_ATTACCO[5]},
+                                0.10f * scale, 0.10f * scale,
+                                coloreAttacco, 16, true
+                        );
+                        cyl1.draw(gl);
+
+                        // 2) coordRotoTop -> coordRotoCenter
+                        Cylinder cyl2 = new Cylinder(
+                                new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                                new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]},
+                                0.22f * scale, 0.22f * scale,
+                                coloreAttacco, 16, true
+                        );
+                        cyl2.draw(gl);
+
+                        // 3) coordST -> coordPivoTilt
+                        Cylinder cyl3 = new Cylinder(
+                                new float[]{DataSaved.GL_ATTACCO[12], DataSaved.GL_ATTACCO[13], DataSaved.GL_ATTACCO[14]},
+                                new float[]{DataSaved.GL_ATTACCO[15], DataSaved.GL_ATTACCO[16], DataSaved.GL_ATTACCO[17]},
+                                larghezza_attacco * 0.75f, ((larghezza_attacco * 0.5f) * 1.15f) * 0.5f,
+                                coloreAttacco, 12, true
+                        );
+                        cyl3.draw(gl);
+
+                    } else {
+                        // TILT NORMALE
+                        Cylinder cylinder = new Cylinder(
+                                new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
+                                new float[]{DataSaved.GL_ATTACCO[3], DataSaved.GL_ATTACCO[4], DataSaved.GL_ATTACCO[5]},
+                                larghezza_attacco * 0.5f, (larghezza_attacco * 0.5f) * 0.5f,
+                                coloreAttacco, 12, true
+                        );
+                        cylinder.draw(gl);
+
+                        Cylinder cylinder1 = new Cylinder(
+                                new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                                new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]},
+                                raggioPivot, raggioPivot,
+                                coloreAttacco, 12, true
+                        );
+                        cylinder1.draw(gl);
+
+                        Cylinder cylinder2 = new Cylinder(
+                                new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
+                                new float[]{DataSaved.GL_ATTACCO[12], DataSaved.GL_ATTACCO[13], DataSaved.GL_ATTACCO[14]},
+                                raggioPivot, raggioPivot,
+                                coloreAttacco, 12, true
+                        );
+                        cylinder2.draw(gl);
+
+                        Cylinder cylinder3 = new Cylinder(
+                                new float[]{DataSaved.GL_ATTACCO[15], DataSaved.GL_ATTACCO[16], DataSaved.GL_ATTACCO[17]},
+                                new float[]{DataSaved.GL_ATTACCO[18], DataSaved.GL_ATTACCO[19], DataSaved.GL_ATTACCO[20]},
+                                larghezza_attacco * 0.75f, ((larghezza_attacco * 0.5f) * 1.15f) * 0.5f,
+                                coloreAttacco, 8, true
+                        );
+                        cylinder3.draw(gl);
+                    }
                 }
-
                 Cylinder boccolaStick = new Cylinder(p3tof(DataSaved.GL_STICK[0]),
                         p3tof(DataSaved.GL_STICK[6]),
                         (float) (DataSaved.L_Stick * 0.025f * scale), (float) (DataSaved.L_Stick * 0.025f * scale), coloreBoom, 12, true);

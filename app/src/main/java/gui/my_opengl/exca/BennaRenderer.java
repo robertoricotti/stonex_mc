@@ -1,5 +1,6 @@
 package gui.my_opengl.exca;
 
+import static gui.my_opengl.MyGLRenderer.scale;
 import static gui.my_opengl.exca.My_Benna.bwF;
 import static gui.my_opengl.exca.My_Benna.fwF;
 import static gui.my_opengl.exca.My_Benna.ltF;
@@ -7,6 +8,7 @@ import static gui.my_opengl.exca.My_Benna.rtF;
 import static gui.my_opengl.exca.My_Benna.start;
 
 import android.graphics.Color;
+import android.opengl.GLU;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,9 +20,12 @@ import java.util.List;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
+import gui.my_opengl.Cylinder;
 import gui.my_opengl.GL_Methods;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.ExcavatorLib;
+import packexcalib.mymatrix.Point3D;
 
 public class BennaRenderer {
     private FloatBuffer edgeBuffer;
@@ -245,57 +250,6 @@ public class BennaRenderer {
         }
 
 
-        //TODO DEBUG
-        if (DataSaved.lrTilt != 0 && DataSaved.isTiltRotator==1) {
-            // punti gialli debug:
-            // 34 = coordPivoTilt
-            // 35 = coordRotoTop
-            // 36 = coordRotoCenter
-            // 37 = bucketCoord
-
-            float[] dbgVertices = {
-                    // punti
-                    My_Benna.DBG_PIVO_TILT.getX(), My_Benna.DBG_PIVO_TILT.getY(), My_Benna.DBG_PIVO_TILT.getZ(),
-                    My_Benna.DBG_ROTO_TOP.getX(), My_Benna.DBG_ROTO_TOP.getY(), My_Benna.DBG_ROTO_TOP.getZ(),
-                    My_Benna.DBG_ROTO_CENTER.getX(), My_Benna.DBG_ROTO_CENTER.getY(), My_Benna.DBG_ROTO_CENTER.getZ(),
-                    My_Benna.DBG_BUCKET_CENTER.getX(), My_Benna.DBG_BUCKET_CENTER.getY(), My_Benna.DBG_BUCKET_CENTER.getZ(),
-
-                    // linee:
-                    // PivoTilt -> RotoTop
-                    My_Benna.DBG_PIVO_TILT.getX(), My_Benna.DBG_PIVO_TILT.getY(), My_Benna.DBG_PIVO_TILT.getZ(),
-                    My_Benna.DBG_ROTO_TOP.getX(), My_Benna.DBG_ROTO_TOP.getY(), My_Benna.DBG_ROTO_TOP.getZ(),
-
-                    // RotoTop -> RotoCenter
-                    My_Benna.DBG_ROTO_TOP.getX(), My_Benna.DBG_ROTO_TOP.getY(), My_Benna.DBG_ROTO_TOP.getZ(),
-                    My_Benna.DBG_ROTO_CENTER.getX(), My_Benna.DBG_ROTO_CENTER.getY(), My_Benna.DBG_ROTO_CENTER.getZ(),
-
-                    // RotoCenter -> BucketCenter
-                    My_Benna.DBG_ROTO_CENTER.getX(), My_Benna.DBG_ROTO_CENTER.getY(), My_Benna.DBG_ROTO_CENTER.getZ(),
-                    My_Benna.DBG_BUCKET_CENTER.getX(), My_Benna.DBG_BUCKET_CENTER.getY(), My_Benna.DBG_BUCKET_CENTER.getZ()
-            };
-
-            ByteBuffer dbb = ByteBuffer.allocateDirect(dbgVertices.length * 4);
-            dbb.order(ByteOrder.nativeOrder());
-            FloatBuffer dbgBuffer = dbb.asFloatBuffer();
-            dbgBuffer.put(dbgVertices);
-            dbgBuffer.position(0);
-
-            gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, dbgBuffer);
-
-// linee gialle
-            gl.glLineWidth(4f);
-            gl.glColor4f(1f, 1f, 0f, 1f);
-            gl.glDrawArrays(GL10.GL_LINES, 4, 6);
-
-// punti gialli
-            gl.glPointSize(12f);
-            gl.glColor4f(1f, 1f, 0f, 1f);
-            gl.glDrawArrays(GL10.GL_POINTS, 0, 4);
-
-            gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        }
-
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 
     }
@@ -314,6 +268,7 @@ public class BennaRenderer {
             addEdgeLine(points[i], points[i + 1]);
         }
     }
+
 
 
 }
