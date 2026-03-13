@@ -252,31 +252,113 @@ public class ExcavatorLib {
 
                                 );
 
-                                //4 centro benna
-                                bucketCoord = Exca_Quaternion.endPoint(
-                                        coordRotoCenter,
-                                        correctWTilt,
-                                        correctTilt,
-                                        DataSaved.L_RotoToBucket,
-                                        hdt_BOOM + yawSensor + Sensors_Decoder.Deg_Roto
-                                );
+                                // =====================================================
+// COMPLETAMENTO ROTOTILT
+// =====================================================
 
-                                //5 destra
-                                bucketRightCoord = Exca_Quaternion.endPoint(
-                                        bucketCoord,
-                                        -correctTilt,
-                                        0,
-                                        DataSaved.W_Bucket * 0.5d,
-                                        hdt_BOOM + yawSensor + Sensors_Decoder.Deg_Roto + 90
-                                );
-                                //6 sinistra
-                                bucketLeftCoord = Exca_Quaternion.endPoint(
-                                        bucketCoord,
-                                        correctTilt,
-                                        0,
-                                        DataSaved.W_Bucket * 0.5d,
-                                        hdt_BOOM + yawSensor + Sensors_Decoder.Deg_Roto + 270
-                                );
+// P = pivot tilt
+                                double[] P = coordPivoTilt;
+
+// R = centro rotazione roto
+                                double[] R = coordRotoCenter;
+
+// T = punto sopra il roto, definisce l'asse roto
+                                double[] T = coordRotoTop;
+
+// asse roto k
+                                double[] k = normalize(sub(T, R));
+
+// verticale globale
+                                double[] g = new double[]{0.0, 0.0, 1.0};
+
+// piano locale pre-roto:
+// x = verticale proiettata sul piano ortogonale a k
+                                double[] x = sub(g, scale(k, dot(g, k)));
+                                x = normalize(x);
+
+// fallback se asse roto quasi verticale
+                                if (norm(x) < 1e-9) {
+                                    x = new double[]{1.0, 0.0, 0.0};
+                                    x = sub(x, scale(k, dot(x, k)));
+                                    x = normalize(x);
+                                }
+
+// y = orizzontale avanti nel piano utensile
+                                double[] y = normalize(cross(k, x));
+
+// direzione retta rossa nel piano pre-roto
+// convenzione:
+// correctWTilt = 0   -> orizzontale avanti
+// correctWTilt = -90 -> verticale verso il basso
+                                double a = Math.toRadians(correctWTilt);
+                                double[] d = add(scale(y, Math.cos(a)), scale(x, Math.sin(a)));
+                                d = normalize(d);
+
+// intersezione retta-cerchio:
+// B0 = P + t*d
+// |B0 - R| = L
+                                double L = DataSaved.L_RotoToBucket;
+
+                                double[] PR = sub(P, R);
+
+                                double A_q = 1.0; // d normalizzato
+                                double B_q = 2.0 * dot(d, PR);
+                                double C_q = dot(PR, PR) - (L * L);
+
+                                double disc = (B_q * B_q) - (4.0 * A_q * C_q);
+                                if (disc < 0) disc = 0;
+
+                                double sqrtDisc = Math.sqrt(disc);
+
+                                double t1 = (-B_q + sqrtDisc) / (2.0 * A_q);
+                                double t2 = (-B_q - sqrtDisc) / (2.0 * A_q);
+
+// scegli la soluzione fisica "in avanti"
+                                double t;
+                                if (t1 >= 0 && t2 >= 0) {
+                                    t = Math.max(t1, t2);
+                                } else if (t1 >= 0) {
+                                    t = t1;
+                                } else if (t2 >= 0) {
+                                    t = t2;
+                                } else {
+                                    // fallback estremo: prendo quella meno negativa
+                                    t = Math.max(t1, t2);
+                                }
+
+// bucket center pre-roto
+                                double[] B0 = add(P, scale(d, t));
+
+// vettore locale rotoCenter -> bucketCenter
+                                double[] v0 = sub(B0, R);
+
+// applica roto
+                                double rotoDeg = MyMCUtils.wrap(Sensors_Decoder.Deg_Roto);
+                                double[] v = rotateAroundAxisRaw(v0, k, rotoDeg);
+
+// centro benna finale
+                                bucketCoord = add(R, v);
+
+// asse trasversale benna pre-roto
+                                double[] right0 = normalize(cross(k, v0));
+
+// fallback se degenerato
+                                if (norm(right0) < 1e-9) {
+                                    right0 = y.clone();
+                                }
+
+// ruota anche l'asse trasversale col roto
+                                double[] right = rotateAroundAxisRaw(right0, k, rotoDeg);
+                                right = normalize(right);
+
+// spigoli dx/sx
+                                double halfW = DataSaved.W_Bucket * 0.5d;
+
+                                bucketRightCoord = add(bucketCoord, scale(right, halfW));
+                                bucketLeftCoord  = add(bucketCoord, scale(right, -halfW));
+
+// per il rototilt yawSensor non guida più direttamente il centro benna
+                                //yawSensor = 0;
                                 //TODO da qui completare bucketCoord e spigoli, sapendo che la lunghezza del segmento è DataSaved.L_RotoToBucket
 
                             }
@@ -727,6 +809,10 @@ public class ExcavatorLib {
                 a[0]*b[1] - a[1]*b[0]
         };
     }
+
+    private static double dot(double[] a, double[] b) {
+        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    }
     private static org.apache.commons.math3.complex.Quaternion axisAngleQuaternion(double[] axis, double angleDeg) {
         double[] ax = normalize(axis);
         double half = Math.toRadians(angleDeg) * 0.5;
@@ -739,17 +825,7 @@ public class ExcavatorLib {
                 ax[2] * s
         );
     }
-    private static double[] add3(double[] a, double[] b, double[] c) {
-        return new double[]{
-                a[0] + b[0] + c[0],
-                a[1] + b[1] + c[1],
-                a[2] + b[2] + c[2]
-        };
-    }
-    private static double[] rotateAroundAxis(double[] v, double[] axis, double angleDeg) {
-        org.apache.commons.math3.complex.Quaternion q = axisAngleQuaternion(axis, angleDeg);
-        return normalize(Exca_Quaternion.rotateVector(q, v[0], v[1], v[2]));
-    }
+
     public static class ToolFrame {
         public double[] origin;   // centro benna
         public double[] forward;  // direzione punta -> retro o viceversa, basta che sia coerente
@@ -768,4 +844,5 @@ public class ExcavatorLib {
             this.tiltPivot = tiltPivot;
         }
     }
+
 }
