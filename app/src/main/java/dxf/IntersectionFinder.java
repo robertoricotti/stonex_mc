@@ -2,6 +2,9 @@ package dxf;
 
 
 
+import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
+import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -11,6 +14,7 @@ import java.util.Set;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Sensors_Decoder;
+import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import packexcalib.mymatrix.EasyPointCalculator;
 
@@ -21,7 +25,9 @@ public class IntersectionFinder {
 
     public static Point2D[] Intersections(double[] currentPos, double HDT) {
 
-        double heading=(NmeaListener.mch_Orientation + DataSaved.deltaGPS2+ ExcavatorLib.yawSensor)+HDT;
+        //double heading=(NmeaListener.mch_Orientation + DataSaved.deltaGPS2+ ExcavatorLib.yawSensor)+HDT;
+        double tempHeading= My_LocationCalc.calcBearingXY(bucketLeftCoord[0],bucketLeftCoord[1],bucketRightCoord[0],bucketRightCoord[1])+270;
+        double heading=tempHeading+HDT;
         heading=heading%360;
         double[] myPos=new EasyPointCalculator(currentPos).calculateEndPoint(0,heading,500);
 
@@ -33,23 +39,6 @@ public class IntersectionFinder {
         Point2D lineStart = new Point2D(x1, y1);
         Point2D lineEnd = new Point2D(x2, y2);
 
-     /*   List<Point2D> intersections = new ArrayList<>();
-        for (double[][] face : DataSaved.filteredFaces) {
-            for (int i = 0; i < face.length; i++) {
-                double[] p0 = face[i];
-                double[] p1 = face[(i + 1) % face.length];
-                Point2D intersection2D = lineIntersection(
-                        lineStart, lineEnd,
-                        new Point2D(p0[0], p0[1]), new Point2D(p1[0], p1[1])
-                );
-                if (intersection2D != null) {
-                    double z = interpolateZ(p0, p1, intersection2D);
-                    double horizontalDistance = calculateHorizontalDistance(currentPos, intersection2D);
-                    double heightDifference = z - currentPos[2];
-                    intersections.add(new Point2D(horizontalDistance, heightDifference));
-                }
-            }
-        }*/
         List<Point2D> intersections = new ArrayList<>();
         List<Face3D> closestFaces = getClosestFaces(DataSaved.filteredFaces, currentPos, 800);
 

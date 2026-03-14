@@ -27,7 +27,7 @@ import iredes.Point3D_IR;
 import iredes.RigStatus_IR;
 
 public class DataSaved {
-    public static double L_RotoToBucket=1.2;
+    public static double L_RotoToBucket;
     public static double Offset_Engcon_Forward;
     public static double Offset_Engcon_Down;
     public static double DELTA_HDT_SMC;

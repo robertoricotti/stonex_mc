@@ -25,6 +25,8 @@ import static services.TriangleService.glSegmentPoint;
 import static services.TriangleService.glTerraPunto;
 import static services.TriangleService.orientamentoFreccia;
 
+import android.util.Log;
+
 import dxf.Point3D;
 import gui.my_opengl.Point3DF;
 import gui.my_opengl.Polyline2DArc;
@@ -165,7 +167,8 @@ public class My_Benna {
             spcB = Exca_Quaternion.endPoint(bucketCoord, -90, 0, 0.05, mhdt);
             sprB = Exca_Quaternion.endPoint(bucketRightCoord, -90, 0, 0.05, mhdt);
 
-        } else if (DataSaved.isTiltRotator!=1) {
+        }
+        else if (DataSaved.isTiltRotator!=1) {
             // TILT NORMALE
             flatLen = Math.sin(Math.toRadians(DataSaved.flat)) * DataSaved.piccolaBucket;
             flatTop = Math.max(0.18, flatLen * 0.8);
@@ -199,7 +202,8 @@ public class My_Benna {
             spcB = Exca_Quaternion.endPoint(bucketCoord, -90, 0, 0.05, mhdt + yawSensor);
             sprB = Exca_Quaternion.endPoint(bucketRightCoord, -90, 0, 0.05, mhdt + yawSensor);
 
-        } else {
+        }
+        else {
             // TILTROTATOR
             BucketFrame f = buildBucketFrameRototilt();
 
@@ -209,7 +213,7 @@ public class My_Benna {
             flatLen = Math.sin(Math.toRadians(DataSaved.flat)) * DataSaved.piccolaBucket;
             flatTop = Math.max(0.18, flatLen * 0.8);
 
-            p1 = f.point(-halfW, 0.0, 0.0);
+            p1 = bucketLeftCoord;//f.point(-halfW, 0.0, 0.0);
             p2 = moveBU(p1, f, 90.0 + DataSaved.flat, flatLen);
             p3 = moveBU(p1, f, 180.0, depth);
             p4 = moveBU(p3, f, 90.0 - (DataSaved.flat * 0.5), flatTop);
@@ -506,7 +510,7 @@ public class My_Benna {
             flatLen = Math.sin(Math.toRadians(DataSaved.flat)) * DataSaved.piccolaBucket;
             flatTop = Math.max(0.18, flatLen * 0.8);
 
-            p1 = f.point(+halfW, 0.0, 0.0);
+            p1 = bucketRightCoord;
             p2 = moveBU(p1, f, 90.0 + DataSaved.flat, flatLen);
             p3 = moveBU(p1, f, 180.0, depth);
             p4 = moveBU(p3, f, 90.0 - (DataSaved.flat * 0.5), flatTop);
@@ -724,17 +728,16 @@ public class My_Benna {
     }
 
     private static BucketFrame buildBucketFrameRototilt() {
-        // Origine locale della benna = tagliente centrale
         double[] O = bucketCoord;
-
-        // Asse destra/sinistra della benna
         double[] R = normalize(sub(bucketRightCoord, bucketLeftCoord));
 
-        // Direzione "retro benna" = dal tagliente verso il centro attacco rototilt
-        double[] backRaw = sub(coordRotoCenter, O);
+// direzione verso il rototilt
+        double[] dirBack = normalize(sub(coordRotoCenter, O));
 
-        // Rendo B ortogonale a R
-        double[] B = projectOnPlane(backRaw, R);
+// imponi solo la lunghezza meccanica corretta
+        double[] toBack = scale3(dirBack, DataSaved.L_RotoToBucket);
+
+        double[] B = projectOnPlane(toBack, R);
         B = normalize(B);
 
         if (norm(B) < 1e-6) {
@@ -743,20 +746,22 @@ public class My_Benna {
             B = normalize(B);
         }
 
-        // Up coerente con terna destrorsa
         double[] U = normalize(cross(B, R));
 
         if (norm(U) < 1e-6) {
             U = new double[]{0.0, 0.0, 1.0};
         }
 
-        // Ri-ortonormalizzazione finale
         B = normalize(cross(R, U));
         U = normalize(cross(B, R));
 
+        // correzione fine del piano benna attorno all'asse laterale
+        double bucketClockwiseFixDeg =DataSaved.flat;   // prova iniziale con flat
+        B = normalize(rotateAroundAxis(B, R, bucketClockwiseFixDeg));
+        U = normalize(rotateAroundAxis(U, R, bucketClockwiseFixDeg));
+
         return new BucketFrame(O, R, B, U);
     }
-
     // =========================
     // UTILITIES VETTORI
     // =========================
@@ -820,5 +825,17 @@ public class My_Benna {
 
     private static double[] moveBU(double[] origin, BucketFrame f, double alphaDeg, double len) {
         return add(origin, scale3(dirBU(f, alphaDeg), len));
+    }
+    private static double[] rotateAroundAxis(double[] v, double[] axisUnit, double angleDeg) {
+        double a = Math.toRadians(angleDeg);
+
+        double cos = Math.cos(a);
+        double sin = Math.sin(a);
+
+        double[] term1 = scale3(v, cos);
+        double[] term2 = scale3(cross(axisUnit, v), sin);
+        double[] term3 = scale3(axisUnit, dot(axisUnit, v) * (1.0 - cos));
+
+        return add(add(term1, term2), term3);
     }
 }

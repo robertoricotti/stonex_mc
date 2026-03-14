@@ -27,7 +27,9 @@ import services.TriangleService;
 import utils.MyData;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
-
+    private float orthoBaseSize = 5f;
+    private int surfaceWidth;
+    private int surfaceHeight;
     boolean is2D, is3D,isFlat;
     public static float scale;
     public static float angleX;
@@ -111,6 +113,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (gl instanceof GL11) {
             GL11 gl11 = (GL11) gl;
+            surfaceWidth = width;
+            surfaceHeight = height;
             coloreEsterno = GL_Methods.darkenColor(GL_Methods.parseColorToGL(MyColorClass.colorBucket), 1, 1);
 
             //coloreEsterno = GL_Methods.darkenColor(GL_Methods.parseColorToGL(MyData.get_Int("colorBucket")), 1, 1);
@@ -126,7 +130,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             coloreBoomScuro = GL_Methods.darkenColor(coloreBoom, 0.75f, 1f);
             gl11.glViewport(0, 0, width, height);
 
-            gl11.glMatrixMode(GL11.GL_PROJECTION);
+         /*   gl11.glMatrixMode(GL11.GL_PROJECTION);
             gl11.glLoadIdentity();
 
             float ratio = (float) width / height;
@@ -135,7 +139,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             GLU.gluPerspective(gl, 45.0f, ratio, 0.1f, 100.0f);
 
             gl11.glMatrixMode(GL11.GL_MODELVIEW);
-            gl11.glLoadIdentity();
+            gl11.glLoadIdentity();*/
         }
     }
 
@@ -144,6 +148,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         if (gl instanceof GL11) {
             GL11 gl11 = (GL11) gl;
+            setupProjection(gl11, gl);
             is2D = My3DActivity.glVista3d==0;
             is3D = My3DActivity.glVista3d==1;
             isFlat = My3DActivity.glVista3d==2;
@@ -224,7 +229,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         if (is2D) {
 
                             gl11.glTranslatef(panX, panY, -5f);  // Pan in 3D
-                            gl11.glScalef(scale, scale, 0f);   // non scala Z
+                            gl11.glScalef(1f,1f,1f);
                             //in 2D ruota il terreno e non la macchina
                             gl11.glRotatef(0, 1f, 0f, 0f);
                             gl11.glRotatef(angleTest, 0f, 0f, 1f);
@@ -321,6 +326,40 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
 
 
+    }
+    private void setupProjection(GL11 gl11, GL10 gl) {
+
+        float ratio = (float) surfaceWidth / surfaceHeight;
+
+        gl11.glMatrixMode(GL11.GL_PROJECTION);
+        gl11.glLoadIdentity();
+
+        if (is3D) {
+
+            GLU.gluPerspective(gl, 45.0f, ratio, 0.1f, 100.0f);
+
+            gl11.glEnable(GL11.GL_DEPTH_TEST);
+
+        } else {
+
+            float zoom = scale;
+
+            float size = orthoBaseSize / zoom;
+
+            gl11.glOrthof(
+                    -ratio * size,
+                    ratio * size,
+                    -size,
+                    size,
+                    -50f,
+                    50f
+            );
+
+            gl11.glDisable(GL11.GL_DEPTH_TEST);
+        }
+
+        gl11.glMatrixMode(GL11.GL_MODELVIEW);
+        gl11.glLoadIdentity();
     }
 
 

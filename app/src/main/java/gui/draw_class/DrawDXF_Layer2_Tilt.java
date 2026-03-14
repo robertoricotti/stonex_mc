@@ -97,7 +97,14 @@ public class DrawDXF_Layer2_Tilt extends View {
             rotation_point_bucket.x = getWidth() * PIVOT_X;
             rotation_point_bucket.y = right_bottom_bucket.y;
 
-            double bucket_angle = ExcavatorLib.correctTilt * -1;
+            double bucket_angle;
+            if (DataSaved.isTiltRotator == 1) {
+                double dz = ExcavatorLib.bucketRightCoord[2] - ExcavatorLib.bucketLeftCoord[2];
+                double dxy = distXY(ExcavatorLib.bucketLeftCoord, ExcavatorLib.bucketRightCoord);
+                bucket_angle = Math.toDegrees(Math.atan2(dz, dxy));
+            } else {
+                bucket_angle = ExcavatorLib.correctTilt * -1;
+            }
 
             // applico le rotazioni della benna e inserisco i punti nell'arraylist
             ArrayList<PointF> bucket = new ArrayList<>();
@@ -305,7 +312,7 @@ public class DrawDXF_Layer2_Tilt extends View {
                 paint.setTextSize(24);
             }
 
-            canvas.drawText(Utils.readAngoloLITE(String.valueOf(ExcavatorLib.correctTilt)) + Utils.getGradiSimbol(), (bucket.get(1).x + bucket.get(2).x + bucket.get(3).x + bucket.get(4).x) / 4f, ((bucket.get(3).y + bucket.get(4).y) / 2f) - 30f, paint);
+            canvas.drawText(Utils.readAngoloLITE(String.valueOf(-bucket_angle)) + Utils.getGradiSimbol(), (bucket.get(1).x + bucket.get(2).x + bucket.get(3).x + bucket.get(4).x) / 4f, ((bucket.get(3).y + bucket.get(4).y) / 2f) - 30f, paint);
             //-----------------------------------------------------------------------------
 
 
@@ -622,5 +629,10 @@ public class DrawDXF_Layer2_Tilt extends View {
             invalidate();
             return true;
         }
+    }
+    private double distXY(double[] a, double[] b) {
+        double dx = b[0] - a[0];
+        double dy = b[1] - a[1];
+        return Math.sqrt(dx * dx + dy * dy);
     }
 }

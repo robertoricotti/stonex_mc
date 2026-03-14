@@ -324,7 +324,7 @@ public class ExcavatorLib {
 // -------------------------------------------------
 // 5) APPLICO IL ROTO
 // -------------------------------------------------
-                                double rotoDeg = MyMCUtils.wrap(Sensors_Decoder.Deg_Roto);
+                                double rotoDeg = -MyMCUtils.wrap(Sensors_Decoder.Deg_Roto);
 
                                 double[] v = rotateAroundAxisRaw(v0, k, rotoDeg);
 
