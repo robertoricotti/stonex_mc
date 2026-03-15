@@ -24,7 +24,6 @@ import static services.TriangleService.glTerraPunto;
 
 import android.graphics.Color;
 import android.opengl.GLES11;
-import android.util.Log;
 
 import java.nio.FloatBuffer;
 import java.util.List;

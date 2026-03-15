@@ -72,9 +72,16 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             renderer.angleX = Math.max(-110f, Math.min(0f, renderer.angleX));
                         }
                     } else {
-                        float panFactor = 0.005f;
-                        panX += dx * panFactor;
-                        panY -= dy * panFactor;
+                        if(renderer.is3D) {
+                            float panFactor = 0.005f;
+                            panX += dx * panFactor;
+                            panY -= dy * panFactor;
+                        }else if(renderer.is2D){
+                            float panFactor = (0.005f * renderer.orthoBaseSize) / MyGLRenderer.scale;
+                            panX += dx * panFactor;
+                            panY -= dy * panFactor;
+                        }
+
                     }
 
 

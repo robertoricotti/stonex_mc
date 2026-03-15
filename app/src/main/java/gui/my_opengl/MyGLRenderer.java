@@ -27,7 +27,7 @@ import services.TriangleService;
 import utils.MyData;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
-    private float orthoBaseSize = 5f;
+     float orthoBaseSize = 5f;
     private int surfaceWidth;
     private int surfaceHeight;
     boolean is2D, is3D,isFlat;

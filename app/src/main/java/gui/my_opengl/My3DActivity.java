@@ -593,7 +593,6 @@ public class My3DActivity extends BaseClass {
 
                     String s2 = s.substring(s.lastIndexOf("/"));
                     boolean isDir = s.equals("/storage/emulated/0/StonexMC_V4/Projects");
-                    //Log.d("mioProgetto",pathToPNEZD+"  "+s2);
                     if (!isDir) {
                         if (!dialogPrjFolder.dialog.isShowing()) {
                             dialogPrjFolder.show(s);

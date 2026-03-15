@@ -25,8 +25,6 @@ import static services.TriangleService.glSegmentPoint;
 import static services.TriangleService.glTerraPunto;
 import static services.TriangleService.orientamentoFreccia;
 
-import android.util.Log;
-
 import dxf.Point3D;
 import gui.my_opengl.Point3DF;
 import gui.my_opengl.Polyline2DArc;
