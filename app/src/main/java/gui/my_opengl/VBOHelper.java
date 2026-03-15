@@ -2,10 +2,10 @@ package gui.my_opengl;
 
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL11;
+import gui.my_opengl.compat.GL11;
 
 import java.nio.FloatBuffer;
-import javax.microedition.khronos.opengles.GL11;
+import gui.my_opengl.compat.GL11;
 
 public class VBOHelper {
 

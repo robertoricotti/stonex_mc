@@ -1,14 +1,6 @@
 package gui.my_opengl.dozer;
 
-
-
-import static gui.my_opengl.dozer.My_Lama.bwF;
-import static gui.my_opengl.dozer.My_Lama.fwF;
-import static gui.my_opengl.dozer.My_Lama.ltF;
-import static gui.my_opengl.dozer.My_Lama.rtF;
-import static gui.my_opengl.dozer.My_Lama.start;
-
-import android.graphics.Color;
+import android.opengl.GLES20;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -17,16 +9,13 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
-
-import gui.my_opengl.GL_Methods;
 import gui.my_opengl.Point3DF;
-import gui.my_opengl.exca.BennaRenderer;
-import gui.my_opengl.exca.My_Benna;
-import packexcalib.exca.DataSaved;
+import gui.my_opengl.compat.GL11;
 
 public class WheelRender {
+
+    private static WheelProgram program;
+
     private FloatBuffer edgeBuffer;
     private int edgeCount;
     private final float[] innerColor;
@@ -36,13 +25,20 @@ public class WheelRender {
     private FloatBuffer vertexBuffer;
     private ShortBuffer outerIndexBuffer;
     private ShortBuffer innerIndexBuffer;
-    private List<LineSegment> edgeLines = new ArrayList<>();
+    private final List<LineSegment> edgeLines = new ArrayList<>();
 
     private int outerIndexCount;
     private int innerIndexCount;
 
+    private final float[] vpMatrix = new float[16];
 
-    public WheelRender(Point3DF[] inputPoints, short[] fiancateLeft, short[] fiancateRight, short[] culla, float[] innerColor, float[] outerColor, float thickness) {
+    public WheelRender(Point3DF[] inputPoints,
+                       short[] fiancateLeft,
+                       short[] fiancateRight,
+                       short[] culla,
+                       float[] innerColor,
+                       float[] outerColor,
+                       float thickness) {
         this.innerColor = innerColor;
         this.outerColor = outerColor;
         this.thickness = thickness;
@@ -53,34 +49,25 @@ public class WheelRender {
         for (short i : culla) allIndices.add(i);
 
         short[] combinedIndices = new short[allIndices.size()];
-        for (int i = 0; i < combinedIndices.length; i++) combinedIndices[i] = allIndices.get(i);
+        for (int i = 0; i < combinedIndices.length; i++) {
+            combinedIndices[i] = allIndices.get(i);
+        }
 
         buildExtrudedMesh(inputPoints, combinedIndices);
-        addFiancataContour(0, 8, inputPoints);   // fiancata sinistra
-        addFiancataContour(9, 17, inputPoints);  // fiancata destra
+        addFiancataContour(0, 8, inputPoints);
+        addFiancataContour(9, 17, inputPoints);
         addEdgeLine(inputPoints[1], inputPoints[10]);
-        addEdgeLine(inputPoints[0],inputPoints[9]);
-        addEdgeLine(inputPoints[2],inputPoints[11]);
-        addEdgeLine(inputPoints[7],inputPoints[16]);
-        // Ricostruzione edgeBuffer con i nuovi contorni
-        float[] edgeVertices = new float[edgeLines.size() * 6];
-        for (int i = 0; i < edgeLines.size(); i++) {
-            LineSegment line = edgeLines.get(i);
-            edgeVertices[i * 6] = line.a.getX();
-            edgeVertices[i * 6 + 1] = line.a.getY();
-            edgeVertices[i * 6 + 2] = line.a.getZ();
-            edgeVertices[i * 6 + 3] = line.b.getX();
-            edgeVertices[i * 6 + 4] = line.b.getY();
-            edgeVertices[i * 6 + 5] = line.b.getZ();
-        }
-        ByteBuffer eb = ByteBuffer.allocateDirect(edgeVertices.length * 4).order(ByteOrder.nativeOrder());
-        edgeBuffer = eb.asFloatBuffer();
-        edgeBuffer.put(edgeVertices).position(0);
-        edgeCount = edgeVertices.length / 3;
+        addEdgeLine(inputPoints[0], inputPoints[9]);
+        addEdgeLine(inputPoints[2], inputPoints[11]);
+        addEdgeLine(inputPoints[7], inputPoints[16]);
 
+        rebuildEdgeBuffer();
+        ensureProgram();
     }
+
     private static class LineSegment {
         Point3DF a, b;
+
         LineSegment(Point3DF a, Point3DF b) {
             this.a = a;
             this.b = b;
@@ -104,37 +91,35 @@ public class WheelRender {
             Point3DF b2 = b.add(normal.scale(thickness));
             Point3DF c2 = c.add(normal.scale(thickness));
 
-            // Add front face (outer)
             short ia = currentIndex++;
             short ib = currentIndex++;
             short ic = currentIndex++;
             addVertex(finalVertices, a);
             addVertex(finalVertices, b);
             addVertex(finalVertices, c);
-            outerIndices.add(ia); outerIndices.add(ib); outerIndices.add(ic);
+            outerIndices.add(ia);
+            outerIndices.add(ib);
+            outerIndices.add(ic);
 
-            // Add back face (inner)
             short ia2 = currentIndex++;
             short ib2 = currentIndex++;
             short ic2 = currentIndex++;
             addVertex(finalVertices, a2);
             addVertex(finalVertices, b2);
             addVertex(finalVertices, c2);
-            innerIndices.add(ic2); innerIndices.add(ib2); innerIndices.add(ia2); // reversed winding
+            innerIndices.add(ic2);
+            innerIndices.add(ib2);
+            innerIndices.add(ia2);
 
-            // Add edges
-          /*  addEdgeLine(a, b);
-            addEdgeLine(b, c);
-            addEdgeLine(c, a);*/
-
-            // Side walls (we skip coloring distinction here)
             currentIndex = addSide(finalVertices, outerIndices, innerIndices, a, b, a2, b2, currentIndex);
             currentIndex = addSide(finalVertices, outerIndices, innerIndices, b, c, b2, c2, currentIndex);
             currentIndex = addSide(finalVertices, outerIndices, innerIndices, c, a, c2, a2, currentIndex);
         }
 
         float[] vertexArray = new float[finalVertices.size()];
-        for (int i = 0; i < vertexArray.length; i++) vertexArray[i] = finalVertices.get(i);
+        for (int i = 0; i < vertexArray.length; i++) {
+            vertexArray[i] = finalVertices.get(i);
+        }
 
         ByteBuffer vb = ByteBuffer.allocateDirect(vertexArray.length * 4).order(ByteOrder.nativeOrder());
         vertexBuffer = vb.asFloatBuffer();
@@ -153,9 +138,13 @@ public class WheelRender {
         innerIndexBuffer.put(innerArray).position(0);
         innerIndexCount = innerArray.length;
 
+        rebuildEdgeBuffer();
+    }
+
+    private void rebuildEdgeBuffer() {
         float[] edgeVertices = new float[edgeLines.size() * 6];
         for (int i = 0; i < edgeLines.size(); i++) {
-           LineSegment line = edgeLines.get(i);
+            LineSegment line = edgeLines.get(i);
             edgeVertices[i * 6] = line.a.getX();
             edgeVertices[i * 6 + 1] = line.a.getY();
             edgeVertices[i * 6 + 2] = line.a.getZ();
@@ -163,13 +152,21 @@ public class WheelRender {
             edgeVertices[i * 6 + 4] = line.b.getY();
             edgeVertices[i * 6 + 5] = line.b.getZ();
         }
+
         ByteBuffer eb = ByteBuffer.allocateDirect(edgeVertices.length * 4).order(ByteOrder.nativeOrder());
         edgeBuffer = eb.asFloatBuffer();
         edgeBuffer.put(edgeVertices).position(0);
         edgeCount = edgeVertices.length / 3;
-
     }
-    private short addSide(List<Float> vList, List<Short> outer, List<Short> inner, Point3DF p1, Point3DF p2, Point3DF p1e, Point3DF p2e, short startIndex) {
+
+    private short addSide(List<Float> vList,
+                          List<Short> outer,
+                          List<Short> inner,
+                          Point3DF p1,
+                          Point3DF p2,
+                          Point3DF p1e,
+                          Point3DF p2e,
+                          short startIndex) {
         short i0 = startIndex;
         short i1 = (short) (startIndex + 1);
         short i2 = (short) (startIndex + 2);
@@ -180,49 +177,182 @@ public class WheelRender {
         addVertex(vList, p2e);
         addVertex(vList, p1e);
 
-        // Decide color by face normal later
-        outer.add(i0); outer.add(i1); outer.add(i2);
-        outer.add(i0); outer.add(i2); outer.add(i3);
+        outer.add(i0);
+        outer.add(i1);
+        outer.add(i2);
+        outer.add(i0);
+        outer.add(i2);
+        outer.add(i3);
 
         return (short) (startIndex + 4);
     }
+
     private void addVertex(List<Float> list, Point3DF p) {
         list.add(p.getX());
         list.add(p.getY());
         list.add(p.getZ());
     }
+
     private short[] toShortArray(List<Short> list) {
         short[] arr = new short[list.size()];
-        for (int i = 0; i < list.size(); i++) arr[i] = list.get(i);
+        for (int i = 0; i < list.size(); i++) {
+            arr[i] = list.get(i);
+        }
         return arr;
     }
+
     private void addEdgeLine(Point3DF p1, Point3DF p2) {
         edgeLines.add(new LineSegment(p1, p2));
     }
+
     private void addFiancataContour(int start, int end, Point3DF[] points) {
         for (int i = start; i < end; i++) {
             addEdgeLine(points[i], points[i + 1]);
         }
     }
+
     public void draw(GL11 gl) {
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        ensureProgram();
 
-        // Outer color (visible exterior)
-        gl.glColor4f(outerColor[0], outerColor[1], outerColor[2], 1);
-        gl.glDrawElements(GL10.GL_TRIANGLES, outerIndexCount, GL10.GL_UNSIGNED_SHORT, outerIndexBuffer);
+        float[] currentVp = GL11.getCurrentViewProjectionMatrix();
+        if (currentVp == null || currentVp.length < 16) {
+            return;
+        }
+        System.arraycopy(currentVp, 0, vpMatrix, 0, 16);
 
-        // Inner color (mouth side)
-        gl.glColor4f(innerColor[0], innerColor[1], innerColor[2], innerColor[3]);
-        gl.glDrawElements(GL10.GL_TRIANGLES, innerIndexCount, GL10.GL_UNSIGNED_SHORT, innerIndexBuffer);
+        if (vertexBuffer == null) return;
 
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        // Disegna il contorno delle fiancate
-        gl.glLineWidth(1.0f);
-        gl.glColor4f(0, 0, 0, 0.9f);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, edgeBuffer);
-        gl.glDrawArrays(GL10.GL_LINES, 0, edgeCount);
+        drawIndexed(vertexBuffer, outerIndexBuffer, outerIndexCount, outerColor);
+        drawIndexed(vertexBuffer, innerIndexBuffer, innerIndexCount, innerColor);
 
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        if (edgeBuffer != null && edgeCount > 0) {
+            GLES20.glLineWidth(1.0f);
+            drawArrays(edgeBuffer, edgeCount, GLES20.GL_LINES, new float[]{0f, 0f, 0f, 0.9f});
+        }
+    }
+
+    private void drawIndexed(FloatBuffer vertices, ShortBuffer indices, int indexCount, float[] color) {
+        if (vertices == null || indices == null || indexCount <= 0) return;
+
+        program.use();
+
+        vertices.position(0);
+        indices.position(0);
+
+        GLES20.glUniformMatrix4fv(program.uMvpMatrix, 1, false, vpMatrix, 0);
+        GLES20.glUniform4f(
+                program.uColor,
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
+
+        GLES20.glEnableVertexAttribArray(program.aPosition);
+        GLES20.glVertexAttribPointer(program.aPosition, 3, GLES20.GL_FLOAT, false, 0, vertices);
+
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indexCount, GLES20.GL_UNSIGNED_SHORT, indices);
+
+        GLES20.glDisableVertexAttribArray(program.aPosition);
+    }
+
+    private void drawArrays(FloatBuffer vertices, int vertexCount, int mode, float[] color) {
+        if (vertices == null || vertexCount <= 0) return;
+
+        program.use();
+
+        vertices.position(0);
+
+        GLES20.glUniformMatrix4fv(program.uMvpMatrix, 1, false, vpMatrix, 0);
+        GLES20.glUniform4f(
+                program.uColor,
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
+
+        GLES20.glEnableVertexAttribArray(program.aPosition);
+        GLES20.glVertexAttribPointer(program.aPosition, 3, GLES20.GL_FLOAT, false, 0, vertices);
+
+        GLES20.glDrawArrays(mode, 0, vertexCount);
+
+        GLES20.glDisableVertexAttribArray(program.aPosition);
+    }
+
+    private static void ensureProgram() {
+        if (program == null) {
+            program = new WheelProgram();
+        }
+    }
+
+    private static class WheelProgram {
+        final int programId;
+        final int aPosition;
+        final int uMvpMatrix;
+        final int uColor;
+
+        WheelProgram() {
+            String vertexShader =
+                    "uniform mat4 uMVPMatrix;\n" +
+                            "attribute vec4 aPosition;\n" +
+                            "void main() {\n" +
+                            "  gl_Position = uMVPMatrix * aPosition;\n" +
+                            "}";
+
+            String fragmentShader =
+                    "precision mediump float;\n" +
+                            "uniform vec4 uColor;\n" +
+                            "void main() {\n" +
+                            "  gl_FragColor = uColor;\n" +
+                            "}";
+
+            int vs = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
+            int fs = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+
+            programId = GLES20.glCreateProgram();
+            GLES20.glAttachShader(programId, vs);
+            GLES20.glAttachShader(programId, fs);
+            GLES20.glLinkProgram(programId);
+
+            int[] linkStatus = new int[1];
+            GLES20.glGetProgramiv(programId, GLES20.GL_LINK_STATUS, linkStatus, 0);
+            if (linkStatus[0] == 0) {
+                String log = GLES20.glGetProgramInfoLog(programId);
+                GLES20.glDeleteProgram(programId);
+                throw new RuntimeException("WheelProgram link error: " + log);
+            }
+
+            GLES20.glDeleteShader(vs);
+            GLES20.glDeleteShader(fs);
+
+            aPosition = GLES20.glGetAttribLocation(programId, "aPosition");
+            uMvpMatrix = GLES20.glGetUniformLocation(programId, "uMVPMatrix");
+            uColor = GLES20.glGetUniformLocation(programId, "uColor");
+        }
+
+        void use() {
+            GLES20.glUseProgram(programId);
+        }
+
+        private static int compileShader(int type, String source) {
+            int shader = GLES20.glCreateShader(type);
+            GLES20.glShaderSource(shader, source);
+            GLES20.glCompileShader(shader);
+
+            int[] compiled = new int[1];
+            GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
+            if (compiled[0] == 0) {
+                String log = GLES20.glGetShaderInfoLog(shader);
+                GLES20.glDeleteShader(shader);
+                throw new RuntimeException("Wheel shader compile error: " + log);
+            }
+            return shader;
+        }
+    }
+    public static void resetGlState() {
+        program = null;
     }
 }

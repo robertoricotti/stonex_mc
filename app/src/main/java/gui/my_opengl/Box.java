@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+import gui.my_opengl.compat.GL10;
 
 public class Box {
     private FloatBuffer vertexBuffer;

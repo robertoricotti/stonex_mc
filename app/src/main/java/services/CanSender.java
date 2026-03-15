@@ -456,7 +456,7 @@ public class CanSender extends Service {
                     }
                 }
 
-
+                MyDeviceManager.CanWrite(true,0, 160, 8, new byte[]{d0, 0, onGrade, 0, 0, (byte) 160, (byte) 168, 0});
             } catch (Exception e) {
                 connections++;
                 if (connections == 30) {

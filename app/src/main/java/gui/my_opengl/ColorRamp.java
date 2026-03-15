@@ -3,8 +3,8 @@ package gui.my_opengl;
 // ===== ColorRamp.java (puoi metterlo dentro GL_Methods se preferisci) =====
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
+import gui.my_opengl.compat.GL10;
+import gui.my_opengl.compat.GL11;
 
 public final class ColorRamp {
 

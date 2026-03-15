@@ -8,6 +8,8 @@ import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
 
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.opengl.GLES20;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -18,8 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
+import gui.my_opengl.compat.GL11;
 
 import dxf.Arc;
 import dxf.AutoCADColor;
@@ -36,84 +37,80 @@ import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import services.TriangleService;
 
-
 public class GLDrawer {
+
+    private static final String TAG = "GLDrawer";
+
     private static final Map<String, Integer> textTextureCache = new HashMap<>();
     private static final Map<String, float[]> textSizeCache = new HashMap<>();
-    static GL10 glClear;
 
+    private static final float[] sVpMatrix = new float[16];
+    private static final float[] sViewMatrix = new float[16];
+    private static boolean hasVpMatrix = false;
+    private static boolean hasViewMatrix = false;
 
-    public static void drawFaces(GL11 gl, List<Face3D> faces, float lineW, float scale, boolean isXML) {
-        if (!My3DActivity.glGradient) {
-            try {
-                gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
-                gl.glEnable(GL10.GL_BLEND);
-                gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+    private static final float[] tempModel = new float[16];
+    private static final float[] tempMvp = new float[16];
+    private static final float[] tempInvView = new float[16];
 
-                gl.glLineWidth(Math.max(1f, lineW * scale));
+    private static ColorProgram colorProgram;
+    private static TextureProgram textureProgram;
 
-                double[] bucketCenter = DataSaved.glL_AnchorView;
-                List<Face3D> sortedFaces = new ArrayList<>(faces);
+    private static final int CIRCLE_SEGMENTS_2D = 72;
+    private static final int ARC_SEGMENTS_2D = 36;
 
-                // Ordina dal più lontano al più vicino
-                sortedFaces.sort((f1, f2) ->
-                        Double.compare(
-                                GL_Methods.averageZ(f2, bucketCenter),
-                                GL_Methods.averageZ(f1, bucketCenter)
-                        )
-                );
+    private GLDrawer() {}
 
-                gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+    // =========================
+    // PUBLIC SETUP
+    // =========================
 
-                for (Face3D face : sortedFaces) {
-                    if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName()))
-                        continue;
-
-                    face.prepareVertexBuffer(bucketCenter, scale);
-                    FloatBuffer buffer = face.getVertexBuffer();
-                    if (buffer == null) continue;
-
-                    // Calcolo colore
-                    int color = isXML
-                            ? GL_Methods.myParseColor(AutoCADColor.getColor(String.valueOf(face.getLayer().getColorState())))
-                            : GL_Methods.myParseColor(face.getLayer().getColorState());
-                    float[] rgb = GL_Methods.parseColorToGL(color);
-
-                    boolean isTriangle = face.getP4().equals(face.getP3());
-                    int vertexCount = isTriangle ? 3 : 4;
-                    int drawMode = isTriangle ? GL10.GL_TRIANGLES : GL10.GL_TRIANGLE_FAN;
-
-                    gl.glPushMatrix();
-                    gl.glTranslatef(0f, 0f, (float) (-DataSaved.offsetH * scale)); // <-- offset verticale
-                    // Riempimento semitrasparente
-                    if (My3DActivity.glFill) {
-                        gl.glColor4f(rgb[0], rgb[1], rgb[2], 0.3f);
-                        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-                        gl.glDrawArrays(drawMode, 0, vertexCount);
-                    }
-
-                    // Contorno definito
-                    if (My3DActivity.glFace) {
-                        buffer.position(0);
-                        gl.glColor4f(rgb[0], rgb[1], rgb[2], 1f);
-                        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-                        gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, vertexCount);
-                    }
-
-                    gl.glPopMatrix();
-                }
-
-                gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-            } catch (Exception e) {
-            }
+    public static void init() {
+        if (colorProgram == null) {
+            colorProgram = new ColorProgram();
+        }
+        if (textureProgram == null) {
+            textureProgram = new TextureProgram();
         }
     }
-    public static void drawFacesGradientPRO(GL11 gl, List<Face3D> faces, float scale, double zMax, double zMin) {
+
+    public static void setViewProjectionMatrix(float[] vpMatrix) {
+        if (vpMatrix != null && vpMatrix.length >= 16) {
+            System.arraycopy(vpMatrix, 0, sVpMatrix, 0, 16);
+            hasVpMatrix = true;
+        }
+    }
+
+    public static void setViewMatrix(float[] viewMatrix) {
+        if (viewMatrix != null && viewMatrix.length >= 16) {
+            System.arraycopy(viewMatrix, 0, sViewMatrix, 0, 16);
+            hasViewMatrix = true;
+        }
+    }
+
+    private static boolean ensureReady() {
+        if (colorProgram == null || textureProgram == null) {
+            init();
+        }
+        return hasVpMatrix;
+    }
+
+    // =========================
+    // FACES
+    // =========================
+
+    public static void drawFaces(GL11 gl, List<Face3D> faces, float lineW, float scale, boolean isXML) {
+        if (faces == null || faces.isEmpty()) return;
+        if (!ensureReady()) return;
+        if (My3DActivity.glGradient) return;
+
         try {
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+            GLES20.glLineWidth(Math.max(1f, lineW * scale));
+
             double[] bucketCenter = DataSaved.glL_AnchorView;
             List<Face3D> sortedFaces = new ArrayList<>(faces);
-
-            // Ordina le facce per profondità
             sortedFaces.sort((f1, f2) ->
                     Double.compare(
                             GL_Methods.averageZ(f2, bucketCenter),
@@ -121,12 +118,58 @@ public class GLDrawer {
                     )
             );
 
-            // ✅ Abilita blending per facce trasparenti
-            gl.glEnable(GL10.GL_BLEND);
-            gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+            for (Face3D face : sortedFaces) {
+                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName())) continue;
+
+                face.prepareVertexBuffer(bucketCenter, scale);
+                FloatBuffer buffer = face.getVertexBuffer();
+                if (buffer == null) continue;
+
+                int color = isXML
+                        ? GL_Methods.myParseColor(AutoCADColor.getColor(String.valueOf(face.getLayer().getColorState())))
+                        : GL_Methods.myParseColor(face.getLayer().getColorState());
+                float[] rgb = GL_Methods.parseColorToGL(color);
+
+                boolean isTriangle = face.getP4().equals(face.getP3());
+                int vertexCount = isTriangle ? 3 : 4;
+                int drawMode = isTriangle ? GLES20.GL_TRIANGLES : GLES20.GL_TRIANGLE_FAN;
+
+                float[] modelMatrix = buildTranslationModel(0f, 0f, (float) (-DataSaved.offsetH * scale));
+
+                if (My3DActivity.glFill) {
+                    drawColoredVertices(buffer, vertexCount, drawMode, modelMatrix, rgb[0], rgb[1], rgb[2], 0.30f);
+                }
+
+                if (My3DActivity.glFace) {
+                    buffer.position(0);
+                    drawColoredVertices(buffer, vertexCount, GLES20.GL_LINE_LOOP, modelMatrix, rgb[0], rgb[1], rgb[2], 1f);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "drawFaces", e);
+        }
+    }
+
+    public static void drawFacesGradientPRO(GL11 gl, List<Face3D> faces, float scale, double zMax, double zMin) {
+        if (faces == null || faces.isEmpty()) return;
+        if (!ensureReady()) return;
+
+        try {
+            double[] bucketCenter = DataSaved.glL_AnchorView;
+            List<Face3D> sortedFaces = new ArrayList<>(faces);
+
+            sortedFaces.sort((f1, f2) ->
+                    Double.compare(
+                            GL_Methods.averageZ(f2, bucketCenter),
+                            GL_Methods.averageZ(f1, bucketCenter)
+                    )
+            );
+
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
             for (Face3D face : sortedFaces) {
-                if (!isLayerEnabled(face.getLayer().getLayerName())) continue;
+                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName())) continue;
 
                 face.prepareVertexBuffer(bucketCenter, scale);
                 FloatBuffer vertexBuffer = face.getVertexBuffer();
@@ -135,150 +178,42 @@ public class GLDrawer {
                 List<Point3D> points = face.getVertices();
                 int vertexCount = points.size();
 
-                // === COLORI GRADIENTE (FACCE) ===
-                float[] colorArray = new float[vertexCount * 4];
-                for (int i = 0; i < vertexCount; i++) {
-                    float[] color = getJetColor(points.get(i).getZ(), zMin, zMax);
-                    colorArray[i * 4]     = color[0];
-                    colorArray[i * 4 + 1] = color[1];
-                    colorArray[i * 4 + 2] = color[2];
-                    colorArray[i * 4 + 3] = 0.75f;   // ✅ Trasparenza
-                }
-                FloatBuffer colorBuffer = createFloatBuffer(colorArray);
-
-                // === DISEGNO FACCIA ===
-                gl.glPushMatrix();
-                gl.glTranslatef(0f, 0f, (float) (-DataSaved.offsetH * scale));
-
-                gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-                gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-                gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
-
-                int drawMode = face.getP4().equals(face.getP3())
-                        ? GL10.GL_TRIANGLES
-                        : GL10.GL_TRIANGLE_FAN;
-
-                gl.glDrawArrays(drawMode, 0, vertexCount);
-
-                gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
-
-                // ============================
-                // ✅ BORDO SEMPRE VISIBILE
-                // ✅ COLORE DERIVATO DALLA FACCIA
-                // ✅ PIÙ MARCATO
-                // ============================
-
-                float[] baseColor = getJetColor(points.get(0).getZ(), zMin, zMax);
-
-                float edgeR = Math.max(baseColor[0] * 0.5f, 0.05f);
-                float edgeG = Math.max(baseColor[1] * 0.5f, 0.05f);
-                float edgeB = Math.max(baseColor[2] * 0.5f, 0.05f);
-
-                // ✅ Stato corretto per il bordo
-                gl.glDisable(GL10.GL_BLEND);
-                gl.glDisable(GL10.GL_DEPTH_TEST);
-
-
-                gl.glLineWidth(1f);
-                gl.glColor4f(edgeR, edgeG, edgeB, 0.85f);
-
-                vertexBuffer.position(0);
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-                gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, vertexCount);
-
-                // ✅ Ripristino stato
-                gl.glEnable(GL10.GL_DEPTH_TEST);
-                gl.glEnable(GL10.GL_BLEND);
-
-
-                gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-                gl.glPopMatrix();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public static void drawFacesGradient(GL11 gl, List<Face3D> faces, float scale, double zMax, double zMin) {
-        try {
-            double[] bucketCenter = DataSaved.glL_AnchorView;
-            List<Face3D> sortedFaces = new ArrayList<>(faces);
-
-            // Ordina le facce per profondità rispetto alla benna
-            sortedFaces.sort((f1, f2) ->
-                    Double.compare(
-                            GL_Methods.averageZ(f2, bucketCenter),
-                            GL_Methods.averageZ(f1, bucketCenter)
-                    )
-            );
-            gl.glEnable(GL10.GL_BLEND);
-            gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-            for (Face3D face : sortedFaces) {
-                if (!isLayerEnabled(face.getLayer().getLayerName())) continue;
-
-                face.prepareVertexBuffer(bucketCenter, scale);
-                FloatBuffer vertexBuffer = face.getVertexBuffer();
-                if (vertexBuffer == null) continue;
-
-                List<Point3D> points = face.getVertices(); // Assicurati che sia implementato
-                int vertexCount = points.size();
-
-                // === Crea il color buffer per il gradiente ===
                 float[] colorArray = new float[vertexCount * 4];
                 for (int i = 0; i < vertexCount; i++) {
                     float[] color = getJetColor(points.get(i).getZ(), zMin, zMax);
                     colorArray[i * 4] = color[0];
                     colorArray[i * 4 + 1] = color[1];
                     colorArray[i * 4 + 2] = color[2];
-                    colorArray[i * 4 + 3] = 0.65f; // Opacità piena
+                    colorArray[i * 4 + 3] = 0.75f;
                 }
                 FloatBuffer colorBuffer = createFloatBuffer(colorArray);
 
-                // === Disegno ===
-                gl.glPushMatrix();
-                gl.glTranslatef(0f, 0f, (float) (-DataSaved.offsetH * scale)); // Offset Z
+                int drawMode = face.getP4().equals(face.getP3()) ? GLES20.GL_TRIANGLES : GLES20.GL_TRIANGLE_FAN;
+                float[] modelMatrix = buildTranslationModel(0f, 0f, (float) (-DataSaved.offsetH * scale));
 
-                gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-                gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+                drawGradientVertices(vertexBuffer, colorBuffer, vertexCount, drawMode, modelMatrix);
 
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-                gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
+                float[] baseColor = getJetColor(points.get(0).getZ(), zMin, zMax);
+                float edgeR = Math.max(baseColor[0] * 0.5f, 0.05f);
+                float edgeG = Math.max(baseColor[1] * 0.5f, 0.05f);
+                float edgeB = Math.max(baseColor[2] * 0.5f, 0.05f);
 
-                int drawMode = face.getP4().equals(face.getP3()) ? GL10.GL_TRIANGLES : GL10.GL_TRIANGLE_FAN;
-                gl.glDrawArrays(drawMode, 0, vertexCount);
-
-                gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
-
-                // === Bordo dei triangoli ===
-                if (My3DActivity.glFace) {
-                    gl.glLineWidth(1f);
-                    float[] edgeColor = GL_Methods.parseColorToGL(MyColorClass.colorConstraint);
-                    gl.glColor4f(edgeColor[0], edgeColor[1], edgeColor[2], 0.8f);
-
-                    vertexBuffer.position(0); // Reset posizione
-                    gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-                    gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, vertexCount);
-                }
-
-                gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-                gl.glPopMatrix();
+                vertexBuffer.position(0);
+                drawColoredVertices(vertexBuffer, vertexCount, GLES20.GL_LINE_LOOP, modelMatrix, edgeR, edgeG, edgeB, 0.85f);
             }
-
         } catch (Exception e) {
+            Log.e(TAG, "drawFacesGradientPRO", e);
         }
     }
 
+    public static void drawFacesGradient(GL11 gl, List<Face3D> faces, float scale, double zMax, double zMin) {
+        if (faces == null || faces.isEmpty()) return;
+        if (!ensureReady()) return;
 
-    public static void drawFacesGradient2D(GL11 gl, List<Face3D> faces, float scale, double zMax, double zMin) {
         try {
             double[] bucketCenter = DataSaved.glL_AnchorView;
             List<Face3D> sortedFaces = new ArrayList<>(faces);
 
-            // Ordina le facce per profondità (opzionale in 2D, ma utile per trasparenze future)
             sortedFaces.sort((f1, f2) ->
                     Double.compare(
                             GL_Methods.averageZ(f2, bucketCenter),
@@ -286,76 +221,114 @@ public class GLDrawer {
                     )
             );
 
-            gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-            gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-            gl.glLineWidth(1f);
-            gl.glEnable(GL10.GL_BLEND);
-            gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-            for (Face3D face : sortedFaces) {
-                if (!isLayerEnabled(face.getLayer().getLayerName())) continue;
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-                // Prepara il vertex buffer per 2D (Z = 0)
+            for (Face3D face : sortedFaces) {
+                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName())) continue;
+
+                face.prepareVertexBuffer(bucketCenter, scale);
+                FloatBuffer vertexBuffer = face.getVertexBuffer();
+                if (vertexBuffer == null) continue;
+
+                List<Point3D> points = face.getVertices();
+                int vertexCount = points.size();
+
+                float[] colorArray = new float[vertexCount * 4];
+                for (int i = 0; i < vertexCount; i++) {
+                    float[] color = getJetColor(points.get(i).getZ(), zMin, zMax);
+                    colorArray[i * 4] = color[0];
+                    colorArray[i * 4 + 1] = color[1];
+                    colorArray[i * 4 + 2] = color[2];
+                    colorArray[i * 4 + 3] = 0.65f;
+                }
+                FloatBuffer colorBuffer = createFloatBuffer(colorArray);
+
+                int drawMode = face.getP4().equals(face.getP3()) ? GLES20.GL_TRIANGLES : GLES20.GL_TRIANGLE_FAN;
+                float[] modelMatrix = buildTranslationModel(0f, 0f, (float) (-DataSaved.offsetH * scale));
+
+                drawGradientVertices(vertexBuffer, colorBuffer, vertexCount, drawMode, modelMatrix);
+
+                if (My3DActivity.glFace) {
+                    float[] edgeColor = GL_Methods.parseColorToGL(MyColorClass.colorConstraint);
+                    vertexBuffer.position(0);
+                    drawColoredVertices(vertexBuffer, vertexCount, GLES20.GL_LINE_LOOP, modelMatrix,
+                            edgeColor[0], edgeColor[1], edgeColor[2], 0.8f);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "drawFacesGradient", e);
+        }
+    }
+
+    public static void drawFacesGradient2D(GL11 gl, List<Face3D> faces, float scale, double zMax, double zMin) {
+        if (faces == null || faces.isEmpty()) return;
+        if (!ensureReady()) return;
+
+        try {
+            double[] bucketCenter = DataSaved.glL_AnchorView;
+            List<Face3D> sortedFaces = new ArrayList<>(faces);
+
+            sortedFaces.sort((f1, f2) ->
+                    Double.compare(
+                            GL_Methods.averageZ(f2, bucketCenter),
+                            GL_Methods.averageZ(f1, bucketCenter)
+                    )
+            );
+
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+            for (Face3D face : sortedFaces) {
+                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName())) continue;
+
                 face.prepareVertexBuffer2DForGradient(bucketCenter, scale);
                 FloatBuffer vertexBuffer = face.getVertexBuffer();
                 if (vertexBuffer == null) continue;
 
-                // Usa i vertici originali per calcolare i colori da quota Z
                 List<Point3D> points = face.getVerticesWithZ();
                 int vertexCount = points.size();
                 float[] colorArray = new float[vertexCount * 4];
 
                 for (int i = 0; i < vertexCount; i++) {
-                    float[] color = GL_Methods.getJetColor(points.get(i).getZ(), zMin, zMax); // 20 cm step
-                    colorArray[i * 4] = color[0];     // R
-                    colorArray[i * 4 + 1] = color[1]; // G
-                    colorArray[i * 4 + 2] = color[2]; // B
-                    colorArray[i * 4 + 3] = 0.75f;       // A
+                    float[] color = GL_Methods.getJetColor(points.get(i).getZ(), zMin, zMax);
+                    colorArray[i * 4] = color[0];
+                    colorArray[i * 4 + 1] = color[1];
+                    colorArray[i * 4 + 2] = color[2];
+                    colorArray[i * 4 + 3] = 0.75f;
                 }
 
                 FloatBuffer colorBuffer = GL_Methods.createFloatBuffer(colorArray);
+                int drawMode = face.getP4().equals(face.getP3()) ? GLES20.GL_TRIANGLES : GLES20.GL_TRIANGLE_FAN;
+                float[] identity = identity();
 
-                gl.glPushMatrix();
+                drawGradientVertices(vertexBuffer, colorBuffer, vertexCount, drawMode, identity);
 
-                // Riempimento con gradiente
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-                gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
-                gl.glDrawArrays(
-                        face.getP4().equals(face.getP3()) ? GL10.GL_TRIANGLES : GL10.GL_TRIANGLE_FAN,
-                        0,
-                        vertexCount
-                );
-
-                // Bordo bianco
                 vertexBuffer.position(0);
-                gl.glColor4f(1f, 1f, 1f, 1f);
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-                gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, vertexCount);
-
-                gl.glPopMatrix();
+                drawColoredVertices(vertexBuffer, vertexCount, GLES20.GL_LINE_LOOP, identity, 1f, 1f, 1f, 1f);
             }
-
-            gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-            gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
-
         } catch (Exception e) {
+            Log.e(TAG, "drawFacesGradient2D", e);
         }
     }
 
+    // =========================
+    // POLYLINES / LINES / ARCS / CIRCLES
+    // =========================
+
     public static void drawPolylines(GL11 gl, List<Polyline> polylines, float lineW, float scale) {
+        if (polylines == null || polylines.isEmpty()) return;
+        if (!ensureReady()) return;
 
-
-        gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
-        gl.glLineWidth(Math.max(1f, lineW * scale));
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glLineWidth(Math.max(1f, lineW * scale));
 
         double[] bucketCenter = DataSaved.glL_AnchorView;
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        float[] identity = identity();
 
         for (Polyline polyline : polylines) {
-            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName()))
-                continue;
+            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName())) continue;
 
             List<Point3D> vertices = polyline.getVertices();
             if (vertices.size() < 2) continue;
@@ -372,98 +345,91 @@ public class GLDrawer {
             int color = GL_Methods.myParseColor(polyline.getLineColor());
             float[] rgb = GL_Methods.parseColorToGL(color);
 
-            gl.glColor4f(rgb[0], rgb[1], rgb[2], 0.85f);  // Leggera trasparenza
-            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-            gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, vertices.size());
+            drawColoredVertices(buffer, vertices.size(), GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 0.85f);
         }
-
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 
     public static void drawLineedge(GL11 gl, float scale) {
-        Point3DF pGround = null;
-        float[] p = new float[3];
+        if (!ensureReady()) return;
+
+        Point3DF pGround;
+        float[] p;
+
         try {
             switch (DataSaved.bucketEdge) {
                 case -1:
-                    p = new float[]{DataSaved.GL_Bucket_Coord[0][0], DataSaved.GL_Bucket_Coord[0][1], DataSaved.GL_Bucket_Coord[0][2]};
-                    pGround = new Point3DF((float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
+                    p = new float[]{
+                            DataSaved.GL_Bucket_Coord[0][0],
+                            DataSaved.GL_Bucket_Coord[0][1],
+                            DataSaved.GL_Bucket_Coord[0][2]
+                    };
+                    pGround = new Point3DF(
+                            (float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
                             (float) (bucketLeftCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                            (float) ((bucketLeftCoord[2] - TriangleService.quota3D_SX) - DataSaved.glL_AnchorView[2]) * scale);
+                            (float) ((bucketLeftCoord[2] - TriangleService.quota3D_SX) - DataSaved.glL_AnchorView[2]) * scale
+                    );
                     break;
 
                 case 0:
                     p = new float[]{
-                            DataSaved.GL_Bucket_Coord[4][0], DataSaved.GL_Bucket_Coord[4][1], DataSaved.GL_Bucket_Coord[4][2]
+                            DataSaved.GL_Bucket_Coord[4][0],
+                            DataSaved.GL_Bucket_Coord[4][1],
+                            DataSaved.GL_Bucket_Coord[4][2]
                     };
-
-                    pGround = new Point3DF((float) (bucketCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
+                    pGround = new Point3DF(
+                            (float) (bucketCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
                             (float) (bucketCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                            (float) ((bucketCoord[2] - TriangleService.quota3D_CT) - DataSaved.glL_AnchorView[2]) * scale);
+                            (float) ((bucketCoord[2] - TriangleService.quota3D_CT) - DataSaved.glL_AnchorView[2]) * scale
+                    );
                     break;
-
 
                 case 1:
                     p = new float[]{
-                            DataSaved.GL_Bucket_Coord[1][0], DataSaved.GL_Bucket_Coord[1][1], DataSaved.GL_Bucket_Coord[1][2]
+                            DataSaved.GL_Bucket_Coord[1][0],
+                            DataSaved.GL_Bucket_Coord[1][1],
+                            DataSaved.GL_Bucket_Coord[1][2]
                     };
-                    pGround = new Point3DF((float) (bucketRightCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
+                    pGround = new Point3DF(
+                            (float) (bucketRightCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
                             (float) (bucketRightCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                            (float) ((bucketRightCoord[2] - TriangleService.quota3D_DX) - DataSaved.glL_AnchorView[2]) * scale);
+                            (float) ((bucketRightCoord[2] - TriangleService.quota3D_DX) - DataSaved.glL_AnchorView[2]) * scale
+                    );
                     break;
+
+                default:
+                    return;
             }
+
             float[] line = {
                     p[0], p[1], p[2],
                     pGround.x, pGround.y, pGround.z
             };
 
-            FloatBuffer lineBuffer = ByteBuffer.allocateDirect(6 * 4)
-                    .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            lineBuffer.put(line).position(0);
-
-            // Imposta colore e disegna la linea
+            FloatBuffer lineBuffer = createFloatBuffer(line);
             float[] red = GL_Methods.parseColorToGL(MyColorClass.colorConstraint);
-            gl.glColor4f(red[0], red[1], red[2], 1.0f);
-            gl.glLineWidth(2.0f);
-            gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, lineBuffer);
-            gl.glDrawArrays(GL10.GL_LINES, 0, 2);
-            //punto
-            FloatBuffer pointBuffer = ByteBuffer.allocateDirect(3 * 4)
-                    .order(ByteOrder.nativeOrder())
-                    .asFloatBuffer();
-            pointBuffer.put(new float[]{pGround.x, pGround.y, pGround.z}).position(0);
+            GLES20.glLineWidth(2f);
+            drawColoredVertices(lineBuffer, 2, GLES20.GL_LINES, identity(), red[0], red[1], red[2], 1f);
 
-            red = GL_Methods.parseColorToGL(Color.BLUE);
-            gl.glColor4f(red[0], red[1], red[2], 1.0f);
-            gl.glPointSize(9f);
-            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, pointBuffer);
-            gl.glDrawArrays(GL10.GL_POINTS, 0, 1);
-            gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+            FloatBuffer pointBuffer = createFloatBuffer(new float[]{pGround.x, pGround.y, pGround.z});
+            float[] blue = GL_Methods.parseColorToGL(Color.BLUE);
+            drawColoredVertices(pointBuffer, 1, GLES20.GL_POINTS, identity(), blue[0], blue[1], blue[2], 1f);
         } catch (Exception e) {
+            Log.e(TAG, "drawLineedge", e);
         }
-
     }
-
 
     public static void drawSelectedPoly(GL11 gl, List<Point3D> vertices, float lineW, int color, float scale) {
         if (vertices == null || vertices.size() < 2) return;
+        if (!ensureReady()) return;
 
         int c = GL_Methods.myParseColor(color);
         float[] rgb = GL_Methods.parseColorToGL(c);
 
-        // Abilita antialiasing e blending per linee più lisce
-
-
-        gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
-        // Imposta la larghezza della linea scalata e limitata ad almeno 1
-        gl.glLineWidth(Math.max(1f, lineW * scale));
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glLineWidth(Math.max(1f, lineW * scale));
 
         double[] bucketCenter = DataSaved.glL_AnchorView;
-
         float[] coords = new float[vertices.size() * 3];
         for (int i = 0; i < vertices.size(); i++) {
             Point3D p = vertices.get(i);
@@ -473,27 +439,15 @@ public class GLDrawer {
         }
 
         FloatBuffer buffer = createFloatBuffer(coords);
-
-        gl.glColor4f(rgb[0], rgb[1], rgb[2], 1.0f);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-        gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, vertices.size());
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-
-        // Disabilita blending e line smooth se non servono altrove
-        gl.glDisable(GL10.GL_BLEND);
-
+        drawColoredVertices(buffer, vertices.size(), GLES20.GL_LINE_STRIP, identity(), rgb[0], rgb[1], rgb[2], 1f);
     }
 
     public static void drawPoints(GL11 gl, List<Point3D> points, float radius, float scale, boolean isXMLPoint) {
+        if (points == null || points.isEmpty()) return;
+        if (!ensureReady()) return;
+
         double[] bucketCenter = DataSaved.glL_AnchorView;
-
-
-        gl.glEnable(GL10.GL_POINT_SMOOTH);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-
-        // Imposta la dimensione dei punti (scalata in base al radius passato)
-        gl.glPointSize(radius * 2 * scale); // moltiplica per 2 per diametro visibile più grande
+        GLES20.glUniform1f(colorProgram.uPointSize, radius * scale * 2f);
 
         for (Point3D p : points) {
             if (p.getLayer() == null || !isLayerEnabled(p.getLayer().getLayerName())) continue;
@@ -502,80 +456,60 @@ public class GLDrawer {
             float y = (float) ((p.getY() - bucketCenter[1]) * scale);
             float z = (float) ((p.getZ() - bucketCenter[2]) * scale);
 
-            int color = isXMLPoint ? GL_Methods.myParseColor(Color.WHITE)
+            int color = isXMLPoint
+                    ? GL_Methods.myParseColor(Color.WHITE)
                     : GL_Methods.myParseColor(p.getLayer().getColorState());
             float[] rgb = GL_Methods.parseColorToGL(color);
 
-            float[] coords = new float[]{x, y, z};
-            FloatBuffer buf = ByteBuffer.allocateDirect(3 * 4)
-                    .order(ByteOrder.nativeOrder())
-                    .asFloatBuffer();
-            buf.put(coords);
-            buf.position(0);
-
-            gl.glColor4f(rgb[0], rgb[1], rgb[2], 1f);
-            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buf);
-            gl.glDrawArrays(GL10.GL_POINTS, 0, 1);
+            FloatBuffer buf = createFloatBuffer(new float[]{x, y, z});
+            drawColoredVertices(buf, 1, GLES20.GL_POINTS, identity(), rgb[0], rgb[1], rgb[2], 1f);
         }
-
-
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glDisable(GL10.GL_POINT_SMOOTH);
-
     }
 
     public static void drawPNEZD(GL11 gl, List<PNEZDPoint> points, float radius, float scale) {
+        if (points == null || points.isEmpty()) return;
+        if (!ensureReady()) return;
+
         double[] bucketCenter = DataSaved.glL_AnchorView;
+        GLES20.glUniform1f(colorProgram.uPointSize, radius * scale * 2f);
 
-
-        gl.glEnable(GL10.GL_POINT_SMOOTH);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        // Imposta la dimensione dei punti (scalata in base al radius passato)
-        gl.glPointSize(radius * 2 * scale); // moltiplica per 2 per diametro visibile più grande
         for (PNEZDPoint p : points) {
-
-
             float x = (float) ((p.getEasting() - bucketCenter[0]) * scale);
             float y = (float) ((p.getNorthing() - bucketCenter[1]) * scale);
             float z = (float) ((p.getElevation() - bucketCenter[2]) * scale);
 
             int color = GL_Methods.myParseColor(Color.WHITE);
-            if(p.getColor()!=null){
-                color=GL_Methods.myParseColor(p.getColor());
+            if (p.getColor() != null) {
+                color = GL_Methods.myParseColor(p.getColor());
             }
 
             float[] rgb = GL_Methods.parseColorToGL(color);
-
-            float[] coords = new float[]{x, y, z};
-            FloatBuffer buf = ByteBuffer.allocateDirect(3 * 4)
-                    .order(ByteOrder.nativeOrder())
-                    .asFloatBuffer();
-            buf.put(coords);
-            buf.position(0);
-
-            gl.glColor4f(rgb[0], rgb[1], rgb[2], 1f);
-            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buf);
-            gl.glDrawArrays(GL10.GL_POINTS, 0, 1);
+            FloatBuffer buf = createFloatBuffer(new float[]{x, y, z});
+            drawColoredVertices(buf, 1, GLES20.GL_POINTS, identity(), rgb[0], rgb[1], rgb[2], 1f);
         }
     }
+
     public static void drawTextsBilBoardPNEZD(GL11 gl, List<PNEZDPoint> texts, double[] anchor, float charSpacingFactor, float scale, FontAtlas atlas) {
-        FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(4 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        FloatBuffer texBuffer = ByteBuffer.allocateDirect(4 * 2 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        if (texts == null || texts.isEmpty() || atlas == null) return;
+        if (!ensureReady() || !hasViewMatrix) return;
+        drawBillboardTextsPnezdInternal(texts, anchor, charSpacingFactor, scale, atlas);
+    }
 
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-        gl.glEnable(GL10.GL_TEXTURE_2D);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-        gl.glDisable(GL10.GL_LIGHTING); // testi = non illuminati
+    public static void drawTextsBilBoard(GL11 gl, List<DxfText> texts, double[] anchor, float charSpacingFactor, float scale, FontAtlas atlas) {
+        if (texts == null || texts.isEmpty() || atlas == null) return;
+        if (!ensureReady() || !hasViewMatrix) return;
+        drawBillboardTextsDxfInternal(texts, anchor, charSpacingFactor, scale, atlas);
+    }
 
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, atlas.getTextureId());
+    private static void drawBillboardTextsPnezdInternal(List<PNEZDPoint> texts, double[] anchor, float charSpacingFactor, float scale, FontAtlas atlas) {
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
         float charW = atlas.getCellSize() * scale * 0.01f;
         float charH = atlas.getCellSize() * scale * 0.01f;
-        GL11 gl11 = (gl instanceof GL11) ? (GL11) gl : null;
-        if (gl11 == null) return;
-        float[] modelView = new float[16];
+
+        float[] right = getCameraRight();
+        float[] up = getCameraUp();
 
         for (PNEZDPoint text : texts) {
             String str = text.getDescription();
@@ -585,76 +519,19 @@ public class GLDrawer {
             float baseY = (float) ((text.getNorthing() - anchor[1]) * scale);
             float baseZ = (float) ((text.getElevation() - anchor[2]) * scale);
 
-            gl.glPushMatrix();
-            gl.glTranslatef(baseX, baseY, baseZ);
-
-            // Billboard: rimuove la rotazione dalla matrice modelview
-            gl11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, modelView, 0);
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    modelView[i * 4 + j] = (i == j) ? 1f : 0f; // solo diagonale = no rotazione
-                }
-            }
-            gl.glLoadMatrixf(modelView, 0);
-
-            float xCursor = 0f; // testo locale, centrato sul punto
-
-            for (char c : str.toCharArray()) {
-                RectF uv = atlas.getUV(c);
-
-                float[] vertices = {
-                        xCursor, 0f, 0f,
-                        xCursor + charW, 0f, 0f,
-                        xCursor, charH, 0f,
-                        xCursor + charW, charH, 0f
-                };
-
-                float[] tex = {
-                        uv.left, uv.top,
-                        uv.right, uv.top,
-                        uv.left, uv.bottom,
-                        uv.right, uv.bottom
-                };
-
-                vertexBuffer.clear();
-                texBuffer.clear();
-                vertexBuffer.put(vertices).position(0);
-                texBuffer.put(tex).position(0);
-
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-                gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texBuffer);
-                gl.glColor4f(1f, 1f, 1f, 1f);
-                gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-
-                xCursor += charW * charSpacingFactor;
-            }
-
-            gl.glPopMatrix();
+            drawBillboardString(str, baseX, baseY, baseZ, charW, charH, charSpacingFactor, atlas, right, up);
         }
-
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-        gl.glDisable(GL10.GL_TEXTURE_2D);
     }
 
-    public static void drawTextsBilBoard(GL11 gl, List<DxfText> texts, double[] anchor, float charSpacingFactor, float scale, FontAtlas atlas) {
-        FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(4 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        FloatBuffer texBuffer = ByteBuffer.allocateDirect(4 * 2 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-        gl.glEnable(GL10.GL_TEXTURE_2D);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-        gl.glDisable(GL10.GL_LIGHTING); // testi = non illuminati
-
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, atlas.getTextureId());
+    private static void drawBillboardTextsDxfInternal(List<DxfText> texts, double[] anchor, float charSpacingFactor, float scale, FontAtlas atlas) {
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
         float charW = atlas.getCellSize() * scale * 0.01f;
         float charH = atlas.getCellSize() * scale * 0.01f;
-        GL11 gl11 = (gl instanceof GL11) ? (GL11) gl : null;
-        if (gl11 == null) return;
-        float[] modelView = new float[16];
+
+        float[] right = getCameraRight();
+        float[] up = getCameraUp();
 
         for (DxfText text : texts) {
             String str = text.getText();
@@ -664,160 +541,129 @@ public class GLDrawer {
             float baseY = (float) ((text.getY() - anchor[1]) * scale);
             float baseZ = (float) ((text.getZ() - anchor[2]) * scale);
 
-            gl.glPushMatrix();
-            gl.glTranslatef(baseX, baseY, baseZ);
-
-            // Billboard: rimuove la rotazione dalla matrice modelview
-            gl11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, modelView, 0);
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    modelView[i * 4 + j] = (i == j) ? 1f : 0f; // solo diagonale = no rotazione
-                }
-            }
-            gl.glLoadMatrixf(modelView, 0);
-
-            float xCursor = 0f; // testo locale, centrato sul punto
-
-            for (char c : str.toCharArray()) {
-                RectF uv = atlas.getUV(c);
-
-                float[] vertices = {
-                        xCursor, 0f, 0f,
-                        xCursor + charW, 0f, 0f,
-                        xCursor, charH, 0f,
-                        xCursor + charW, charH, 0f
-                };
-
-                float[] tex = {
-                        uv.left, uv.top,
-                        uv.right, uv.top,
-                        uv.left, uv.bottom,
-                        uv.right, uv.bottom
-                };
-
-                vertexBuffer.clear();
-                texBuffer.clear();
-                vertexBuffer.put(vertices).position(0);
-                texBuffer.put(tex).position(0);
-
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-                gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texBuffer);
-                gl.glColor4f(1f, 1f, 1f, 1f);
-                gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-
-                xCursor += charW * charSpacingFactor;
-            }
-
-            gl.glPopMatrix();
+            drawBillboardString(str, baseX, baseY, baseZ, charW, charH, charSpacingFactor, atlas, right, up);
         }
-
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-        gl.glDisable(GL10.GL_TEXTURE_2D);
     }
 
+    private static void drawBillboardString(String str, float baseX, float baseY, float baseZ,
+                                            float charW, float charH, float charSpacingFactor,
+                                            FontAtlas atlas, float[] right, float[] up) {
+        float cursor = 0f;
 
+        for (char c : str.toCharArray()) {
+            RectF uv = atlas.getUV(c);
+            if (uv == null) {
+                cursor += charW * charSpacingFactor;
+                continue;
+            }
 
+            float x0 = baseX + right[0] * cursor;
+            float y0 = baseY + right[1] * cursor;
+            float z0 = baseZ + right[2] * cursor;
 
+            float x1 = x0 + right[0] * charW;
+            float y1 = y0 + right[1] * charW;
+            float z1 = z0 + right[2] * charW;
+
+            float x2 = x0 + up[0] * charH;
+            float y2 = y0 + up[1] * charH;
+            float z2 = z0 + up[2] * charH;
+
+            float x3 = x1 + up[0] * charH;
+            float y3 = y1 + up[1] * charH;
+            float z3 = z1 + up[2] * charH;
+
+            float[] vertices = {
+                    x0, y0, z0,
+                    x1, y1, z1,
+                    x2, y2, z2,
+                    x3, y3, z3
+            };
+
+            float[] tex = {
+                    uv.left, uv.top,
+                    uv.right, uv.top,
+                    uv.left, uv.bottom,
+                    uv.right, uv.bottom
+            };
+
+            FloatBuffer vertexBuffer = createFloatBuffer(vertices);
+            FloatBuffer texBuffer = createFloatBuffer(tex);
+
+            drawTexturedQuad(vertexBuffer, texBuffer, atlas.getTextureId(), 4, identity());
+            cursor += charW * charSpacingFactor;
+        }
+    }
+
+    // =========================
+    // 2D ENTITIES
+    // =========================
 
     private static boolean isLayerEnabled(String layerName) {
-        if (layerName == null || layerName.isEmpty()) {
-            return false; // Layer nullo o vuoto non è abilitato
-        }
+        if (layerName == null || layerName.isEmpty()) return false;
 
-        // Cerca il layer nelle tre liste
         for (Layer layer : DataSaved.dxfLayers_DTM) {
-            if (layerName.equals(layer.getLayerName()) && layer.isEnable()) {
-                return true;
-            }
+            if (layerName.equals(layer.getLayerName()) && layer.isEnable()) return true;
         }
         for (Layer layer : DataSaved.dxfLayers_POLY) {
-            if (layerName.equals(layer.getLayerName()) && layer.isEnable()) {
-                return true;
-            }
+            if (layerName.equals(layer.getLayerName()) && layer.isEnable()) return true;
         }
         for (Layer layer : DataSaved.dxfLayers_POINT) {
-            if (layerName.equals(layer.getLayerName()) && layer.isEnable()) {
-                return true;
-            }
+            if (layerName.equals(layer.getLayerName()) && layer.isEnable()) return true;
         }
 
-        return false; // Se il layer non è trovato o non è abilitato
+        return false;
     }
 
-    /// entità solo 2D
     public static void drawLines2D(GL11 gl, List<Line> lines, float lineW, float scale) {
         if (lines == null || lines.isEmpty()) return;
+        if (!ensureReady()) return;
 
-        // Abilita antialiasing e blending per linee più lisce
-
-
-        gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
-        // Imposta la larghezza della linea scalata, con minimo 1
-        gl.glLineWidth(Math.max(1f, lineW * scale));
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glLineWidth(Math.max(1f, lineW * scale));
 
         double[] bucket = DataSaved.glL_AnchorView;
-
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        float[] identity = identity();
 
         for (Line line : lines) {
-            if (line.getLayer() == null || !isLayerEnabled(line.getLayer().getLayerName()))
-                continue;
+            if (line.getLayer() == null || !isLayerEnabled(line.getLayer().getLayerName())) continue;
 
             float[] coords = new float[6];
             coords[0] = (float) ((line.getStart().getX() - bucket[0]) * scale);
             coords[1] = (float) ((line.getStart().getY() - bucket[1]) * scale);
             coords[2] = 0f;
-
             coords[3] = (float) ((line.getEnd().getX() - bucket[0]) * scale);
             coords[4] = (float) ((line.getEnd().getY() - bucket[1]) * scale);
             coords[5] = 0f;
 
             FloatBuffer buffer = createFloatBuffer(coords);
-
             float[] rgb = GL_Methods.parseColorToGL(GL_Methods.myParseColor(line.getColor()));
-            gl.glColor4f(rgb[0], rgb[1], rgb[2], 1f);
-            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-            gl.glDrawArrays(GL10.GL_LINES, 0, 2);
+            drawColoredVertices(buffer, 2, GLES20.GL_LINES, identity, rgb[0], rgb[1], rgb[2], 1f);
         }
-
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-
-        // Disabilita blending e line smooth
-        gl.glDisable(GL10.GL_BLEND);
-
     }
 
-
     public static void drawCircles2D(GL11 gl, List<Circle> circles, float lineW, float scale) {
-        // Abilita line smooth e blending per linee più morbide
+        if (circles == null || circles.isEmpty()) return;
+        if (!ensureReady()) return;
 
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glLineWidth(Math.max(1f, lineW));
 
-        gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
-        gl.glLineWidth(Math.max(1f, lineW));
         double[] bucket = DataSaved.glL_AnchorView;
-
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-
-        final int segments = 72; // Aumentato per un cerchio più liscio
+        float[] identity = identity();
 
         for (Circle circle : circles) {
-            if (circle.getLayer() == null || !isLayerEnabled(circle.getLayer().getLayerName()))
-                continue;
+            if (circle.getLayer() == null || !isLayerEnabled(circle.getLayer().getLayerName())) continue;
 
             float cx = (float) ((circle.getCenter().getX() - bucket[0]) * scale);
             float cy = (float) ((circle.getCenter().getY() - bucket[1]) * scale);
             float r = (float) (circle.getRadius() * scale);
 
-            float[] coords = new float[(segments + 1) * 3];
-            for (int i = 0; i <= segments; i++) {
-                double angle = 2 * Math.PI * i / segments;
+            float[] coords = new float[(CIRCLE_SEGMENTS_2D + 1) * 3];
+            for (int i = 0; i <= CIRCLE_SEGMENTS_2D; i++) {
+                double angle = 2 * Math.PI * i / CIRCLE_SEGMENTS_2D;
                 coords[i * 3] = (float) (cx + r * Math.cos(angle));
                 coords[i * 3 + 1] = (float) (cy + r * Math.sin(angle));
                 coords[i * 3 + 2] = 0f;
@@ -825,27 +671,17 @@ public class GLDrawer {
 
             FloatBuffer buffer = createFloatBuffer(coords);
             float[] rgb = GL_Methods.parseColorToGL(GL_Methods.myParseColor(circle.getColor()));
-            gl.glColor4f(rgb[0], rgb[1], rgb[2], 1f);
-
-            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-            gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, segments + 1);
+            drawColoredVertices(buffer, CIRCLE_SEGMENTS_2D + 1, GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 1f);
         }
-
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-
-        // Disabilita blending e line smooth dopo il disegno
-        gl.glDisable(GL10.GL_BLEND);
-
     }
 
-
     public static void drawArcs2D(GL11 gl, List<Arc> arcs, float lineW, float scale) {
-        gl.glLineWidth(lineW);
+        if (arcs == null || arcs.isEmpty()) return;
+        if (!ensureReady()) return;
+
+        GLES20.glLineWidth(Math.max(1f, lineW));
         double[] bucket = DataSaved.glL_AnchorView;
-
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-
-        final int segments = 36;
+        float[] identity = identity();
 
         for (Arc arc : arcs) {
             if (arc.getLayer() == null || !isLayerEnabled(arc.getLayer().getLayerName())) continue;
@@ -858,11 +694,11 @@ public class GLDrawer {
             float endAngle = (float) arc.getEndAngle();
 
             float sweep = endAngle - startAngle;
-            if (sweep < 0) sweep += 360;
+            if (sweep < 0) sweep += 360f;
 
-            float[] coords = new float[(segments + 1) * 3];
-            for (int i = 0; i <= segments; i++) {
-                double angleDeg = startAngle + sweep * i / segments;
+            float[] coords = new float[(ARC_SEGMENTS_2D + 1) * 3];
+            for (int i = 0; i <= ARC_SEGMENTS_2D; i++) {
+                double angleDeg = startAngle + sweep * i / ARC_SEGMENTS_2D;
                 double angleRad = Math.toRadians(angleDeg);
                 coords[i * 3] = (float) (cx + r * Math.cos(angleRad));
                 coords[i * 3 + 1] = (float) (cy + r * Math.sin(angleRad));
@@ -871,38 +707,29 @@ public class GLDrawer {
 
             FloatBuffer buffer = createFloatBuffer(coords);
             float[] rgb = GL_Methods.parseColorToGL(GL_Methods.myParseColor(arc.getColor()));
-            gl.glColor4f(rgb[0], rgb[1], rgb[2], 1f);
-
-            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-            gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, segments + 1);
+            drawColoredVertices(buffer, ARC_SEGMENTS_2D + 1, GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 1f);
         }
-
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 
-
     public static void drawPolylines2D(GL11 gl, List<Polyline_2D> polylines, float lineW, float scale) {
-        // Abilita line smooth e blending per linee più morbide
+        if (polylines == null || polylines.isEmpty()) return;
+        if (!ensureReady()) return;
 
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glLineWidth(Math.max(1f, lineW));
 
-        gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
-        gl.glLineWidth(Math.max(1f, lineW));
         double[] bucket = DataSaved.glL_AnchorView;
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        float[] identity = identity();
 
         for (Polyline_2D polyline : polylines) {
-            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName()))
-                continue;
+            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName())) continue;
 
             List<Point3D> vertices = polyline.getVertices();
             if (vertices.size() < 2) continue;
 
             int color = GL_Methods.myParseColor(polyline.getLineColor());
             float[] rgb = GL_Methods.parseColorToGL(color);
-            gl.glColor4f(rgb[0], rgb[1], rgb[2], 1.0f);
 
             for (int i = 0; i < vertices.size() - 1; i++) {
                 Point3D p1 = vertices.get(i);
@@ -910,7 +737,6 @@ public class GLDrawer {
                 double bulge = p1.getBulge();
 
                 if (bulge == 0) {
-                    // Linea retta tra p1 e p2
                     float[] coords = new float[]{
                             (float) ((p1.getX() - bucket[0]) * scale),
                             (float) ((p1.getY() - bucket[1]) * scale),
@@ -920,31 +746,17 @@ public class GLDrawer {
                             0f
                     };
                     FloatBuffer buffer = createFloatBuffer(coords);
-                    gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-                    gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, 2);
-
+                    drawColoredVertices(buffer, 2, GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 1f);
                 } else {
-                    // Arco tra p1 e p2
-                    float[][] arcPoints;
-                    if (Math.abs(bulge) > 1) {
-                        arcPoints = computeArcPointsM(p1, p2, bulge, scale, bucket);
-                    } else {
-                        arcPoints = computeArcPoints(p1, p2, bulge, scale, bucket);
-                    }
+                    float[][] arcPoints = Math.abs(bulge) > 1
+                            ? computeArcPointsM(p1, p2, bulge, scale, bucket)
+                            : computeArcPoints(p1, p2, bulge, scale, bucket);
                     FloatBuffer buffer = createFloatBuffer(flatten(arcPoints));
-                    gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-                    gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, arcPoints.length);
+                    drawColoredVertices(buffer, arcPoints.length, GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 1f);
                 }
             }
         }
-
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-
-        // Disabilita blending e line smooth dopo il disegno
-        gl.glDisable(GL10.GL_BLEND);
-
     }
-
 
     private static float[][] computeArcPointsM(Point3D p1, Point3D p2, double bulge, float scale, double[] bucket) {
         final int numSegments = 32;
@@ -955,16 +767,15 @@ public class GLDrawer {
 
         float x2 = (float) ((p2.getX() - bucket[0]) * scale);
         float y2 = (float) ((p2.getY() - bucket[1]) * scale);
-        float z2 = (float) ((p2.getZ() - bucket[2]) * scale);
 
         double chordLength = Math.hypot(x2 - x1, y2 - y1);
         double theta = 4 * Math.atan(Math.abs(bulge));
-        double radius = Math.abs((chordLength / 2) / Math.sin(theta / 2));
+        double radius = Math.abs((chordLength / 2d) / Math.sin(theta / 2d));
 
-        float midX = (x1 + x2) / 2;
-        float midY = (y1 + y2) / 2;
+        float midX = (x1 + x2) / 2f;
+        float midY = (y1 + y2) / 2f;
 
-        double sagitta = Math.sqrt(radius * radius - (chordLength / 2) * (chordLength / 2));
+        double sagitta = Math.sqrt(radius * radius - (chordLength / 2d) * (chordLength / 2d));
 
         float dx = x2 - x1;
         float dy = y2 - y1;
@@ -982,21 +793,18 @@ public class GLDrawer {
 
         float sweepAngle = endAngle - startAngle;
         if (bulge > 0) {
-            if (sweepAngle < 0) sweepAngle += 2 * Math.PI;
+            if (sweepAngle < 0) sweepAngle += 2f * (float) Math.PI;
         } else {
-            if (sweepAngle > 0) sweepAngle -= 2 * Math.PI;
+            if (sweepAngle > 0) sweepAngle -= 2f * (float) Math.PI;
         }
 
         float[][] arcPoints = new float[numSegments + 1][3];
         for (int i = 0; i <= numSegments; i++) {
             float angle = startAngle + (sweepAngle * i / numSegments);
-            float px = (float) (centerX + radius * Math.cos(angle));
-            float py = (float) (centerY + radius * Math.sin(angle));
-            arcPoints[i][0] = px;
-            arcPoints[i][1] = py;
+            arcPoints[i][0] = (float) (centerX + radius * Math.cos(angle));
+            arcPoints[i][1] = (float) (centerY + radius * Math.sin(angle));
             arcPoints[i][2] = z1;
         }
-
         return arcPoints;
     }
 
@@ -1009,16 +817,15 @@ public class GLDrawer {
 
         float x2 = (float) ((p2.getX() - bucket[0]) * scale);
         float y2 = (float) ((p2.getY() - bucket[1]) * scale);
-        float z2 = (float) ((p2.getZ() - bucket[2]) * scale);
 
         double distance = Math.hypot(x2 - x1, y2 - y1);
         double theta = 4 * Math.atan(Math.abs(bulge));
-        double radius = (distance / 2) / Math.abs(Math.sin(theta / 2));
+        double radius = (distance / 2d) / Math.abs(Math.sin(theta / 2d));
 
-        float midX = (x1 + x2) / 2;
-        float midY = (y1 + y2) / 2;
+        float midX = (x1 + x2) / 2f;
+        float midY = (y1 + y2) / 2f;
 
-        double height = Math.sqrt(radius * radius - (distance / 2) * (distance / 2));
+        double height = Math.sqrt(radius * radius - (distance / 2d) * (distance / 2d));
 
         float dx = x2 - x1;
         float dy = y2 - y1;
@@ -1036,29 +843,27 @@ public class GLDrawer {
 
         float sweepAngle = endAngle - startAngle;
         if (bulge > 0) {
-            if (sweepAngle < 0) sweepAngle += 2 * Math.PI;
+            if (sweepAngle < 0) sweepAngle += 2f * (float) Math.PI;
         } else {
-            if (sweepAngle > 0) sweepAngle -= 2 * Math.PI;
+            if (sweepAngle > 0) sweepAngle -= 2f * (float) Math.PI;
         }
 
-        // Correzione sweep per archi "invertiti"
         if (Math.abs(bulge) > 1 && Math.abs(Math.toDegrees(sweepAngle)) < 180) {
-            sweepAngle = (float) ((bulge > 0) ? (2 * Math.PI - Math.abs(sweepAngle)) : -(2 * Math.PI - Math.abs(sweepAngle)));
+            sweepAngle = (float) ((bulge > 0)
+                    ? (2 * Math.PI - Math.abs(sweepAngle))
+                    : -(2 * Math.PI - Math.abs(sweepAngle)));
         }
 
         float[][] arcPoints = new float[numSegments + 1][3];
         for (int i = 0; i <= numSegments; i++) {
             float angle = startAngle + (sweepAngle * i / numSegments);
-            float px = (float) (centerX + radius * Math.cos(angle));
-            float py = (float) (centerY + radius * Math.sin(angle));
-            arcPoints[i][0] = px;
-            arcPoints[i][1] = py;
+            arcPoints[i][0] = (float) (centerX + radius * Math.cos(angle));
+            arcPoints[i][1] = (float) (centerY + radius * Math.sin(angle));
             arcPoints[i][2] = z1;
         }
 
         return arcPoints;
     }
-
 
     private static float[] flatten(float[][] array) {
         float[] flat = new float[array.length * 3];
@@ -1069,45 +874,344 @@ public class GLDrawer {
         }
         return flat;
     }
+    public static void drawCircle(GL11 gl, float cx, float cy, float cz, float radius, int segments, float[] color) {
+        if (!ensureReady()) return;
 
-
-    // Disegna un cerchio pieno sul piano XY (a z = cz)
-    public static void drawCircle(GL11 gl, float cx, float cy, float cz, float radius, int segments) {
-        float[] coords = new float[(segments + 2) * 3]; // centro + tutti punti + ritorno
-
+        float[] coords = new float[(segments + 2) * 3];
         coords[0] = cx;
         coords[1] = cy;
         coords[2] = cz;
 
         for (int i = 0; i <= segments; i++) {
-            double angle = 2 * Math.PI * i / segments;
+            double angle = 2d * Math.PI * i / segments;
             coords[(i + 1) * 3] = cx + (float) (radius * Math.cos(angle));
             coords[(i + 1) * 3 + 1] = cy + (float) (radius * Math.sin(angle));
             coords[(i + 1) * 3 + 2] = cz;
         }
 
-        FloatBuffer buffer = ByteBuffer.allocateDirect(coords.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        buffer.put(coords).position(0);
+        FloatBuffer buffer = createFloatBuffer(coords);
+        drawColoredVertices(
+                buffer,
+                segments + 2,
+                GLES20.GL_TRIANGLE_FAN,
+                identity(),
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
+    }
+    public static void drawCircle(GL11 gl, float cx, float cy, float cz, float radius, int segments) {
+        if (!ensureReady()) return;
 
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, buffer);
-        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, segments + 2);
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        float[] coords = new float[(segments + 2) * 3];
+        coords[0] = cx;
+        coords[1] = cy;
+        coords[2] = cz;
+
+        for (int i = 0; i <= segments; i++) {
+            double angle = 2d * Math.PI * i / segments;
+            coords[(i + 1) * 3] = cx + (float) (radius * Math.cos(angle));
+            coords[(i + 1) * 3 + 1] = cy + (float) (radius * Math.sin(angle));
+            coords[(i + 1) * 3 + 2] = cz;
+        }
+
+        FloatBuffer buffer = createFloatBuffer(coords);
+        drawColoredVertices(buffer, segments + 2, GLES20.GL_TRIANGLE_FAN, identity(), 1f, 1f, 1f, 1f);
+    }
+    public static void drawRawLines3D(float[] coords, int vertexCount, float[] color, float lineWidth) {
+        if (coords == null || coords.length < vertexCount * 3) return;
+        if (!ensureReady()) return;
+
+        GLES20.glLineWidth(Math.max(1f, lineWidth));
+        FloatBuffer buffer = createFloatBuffer(coords);
+        drawColoredVertices(
+                buffer,
+                vertexCount,
+                GLES20.GL_LINES,
+                identity(),
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
     }
 
     public static void clearTextTextureCache() {
         try {
-            for (int textureId : textTextureCache.values()) {
-                int[] ids = {textureId};
-                glClear.glDeleteTextures(1, ids, 0);
+            if (!textTextureCache.isEmpty()) {
+                int[] ids = new int[textTextureCache.size()];
+                int i = 0;
+                for (int textureId : textTextureCache.values()) {
+                    ids[i++] = textureId;
+                }
+                GLES20.glDeleteTextures(ids.length, ids, 0);
             }
             textTextureCache.clear();
             textSizeCache.clear();
         } catch (Exception ignored) {
         }
-
     }
 
+    // =========================
+    // LOW LEVEL DRAW
+    // =========================
+
+    private static void drawColoredVertices(FloatBuffer vertexBuffer, int vertexCount, int mode,
+                                            float[] modelMatrix, float r, float g, float b, float a) {
+        if (vertexBuffer == null || vertexCount <= 0) return;
+
+        colorProgram.use();
+        buildMvp(modelMatrix);
+
+        GLES20.glUniformMatrix4fv(colorProgram.uMvpMatrix, 1, false, tempMvp, 0);
+        GLES20.glUniform4f(colorProgram.uColor, r, g, b, a);
+        GLES20.glUniform1i(colorProgram.uUseVertexColor, 0);
+
+        vertexBuffer.position(0);
+        GLES20.glEnableVertexAttribArray(colorProgram.aPosition);
+        GLES20.glVertexAttribPointer(colorProgram.aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
+
+        GLES20.glDisableVertexAttribArray(colorProgram.aColor);
+        GLES20.glVertexAttrib4f(colorProgram.aColor, 1f, 1f, 1f, 1f);
+
+        GLES20.glDrawArrays(mode, 0, vertexCount);
+        GLES20.glDisableVertexAttribArray(colorProgram.aPosition);
+    }
+
+    private static void drawGradientVertices(FloatBuffer vertexBuffer, FloatBuffer colorBuffer,
+                                             int vertexCount, int mode, float[] modelMatrix) {
+        if (vertexBuffer == null || colorBuffer == null || vertexCount <= 0) return;
+
+        colorProgram.use();
+        buildMvp(modelMatrix);
+
+        GLES20.glUniformMatrix4fv(colorProgram.uMvpMatrix, 1, false, tempMvp, 0);
+        GLES20.glUniform4f(colorProgram.uColor, 1f, 1f, 1f, 1f);
+        GLES20.glUniform1i(colorProgram.uUseVertexColor, 1);
+
+        vertexBuffer.position(0);
+        colorBuffer.position(0);
+
+        GLES20.glEnableVertexAttribArray(colorProgram.aPosition);
+        GLES20.glVertexAttribPointer(colorProgram.aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
+
+        GLES20.glEnableVertexAttribArray(colorProgram.aColor);
+        GLES20.glVertexAttribPointer(colorProgram.aColor, 4, GLES20.GL_FLOAT, false, 0, colorBuffer);
+
+        GLES20.glDrawArrays(mode, 0, vertexCount);
+
+        GLES20.glDisableVertexAttribArray(colorProgram.aPosition);
+        GLES20.glDisableVertexAttribArray(colorProgram.aColor);
+    }
+
+    private static void drawTexturedQuad(FloatBuffer vertexBuffer, FloatBuffer texBuffer,
+                                         int textureId, int vertexCount, float[] modelMatrix) {
+        if (vertexBuffer == null || texBuffer == null || vertexCount <= 0) return;
+
+        textureProgram.use();
+        buildMvp(modelMatrix);
+
+        GLES20.glUniformMatrix4fv(textureProgram.uMvpMatrix, 1, false, tempMvp, 0);
+        GLES20.glUniform4f(textureProgram.uColor, 1f, 1f, 1f, 1f);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glUniform1i(textureProgram.uTexture, 0);
+
+        vertexBuffer.position(0);
+        texBuffer.position(0);
+
+        GLES20.glEnableVertexAttribArray(textureProgram.aPosition);
+        GLES20.glVertexAttribPointer(textureProgram.aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
+
+        GLES20.glEnableVertexAttribArray(textureProgram.aTexCoord);
+        GLES20.glVertexAttribPointer(textureProgram.aTexCoord, 2, GLES20.GL_FLOAT, false, 0, texBuffer);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertexCount);
+
+        GLES20.glDisableVertexAttribArray(textureProgram.aPosition);
+        GLES20.glDisableVertexAttribArray(textureProgram.aTexCoord);
+    }
+
+    private static float[] buildTranslationModel(float tx, float ty, float tz) {
+        Matrix.setIdentityM(tempModel, 0);
+        Matrix.translateM(tempModel, 0, tx, ty, tz);
+        return tempModel;
+    }
+
+    private static float[] identity() {
+        Matrix.setIdentityM(tempModel, 0);
+        return tempModel;
+    }
+
+    private static void buildMvp(float[] modelMatrix) {
+        Matrix.multiplyMM(tempMvp, 0, sVpMatrix, 0, modelMatrix, 0);
+    }
+
+    private static float[] getCameraRight() {
+        float[] invView = new float[16];
+        if (!Matrix.invertM(invView, 0, sViewMatrix, 0)) {
+            return new float[]{1f, 0f, 0f};
+        }
+        return new float[]{invView[0], invView[1], invView[2]};
+    }
+
+    private static float[] getCameraUp() {
+        float[] invView = new float[16];
+        if (!Matrix.invertM(invView, 0, sViewMatrix, 0)) {
+            return new float[]{0f, 1f, 0f};
+        }
+        return new float[]{invView[4], invView[5], invView[6]};
+    }
+
+    // =========================
+    // SHADERS
+    // =========================
+
+    private static class ColorProgram {
+        final int program;
+        final int aPosition;
+        final int aColor;
+        final int uMvpMatrix;
+        final int uColor;
+        final int uUseVertexColor;
+        final int uPointSize;
+        ColorProgram() {
+            String vertex =
+                    "uniform mat4 uMVPMatrix;\n" +
+                            "attribute vec4 aPosition;\n" +
+                            "attribute vec4 aColor;\n" +
+                            "uniform vec4 uColor;\n" +
+                            "uniform int uUseVertexColor;\n" +
+                            "uniform float uPointSize;\n"+
+                            "varying vec4 vColor;\n" +
+                            "void main() {\n" +
+                            "  gl_Position = uMVPMatrix * aPosition;\n" +
+                            "  gl_PointSize = 8.0;\n" +
+                            "  vColor = (uUseVertexColor == 1) ? aColor : uColor;\n" +
+                            "}";
+
+            String fragment =
+                    "precision mediump float;\n" +
+                            "varying vec4 vColor;\n" +
+                            "void main() {\n" +
+                            "  gl_FragColor = vColor;\n" +
+                            "}";
+
+            program = createProgram(vertex, fragment);
+            aPosition = GLES20.glGetAttribLocation(program, "aPosition");
+            aColor = GLES20.glGetAttribLocation(program, "aColor");
+            uMvpMatrix = GLES20.glGetUniformLocation(program, "uMVPMatrix");
+            uColor = GLES20.glGetUniformLocation(program, "uColor");
+            uUseVertexColor = GLES20.glGetUniformLocation(program, "uUseVertexColor");
+            uPointSize = GLES20.glGetUniformLocation(program, "uPointSize");
+        }
+
+        void use() {
+            GLES20.glUseProgram(program);
+        }
+    }
+
+    private static class TextureProgram {
+        final int program;
+        final int aPosition;
+        final int aTexCoord;
+        final int uMvpMatrix;
+        final int uTexture;
+        final int uColor;
+
+        TextureProgram() {
+            String vertex =
+                    "uniform mat4 uMVPMatrix;\n" +
+                            "attribute vec4 aPosition;\n" +
+                            "attribute vec2 aTexCoord;\n" +
+                            "varying vec2 vTexCoord;\n" +
+                            "void main() {\n" +
+                            "  gl_Position = uMVPMatrix * aPosition;\n" +
+                            "  vTexCoord = aTexCoord;\n" +
+                            "}";
+
+            String fragment =
+                    "precision mediump float;\n" +
+                            "varying vec2 vTexCoord;\n" +
+                            "uniform sampler2D uTexture;\n" +
+                            "uniform vec4 uColor;\n" +
+                            "void main() {\n" +
+                            "  vec4 tex = texture2D(uTexture, vTexCoord);\n" +
+                            "  gl_FragColor = tex * uColor;\n" +
+                            "}";
+
+            program = createProgram(vertex, fragment);
+            aPosition = GLES20.glGetAttribLocation(program, "aPosition");
+            aTexCoord = GLES20.glGetAttribLocation(program, "aTexCoord");
+            uMvpMatrix = GLES20.glGetUniformLocation(program, "uMVPMatrix");
+            uTexture = GLES20.glGetUniformLocation(program, "uTexture");
+            uColor = GLES20.glGetUniformLocation(program, "uColor");
+        }
+
+        void use() {
+            GLES20.glUseProgram(program);
+        }
+    }
+
+    private static int createProgram(String vertexSource, String fragmentSource) {
+        int vs = compileShader(GLES20.GL_VERTEX_SHADER, vertexSource);
+        int fs = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentSource);
+        int program = GLES20.glCreateProgram();
+
+        GLES20.glAttachShader(program, vs);
+        GLES20.glAttachShader(program, fs);
+        GLES20.glLinkProgram(program);
+
+        int[] link = new int[1];
+        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, link, 0);
+        if (link[0] == 0) {
+            String msg = GLES20.glGetProgramInfoLog(program);
+            GLES20.glDeleteProgram(program);
+            throw new RuntimeException("Program link error: " + msg);
+        }
+
+        GLES20.glDeleteShader(vs);
+        GLES20.glDeleteShader(fs);
+        return program;
+    }
+
+    private static int compileShader(int type, String source) {
+        int shader = GLES20.glCreateShader(type);
+        GLES20.glShaderSource(shader, source);
+        GLES20.glCompileShader(shader);
+
+        int[] compiled = new int[1];
+        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
+        if (compiled[0] == 0) {
+            String msg = GLES20.glGetShaderInfoLog(shader);
+            GLES20.glDeleteShader(shader);
+            throw new RuntimeException("Shader compile error: " + msg);
+        }
+        return shader;
+    }
+    public static void drawRawLineStrip3D(float[] coords, int vertexCount, float[] color, float lineWidth) {
+        if (coords == null || coords.length < vertexCount * 3) return;
+        if (!ensureReady()) return;
+
+        GLES20.glLineWidth(Math.max(1f, lineWidth));
+        FloatBuffer buffer = createFloatBuffer(coords);
+        drawColoredVertices(
+                buffer,
+                vertexCount,
+                GLES20.GL_LINE_STRIP,
+                identity(),
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
+    }
+    public static void resetGlState() {
+        colorProgram = null;
+        textureProgram = null;
+        hasVpMatrix = false;
+        hasViewMatrix = false;
+    }
 }

@@ -1,30 +1,32 @@
 package gui.my_opengl.exca;
 
-import android.opengl.GLES11;
+import android.opengl.GLES20;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
-
 import gui.my_opengl.Point3DF;
+import gui.my_opengl.compat.GL11;
 
 public class BoomsDrawer {
 
-    private FloatBuffer vertexBuffer;
-    private ShortBuffer triangleBuffer1;
-    private ShortBuffer triangleBuffer2;
-    private ShortBuffer edgeIndexBuffer;
+    private static BoomProgram program;
 
-    private int numIndices1;
-    private int numIndices2;
-    private int numEdgeIndices;
+    private final FloatBuffer vertexBuffer;
+    private final ShortBuffer triangleBuffer1;
+    private final ShortBuffer triangleBuffer2;
+    private final ShortBuffer edgeIndexBuffer;
 
-    private float[] color1;
-    private float[] color2;
+    private final int numIndices1;
+    private final int numIndices2;
+    private final int numEdgeIndices;
+
+    private final float[] color1;
+    private final float[] color2;
+
+    private final float[] vpMatrix = new float[16];
 
     public BoomsDrawer(Point3DF[] points, short[] triangles1, float[] color1,
                        short[] triangles2, float[] color2, short[] edges) {
@@ -32,7 +34,6 @@ public class BoomsDrawer {
         this.color1 = color1;
         this.color2 = color2;
 
-        // Vertex buffer
         float[] vertices = new float[points.length * 3];
         for (int i = 0; i < points.length; i++) {
             vertices[i * 3] = points[i].getX();
@@ -41,49 +42,69 @@ public class BoomsDrawer {
         }
         vertexBuffer = createFloatBuffer(vertices);
 
-        // Triangle index buffers
         triangleBuffer1 = createShortBuffer(triangles1);
         numIndices1 = triangles1.length;
 
         triangleBuffer2 = createShortBuffer(triangles2);
         numIndices2 = triangles2.length;
 
-        // Edge index buffer
         edgeIndexBuffer = createShortBuffer(edges);
         numEdgeIndices = edges.length;
+
+        ensureProgram();
     }
 
     public void draw(GL11 gl) {
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-        gl.glEnable(GL10.GL_DEPTH_TEST);
+        ensureProgram();
 
-        // Disegna facce
-        gl.glColor4f(color1[0], color1[1], color1[2], color1[3]);
-        gl.glDrawElements(GL10.GL_TRIANGLES, numIndices1, GL10.GL_UNSIGNED_SHORT, triangleBuffer1);
+        float[] currentVp = GL11.getCurrentViewProjectionMatrix();
+        if (currentVp == null || currentVp.length < 16) {
+            return;
+        }
+        System.arraycopy(currentVp, 0, vpMatrix, 0, 16);
 
-        gl.glColor4f(color2[0], color2[1], color2[2], color2[3]);
-        gl.glDrawElements(GL10.GL_TRIANGLES, numIndices2, GL10.GL_UNSIGNED_SHORT, triangleBuffer2);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        // Contorni
-        gl.glEnable(GL10.GL_POLYGON_OFFSET_FILL);
-        gl.glPolygonOffset(1.0f, 1.0f); // leggero offset per evitare z-fighting
+        // facce gruppo 1
+        drawElements(vertexBuffer, triangleBuffer1, numIndices1, GLES20.GL_TRIANGLES, color1);
 
+        // facce gruppo 2
+        drawElements(vertexBuffer, triangleBuffer2, numIndices2, GLES20.GL_TRIANGLES, color2);
 
-
-        gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
-
-        //gl.glColor4f(0f, 0f, 0f, 0.95f);
-        gl.glColor4f(color2[0], color2[1], color2[2], 1f);
-        gl.glLineWidth(1f);
-
-        // Mantieni il depth test attivo
-        gl.glDrawElements(GL10.GL_LINES, numEdgeIndices, GL10.GL_UNSIGNED_SHORT, edgeIndexBuffer);
-
-        gl.glDisable(GL10.GL_POLYGON_OFFSET_FILL);
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        // contorni
+        GLES20.glLineWidth(1f);
+        drawElements(vertexBuffer, edgeIndexBuffer, numEdgeIndices, GLES20.GL_LINES,
+                new float[]{color2[0], color2[1], color2[2], 1f});
     }
 
+    private void drawElements(FloatBuffer vertices,
+                              ShortBuffer indices,
+                              int indexCount,
+                              int mode,
+                              float[] color) {
+        if (vertices == null || indices == null || indexCount <= 0) return;
+
+        program.use();
+
+        vertices.position(0);
+        indices.position(0);
+
+        GLES20.glUniformMatrix4fv(program.uMvpMatrix, 1, false, vpMatrix, 0);
+        GLES20.glUniform4f(
+                program.uColor,
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
+
+        GLES20.glEnableVertexAttribArray(program.aPosition);
+        GLES20.glVertexAttribPointer(program.aPosition, 3, GLES20.GL_FLOAT, false, 0, vertices);
+
+        GLES20.glDrawElements(mode, indexCount, GLES20.GL_UNSIGNED_SHORT, indices);
+
+        GLES20.glDisableVertexAttribArray(program.aPosition);
+    }
 
     private FloatBuffer createFloatBuffer(float[] data) {
         ByteBuffer bb = ByteBuffer.allocateDirect(data.length * 4);
@@ -101,5 +122,79 @@ public class BoomsDrawer {
         sb.put(data);
         sb.position(0);
         return sb;
+    }
+
+    private static void ensureProgram() {
+        if (program == null) {
+            program = new BoomProgram();
+        }
+    }
+
+    private static class BoomProgram {
+        final int programId;
+        final int aPosition;
+        final int uMvpMatrix;
+        final int uColor;
+
+        BoomProgram() {
+            String vertexShader =
+                    "uniform mat4 uMVPMatrix;\n" +
+                            "attribute vec4 aPosition;\n" +
+                            "void main() {\n" +
+                            "  gl_Position = uMVPMatrix * aPosition;\n" +
+                            "}";
+
+            String fragmentShader =
+                    "precision mediump float;\n" +
+                            "uniform vec4 uColor;\n" +
+                            "void main() {\n" +
+                            "  gl_FragColor = uColor;\n" +
+                            "}";
+
+            int vs = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
+            int fs = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+
+            programId = GLES20.glCreateProgram();
+            GLES20.glAttachShader(programId, vs);
+            GLES20.glAttachShader(programId, fs);
+            GLES20.glLinkProgram(programId);
+
+            int[] linkStatus = new int[1];
+            GLES20.glGetProgramiv(programId, GLES20.GL_LINK_STATUS, linkStatus, 0);
+            if (linkStatus[0] == 0) {
+                String log = GLES20.glGetProgramInfoLog(programId);
+                GLES20.glDeleteProgram(programId);
+                throw new RuntimeException("BoomProgram link error: " + log);
+            }
+
+            GLES20.glDeleteShader(vs);
+            GLES20.glDeleteShader(fs);
+
+            aPosition = GLES20.glGetAttribLocation(programId, "aPosition");
+            uMvpMatrix = GLES20.glGetUniformLocation(programId, "uMVPMatrix");
+            uColor = GLES20.glGetUniformLocation(programId, "uColor");
+        }
+
+        void use() {
+            GLES20.glUseProgram(programId);
+        }
+
+        private static int compileShader(int type, String source) {
+            int shader = GLES20.glCreateShader(type);
+            GLES20.glShaderSource(shader, source);
+            GLES20.glCompileShader(shader);
+
+            int[] compiled = new int[1];
+            GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
+            if (compiled[0] == 0) {
+                String log = GLES20.glGetShaderInfoLog(shader);
+                GLES20.glDeleteShader(shader);
+                throw new RuntimeException("Boom shader compile error: " + log);
+            }
+            return shader;
+        }
+    }
+    public static void resetGlState() {
+        program = null;
     }
 }

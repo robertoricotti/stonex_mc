@@ -1,6 +1,7 @@
 package dxf;
 
 
+
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -8,7 +9,7 @@ import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.microedition.khronos.opengles.GL11;
+import gui.my_opengl.compat.GL11;
 
 import gui.my_opengl.GL_Methods;
 import gui.my_opengl.VBOHelper;

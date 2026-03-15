@@ -1,15 +1,17 @@
 package gui.my_opengl;
 
-import android.opengl.GLES11;
+import android.opengl.GLES20;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
+import gui.my_opengl.compat.GL11;
 
-public class Cylinder{
+public class Cylinder {
+
+    private static CylinderProgram program;
+
     private float[] col;
     private FloatBuffer sideLineBuffer;
     private int sideLineCount;
@@ -17,6 +19,7 @@ public class Cylinder{
 
     private FloatBuffer bottomEdgeBuffer;
     private FloatBuffer topEdgeBuffer;
+
     private FloatBuffer sideBuffer;
     private FloatBuffer sideColorBuffer;
     private int sideVertexCount;
@@ -29,10 +32,13 @@ public class Cylinder{
     private FloatBuffer topColorBuffer;
     private int topVertexCount;
 
-    public Cylinder(float[] baseCenter, float[] topCenter, float radius,float topRadius, float[] color, int numSides,boolean border) {
+    private final float[] vpMatrix = new float[16];
+
+    public Cylinder(float[] baseCenter, float[] topCenter, float radius, float topRadius, float[] color, int numSides, boolean border) {
         generateSide(baseCenter, topCenter, radius, topRadius, color, numSides);
-        this.border=border;
-        this.col=color;
+        this.border = border;
+        this.col = color;
+
         float[] dir = new float[]{
                 topCenter[0] - baseCenter[0],
                 topCenter[1] - baseCenter[1],
@@ -42,6 +48,7 @@ public class Cylinder{
         generateCap(baseCenter, dir, radius, color, numSides, true);
         generateCap(topCenter, dir, topRadius, color, numSides, false);
 
+        ensureProgram();
     }
 
     private void generateSide(float[] base, float[] top, float baseRadius, float topRadius, float[] color, int numSides) {
@@ -69,7 +76,6 @@ public class Cylinder{
             float yDir = right[1] * cos + forward[1] * sin;
             float zDir = right[2] * cos + forward[2] * sin;
 
-            // Offset per base e top con raggi diversi
             float[] baseOffset = new float[]{
                     xDir * baseRadius,
                     yDir * baseRadius,
@@ -81,12 +87,10 @@ public class Cylinder{
                     zDir * topRadius
             };
 
-            // Bottom vertex
-            vertices[i * 6 + 0] = base[0] + baseOffset[0];
+            vertices[i * 6] = base[0] + baseOffset[0];
             vertices[i * 6 + 1] = base[1] + baseOffset[1];
             vertices[i * 6 + 2] = base[2] + baseOffset[2];
 
-            // Top vertex
             vertices[i * 6 + 3] = top[0] + topOffset[0];
             vertices[i * 6 + 4] = top[1] + topOffset[1];
             vertices[i * 6 + 5] = top[2] + topOffset[2];
@@ -101,16 +105,12 @@ public class Cylinder{
         sideBuffer = createFloatBuffer(vertices);
         sideColorBuffer = createFloatBuffer(colors);
 
-        //sideLineBuffer = null; // Disabilitato per ora, può essere adattato se vuoi anche perici verticali con raggi differenti
-        float[] lineVertices = new float[numSides * 2 * 3]; // 2 vertici per linea, 3 coordinate
-
+        float[] lineVertices = new float[numSides * 2 * 3];
         for (int i = 0; i < numSides; i++) {
-            // Base vertex
-            lineVertices[i * 6 + 0] = vertices[i * 6 + 0];
+            lineVertices[i * 6] = vertices[i * 6];
             lineVertices[i * 6 + 1] = vertices[i * 6 + 1];
             lineVertices[i * 6 + 2] = vertices[i * 6 + 2];
 
-            // Top vertex
             lineVertices[i * 6 + 3] = vertices[i * 6 + 3];
             lineVertices[i * 6 + 4] = vertices[i * 6 + 4];
             lineVertices[i * 6 + 5] = vertices[i * 6 + 5];
@@ -118,26 +118,19 @@ public class Cylinder{
 
         sideLineBuffer = createFloatBuffer(lineVertices);
         sideLineCount = numSides * 2;
-
     }
-
-
 
     private void generateCap(float[] center, float[] direction, float radius, float[] color, int numSides, boolean isBottom) {
         float[] up = normalize(direction);
-
-        // Trova un vettore non parallelo a "up"
         float[] arbitrary = (Math.abs(up[1]) < 0.99f) ? new float[]{0f, 1f, 0f} : new float[]{1f, 0f, 0f};
 
-        // Costruisci vettori ortogonali al piano del disco
         float[] right = normalize(cross(up, arbitrary));
         float[] forward = normalize(cross(right, up));
 
         float[] vertices = new float[(numSides + 2) * 3];
         float[] colors = new float[(numSides + 2) * 4];
-        float[] edgeVertices = new float[numSides * 3]; // Solo per il contorno
+        float[] edgeVertices = new float[numSides * 3];
 
-        // Centro del disco
         vertices[0] = center[0];
         vertices[1] = center[1];
         vertices[2] = center[2];
@@ -157,15 +150,14 @@ public class Cylinder{
             float vy = center[1] + y * radius;
             float vz = center[2] + z * radius;
 
-            vertices[(i + 1) * 3 + 0] = vx;
+            vertices[(i + 1) * 3] = vx;
             vertices[(i + 1) * 3 + 1] = vy;
             vertices[(i + 1) * 3 + 2] = vz;
 
             System.arraycopy(color, 0, colors, (i + 1) * 4, 4);
 
-            // Aggiungi ai vertici del bordo (saltando il punto centrale)
             if (i < numSides) {
-                edgeVertices[i * 3 + 0] = vx;
+                edgeVertices[i * 3] = vx;
                 edgeVertices[i * 3 + 1] = vy;
                 edgeVertices[i * 3 + 2] = vz;
             }
@@ -184,8 +176,6 @@ public class Cylinder{
         }
     }
 
-
-
     private FloatBuffer createFloatBuffer(float[] data) {
         ByteBuffer bb = ByteBuffer.allocateDirect(data.length * 4);
         bb.order(ByteOrder.nativeOrder());
@@ -196,115 +186,193 @@ public class Cylinder{
     }
 
     public void draw(GL11 gl) {
-        // Abilita gli array per vertici e colori
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+        float[] currentVp = GL11.getCurrentViewProjectionMatrix();
+        if (currentVp == null || currentVp.length < 16) return;
+        System.arraycopy(currentVp, 0, vpMatrix, 0, 16);
 
-        // Disegna i lati del cilindro
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, sideBuffer);
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, sideColorBuffer);
-        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, sideVertexCount);
+        ensureProgram();
 
-        // Disegna la base inferiore
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, bottomBuffer);
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, bottomColorBuffer);
-        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, bottomVertexCount);
+        drawColored(sideBuffer, sideColorBuffer, sideVertexCount, GLES20.GL_TRIANGLE_STRIP);
+        drawColored(bottomBuffer, bottomColorBuffer, bottomVertexCount, GLES20.GL_TRIANGLE_FAN);
+        drawColored(topBuffer, topColorBuffer, topVertexCount, GLES20.GL_TRIANGLE_FAN);
 
-        // Disegna la base superiore
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, topBuffer);
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, topColorBuffer);
-        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, topVertexCount);
-
-        // Disattiva il color array per usare un colore fisso
-        gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
-
-        if(border) {
-            // Imposta colore nero per i contorni
-            gl.glColor4f(0f, 0f, 0f, 1f);
-            gl.glLineWidth(1f);
-            // Disegna contorno inferiore
-            if (bottomEdgeBuffer != null) {
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, bottomEdgeBuffer);
-                gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, bottomVertexCount - 2);
-            }
-
-            // Disegna contorno superiore
-            if (topEdgeBuffer != null) {
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, topEdgeBuffer);
-                gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, topVertexCount - 2);
-            }
-
+        if (border) {
+            drawSolid(bottomEdgeBuffer, bottomVertexCount - 2, GLES20.GL_LINE_LOOP, new float[]{0f, 0f, 0f, 1f}, 1f);
+            drawSolid(topEdgeBuffer, topVertexCount - 2, GLES20.GL_LINE_LOOP, new float[]{0f, 0f, 0f, 1f}, 1f);
         }
-
-
-
-        // Disattiva tutto
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 
-    public  void drawL(GL11 gl,boolean lines){
-        // Abilita gli array per vertici e colori
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+    public void drawL(GL11 gl, boolean lines) {
+        float[] currentVp = GL11.getCurrentViewProjectionMatrix();
+        if (currentVp == null || currentVp.length < 16) return;
+        System.arraycopy(currentVp, 0, vpMatrix, 0, 16);
 
-        // Disegna i lati del cilindro
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, sideBuffer);
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, sideColorBuffer);
-        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, sideVertexCount);
+        ensureProgram();
 
-        // Disegna la base inferiore
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, bottomBuffer);
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, bottomColorBuffer);
-        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, bottomVertexCount);
+        drawColored(sideBuffer, sideColorBuffer, sideVertexCount, GLES20.GL_TRIANGLE_STRIP);
+        drawColored(bottomBuffer, bottomColorBuffer, bottomVertexCount, GLES20.GL_TRIANGLE_FAN);
+        drawColored(topBuffer, topColorBuffer, topVertexCount, GLES20.GL_TRIANGLE_FAN);
 
-        // Disegna la base superiore
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, topBuffer);
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, topColorBuffer);
-        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, topVertexCount);
+        if (lines) {
+            float[] c = GL_Methods.darkenColor(col, 0.5f, 0.9f);
 
-        // Disattiva il color array per usare un colore fisso
-        gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+            drawSolid(bottomEdgeBuffer, bottomVertexCount - 2, GLES20.GL_LINE_LOOP, c, 0.8f);
+            drawSolid(topEdgeBuffer, topVertexCount - 2, GLES20.GL_LINE_LOOP, c, 0.8f);
 
-        if(lines) {
-            // Imposta colore nero per i contorni
-            float[]c=GL_Methods.darkenColor(col,0.5f,0.9f);
-            gl.glColor4f(c[0],c[1],c[2],c[3]);
-            gl.glLineWidth(0.8f);
-            // Disegna contorno inferiore
-            if (bottomEdgeBuffer != null) {
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, bottomEdgeBuffer);
-                gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, bottomVertexCount - 2);
-            }
-
-            // Disegna contorno superiore
-            if (topEdgeBuffer != null) {
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, topEdgeBuffer);
-                gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, topVertexCount - 2);
-            }
-            // Linee verticali laterali
             if (sideLineBuffer != null) {
-                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, sideLineBuffer);
-                gl.glDrawArrays(GL10.GL_LINES, 0, sideLineCount);
+                drawSolid(sideLineBuffer, sideLineCount, GLES20.GL_LINES, c, 0.8f);
             }
         }
+    }
 
+    private void drawColored(FloatBuffer vertexBuffer, FloatBuffer colorBuffer, int vertexCount, int mode) {
+        if (vertexBuffer == null || colorBuffer == null || vertexCount <= 0) return;
 
+        program.use();
 
-        // Disattiva tutto
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        vertexBuffer.position(0);
+        colorBuffer.position(0);
+
+        GLES20.glUniformMatrix4fv(program.uMvpMatrix, 1, false, vpMatrix, 0);
+        GLES20.glUniform1i(program.uUseVertexColor, 1);
+        GLES20.glUniform4f(program.uColor, 1f, 1f, 1f, 1f);
+
+        GLES20.glEnableVertexAttribArray(program.aPosition);
+        GLES20.glVertexAttribPointer(program.aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
+
+        GLES20.glEnableVertexAttribArray(program.aColor);
+        GLES20.glVertexAttribPointer(program.aColor, 4, GLES20.GL_FLOAT, false, 0, colorBuffer);
+
+        GLES20.glDrawArrays(mode, 0, vertexCount);
+
+        GLES20.glDisableVertexAttribArray(program.aPosition);
+        GLES20.glDisableVertexAttribArray(program.aColor);
+    }
+
+    private void drawSolid(FloatBuffer vertexBuffer, int vertexCount, int mode, float[] color, float lineWidth) {
+        if (vertexBuffer == null || vertexCount <= 0) return;
+
+        program.use();
+
+        vertexBuffer.position(0);
+
+        GLES20.glUniformMatrix4fv(program.uMvpMatrix, 1, false, vpMatrix, 0);
+        GLES20.glUniform1i(program.uUseVertexColor, 0);
+        GLES20.glUniform4f(
+                program.uColor,
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
+
+        GLES20.glLineWidth(Math.max(1f, lineWidth));
+
+        GLES20.glEnableVertexAttribArray(program.aPosition);
+        GLES20.glVertexAttribPointer(program.aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
+
+        GLES20.glDisableVertexAttribArray(program.aColor);
+        GLES20.glVertexAttrib4f(program.aColor, 1f, 1f, 1f, 1f);
+
+        GLES20.glDrawArrays(mode, 0, vertexCount);
+
+        GLES20.glDisableVertexAttribArray(program.aPosition);
     }
 
     private float[] normalize(float[] v) {
-        float len = (float) Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-        return new float[]{v[0]/len, v[1]/len, v[2]/len};
+        float len = (float) Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+        if (len == 0f) return new float[]{0f, 1f, 0f};
+        return new float[]{v[0] / len, v[1] / len, v[2] / len};
     }
 
     private float[] cross(float[] a, float[] b) {
         return new float[]{
-                a[1]*b[2] - a[2]*b[1],
-                a[2]*b[0] - a[0]*b[2],
-                a[0]*b[1] - a[1]*b[0]
+                a[1] * b[2] - a[2] * b[1],
+                a[2] * b[0] - a[0] * b[2],
+                a[0] * b[1] - a[1] * b[0]
         };
     }
 
+    private static void ensureProgram() {
+        if (program == null) {
+            program = new CylinderProgram();
+        }
+    }
+
+    private static class CylinderProgram {
+        final int programId;
+        final int aPosition;
+        final int aColor;
+        final int uMvpMatrix;
+        final int uColor;
+        final int uUseVertexColor;
+
+        CylinderProgram() {
+            String vertexShader =
+                    "uniform mat4 uMVPMatrix;\n" +
+                            "attribute vec4 aPosition;\n" +
+                            "attribute vec4 aColor;\n" +
+                            "uniform vec4 uColor;\n" +
+                            "uniform int uUseVertexColor;\n" +
+                            "varying vec4 vColor;\n" +
+                            "void main() {\n" +
+                            "  gl_Position = uMVPMatrix * aPosition;\n" +
+                            "  vColor = (uUseVertexColor == 1) ? aColor : uColor;\n" +
+                            "}";
+
+            String fragmentShader =
+                    "precision mediump float;\n" +
+                            "varying vec4 vColor;\n" +
+                            "void main() {\n" +
+                            "  gl_FragColor = vColor;\n" +
+                            "}";
+
+            int vs = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
+            int fs = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+
+            programId = GLES20.glCreateProgram();
+            GLES20.glAttachShader(programId, vs);
+            GLES20.glAttachShader(programId, fs);
+            GLES20.glLinkProgram(programId);
+
+            int[] linkStatus = new int[1];
+            GLES20.glGetProgramiv(programId, GLES20.GL_LINK_STATUS, linkStatus, 0);
+            if (linkStatus[0] == 0) {
+                String log = GLES20.glGetProgramInfoLog(programId);
+                GLES20.glDeleteProgram(programId);
+                throw new RuntimeException("CylinderProgram link error: " + log);
+            }
+
+            GLES20.glDeleteShader(vs);
+            GLES20.glDeleteShader(fs);
+
+            aPosition = GLES20.glGetAttribLocation(programId, "aPosition");
+            aColor = GLES20.glGetAttribLocation(programId, "aColor");
+            uMvpMatrix = GLES20.glGetUniformLocation(programId, "uMVPMatrix");
+            uColor = GLES20.glGetUniformLocation(programId, "uColor");
+            uUseVertexColor = GLES20.glGetUniformLocation(programId, "uUseVertexColor");
+        }
+
+        void use() {
+            GLES20.glUseProgram(programId);
+        }
+
+        private static int compileShader(int type, String source) {
+            int shader = GLES20.glCreateShader(type);
+            GLES20.glShaderSource(shader, source);
+            GLES20.glCompileShader(shader);
+
+            int[] compiled = new int[1];
+            GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
+            if (compiled[0] == 0) {
+                String log = GLES20.glGetShaderInfoLog(shader);
+                GLES20.glDeleteShader(shader);
+                throw new RuntimeException("Cylinder shader compile error: " + log);
+            }
+            return shader;
+        }
+    }
+    public static void resetGlState() {
+        program = null;
+    }
 }

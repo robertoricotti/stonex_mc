@@ -77,6 +77,7 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 
+import services.CanSender;
 import services.TriangleService;
 import utils.LeicaLB;
 import utils.MyData;
@@ -1156,15 +1157,18 @@ public class My3DActivity extends BaseClass {
                                 txtCutFill.setBackground(getResources().getDrawable(colorUpCF));
                                 txtCutFill.setTextColor(Color.WHITE);
                                 txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
+                                CanSender.onGrade = (byte) 125;
                             } else if (TriangleService.quota3D_SX < -DataSaved.deadbandH) {
                                 txtCutFill.setTextColor(Color.WHITE);
                                 txtCutFill.setBackground(getResources().getDrawable(colorDownCF));
                                 txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
+                                CanSender.onGrade = (byte) 131;
                             } else if (TriangleService.quota3D_SX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
                                 txtCutFill.setTextColor(Color.DKGRAY);
 
                                 txtCutFill.setBackground(getDrawable(colorGreenCF));
                                 txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
+                                CanSender.onGrade = (byte) 128;
                             }
                         }
                         break;
@@ -1179,14 +1183,17 @@ public class My3DActivity extends BaseClass {
                                 txtCutFill.setTextColor(Color.WHITE);
                                 txtCutFill.setBackground(getResources().getDrawable(colorUpCF));
                                 txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                                CanSender.onGrade = (byte) 125;
                             } else if (TriangleService.quota3D_CT < -DataSaved.deadbandH) {
                                 txtCutFill.setTextColor(Color.WHITE);
                                 txtCutFill.setBackground(getResources().getDrawable(colorDownCF));
                                 txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                                CanSender.onGrade = (byte) 131;
                             } else if (TriangleService.quota3D_CT >= -DataSaved.deadbandH && TriangleService.quota3D_CT <= DataSaved.deadbandH) {
                                 txtCutFill.setTextColor(Color.DKGRAY);
                                 txtCutFill.setBackground(getDrawable(colorGreenCF));
                                 txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                                CanSender.onGrade = (byte) 128;
                             }
                         }
                         break;
@@ -1201,14 +1208,17 @@ public class My3DActivity extends BaseClass {
                                 txtCutFill.setTextColor(Color.WHITE);
                                 txtCutFill.setBackground(getResources().getDrawable(colorUpCF));
                                 txtCutFill.setText("▼\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                                CanSender.onGrade = (byte) 125;
                             } else if (TriangleService.quota3D_DX < -DataSaved.deadbandH) {
                                 txtCutFill.setTextColor(Color.WHITE);
                                 txtCutFill.setBackground(getResources().getDrawable(colorDownCF));
                                 txtCutFill.setText("▲\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                                CanSender.onGrade = (byte) 131;
                             } else if (TriangleService.quota3D_DX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
                                 txtCutFill.setTextColor(Color.DKGRAY);
                                 txtCutFill.setBackground(getDrawable(colorGreenCF));
                                 txtCutFill.setText("⧗\n" + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                                CanSender.onGrade = (byte) 128;
                             }
                         }
                         break;
@@ -1321,10 +1331,12 @@ public class My3DActivity extends BaseClass {
                 boxLeft.setBackground(getResources().getDrawable(colorUp));
                 boxLeft.setTextColor(Color.WHITE);
                 boxLeft.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
+                CanSender.onGrade = (byte) 125;
             } else if (TriangleService.quota3D_SX < -DataSaved.deadbandH) {
                 boxLeft.setTextColor(Color.WHITE);
                 boxLeft.setBackground(getResources().getDrawable(colorDown));
                 boxLeft.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
+                CanSender.onGrade = (byte) 131;
             } else if (TriangleService.quota3D_SX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
                 if (!isCutFill) {
                     boxLeft.setTextColor(Color.DKGRAY);
@@ -1333,6 +1345,7 @@ public class My3DActivity extends BaseClass {
                 }
                 boxLeft.setBackground(getDrawable(colorGreen));
                 boxLeft.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
+                CanSender.onGrade = (byte) 128;
             }
         }
         ///
@@ -1348,10 +1361,12 @@ public class My3DActivity extends BaseClass {
                     boxCent.setTextColor(Color.WHITE);
                     boxCent.setBackground(getResources().getDrawable(colorUp));
                     boxCent.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                    CanSender.onGrade = (byte) 125;
                 } else if (TriangleService.quota3D_CT < -DataSaved.deadbandH) {
                     boxCent.setTextColor(Color.WHITE);
                     boxCent.setBackground(getResources().getDrawable(colorDown));
                     boxCent.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                    CanSender.onGrade = (byte) 131;
                 } else if (TriangleService.quota3D_CT >= -DataSaved.deadbandH && TriangleService.quota3D_CT <= DataSaved.deadbandH) {
                     if (!isCutFill) {
                         boxCent.setTextColor(Color.DKGRAY);
@@ -1360,6 +1375,7 @@ public class My3DActivity extends BaseClass {
                     }
                     boxCent.setBackground(getDrawable(colorGreen));
                     boxCent.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                    CanSender.onGrade = (byte) 128;
                 }
             }
 
@@ -1448,10 +1464,12 @@ public class My3DActivity extends BaseClass {
                 boxRight.setTextColor(Color.WHITE);
                 boxRight.setBackground(getResources().getDrawable(colorUp));
                 boxRight.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                CanSender.onGrade = (byte) 125;
             } else if (TriangleService.quota3D_DX < -DataSaved.deadbandH) {
                 boxRight.setTextColor(Color.WHITE);
                 boxRight.setBackground(getResources().getDrawable(colorDown));
                 boxRight.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                CanSender.onGrade = (byte) 131;
             } else if (TriangleService.quota3D_DX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
                 if (!isCutFill) {
                     boxRight.setTextColor(Color.DKGRAY);
@@ -1460,6 +1478,7 @@ public class My3DActivity extends BaseClass {
                 }
                 boxRight.setBackground(getDrawable(colorGreen));
                 boxRight.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                CanSender.onGrade = (byte) 128;
             }
         }
 
