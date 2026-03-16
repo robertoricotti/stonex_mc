@@ -427,10 +427,10 @@ public class UpdateValuesService extends Service {
                     //draw
                     if (colorBenna == null) {
                         ;
-                        MyData.push("M" + i + "coloreBenna", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
+                        MyData.push("M" + i + "coloreBenna", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.volvo_grey)));
                     }
                     if (colorStick == null) {
-                        MyData.push("M" + i + "coloreStick", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.bg)));
+                        MyData.push("M" + i + "coloreStick", String.valueOf(ContextCompat.getColor(UpdateValuesService.this, R.color.hitachi)));
                     }
                     if (larghezza_Carro == null) {
                         MyData.push("M" + i + "larghezza_Carro", "2.0");

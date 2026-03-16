@@ -115,6 +115,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         coloreBoomScuro = GL_Methods.darkenColor(coloreBoom, 0.75f, 1f);
 
         GLES20.glViewport(0, 0, width, height);
+        GLDrawer.setViewportSize(width, height);
     }
 
     @Override
@@ -186,11 +187,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (is3D) {
             Matrix.perspectiveM(projectionMatrix, 0, 45.0f, ratio, 0.1f, 100.0f);
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+            GLDrawer.setOrthoMetrics(false, 1f, 1f);
         } else {
             float zoom = Math.max(scale, 0.001f);
             float size = orthoBaseSize / zoom;
             Matrix.orthoM(projectionMatrix, 0, -ratio * size, ratio * size, -size, size, -50f, 50f);
             GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+            GLDrawer.setOrthoMetrics(true, ratio * size, size);
         }
     }
 

@@ -38,7 +38,11 @@ import packexcalib.exca.DataSaved;
 import services.TriangleService;
 
 public class GLDrawer {
-
+    private static int viewportWidth = 1;
+    private static int viewportHeight = 1;
+    private static float orthoWorldHalfHeight = 1f;
+    private static float orthoWorldHalfWidth = 1f;
+    private static boolean isOrtho2D = false;
     private static final String TAG = "GLDrawer";
 
     private static final Map<String, Integer> textTextureCache = new HashMap<>();
@@ -330,22 +334,14 @@ public class GLDrawer {
         for (Polyline polyline : polylines) {
             if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName())) continue;
 
-            List<Point3D> vertices = polyline.getVertices();
-            if (vertices.size() < 2) continue;
+            FloatBuffer buffer = polyline.getOrBuildGlBuffer(bucketCenter, scale);
+            int vertexCount = polyline.getCachedVertexCount();
+            if (buffer == null || vertexCount < 2) continue;
 
-            float[] coords = new float[vertices.size() * 3];
-            for (int i = 0; i < vertices.size(); i++) {
-                Point3D pt = vertices.get(i);
-                coords[i * 3] = (float) ((pt.getX() - bucketCenter[0]) * scale);
-                coords[i * 3 + 1] = (float) ((pt.getY() - bucketCenter[1]) * scale);
-                coords[i * 3 + 2] = (float) ((pt.getZ() - bucketCenter[2]) * scale);
-            }
-
-            FloatBuffer buffer = createFloatBuffer(coords);
             int color = GL_Methods.myParseColor(polyline.getLineColor());
             float[] rgb = GL_Methods.parseColorToGL(color);
 
-            drawColoredVertices(buffer, vertices.size(), GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 0.85f);
+            drawColoredVertices(buffer, vertexCount, GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 0.85f);
         }
     }
 
@@ -619,12 +615,8 @@ public class GLDrawer {
         if (lines == null || lines.isEmpty()) return;
         if (!ensureReady()) return;
 
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glLineWidth(Math.max(1f, lineW * scale));
-
         double[] bucket = DataSaved.glL_AnchorView;
-        float[] identity = identity();
+        float width = Math.max(1f, lineW );
 
         for (Line line : lines) {
             if (line.getLayer() == null || !isLayerEnabled(line.getLayer().getLayerName())) continue;
@@ -633,13 +625,13 @@ public class GLDrawer {
             coords[0] = (float) ((line.getStart().getX() - bucket[0]) * scale);
             coords[1] = (float) ((line.getStart().getY() - bucket[1]) * scale);
             coords[2] = 0f;
+
             coords[3] = (float) ((line.getEnd().getX() - bucket[0]) * scale);
             coords[4] = (float) ((line.getEnd().getY() - bucket[1]) * scale);
             coords[5] = 0f;
 
-            FloatBuffer buffer = createFloatBuffer(coords);
             float[] rgb = GL_Methods.parseColorToGL(GL_Methods.myParseColor(line.getColor()));
-            drawColoredVertices(buffer, 2, GLES20.GL_LINES, identity, rgb[0], rgb[1], rgb[2], 1f);
+            drawThickSegments2D(coords, width, new float[]{rgb[0], rgb[1], rgb[2], 1f});
         }
     }
 
@@ -715,21 +707,20 @@ public class GLDrawer {
         if (polylines == null || polylines.isEmpty()) return;
         if (!ensureReady()) return;
 
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glLineWidth(Math.max(1f, lineW));
-
         double[] bucket = DataSaved.glL_AnchorView;
-        float[] identity = identity();
+        float width = Math.max(1f, lineW);
 
         for (Polyline_2D polyline : polylines) {
             if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName())) continue;
 
             List<Point3D> vertices = polyline.getVertices();
-            if (vertices.size() < 2) continue;
+            if (vertices == null || vertices.size() < 2) continue;
 
             int color = GL_Methods.myParseColor(polyline.getLineColor());
             float[] rgb = GL_Methods.parseColorToGL(color);
+
+            // Costruiamo SEMPRE punti già in GL-space
+            List<Point3D> glPoints = new ArrayList<>();
 
             for (int i = 0; i < vertices.size() - 1; i++) {
                 Point3D p1 = vertices.get(i);
@@ -737,25 +728,79 @@ public class GLDrawer {
                 double bulge = p1.getBulge();
 
                 if (bulge == 0) {
-                    float[] coords = new float[]{
-                            (float) ((p1.getX() - bucket[0]) * scale),
-                            (float) ((p1.getY() - bucket[1]) * scale),
-                            0f,
-                            (float) ((p2.getX() - bucket[0]) * scale),
-                            (float) ((p2.getY() - bucket[1]) * scale),
-                            0f
-                    };
-                    FloatBuffer buffer = createFloatBuffer(coords);
-                    drawColoredVertices(buffer, 2, GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 1f);
+                    if (glPoints.isEmpty()) {
+                        glPoints.add(new Point3D(
+                                (p1.getX() - bucket[0]) * scale,
+                                (p1.getY() - bucket[1]) * scale,
+                                0
+                        ));
+                    }
+                    glPoints.add(new Point3D(
+                            (p2.getX() - bucket[0]) * scale,
+                            (p2.getY() - bucket[1]) * scale,
+                            0
+                    ));
                 } else {
                     float[][] arcPoints = Math.abs(bulge) > 1
                             ? computeArcPointsM(p1, p2, bulge, scale, bucket)
                             : computeArcPoints(p1, p2, bulge, scale, bucket);
-                    FloatBuffer buffer = createFloatBuffer(flatten(arcPoints));
-                    drawColoredVertices(buffer, arcPoints.length, GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 1f);
+
+                    for (int j = 0; j < arcPoints.length; j++) {
+                        float[] ap = arcPoints[j];
+
+                        // evita duplicati consecutivi
+                        if (!glPoints.isEmpty()) {
+                            Point3D last = glPoints.get(glPoints.size() - 1);
+                            if (Math.abs(last.getX() - ap[0]) < 1e-6 &&
+                                    Math.abs(last.getY() - ap[1]) < 1e-6) {
+                                continue;
+                            }
+                        }
+
+                        glPoints.add(new Point3D(ap[0], ap[1], 0));
+                    }
                 }
             }
+
+            if (glPoints.size() < 2) continue;
+
+            drawThickLineStrip2D_GLSpace(
+                    glPoints,
+                    width,
+                    new float[]{rgb[0], rgb[1], rgb[2], 1f}
+            );
         }
+    }
+    private static void drawThickLineStrip2D_GLSpace(List<Point3D> points, float widthPx, float[] color) {
+        if (points == null || points.size() < 2) return;
+        if (!ensureReady()) return;
+
+        List<Float> out = new ArrayList<>();
+        float half = Math.max(0.5f, widthPx * 0.5f);
+
+        for (int i = 0; i < points.size() - 1; i++) {
+            Point3D p1 = points.get(i);
+            Point3D p2 = points.get(i + 1);
+            appendThickSegment(out,
+                    (float) p1.getX(), (float) p1.getY(), 0f,
+                    (float) p2.getX(), (float) p2.getY(), 0f,
+                    half);
+        }
+
+        float[] arr = new float[out.size()];
+        for (int i = 0; i < out.size(); i++) arr[i] = out.get(i);
+
+        FloatBuffer buffer = createFloatBuffer(arr);
+        drawColoredVertices(
+                buffer,
+                arr.length / 3,
+                GLES20.GL_TRIANGLES,
+                identity(),
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
     }
 
     private static float[][] computeArcPointsM(Point3D p1, Point3D p2, double bulge, float scale, double[] bucket) {
@@ -967,6 +1012,7 @@ public class GLDrawer {
         GLES20.glUniformMatrix4fv(colorProgram.uMvpMatrix, 1, false, tempMvp, 0);
         GLES20.glUniform4f(colorProgram.uColor, r, g, b, a);
         GLES20.glUniform1i(colorProgram.uUseVertexColor, 0);
+        GLES20.glUniform1f(colorProgram.uPointSize, 8f);
 
         vertexBuffer.position(0);
         GLES20.glEnableVertexAttribArray(colorProgram.aPosition);
@@ -1088,7 +1134,7 @@ public class GLDrawer {
                             "varying vec4 vColor;\n" +
                             "void main() {\n" +
                             "  gl_Position = uMVPMatrix * aPosition;\n" +
-                            "  gl_PointSize = 8.0;\n" +
+                            "  gl_PointSize = uPointSize;\n" +
                             "  vColor = (uUseVertexColor == 1) ? aColor : uColor;\n" +
                             "}";
 
@@ -1208,10 +1254,149 @@ public class GLDrawer {
                 color.length > 3 ? color[3] : 1f
         );
     }
+    public static void drawThickLineStrip2D(List<Point3D> points, double[] anchor, float scale, float widthPx, float[] color) {
+        if (points == null || points.size() < 2) return;
+        if (!ensureReady()) return;
+
+        float[] triVerts = buildThickLineStrip2D(points, anchor, scale, widthPx);
+        if (triVerts == null || triVerts.length == 0) return;
+
+        FloatBuffer buffer = createFloatBuffer(triVerts);
+        drawColoredVertices(
+                buffer,
+                triVerts.length / 3,
+                GLES20.GL_TRIANGLES,
+                identity(),
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
+    }
+
+    public static void drawThickSegments2D(float[] coords, float widthPx, float[] color) {
+        if (coords == null || coords.length < 6) return;
+        if (!ensureReady()) return;
+
+        float[] triVerts = buildThickSegments2D(coords, widthPx);
+        if (triVerts == null || triVerts.length == 0) return;
+
+        FloatBuffer buffer = createFloatBuffer(triVerts);
+        drawColoredVertices(
+                buffer,
+                triVerts.length / 3,
+                GLES20.GL_TRIANGLES,
+                identity(),
+                color[0],
+                color[1],
+                color[2],
+                color.length > 3 ? color[3] : 1f
+        );
+    }
+
+    private static float[] buildThickLineStrip2D(List<Point3D> points, double[] anchor, float scale, float widthPx) {
+        if (points.size() < 2) return null;
+
+        List<Float> out = new ArrayList<>();
+        float half = Math.max(0.5f, widthPx * 0.5f);
+
+        for (int i = 0; i < points.size() - 1; i++) {
+            Point3D p1 = points.get(i);
+            Point3D p2 = points.get(i + 1);
+
+            float x1 = (float) ((p1.getX() - anchor[0]) * scale);
+            float y1 = (float) ((p1.getY() - anchor[1]) * scale);
+            float z1 = 0f;
+
+            float x2 = (float) ((p2.getX() - anchor[0]) * scale);
+            float y2 = (float) ((p2.getY() - anchor[1]) * scale);
+            float z2 = 0f;
+
+            appendThickSegment(out, x1, y1, z1, x2, y2, z2, half);
+        }
+
+        float[] arr = new float[out.size()];
+        for (int i = 0; i < out.size(); i++) arr[i] = out.get(i);
+        return arr;
+    }
+
+    private static float[] buildThickSegments2D(float[] coords, float widthPx) {
+        if (coords.length < 6) return null;
+
+        List<Float> out = new ArrayList<>();
+        float half = Math.max(0.5f, widthPx * 0.5f);
+
+        for (int i = 0; i <= coords.length - 6; i += 6) {
+            float x1 = coords[i];
+            float y1 = coords[i + 1];
+            float z1 = coords[i + 2];
+
+            float x2 = coords[i + 3];
+            float y2 = coords[i + 4];
+            float z2 = coords[i + 5];
+
+            appendThickSegment(out, x1, y1, z1, x2, y2, z2, half);
+        }
+
+        float[] arr = new float[out.size()];
+        for (int i = 0; i < out.size(); i++) arr[i] = out.get(i);
+        return arr;
+    }
+
+    private static void appendThickSegment(List<Float> out,
+                                           float x1, float y1, float z1,
+                                           float x2, float y2, float z2,
+                                           float halfWidthPx) {
+        float dx = x2 - x1;
+        float dy = y2 - y1;
+        float len = (float) Math.sqrt(dx * dx + dy * dy);
+        if (len < 1e-6f) return;
+
+        float nx = -dy / len;
+        float ny = dx / len;
+
+        float halfWorldX = pixelsToWorldX(halfWidthPx);
+        float halfWorldY = pixelsToWorldY(halfWidthPx);
+
+        float ox = nx * halfWorldX;
+        float oy = ny * halfWorldY;
+
+        float ax = x1 + ox, ay = y1 + oy;
+        float bx = x1 - ox, by = y1 - oy;
+        float cx = x2 + ox, cy = y2 + oy;
+        float dx2 = x2 - ox, dy2 = y2 - oy;
+
+        out.add(ax);  out.add(ay);  out.add(z1);
+        out.add(bx);  out.add(by);  out.add(z1);
+        out.add(cx);  out.add(cy);  out.add(z2);
+
+        out.add(cx);  out.add(cy);  out.add(z2);
+        out.add(bx);  out.add(by);  out.add(z1);
+        out.add(dx2); out.add(dy2); out.add(z2);
+    }
     public static void resetGlState() {
         colorProgram = null;
         textureProgram = null;
         hasVpMatrix = false;
         hasViewMatrix = false;
+    }
+    private static float pixelsToWorldX(float px) {
+        if (!isOrtho2D) return px;
+        return (2f * orthoWorldHalfWidth / (float) viewportWidth) * px;
+    }
+
+    private static float pixelsToWorldY(float px) {
+        if (!isOrtho2D) return px;
+        return (2f * orthoWorldHalfHeight / (float) viewportHeight) * px;
+    }
+    public static void setViewportSize(int width, int height) {
+        viewportWidth = Math.max(1, width);
+        viewportHeight = Math.max(1, height);
+    }
+
+    public static void setOrthoMetrics(boolean ortho2D, float halfWidth, float halfHeight) {
+        isOrtho2D = ortho2D;
+        orthoWorldHalfWidth = Math.max(1e-6f, halfWidth);
+        orthoWorldHalfHeight = Math.max(1e-6f, halfHeight);
     }
 }

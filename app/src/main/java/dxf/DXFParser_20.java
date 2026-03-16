@@ -196,6 +196,7 @@ public class DXFParser_20 {
 
                             // Chiudi LWPOLYLINE
                             if (currentPolyline_2D != null) {
+                                currentPolyline_2D.markGlDirty();   // <-- QUI
                                 if (!currentPolyline_2D.getVertices().isEmpty() &&
                                         currentPolyline_2D.getLayer() != null &&
                                         currentPolyline_2D.getLayer().getColorState() != null &&
@@ -285,6 +286,7 @@ public class DXFParser_20 {
                                 // chiusura POLYLINE 3D/2D old style
                                 inVertex = false;
                                 if (currentPolyline != null) {
+                                    currentPolyline.markGlDirty();   // <-- QUI
                                     if (currentPolyline.getLayer() != null &&
                                             currentPolyline.getLayer().getColorState() != null &&
                                             currentPolyline.getLayer().getColorState() != -1) {
@@ -965,6 +967,7 @@ public class DXFParser_20 {
                 Polyline c = clonePolyline(pl);
                 transformPolyline(c, ins, bx, by, bz, cosA, sinA);
                 c.setLayer(ins.getLayer());
+                c.markGlDirty();   // <-- QUI
                 data.addPolyline(c);
             }
 
@@ -972,6 +975,7 @@ public class DXFParser_20 {
                 Polyline_2D c = clonePolyline2D(pl);
                 transformPolyline2D(c, ins, bx, by, bz, cosA, sinA);
                 c.setLayer(ins.getLayer());
+                c.markGlDirty();   // <-- QUI
                 data.addPolyline2D(c);
             }
 
@@ -1100,6 +1104,7 @@ public class DXFParser_20 {
         for (Point3D p : pl.getVertices()) {
             c.getVertices().add(new Point3D(p.x, p.y, p.z));
         }
+        c.markGlDirty();   // <-- QUI
         return c;
     }
 
@@ -1112,6 +1117,7 @@ public class DXFParser_20 {
             pp.setBulge(p.getBulge());
             c.getVertices().add(pp);
         }
+        c.markGlDirty();   // <-- QUI
         return c;
     }
 

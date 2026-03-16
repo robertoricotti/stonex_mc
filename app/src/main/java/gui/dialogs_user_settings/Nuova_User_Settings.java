@@ -749,7 +749,7 @@ public class Nuova_User_Settings extends BaseClass {
             R.color.magenta,
             R.color.purple_200,
             R.color.cyan,
-            R.color.red,
+            R.color.hitachi,
             R.color.bg,
             R.color.orange,
             R.color.yellow,
