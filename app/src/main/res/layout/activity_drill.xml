@@ -194,7 +194,7 @@
             android:gravity="center"
             android:textStyle="bold"
             android:textSize="26sp"
-            android:ems="12"
+            android:ems="10"
             android:layout_weight="1"
             android:textColor="@color/white"
             android:text="P:1234"

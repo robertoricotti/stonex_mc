@@ -165,16 +165,20 @@ public class DrawDXF_Drill_Point {
             if (point.getRowId() == null || point.getRowId().isEmpty()) {
                 testo = point.getId();
             }
+            String des=" ";
+            if(point.getDescription()!=null){
+                des=point.getDescription();
+            }
             testo = switch (DataSaved.Drill_Text_Mode) {
                 case 0 -> testo;
-                case 1 -> testo + "\n" + point.getDescription();
+                case 1 -> testo + "\n" + des;
                 case 2 ->
                         testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                 case 3 ->
-                        testo + "\n" + point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-                case 4 -> point.getDescription();
+                        testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 4 -> des;
                 case 5 ->
-                        point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                        des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                 case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                 default -> "?";
             };
@@ -271,16 +275,20 @@ public class DrawDXF_Drill_Point {
                 if (point.getRowId() == null || point.getRowId().isEmpty()) {
                     testo = point.getId();
                 }
+                String des=" ";
+                if(point.getDescription()!=null){
+                    des=point.getDescription();
+                }
                 testo = switch (DataSaved.Drill_Text_Mode) {
                     case 0 -> testo;
-                    case 1 -> testo + "\n" + point.getDescription();
+                    case 1 -> testo + "\n" + des;
                     case 2 ->
                             testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     case 3 ->
-                            testo + "\n" + point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-                    case 4 -> point.getDescription();
+                            testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 4 -> des;
                     case 5 ->
-                            point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                            des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     default -> "?";
                 };
@@ -320,16 +328,20 @@ public class DrawDXF_Drill_Point {
                 if (point.getRowId() == null || point.getRowId().isEmpty()) {
                     testo = point.getId();
                 }
+                String des=" ";
+                if(point.getDescription()!=null){
+                    des=point.getDescription();
+                }
                 testo = switch (DataSaved.Drill_Text_Mode) {
                     case 0 -> testo;
-                    case 1 -> testo + "\n" + point.getDescription();
+                    case 1 -> testo + "\n" + des;
                     case 2 ->
                             testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     case 3 ->
-                            testo + "\n" + point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-                    case 4 -> point.getDescription();
+                            testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 4 -> des;
                     case 5 ->
-                            point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                            des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     default -> "?";
                 };
@@ -433,16 +445,20 @@ public class DrawDXF_Drill_Point {
         if (point.getRowId() == null || point.getRowId().isEmpty()) {
             testo = point.getId();
         }
+        String des=" ";
+        if(point.getDescription()!=null){
+            des=point.getDescription();
+        }
         testo = switch (DataSaved.Drill_Text_Mode) {
             case 0 -> testo;
-            case 1 -> testo + "\n" + point.getDescription();
+            case 1 -> testo + "\n" + des;
             case 2 ->
                     testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
             case 3 ->
-                    testo + "\n" + point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-            case 4 -> point.getDescription();
+                    testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+            case 4 -> des;
             case 5 ->
-                    point.getDescription() + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
             case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
             default -> "?";
         };

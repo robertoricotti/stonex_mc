@@ -9,7 +9,13 @@ import java.util.Locale;
 public class LanguageSetter {
 
     public static void setLocale(Activity activity, String lang) {
+
+        if (lang == null || lang.trim().isEmpty()) {
+            lang = Locale.getDefault().getLanguage();
+        }
+
         String str = "en";
+
         switch (lang) {
             case "en_GB":
             case "en_US":
@@ -52,12 +58,14 @@ public class LanguageSetter {
                 str = "nl";
                 break;
         }
+
         Locale locale = new Locale(str);
         Locale.setDefault(locale);
+
         Resources resources = activity.getBaseContext().getResources();
         Configuration config = resources.getConfiguration();
         config.setLocale(locale);
         resources.updateConfiguration(config, resources.getDisplayMetrics());
-
     }
+
 }

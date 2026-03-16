@@ -87,7 +87,10 @@ public class Drill_TopView extends View {
     private boolean isBitOnHoleHead = false;
     private int coloreCroce = Color.YELLOW;
 
-
+    PointF w1;
+    PointF w2 ;
+    PointF w3 ;
+    PointF w4;
     public Drill_TopView(Context context) {
 
         super(context);
@@ -121,6 +124,10 @@ public class Drill_TopView extends View {
         this.canvas = canvas;
 
         paint.setAntiAlias(true);
+         w1 = screenToWorld(0, 0);
+         w2 = screenToWorld(getWidth(), 0);
+         w3 = screenToWorld(0, getHeight());
+         w4 = screenToWorld(getWidth(), getHeight());
 
         try {
 
@@ -261,12 +268,33 @@ public class Drill_TopView extends View {
                 Log.e("DrillDraw", "filtered_drill_points == null");
                 return;
             }
+            float minE = Math.min(Math.min(w1.x, w2.x), Math.min(w3.x, w4.x));
+            float maxE = Math.max(Math.max(w1.x, w2.x), Math.max(w3.x, w4.x));
+
+            float minN = Math.min(Math.min(w1.y, w2.y), Math.min(w3.y, w4.y));
+            float maxN = Math.max(Math.max(w1.y, w2.y), Math.max(w3.y, w4.y));
+
+// margine
+            float margin = (float) (30f / DataSaved.scale_Factor3D);
+
+            minE -= margin;
+            maxE += margin;
+            minN -= margin;
+            maxN += margin;
 
             for (Point3D_Drill point : DataSaved.filtered_drill_points) {
-                if (point == null) continue;
-                if (point.getHeadX() == null || point.getHeadY() == null) continue; // evita NPE
 
-                DrawDXF_Drill_Point.draw(canvas,
+                if (point == null) continue;
+
+                Double e = point.getHeadX();
+                Double n = point.getHeadY();
+                // CULLING
+                if (e < minE || e > maxE || n < minN || n > maxN) {
+                    continue;
+                }
+
+                DrawDXF_Drill_Point.draw(
+                        canvas,
                         paint,
                         point,
                         toolX,
@@ -274,9 +302,12 @@ public class Drill_TopView extends View {
                         toolEast,
                         toolNord,
                         scala,
-                        rotationAngle, DataSaved.ShowText == 1, uiRotDeg
+                        rotationAngle,
+                        DataSaved.ShowText == 1,
+                        uiRotDeg
                 );
             }
+
         } catch (Exception e) {
             Log.e("DrillDraw", "Errore drawDrillPoints", e);
         }
@@ -1122,6 +1153,16 @@ public class Drill_TopView extends View {
         paint.setColor(oldColor);
         paint.setStrokeWidth(oldStroke);
         paint.setStrokeCap(oldCap);
+    }
+    private PointF screenToWorld(float sx, float sy) {
+
+        double dx = sx - toolX;
+        double dy = sy - toolY;
+
+        double worldE = toolEast + (dx * Math.cos(rotationAngle) + dy * Math.sin(rotationAngle)) / scala;
+        double worldN = toolNord + (-dx * Math.sin(rotationAngle) + dy * Math.cos(rotationAngle)) / scala;
+
+        return new PointF((float) worldE, (float) worldN);
     }
 
 }
