@@ -116,26 +116,88 @@ public class Draw3DFace {
     }
 
 
+    public static void drawScreen(
+            Paint paint,
+            Canvas canvas,
+            float[][] screenPts,
+            int color,
+            boolean triangola,
+            boolean fill
+    ) {
+        if (screenPts == null || screenPts.length < 3) return;
 
+        float x1 = screenPts[0][0];
+        float y1 = screenPts[0][1];
+        float x2 = screenPts[1][0];
+        float y2 = screenPts[1][1];
+        float x3 = screenPts[2][0];
+        float y3 = screenPts[2][1];
 
+        try {
+            if (triangola) {
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setColor(color);
+                paint.setStrokeWidth((float) (0.8 / DataSaved.scale_Factor3D));
+                canvas.drawLine(x1, y1, x2, y2, paint);
+                canvas.drawLine(x2, y2, x3, y3, paint);
+                canvas.drawLine(x3, y3, x1, y1, paint);
+            }
+        } catch (Exception ignored) {
+        }
 
+        if (fill) {
+            Path path = new Path();
+            path.moveTo(x1, y1);
+            path.lineTo(x2, y2);
+            path.lineTo(x3, y3);
+            path.close();
+
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(applyAlphaToColor(color, 0.3f));
+            canvas.drawPath(path, paint);
+        }
+    }
+
+    // =========================================================
+    // NUOVO: gradient già in screen space
+    // vertices serve solo per leggere la Z media
+    // =========================================================
+    public static void drawFaceGradientScreen(
+            Paint paint,
+            Canvas canvas,
+            double[][] vertices,
+            float[][] screenPts,
+            double zMin,
+            double zMax
+    ) {
+        if (vertices == null || vertices.length < 3) return;
+        if (screenPts == null || screenPts.length < 3) return;
+
+        double zAvg = (vertices[0][2] + vertices[1][2] + vertices[2][2]) / 3.0;
+        int color = getJetColorInt(zAvg, zMin, zMax);
+
+        Path path = new Path();
+        path.moveTo(screenPts[0][0], screenPts[0][1]);
+        path.lineTo(screenPts[1][0], screenPts[1][1]);
+        path.lineTo(screenPts[2][0], screenPts[2][1]);
+        path.close();
+
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(applyAlphaToColor(color, 0.5f));
+        canvas.drawPath(path, paint);
+    }
 
     private static int applyAlphaToColor(int color, float alpha) {
-        // Estrai i componenti RGB dal colore (in formato ARGB)
-        float red = ((color >> 16) & 0xFF) / 255.0f;  // Estrai il componente rosso (dal bit 16 al bit 23)
-        float green = ((color >> 8) & 0xFF) / 255.0f; // Estrai il componente verde (dal bit 8 al bit 15)
-        float blue = (color & 0xFF) / 255.0f;         // Estrai il componente blu (dal bit 0 al bit 7)
-        float alphaOriginal = ((color >> 24) & 0xFF) / 255.0f; // Estrai il componente alpha (dal bit 24 al bit 31)
+        float red = ((color >> 16) & 0xFF) / 255.0f;
+        float green = ((color >> 8) & 0xFF) / 255.0f;
+        float blue = (color & 0xFF) / 255.0f;
+        float alphaOriginal = ((color >> 24) & 0xFF) / 255.0f;
 
-        // Applica il nuovo valore alpha, mantenendo gli altri componenti invariati
-        float newAlpha = alphaOriginal * alpha; // Combina il valore alpha originale con quello nuovo
+        float newAlpha = alphaOriginal * alpha;
 
-        // Ricostruisci il colore con il nuovo alpha
-        int newColor = (Math.round(newAlpha * 255) << 24)  // Nuovo componente alpha
-                | (Math.round(red * 255) << 16)     // Componente rosso
-                | (Math.round(green * 255) << 8)    // Componente verde
-                | Math.round(blue * 255);          // Componente blu
-
-        return newColor;
+        return (Math.round(newAlpha * 255) << 24)
+                | (Math.round(red * 255) << 16)
+                | (Math.round(green * 255) << 8)
+                | Math.round(blue * 255);
     }
 }

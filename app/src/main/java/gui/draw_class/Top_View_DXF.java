@@ -182,16 +182,23 @@ public class Top_View_DXF extends View {
                 l_bucket = DataSaved.L_Bucket;
                 w_bucket = DataSaved.W_Bucket;
 
-                originPointBucket = new PointF(getBucketAnchorX(), getBucketAnchorY());
+                originPointBucket = worldToScreen(
+                        ExcavatorLib.bucketCoord[0],
+                        ExcavatorLib.bucketCoord[1]
+                );
 
                 canvas.save();
-                canvas.scale(
-                        (float) DataSaved.scale_Factor3D,
-                        (float) DataSaved.scale_Factor3D,
-                        originPointBucket.x,
-                        originPointBucket.y
-                );
-                canvas.translate(offsetX, offsetY);
+
+                if (My3DActivity.glVista3d != 0) {
+                    canvas.scale(
+                            (float) DataSaved.scale_Factor3D,
+                            (float) DataSaved.scale_Factor3D,
+                            originPointBucket.x,
+                            originPointBucket.y
+                    );
+                    canvas.translate(offsetX, offsetY);
+                }
+
                 canvasMatrix = new Matrix(canvas.getMatrix());
 
                 dist = new DistToPoint(
@@ -239,16 +246,23 @@ public class Top_View_DXF extends View {
 
                 dist = 0.5;
                 bucketHeight = dist * scala;
-                originPointBucket = new PointF(getBucketAnchorX(), getBucketAnchorY());
+                originPointBucket = worldToScreen(
+                        ExcavatorLib.bucketCoord[0],
+                        ExcavatorLib.bucketCoord[1]
+                );
 
                 canvas.save();
-                canvas.scale(
-                        (float) DataSaved.scale_Factor3D,
-                        (float) DataSaved.scale_Factor3D,
-                        originPointBucket.x,
-                        originPointBucket.y
-                );
-                canvas.translate(offsetX, offsetY);
+
+                if (My3DActivity.glVista3d != 0) {
+                    canvas.scale(
+                            (float) DataSaved.scale_Factor3D,
+                            (float) DataSaved.scale_Factor3D,
+                            originPointBucket.x,
+                            originPointBucket.y
+                    );
+                    canvas.translate(offsetX, offsetY);
+                }
+
                 canvasMatrix = new Matrix(canvas.getMatrix());
 
                 left_top_bucket = new PointF(
@@ -326,87 +340,55 @@ public class Top_View_DXF extends View {
 
     private void drawDXFElements(double bucketEst, double bucketNord) {
         try {
-            if (My3DActivity.glGradient) {
-                if (isXML) {
-                    for (Face3D face : DataSaved.filteredFaces) {
-                        if (isLayerEnabled(face.getLayer().getLayerName())) {
-                            Draw3DFace.drawFaceGradientCanvas(
-                                    paint,
-                                    canvas,
-                                    face.toArrayWithCentroid(),
-                                    bucketX,
-                                    bucketY,
-                                    bucketEst,
-                                    bucketNord,
-                                    scala,
-                                    rotationAngle,
-                                    TriangleService.maxZ,
-                                    TriangleService.minZ
-                            );
-                        }
-                    }
+            for (Face3D face : DataSaved.filteredFaces) {
+                if (!isLayerEnabled(face.getLayer().getLayerName())) continue;
+
+                double[][] verts = face.toArrayWithCentroid();
+                if (verts == null || verts.length < 3) continue;
+
+                PointF p1 = worldToScreen(verts[0][0], verts[0][1]);
+                PointF p2 = worldToScreen(verts[1][0], verts[1][1]);
+                PointF p3 = worldToScreen(verts[2][0], verts[2][1]);
+
+                if (p1 == null || p2 == null || p3 == null) continue;
+
+                float[][] screenPts = new float[][]{
+                        {p1.x, p1.y},
+                        {p2.x, p2.y},
+                        {p3.x, p3.y}
+                };
+
+                if (My3DActivity.glGradient) {
+                    Draw3DFace.drawFaceGradientScreen(
+                            paint,
+                            canvas,
+                            verts,
+                            screenPts,
+                            TriangleService.maxZ,
+                            TriangleService.minZ
+                    );
                 } else {
-                    for (Face3D face : DataSaved.filteredFaces) {
-                        if (isLayerEnabled(face.getLayer().getLayerName())) {
-                            Draw3DFace.drawFaceGradientCanvas(
-                                    paint,
-                                    canvas,
-                                    face.toArrayWithCentroid(),
-                                    bucketX,
-                                    bucketY,
-                                    bucketEst,
-                                    bucketNord,
-                                    scala,
-                                    rotationAngle,
-                                    TriangleService.maxZ,
-                                    TriangleService.minZ
-                            );
-                        }
+                    int faceColor;
+                    if (isXML) {
+                        faceColor = myParseColor(
+                                AutoCADColor.getColor(String.valueOf(face.getLayer().getColorState()))
+                        );
+                    } else {
+                        faceColor = myParseColor(face.getLayer().getColorState());
                     }
-                }
-            } else {
-                if (isXML) {
-                    for (Face3D face : DataSaved.filteredFaces) {
-                        if (isLayerEnabled(face.getLayer().getLayerName())) {
-                            Draw3DFace.draw(
-                                    paint,
-                                    canvas,
-                                    face.toArrayWithCentroid(),
-                                    bucketX,
-                                    bucketY,
-                                    bucketEst,
-                                    bucketNord,
-                                    myParseColor(AutoCADColor.getColor(String.valueOf(face.getLayer().getColorState()))),
-                                    scala,
-                                    rotationAngle,
-                                    My3DActivity.glFace,
-                                    My3DActivity.glFill
-                            );
-                        }
-                    }
-                } else {
-                    for (Face3D face : DataSaved.filteredFaces) {
-                        if (isLayerEnabled(face.getLayer().getLayerName())) {
-                            Draw3DFace.draw(
-                                    paint,
-                                    canvas,
-                                    face.toArrayWithCentroid(),
-                                    bucketX,
-                                    bucketY,
-                                    bucketEst,
-                                    bucketNord,
-                                    myParseColor(face.getLayer().getColorState()),
-                                    scala,
-                                    rotationAngle,
-                                    My3DActivity.glFace,
-                                    My3DActivity.glFill
-                            );
-                        }
-                    }
+
+                    Draw3DFace.drawScreen(
+                            paint,
+                            canvas,
+                            screenPts,
+                            faceColor,
+                            My3DActivity.glFace,
+                            My3DActivity.glFill
+                    );
                 }
             }
         } catch (Exception e) {
-            Log.d("expRT", "excFace");
+            Log.d("expRT", "excFace", e);
         }
 
         try {
@@ -430,34 +412,37 @@ public class Top_View_DXF extends View {
                 }
 
 
-                if (DataSaved.isAutoSnap == 2 && DataSaved.selectedPoly != null
+                if (DataSaved.isAutoSnap == 2
+                        && DataSaved.selectedPoly != null
                         && DataSaved.selectedPoly.getLayer() != null
                         && DataSaved.selectedPoly.getLayer().isEnable()) {
-                    DrawSelectedPolyline.draw(
+
+                    List<PointF> selectedScreenPoints = new ArrayList<>();
+                    for (Point3D v : DataSaved.selectedPoly.getVertices()) {
+                        selectedScreenPoints.add(worldToScreen(v.getX(), v.getY()));
+                    }
+
+                    DrawSelectedPolyline.drawScreen(
                             canvas,
                             paint,
-                            DataSaved.selectedPoly.getVertices(),
-                            bucketX,
-                            bucketY,
-                            bucketEst,
-                            bucketNord,
-                            myParseColor(DataSaved.selectedPoly.getLineColor()),
-                            scala,
-                            rotationAngle
+                            selectedScreenPoints,
+                            myParseColor(DataSaved.selectedPoly.getLineColor())
                     );
 
-                    if (DataSaved.line_Offset != 0) {
-                        DrawSelectedPolyline.draw(
+                    if (DataSaved.line_Offset != 0
+                            && DataSaved.selectedPoly_OFFSET != null
+                            && DataSaved.selectedPoly_OFFSET.getVertices() != null) {
+
+                        List<PointF> offsetScreenPoints = new ArrayList<>();
+                        for (Point3D v : DataSaved.selectedPoly_OFFSET.getVertices()) {
+                            offsetScreenPoints.add(worldToScreen(v.getX(), v.getY()));
+                        }
+
+                        DrawSelectedPolyline.drawScreen(
                                 canvas,
                                 paint,
-                                DataSaved.selectedPoly_OFFSET.getVertices(),
-                                bucketX,
-                                bucketY,
-                                bucketEst,
-                                bucketNord,
-                                MyColorClass.colorConstraint,
-                                scala,
-                                rotationAngle
+                                offsetScreenPoints,
+                                MyColorClass.colorConstraint
                         );
                     }
                 }
@@ -470,60 +455,56 @@ public class Top_View_DXF extends View {
             if (My3DActivity.glPoint) {
                 int col = 0;
                 for (Point3D point : DataSaved.filteredPoints) {
-                    if (isLayerEnabled(point.getLayer().getLayerName())) {
-                        if (isXMLPoint) {
-                            col = myParseColor(Color.WHITE);
-                        } else {
-                            col = myParseColor(point.getLayer().getColorState());
-                        }
-                        DrawDXFPoint.draw(
-                                canvas,
-                                paint,
-                                point,
-                                bucketX,
-                                bucketY,
-                                bucketEst,
-                                bucketNord,
-                                scala,
-                                col,
-                                rotationAngle
-                        );
+                    if (!isLayerEnabled(point.getLayer().getLayerName())) continue;
+
+                    if (isXMLPoint) {
+                        col = myParseColor(Color.WHITE);
+                    } else {
+                        col = myParseColor(point.getLayer().getColorState());
                     }
+
+                    PointF p = worldToScreen(point.getX(), point.getY());
+
+                    DrawDXFPoint.drawScreen(
+                            canvas,
+                            paint,
+                            p.x,
+                            p.y,
+                            col
+                    );
                 }
             }
         } catch (Exception e) {
-            Log.d("expRT", "excPT");
+            Log.d("expRT", "excPT", e);
         }
 
         try {
             if (My3DActivity.glText) {
-                int col = 0;
+                int col;
                 for (DxfText dxfText : DataSaved.filteredDxfTexts) {
-                    if (isLayerEnabled(dxfText.getLayer().getLayerName())) {
-                        if (isXMLPoint) {
-                            col = myParseColor(Color.WHITE);
-                        } else {
-                            col = myParseColor(dxfText.getLayer().getColorState());
-                        }
-                        DrawDXFText.draw(
-                                canvas,
-                                paint,
-                                dxfText,
-                                bucketX,
-                                bucketY,
-                                bucketEst,
-                                bucketNord,
-                                scala,
-                                col,
-                                rotationAngle
-                        );
+                    if (!isLayerEnabled(dxfText.getLayer().getLayerName())) continue;
+
+                    if (isXMLPoint) {
+                        col = myParseColor(Color.WHITE);
+                    } else {
+                        col = myParseColor(dxfText.getLayer().getColorState());
                     }
+
+                    PointF p = worldToScreen(dxfText.getX(), dxfText.getY());
+
+                    DrawDXFText.drawScreen(
+                            canvas,
+                            paint,
+                            dxfText.getText(),
+                            p.x,
+                            p.y,
+                            col
+                    );
                 }
             }
         } catch (Exception e) {
-            Log.d("expRT", "excTxT");
+            Log.d("expRT", "excTxT", e);
         }
-
         if (My3DActivity.glPoly) {
             try {
 
@@ -552,20 +533,36 @@ public class Top_View_DXF extends View {
 
             try {
                 for (Arc arc : DataSaved.arcs) {
-                    if (isLayerEnabled(arc.getLayer().getLayerName())) {
-                        DrawArcs.draw(
-                                canvas,
-                                paint,
-                                arc,
-                                bucketX,
-                                bucketY,
-                                bucketEst,
-                                bucketNord,
-                                scala,
-                                myParseColor(arc.getColor()),
-                                ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360)
-                        );
-                    }
+                    if (!isLayerEnabled(arc.getLayer().getLayerName())) continue;
+
+                    PointF center = worldToScreen(
+                            arc.getCenter().getX(),
+                            arc.getCenter().getY()
+                    );
+
+                    PointF edge = worldToScreen(
+                            arc.getCenter().getX() + arc.getRadius(),
+                            arc.getCenter().getY()
+                    );
+
+                    float dx = edge.x - center.x;
+                    float dy = edge.y - center.y;
+                    float radiusPx = (float) Math.sqrt(dx * dx + dy * dy);
+
+                    int color = isXML
+                            ? myParseColor(AutoCADColor.getColor(String.valueOf(arc.getLayer().getColorState())))
+                            : myParseColor(arc.getLayer().getColorState());
+
+                    DrawArcs.drawScreen(
+                            canvas,
+                            paint,
+                            center.x,
+                            center.y,
+                            radiusPx,
+                            arc.getStartAngle(),
+                            arc.getEndAngle(),
+                            color
+                    );
                 }
             } catch (Exception e) {
                 Log.d("expRT", "arcs");
@@ -594,17 +591,24 @@ public class Top_View_DXF extends View {
             try {
                 for (Circle circle : DataSaved.circles) {
                     if (isLayerEnabled(circle.getLayer().getLayerName())) {
-                        DrawCircles.draw(
+                        PointF center = worldToScreen(circle.getCenter().getX(), circle.getCenter().getY());
+                        PointF edge   = worldToScreen(circle.getCenter().getX() + circle.getRadius(), circle.getCenter().getY());
+
+                        float dx = edge.x - center.x;
+                        float dy = edge.y - center.y;
+                        float radiusPx = (float) Math.sqrt(dx * dx + dy * dy);
+
+                        int color = isXML
+                                ? myParseColor(AutoCADColor.getColor(String.valueOf(circle.getLayer().getColorState())))
+                                : myParseColor(circle.getLayer().getColorState());
+
+                        DrawCircles.drawScreen(
                                 canvas,
                                 paint,
-                                circle,
-                                bucketX,
-                                bucketY,
-                                bucketEst,
-                                bucketNord,
-                                scala,
-                                myParseColor(circle.getColor()),
-                                rotationAngle
+                                center.x,
+                                center.y,
+                                radiusPx,
+                                color
                         );
                     }
                 }

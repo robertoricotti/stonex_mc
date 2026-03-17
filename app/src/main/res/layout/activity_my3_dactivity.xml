@@ -426,16 +426,7 @@
             android:layout_marginRight="4dp"
             android:gravity="center"
             android:orientation="vertical">
-            <ImageView
-                android:id="@+id/gl_folder"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginVertical="2dp"
-                android:background="@drawable/custom_background_test3d"
-                android:clickable="true"
-                android:padding="3dp"
-                android:src="@drawable/file_folder_96"
-                app:tint="@color/white" />
+
 
             <ImageView
                 android:id="@+id/gl_layers"
@@ -514,7 +505,7 @@
                 app:tint="@color/white" />
 
             <ImageView
-                android:visibility="gone"
+
                 android:id="@+id/gl_zoomC"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -535,12 +526,12 @@
                 android:clickable="true"
                 android:padding="4dp"
                 android:alpha="1"
-                android:visibility="gone"
+
                 android:src="@drawable/zoomout"
                 app:tint="@color/white" />
 
             <ImageView
-                android:visibility="gone"
+
                 android:id="@+id/gl_zoomP"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -584,7 +575,16 @@
             android:layout_marginLeft="4dp"
             android:gravity="center"
             android:orientation="vertical">
-
+            <ImageView
+                android:id="@+id/gl_folder"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/custom_background_test3d"
+                android:clickable="true"
+                android:padding="3dp"
+                android:src="@drawable/file_folder_96"
+                app:tint="@color/white" />
 
             <ImageView
                 android:id="@+id/gl_filter"

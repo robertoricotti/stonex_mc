@@ -83,10 +83,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             panX += dx * panFactor;
                             panY -= dy * panFactor;
                         }else if(renderer.is2D){
-                           /* float panFactor = (0.005f * renderer.orthoBaseSize) / MyGLRenderer.scale;
+                            float panFactor = (0.005f * renderer.orthoBaseSize) / MyGLRenderer.scale;
                             panX += dx * panFactor;
-                            panY -= dy * panFactor;*/
-                            float viewW = getWidth();
+                            panY -= dy * panFactor;
+                           /* float viewW = getWidth();
                             float viewH = getHeight();
 
                             if (viewW > 0 && viewH > 0) {
@@ -101,7 +101,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                                 if (topView != null) {
                                     topView.postInvalidateOnAnimation();
                                 }
-                            }
+                            }*/
 
                         }
 
@@ -210,7 +210,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public void updateZOrder() {
         if (My3DActivity.glVista3d == 0) {
-            setZOrderOnTop(true);
+            setZOrderOnTop(false);
             getHolder().setFormat(android.graphics.PixelFormat.TRANSLUCENT);
         } else {
             setZOrderOnTop(false);

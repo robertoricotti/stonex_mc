@@ -60,4 +60,38 @@ public class DrawArcs {
             canvas.restore();
 
     }
+    public static void drawScreen(
+            Canvas canvas,
+            Paint paint,
+            float centerX,
+            float centerY,
+            float radiusPx,
+            double startAngleDeg,
+            double endAngleDeg,
+            int color
+    ) {
+        if (radiusPx <= 0f) return;
+
+        RectF oval = new RectF(
+                centerX - radiusPx,
+                centerY - radiusPx,
+                centerX + radiusPx,
+                centerY + radiusPx
+        );
+
+        float startAngle = ((float) startAngleDeg) % 360f;
+        float sweepAngle = ((float) (endAngleDeg - startAngleDeg)) % 360f;
+
+        if (sweepAngle < 0f) {
+            sweepAngle += 360f;
+        }
+
+        // Conversione dal sistema DXF al sistema Canvas
+        startAngle = (360f - startAngle) % 360f;
+
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(color);
+
+        canvas.drawArc(oval, startAngle, -sweepAngle, false, paint);
+    }
 }

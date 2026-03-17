@@ -20,4 +20,23 @@ public class DrawDXFText {
 
 
     }
+    public static void drawScreen(
+            Canvas canvas,
+            Paint paint,
+            String text,
+            float x,
+            float y,
+            int color
+    ) {
+        if (text == null || text.isEmpty()) return;
+
+        float offX = 3f;
+        float offY = 3f;
+
+        paint.setTextSize(30f);
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.FILL);
+
+        canvas.drawText(text, x + offX, y - offY, paint);
+    }
 }

@@ -567,11 +567,15 @@
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 prova 2D TODO">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Draw2DPolyline.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Draw2DPolyline.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Draw3DPolyline.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Draw3DPolyline.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawLines.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawLines.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/Draw3DFace.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/Draw3DFace.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawArcs.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawArcs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawCircles.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawCircles.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXFPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXFPoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXFText.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawDXFText.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/dxf/DrawSelectedPolyline.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/dxf/DrawSelectedPolyline.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/draw_class/Top_View_DXF.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLSurfaceView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLSurfaceView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_my3_dactivity.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -815,14 +819,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00117" summary="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate">
-      <option name="closed" value="true" />
-      <created>1771522697159</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
-      <option name="project" value="LOCAL" />
-      <updated>1771522697160</updated>
     </task>
     <task id="LOCAL-00118" summary="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate">
       <option name="closed" value="true" />
@@ -1208,7 +1204,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773706807089</updated>
     </task>
-    <option name="localTasksCounter" value="166" />
+    <task id="LOCAL-00166" summary="4.1.0 prova 2D TODO">
+      <option name="closed" value="true" />
+      <created>1773711343583</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1773711343583</updated>
+    </task>
+    <option name="localTasksCounter" value="167" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

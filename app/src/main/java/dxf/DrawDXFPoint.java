@@ -23,4 +23,23 @@ public class DrawDXFPoint {
         paint.setStrokeWidth(10f);
 
     }
+    public static void drawScreen(
+            Canvas canvas,
+            Paint paint,
+            float x,
+            float y,
+            int color
+    ) {
+        float r = 4f;
+
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(color);
+        canvas.drawCircle(x, y, r, paint);
+
+        paint.setColor(MyColorClass.colorSfondo);
+        paint.setStrokeWidth(3f);
+        canvas.drawPoint(x, y, paint);
+
+        paint.setStrokeWidth(10f);
+    }
 }

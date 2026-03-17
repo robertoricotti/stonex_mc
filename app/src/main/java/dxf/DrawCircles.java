@@ -33,4 +33,18 @@ public class DrawCircles {
         float radius = (float) (circle.getRadius() * scala);
         canvas.drawCircle(rotatedX, rotatedY, radius, paint);
     }
+    public static void drawScreen(
+            Canvas canvas,
+            Paint paint,
+            float centerX,
+            float centerY,
+            float radiusPx,
+            int color
+    ) {
+        if (radiusPx <= 0f) return;
+
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(color);
+        canvas.drawCircle(centerX, centerY, radiusPx, paint);
+    }
 }
