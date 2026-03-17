@@ -15,7 +15,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -51,8 +50,6 @@ import dxf.Polyline;
 import dxf.Polyline_2D;
 import dxf.Segment;
 import gui.my_opengl.My3DActivity;
-import gui.my_opengl.MyGLRenderer;
-import gui.my_opengl.MyGLSurfaceView;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
@@ -62,9 +59,9 @@ import services.TriangleService;
 import utils.DistToPoint;
 
 
-public class Top_View_DXF extends View {
+public class Top_View_DXF_Nuova extends View {
     private Matrix canvasMatrix = new Matrix();
-    public static Point3D lineCoord = new Point3D(0, 0, 0);
+    public static Point3D lineCoord=new Point3D(0,0,0);
 
     List<PointF> arcPoints;
     List<List<PointF>> arcSegments;
@@ -101,12 +98,11 @@ public class Top_View_DXF extends View {
     private int activePointerId = INVALID_POINTER_ID;
     float inizioX, inizioY;
     boolean isXML, isXMLLyne, isXMLPoint;
-    private MyGLSurfaceView glSurfaceView;
 
-    public Top_View_DXF(Context context, MyGLSurfaceView glSurfaceView) {
+    public Top_View_DXF_Nuova(Context context) {
 
         super(context);
-        this.glSurfaceView = glSurfaceView;
+
         if (DataSaved.scale_Factor3D == 0) {
             DataSaved.scale_Factor3D = 1f;
         }
@@ -117,7 +113,11 @@ public class Top_View_DXF extends View {
         gestureDetector = new GestureDetector(context, new GestureListener());
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
 
-       // syncGlFromTopView(glSurfaceView);
+        if (offsetY == 0) {
+            offsetY = 100;
+        }
+
+
         try {
             isXML = DataSaved.progettoSelected.substring(DataSaved.progettoSelected.lastIndexOf(".") + 1).equalsIgnoreCase("xml");
 
@@ -147,9 +147,7 @@ public class Top_View_DXF extends View {
         super.onDraw(canvas);
 
         this.canvas = canvas;
-        if (My3DActivity.glVista3d == 0) {
-            syncTopViewFromGl();
-        }
+
         paint.setAntiAlias(true);
         if (My3DActivity.glPoint) {
             DataSaved.Punti_Surf = 1;
@@ -167,25 +165,20 @@ public class Top_View_DXF extends View {
             double dist = 0;
             double bucketHeight = 0;
             double bucketHeightFake = 0;
-            double extraHeading = NmeaListener.roof_Orientation + DataSaved.offsetSwingExca;
-            if (DataSaved.Extra_Heading == 0) {
-                extraHeading = 0;
+            double extraHeading=NmeaListener.roof_Orientation+DataSaved.offsetSwingExca;
+            if(DataSaved.Extra_Heading == 0){
+                extraHeading=0;
             }
             rotationAngle = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
-            rotationAngleBoom = Math.toRadians(rotationAngle + extraHeading);
+            rotationAngleBoom=Math.toRadians(rotationAngle+extraHeading);
             if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
                 bucketWidth = DataSaved.W_Bucket * scala;
 
                 l_bucket = DataSaved.L_Bucket;
                 w_bucket = DataSaved.W_Bucket;
-                originPointBucket = new PointF(getBucketAnchorX(), getBucketAnchorY());
+                originPointBucket = new PointF(getWidth() * 0.5f, getHeight() * 0.75f);
                 canvas.save();
-                canvas.scale(
-                        (float) DataSaved.scale_Factor3D,
-                        (float) DataSaved.scale_Factor3D,
-                        originPointBucket.x,
-                        originPointBucket.y
-                );
+                canvas.scale((float) DataSaved.scale_Factor3D, (float) DataSaved.scale_Factor3D, getWidth() * 0.5f, getHeight() * 0.75f);
                 canvas.translate(offsetX, offsetY);
                 dist = new DistToPoint(ExcavatorLib.bucketCoord[0], ExcavatorLib.bucketCoord[1], 0, ExcavatorLib.coordPivoTilt[0], ExcavatorLib.coordPivoTilt[1], 0).getDist_to_point();
                 bucketHeight = dist * scala;
@@ -203,8 +196,9 @@ public class Top_View_DXF extends View {
                 bucketX = (((left_top_bucket.x) + (right_bottom_bucket.x)) * 0.5f);
                 bucketY = left_top_bucket.y;
                 drawDXFElements(bennaEst, bennaNord);
-
-            } else if (DataSaved.isWL == GRADER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == DOZER) {
+                drawBenna(canvas);
+            }
+            else if (DataSaved.isWL == GRADER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == DOZER) {
                 PointF center = new PointF(getWidth() / 2f, getHeight() / 2f);
                 canvas.rotate(45, center.x, center.y);
                 canvas.rotate(-45, center.x, center.y);
@@ -218,17 +212,12 @@ public class Top_View_DXF extends View {
                     l_bucket = DataSaved.W_Blade_TOT;
                     w_bucket = DataSaved.W_Blade_TOT;
                 }
+                canvas.save();
+                canvas.scale((float) DataSaved.scale_Factor3D, (float) DataSaved.scale_Factor3D, getWidth() * 0.5f, getHeight() * 0.65f);
+                canvas.translate(offsetX, offsetY);
                 dist = 0.5;
                 bucketHeight = dist * scala;
-                originPointBucket = new PointF(getBucketAnchorX(), getBucketAnchorY());
-                canvas.save();
-                canvas.scale(
-                        (float) DataSaved.scale_Factor3D,
-                        (float) DataSaved.scale_Factor3D,
-                        originPointBucket.x,
-                        originPointBucket.y
-                );
-                canvas.translate(offsetX, offsetY);
+                originPointBucket = new PointF(getWidth() * 0.5f, getHeight() * 0.75f);
                 left_top_bucket = new PointF(originPointBucket.x - (float) bucketWidth / 2f, originPointBucket.y - (float) bucketHeight);
                 left_top_bucket2 = new PointF(originPointBucket.x - (float) bucketWidth / 2f, originPointBucket.y - (float) bucketHeight);
                 right_bottom_bucket = new PointF(originPointBucket.x + (float) bucketWidth / 2f, originPointBucket.y);
@@ -237,7 +226,7 @@ public class Top_View_DXF extends View {
                 bucketX = (float) ((((left_top_bucket.x + 0) + (right_bottom_bucket.x + 0)) * 0.5f));
                 bucketY = left_top_bucket.y;
                 drawDXFElements(bennaEst, bennaNord);
-
+                drawLama(canvas);
             }
 
             float stopX = ((left_top_bucket.x + right_bottom_bucket.x) / 2f);
@@ -691,6 +680,292 @@ public class Top_View_DXF extends View {
     }
 
 
+    private void drawBenna(Canvas canvas) {
+        ancorPX = (float) (((left_top_bucket.x + right_bottom_bucket.x) * 0.5f));
+        ancorPY = left_top_bucket.y;
+        canvas.rotate((float) ExcavatorLib.yawSensor, (ancorPX), ancorPY);
+        paint.setColor(MyColorClass.colorBucket);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawRect((float) (left_top_bucket.x), left_top_bucket.y, (float) (right_bottom_bucket.x), right_bottom_bucket.y, paint);
+        if (DataSaved.isWL == EXCAVATOR) {
+            if (ExcavatorLib.correctBucket < -90 || ExcavatorLib.correctBucket > 90) {
+                paint.setColor(getResources().getColor(R.color.transparentgray));
+                paint.setStyle(Paint.Style.FILL);
+                paint.setStrokeWidth(1.5f);
+                canvas.drawRect((float) (left_top_bucket.x) + 2.5f, left_top_bucket.y - 2f, (float) (right_bottom_bucket.x) - 2.5f, right_bottom_bucket.y + 1f, paint);
+
+            }
+        } else {
+            if (ExcavatorLib.correctBucket < 90 && ExcavatorLib.correctBucket > -90) {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(getResources().getColor(R.color.transparentgray));
+                paint.setStrokeWidth(1.5f);
+                canvas.drawRect((float) (left_top_bucket.x) + 2.5f, left_top_bucket.y - 2f, (float) (right_bottom_bucket.x) - 2.5f, right_bottom_bucket.y + 1f, paint);
+
+            }
+
+        }
+        paint.setColor(MyColorClass.colorBucket);
+        paint.setStyle(Paint.Style.FILL);
+
+        //disegna la benna fake a larghezza fissa per evitare l'effetto di far scomparire la benna
+        canvas.drawRect((float) (left_top_bucket2.x), left_top_bucket2.y, (float) (right_bottom_bucket.x), right_bottom_bucket.y, paint);
+        canvas.rotate((float) -ExcavatorLib.yawSensor, (ancorPX), ancorPY);
+
+
+        //disegna la croce
+        paint.setColor(Color.GREEN);
+        paint.setStrokeWidth((float) (2.5f / DataSaved.scale_Factor3D));
+        float stopX = (float) ((left_top_bucket.x + right_bottom_bucket.x) / 2f);
+        float stopY = left_top_bucket.y;
+        float stopXLeft = (float) (left_top_bucket.x);
+        float stopXRight = (float) (right_bottom_bucket.x);
+        float x0 = stopXLeft;
+        float y0 = stopY;
+        float x1 = stopXLeft;
+        float y1 = stopY - 1000f;
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+        float step = (float) (2.5f * scala);
+        float length = (float) Math.sqrt(dx * dx + dy * dy);
+        if (length == 0) return;
+
+        float ux = dx / length;
+        float uy = dy / length;
+
+        int count = (int) (length / step);
+        if (DataSaved.showAlign == 1) {
+            paint.setStyle(Paint.Style.FILL);
+            switch (DataSaved.bucketEdge) {
+                case -1:
+                    canvas.rotate((float) ExcavatorLib.yawSensor, ancorPX, ancorPY);
+                    ux = dx / length;
+                    uy = dy / length;
+                    for (int i = 1; i <= count; i++) {   // 👈 parte da 1, NON da 0
+                        float dist = i * step;
+
+                        if (dist > length) dist = length; // forza ultimo esatto
+
+                        float cx = x0 + ux * dist;
+                        float cy = y0 + uy * dist;
+
+                        drawArrowTriangle(
+                                canvas,
+                                cx,
+                                cy,
+                                ux,
+                                uy,
+                                (float) (10f / DataSaved.scale_Factor3D)
+                        );
+                    }
+                    canvas.drawLine(stopXLeft, stopY, stopXLeft, stopY - 1000f, paint);//fw
+                    canvas.drawLine(stopXLeft, stopY, stopXLeft, stopY + 1000f, paint);//bw
+                    canvas.drawLine(stopXLeft, stopY, stopXLeft - 500f, stopY, paint);//left
+                    canvas.drawLine(stopXLeft, stopY, stopXLeft + 500f, stopY, paint);//right
+                    canvas.rotate((float) -ExcavatorLib.yawSensor, ancorPX, ancorPY);
+                    break;
+
+                case 0:
+                    x0 = stopX;
+                    y0 = stopY;
+                    x1 = stopX;
+                    y1 = stopY - 1000f;
+                    dx = x1 - x0;
+                    dy = y1 - y0;
+                    ux = dx / length;
+                    uy = dy / length;
+                    canvas.rotate((float) ExcavatorLib.yawSensor, ancorPX, ancorPY);
+                    for (int i = 1; i <= count; i++) {   // 👈 parte da 1, NON da 0
+                        float dist = i * step;
+
+                        if (dist > length) dist = length; // forza ultimo esatto
+
+                        float cx = x0 + ux * dist;
+                        float cy = y0 + uy * dist;
+
+                        drawArrowTriangle(
+                                canvas,
+                                cx,
+                                cy,
+                                ux,
+                                uy,
+                                (float) (10f / DataSaved.scale_Factor3D)
+                        );
+                    }
+                    canvas.drawLine(stopX, stopY, stopX, stopY - 1000f, paint);//fw
+                    canvas.drawLine(stopX, stopY, stopX, stopY + 1000f, paint);//bw
+                    canvas.drawLine(stopX, stopY, stopX - 500f, stopY, paint);//left
+                    canvas.drawLine(stopX, stopY, stopX + 500f, stopY, paint);//right
+                    canvas.rotate((float) -ExcavatorLib.yawSensor, ancorPX, ancorPY);
+                    break;
+
+                case 1:
+                    x0 = stopXRight;
+                    y0 = stopY;
+                    x1 = stopXRight;
+                    y1 = stopY - 1000f;
+                    dx = x1 - x0;
+                    dy = y1 - y0;
+                    ux = dx / length;
+                    uy = dy / length;
+                    canvas.rotate((float) ExcavatorLib.yawSensor, ancorPX, ancorPY);
+                    for (int i = 1; i <= count; i++) {   // 👈 parte da 1, NON da 0
+                        float dist = i * step;
+
+                        if (dist > length) dist = length; // forza ultimo esatto
+
+                        float cx = x0 + ux * dist;
+                        float cy = y0 + uy * dist;
+
+                        drawArrowTriangle(
+                                canvas,
+                                cx,
+                                cy,
+                                ux,
+                                uy,
+                                (float) (10f / DataSaved.scale_Factor3D)
+                        );
+                    }
+                    canvas.drawLine(stopXRight, stopY, stopXRight, stopY - 1000f, paint);//fw
+                    canvas.drawLine(stopXRight, stopY, stopXRight, stopY + 1000f, paint);//bw
+                    canvas.drawLine(stopXRight, stopY, stopXRight - 500f, stopY, paint);//left
+                    canvas.drawLine(stopXRight, stopY, stopXRight + 500f, stopY, paint);//right
+                    canvas.rotate((float) -ExcavatorLib.yawSensor, ancorPX, ancorPY);
+                    break;
+            }
+            paint.setStrokeWidth(2.5f);
+            paint.setColor(MyColorClass.colorBucket);
+        }
+
+    }
+
+    private void drawLama(Canvas canvas) {
+        float delta = 0;
+        if (DataSaved.isWL == GRADER) {
+            delta = (float) (0.25 * scala);
+        }
+        paint.setColor(MyColorClass.colorBucket);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawRect((left_top_bucket2.x), left_top_bucket2.y, (right_bottom_bucket.x), right_bottom_bucket.y - delta, paint);
+        //disegna la croce
+        paint.setColor(Color.GREEN);
+        paint.setStrokeWidth((float) (2.5f / DataSaved.scale_Factor3D));
+        float stopX = (float) ((left_top_bucket.x + right_bottom_bucket.x) / 2f);
+        float stopY = left_top_bucket.y;
+        float stopXLeft = (float) (left_top_bucket.x);
+        float stopXRight = (float) (right_bottom_bucket.x);
+        float x0 = stopXLeft;
+        float y0 = stopY;
+        float x1 = stopXLeft;
+        float y1 = stopY - 1000f;
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+        float step = (float) (2.5f * scala);
+        float length = (float) Math.sqrt(dx * dx + dy * dy);
+        if (length == 0) return;
+
+        float ux = dx / length;
+        float uy = dy / length;
+
+        int count = (int) (length / step);
+        if (DataSaved.showAlign == 1) {
+            switch (DataSaved.bucketEdge) {
+                case -1:
+                    ux = dx / length;
+                    uy = dy / length;
+                    for (int i = 1; i <= count; i++) {   // 👈 parte da 1, NON da 0
+                        float dist = i * step;
+
+                        if (dist > length) dist = length; // forza ultimo esatto
+
+                        float cx = x0 + ux * dist;
+                        float cy = y0 + uy * dist;
+
+                        drawArrowTriangle(
+                                canvas,
+                                cx,
+                                cy,
+                                ux,
+                                uy,
+                                (float) (10f / DataSaved.scale_Factor3D)
+                        );
+                    }
+                    canvas.drawLine(stopXLeft, stopY, stopXLeft, stopY - 1000f, paint);//fw
+                    canvas.drawLine(stopXLeft, stopY, stopXLeft, stopY + 1000f, paint);//bw
+                    canvas.drawLine(stopXLeft, stopY, stopXLeft - 500f, stopY, paint);//left
+                    canvas.drawLine(stopXLeft, stopY, stopXLeft + 500f, stopY, paint);//right
+                    break;
+
+                case 0:
+                    x0 = stopX;
+                    y0 = stopY;
+                    x1 = stopX;
+                    y1 = stopY - 1000f;
+                    dx = x1 - x0;
+                    dy = y1 - y0;
+                    ux = dx / length;
+                    uy = dy / length;
+                    for (int i = 1; i <= count; i++) {   // 👈 parte da 1, NON da 0
+                        float dist = i * step;
+
+                        if (dist > length) dist = length; // forza ultimo esatto
+
+                        float cx = x0 + ux * dist;
+                        float cy = y0 + uy * dist;
+
+                        drawArrowTriangle(
+                                canvas,
+                                cx,
+                                cy,
+                                ux,
+                                uy,
+                                (float) (10f / DataSaved.scale_Factor3D)
+                        );
+                    }
+                    canvas.drawLine(stopX, stopY, stopX, stopY - 1000f, paint);//fw
+                    canvas.drawLine(stopX, stopY, stopX, stopY + 1000f, paint);//bw
+                    canvas.drawLine(stopX, stopY, stopX - 500f, stopY, paint);//left
+                    canvas.drawLine(stopX, stopY, stopX + 500f, stopY, paint);//right
+                    break;
+
+                case 1:
+                    x0 = stopXRight;
+                    y0 = stopY;
+                    x1 = stopXRight;
+                    y1 = stopY - 1000f;
+                    dx = x1 - x0;
+                    dy = y1 - y0;
+                    ux = dx / length;
+                    uy = dy / length;
+                    for (int i = 1; i <= count; i++) {   // 👈 parte da 1, NON da 0
+                        float dist = i * step;
+
+                        if (dist > length) dist = length; // forza ultimo esatto
+
+                        float cx = x0 + ux * dist;
+                        float cy = y0 + uy * dist;
+
+                        drawArrowTriangle(
+                                canvas,
+                                cx,
+                                cy,
+                                ux,
+                                uy,
+                                (float) (10f / DataSaved.scale_Factor3D)
+                        );
+                    }
+                    canvas.drawLine(stopXRight, stopY, stopXRight, stopY - 1000f, paint);//fw
+                    canvas.drawLine(stopXRight, stopY, stopXRight, stopY + 1000f, paint);//bw
+                    canvas.drawLine(stopXRight, stopY, stopXRight - 500f, stopY, paint);//left
+                    canvas.drawLine(stopXRight, stopY, stopXRight + 500f, stopY, paint);//right
+                    break;
+            }
+            paint.setColor(MyColorClass.colorBucket);
+            paint.setStrokeWidth(2.5f);
+        }
+
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -730,7 +1005,6 @@ public class Top_View_DXF extends View {
 
                     lastTouchX = x;
                     lastTouchY = y;
-                    syncGlFromTopView(glSurfaceView);
                 }
                 break;
 
@@ -767,9 +1041,7 @@ public class Top_View_DXF extends View {
             // Aggiorna gli offset in base ai gesti di trascinamento
             offsetX -= (float) (distanceX / DataSaved.scale_Factor3D);
             offsetY -= (float) (distanceY / DataSaved.scale_Factor3D);
-
             invalidate();
-            syncGlFromTopView(glSurfaceView);
             return true;
         }
 
@@ -777,9 +1049,8 @@ public class Top_View_DXF extends View {
         public boolean onDoubleTap(MotionEvent e) {
             // Ripristina il pan al doppio tap e lo zoom
             offsetX = 0;
-            syncGlFromTopView(glSurfaceView);
+            offsetY = 0;
             invalidate();
-            syncGlFromTopView(glSurfaceView);
             return true;
         }
 
@@ -797,9 +1068,7 @@ public class Top_View_DXF extends View {
             DataSaved.scale_Factor3D *= detector.getScaleFactor();
             // Limita il fattore di scala
             DataSaved.scale_Factor3D = Math.max(0.05f, Math.min(DataSaved.scale_Factor3D, 10.0f));
-
             invalidate();
-            syncGlFromTopView(glSurfaceView);
             return true;
         }
     }
@@ -927,65 +1196,5 @@ public class Top_View_DXF extends View {
         canvas.drawPath(p, paint);
     }
 
-    public static void syncGlFromTopView(MyGLSurfaceView glSurfaceView) {
-        if (glSurfaceView == null) return;
-        if (glSurfaceView.getWidth() == 0 || glSurfaceView.getHeight() == 0) return;
-        if (My3DActivity.glVista3d != 0) return;
-
-        float safeScale = Math.max((float) DataSaved.scale_Factor3D, 0.001f);
-        MyGLRenderer.scale = safeScale;
-
-        float viewW = glSurfaceView.getWidth();
-        float viewH = glSurfaceView.getHeight();
-
-        float ratio = viewW / viewH;
-        float orthoHalfHeight = MyGLRenderer.orthoBaseSize / safeScale;
-        float orthoHalfWidth = orthoHalfHeight * ratio;
-
-        // Nel Canvas il delta visivo è offset * scale
-        float effectiveScreenDx = Top_View_DXF.offsetX * safeScale;
-        float effectiveScreenDy = Top_View_DXF.offsetY * safeScale;
-
-        MyGLRenderer.panX = (effectiveScreenDx / viewW) * (2f * orthoHalfWidth);
-        MyGLRenderer.panY = -(effectiveScreenDy / viewH) * (2f * orthoHalfHeight);
-
-        glSurfaceView.requestRender();
-    }
-
-    private float getBucketAnchorX() {
-        return getWidth() * 0.5f;
-    }
-
-    private float getBucketAnchorY() {
-        return getHeight() * 0.75f;
-    }
-
-    /**
-     * Adatta il Canvas al GL.
-     * Il GL è la sorgente di verità per pan/zoom in vista 2D.
-     */
-    private void syncTopViewFromGl() {
-        if (glSurfaceView == null) return;
-        if (glSurfaceView.getWidth() == 0 || glSurfaceView.getHeight() == 0) return;
-        if (My3DActivity.glVista3d != 0) return;
-
-        float viewW = glSurfaceView.getWidth();
-        float viewH = glSurfaceView.getHeight();
-
-        float safeScale = Math.max(MyGLRenderer.scale, 0.001f);
-        float ratio = viewW / viewH;
-        float orthoHalfHeight = MyGLRenderer.orthoBaseSize / safeScale;
-        float orthoHalfWidth = orthoHalfHeight * ratio;
-
-        // Delta a schermo equivalente del pan GL
-        float screenDx = (MyGLRenderer.panX / (2f * orthoHalfWidth)) * viewW;
-        float screenDy = -(MyGLRenderer.panY / (2f * orthoHalfHeight)) * viewH;
-
-        // Nel Canvas: scale(...pivot...) + translate(offsetX, offsetY)
-        // La translate è percepita a schermo come offset * scale
-        DataSaved.scale_Factor3D = safeScale;
-        offsetX = screenDx / safeScale;
-        offsetY = screenDy / safeScale;
-    }
 
 }

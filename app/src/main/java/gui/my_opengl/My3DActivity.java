@@ -172,26 +172,7 @@ public class My3DActivity extends BaseClass {
         }
         findView();
         onClick();
-
-
-        //1
-        // Ora troviamo il glSurfaceView dentro il layout
-        GLSurfaceView oldView = findViewById(R.id.glSurfaceView);
-
-        // Sostituirlo con il nostro MyGLSurfaceView
-        glSurfaceView = new MyGLSurfaceView(this);
-
-        // Impostiamo le stesse Constraint dinamicamente
-        if (oldView.getLayoutParams() != null) {
-            glSurfaceView.setLayoutParams(oldView.getLayoutParams());
-        }
-
-        // Sostituisci nel parent view
-        ViewGroup parent = (ViewGroup) oldView.getParent();
-        int index = parent.indexOfChild(oldView);
-        parent.removeView(oldView);
-        parent.addView(glSurfaceView, index);
-
+        initTopViewAndGlOverlay();
 
         btn_hide.callOnClick();
         indexMachineSelected = MyData.get_Int("MachineSelected");
@@ -220,6 +201,8 @@ public class My3DActivity extends BaseClass {
                             (byte) 0x0,
                             (byte) 0xB0});
         }
+
+
 
     }
 
@@ -299,7 +282,7 @@ public class My3DActivity extends BaseClass {
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
-        layer3Canvas = new Top_View_DXF(this);
+
         if (DataSaved.isWL < DOZER) {
             layer1Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer1_Tilt(this) : new DrawDXF_Layer1(this);
             layer2Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer2_Tilt(this) : new DrawDXF_Layer2(this);
@@ -309,10 +292,10 @@ public class My3DActivity extends BaseClass {
         }
         panel1.addView(layer1Canvas);
         panel2.addView(layer2Canvas);
-        panel3.addView(layer3Canvas);
+
         panel1.setBackgroundColor(MyColorClass.colorSfondo);
         panel2.setBackgroundColor(MyColorClass.colorSfondo);
-        panel3.setBackgroundColor(MyColorClass.colorSfondo);
+
 
         if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
             gl_benne.setImageResource((R.drawable.benna_vuota1));
@@ -707,14 +690,18 @@ public class My3DActivity extends BaseClass {
             if (isPan && glVista3d == 1) {
                 isPan = false;
             }
+            glSurfaceView.updateZOrder();
+            /*glSurfaceView.onPause();
+            glSurfaceView.updateZOrder();
+            glSurfaceView.onResume();Da fare solo se non aggiorna*/
             updateMemories();
         });
         gl_vista.setOnLongClickListener(view -> {
-            if (glVista3d != 2) {
+           /* if (glVista3d != 2) {
                 glVista3d = 2;
             } else {
                 glVista3d = MyData.get_Int("vista3D");
-            }
+            }*/
             return true;
         });
 
@@ -1244,13 +1231,20 @@ public class My3DActivity extends BaseClass {
                 view2.setVisibility(View.INVISIBLE);
                 panel1.setVisibility(View.GONE);
                 panel2.setVisibility(View.GONE);
-                if (glVista3d == 2) {
-                    glSurfaceView.setVisibility(View.GONE);
+                if (glVista3d == 0) {
+                    // 2D: Canvas + GL
+                   // glSurfaceView.bringToFront();
                     panel3.setVisibility(View.VISIBLE);
-                    layer3Canvas.invalidate();
-                } else {
                     glSurfaceView.setVisibility(View.VISIBLE);
-                    panel3.setVisibility(View.GONE);
+
+                    if (layer3Canvas != null) {
+                        layer3Canvas.invalidate();
+                    }
+
+                } else {
+                    // 3D: solo GL
+                    panel3.setVisibility(View.VISIBLE);
+                    glSurfaceView.setVisibility(View.VISIBLE);
                 }
                 break;
             case 1:
@@ -1264,13 +1258,20 @@ public class My3DActivity extends BaseClass {
                 panel2.setVisibility(View.VISIBLE);
                 layer1Canvas.invalidate();
                 layer2Canvas.invalidate();
-                if (glVista3d == 2) {
-                    glSurfaceView.setVisibility(View.GONE);
+                if (glVista3d == 0) {
+                    // 2D: Canvas + GL
+                   // glSurfaceView.bringToFront();
                     panel3.setVisibility(View.VISIBLE);
-                    layer3Canvas.invalidate();
-                } else {
                     glSurfaceView.setVisibility(View.VISIBLE);
-                    panel3.setVisibility(View.GONE);
+
+                    if (layer3Canvas != null) {
+                        layer3Canvas.invalidate();
+                    }
+
+                } else {
+                    // 3D: solo GL
+                    panel3.setVisibility(View.VISIBLE);
+                    glSurfaceView.setVisibility(View.VISIBLE);
                 }
                 break;
             case 2:
@@ -1831,5 +1832,41 @@ public class My3DActivity extends BaseClass {
             gl_gps.setImageTintList(ColorStateList.valueOf(Color.RED));
             gl_gps.setBackground(getDrawable(R.drawable.custom_background_test3d_box_grigino));
         }
+    }
+    private void initTopViewAndGlOverlay() {
+        GLSurfaceView oldView = findViewById(R.id.glSurfaceView);
+
+        if (oldView != null) {
+            ViewGroup oldParent = (ViewGroup) oldView.getParent();
+            if (oldParent != null) {
+                oldParent.removeView(oldView);
+            }
+        }
+
+        glSurfaceView = new MyGLSurfaceView(this, null);
+
+        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        glSurfaceView.setLayoutParams(lp);
+
+        layer3Canvas = new Top_View_DXF(this, glSurfaceView);
+        layer3Canvas.setLayoutParams(new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        glSurfaceView.setTopView((Top_View_DXF) layer3Canvas);
+
+        panel3.removeAllViews();
+
+        // Sotto il canvas DXF, sopra il GL trasparente che riceve il touch
+        panel3.addView(layer3Canvas);
+        panel3.addView(glSurfaceView);
+
+        glSurfaceView.updateZOrder();
+        glSurfaceView.setVisibility(View.VISIBLE);
+        panel3.setVisibility(View.VISIBLE);
+        panel3.setBackgroundColor(MyColorClass.colorSfondo);
     }
 }

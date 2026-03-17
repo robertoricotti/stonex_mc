@@ -208,7 +208,7 @@ public class Digging3D_DXF extends BaseClass {
 
         if (DataSaved.isWL == 0) {
 
-            topViewCanvas = new Top_View_DXF(this);
+            topViewCanvas = new Top_View_DXF(this,null);
 
         } else {
 

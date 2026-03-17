@@ -7,10 +7,10 @@
         android:id="@+id/glSurfaceView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guidLo"
         app:layout_constraintLeft_toRightOf="@id/view1"
         app:layout_constraintRight_toLeftOf="@id/fine"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/guidTop" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,10 +50,10 @@
         android:layout_marginTop="0.5dp"
         android:layout_marginEnd="0.5dp"
         android:background="@color/application_table_line_color"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guidLo"
         app:layout_constraintLeft_toRightOf="@id/view1"
         app:layout_constraintRight_toLeftOf="@id/fine"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="@id/guidTop" >
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -427,6 +427,28 @@
             android:gravity="center"
             android:orientation="vertical">
             <ImageView
+                android:id="@+id/gl_folder"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/custom_background_test3d"
+                android:clickable="true"
+                android:padding="3dp"
+                android:src="@drawable/file_folder_96"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/gl_layers"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/custom_background_test3d"
+                android:clickable="true"
+                android:padding="3dp"
+                android:src="@drawable/layer_96"
+                app:tint="@color/white" />
+
+            <ImageView
                 android:id="@+id/gl_hydroP"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -470,6 +492,7 @@
                 android:src="@drawable/correcting_new"
                 app:tint="@color/white" />
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/gl_bright"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -491,6 +514,7 @@
                 app:tint="@color/white" />
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/gl_zoomC"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -511,10 +535,12 @@
                 android:clickable="true"
                 android:padding="4dp"
                 android:alpha="1"
+                android:visibility="gone"
                 android:src="@drawable/zoomout"
                 app:tint="@color/white" />
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/gl_zoomP"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -559,27 +585,6 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/gl_folder"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginVertical="2dp"
-                android:background="@drawable/custom_background_test3d"
-                android:clickable="true"
-                android:padding="3dp"
-                android:src="@drawable/file_folder_96"
-                app:tint="@color/white" />
-
-            <ImageView
-                android:id="@+id/gl_layers"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginVertical="2dp"
-                android:background="@drawable/custom_background_test3d"
-                android:clickable="true"
-                android:padding="3dp"
-                android:src="@drawable/layer_96"
-                app:tint="@color/white" />
 
             <ImageView
                 android:id="@+id/gl_filter"

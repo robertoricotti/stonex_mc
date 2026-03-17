@@ -11,9 +11,11 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import gui.draw_class.Top_View_DXF;
 import packexcalib.exca.DataSaved;
 
 public class MyGLSurfaceView extends GLSurfaceView {
+    private Top_View_DXF topView;
 
     private final MyGLRenderer renderer;
     private final GestureDetector gestureDetector;
@@ -26,14 +28,18 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private long lastZoomTime = 0; // <-- nuovo
 
     private final float ROTATION_SENSITIVITY = 0.1f;
+    private GLSurfaceView glSurfaceView;
 
-    public MyGLSurfaceView(Context context) {
+    public MyGLSurfaceView(Context context,GLSurfaceView glSurfaceView) {
         super(context);
-        //  Abilita MSAA (4x) per avere bordi più morbidi
-        // Parametri: RGBA 8 bit, Depth 24 bit, 4x multisample
+        this.glSurfaceView=glSurfaceView;
+
         setEGLConfigChooser(8, 8, 8, 8, 24, 4);
         setEGLContextClientVersion(2);
         setPreserveEGLContextOnPause(true);
+
+        updateZOrder();
+
         renderer = new MyGLRenderer();
         setRenderer(renderer);
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
@@ -77,9 +83,26 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             panX += dx * panFactor;
                             panY -= dy * panFactor;
                         }else if(renderer.is2D){
-                            float panFactor = (0.005f * renderer.orthoBaseSize) / MyGLRenderer.scale;
+                           /* float panFactor = (0.005f * renderer.orthoBaseSize) / MyGLRenderer.scale;
                             panX += dx * panFactor;
-                            panY -= dy * panFactor;
+                            panY -= dy * panFactor;*/
+                            float viewW = getWidth();
+                            float viewH = getHeight();
+
+                            if (viewW > 0 && viewH > 0) {
+                                float safeScale = Math.max(MyGLRenderer.scale, 0.001f);
+                                float ratio = viewW / viewH;
+
+                                float orthoHalfHeight = renderer.orthoBaseSize / safeScale;
+                                float orthoHalfWidth = orthoHalfHeight * ratio;
+
+                                panX += (dx / viewW) * (2f * orthoHalfWidth);
+                                panY -= (dy / viewH) * (2f * orthoHalfHeight);
+                                if (topView != null) {
+                                    topView.postInvalidateOnAnimation();
+                                }
+                            }
+
                         }
 
                     }
@@ -114,13 +137,43 @@ public class MyGLSurfaceView extends GLSurfaceView {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float rawFactor = detector.getScaleFactor();
-
-            // Applichiamo un fattore di attenuazione per rendere lo zoom più lento
-            float zoomSensitivity = 0.25f; // più basso = zoom meno aggressivo (es. 0.1f–0.3f)
+            float zoomSensitivity = 0.25f;
             float adjustedFactor = 1f + (rawFactor - 1f) * zoomSensitivity;
 
-            scale *= adjustedFactor;
-            scale = Math.max(0.09f, Math.min(scale, 1.5f));
+            float oldScale = scale;
+            float newScale = oldScale * adjustedFactor;
+            newScale = Math.max(0.09f, Math.min(newScale, 1.5f));
+
+            float viewW = getWidth();
+            float viewH = getHeight();
+
+            if (renderer.is2D && viewW > 0 && viewH > 0) {
+                float ratio = viewW / viewH;
+
+                float oldHalfH = renderer.orthoBaseSize / Math.max(oldScale, 0.001f);
+                float oldHalfW = oldHalfH * ratio;
+
+                float newHalfH = renderer.orthoBaseSize / Math.max(newScale, 0.001f);
+                float newHalfW = newHalfH * ratio;
+
+                // stesso anchor del Canvas
+                float anchorScreenX = viewW * 0.5f;
+                float anchorScreenY = viewH * 0.75f;
+
+                // coordinate NDC dell'anchor rispetto al viewport
+                float ndcX = ((anchorScreenX / viewW) * 2f) - 1f;
+                float ndcY = 1f - ((anchorScreenY / viewH) * 2f);
+
+                // compensazione pan per mantenere fisso l'anchor durante lo zoom
+                panX += ndcX * (oldHalfW - newHalfW);
+                panY += ndcY * (oldHalfH - newHalfH);
+            }
+
+            scale = newScale;
+
+            if (topView != null) {
+                topView.postInvalidateOnAnimation();
+            }
 
             return true;
         }
@@ -145,19 +198,26 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-
-          /*  if (!My3DActivity.isPan) {
-                renderer.angleX = -90f;
-                renderer.angleY = 0f;
-            }*/
             panX = 0;
             panY = -0.3f;
-
+            if (topView != null) {
+                topView.postInvalidateOnAnimation();
+            }
 
             return true;
         }
     }
 
-
-
+    public void updateZOrder() {
+        if (My3DActivity.glVista3d == 0) {
+            setZOrderOnTop(true);
+            getHolder().setFormat(android.graphics.PixelFormat.TRANSLUCENT);
+        } else {
+            setZOrderOnTop(false);
+            getHolder().setFormat(android.graphics.PixelFormat.OPAQUE);
+        }
+    }
+    public void setTopView(Top_View_DXF topView) {
+        this.topView = topView;
+    }
 }

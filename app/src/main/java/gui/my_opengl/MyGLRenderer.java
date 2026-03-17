@@ -31,7 +31,7 @@ import utils.MyData;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
-    float orthoBaseSize = 5f;
+    public static float orthoBaseSize = 5f;
 
     private int surfaceWidth;
     private int surfaceHeight;
@@ -92,8 +92,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             isXMLPoint = false;
         }
 
-        float[] sf = GL_Methods.parseColorToGL(MyColorClass.colorSfondo);
-        GLES20.glClearColor(sf[0], sf[1], sf[2], sf[3]);
+
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         GLES20.glDepthFunc(GLES20.GL_LEQUAL);
@@ -124,10 +123,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         is3D = My3DActivity.glVista3d == 1;
         isFlat = My3DActivity.glVista3d == 2;
 
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
 
         if (isFlat) return;
         if (DataSaved.typeView != 0 && DataSaved.typeView != 1) return;
+        if (is3D) {
+            float[] sf = GL_Methods.parseColorToGL(MyColorClass.colorSfondo);
+            GLES20.glClearColor(sf[0], sf[1], sf[2], sf[3]);
+        } else if (is2D) {
+            GLES20.glClearColor(0f, 0f, 0f, 0f);
+        }
+
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
 
         try {
             float angleTest = (float) ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360f);
@@ -146,6 +154,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             gl11.glLoadIdentity();
 
             if (is3D) {
+                float[] sf = GL_Methods.parseColorToGL(MyColorClass.colorSfondo);
+
                 gl11.glTranslatef(panX, panY, -5.0f);
                 gl11.glScalef(scale, scale, scale);
                 gl11.glRotatef(angleX, 1f, 0f, 0f);
@@ -158,9 +168,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             }
 
             if (is2D) {
+
                 gl11.glTranslatef(panX, panY, -5f);
+                gl11.glScalef(scale, scale, scale);
                 gl11.glRotatef(angleTest, 0f, 0f, 1f);
-                drawTerrain2D();
+                //drawTerrain2D();
             }
 
             switch (DataSaved.isWL) {
