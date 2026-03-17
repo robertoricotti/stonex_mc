@@ -63,4 +63,25 @@ public class Draw3DPolyline {
 
         canvas.drawPath(path, paint);
     }
+    public static void drawScreen(
+            Paint paint,
+            Canvas canvas,
+            List<PointF> screenPoints,
+            int color
+    ) {
+        if (screenPoints == null || screenPoints.size() < 2) return;
+
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.STROKE);
+
+        Path path = new Path();
+        path.moveTo(screenPoints.get(0).x, screenPoints.get(0).y);
+
+        for (int i = 1; i < screenPoints.size(); i++) {
+            PointF p = screenPoints.get(i);
+            path.lineTo(p.x, p.y);
+        }
+
+        canvas.drawPath(path, paint);
+    }
 }

@@ -172,7 +172,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 gl11.glTranslatef(panX, panY, -5f);
                 gl11.glScalef(scale, scale, scale);
                 gl11.glRotatef(angleTest, 0f, 0f, 1f);
-                //drawTerrain2D();
+                drawTerrain2D();
             }
 
             switch (DataSaved.isWL) {

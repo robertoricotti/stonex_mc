@@ -2,6 +2,7 @@ package dxf;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
@@ -186,5 +187,31 @@ public class Draw2DPolyline {
 
         // Step 11: Disegna l'arco
         canvas.drawArc(boundingRect, startAngle, sweepAngle, false, paint);
+    }
+    public static void drawScreen(
+            Paint paint,
+            Canvas canvas,
+            List<PointF> screenPoints,
+            int color,
+            boolean closed
+    ) {
+        if (screenPoints == null || screenPoints.size() < 2) return;
+
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.STROKE);
+
+        Path path = new Path();
+        path.moveTo(screenPoints.get(0).x, screenPoints.get(0).y);
+
+        for (int i = 1; i < screenPoints.size(); i++) {
+            PointF p = screenPoints.get(i);
+            path.lineTo(p.x, p.y);
+        }
+
+        if (closed) {
+            path.close();
+        }
+
+        canvas.drawPath(path, paint);
     }
 }
