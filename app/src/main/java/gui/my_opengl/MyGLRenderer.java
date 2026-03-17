@@ -43,6 +43,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public static float panX;
     public static float panY = -0.3f;
 
+    public static float scale_2d = 1f;
+    public static float panX_2d;
+    public static float panY_2d = -1f;
+
     private boolean isXML, isXMLPoint;
 
     public static float[] coloreEsterno = new float[]{0.4f, 0.4f, 0.4f, 1f};
@@ -169,8 +173,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
             if (is2D) {
 
-                gl11.glTranslatef(panX, panY, -5f);
-                gl11.glScalef(scale, scale, scale);
+                gl11.glTranslatef(panX_2d, panY_2d, -5f);
+                gl11.glScalef(scale_2d, scale_2d, scale_2d);
                 gl11.glRotatef(angleTest, 0f, 0f, 1f);
                 drawTerrain2D();
             }
@@ -201,7 +205,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             GLDrawer.setOrthoMetrics(false, 1f, 1f);
         } else {
-            float zoom = Math.max(scale, 0.001f);
+            float zoom = Math.max(scale_2d, 0.001f);
             float size = orthoBaseSize / zoom;
             Matrix.orthoM(projectionMatrix, 0, -ratio * size, ratio * size, -size, size, -50f, 50f);
             GLES20.glDisable(GLES20.GL_DEPTH_TEST);
@@ -223,7 +227,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 Matrix.rotateM(viewMatrix, 0, angleY, 0f, 0f, 1f);
             }
         } else if (is2D) {
-            Matrix.translateM(viewMatrix, 0, panX, panY, -5f);
+            Matrix.translateM(viewMatrix, 0, panX_2d, panY_2d, -5f);
             Matrix.rotateM(viewMatrix, 0, angleTest, 0f, 0f, 1f);
         }
     }
@@ -285,61 +289,61 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private void drawTerrain2D() {
         if (!My3DActivity.glFilter) {
             if (My3DActivity.glFace || My3DActivity.glFill) {
-                GLDrawer.drawFaces(gl11, DataSaved.dxfFacesGL_2D, 0.8f, scale, isXML);
+                GLDrawer.drawFaces(gl11, DataSaved.dxfFacesGL_2D, 0.8f, scale_2d, isXML);
             }
             if (My3DActivity.glGradient) {
-                GLDrawer.drawFacesGradient2D(gl11, DataSaved.dxfFaces, scale, TriangleService.minZ, TriangleService.maxZ);
+                GLDrawer.drawFacesGradient2D(gl11, DataSaved.dxfFaces, scale_2d, TriangleService.minZ, TriangleService.maxZ);
             }
 
             GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
             if (My3DActivity.glPoly) {
-                GLDrawer.drawPolylines(gl11, DataSaved.polylinesGL_2D, 3f, scale);
-                GLDrawer.drawLines2D(gl11, DataSaved.lines_2D, 3f, scale);
-                GLDrawer.drawArcs2D(gl11, DataSaved.arcs, 2f, scale);
-                GLDrawer.drawPolylines2D(gl11, DataSaved.polylines_2D, 3f, scale);
-                GLDrawer.drawCircles2D(gl11, DataSaved.circles, 2f, scale);
+                GLDrawer.drawPolylines(gl11, DataSaved.polylinesGL_2D, 3f, scale_2d);
+                GLDrawer.drawLines2D(gl11, DataSaved.lines_2D, 3f, scale_2d);
+                GLDrawer.drawArcs2D(gl11, DataSaved.arcs, 2f, scale_2d);
+                GLDrawer.drawPolylines2D(gl11, DataSaved.polylines_2D, 3f, scale_2d);
+                GLDrawer.drawCircles2D(gl11, DataSaved.circles, 2f, scale_2d);
             }
 
             if (My3DActivity.glPoint) {
-                GLDrawer.drawPoints(gl11, DataSaved.points, 10f, scale, isXMLPoint);
+                GLDrawer.drawPoints(gl11, DataSaved.points, 10f, scale_2d, isXMLPoint);
             }
             if (My3DActivity.glText) {
-                GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
+                GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale_2d, atlas);
             }
             if (PNEZD_FUNCTION || glPoint) {
-                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
-                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale_2d);
+                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale_2d, atlasPNEZD);
             }
 
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         } else {
             if (My3DActivity.glFace || My3DActivity.glFill) {
-                GLDrawer.drawFaces(gl11, DataSaved.filteredFacesGL_2D, 0.8f, scale, isXML);
+                GLDrawer.drawFaces(gl11, DataSaved.filteredFacesGL_2D, 0.8f, scale_2d, isXML);
             }
             if (My3DActivity.glGradient) {
-                GLDrawer.drawFacesGradient2D(gl11, DataSaved.filteredFaces, scale, TriangleService.minZ, TriangleService.maxZ);
+                GLDrawer.drawFacesGradient2D(gl11, DataSaved.filteredFaces, scale_2d, TriangleService.minZ, TriangleService.maxZ);
             }
 
             GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
             if (My3DActivity.glPoly) {
-                GLDrawer.drawPolylines(gl11, DataSaved.polylinesGL_2D, 3f, scale);
-                GLDrawer.drawLines2D(gl11, DataSaved.lines_2D, 3f, scale);
-                GLDrawer.drawArcs2D(gl11, DataSaved.arcs, 2f, scale);
-                GLDrawer.drawPolylines2D(gl11, DataSaved.polylines_2D, 3f, scale);
-                GLDrawer.drawCircles2D(gl11, DataSaved.circles, 2f, scale);
+                GLDrawer.drawPolylines(gl11, DataSaved.polylinesGL_2D, 3f, scale_2d);
+                GLDrawer.drawLines2D(gl11, DataSaved.lines_2D, 3f, scale_2d);
+                GLDrawer.drawArcs2D(gl11, DataSaved.arcs, 2f, scale_2d);
+                GLDrawer.drawPolylines2D(gl11, DataSaved.polylines_2D, 3f, scale_2d);
+                GLDrawer.drawCircles2D(gl11, DataSaved.circles, 2f, scale_2d);
             }
 
             if (glPoint) {
-                GLDrawer.drawPoints(gl11, DataSaved.filteredPoints, 10f, scale, isXMLPoint);
+                GLDrawer.drawPoints(gl11, DataSaved.filteredPoints, 10f, scale_2d, isXMLPoint);
             }
             if (My3DActivity.glText) {
-                GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
+                GLDrawer.drawTextsBilBoard(gl11, DataSaved.filteredDxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale_2d, atlas);
             }
             if (PNEZD_FUNCTION || glPoint) {
-                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
-                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale_2d);
+                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale_2d, atlasPNEZD);
             }
 
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);

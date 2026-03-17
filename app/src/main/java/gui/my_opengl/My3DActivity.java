@@ -46,7 +46,6 @@ import androidx.constraintlayout.widget.Guideline;
 
 import com.example.stx_dig.R;
 
-
 import DPAD.DPadHelper;
 import gui.BaseClass;
 import gui.MyApp;
@@ -76,7 +75,6 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
-
 import services.CanSender;
 import services.TriangleService;
 import utils.LeicaLB;
@@ -101,7 +99,7 @@ public class My3DActivity extends BaseClass {
     int initialFunction = 0;
     int indexAudioSystem;
     static float vol;
-    TextView titolo,marcia;
+    TextView titolo, marcia;
     SeekBar seekRed;
     SeekBar seekGreen;
     SeekBar seekBlue;
@@ -203,11 +201,10 @@ public class My3DActivity extends BaseClass {
         }
 
 
-
     }
 
     private void findView() {
-        marcia=findViewById(R.id.marcia);
+        marcia = findViewById(R.id.marcia);
         navigatorHDT = findViewById(R.id.navigatorHDT);
         navigatorHDT.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
         panel1 = findViewById(R.id.panel1D);
@@ -316,18 +313,21 @@ public class My3DActivity extends BaseClass {
             MyGLRenderer.panX = 0;
             MyGLRenderer.panY = -0.3f;
             MyGLRenderer.angleY_extra = MyData.get_Float("glAngleY_Extra");
-        }catch (Exception e){
+            MyGLRenderer.scale_2d = MyData.get_Float("glScale_2d");
+        } catch (Exception e) {
+            MyGLRenderer.scale_2d=0.5f;
             MyGLRenderer.scale = 0.5f;
             MyGLRenderer.angleX = -90f;
             MyGLRenderer.angleY = 0f;
             MyGLRenderer.panX = 0f;
             MyGLRenderer.panY = -0.3f;
             MyGLRenderer.angleY_extra = 0.0f;
+            saveParam();
         }
 
 
-        if(MyGLRenderer.scale<0.09f){
-            MyGLRenderer.scale=0.09f;
+        if (MyGLRenderer.scale < 0.09f) {
+            MyGLRenderer.scale = 0.09f;
         }
     }
 
@@ -473,36 +473,41 @@ public class My3DActivity extends BaseClass {
             updateMemories();
         });
         btn_zoomC.setOnClickListener(view -> {
-            if(btn_zoomC.getAlpha()==1f) {
-                no_touch_menu.removeCallbacks(timeOutTouch);
-                no_touch_menu.postDelayed(timeOutTouch, delay);
-                MyGLRenderer.panX = 0;
-                MyGLRenderer.panY = -0.3f;
-            }
+            no_touch_menu.removeCallbacks(timeOutTouch);
+            no_touch_menu.postDelayed(timeOutTouch, delay);
+            glSurfaceView.setDoubleTap();
+
         });
         btn_zoomP.setOnClickListener(view -> {
-            if(btn_zoomP.getAlpha()==1f) {
+            if (glVista3d == 1) {
                 no_touch_menu.removeCallbacks(timeOutTouch);
                 no_touch_menu.postDelayed(timeOutTouch, delay);
                 MyGLRenderer.scale += 0.05f;
                 MyGLRenderer.scale = Math.max(0.09f, Math.min(MyGLRenderer.scale, 1.5f));
+            } else {
+                no_touch_menu.removeCallbacks(timeOutTouch);
+                no_touch_menu.postDelayed(timeOutTouch, delay);
+                MyGLRenderer.scale_2d += 0.1f;
+                MyGLRenderer.scale_2d = Math.max(0.1f, Math.min(MyGLRenderer.scale_2d, 4.5f));
             }
         });
         btn_zoomM.setOnClickListener(view -> {
-            if(btn_zoomM.getAlpha()==1f) {
+            if (glVista3d == 1) {
                 no_touch_menu.removeCallbacks(timeOutTouch);
                 no_touch_menu.postDelayed(timeOutTouch, delay);
                 MyGLRenderer.scale -= 0.05f;
                 MyGLRenderer.scale = Math.max(0.09f, Math.min(MyGLRenderer.scale, 1.5f));
+            } else {
+                no_touch_menu.removeCallbacks(timeOutTouch);
+                no_touch_menu.postDelayed(timeOutTouch, delay);
+                MyGLRenderer.scale_2d -= 0.1f;
+                MyGLRenderer.scale_2d = Math.max(0.1f, Math.min(MyGLRenderer.scale_2d, 4.5f));
             }
         });
 
         btn_color.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
-           /* if (!dialogColors.dialog.isShowing()) {
-                dialogColors.show();
-            }*/
             showColorPickerDialog(this);
         });
 
@@ -595,25 +600,14 @@ public class My3DActivity extends BaseClass {
         });
 
         gl_pan_pinch.setOnClickListener(view -> {
-            if(gl_pan_pinch.getAlpha()==1f) {
+            if (gl_pan_pinch.getAlpha() == 1f) {
                 no_touch_menu.removeCallbacks(timeOutTouch);
                 no_touch_menu.postDelayed(timeOutTouch, delay);
                 isPan = !isPan;
             }
         });
         exit.setOnClickListener(view -> {
-            try {
-                MyData.push("scaleFactor_vista1D", String.valueOf(DataSaved.scale_FactorVista1D));
-                MyData.push("scaleFactor_vista2D", String.valueOf(DataSaved.scale_FactorVista2D));
-
-                MyData.push("glScale", String.valueOf(MyGLRenderer.scale));
-                MyData.push("glAngleX", String.valueOf(MyGLRenderer.angleX));
-                MyData.push("glAngleY", String.valueOf(MyGLRenderer.angleY));
-                MyData.push("glAngleY_Extra", String.valueOf(MyGLRenderer.angleY_extra));
-
-
-            } catch (Exception e) {
-            }
+            saveParam();
             startActivity(new Intent(this, Activity_Home_Page.class));
             finish();
         });
@@ -691,19 +685,9 @@ public class My3DActivity extends BaseClass {
                 isPan = false;
             }
             glSurfaceView.updateZOrder();
-            /*glSurfaceView.onPause();
-            glSurfaceView.updateZOrder();
-            glSurfaceView.onResume();Da fare solo se non aggiorna*/
             updateMemories();
         });
-        gl_vista.setOnLongClickListener(view -> {
-           /* if (glVista3d != 2) {
-                glVista3d = 2;
-            } else {
-                glVista3d = MyData.get_Int("vista3D");
-            }*/
-            return true;
-        });
+
 
         bucketEdge.setOnLongClickListener(view -> {
             DataSaved.isLowerEdge = !DataSaved.isLowerEdge;
@@ -842,30 +826,25 @@ public class My3DActivity extends BaseClass {
     }
 
     public void updateUI() {
-        if(DataSaved.isCanOpen==JOYSTICKS){
+        if (DataSaved.isCanOpen == JOYSTICKS) {
             marcia.setVisibility(View.VISIBLE);
             marcia.setText(DPadHelper.getMarcia(DPadHelper.getInstance().getStep()));
-        }else {
+        } else {
             marcia.setVisibility(View.GONE);
         }
-        if (glVista3d == 2) {
+
+        if (DataSaved.typeView == 0 || DataSaved.typeView == 1) {
+            btn_zoomP.setAlpha(1f);
+            btn_zoomM.setAlpha(1f);
+            btn_zoomC.setAlpha(1f);
+            gl_pan_pinch.setAlpha(1f);
+        } else {
             btn_zoomP.setAlpha(0.3f);
             btn_zoomM.setAlpha(0.3f);
-            btn_zoomC.setAlpha(0.3f);
+            btn_zoomC.setAlpha(1f);
             gl_pan_pinch.setAlpha(0.3f);
-        } else {
-            if (DataSaved.typeView == 0 || DataSaved.typeView == 1) {
-                btn_zoomP.setAlpha(1f);
-                btn_zoomM.setAlpha(1f);
-                btn_zoomC.setAlpha(1f);
-                gl_pan_pinch.setAlpha(1f);
-            }else {
-                btn_zoomP.setAlpha(0.3f);
-                btn_zoomM.setAlpha(0.3f);
-                btn_zoomC.setAlpha(1f);
-                gl_pan_pinch.setAlpha(0.3f);
-            }
         }
+
         if (DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
             if (prepLeft || prepRight) {
                 hydroPoint.setVisibility(View.VISIBLE);
@@ -1233,7 +1212,7 @@ public class My3DActivity extends BaseClass {
                 panel2.setVisibility(View.GONE);
                 if (glVista3d == 0) {
                     // 2D: Canvas + GL
-                   // glSurfaceView.bringToFront();
+                    // glSurfaceView.bringToFront();
                     panel3.setVisibility(View.VISIBLE);
                     glSurfaceView.setVisibility(View.VISIBLE);
 
@@ -1260,7 +1239,7 @@ public class My3DActivity extends BaseClass {
                 layer2Canvas.invalidate();
                 if (glVista3d == 0) {
                     // 2D: Canvas + GL
-                   // glSurfaceView.bringToFront();
+                    // glSurfaceView.bringToFront();
                     panel3.setVisibility(View.VISIBLE);
                     glSurfaceView.setVisibility(View.VISIBLE);
 
@@ -1796,10 +1775,12 @@ public class My3DActivity extends BaseClass {
         }
         setDpad();
     }
-    private void setDpad(){
 
-        DPadHelper.getInstance().setXYZ( new double[]{ MyData.get_Double("demoEAST"), MyData.get_Double("demoNORD"), MyData.get_Double("demoZ")});
+    private void setDpad() {
+
+        DPadHelper.getInstance().setXYZ(new double[]{MyData.get_Double("demoEAST"), MyData.get_Double("demoNORD"), MyData.get_Double("demoZ")});
     }
+
     private static String[] coordShow(int mode) {
         String s = OUTPUT_HYDRO + "\n";
         if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
@@ -1833,6 +1814,7 @@ public class My3DActivity extends BaseClass {
             gl_gps.setBackground(getDrawable(R.drawable.custom_background_test3d_box_grigino));
         }
     }
+
     private void initTopViewAndGlOverlay() {
         GLSurfaceView oldView = findViewById(R.id.glSurfaceView);
 
@@ -1868,5 +1850,20 @@ public class My3DActivity extends BaseClass {
         glSurfaceView.setVisibility(View.VISIBLE);
         panel3.setVisibility(View.VISIBLE);
         panel3.setBackgroundColor(MyColorClass.colorSfondo);
+    }
+    private void saveParam(){
+        try {
+            MyData.push("scaleFactor_vista1D", String.valueOf(DataSaved.scale_FactorVista1D));
+            MyData.push("scaleFactor_vista2D", String.valueOf(DataSaved.scale_FactorVista2D));
+
+            MyData.push("glScale", String.valueOf(MyGLRenderer.scale));
+            MyData.push("glScale_2d", String.valueOf(MyGLRenderer.scale_2d));
+            MyData.push("glAngleX", String.valueOf(MyGLRenderer.angleX));
+            MyData.push("glAngleY", String.valueOf(MyGLRenderer.angleY));
+            MyData.push("glAngleY_Extra", String.valueOf(MyGLRenderer.angleY_extra));
+
+
+        } catch (Exception e) {
+        }
     }
 }
