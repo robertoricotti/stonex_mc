@@ -3,9 +3,6 @@ package gui.my_opengl.compat;
 import android.opengl.GLES20;
 
 import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 

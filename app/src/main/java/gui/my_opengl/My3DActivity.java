@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -66,7 +67,6 @@ import gui.draw_class.DrawDXF_Layer1_Tilt;
 import gui.draw_class.DrawDXF_Layer2;
 import gui.draw_class.DrawDXF_Layer2_Tilt;
 import gui.draw_class.MyColorClass;
-import gui.draw_class.Top_View_DXF;
 import gui.grade_draw_class.Grade_DrawDXF_Layer1;
 import gui.grade_draw_class.Grade_DrawDXF_Layer2;
 import gui.hydro.Dialog_Gain_Hydro;
@@ -84,7 +84,11 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
+    private Handler zoomHandler = new Handler();
+    private boolean isZooming = false;
 
+    private static final long ZOOM_INTERVAL = 150; // 150 ms
+    private static final float ZOOM_STEP = 1.12f;
     int flip = 0;
 
     ImageView navigatorHDT;
@@ -104,7 +108,7 @@ public class My3DActivity extends BaseClass {
     SeekBar seekGreen;
     SeekBar seekBlue;
     ConstraintLayout panel1, panel2, panel3;
-    View layer1Canvas, layer2Canvas, layer3Canvas;
+    View layer1Canvas, layer2Canvas;
     View colorPreview;
     ImageView loading;
     ProgressBar progress;
@@ -478,39 +482,48 @@ public class My3DActivity extends BaseClass {
             glSurfaceView.setDoubleTap();
 
         });
-        btn_zoomP.setOnClickListener(view -> {
-            if (glVista3d == 1) {
-                no_touch_menu.removeCallbacks(timeOutTouch);
-                no_touch_menu.postDelayed(timeOutTouch, delay);
-                MyGLRenderer.scale += 0.05f;
-                MyGLRenderer.scale = Math.max(0.09f, Math.min(MyGLRenderer.scale, 1.5f));
-            } else {
-                no_touch_menu.removeCallbacks(timeOutTouch);
-                no_touch_menu.postDelayed(timeOutTouch, delay);
-                MyGLRenderer.scale_2d += 0.1f;
-                MyGLRenderer.scale_2d = Math.max(0.1f, Math.min(MyGLRenderer.scale_2d, 4.5f));
+        btn_zoomP.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    isZooming = true;
+                    no_touch_menu.removeCallbacks(timeOutTouch);
+                    no_touch_menu.postDelayed(timeOutTouch, delay);
+                    zoomInRunnable.run();
+                    zoomHandler.postDelayed(zoomInRunnable, ZOOM_INTERVAL);
+                    return true;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    isZooming = false;
+                    zoomHandler.removeCallbacks(zoomInRunnable);
+                    return true;
             }
-        });
-        btn_zoomM.setOnClickListener(view -> {
-            if (glVista3d == 1) {
-                no_touch_menu.removeCallbacks(timeOutTouch);
-                no_touch_menu.postDelayed(timeOutTouch, delay);
-                MyGLRenderer.scale -= 0.05f;
-                MyGLRenderer.scale = Math.max(0.09f, Math.min(MyGLRenderer.scale, 1.5f));
-            } else {
-                no_touch_menu.removeCallbacks(timeOutTouch);
-                no_touch_menu.postDelayed(timeOutTouch, delay);
-                MyGLRenderer.scale_2d -= 0.1f;
-                MyGLRenderer.scale_2d = Math.max(0.1f, Math.min(MyGLRenderer.scale_2d, 4.5f));
-            }
+            return false;
         });
 
+        btn_zoomM.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    isZooming = true;
+                    no_touch_menu.removeCallbacks(timeOutTouch);
+                    no_touch_menu.postDelayed(timeOutTouch, delay);
+                    zoomOutRunnable.run();
+                    zoomHandler.postDelayed(zoomOutRunnable,ZOOM_INTERVAL);
+                    return true;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    isZooming = false;
+                    zoomHandler.removeCallbacks(zoomOutRunnable);
+                    return true;
+            }
+            return false;
+        });
         btn_color.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
             showColorPickerDialog(this);
         });
-
         btn_show.setOnClickListener(v -> {
             if (sideBar.getVisibility() == View.GONE) {
                 no_touch_menu.removeCallbacks(timeOutTouch);
@@ -547,7 +560,6 @@ public class My3DActivity extends BaseClass {
                     .start();
 
         });
-
         gl_layers.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
@@ -684,7 +696,7 @@ public class My3DActivity extends BaseClass {
             if (isPan && glVista3d == 1) {
                 isPan = false;
             }
-            glSurfaceView.updateZOrder();
+
             updateMemories();
         });
 
@@ -1216,10 +1228,6 @@ public class My3DActivity extends BaseClass {
                     panel3.setVisibility(View.VISIBLE);
                     glSurfaceView.setVisibility(View.VISIBLE);
 
-                    if (layer3Canvas != null) {
-                        layer3Canvas.invalidate();
-                    }
-
                 } else {
                     // 3D: solo GL
                     panel3.setVisibility(View.VISIBLE);
@@ -1242,10 +1250,6 @@ public class My3DActivity extends BaseClass {
                     // glSurfaceView.bringToFront();
                     panel3.setVisibility(View.VISIBLE);
                     glSurfaceView.setVisibility(View.VISIBLE);
-
-                    if (layer3Canvas != null) {
-                        layer3Canvas.invalidate();
-                    }
 
                 } else {
                     // 3D: solo GL
@@ -1832,20 +1836,8 @@ public class My3DActivity extends BaseClass {
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
         glSurfaceView.setLayoutParams(lp);
-
-        layer3Canvas = new Top_View_DXF(this, glSurfaceView);
-        layer3Canvas.setLayoutParams(new ConstraintLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
-
         panel3.removeAllViews();
-
-        // Sotto il canvas DXF, sopra il GL trasparente che riceve il touch
-        panel3.addView(layer3Canvas);
         panel3.addView(glSurfaceView);
-
-        glSurfaceView.updateZOrder();
         glSurfaceView.setVisibility(View.VISIBLE);
         panel3.setVisibility(View.VISIBLE);
         panel3.setBackgroundColor(MyColorClass.colorSfondo);
@@ -1854,7 +1846,6 @@ public class My3DActivity extends BaseClass {
         try {
             MyData.push("scaleFactor_vista1D", String.valueOf(DataSaved.scale_FactorVista1D));
             MyData.push("scaleFactor_vista2D", String.valueOf(DataSaved.scale_FactorVista2D));
-
             MyData.push("glScale", String.valueOf(MyGLRenderer.scale));
             MyData.push("glScale_2d", String.valueOf(MyGLRenderer.scale_2d));
             MyData.push("glAngleX", String.valueOf(MyGLRenderer.angleX));
@@ -1865,4 +1856,36 @@ public class My3DActivity extends BaseClass {
         } catch (Exception e) {
         }
     }
+    private final Runnable zoomInRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!isZooming) return;
+
+            if (glVista3d == 1) {
+                MyGLRenderer.scale *= ZOOM_STEP;
+                MyGLRenderer.scale = Math.max(0.04f, Math.min(MyGLRenderer.scale, 1.5f));
+            } else {
+                MyGLRenderer.scale_2d *= ZOOM_STEP;
+                MyGLRenderer.scale_2d = Math.max(0.05f, Math.min(MyGLRenderer.scale_2d, 4.5f));
+            }
+
+            zoomHandler.postDelayed(this, ZOOM_INTERVAL);
+        }
+    };
+    private final Runnable zoomOutRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!isZooming) return;
+
+            if (glVista3d == 1) {
+                MyGLRenderer.scale /= ZOOM_STEP;
+                MyGLRenderer.scale = Math.max(0.04f, Math.min(MyGLRenderer.scale, 1.5f));
+            } else {
+                MyGLRenderer.scale_2d /= ZOOM_STEP;
+                MyGLRenderer.scale_2d = Math.max(0.05f, Math.min(MyGLRenderer.scale_2d, 4.5f));
+            }
+
+            zoomHandler.postDelayed(this, ZOOM_INTERVAL);
+        }
+    };
 }

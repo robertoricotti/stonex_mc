@@ -1,6 +1,5 @@
 package gui.my_opengl.exca;
 
-import static gui.my_opengl.MyGLRenderer.scale;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
@@ -16,14 +15,16 @@ import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 
-import android.util.Log;
-
+import gui.my_opengl.MyGLRenderer;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 
 public class PuntiBenna {
     static double mhdt;
+    private static float rs() {
+        return MyGLRenderer.currentRenderScale();
+    }
 
     public static float[][] GLBucketCoord() {
         mhdt=hdt_BOOM;
@@ -65,61 +66,61 @@ public class PuntiBenna {
             altoBackDX=Exca_Quaternion.endPoint(altoDX, correctWTilt + 90 -DataSaved.flat, 0, flatDist*0.85, mhdt+yawSensor );
         }
 
-        Point3DF left = new Point3DF((float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (bucketLeftCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (bucketLeftCoord[2] - DataSaved.glL_AnchorView[2]) * scale);
-        Point3DF right = new Point3DF((float) (bucketRightCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (bucketRightCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (bucketRightCoord[2] - DataSaved.glL_AnchorView[2]) * scale);
-        Point3DF altoSx = new Point3DF((float) (altoSX[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (altoSX[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (altoSX[2] - DataSaved.glL_AnchorView[2]) * scale);
-        Point3DF altoDx = new Point3DF((float) (altoDX[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (altoDX[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (altoDX[2] - DataSaved.glL_AnchorView[2]) * scale);
+        Point3DF left = new Point3DF((float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (bucketLeftCoord[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (bucketLeftCoord[2] - DataSaved.glL_AnchorView[2]) * rs());
+        Point3DF right = new Point3DF((float) (bucketRightCoord[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (bucketRightCoord[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (bucketRightCoord[2] - DataSaved.glL_AnchorView[2]) * rs());
+        Point3DF altoSx = new Point3DF((float) (altoSX[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (altoSX[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (altoSX[2] - DataSaved.glL_AnchorView[2]) * rs());
+        Point3DF altoDx = new Point3DF((float) (altoDX[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (altoDX[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (altoDX[2] - DataSaved.glL_AnchorView[2]) * rs());
 
-        Point3DF center = new Point3DF((float) (bucketCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (bucketCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (bucketCoord[2] - DataSaved.glL_AnchorView[2]) * scale);
+        Point3DF center = new Point3DF((float) (bucketCoord[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (bucketCoord[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (bucketCoord[2] - DataSaved.glL_AnchorView[2]) * rs());
 
 
-        Point3DF pivot = new Point3DF((float) (coordPivoTilt[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (coordPivoTilt[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (coordPivoTilt[2] - DataSaved.glL_AnchorView[2]) * scale);
+        Point3DF pivot = new Point3DF((float) (coordPivoTilt[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (coordPivoTilt[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (coordPivoTilt[2] - DataSaved.glL_AnchorView[2]) * rs());
 
-        Point3DF stick = new Point3DF((float) (coordST[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (coordST[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (coordST[2] - DataSaved.glL_AnchorView[2]) * scale);
-        Point3DF boom2 = new Point3DF((float) (coordB2[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (coordB2[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (coordB2[2] - DataSaved.glL_AnchorView[2]) * scale);
-        Point3DF boom1 = new Point3DF((float) (coordB1[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (coordB1[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (coordB1[2] - DataSaved.glL_AnchorView[2]) * scale);
+        Point3DF stick = new Point3DF((float) (coordST[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (coordST[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (coordST[2] - DataSaved.glL_AnchorView[2]) * rs());
+        Point3DF boom2 = new Point3DF((float) (coordB2[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (coordB2[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (coordB2[2] - DataSaved.glL_AnchorView[2]) * rs());
+        Point3DF boom1 = new Point3DF((float) (coordB1[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (coordB1[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (coordB1[2] - DataSaved.glL_AnchorView[2]) * rs());
 
-        Point3DF deltaY = new Point3DF((float) (coordinateDY[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (coordinateDY[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (coordinateDY[2] - DataSaved.glL_AnchorView[2]) * scale);
-        Point3DF centBack = new Point3DF((float) (centerBack[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (centerBack[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (centerBack[2] - DataSaved.glL_AnchorView[2]) * scale);
-        Point3DF centBackSX = new Point3DF((float) (centerBackSX[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (centerBackSX[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (centerBackSX[2] - DataSaved.glL_AnchorView[2]) * scale);
-        Point3DF centBackDX = new Point3DF((float) (centerBackDX[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (centerBackDX[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (centerBackDX[2] - DataSaved.glL_AnchorView[2]) * scale);
-        Point3DF buckPivot = new Point3DF((float) (tempPivot[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (tempPivot[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (tempPivot[2] - DataSaved.glL_AnchorView[2]) * scale);
+        Point3DF deltaY = new Point3DF((float) (coordinateDY[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (coordinateDY[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (coordinateDY[2] - DataSaved.glL_AnchorView[2]) * rs());
+        Point3DF centBack = new Point3DF((float) (centerBack[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (centerBack[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (centerBack[2] - DataSaved.glL_AnchorView[2]) * rs());
+        Point3DF centBackSX = new Point3DF((float) (centerBackSX[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (centerBackSX[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (centerBackSX[2] - DataSaved.glL_AnchorView[2]) * rs());
+        Point3DF centBackDX = new Point3DF((float) (centerBackDX[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (centerBackDX[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (centerBackDX[2] - DataSaved.glL_AnchorView[2]) * rs());
+        Point3DF buckPivot = new Point3DF((float) (tempPivot[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (tempPivot[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (tempPivot[2] - DataSaved.glL_AnchorView[2]) * rs());
 
-        Point3DF altoBSX = new Point3DF((float) (altoBackSX[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (altoBackSX[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (altoBackSX[2] - DataSaved.glL_AnchorView[2]) * scale);
+        Point3DF altoBSX = new Point3DF((float) (altoBackSX[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (altoBackSX[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (altoBackSX[2] - DataSaved.glL_AnchorView[2]) * rs());
 
-        Point3DF altoBDX = new Point3DF((float) (altoBackDX[0] - DataSaved.glL_AnchorView[0]) * scale,
-                (float) (altoBackDX[1] - DataSaved.glL_AnchorView[1]) * scale,
-                (float) (altoBackDX[2] - DataSaved.glL_AnchorView[2]) * scale);
+        Point3DF altoBDX = new Point3DF((float) (altoBackDX[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                (float) (altoBackDX[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                (float) (altoBackDX[2] - DataSaved.glL_AnchorView[2]) * rs());
 
 
 

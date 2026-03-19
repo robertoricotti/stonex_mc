@@ -16,8 +16,6 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import gui.my_opengl.GLDrawer;
 import gui.my_opengl.GL_Methods;
 import gui.my_opengl.Point3DF;
 import gui.my_opengl.compat.GL11;

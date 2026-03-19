@@ -281,18 +281,21 @@ public class NmeaListener {
 
 
             case 0x18FF0110:
+            case 0x18FF0101:
                 //UTM NORD
                 long bigInteger = PLC_DataTypes_LittleEndian.byte_to_S64_le(data);
                 tmpNordUTM = bigInteger * 0.001;
                 break;
 
             case 0x18FF0210:
+            case 0x18FF0201:
                 //UTM EST +WGS84 Z
 
                 tmpEstUTM = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]}) * 0.001;
                 tmpQuotaUTM = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[4], data[5], data[6], data[7]}) * 0.001;
                 break;
             case 0x18FF0310:
+            case 0x18FF0301:
                 mZone = (int) data[0];
                 mChar = (char) data[1];
                 mch_Orientation = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[2], data[3]}) * 0.01;
@@ -313,32 +316,38 @@ public class NmeaListener {
 
                 break;
             case 0x18FF0410:
+            case 0x18FF0401:
                 //LOCAL NORD
                 tmpNordLOC = PLC_DataTypes_LittleEndian.byte_to_S64_le(data) * 0.001;
                 break;
             case 0x18FF0510:
+            case 0x18FF0501:
                 //Lat
                 tmpLat = PLC_DataTypes_LittleEndian.byte_to_S64_le(data) * 0.0000000001;
                 mLat_1 = tmpLat;
 
                 break;
             case 0x18FF0610:
+            case 0x18FF0601:
                 //LOCAL EST
                 tmpEstLOC = PLC_DataTypes_LittleEndian.byte_to_S64_le(data) * 0.001;
                 break;
             case 0x18FF0810:
+            case 0x18FF0801:
                 //Lon
                 tmpLon = PLC_DataTypes_LittleEndian.byte_to_S64_le(data) * 0.000000001;//corrected
                 mLon_1 = tmpLon;
 
                 break;
             case 0x18FF0910:
+            case 0x18FF0901:
                 //RMS
                 HRMS_ = String.format("%.3f", PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[0], data[1]}) * 0.001).replace(",", ".");
                 VRMS_ = String.format("%.3f", PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[2], data[3]}) * 0.001).replace(",", ".");
                 tmpGeoidSeparator = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[4], data[5], data[6], data[7]}) * 0.001;
                 break;
             case 0x18FF0B10:
+            case 0x18FF0B01:
                 try {
                     String s0 = String.format("%02d", (int) data[0]);
                     String s1 = String.format("%02d", (int) data[1]);
@@ -370,6 +379,7 @@ public class NmeaListener {
                 break;
 
             case 0x18FF0D10:
+            case 0x18FF0D01:
                 //LOCAL Z
                 tmpQuotaLOC = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[0], data[1], data[2], data[3]}) * 0.001;
                 break;

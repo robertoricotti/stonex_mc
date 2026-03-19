@@ -40,7 +40,7 @@ public class ExportDXF_1P {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + "/" + filename))) {
             DXFWriteMethods.testa(writer, 3);
-            DXFWriteMethods.writeLayer(writer, "LAYER_3D_FACES", 1);
+            DXFWriteMethods.writeLayer(writer, "LAYER_3D_FACES", 2);
             DXFWriteMethods.writeLayer(writer, "LAYER_POLYLINES", 6);
             DXFWriteMethods.writeLayer(writer, "LAYER_POINTS", 4);
             DXFWriteMethods.endLayers(writer);

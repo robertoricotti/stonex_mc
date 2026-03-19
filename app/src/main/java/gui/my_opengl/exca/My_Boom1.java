@@ -1,6 +1,5 @@
 package gui.my_opengl.exca;
 
-import static gui.my_opengl.MyGLRenderer.scale;
 import static gui.my_opengl.Point3DF.pTransform;
 import static packexcalib.exca.ExcavatorLib.coordB2;
 import static packexcalib.exca.ExcavatorLib.coordinateDY;
@@ -8,13 +7,15 @@ import static packexcalib.exca.ExcavatorLib.correctBoom1;
 import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 
-import android.util.Log;
-
+import gui.my_opengl.MyGLRenderer;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 
 public class My_Boom1 {
+    private static float rs() {
+        return MyGLRenderer.currentRenderScale();
+    }
     static double mhdt;
     static Point3DF P0s, P1s, P2s, P3s, P4s, P5s, P6s, P7s, P8s, P9s, P10s;
     static Point3DF P0d, P1d, P2d, P3d, P4d, P5d, P6d, P7d, P8d, P9d, P10d;
@@ -65,29 +66,29 @@ public class My_Boom1 {
         p10d = Exca_Quaternion.endPoint(p0d, correctBoom1 - 120, Deg_Boom_Roll, Spessore_P, mhdt);
         p9d = Exca_Quaternion.endPoint(p10d, correctBoom1 + 164, Deg_Boom_Roll, L5, mhdt);
 
-        P0s = pTransform(p0s, DataSaved.glL_AnchorView, scale);
-        P1s = pTransform(p1s, DataSaved.glL_AnchorView, scale);
-        P2s = pTransform(p2s, DataSaved.glL_AnchorView, scale);
-        P3s = pTransform(p3s, DataSaved.glL_AnchorView, scale);
-        P4s = pTransform(p4s, DataSaved.glL_AnchorView, scale);
-        P5s = pTransform(p5s, DataSaved.glL_AnchorView, scale);
-        P6s = pTransform(p6s, DataSaved.glL_AnchorView, scale);
-        P7s = pTransform(p7s, DataSaved.glL_AnchorView, scale);
-        P8s = pTransform(p8s, DataSaved.glL_AnchorView, scale);
-        P9s = pTransform(p9s, DataSaved.glL_AnchorView, scale);
-        P10s = pTransform(p10s, DataSaved.glL_AnchorView, scale);
+        P0s = pTransform(p0s, DataSaved.glL_AnchorView, rs());
+        P1s = pTransform(p1s, DataSaved.glL_AnchorView, rs());
+        P2s = pTransform(p2s, DataSaved.glL_AnchorView, rs());
+        P3s = pTransform(p3s, DataSaved.glL_AnchorView, rs());
+        P4s = pTransform(p4s, DataSaved.glL_AnchorView, rs());
+        P5s = pTransform(p5s, DataSaved.glL_AnchorView, rs());
+        P6s = pTransform(p6s, DataSaved.glL_AnchorView, rs());
+        P7s = pTransform(p7s, DataSaved.glL_AnchorView, rs());
+        P8s = pTransform(p8s, DataSaved.glL_AnchorView, rs());
+        P9s = pTransform(p9s, DataSaved.glL_AnchorView, rs());
+        P10s = pTransform(p10s, DataSaved.glL_AnchorView, rs());
 
-        P0d = pTransform(p0d, DataSaved.glL_AnchorView, scale);
-        P1d = pTransform(p1d, DataSaved.glL_AnchorView, scale);
-        P2d = pTransform(p2d, DataSaved.glL_AnchorView, scale);
-        P3d = pTransform(p3d, DataSaved.glL_AnchorView, scale);
-        P4d = pTransform(p4d, DataSaved.glL_AnchorView, scale);
-        P5d = pTransform(p5d, DataSaved.glL_AnchorView, scale);
-        P6d = pTransform(p6d, DataSaved.glL_AnchorView, scale);
-        P7d = pTransform(p7d, DataSaved.glL_AnchorView, scale);
-        P8d = pTransform(p8d, DataSaved.glL_AnchorView, scale);
-        P9d = pTransform(p9d, DataSaved.glL_AnchorView, scale);
-        P10d = pTransform(p10d, DataSaved.glL_AnchorView, scale);
+        P0d = pTransform(p0d, DataSaved.glL_AnchorView, rs());
+        P1d = pTransform(p1d, DataSaved.glL_AnchorView, rs());
+        P2d = pTransform(p2d, DataSaved.glL_AnchorView, rs());
+        P3d = pTransform(p3d, DataSaved.glL_AnchorView, rs());
+        P4d = pTransform(p4d, DataSaved.glL_AnchorView, rs());
+        P5d = pTransform(p5d, DataSaved.glL_AnchorView, rs());
+        P6d = pTransform(p6d, DataSaved.glL_AnchorView, rs());
+        P7d = pTransform(p7d, DataSaved.glL_AnchorView, rs());
+        P8d = pTransform(p8d, DataSaved.glL_AnchorView, rs());
+        P9d = pTransform(p9d, DataSaved.glL_AnchorView, rs());
+        P10d = pTransform(p10d, DataSaved.glL_AnchorView, rs());
         return new Point3DF[]{
                 P0s, P1s, P2s, P3s, P4s, P5s, P6s, P7s, P8s, P9s, P10s,
                 P0d, P1d, P2d, P3d, P4d, P5d, P6d, P7d, P8d, P9d, P10d

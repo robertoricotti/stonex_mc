@@ -1,6 +1,5 @@
 package gui.my_opengl.exca;
 
-import static gui.my_opengl.MyGLRenderer.scale;
 import static gui.my_opengl.Point3DF.pTransform;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
@@ -26,6 +25,7 @@ import static services.TriangleService.glTerraPunto;
 import static services.TriangleService.orientamentoFreccia;
 
 import dxf.Point3D;
+import gui.my_opengl.MyGLRenderer;
 import gui.my_opengl.Point3DF;
 import gui.my_opengl.Polyline2DArc;
 import packexcalib.exca.DataSaved;
@@ -36,6 +36,9 @@ import utils.DistToPoint;
 
 public class My_Benna {
 
+    private static float rs() {
+        return MyGLRenderer.currentRenderScale();
+    }
 
 
     public static double[] coneDown, coneUp;
@@ -77,7 +80,7 @@ public class My_Benna {
         }
 
         double[] point(double right, double back, double up) {
-            return add(add(add(O, scale3(R, right)), scale3(B, back)), scale3(U, up));
+            return add(add(add(O, s3(R, right)), s3(B, back)), s3(U, up));
         }
     }
 
@@ -95,7 +98,7 @@ public class My_Benna {
         }
 
         double[] point(double right, double forward, double up) {
-            return add(add(add(O, scale3(R, right)), scale3(F, forward)), scale3(U, up));
+            return add(add(add(O, s3(R, right)), s3(F, forward)), s3(U, up));
         }
     }
 
@@ -300,13 +303,13 @@ public class My_Benna {
                     switch (DataSaved.bucketEdge) {
                         case -1: {
                             Point3DF pbuck = new Point3DF(
-                                    (float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (bucketLeftCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (bucketLeftCoord[2] - DataSaved.glL_AnchorView[2]) * scale);
+                                    (float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (bucketLeftCoord[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (bucketLeftCoord[2] - DataSaved.glL_AnchorView[2]) * rs());
                             Point3DF pline = new Point3DF(
-                                    (float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * scale);
+                                    (float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
                             glLinePunto = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glPuntoTerra = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glTerraPunto = pline;
@@ -314,13 +317,13 @@ public class My_Benna {
                         }
                         case 0: {
                             Point3DF pbuck = new Point3DF(
-                                    (float) (bucketCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (bucketCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (bucketCoord[2] - DataSaved.glL_AnchorView[2]) * scale);
+                                    (float) (bucketCoord[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (bucketCoord[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (bucketCoord[2] - DataSaved.glL_AnchorView[2]) * rs());
                             Point3DF pline = new Point3DF(
-                                    (float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * scale);
+                                    (float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
                             glLinePunto = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glPuntoTerra = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glTerraPunto = pline;
@@ -328,13 +331,13 @@ public class My_Benna {
                         }
                         case 1: {
                             Point3DF pbuck = new Point3DF(
-                                    (float) (bucketRightCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (bucketRightCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (bucketRightCoord[2] - DataSaved.glL_AnchorView[2]) * scale);
+                                    (float) (bucketRightCoord[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (bucketRightCoord[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (bucketRightCoord[2] - DataSaved.glL_AnchorView[2]) * rs());
                             Point3DF pline = new Point3DF(
-                                    (float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * scale);
+                                    (float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
                             glLinePunto = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glPuntoTerra = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glTerraPunto = pline;
@@ -350,11 +353,11 @@ public class My_Benna {
                 if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
                     switch (DataSaved.bucketEdge) {
                         case -1: {
-                            Point3DF pbuck = pTransform(bucketLeftCoord, DataSaved.glL_AnchorView, scale);
+                            Point3DF pbuck = pTransform(bucketLeftCoord, DataSaved.glL_AnchorView, rs());
                             Point3D p = getProjectedPointOnSegment3D(
                                     new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], bucketLeftCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
-                            Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, scale);
+                            Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, rs());
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
@@ -362,11 +365,11 @@ public class My_Benna {
                             break;
                         }
                         case 0: {
-                            Point3DF pbuck = pTransform(bucketCoord, DataSaved.glL_AnchorView, scale);
+                            Point3DF pbuck = pTransform(bucketCoord, DataSaved.glL_AnchorView, rs());
                             Point3D p = getProjectedPointOnSegment3D(
                                     new Point3D(bucketCoord[0], bucketCoord[1], bucketCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
-                            Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, scale);
+                            Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, rs());
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
@@ -374,11 +377,11 @@ public class My_Benna {
                             break;
                         }
                         case 1: {
-                            Point3DF pbuck = pTransform(bucketRightCoord, DataSaved.glL_AnchorView, scale);
+                            Point3DF pbuck = pTransform(bucketRightCoord, DataSaved.glL_AnchorView, rs());
                             Point3D p = getProjectedPointOnSegment3D(
                                     new Point3D(bucketRightCoord[0], bucketRightCoord[1], bucketRightCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
-                            Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, scale);
+                            Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, rs());
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
@@ -392,32 +395,32 @@ public class My_Benna {
                 break;
         }
 
-        start = pTransform(pos, DataSaved.glL_AnchorView, scale);
-        fwF = pTransform(fw, DataSaved.glL_AnchorView, scale);
-        bwF = pTransform(bw, DataSaved.glL_AnchorView, scale);
-        ltF = pTransform(lt, DataSaved.glL_AnchorView, scale);
-        rtF = pTransform(rt, DataSaved.glL_AnchorView, scale);
+        start = pTransform(pos, DataSaved.glL_AnchorView, rs());
+        fwF = pTransform(fw, DataSaved.glL_AnchorView, rs());
+        bwF = pTransform(bw, DataSaved.glL_AnchorView, rs());
+        ltF = pTransform(lt, DataSaved.glL_AnchorView, rs());
+        rtF = pTransform(rt, DataSaved.glL_AnchorView, rs());
 
-        coneDownF = pTransform(coneDown, DataSaved.glL_AnchorView, scale);
-        coneUpF = pTransform(coneUp, DataSaved.glL_AnchorView, scale);
+        coneDownF = pTransform(coneDown, DataSaved.glL_AnchorView, rs());
+        coneUpF = pTransform(coneUp, DataSaved.glL_AnchorView, rs());
 
-        P1_sx = pTransform(p1, DataSaved.glL_AnchorView, scale);
-        P2_sx = pTransform(p2, DataSaved.glL_AnchorView, scale);
-        P3_sx = pTransform(p3, DataSaved.glL_AnchorView, scale);
-        P4_sx = pTransform(p4, DataSaved.glL_AnchorView, scale);
-        P5_sx = pTransform(p5, DataSaved.glL_AnchorView, scale);
-        P6_sx = pTransform(p6, DataSaved.glL_AnchorView, scale);
-        P7_sx = pTransform(p7, DataSaved.glL_AnchorView, scale);
-        P8_sx = pTransform(p8, DataSaved.glL_AnchorView, scale);
-        PM1_sx = pTransform(pm1, DataSaved.glL_AnchorView, scale);
-        PM2_sx = pTransform(pm2, DataSaved.glL_AnchorView, scale);
+        P1_sx = pTransform(p1, DataSaved.glL_AnchorView, rs());
+        P2_sx = pTransform(p2, DataSaved.glL_AnchorView, rs());
+        P3_sx = pTransform(p3, DataSaved.glL_AnchorView, rs());
+        P4_sx = pTransform(p4, DataSaved.glL_AnchorView, rs());
+        P5_sx = pTransform(p5, DataSaved.glL_AnchorView, rs());
+        P6_sx = pTransform(p6, DataSaved.glL_AnchorView, rs());
+        P7_sx = pTransform(p7, DataSaved.glL_AnchorView, rs());
+        P8_sx = pTransform(p8, DataSaved.glL_AnchorView, rs());
+        PM1_sx = pTransform(pm1, DataSaved.glL_AnchorView, rs());
+        PM2_sx = pTransform(pm2, DataSaved.glL_AnchorView, rs());
 
-        SPIG_L = pTransform(splA, DataSaved.glL_AnchorView, scale);
-        SPIG_C = pTransform(spcA, DataSaved.glL_AnchorView, scale);
-        SPIG_R = pTransform(sprA, DataSaved.glL_AnchorView, scale);
-        SPIG_LB = pTransform(splB, DataSaved.glL_AnchorView, scale);
-        SPIG_CB = pTransform(spcB, DataSaved.glL_AnchorView, scale);
-        SPIG_RB = pTransform(sprB, DataSaved.glL_AnchorView, scale);
+        SPIG_L = pTransform(splA, DataSaved.glL_AnchorView, rs());
+        SPIG_C = pTransform(spcA, DataSaved.glL_AnchorView, rs());
+        SPIG_R = pTransform(sprA, DataSaved.glL_AnchorView, rs());
+        SPIG_LB = pTransform(splB, DataSaved.glL_AnchorView, rs());
+        SPIG_CB = pTransform(spcB, DataSaved.glL_AnchorView, rs());
+        SPIG_RB = pTransform(sprB, DataSaved.glL_AnchorView, rs());
 
 
 
@@ -530,16 +533,16 @@ public class My_Benna {
             p7 = moveBU(p5, f, 180.0 - segmentsT[3].angleDegrees, segmentsT[3].length);
         }
 
-        P1_dx = pTransform(p1, DataSaved.glL_AnchorView, scale);
-        P2_dx = pTransform(p2, DataSaved.glL_AnchorView, scale);
-        P3_dx = pTransform(p3, DataSaved.glL_AnchorView, scale);
-        P4_dx = pTransform(p4, DataSaved.glL_AnchorView, scale);
-        P5_dx = pTransform(p5, DataSaved.glL_AnchorView, scale);
-        P6_dx = pTransform(p6, DataSaved.glL_AnchorView, scale);
-        P7_dx = pTransform(p7, DataSaved.glL_AnchorView, scale);
-        P8_dx = pTransform(p8, DataSaved.glL_AnchorView, scale);
-        PM1_dx = pTransform(pm1, DataSaved.glL_AnchorView, scale);
-        PM2_dx = pTransform(pm2, DataSaved.glL_AnchorView, scale);
+        P1_dx = pTransform(p1, DataSaved.glL_AnchorView, rs());
+        P2_dx = pTransform(p2, DataSaved.glL_AnchorView, rs());
+        P3_dx = pTransform(p3, DataSaved.glL_AnchorView, rs());
+        P4_dx = pTransform(p4, DataSaved.glL_AnchorView, rs());
+        P5_dx = pTransform(p5, DataSaved.glL_AnchorView, rs());
+        P6_dx = pTransform(p6, DataSaved.glL_AnchorView, rs());
+        P7_dx = pTransform(p7, DataSaved.glL_AnchorView, rs());
+        P8_dx = pTransform(p8, DataSaved.glL_AnchorView, rs());
+        PM1_dx = pTransform(pm1, DataSaved.glL_AnchorView, rs());
+        PM2_dx = pTransform(pm2, DataSaved.glL_AnchorView, rs());
 
         return new Point3DF[]{
                 P1_dx, PM2_dx, PM1_dx, P3_dx, P4_dx, P7_dx, P5_dx, P6_dx, P8_dx, P2_dx, P1_dx
@@ -551,7 +554,7 @@ public class My_Benna {
     // =========================
 
     public static float[] attacco() {
-        larghezza_attacco = (float) (Math.max(0.15, Math.min((DataSaved.L_Stick * 0.13f), 0.45)) * scale);
+        larghezza_attacco = (float) (Math.max(0.15, Math.min((DataSaved.L_Stick * 0.13f), 0.45)) * rs());
 
         double altezza;
         double[] pmB;
@@ -564,7 +567,7 @@ public class My_Benna {
 
         if (DataSaved.lrTilt == 0) {
             altezza = DataSaved.L_Bucket - (DataSaved.L_Bucket * 0.9);
-            altezzaAttacco = (float) (altezza * scale);
+            altezzaAttacco = (float) (altezza * rs());
             raggioPivot = (float) Math.max(0.05, Math.min(DataSaved.L_Bucket - (DataSaved.L_Bucket * 0.92), 0.10));
 
             pmB = Exca_Quaternion.endPoint(bucketCoord, correctBucket + 180, Deg_Boom_Roll, DataSaved.L_Bucket * 0.9, mhdt);
@@ -573,17 +576,17 @@ public class My_Benna {
             pmAH = coordST;
             pmBH = Exca_Quaternion.endPoint(pmAH, correctBucket - (DataSaved.flat * 0.5), Deg_Boom_Roll, altezza, mhdt);
 
-            PBASE = pTransform(pmB, DataSaved.glL_AnchorView, scale);
-            PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, scale);
-            P_A_Front = pTransform(coordST, DataSaved.glL_AnchorView, scale);
-            P_A_Back = pTransform(coordST, DataSaved.glL_AnchorView, scale);
-            P_A_FF = pTransform(coordST, DataSaved.glL_AnchorView, scale);
-            PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, scale);
-            PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, scale);
+            PBASE = pTransform(pmB, DataSaved.glL_AnchorView, rs());
+            PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, rs());
+            P_A_Front = pTransform(coordST, DataSaved.glL_AnchorView, rs());
+            P_A_Back = pTransform(coordST, DataSaved.glL_AnchorView, rs());
+            P_A_FF = pTransform(coordST, DataSaved.glL_AnchorView, rs());
+            PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, rs());
+            PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, rs());
 
         } else if(DataSaved.isTiltRotator==0) {
             altezza = DataSaved.L_Bucket - (DataSaved.piccolaBucket * 0.95) - DataSaved.L_Tilt;
-            altezzaAttacco = (float) (altezza * scale);
+            altezzaAttacco = (float) (altezza * rs());
 
             pmB = Exca_Quaternion.endPoint(bucketCoord, correctWTilt + 180, correctTilt, DataSaved.piccolaBucket * 0.9, mhdt + yawSensor);
             pmA = Exca_Quaternion.endPoint(pmB, correctWTilt + 180 - (DataSaved.flat * 0.5), correctTilt, altezza, mhdt + yawSensor);
@@ -595,15 +598,15 @@ public class My_Benna {
             pmAH = coordST;
             pmBH = Exca_Quaternion.endPoint(coordST, correctDeltaAngle, Deg_Boom_Roll, DataSaved.L_Tilt, mhdt);
 
-            raggioPivot = (float) (DistToPoint.dist3D(pmA, pmBH) * scale);
+            raggioPivot = (float) (DistToPoint.dist3D(pmA, pmBH) * rs());
 
-            PBASE = pTransform(pmB, DataSaved.glL_AnchorView, scale);
-            PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, scale);
-            P_A_Front = pTransform(paFront, DataSaved.glL_AnchorView, scale);
-            P_A_Back = pTransform(paBack, DataSaved.glL_AnchorView, scale);
-            P_A_FF = pTransform(paFrontFront, DataSaved.glL_AnchorView, scale);
-            PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, scale);
-            PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, scale);
+            PBASE = pTransform(pmB, DataSaved.glL_AnchorView, rs());
+            PBASE_ALTA = pTransform(pmA, DataSaved.glL_AnchorView, rs());
+            P_A_Front = pTransform(paFront, DataSaved.glL_AnchorView, rs());
+            P_A_Back = pTransform(paBack, DataSaved.glL_AnchorView, rs());
+            P_A_FF = pTransform(paFrontFront, DataSaved.glL_AnchorView, rs());
+            PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, rs());
+            PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, rs());
 
         }      else {
             // ROTOTILT:
@@ -611,21 +614,21 @@ public class My_Benna {
             // 2) coordRotoTop  -> coordRotoCenter   r = 0.22 m
             // 3) coordST       -> coordPivoTilt     r = larghezza_attacco * 0.5f -> metà di quello
 
-            larghezza_attacco = 0.4f * scale;
-            raggioPivot = 0.10f * scale;
+            larghezza_attacco = 0.4f * rs();
+            raggioPivot = 0.10f * rs();
             altezzaAttacco = 0f;
 
             // cilindro 1
-            PBASE      = pTransform(coordPivoTilt,   DataSaved.glL_AnchorView, scale);
-            PBASE_ALTA = pTransform(coordRotoTop,    DataSaved.glL_AnchorView, scale);
+            PBASE      = pTransform(coordPivoTilt,   DataSaved.glL_AnchorView, rs());
+            PBASE_ALTA = pTransform(coordRotoTop,    DataSaved.glL_AnchorView, rs());
 
             // cilindro 2
-            P_A_Front  = pTransform(coordRotoTop,    DataSaved.glL_AnchorView, scale);
-            P_A_Back   = pTransform(coordRotoCenter, DataSaved.glL_AnchorView, scale);
+            P_A_Front  = pTransform(coordRotoTop,    DataSaved.glL_AnchorView, rs());
+            P_A_Back   = pTransform(coordRotoCenter, DataSaved.glL_AnchorView, rs());
 
             // cilindro 3
-            P_A_FF       = pTransform(coordST,         DataSaved.glL_AnchorView, scale);
-            PBASE_ALTA_H = pTransform(coordPivoTilt,   DataSaved.glL_AnchorView, scale);
+            P_A_FF       = pTransform(coordST,         DataSaved.glL_AnchorView, rs());
+            PBASE_ALTA_H = pTransform(coordPivoTilt,   DataSaved.glL_AnchorView, rs());
 
             // riempimento sicurezza
             PBASE_H = PBASE_ALTA_H;
@@ -733,7 +736,7 @@ public class My_Benna {
         double[] dirBack = normalize(sub(coordRotoCenter, O));
 
 // imponi solo la lunghezza meccanica corretta
-        double[] toBack = scale3(dirBack, DataSaved.L_RotoToBucket);
+        double[] toBack = s3(dirBack, DataSaved.L_RotoToBucket);
 
         double[] B = projectOnPlane(toBack, R);
         B = normalize(B);
@@ -772,7 +775,7 @@ public class My_Benna {
         return new double[]{a[0] + b[0], a[1] + b[1], a[2] + b[2]};
     }
 
-    private static double[] scale3(double[] v, double s) {
+    private static double[] s3(double[] v, double s) {
         return new double[]{v[0] * s, v[1] * s, v[2] * s};
     }
 
@@ -800,7 +803,7 @@ public class My_Benna {
 
     private static double[] projectOnPlane(double[] v, double[] normal) {
         double d = dot(v, normal);
-        return sub(v, scale3(normal, d));
+        return sub(v, s3(normal, d));
     }
 
     // =========================
@@ -814,15 +817,15 @@ public class My_Benna {
         // 90° = su = +U
         // 180° = dietro = +B
         double[] dir = add(
-                scale3(f.B, -Math.cos(a)),
-                scale3(f.U, Math.sin(a))
+                s3(f.B, -Math.cos(a)),
+                s3(f.U, Math.sin(a))
         );
 
         return normalize(dir);
     }
 
     private static double[] moveBU(double[] origin, BucketFrame f, double alphaDeg, double len) {
-        return add(origin, scale3(dirBU(f, alphaDeg), len));
+        return add(origin, s3(dirBU(f, alphaDeg), len));
     }
     private static double[] rotateAroundAxis(double[] v, double[] axisUnit, double angleDeg) {
         double a = Math.toRadians(angleDeg);
@@ -830,9 +833,9 @@ public class My_Benna {
         double cos = Math.cos(a);
         double sin = Math.sin(a);
 
-        double[] term1 = scale3(v, cos);
-        double[] term2 = scale3(cross(axisUnit, v), sin);
-        double[] term3 = scale3(axisUnit, dot(axisUnit, v) * (1.0 - cos));
+        double[] term1 = s3(v, cos);
+        double[] term2 = s3(cross(axisUnit, v), sin);
+        double[] term3 = s3(axisUnit, dot(axisUnit, v) * (1.0 - cos));
 
         return add(add(term1, term2), term3);
     }

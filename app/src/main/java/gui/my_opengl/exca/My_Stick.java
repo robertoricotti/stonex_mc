@@ -1,6 +1,5 @@
 package gui.my_opengl.exca;
 
-import static gui.my_opengl.MyGLRenderer.scale;
 import static gui.my_opengl.Point3DF.pTransform;
 import static packexcalib.exca.ExcavatorLib.coordB2;
 import static packexcalib.exca.ExcavatorLib.coordST;
@@ -8,11 +7,15 @@ import static packexcalib.exca.ExcavatorLib.correctStick;
 import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 
+import gui.my_opengl.MyGLRenderer;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 
 public class My_Stick {
+    private static float rs() {
+        return MyGLRenderer.currentRenderScale();
+    }
     static Point3DF P0_S, P1_S, PA_S, PE_S, PM_S, PM1_S, PM2_S;
     static Point3DF P0_D, P1_D, PA_D, PE_D, PM_D, PM1_D, PM2_D;
     static double LA, LE, LM;
@@ -44,22 +47,22 @@ public class My_Stick {
         pa_s = Exca_Quaternion.endPoint(pm2_s, correctStick + 55 + 90, Deg_Boom_Roll, LA, mHdt);
         pa_d = Exca_Quaternion.endPoint(pm2_d, correctStick + 55 + 90, Deg_Boom_Roll, LA, mHdt);
 
-        P0_S = pTransform(p0_s, DataSaved.glL_AnchorView, scale);
-        PM_S = pTransform(pm_s, DataSaved.glL_AnchorView, scale);
-        P0_D = pTransform(p0_d, DataSaved.glL_AnchorView, scale);
-        PM_D = pTransform(pm_d, DataSaved.glL_AnchorView, scale);
-        P1_S = pTransform(p1_s, DataSaved.glL_AnchorView, scale);
-        P1_D = pTransform(p1_d, DataSaved.glL_AnchorView, scale);
-        PA_S = pTransform(pa_s, DataSaved.glL_AnchorView, scale);
-        PA_D = pTransform(pa_d, DataSaved.glL_AnchorView, scale);
-        PE_S = pTransform(pe_s, DataSaved.glL_AnchorView, scale);
-        PE_D = pTransform(pe_d, DataSaved.glL_AnchorView, scale);
+        P0_S = pTransform(p0_s, DataSaved.glL_AnchorView, rs());
+        PM_S = pTransform(pm_s, DataSaved.glL_AnchorView, rs());
+        P0_D = pTransform(p0_d, DataSaved.glL_AnchorView, rs());
+        PM_D = pTransform(pm_d, DataSaved.glL_AnchorView, rs());
+        P1_S = pTransform(p1_s, DataSaved.glL_AnchorView, rs());
+        P1_D = pTransform(p1_d, DataSaved.glL_AnchorView, rs());
+        PA_S = pTransform(pa_s, DataSaved.glL_AnchorView, rs());
+        PA_D = pTransform(pa_d, DataSaved.glL_AnchorView, rs());
+        PE_S = pTransform(pe_s, DataSaved.glL_AnchorView, rs());
+        PE_D = pTransform(pe_d, DataSaved.glL_AnchorView, rs());
 
-        PM2_S = pTransform(pm2_s, DataSaved.glL_AnchorView, scale);
-        PM2_D = pTransform(pm2_d, DataSaved.glL_AnchorView, scale);
+        PM2_S = pTransform(pm2_s, DataSaved.glL_AnchorView, rs());
+        PM2_D = pTransform(pm2_d, DataSaved.glL_AnchorView, rs());
 
-        PM1_S = pTransform(pm1_s, DataSaved.glL_AnchorView, scale);
-        PM1_D = pTransform(pm1_d, DataSaved.glL_AnchorView, scale);
+        PM1_S = pTransform(pm1_s, DataSaved.glL_AnchorView, rs());
+        PM1_D = pTransform(pm1_d, DataSaved.glL_AnchorView, rs());
         return new Point3DF[]{
                 P0_S,
                 PM_S,

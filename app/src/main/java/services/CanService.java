@@ -152,7 +152,7 @@ public class CanService extends Service {
                 }
                 if (DataSaved.my_comPort == 0 && DataSaved.gpsType == 0) {
                     NmeaListener.NmeaSTX(id, msg);
-                    if (id == 0x18FF0510) {
+                    if (id == 0x18FF0510||id==0x18FF0501) {
                         nmeaSTX_Disc = false;
                         try {
                             handler_nmeaSTX.removeCallbacks(timeoutRunnable_nmea2k);

@@ -1,7 +1,6 @@
 package gui.my_opengl.wheel;
 
 
-import static gui.my_opengl.MyGLRenderer.scale;
 import static gui.my_opengl.Point3DF.pTransform;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
@@ -19,6 +18,7 @@ import static services.TriangleService.glTerraPunto;
 import static services.TriangleService.orientamentoFreccia;
 
 import dxf.Point3D;
+import gui.my_opengl.MyGLRenderer;
 import gui.my_opengl.Point3DF;
 import gui.my_opengl.Polyline2DArc;
 import packexcalib.exca.DataSaved;
@@ -28,6 +28,9 @@ import packexcalib.gnss.My_LocationCalc;
 import utils.DistToPoint;
 
 public class My_Wheel {
+    private static float rs() {
+        return MyGLRenderer.currentRenderScale();
+    }
     static Point3DF P1_sx, P2_sx, P3_sx, P4_sx, P5_sx, P6_sx, P7_sx, P8_sx;
     static Point3DF P1_dx, P2_dx, P3_dx, P4_dx, P5_dx, P6_dx, P7_dx, P8_dx;
     static Point3DF SPIG_L, SPIG_C, SPIG_R, SPIG_LB, SPIG_CB, SPIG_RB;
@@ -37,6 +40,7 @@ public class My_Wheel {
     private static Point3DF[] fiancataSX() {
         double flatTop;
         double flatLen;
+
         double[] p1;
         double[] p2;
         double[] p3;
@@ -133,36 +137,36 @@ public class My_Wheel {
                 if (DataSaved.points != null && !DataSaved.points.isEmpty()) {
                     switch (DataSaved.bucketEdge) {
                         case -1:
-                            Point3DF pbuck = new Point3DF((float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (bucketLeftCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (bucketLeftCoord[2] - DataSaved.glL_AnchorView[2]) * scale);
-                            Point3DF pline = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * scale);
+                            Point3DF pbuck = new Point3DF((float) (bucketLeftCoord[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (bucketLeftCoord[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (bucketLeftCoord[2] - DataSaved.glL_AnchorView[2]) * rs());
+                            Point3DF pline = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
                             glLinePunto = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glPuntoTerra = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glTerraPunto = pline;
                             break;
 
                         case 0:
-                            Point3DF pbuckC = new Point3DF((float) (bucketCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (bucketCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (bucketCoord[2] - DataSaved.glL_AnchorView[2]) * scale);
-                            Point3DF plineC = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * scale);
+                            Point3DF pbuckC = new Point3DF((float) (bucketCoord[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (bucketCoord[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (bucketCoord[2] - DataSaved.glL_AnchorView[2]) * rs());
+                            Point3DF plineC = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
                             glLinePunto = new Point3DF(pbuckC.getX(), pbuckC.getY(), pbuckC.getZ());
                             glPuntoTerra = new Point3DF(pbuckC.getX(), pbuckC.getY(), plineC.getZ());
                             glTerraPunto = plineC;
                             break;
 
                         case 1:
-                            Point3DF pbuckR = new Point3DF((float) (bucketRightCoord[0] - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (bucketRightCoord[1] - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (bucketRightCoord[2] - DataSaved.glL_AnchorView[2]) * scale);
-                            Point3DF plineR = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * scale,
-                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * scale,
-                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * scale);
+                            Point3DF pbuckR = new Point3DF((float) (bucketRightCoord[0] - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (bucketRightCoord[1] - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (bucketRightCoord[2] - DataSaved.glL_AnchorView[2]) * rs());
+                            Point3DF plineR = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
+                                    (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
                             glLinePunto = new Point3DF(pbuckR.getX(), pbuckR.getY(), pbuckR.getZ());
                             glPuntoTerra = new Point3DF(pbuckR.getX(), pbuckR.getY(), plineR.getZ());
                             glTerraPunto = plineR;
@@ -178,10 +182,10 @@ public class My_Wheel {
                 if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
                     switch (DataSaved.bucketEdge) {
                         case -1:
-                            Point3DF pbuck = pTransform(bucketLeftCoord, DataSaved.glL_AnchorView, scale);
+                            Point3DF pbuck = pTransform(bucketLeftCoord, DataSaved.glL_AnchorView, rs());
                             Point3D p = getProjectedPointOnSegment3D(new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], bucketLeftCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
-                            Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, scale);
+                            Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, rs());
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
@@ -191,10 +195,10 @@ public class My_Wheel {
 
                         case 0:
 
-                            Point3DF pbuckC = pTransform(bucketCoord, DataSaved.glL_AnchorView, scale);
+                            Point3DF pbuckC = pTransform(bucketCoord, DataSaved.glL_AnchorView, rs());
                             Point3D pC = getProjectedPointOnSegment3D(new Point3D(bucketCoord[0], bucketCoord[1], bucketCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
-                            Point3DF plineC = pTransform(new double[]{pC.getX(), pC.getY(), pC.getZ()}, DataSaved.glL_AnchorView, scale);
+                            Point3DF plineC = pTransform(new double[]{pC.getX(), pC.getY(), pC.getZ()}, DataSaved.glL_AnchorView, rs());
                             glLinePoint = pbuckC;
                             glSegmentPoint = new Point3DF(pbuckC.getX(), pbuckC.getY(), plineC.getZ());
                             glSegmentEnd = plineC;
@@ -204,10 +208,10 @@ public class My_Wheel {
 
                         case 1:
 
-                            Point3DF pbuckR = pTransform(bucketRightCoord, DataSaved.glL_AnchorView, scale);
+                            Point3DF pbuckR = pTransform(bucketRightCoord, DataSaved.glL_AnchorView, rs());
                             Point3D pR = getProjectedPointOnSegment3D(new Point3D(bucketRightCoord[0], bucketRightCoord[1], bucketRightCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
-                            Point3DF plineR = pTransform(new double[]{pR.getX(), pR.getY(), pR.getZ()}, DataSaved.glL_AnchorView, scale);
+                            Point3DF plineR = pTransform(new double[]{pR.getX(), pR.getY(), pR.getZ()}, DataSaved.glL_AnchorView, rs());
                             glLinePoint = pbuckR;
                             glSegmentPoint = new Point3DF(pbuckR.getX(), pbuckR.getY(), plineR.getZ());
                             glSegmentEnd = plineR;
@@ -229,28 +233,28 @@ public class My_Wheel {
 
         }
 
-        start = pTransform(pos, DataSaved.glL_AnchorView, scale);
-        fwF = pTransform(fw, DataSaved.glL_AnchorView, scale);
-        bwF = pTransform(bw, DataSaved.glL_AnchorView, scale);
-        ltF = pTransform(lt, DataSaved.glL_AnchorView, scale);
-        rtF = pTransform(rt, DataSaved.glL_AnchorView, scale);
+        start = pTransform(pos, DataSaved.glL_AnchorView, rs());
+        fwF = pTransform(fw, DataSaved.glL_AnchorView, rs());
+        bwF = pTransform(bw, DataSaved.glL_AnchorView, rs());
+        ltF = pTransform(lt, DataSaved.glL_AnchorView, rs());
+        rtF = pTransform(rt, DataSaved.glL_AnchorView, rs());
 
-        P1_sx = pTransform(p1, DataSaved.glL_AnchorView, scale);
-        P2_sx = pTransform(p2, DataSaved.glL_AnchorView, scale);
-        P3_sx = pTransform(p3, DataSaved.glL_AnchorView, scale);
-        P4_sx = pTransform(p4, DataSaved.glL_AnchorView, scale);
-        P5_sx = pTransform(p5, DataSaved.glL_AnchorView, scale);
-        P6_sx = pTransform(p6, DataSaved.glL_AnchorView, scale);
-        P7_sx = pTransform(p7, DataSaved.glL_AnchorView, scale);
-        P8_sx = pTransform(p8, DataSaved.glL_AnchorView, scale);
-        SPIG_L = pTransform(splA, DataSaved.glL_AnchorView, scale);
-        SPIG_C = pTransform(spcA, DataSaved.glL_AnchorView, scale);
-        SPIG_R = pTransform(sprA, DataSaved.glL_AnchorView, scale);
-        SPIG_LB = pTransform(splB, DataSaved.glL_AnchorView, scale);
-        SPIG_CB = pTransform(spcB, DataSaved.glL_AnchorView, scale);
-        SPIG_RB = pTransform(sprB, DataSaved.glL_AnchorView, scale);
-        PIVOT_IN=pTransform(pivot_in,DataSaved.glL_AnchorView,scale);
-        PIVOT_OUT=pTransform(pivot_out,DataSaved.glL_AnchorView,scale);
+        P1_sx = pTransform(p1, DataSaved.glL_AnchorView, rs());
+        P2_sx = pTransform(p2, DataSaved.glL_AnchorView, rs());
+        P3_sx = pTransform(p3, DataSaved.glL_AnchorView, rs());
+        P4_sx = pTransform(p4, DataSaved.glL_AnchorView, rs());
+        P5_sx = pTransform(p5, DataSaved.glL_AnchorView, rs());
+        P6_sx = pTransform(p6, DataSaved.glL_AnchorView, rs());
+        P7_sx = pTransform(p7, DataSaved.glL_AnchorView, rs());
+        P8_sx = pTransform(p8, DataSaved.glL_AnchorView, rs());
+        SPIG_L = pTransform(splA, DataSaved.glL_AnchorView, rs());
+        SPIG_C = pTransform(spcA, DataSaved.glL_AnchorView, rs());
+        SPIG_R = pTransform(sprA, DataSaved.glL_AnchorView, rs());
+        SPIG_LB = pTransform(splB, DataSaved.glL_AnchorView, rs());
+        SPIG_CB = pTransform(spcB, DataSaved.glL_AnchorView, rs());
+        SPIG_RB = pTransform(sprB, DataSaved.glL_AnchorView, rs());
+        PIVOT_IN=pTransform(pivot_in,DataSaved.glL_AnchorView,rs());
+        PIVOT_OUT=pTransform(pivot_out,DataSaved.glL_AnchorView,rs());
         return new Point3DF[]{
                 //sequenza 1,3,4,7,5,6,8,2,1
                 P1_sx, P3_sx, P7_sx, P7_sx, P5_sx, P6_sx, P8_sx, P2_sx, P1_sx
@@ -299,14 +303,14 @@ public class My_Wheel {
         p6 = Exca_Quaternion.endPoint(p8, correctBucket + 90 + (-d2), Deg_Boom_Roll, L2, hdt_BOOM);
         p5 = Exca_Quaternion.endPoint(p6, correctBucket + 90 + (-d3), Deg_Boom_Roll, L3, hdt_BOOM);
         p7 = Exca_Quaternion.endPoint(p5, correctBucket + 90 + (-d4), Deg_Boom_Roll, L4, hdt_BOOM);
-        P1_dx = pTransform(p1, DataSaved.glL_AnchorView, scale);
-        P2_dx = pTransform(p2, DataSaved.glL_AnchorView, scale);
-        P3_dx = pTransform(p3, DataSaved.glL_AnchorView, scale);
-        P4_dx = pTransform(p4, DataSaved.glL_AnchorView, scale);
-        P5_dx = pTransform(p5, DataSaved.glL_AnchorView, scale);
-        P6_dx = pTransform(p6, DataSaved.glL_AnchorView, scale);
-        P7_dx = pTransform(p7, DataSaved.glL_AnchorView, scale);
-        P8_dx = pTransform(p8, DataSaved.glL_AnchorView, scale);
+        P1_dx = pTransform(p1, DataSaved.glL_AnchorView, rs());
+        P2_dx = pTransform(p2, DataSaved.glL_AnchorView, rs());
+        P3_dx = pTransform(p3, DataSaved.glL_AnchorView, rs());
+        P4_dx = pTransform(p4, DataSaved.glL_AnchorView, rs());
+        P5_dx = pTransform(p5, DataSaved.glL_AnchorView, rs());
+        P6_dx = pTransform(p6, DataSaved.glL_AnchorView, rs());
+        P7_dx = pTransform(p7, DataSaved.glL_AnchorView, rs());
+        P8_dx = pTransform(p8, DataSaved.glL_AnchorView, rs());
         return new Point3DF[]{
                 //sequenza 1,3,4,7,5,6,8,2,1
                 P1_dx, P3_dx, P7_dx, P7_dx, P5_dx, P6_dx, P8_dx, P2_dx, P1_dx

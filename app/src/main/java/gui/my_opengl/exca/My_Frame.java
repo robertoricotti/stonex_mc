@@ -1,6 +1,5 @@
 package gui.my_opengl.exca;
 
-import static gui.my_opengl.MyGLRenderer.scale;
 import static gui.my_opengl.Point3DF.pTransform;
 import static packexcalib.exca.ExcavatorLib.coordinateDY;
 import static packexcalib.exca.ExcavatorLib.correctPitch;
@@ -9,6 +8,7 @@ import static packexcalib.exca.ExcavatorLib.*;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 
 import dxf.Point3D;
+import gui.my_opengl.MyGLRenderer;
 import gui.my_opengl.Point3DF;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
@@ -17,7 +17,9 @@ import utils.DistToPoint;
 
 
 public class My_Frame {
-
+    private static float rs() {
+        return MyGLRenderer.currentRenderScale();
+    }
     static Point3DF P1_A, P2_A, P3_A, P4_A, P5_A;
     static Point3DF P1_B, P2_B, P3_B, P4_B, P5_B;
     static Point3DF CAB_0_B, CAB_1_B, CAB_2_B, CAB_3_B;
@@ -164,76 +166,76 @@ public class My_Frame {
         ai_5=Exca_Quaternion.endPoint(p5_i_c,correctPitch+90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
         bi_5=Exca_Quaternion.endPoint(p5_i_c,correctPitch-90,correctRoll,R_Cingolo*0.5,mHdt_Boom);
         {
-            P1_A = pTransform(p1a, DataSaved.glL_AnchorView, scale);
-            P2_A = pTransform(p2a, DataSaved.glL_AnchorView, scale);
-            P3_A = pTransform(p3a, DataSaved.glL_AnchorView, scale);
-            P4_A = pTransform(p4a, DataSaved.glL_AnchorView, scale);
-            P5_A = pTransform(p5a, DataSaved.glL_AnchorView, scale);
-            P1_B = pTransform(p1b, DataSaved.glL_AnchorView, scale);
-            P2_B = pTransform(p2b, DataSaved.glL_AnchorView, scale);
-            P3_B = pTransform(p3b, DataSaved.glL_AnchorView, scale);
-            P4_B = pTransform(p4b, DataSaved.glL_AnchorView, scale);
-            P5_B = pTransform(p5b, DataSaved.glL_AnchorView, scale);
+            P1_A = pTransform(p1a, DataSaved.glL_AnchorView, rs());
+            P2_A = pTransform(p2a, DataSaved.glL_AnchorView, rs());
+            P3_A = pTransform(p3a, DataSaved.glL_AnchorView, rs());
+            P4_A = pTransform(p4a, DataSaved.glL_AnchorView, rs());
+            P5_A = pTransform(p5a, DataSaved.glL_AnchorView, rs());
+            P1_B = pTransform(p1b, DataSaved.glL_AnchorView, rs());
+            P2_B = pTransform(p2b, DataSaved.glL_AnchorView, rs());
+            P3_B = pTransform(p3b, DataSaved.glL_AnchorView, rs());
+            P4_B = pTransform(p4b, DataSaved.glL_AnchorView, rs());
+            P5_B = pTransform(p5b, DataSaved.glL_AnchorView, rs());
 
-            CAB_0_B = pTransform(cab0_b, DataSaved.glL_AnchorView, scale);
-            CAB_1_B = pTransform(cab1_b, DataSaved.glL_AnchorView, scale);
-            CAB_2_B = pTransform(cab2_b, DataSaved.glL_AnchorView, scale);
-            CAB_3_B = pTransform(cab3_b, DataSaved.glL_AnchorView, scale);
+            CAB_0_B = pTransform(cab0_b, DataSaved.glL_AnchorView, rs());
+            CAB_1_B = pTransform(cab1_b, DataSaved.glL_AnchorView, rs());
+            CAB_2_B = pTransform(cab2_b, DataSaved.glL_AnchorView, rs());
+            CAB_3_B = pTransform(cab3_b, DataSaved.glL_AnchorView, rs());
 
-            CAB_0_A = pTransform(cab0_a, DataSaved.glL_AnchorView, scale);
-            CAB_1_A = pTransform(cab1_a, DataSaved.glL_AnchorView, scale);
-            CAB_2_A = pTransform(cab2_a, DataSaved.glL_AnchorView, scale);
-            CAB_3_A = pTransform(cab3_a, DataSaved.glL_AnchorView, scale);
+            CAB_0_A = pTransform(cab0_a, DataSaved.glL_AnchorView, rs());
+            CAB_1_A = pTransform(cab1_a, DataSaved.glL_AnchorView, rs());
+            CAB_2_A = pTransform(cab2_a, DataSaved.glL_AnchorView, rs());
+            CAB_3_A = pTransform(cab3_a, DataSaved.glL_AnchorView, rs());
 
-            MINP0 = pTransform(minip0, DataSaved.glL_AnchorView, scale);
-            MINP1 = pTransform(minip1, DataSaved.glL_AnchorView, scale);
-            MINP2 = pTransform(minip2, DataSaved.glL_AnchorView, scale);
-            MINP3 = pTransform(minip3, DataSaved.glL_AnchorView, scale);
+            MINP0 = pTransform(minip0, DataSaved.glL_AnchorView, rs());
+            MINP1 = pTransform(minip1, DataSaved.glL_AnchorView, rs());
+            MINP2 = pTransform(minip2, DataSaved.glL_AnchorView, rs());
+            MINP3 = pTransform(minip3, DataSaved.glL_AnchorView, rs());
 
-            MINPB0 = pTransform(minipB0, DataSaved.glL_AnchorView, scale);
-            MINPB1 = pTransform(minipB1, DataSaved.glL_AnchorView, scale);
-            MINPB2 = pTransform(minipB2, DataSaved.glL_AnchorView, scale);
-            MINPB3 = pTransform(minipB3, DataSaved.glL_AnchorView, scale);
+            MINPB0 = pTransform(minipB0, DataSaved.glL_AnchorView, rs());
+            MINPB1 = pTransform(minipB1, DataSaved.glL_AnchorView, rs());
+            MINPB2 = pTransform(minipB2, DataSaved.glL_AnchorView, rs());
+            MINPB3 = pTransform(minipB3, DataSaved.glL_AnchorView, rs());
 
-            ZAVM0 = pTransform(zavm0, DataSaved.glL_AnchorView, scale);
-            ZAVM1 = pTransform(zavm1, DataSaved.glL_AnchorView, scale);
-            ZAVM2 = pTransform(zavm2, DataSaved.glL_AnchorView, scale);
-            ZAVM3 = pTransform(zavm3, DataSaved.glL_AnchorView, scale);
+            ZAVM0 = pTransform(zavm0, DataSaved.glL_AnchorView, rs());
+            ZAVM1 = pTransform(zavm1, DataSaved.glL_AnchorView, rs());
+            ZAVM2 = pTransform(zavm2, DataSaved.glL_AnchorView, rs());
+            ZAVM3 = pTransform(zavm3, DataSaved.glL_AnchorView, rs());
 
-            ZAVH0 = pTransform(zavh0, DataSaved.glL_AnchorView, scale);
-            ZAVH1 = pTransform(zavh1, DataSaved.glL_AnchorView, scale);
-            ZAVH2 = pTransform(zavh2, DataSaved.glL_AnchorView, scale);
-            ZAVH3 = pTransform(zavh3, DataSaved.glL_AnchorView, scale);
-            FINE_ZAV = pTransform(finezav, DataSaved.glL_AnchorView, scale);
+            ZAVH0 = pTransform(zavh0, DataSaved.glL_AnchorView, rs());
+            ZAVH1 = pTransform(zavh1, DataSaved.glL_AnchorView, rs());
+            ZAVH2 = pTransform(zavh2, DataSaved.glL_AnchorView, rs());
+            ZAVH3 = pTransform(zavh3, DataSaved.glL_AnchorView, rs());
+            FINE_ZAV = pTransform(finezav, DataSaved.glL_AnchorView, rs());
 
-            RALLA_A = pTransform(rallaalta, DataSaved.glL_AnchorView, scale);
-            RALLA_B = pTransform(rallabassa, DataSaved.glL_AnchorView, scale);
+            RALLA_A = pTransform(rallaalta, DataSaved.glL_AnchorView, rs());
+            RALLA_B = pTransform(rallabassa, DataSaved.glL_AnchorView, rs());
 
-            AI_2=pTransform(ai_2,DataSaved.glL_AnchorView,scale);
-            BI_2=pTransform(bi_2,DataSaved.glL_AnchorView,scale);
-            AI_3=pTransform(ai_3,DataSaved.glL_AnchorView,scale);
-            BI_3=pTransform(bi_3,DataSaved.glL_AnchorView,scale);
-            AI_4=pTransform(ai_4,DataSaved.glL_AnchorView,scale);
-            BI_4=pTransform(bi_4,DataSaved.glL_AnchorView,scale);
-            AI_5=pTransform(ai_5,DataSaved.glL_AnchorView,scale);
-            BI_5=pTransform(bi_5,DataSaved.glL_AnchorView,scale);
+            AI_2=pTransform(ai_2,DataSaved.glL_AnchorView, rs());
+            BI_2=pTransform(bi_2,DataSaved.glL_AnchorView, rs());
+            AI_3=pTransform(ai_3,DataSaved.glL_AnchorView, rs());
+            BI_3=pTransform(bi_3,DataSaved.glL_AnchorView, rs());
+            AI_4=pTransform(ai_4,DataSaved.glL_AnchorView, rs());
+            BI_4=pTransform(bi_4,DataSaved.glL_AnchorView, rs());
+            AI_5=pTransform(ai_5,DataSaved.glL_AnchorView, rs());
+            BI_5=pTransform(bi_5,DataSaved.glL_AnchorView, rs());
         }
-        PC_2 = pTransform(p2_c, DataSaved.glL_AnchorView, scale);
-        PC_3 = pTransform(p3_c, DataSaved.glL_AnchorView, scale);
-        PC_4 = pTransform(p4_c, DataSaved.glL_AnchorView, scale);
-        PC_5 = pTransform(p5_c, DataSaved.glL_AnchorView, scale);
-        P2_ALTO = pTransform(p2_alto, DataSaved.glL_AnchorView, scale);
-        P3_ALTO = pTransform(p3_alto, DataSaved.glL_AnchorView, scale);
-        P4_ALTO = pTransform(p4_alto, DataSaved.glL_AnchorView, scale);
-        P5_ALTO = pTransform(p5_alto, DataSaved.glL_AnchorView, scale);
-        P2_BASSO = pTransform(p2_basso, DataSaved.glL_AnchorView, scale);
-        P3_BASSO = pTransform(p3_basso, DataSaved.glL_AnchorView, scale);
-        P4_BASSO = pTransform(p4_basso, DataSaved.glL_AnchorView, scale);
-        P5_BASSO = pTransform(p5_basso, DataSaved.glL_AnchorView, scale);
-        P2I_C = pTransform(p2_i_c, DataSaved.glL_AnchorView, scale);
-        P3I_C = pTransform(p3_i_c, DataSaved.glL_AnchorView, scale);
-        P4I_C = pTransform(p4_i_c, DataSaved.glL_AnchorView, scale);
-        P5I_C = pTransform(p5_i_c, DataSaved.glL_AnchorView, scale);
+        PC_2 = pTransform(p2_c, DataSaved.glL_AnchorView, rs());
+        PC_3 = pTransform(p3_c, DataSaved.glL_AnchorView, rs());
+        PC_4 = pTransform(p4_c, DataSaved.glL_AnchorView, rs());
+        PC_5 = pTransform(p5_c, DataSaved.glL_AnchorView, rs());
+        P2_ALTO = pTransform(p2_alto, DataSaved.glL_AnchorView, rs());
+        P3_ALTO = pTransform(p3_alto, DataSaved.glL_AnchorView, rs());
+        P4_ALTO = pTransform(p4_alto, DataSaved.glL_AnchorView, rs());
+        P5_ALTO = pTransform(p5_alto, DataSaved.glL_AnchorView, rs());
+        P2_BASSO = pTransform(p2_basso, DataSaved.glL_AnchorView, rs());
+        P3_BASSO = pTransform(p3_basso, DataSaved.glL_AnchorView, rs());
+        P4_BASSO = pTransform(p4_basso, DataSaved.glL_AnchorView, rs());
+        P5_BASSO = pTransform(p5_basso, DataSaved.glL_AnchorView, rs());
+        P2I_C = pTransform(p2_i_c, DataSaved.glL_AnchorView, rs());
+        P3I_C = pTransform(p3_i_c, DataSaved.glL_AnchorView, rs());
+        P4I_C = pTransform(p4_i_c, DataSaved.glL_AnchorView, rs());
+        P5I_C = pTransform(p5_i_c, DataSaved.glL_AnchorView, rs());
 
         return new Point3DF[]{
                 P1_A,//0

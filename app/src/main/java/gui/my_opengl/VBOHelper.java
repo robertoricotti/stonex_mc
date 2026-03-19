@@ -4,8 +4,6 @@ import java.nio.FloatBuffer;
 
 import gui.my_opengl.compat.GL11;
 
-import java.nio.FloatBuffer;
-import gui.my_opengl.compat.GL11;
 
 public class VBOHelper {
 

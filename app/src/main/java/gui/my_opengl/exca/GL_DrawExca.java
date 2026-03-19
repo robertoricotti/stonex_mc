@@ -6,29 +6,26 @@ import static gui.my_opengl.MyGLRenderer.coloreBoom;
 import static gui.my_opengl.MyGLRenderer.coloreBoomScuro;
 import static gui.my_opengl.MyGLRenderer.coloreEsterno;
 import static gui.my_opengl.MyGLRenderer.coloreInterno;
-import static gui.my_opengl.MyGLRenderer.scale;
 import static gui.my_opengl.exca.My_Benna.cullaIndices;
 import static gui.my_opengl.exca.My_Benna.larghezza_attacco;
 import static gui.my_opengl.exca.My_Benna.leftSideIndices;
 import static gui.my_opengl.exca.My_Benna.raggioPivot;
 import static gui.my_opengl.exca.My_Benna.rightSideIndices;
 import static gui.my_opengl.exca.My_Frame.R_Cingolo;
-import static packexcalib.exca.DataSaved.GL_BENNA;
 
 import android.graphics.Color;
 
-import java.util.List;
-
 import gui.my_opengl.Cylinder;
-import gui.my_opengl.GLDrawer;
 import gui.my_opengl.GL_Methods;
+import gui.my_opengl.MyGLRenderer;
 import gui.my_opengl.Point3DF;
 import gui.my_opengl.compat.GL11;
-import dxf.Point3D;
 import packexcalib.exca.DataSaved;
-import packexcalib.exca.ExcavatorLib;
 
 public class GL_DrawExca {
+    private static float rs() {
+        return MyGLRenderer.currentRenderScale();
+    }
 
     public static void draw(GL11 gl) {
 
@@ -47,8 +44,8 @@ public class GL_DrawExca {
             Cylinder ralla = new Cylinder(
                     p3tof(DataSaved.GL_FRAME_BASE[35]),
                     p3tof(DataSaved.GL_FRAME_BASE[36]),
-                    0.25f * scale,
-                    0.25f * scale,
+                    0.25f * rs(),
+                    0.25f * rs(),
                     coloreAttaccoScuro,
                     16,
                     false
@@ -58,8 +55,8 @@ public class GL_DrawExca {
             Cylinder c2 = new Cylinder(
                     p3tof(DataSaved.GL_FRAME_BASE[37]),
                     p3tof(DataSaved.GL_FRAME_BASE[49]),
-                    (float) (R_Cingolo * 0.5 * scale),
-                    (float) (R_Cingolo * 0.5 * scale),
+                    (float) (R_Cingolo * 0.5 * rs()),
+                    (float) (R_Cingolo * 0.5 * rs()),
                     coloreAttacco,
                     16,
                     true
@@ -67,8 +64,8 @@ public class GL_DrawExca {
             Cylinder c3 = new Cylinder(
                     p3tof(DataSaved.GL_FRAME_BASE[38]),
                     p3tof(DataSaved.GL_FRAME_BASE[50]),
-                    (float) (R_Cingolo * 0.5 * scale),
-                    (float) (R_Cingolo * 0.5 * scale),
+                    (float) (R_Cingolo * 0.5 * rs()),
+                    (float) (R_Cingolo * 0.5 * rs()),
                     coloreAttacco,
                     16,
                     true
@@ -76,8 +73,8 @@ public class GL_DrawExca {
             Cylinder c4 = new Cylinder(
                     p3tof(DataSaved.GL_FRAME_BASE[39]),
                     p3tof(DataSaved.GL_FRAME_BASE[51]),
-                    (float) (R_Cingolo * 0.5 * scale),
-                    (float) (R_Cingolo * 0.5 * scale),
+                    (float) (R_Cingolo * 0.5 * rs()),
+                    (float) (R_Cingolo * 0.5 * rs()),
                     coloreAttacco,
                     16,
                     true
@@ -85,8 +82,8 @@ public class GL_DrawExca {
             Cylinder c5 = new Cylinder(
                     p3tof(DataSaved.GL_FRAME_BASE[40]),
                     p3tof(DataSaved.GL_FRAME_BASE[52]),
-                    (float) (R_Cingolo * 0.5 * scale),
-                    (float) (R_Cingolo * 0.5 * scale),
+                    (float) (R_Cingolo * 0.5 * rs()),
+                    (float) (R_Cingolo * 0.5 * rs()),
                     coloreAttacco,
                     16,
                     true
@@ -111,8 +108,8 @@ public class GL_DrawExca {
                     Cylinder cyl1 = new Cylinder(
                             new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
                             new float[]{DataSaved.GL_ATTACCO[3], DataSaved.GL_ATTACCO[4], DataSaved.GL_ATTACCO[5]},
-                            0.10f * scale,
-                            0.10f * scale,
+                            0.10f * rs(),
+                            0.10f * rs(),
                             coloreAttacco,
                             16,
                             true
@@ -122,8 +119,8 @@ public class GL_DrawExca {
                     Cylinder cyl2 = new Cylinder(
                             new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
                             new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]},
-                            0.22f * scale,
-                            0.22f * scale,
+                            0.22f * rs(),
+                            0.22f * rs(),
                             coloreAttacco,
                             16,
                             true
@@ -191,8 +188,8 @@ public class GL_DrawExca {
             Cylinder boccolaStick = new Cylinder(
                     p3tof(DataSaved.GL_STICK[0]),
                     p3tof(DataSaved.GL_STICK[6]),
-                    (float) (DataSaved.L_Stick * 0.025f * scale),
-                    (float) (DataSaved.L_Stick * 0.025f * scale),
+                    (float) (DataSaved.L_Stick * 0.025f * rs()),
+                    (float) (DataSaved.L_Stick * 0.025f * rs()),
                     coloreBoom,
                     12,
                     true
@@ -272,7 +269,6 @@ public class GL_DrawExca {
             minipitch.draw(gl);
 
             drawBucketEdge(gl);
-            drawSnapHelpers(gl);
 
         } else {
             BennaRenderer bennaRenderer = new BennaRenderer(
@@ -291,8 +287,8 @@ public class GL_DrawExca {
                     Cylinder cyl1 = new Cylinder(
                             new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
                             new float[]{DataSaved.GL_ATTACCO[3], DataSaved.GL_ATTACCO[4], DataSaved.GL_ATTACCO[5]},
-                            0.10f * scale,
-                            0.10f * scale,
+                            0.10f * rs(),
+                            0.10f * rs(),
                             coloreAttacco,
                             16,
                             true
@@ -302,8 +298,8 @@ public class GL_DrawExca {
                     Cylinder cyl2 = new Cylinder(
                             new float[]{DataSaved.GL_ATTACCO[6], DataSaved.GL_ATTACCO[7], DataSaved.GL_ATTACCO[8]},
                             new float[]{DataSaved.GL_ATTACCO[9], DataSaved.GL_ATTACCO[10], DataSaved.GL_ATTACCO[11]},
-                            0.22f * scale,
-                            0.22f * scale,
+                            0.22f * rs(),
+                            0.22f * rs(),
                             coloreAttacco,
                             16,
                             true
@@ -371,8 +367,8 @@ public class GL_DrawExca {
             Cylinder boccolaStick = new Cylinder(
                     p3tof(DataSaved.GL_STICK[0]),
                     p3tof(DataSaved.GL_STICK[6]),
-                    (float) (DataSaved.L_Stick * 0.025f * scale),
-                    (float) (DataSaved.L_Stick * 0.025f * scale),
+                    (float) (DataSaved.L_Stick * 0.025f * rs()),
+                    (float) (DataSaved.L_Stick * 0.025f * rs()),
                     coloreBoom,
                     12,
                     true
@@ -412,7 +408,6 @@ public class GL_DrawExca {
             }
 
             drawBucketEdge(gl);
-            drawSnapHelpers(gl);
         }
     }
 
@@ -436,8 +431,8 @@ public class GL_DrawExca {
                 spigolo = new Cylinder(
                         p3tof(DataSaved.GL_BENNA[24]),
                         p3tof(DataSaved.GL_BENNA[27]),
-                        0.05f * scale,
-                        0.02f * scale,
+                        0.05f * rs(),
+                        0.02f * rs(),
                         GL_Methods.parseColorToGL(colore),
                         8,
                         false
@@ -449,8 +444,8 @@ public class GL_DrawExca {
                 spigolo = new Cylinder(
                         p3tof(DataSaved.GL_BENNA[22]),
                         p3tof(DataSaved.GL_BENNA[25]),
-                        0.05f * scale,
-                        0.01f * scale,
+                        0.05f * rs(),
+                        0.01f * rs(),
                         GL_Methods.parseColorToGL(colore),
                         8,
                         false
@@ -462,8 +457,8 @@ public class GL_DrawExca {
                 spigolo = new Cylinder(
                         p3tof(DataSaved.GL_BENNA[23]),
                         p3tof(DataSaved.GL_BENNA[26]),
-                        0.05f * scale,
-                        0.01f * scale,
+                        0.05f * rs(),
+                        0.01f * rs(),
                         GL_Methods.parseColorToGL(colore),
                         8,
                         false
@@ -473,86 +468,5 @@ public class GL_DrawExca {
         }
     }
 
-    private static void drawSnapHelpers(GL11 gl) {
-        switch (DataSaved.isAutoSnap) {
-            case 1:
-            case 3:
-                if (DataSaved.nearestPoint != null) {
-                    drawPointDist(gl, 5f, Color.GREEN, scale);
-                }
-                break;
 
-            case 2:
-            case 4:
-                List<Point3D> polyVertices;
-                if (DataSaved.selectedPoly_OFFSET != null && DataSaved.line_Offset != 0) {
-                    polyVertices = DataSaved.selectedPoly_OFFSET.getVertices();
-                } else if (DataSaved.selectedPoly != null) {
-                    polyVertices = DataSaved.selectedPoly.getVertices();
-                } else {
-                    polyVertices = null;
-                }
-
-                if (polyVertices != null) {
-                    GLDrawer.drawSelectedPoly(gl, polyVertices, 5f, Color.GREEN, scale);
-                }
-                drawLineDist(gl, 5f, Color.GREEN, scale);
-                break;
-        }
-    }
-
-    private static void drawLineDist(GL11 gl, float lineW, int color, float scale) {
-        try {
-            float[] coords = new float[]{
-                    GL_BENNA[28].getX(), GL_BENNA[28].getY(), GL_BENNA[28].getZ(),
-                    GL_BENNA[29].getX(), GL_BENNA[29].getY(), GL_BENNA[29].getZ(),
-                    GL_BENNA[30].getX(), GL_BENNA[30].getY(), GL_BENNA[30].getZ()
-            };
-
-            GLDrawer.drawRawLineStrip3D(
-                    coords,
-                    3,
-                    GL_Methods.parseColorToGL(color),
-                    Math.max(1f, lineW * scale)
-            );
-        } catch (Exception ignored) {
-        }
-    }
-
-    private static void drawPointDist(GL11 gl, float lineW, int color, float scale) {
-        try {
-            float[] coords = new float[]{
-                    GL_BENNA[31].getX(), GL_BENNA[31].getY(), GL_BENNA[31].getZ(),
-                    GL_BENNA[32].getX(), GL_BENNA[32].getY(), GL_BENNA[32].getZ(),
-                    GL_BENNA[33].getX(), GL_BENNA[33].getY(), GL_BENNA[33].getZ()
-            };
-
-            GLDrawer.drawRawLineStrip3D(
-                    coords,
-                    3,
-                    GL_Methods.parseColorToGL(color),
-                    Math.max(1f, lineW * scale)
-            );
-
-            drawBillboardCircle(gl, DataSaved.nearestPoint, 0.08f, scale);
-        } catch (Exception ignored) {
-        }
-    }
-
-    private static void drawBillboardCircle(GL11 gl, Point3D center, float radius, float scale) {
-        if (center == null) return;
-
-        final int segments = 32;
-
-        float cx = (float) ((center.getX() - DataSaved.glL_AnchorView[0]) * scale);
-        float cy = (float) ((center.getY() - DataSaved.glL_AnchorView[1]) * scale);
-        float cz = (float) ((center.getZ() - DataSaved.glL_AnchorView[2]) * scale);
-
-        float rOuter = radius * 1.1f;
-        float rInner = radius;
-
-        float[] green = GL_Methods.parseColorToGL(Color.GREEN);
-        GLDrawer.drawCircle(gl, cx, cy, cz, rOuter, segments, green);
-        GLDrawer.drawCircle(gl, cx, cy, cz, rInner, segments, green);
-    }
 }
