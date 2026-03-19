@@ -566,7 +566,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 ritornati a 2D piana GL">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/values-cs/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/DialogLanguages.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/DialogLanguages.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/gps/Nuovo_Gps.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GLDrawer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GLDrawer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/My3DActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLRenderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLSurfaceView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLSurfaceView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/LanguageSetter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/LanguageSetter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_languages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_languages.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -602,13 +614,13 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="valueResourceFile" />
         <option value="Interface" />
         <option value="Enum" />
         <option value="resourceFile" />
         <option value="layoutResourceFile" />
         <option value="Exception" />
         <option value="Class" />
+        <option value="valueResourceFile" />
       </list>
     </option>
   </component>
@@ -656,7 +668,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/Development/MC_V4/app/src/main/res/drawable&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
     &quot;settings.editor.splitter.proportion&quot;: &quot;0.35707122&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -810,14 +822,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00120" summary="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate">
-      <option name="closed" value="true" />
-      <created>1771772455211</created>
-      <option name="number" value="00120" />
-      <option name="presentableId" value="LOCAL-00120" />
-      <option name="project" value="LOCAL" />
-      <updated>1771772455213</updated>
     </task>
     <task id="LOCAL-00121" summary="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate">
       <option name="closed" value="true" />
@@ -1203,7 +1207,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773769440336</updated>
     </task>
-    <option name="localTasksCounter" value="169" />
+    <task id="LOCAL-00169" summary="4.1.0 ritornati a 2D piana GL">
+      <option name="closed" value="true" />
+      <created>1773770822532</created>
+      <option name="number" value="00169" />
+      <option name="presentableId" value="LOCAL-00169" />
+      <option name="project" value="LOCAL" />
+      <updated>1773770822532</updated>
+    </task>
+    <option name="localTasksCounter" value="170" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1251,7 +1263,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1773655305180" />
+            <CheckInfo lastCheckTimestamp="1773849596787" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1261,7 +1273,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1773655305181" />
+            <CheckInfo lastCheckTimestamp="1773849596784" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1271,7 +1283,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1773655305180" />
+            <CheckInfo lastCheckTimestamp="1773849596785" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

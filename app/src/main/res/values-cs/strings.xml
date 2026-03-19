@@ -1,0 +1,158 @@
+<resources>
+    <string name="app_name">STX MC V4</string>
+    <string name="copyright">Copyright © \nAll rights reserved</string>
+    <string name="error_license">Licence vypršela nebo chybí.\nKontaktujte prosím svého místního prodejce pro vyřešení problému</string>
+    <string name="website">www.stonex.it</string>
+    <string name="copy_adding">"Kopírování přidání\nPostupné číslo"</string>
+    <string name="general_set">OBECNÁ NASTAVENÍ</string>
+    <string name="change_machine">ZMĚNIT MODEL STROJE</string>
+    <string name="procedi">Chcete pokračovat?</string>
+    <string name="downloading">Probíhá stahování. . . .</string>
+    <string name="uploading">Probíhá nahrávání. . . .</string>
+    <string name="rotate_m">OTOČIT STROJ</string>
+    <string name="rotate_w">OTOČIT SVĚT</string>
+    <string name="tred_scene">3D SCÉNA</string>
+    <string name="tit_hydro_set">PARAMETRY AUTO DOZER/GRADER</string>
+    <string name="savepara">ULOŽIT VŠECHNY PARAMETRY DO EXTERNÍ PAMĚTI</string>
+    <string name="savepara_pro">Chcete pokračovat?</string>
+    <string name="write_para">PŘEPSAT VŠECHNY PARAMETRY APLIKACE</string>
+    <string name="hydro_cp">HYDRAULICKÉ\nKONTROLNÍ BODY</string>
+    <string name="hydro_apply">POUŽÍT NOVÉ HYDRAULICKÉ HODNOTY</string>
+    <string name="brigbck">JAS - POZADÍ</string>
+    <string name="etxoff">Krok externího offsetu Zvýšit/Snížit</string>
+
+    <string name="first_rod_l">DÉLKA PRVNÍ TYČE</string>
+    <string name="rod_l">DÉLKA TYČE</string>
+    <string name="bit_l">DÉLKA VRTACÍHO NÁSTROJE - ŠÍŘKA</string>
+    <string name="rod_nr">POČET TYČÍ</string>
+    <string name="remove_all_rods">ODEBRAT VŠECHNY TYČE?</string>
+    <string name="sdd_rod">PŘIDAT 1 TYČ?</string>
+    <string name="remove_one_rod">PŘIDAT 1 TYČ?</string>
+
+    <string name="color_bucket">BARVA LOPATY - RADLICE</string>
+    <string name="color_boom">BARVA RAMENE - RÁMU</string>
+    <string name="ext_offset">KROK EXTERNÍHO OFFSETU</string>
+    <string name="auto_z_db">LEVÁ VÝŠKOVÁ TOLERANCE</string>
+    <string name="auto_z_dbR">PRAVÁ VÝŠKOVÁ TOLERANCE</string>
+    <string name="hydro_window">OKNO HYDRAULICKÉ AKTIVACE</string>
+    <string name="auto_slope_db">TOLERANCE SKLONU</string>
+    <string name="xy_db">XY TOLERANCE</string>
+
+    <string name="mac_setup">NASTAVENÍ STROJE</string>
+    <string name="sens_config">KONFIGURACE CAN SENZORŮ</string>
+    <string name="mch_schema">ZOBRAZIT 3D SCHÉMA STROJE</string>
+    <string name="enable_but">POVOLIT NAVIGAČNÍ TLAČÍTKA ANDROID</string>
+    <string name="extra_hdt">POVOLIT EXTRA SENZOR SMĚRU</string>
+    <string name="en_out">POVOLIT DIGITÁLNÍ VÝSTUP 12V ALARMU HRANICE</string>
+    <string name="en_uhf_ntrip">PŘEPÍNAT UHF/NTRIP</string>
+    <string name="uppaer_bar">HORNÍ LIŠTA VŽDY VIDITELNÁ</string>
+    <string name="interface_type">TYP HYDRAULICKÉHO ROZHRANÍ</string>
+    <string name="save">ULOŽIT</string>
+    <string name="exit">KONEC</string>
+    <string name="machines">STROJE</string>
+    <string name="machines_setup">NASTAVENÍ STROJŮ</string>
+    <string name="rename_file">PŘEJMENOVAT SOUBOR</string>
+    <string name="wait_until">Počkejte na aktualizaci projektu</string>
+    <string name="com_debug">CAN DEBUG</string>
+    <string name="profiles">PROFILY</string>
+    <string name="buckets">VYBERTE LOPATU</string>
+    <string name="settings">UŽIVATELSKÉ NASTAVENÍ</string>
+
+    <string name="sensor">SENZOR</string>
+    <string name="value">HODNOTA</string>
+    <string name="offset">OFFSET</string>
+    <string name="status">STAV</string>
+
+    <string name="stick_laser">RAMENO-LASER</string>
+    <string name="bucket">LOPATA</string>
+    <string name="frame_picth_roll">RÁM NÁKLON-ROLL</string>
+    <string name="compass">KOMPAS</string>
+    <string name="tilt">NÁKLON</string>
+    <string name="pos">POZICE</string>
+
+    <string name="single_slope">JEDNODUCHÝ SKLON</string>
+    <string name="off">VYPNUTO</string>
+    <string name="left">VLEVO</string>
+    <string name="right">VPRAVO</string>
+
+    <string name="reset">RESET</string>
+    <string name="yes">ANO</string>
+    <string name="no">NE</string>
+    <string name="language">JAZYK</string>
+
+    <string name="lasermode">Režim 2D LASER bagru</string>
+    <string name="close_app">Opravdu chcete zavřít aplikaci?</string>
+    <string name="ok">OK</string>
+    <string name="set">NASTAVIT</string>
+
+    <string name="height_alarm">VÝŠKOVÝ ALARM</string>
+    <string name="use_tilt">POUŽÍT SENZOR NÁKLONU</string>
+    <string name="use_bucket">POUŽÍT SENZOR LOPATY</string>
+
+    <string name="units">VZDÁLENOST</string>
+    <string name="unitsA">ÚHEL</string>
+    <string name="viewport">ZOBRAZENÍ</string>
+    <string name="user_units">JEDNOTKY</string>
+
+    <string name="audio">ZVUKY</string>
+    <string name="messages">ZPRÁVY</string>
+    <string name="exit_proj">KONEC?\nVŠECHNA DATA BUDOU ZTRACENA</string>
+
+    <string name="laserOK">LASER OK</string>
+    <string name="laserKO">LASER MIMO ROZSAH</string>
+    <string name="disabled">ZAKÁZÁNO</string>
+
+    <string name="toast_select_bucket">VYBERTE LOPATU PRO KALIBRACI</string>
+    <string name="toast_hold_to_set">PODRŽTE PRO NASTAVENÍ</string>
+
+    <string name="selectafile">VYBERTE SOUBOR!</string>
+    <string name="file_exists">Soubor již existuje</string>
+    <string name="overwrite">PŘEPSAT?</string>
+    <string name="delete_file">SMAZAT VYBRANÝ SOUBOR?</string>
+
+    <string name="deleted">SMAZÁNO</string>
+    <string name="add_surface">NOVÝ POVRCH</string>
+    <string name="enter_filename">Zadejte název souboru</string>
+
+    <string name="menu_utente">UŽIVATELSKÉ NASTAVENÍ</string>
+    <string name="menu_macchine">NASTAVENÍ STROJE</string>
+    <string name="nuovo_progetto">NOVÝ PROJEKT</string>
+    <string name="lista_lavori">SEZNAM ÚKOLŮ</string>
+
+    <string name="rimuovi_usb">ODEBRAT USB</string>
+    <string name="rimozione_sicura">BEZPEČNĚ ODEBERTE USB PŘED UKONČENÍM</string>
+
+    <string name="progetti_non_trovata">Složka projektů nenalezena</string>
+    <string name="stxmc_creata">Složka STX_MC vytvořena na USB</string>
+    <string name="stxmc_fallita">Nepodařilo se vytvořit složku STX_MC</string>
+    <string name="stxmc_nontrovata">USB nenalezeno</string>
+
+    <string name="sovrascrivere">Přepsat?</string>
+
+    <string-array name="radio_proto">
+        <item>Satel</item><!-- 0 -->
+        <item>PCC-4FSK</item><!-- 1 -->
+        <item>PCC-GMSK</item><!-- 2 -->
+        <item>TrimTalk 450S</item><!-- 3 -->
+        <item>South 9600</item><!-- 4 -->
+        <item>HITARGET(9600)</item><!-- 6 -->
+        <item>HITARGET(19200)</item><!-- 7 -->
+        <item>TrimMark III</item><!-- 9 -->
+        <item>South 19200</item><!-- 10 -->
+        <item>TrimTalk(4800)</item><!-- 11 -->
+        <item>GEOTALK</item><!-- 13 -->
+        <item>GEOMARK</item><!-- 14 -->
+        <item>900M Hopping</item><!-- 15 -->
+        <item>HZSZ</item><!-- 16 -->
+        <item>GEO FHSS</item><!-- 17 -->
+        <item>Satel_ADL</item><!-- 19 -->
+        <item>PCCFST</item><!-- 20 -->
+        <item>PCCFST_ADL</item><!-- 21 -->
+    </string-array>
+    <string-array name="radio_spacing">
+        <item>12.5</item>
+        <item>25</item>
+    </string-array>
+
+
+</resources>

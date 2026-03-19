@@ -2086,7 +2086,7 @@ public class Nuovo_Gps extends BaseClass {
                 MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{READ, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                 break;
             case 1:
-                //s980
+                //s980 "get,device.loglist,gga\r\n"
                 SerialPortManager.instance().sendCommand("get,device.loglist,gga|hdt|gst|llq\r\n");//LLQ must be added
 
                 break;

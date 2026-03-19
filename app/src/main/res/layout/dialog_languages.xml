@@ -198,6 +198,18 @@
         app:layout_constraintRight_toRightOf="@id/v66"
         app:layout_constraintLeft_toRightOf="@id/v33"
         android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/flagCZH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/czech"
+        android:padding="30dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/h99"
+        app:layout_constraintRight_toRightOf="@id/v75"
+        app:layout_constraintLeft_toRightOf="@id/v66"
+        android:contentDescription="TODO" />
 
 
 

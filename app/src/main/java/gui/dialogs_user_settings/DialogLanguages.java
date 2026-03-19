@@ -23,7 +23,7 @@ import utils.MyData;
 public class DialogLanguages {
     Activity activity;
     public Dialog dialog;
-    ImageView ita, usa, fra, spa, eng, deu,rus,chin,pur,gre,kor,rum,nel,jpn;
+    ImageView ita, usa, fra, spa, eng, deu,rus,chin,pur,gre,kor,rum,nel,jpn,czh;
 
 
     boolean flagactivity=false;
@@ -39,6 +39,7 @@ public class DialogLanguages {
     }
 
     private void findView() {
+        czh=dialog.findViewById(R.id.flagCZH);
         jpn=dialog.findViewById(R.id.flagJPN);
         ita = dialog.findViewById(R.id.flagIT);
         usa = dialog.findViewById(R.id.flagUS);
@@ -102,6 +103,12 @@ public class DialogLanguages {
 
         jpn.setOnClickListener(view -> {
             MyData.push("language","ja");
+            LanguageSetter.setLocale(activity,MyData.get_String("language"));
+            restart();
+            dialog.dismiss();
+        });
+        czh.setOnClickListener(view -> {
+            MyData.push("language","cs");
             LanguageSetter.setLocale(activity,MyData.get_String("language"));
             restart();
             dialog.dismiss();

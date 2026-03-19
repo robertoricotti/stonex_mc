@@ -1825,7 +1825,7 @@ public class My3DActivity extends BaseClass {
             }
         }
 
-        glSurfaceView = new MyGLSurfaceView(this, null);
+        glSurfaceView = new MyGLSurfaceView(this);
 
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -1838,7 +1838,6 @@ public class My3DActivity extends BaseClass {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
-        glSurfaceView.setTopView((Top_View_DXF) layer3Canvas);
 
         panel3.removeAllViews();
 

@@ -235,14 +235,14 @@ public class NmeaListener {
                         case "$GPGST":
                         case "$GNGST":
                             try {
+                                //$GNGST,161331.00,1.46,2.23,1.80,11.0054,1.886,1.614,2.511*74
                                 String LatCQ = NmeaInput[6];
                                 String LonCQ = NmeaInput[7];
                                 String HgtCQ = NmeaInput[8].substring(0, NmeaInput[8].indexOf("*"));
                                 VRMS_ = String.format("%.3f", Float.parseFloat(HgtCQ.replace(",", ".")));
                                 HRMS_ = String.format("%.3f", 2 * Math.sqrt(0.5 * ((Math.pow(Double.parseDouble(LatCQ.replace(",", ".")), 2) + Math.pow(Double.parseDouble(LonCQ.replace(",", ".")), 2)) / 2)));
-                                ;
                                 _3DRMS = String.format("%.3f", Math.sqrt(Math.pow(Double.parseDouble(HRMS_), 2) + Math.pow(Double.parseDouble(VRMS_), 2)));
-                                ;
+
 
                             } catch (Exception e) {
                                 VRMS_ = "0.000";

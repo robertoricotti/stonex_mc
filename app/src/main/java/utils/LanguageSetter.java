@@ -57,6 +57,9 @@ public class LanguageSetter {
             case "nl":
                 str = "nl";
                 break;
+            case "cs":
+                str = "cs";
+                break;
         }
 
         Locale locale = new Locale(str);
