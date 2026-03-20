@@ -17,9 +17,11 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
+import drill_pile.gui.Drill_MainPage;
 import event_bus.SerialEvent;
 import gui.BaseClass;
 import gui.gps.Nuovo_Gps;
+import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
 import utils.MyDeviceManager;
 
@@ -30,7 +32,7 @@ public class Serial_Msg_Debug extends BaseClass {
     private ArrayAdapter<String> adapterC;
     private ArrayList<String> itemListC;
     private boolean b_playC = false;
-
+    String chi = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,11 @@ public class Serial_Msg_Debug extends BaseClass {
         findView();
         onClick();
         updateC();
+        Intent intent = getIntent();
+        chi = intent.getStringExtra("chi");
+        if(chi==null){
+            chi="gps";
+        }
 
     }
 
@@ -57,7 +64,22 @@ public class Serial_Msg_Debug extends BaseClass {
     private void onClick() {
         back.setOnClickListener(view -> {
             back.setEnabled(false);
-            startActivity(new Intent(this, Nuovo_Gps.class));
+            switch (chi) {
+                case "gps":
+                    startActivity(new Intent(this, Nuovo_Gps.class));
+                    break;
+
+                case "drill_main":
+                    startActivity(new Intent(this, Drill_MainPage.class));
+                    break;
+                case "menu":
+                    startActivity(new Intent(this, ExcavatorChooserActivity.class));
+                    break;
+                default:
+                    startActivity(new Intent(this, ExcavatorChooserActivity.class));
+
+                    break;
+            }
             finish();
         });
         playpause.setOnClickListener(view -> {

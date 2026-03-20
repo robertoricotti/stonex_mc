@@ -55,7 +55,7 @@
             android:padding="15dp"
             android:scaleType="centerInside" />
         <ImageView
-            android:id="@+id/deleteFile"
+            android:id="@+id/debugSerial"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"

@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,7 +55,7 @@ public class PickProject extends BaseClass {
         recyclerView = findViewById(R.id.recycler_view);
         back = findViewById(R.id.back);
         confirm = findViewById(R.id.confirm);
-        deletaFile = findViewById(R.id.deleteFile);
+        deletaFile = findViewById(R.id.debugSerial);
         rename = findViewById(R.id.imgCopy);
         titolone=findViewById(R.id.titolone);
         customQwertyDialog = new CustomQwertyDialog(this,null);

@@ -7,6 +7,11 @@
       </config>
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/baseline_monitor_can_96.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_grada.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -58,6 +63,11 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_start_drill.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_todebug.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
         </config>
@@ -338,6 +348,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_network_config_settings.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_grade_calib.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -566,30 +581,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 prima di implementare 3deasy">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/GgaLimiterPickerDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/MountpointPickerDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/NetworkConfigSettings.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NtripClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/edit_text_border.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/network_off.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_network_config_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Can_Msg_Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Can_Msg_Debug.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Serial_Msg_Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Serial_Msg_Debug.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/PickProject.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/PickProject.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NmeaListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/TriangleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-cs/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-cs/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-el/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-el/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-es/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-es/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-fr/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-fr/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ja/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ja/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ko/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ko/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-nl-rNL/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-nl-rNL/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-pt/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-pt/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ro-rRO/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ro-rRO/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-zh/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-zh/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_entering.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_entering.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_machines.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_machines.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_project_picker.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_project_picker.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_progect_folder.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_progect_folder.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -627,11 +639,11 @@
       <list>
         <option value="Interface" />
         <option value="Enum" />
-        <option value="resourceFile" />
         <option value="layoutResourceFile" />
         <option value="Exception" />
         <option value="Class" />
         <option value="valueResourceFile" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>
@@ -716,7 +728,10 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Development\MC_V4\app\src\main\res\drawable" />
-      <recent name="D:\Development\MC_V4\app\src\main\java\DPAD" />
+      <recent name="D:\Development\MC_V4\app\src\main\java\packexcalib\gnss" />
+      <recent name="D:\Development\MC_V4\app\src\main\java\gui\tech_menu" />
+      <recent name="D:\Development\MC_V4\app\src\main\java\gui\dialogs_and_toast" />
+      <recent name="D:\Development\MC_V4\app\src\main\res\layout" />
     </key>
     <key name="android.template.-263663279">
       <recent name="gui.tech_menu" />
@@ -833,14 +848,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00123" summary="4.1.0 TODO protocollo special machine">
-      <option name="closed" value="true" />
-      <created>1771869637831</created>
-      <option name="number" value="00123" />
-      <option name="presentableId" value="LOCAL-00123" />
-      <option name="project" value="LOCAL" />
-      <updated>1771869637831</updated>
     </task>
     <task id="LOCAL-00124" summary="4.1.0 TODO protocollo special machine">
       <option name="closed" value="true" />
@@ -1226,7 +1233,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773962743359</updated>
     </task>
-    <option name="localTasksCounter" value="172" />
+    <task id="LOCAL-00172" summary="4.1.0 prima di implementare 3deasy">
+      <option name="closed" value="true" />
+      <created>1774007094017</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1774007094017</updated>
+    </task>
+    <option name="localTasksCounter" value="173" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

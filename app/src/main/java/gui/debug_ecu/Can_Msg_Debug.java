@@ -62,6 +62,9 @@ public class Can_Msg_Debug extends AppCompatActivity {
         updateC();
         Intent intent = getIntent();
         chi = intent.getStringExtra("chi");
+        if(chi==null){
+            chi="chi";
+        }
     }
 
     private void findView() {

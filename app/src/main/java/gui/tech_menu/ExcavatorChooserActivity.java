@@ -33,6 +33,7 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.buckets.BucketChooserActivity;
 import drill_pile.gui.Drill_Rod_Activity;
 import gui.debug_ecu.Can_Msg_Debug;
+import gui.debug_ecu.Serial_Msg_Debug;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.hydro.Hydro_Activity_Entering;
 import gui.dialogs_and_toast.CustomToast;
@@ -55,7 +56,7 @@ public class ExcavatorChooserActivity extends BaseClass {
     ImageView bucketM1, bucketM2, bucketM3, bucketM4;
     ImageView settingsM1, settingsM2, settingsM3, settingsM4;
     ImageView back;
-    ImageView img00, img01, btn_3;
+    ImageView img00, img01, btn_3,debugSerial;
     TextView txtProject;
 
     private boolean isDefault_1, isDefault_2, isDefault_3, isDefault_4;
@@ -89,6 +90,7 @@ public class ExcavatorChooserActivity extends BaseClass {
     }
 
     private void findView() {
+        debugSerial=findViewById(R.id.debugSerial);
         btn_3 = findViewById(R.id.btn_3);
         img00 = findViewById(R.id.img00);
         img01 = findViewById(R.id.img01);
@@ -253,6 +255,7 @@ public class ExcavatorChooserActivity extends BaseClass {
     }
 
     private void disableAll() {
+        debugSerial.setEnabled(false);
         btn_3.setEnabled(false);
         lockUnlock.setEnabled(false);
         back.setEnabled(false);
@@ -369,6 +372,12 @@ public class ExcavatorChooserActivity extends BaseClass {
         btn_3.setOnClickListener(view -> {
             disableAll();
             Intent intent = new Intent(this, Can_Msg_Debug.class);
+            intent.putExtra("chi", "menu");
+            startActivity(intent);
+            finish();
+        });
+        debugSerial.setOnClickListener(view -> {
+            Intent intent = new Intent(this, Serial_Msg_Debug.class);
             intent.putExtra("chi", "menu");
             startActivity(intent);
             finish();
@@ -652,7 +661,9 @@ public class ExcavatorChooserActivity extends BaseClass {
         });
         canM1.setOnClickListener(view -> {
             if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
-                //TODO 3DEASY
+                disableAll();
+                startActivity(new Intent(this, NetworkConfigSettings.class));
+                finish();
 
             }else {
                 if (indexMachineSelected == 1) {
@@ -670,7 +681,9 @@ public class ExcavatorChooserActivity extends BaseClass {
         });
         canM2.setOnClickListener(view -> {
             if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
-                //TODO 3DEASY
+                disableAll();
+                startActivity(new Intent(this, NetworkConfigSettings.class));
+                finish();
 
             }else {
                 if (indexMachineSelected == 2) {
@@ -689,7 +702,9 @@ public class ExcavatorChooserActivity extends BaseClass {
         });
         canM3.setOnClickListener(view -> {
             if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
-                //TODO 3DEASY
+                disableAll();
+                startActivity(new Intent(this, NetworkConfigSettings.class));
+                finish();
 
             }else {
                 if (indexMachineSelected == 3) {
@@ -708,7 +723,9 @@ public class ExcavatorChooserActivity extends BaseClass {
         });
         canM4.setOnClickListener(view -> {
             if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
-                //TODO 3DEASY
+                disableAll();
+                startActivity(new Intent(this, NetworkConfigSettings.class));
+                finish();
 
             }else {
                 if (indexMachineSelected == 4) {

@@ -69,7 +69,6 @@ public class Nuova_User_Settings extends BaseClass {
     double myStep, myStepAngle;
     TextView tvRotateMode, tvAXYValue, tvAngAutoValue, tvZValue, tvWINDOWValue;
     ImageView but_meno_auto_zR,but_piu_auto_zR,but_meno_auto_z, but_piu_auto_z, but_meno_ang_auto, but_piu_ang_auto, but_meno_xy, but_piu_xy, but_meno_auto_window, but_piu_auto_window;
-
     ImageView but_meno_bkc, but_piu_bkc, but_meno_boom, but_piu_boom;
     TextView coloreBenna, coloreBoom;
 
