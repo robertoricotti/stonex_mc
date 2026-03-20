@@ -550,7 +550,7 @@ public class Nuova_User_Settings extends BaseClass {
                 case "ja":
                     imgLocale.setImageResource(R.drawable.jpn);
                     break;
-                case "cscz":
+                case "cs":
                     imgLocale.setImageResource(R.drawable.czech);
                     break;
                 default:

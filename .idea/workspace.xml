@@ -581,27 +581,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 prima di implementare 3deasy">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/GgaLimiterPickerDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/MountpointPickerDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/NetworkConfigSettings.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NtripClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/edit_text_border.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/network_off.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_network_config_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Can_Msg_Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Can_Msg_Debug.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Serial_Msg_Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Serial_Msg_Debug.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/Dialog_PRJ_Folder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/PickProject.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/PickProject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/ExcavatorChooserActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_entering.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_hydro_entering.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_machines.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_machines.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_project_picker.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_project_picker.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_progect_folder.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_progect_folder.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -848,14 +829,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00124" summary="4.1.0 TODO protocollo special machine">
-      <option name="closed" value="true" />
-      <created>1771885494916</created>
-      <option name="number" value="00124" />
-      <option name="presentableId" value="LOCAL-00124" />
-      <option name="project" value="LOCAL" />
-      <updated>1771885494916</updated>
     </task>
     <task id="LOCAL-00125" summary="4.1.0 TODO testare special machine output CAN">
       <option name="closed" value="true" />
@@ -1241,7 +1214,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774007094017</updated>
     </task>
-    <option name="localTasksCounter" value="173" />
+    <task id="LOCAL-00173" summary="4.1.0 prima di implementare 3deasy">
+      <option name="closed" value="true" />
+      <created>1774021158137</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1774021158138</updated>
+    </task>
+    <option name="localTasksCounter" value="174" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
