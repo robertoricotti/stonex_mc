@@ -206,7 +206,7 @@
     <!-- nuove stringhe -->
     <string name="menu_utente">IMPOSTAZIONI UTENTE</string>
     <string name="menu_macchine">IMPOSTAZIONI MACCHINA</string>
-    <string name="nuovo_progetto">NUOVO PROGETTO</string>
+    <string name="nuovo_progetto">NUOVA AREA DI LAVORO</string>
     <string name="lista_lavori">LISTA LAVORI</string>
     <string name="rimuovi_usb">RIMUOVI CHIAVETTA USB</string>
     <string name="rimozione_sicura">RIMOZIONE SICURA USB PRIMA DI USCIRE</string>

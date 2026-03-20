@@ -158,8 +158,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static String gridFile_GR_dN = "";
     public static CzechGridShiftTransformer cz_Q1;
     public static CzechGridShiftTransformer cz_Q3;
-    public static String table_yx_3_v1710_Q1 = "";
-    public static String table_yx_3_v1710_Q3 = "";
     public static String DEVICE_SN = "";
     public static Activity visibleActivity;
     public static String Actualactivity;

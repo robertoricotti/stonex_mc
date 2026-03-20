@@ -5,6 +5,8 @@ import static gui.MyApp.folderPath;
 import static gui.MyApp.isApollo;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.restoreCode;
+import static utils.MyTypes.MC_3D_EASY;
+import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
 
 import android.content.Context;
@@ -44,6 +46,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
+import packexcalib.exca.DataSaved;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -482,6 +485,13 @@ public class WebSocketPlugin {
                 FileWriter writer = new FileWriter(outputFile);
                 writer.write(jsonObject.toString());
                 writer.close();
+                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
+                    DataSaved.my_comPort = 3;
+                    MyData.push("M" + "1" + "_comPort", String.valueOf(DataSaved.my_comPort));
+                    MyData.push("M" + "2" + "_comPort", String.valueOf(DataSaved.my_comPort));
+                    MyData.push("M" + "3" + "_comPort", String.valueOf(DataSaved.my_comPort));
+                    MyData.push("M" + "4" + "_comPort", String.valueOf(DataSaved.my_comPort));
+                }
 
             } catch (JSONException e) {
                 activationCode = "none";

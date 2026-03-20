@@ -202,7 +202,7 @@
     <!-- новые строки -->
     <string name="menu_utente">НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ</string>
     <string name="menu_macchine">НАСТРОЙКИ МАШИНЫ</string>
-    <string name="nuovo_progetto">НОВЫЙ ПРОЕКТ</string>
+    <string name="nuovo_progetto">НОВОЕ РАБОЧЕЕ ПРОСТРАНСТВО</string>
     <string name="lista_lavori">СПИСОК РАБОТ</string>
     <string name="rimuovi_usb">ИЗВЛЕЧЬ USB-НОСИТЕЛЬ</string>
     <string name="rimozione_sicura">БЕЗОПАСНОЕ ИЗВЛЕЧЕНИЕ USB ПЕРЕД ВЫХОДОМ</string>

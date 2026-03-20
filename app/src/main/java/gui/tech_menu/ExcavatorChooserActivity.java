@@ -1,6 +1,7 @@
 package gui.tech_menu;
 
 import static gui.MyApp.errorCode;
+import static gui.MyApp.licenseType;
 import static gui.boot_and_choose.LaunchScreenActivity.hasAuto;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static utils.MyTypes.DOZER;
@@ -8,6 +9,8 @@ import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.MC_3D_EASY;
+import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -648,57 +651,75 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         });
         canM1.setOnClickListener(view -> {
-            if (indexMachineSelected == 1) {
-                if (isTech) {
-                    disableAll();
-                    startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
-                    finish();
-                } else {
-                    if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show(1);
+            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                //TODO 3DEASY
+
+            }else {
+                if (indexMachineSelected == 1) {
+                    if (isTech) {
+                        disableAll();
+                        startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
+                        finish();
+                    } else {
+                        if (!dialogPassword.dialog.isShowing()) {
+                            dialogPassword.show(1);
+                        }
                     }
                 }
             }
         });
         canM2.setOnClickListener(view -> {
+            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                //TODO 3DEASY
 
-            if (indexMachineSelected == 2) {
-                if (isTech) {
-                    disableAll();
-                    startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
-                    finish();
-                } else {
-                    if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show(1);
+            }else {
+                if (indexMachineSelected == 2) {
+                    if (isTech) {
+                        disableAll();
+                        startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
+                        finish();
+                    } else {
+                        if (!dialogPassword.dialog.isShowing()) {
+                            dialogPassword.show(1);
+                        }
                     }
                 }
             }
 
-
         });
         canM3.setOnClickListener(view -> {
-            if (indexMachineSelected == 3) {
-                if (isTech) {
-                    disableAll();
-                    startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
-                    finish();
-                } else {
-                    if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show(1);
+            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                //TODO 3DEASY
+
+            }else {
+                if (indexMachineSelected == 3) {
+                    if (isTech) {
+                        disableAll();
+                        startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
+                        finish();
+                    } else {
+                        if (!dialogPassword.dialog.isShowing()) {
+                            dialogPassword.show(1);
+                        }
                     }
                 }
             }
 
         });
         canM4.setOnClickListener(view -> {
-            if (indexMachineSelected == 4) {
-                if (isTech) {
-                    disableAll();
-                    startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
-                    finish();
-                } else {
-                    if (!dialogPassword.dialog.isShowing()) {
-                        dialogPassword.show(1);
+            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                //TODO 3DEASY
+
+            }else {
+                if (indexMachineSelected == 4) {
+                    if (isTech) {
+                        disableAll();
+                        startActivity(new Intent(ExcavatorChooserActivity.this, Nuovo_Gps.class));
+                        finish();
+                    } else {
+                        if (!dialogPassword.dialog.isShowing()) {
+                            dialogPassword.show(1);
+                        }
                     }
                 }
             }

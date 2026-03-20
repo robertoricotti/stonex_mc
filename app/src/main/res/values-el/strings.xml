@@ -201,7 +201,7 @@
     <!-- nuove stringhe -->
     <string name="menu_utente">ΡΥΘΜΙΣΕΙΣ ΧΡΗΣΤΗ</string>
     <string name="menu_macchine">ΡΥΘΜΙΣΕΙΣ ΜΗΧΑΝΗΜΑΤΟΣ</string>
-    <string name="nuovo_progetto">ΝΕΟ ΕΡΓΟ</string>
+    <string name="nuovo_progetto">ΝΕΟΣ ΧΩΡΟΣ ΕΡΓΑΣΙΑΣ</string>
     <string name="lista_lavori">ΛΙΣΤΑ ΕΡΓΑΣΙΩΝ</string>
     <string name="rimuovi_usb">ΑΦΑΙΡΕΣΗ USB STICK</string>
     <string name="rimozione_sicura">ΑΣΦΑΛΗΣ ΑΦΑΙΡΕΣΗ USB ΠΡΙΝ ΤΗΝ ΕΞΟΔΟ</string>

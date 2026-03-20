@@ -6,6 +6,7 @@ import static gui.MyApp.gridFile_GR_dE;
 import static gui.MyApp.gridFile_GR_dN;
 import static gui.MyApp.heposTransformer;
 import static gui.MyApp.isCRSStarted;
+import static gui.MyApp.licenseType;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static services.CanSender.GNSS_MSG;
 import static services.TriangleService.scanPNEZD;
@@ -23,6 +24,9 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JETGROUTING_MODE;
+import static utils.MyTypes.MC_2D;
+import static utils.MyTypes.MC_3D_EASY;
+import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.WHEELLOADER;
 
@@ -432,7 +436,7 @@ public class ReadProjectService extends Service {
 
             MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
         }
-        isCRSStarted=true;
+        isCRSStarted = true;
     }
 
     private static void initBase5514Proj4j() {
@@ -606,7 +610,7 @@ public class ReadProjectService extends Service {
             isFinishedPOINT = true;
         }
 
-        if (MyApp.licenseType > 1) {
+        if (MyApp.licenseType > MC_2D) {
             if (!nomeProgettoTRM.equals("")) {
                 try {
                     if (mettiPoly) {
@@ -652,9 +656,8 @@ public class ReadProjectService extends Service {
                     }
                     parserStatus = "Reading TRM...";
                     if (fileExtensionTRM.equalsIgnoreCase("dxf") || fileExtensionTRM.equalsIgnoreCase("pstx")) {
-                        if (MyApp.licenseType > 1) {
+                        if (MyApp.licenseType > MC_2D) {
                             isFinishedDTM = false;
-
                             DataSaved.projectTAG = "DXF";
                             if (MyData.get_String("ZDXF") == null) {
                                 MyData.push("ZDXF", "0.0");
@@ -691,11 +694,23 @@ public class ReadProjectService extends Service {
                                 if (mettiPoly) {
                                     switch (fileExtensionPOLY.toLowerCase()) {
                                         case "dxf":
-                                        case "pstx":
-
+                                            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                                break;
+                                            }
                                             parserStatus = "Reading Polylines...";
                                             dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
-
+                                            dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                            DataSaved.polylines = dxfDataPoly.getPolylines();
+                                            DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
+                                            DataSaved.arcs = dxfDataPoly.getArcs();
+                                            DataSaved.circles = dxfDataPoly.getCircles();
+                                            DataSaved.lines_2D = dxfDataPoly.getLines();
+                                            DataSaved.dxfLayers_POLY = dxfDataPoly.getLayers();
+                                            copiaPoly();
+                                            break;
+                                        case "pstx":
+                                            parserStatus = "Reading Polylines...";
+                                            dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                             dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                             DataSaved.polylines = dxfDataPoly.getPolylines();
                                             DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
@@ -706,11 +721,11 @@ public class ReadProjectService extends Service {
                                             copiaPoly();
                                             break;
                                         case "xml":
-
+                                            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                                break;
+                                            }
                                             parserStatus = "Reading Polylines...";
-
                                             landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
-
                                             DataSaved.polylines = landXMLPOLY.getPolylines();
                                             DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
                                             copiaPoly();
@@ -731,19 +746,30 @@ public class ReadProjectService extends Service {
                                 if (mettiPunti) {
                                     switch (fileExtensionPOINT.toLowerCase()) {
                                         case "dxf":
+                                            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                                break;
+                                            }
+                                            parserStatus = "Reading Points...";
+                                            dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                            dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                            DataSaved.points = dxfDataPoint.getPoints();
+                                            DataSaved.dxfTexts = dxfDataPoint.getTexts();
+                                            DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
+                                            break;
                                         case "pstx":
                                             parserStatus = "Reading Points...";
                                             dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
-
                                             dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                             DataSaved.points = dxfDataPoint.getPoints();
                                             DataSaved.dxfTexts = dxfDataPoint.getTexts();
                                             DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
                                             break;
                                         case "xml":
+                                            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                                break;
+                                            }
                                             parserStatus = "Reading Points...";
                                             landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
-
                                             DataSaved.points = landXMLPOINT.getPoints();
                                             DataSaved.dxfTexts = landXMLPOINT.getTexts();
                                             DataSaved.dxfLayers_POINT = landXMLPOINT.getLayers();
@@ -834,11 +860,24 @@ public class ReadProjectService extends Service {
                                 DataSaved.lines_2D = new ArrayList<>();
                                 if (mettiPoly) {
                                     switch (fileExtensionPOLY.toLowerCase()) {
-                                        case "dxf":
+                                        case "dxf": if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                            break;
+                                        }
+
+                                            parserStatus = "Reading Polylines...";
+                                            dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                            dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                            DataSaved.polylines = dxfDataPoly.getPolylines();
+                                            DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
+                                            DataSaved.arcs = dxfDataPoly.getArcs();
+                                            DataSaved.circles = dxfDataPoly.getCircles();
+                                            DataSaved.lines_2D = dxfDataPoly.getLines();
+                                            DataSaved.dxfLayers_POLY = dxfDataPoly.getLayers();
+                                            copiaPoly();
+                                            break;
                                         case "pstx":
                                             parserStatus = "Reading Polylines...";
                                             dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
-
                                             dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                             DataSaved.polylines = dxfDataPoly.getPolylines();
                                             DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
@@ -849,10 +888,11 @@ public class ReadProjectService extends Service {
                                             copiaPoly();
                                             break;
                                         case "xml":
+                                            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                                break;
+                                            }
                                             parserStatus = "Reading Polylines...";
-
                                             landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
-
                                             DataSaved.polylines = landXMLPOLY.getPolylines();
                                             DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
                                             copiaPoly();
@@ -873,6 +913,16 @@ public class ReadProjectService extends Service {
                                 if (mettiPunti) {
                                     switch (fileExtensionPOINT.toLowerCase()) {
                                         case "dxf":
+                                            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                                break;
+                                            }
+                                            parserStatus = "Reading Points...";
+                                            dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                            dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                            DataSaved.points = dxfDataPoint.getPoints();
+                                            DataSaved.dxfTexts = dxfDataPoint.getTexts();
+                                            DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
+                                            break;
                                         case "pstx":
                                             parserStatus = "Reading Points...";
                                             dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
@@ -880,10 +930,11 @@ public class ReadProjectService extends Service {
                                             DataSaved.points = dxfDataPoint.getPoints();
                                             DataSaved.dxfTexts = dxfDataPoint.getTexts();
                                             DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
-
-
                                             break;
                                         case "xml":
+                                            if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                                break;
+                                            }
                                             parserStatus = "Reading Points...";
                                             landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
                                             DataSaved.points = landXMLPOINT.getPoints();
@@ -1047,11 +1098,17 @@ public class ReadProjectService extends Service {
 
                             switch (fileExtensionPOINT.toLowerCase()) {
                                 case "dxf":
+                                    if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                        break;
+                                    }
                                     parserStatus = "Reading Points...";
                                     dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                     DataSaved.drill_points = dxfDataPoint.getDrill_points();
                                     break;
                                 case "xml":
+                                    if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                        break;
+                                    }
                                     //TODO CGPOINTS
                                     parserStatus = "Reading Points...";
                                     landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor);
@@ -1066,11 +1123,17 @@ public class ReadProjectService extends Service {
 
                                     break;
                                 case "ird":
+                                    if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                        break;
+                                    }
                                     parserStatus = "Reading Points...";
                                     DataSaved.drill_points = IrdParser.parseIrd(DataSaved.progettoSelected_POINT, 0, conversionFactor);
                                     break;
                                 case "xlsx":
                                 case "xls":
+                                    if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                        break;
+                                    }
                                     parserStatus = "Reading Points..." + "\n...WAIT...";
                                     DataSaved.drill_points = JetXlsxParser.parseJetXlsx(
                                             DataSaved.progettoSelected_POINT,
@@ -1116,9 +1179,11 @@ public class ReadProjectService extends Service {
                         if (mettiPoly) {
                             switch (fileExtensionPOLY.toLowerCase()) {
                                 case "dxf":
+                                    if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                        break;
+                                    }
                                     parserStatus = "Reading Polylines...";
                                     dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
-
                                     dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                     DataSaved.polylines = dxfDataPoly.getPolylines();
                                     DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
@@ -1129,6 +1194,9 @@ public class ReadProjectService extends Service {
                                     copiaPoly();
                                     break;
                                 case "xml":
+                                    if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
+                                        break;
+                                    }
                                     parserStatus = "Reading Polylines...";
                                     landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
                                     DataSaved.polylines = landXMLPOLY.getPolylines();

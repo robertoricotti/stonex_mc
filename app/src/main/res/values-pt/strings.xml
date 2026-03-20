@@ -206,7 +206,7 @@
     <!-- novas strings -->
     <string name="menu_utente">CONFIGURAÇÕES DO USUÁRIO</string>
     <string name="menu_macchine">CONFIGURAÇÕES DA MÁQUINA</string>
-    <string name="nuovo_progetto">NOVO PROJETO</string>
+    <string name="nuovo_progetto">NOVO ESPAÇO DE TRABALHO</string>
     <string name="lista_lavori">LISTA DE TRABALHOS</string>
     <string name="rimuovi_usb">REMOVER PEN DRIVE</string>
     <string name="rimozione_sicura">REMOVA O USB COM SEGURANÇA ANTES DE SAIR</string>

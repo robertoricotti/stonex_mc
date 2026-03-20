@@ -203,7 +203,7 @@
     <!-- 新字符串 -->
     <string name="menu_utente">用户设置</string>
     <string name="menu_macchine">机器设置</string>
-    <string name="nuovo_progetto">新项目</string>
+    <string name="nuovo_progetto">新建工作区</string>
     <string name="lista_lavori">工作列表</string>
     <string name="rimuovi_usb">移除USB闪存盘</string>
     <string name="rimozione_sicura">退出前安全移除USB</string>

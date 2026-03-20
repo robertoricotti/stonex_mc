@@ -98,8 +98,6 @@ public class TriangleService extends Service {
 
                 case 2:
                 case 3:
-                    conversionFactor = 0.3048006096;
-                    break;
                 case 4:
                 case 5:
                     conversionFactor = 0.3048006096;
@@ -180,7 +178,7 @@ public class TriangleService extends Service {
 
                         quota3D_DX = quotas[2] - (DataSaved.offsetH * -1);
 
-                        if(DataSaved.Interface_Type==255) {
+                        if (DataSaved.Interface_Type == 255) {
                             double QuotaMedia = (minZ + maxZ) / 2.0d;
 
                             DGM_Letf = bucketLeftCoord[2] - QuotaMedia;
@@ -254,8 +252,6 @@ public class TriangleService extends Service {
 
                                     // Genera segmenti offset a partire dalle polilinee filtrate
                                     List<Segment> allOffsetSegments = buildOffsetForSnap(DataSaved.filteredPolylines, DataSaved.line_Offset);
-
-
                                     switch (DataSaved.bucketEdge) {
                                         case -1:
                                             referencePoint = new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], 0);
@@ -270,34 +266,48 @@ public class TriangleService extends Service {
                                             referencePoint = new Point3D(bucketCoord[0], bucketCoord[1], 0);
                                             break;
                                     }
-
-                                    Segment closestSegment;
-
-
+                                    Segment closestSegment = null;
+                                    Polyline activeOriginalPoly = null;
+                                    Polyline activeOffsetPoly = null;
                                     if (DataSaved.lockUnlock == 0) {
-                                        // comportamento normale: trova il segmento più vicino tra tutti
+                                        // normale: cerca tra tutti i segmenti offsettati/originali
                                         closestSegment = findClosestSegment(referencePoint, allOffsetSegments);
-                                        DataSaved.selectedPoly = closestSegment.getPolyline();
-                                    } else {
-                                        // lock attivo: calcola l'offset partendo sempre dall'originale
-                                        Polyline offsetPoly = DataSaved.line_Offset != 0 ?
-                                                JTSOffsetHelper.generateOffsetPolyline(DataSaved.selectedPoly, DataSaved.line_Offset) :
-                                                DataSaved.selectedPoly;
 
-                                        // genera segmenti della polyline selezionata solo
-                                        List<Segment> lockedSegments = new ArrayList<>();
-                                        List<Point3D> verts = offsetPoly.getVertices();
-                                        for (int i = 0; i < verts.size() - 1; i++) {
-                                            lockedSegments.add(new Segment(verts.get(i), verts.get(i + 1), DataSaved.selectedPoly));
+                                        if (closestSegment != null) {
+                                            activeOriginalPoly = closestSegment.getPolyline(); // ora è SEMPRE l'originale
+                                            activeOffsetPoly = (DataSaved.line_Offset != 0)
+                                                    ? JTSOffsetHelper.generateOffsetPolyline(activeOriginalPoly, DataSaved.line_Offset)
+                                                    : activeOriginalPoly;
+
+                                            DataSaved.selectedPoly = activeOriginalPoly;
+                                            DataSaved.selectedPoly_OFFSET = activeOffsetPoly;
                                         }
+                                    } else {
+                                        // lock: lavora SEMPRE partendo dall'originale bloccata
+                                        activeOriginalPoly = DataSaved.selectedPoly;
 
-                                        closestSegment = findClosestSegment(referencePoint, lockedSegments);
+                                        if (activeOriginalPoly != null) {
+                                            activeOffsetPoly = (DataSaved.line_Offset != 0)
+                                                    ? JTSOffsetHelper.generateOffsetPolyline(activeOriginalPoly, DataSaved.line_Offset)
+                                                    : activeOriginalPoly;
+
+                                            DataSaved.selectedPoly_OFFSET = activeOffsetPoly;
+
+                                            List<Segment> lockedSegments = new ArrayList<>();
+                                            List<Point3D> verts = activeOffsetPoly.getVertices();
+
+                                            for (int i = 0; i < verts.size() - 1; i++) {
+                                                // il Segment può continuare a puntare all'originale
+                                                lockedSegments.add(new Segment(verts.get(i), verts.get(i + 1), activeOriginalPoly));
+                                            }
+                                            closestSegment = findClosestSegment(referencePoint, lockedSegments);
+                                        }
                                     }
 
+                                    DataSaved.nearestSegment = closestSegment;
                                     double refE = 0, refN = 0;
                                     // salva i risultati
-                                    DataSaved.nearestSegment = closestSegment;
-                                    DataSaved.selectedPoly_OFFSET = closestSegment != null ? closestSegment.getPolyline() : null;
+
 
                                     // calcola le distanze 3D
                                     if (DataSaved.bucketEdge == -1 && closestSegment != null) {
@@ -321,7 +331,7 @@ public class TriangleService extends Service {
                                         refN = bucketRightCoord[1];
                                     }
 
-                                    Point3D p = closestSegment.getClosestPoint(bucketLeftCoord[0], bucketLeftCoord[1]);
+                                    Point3D p = closestSegment.getClosestPoint(refE, refN);
                                     double dE = p.getX() - refE;
                                     double dN = p.getY() - refN;
                                     double yawRad = Math.toRadians(ExcavatorLib.hdt_BOOM + yawSensor);
@@ -602,54 +612,20 @@ public class TriangleService extends Service {
     }
 
     public static Segment findClosestSegment(Point3D point, List<Segment> segments) {
-        if (DataSaved.lockUnlock == 0) {
-            //  Comportamento attuale: cerca il più vicino tra tutti
-            Segment closestSegment = null;
-            double minDistance = Double.MAX_VALUE;
+        if (segments == null || segments.isEmpty()) return null;
 
-            for (Segment segment : segments) {
-                double distance = pointToSegmentDistance(point, segment);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestSegment = segment;
-                }
+        Segment closestSegment = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Segment segment : segments) {
+            double distance = pointToSegmentDistance(point, segment);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestSegment = segment;
             }
-
-            return closestSegment;
-
-        } else {
-            //  Usa SEMPRE la polyline offsettata della selezionata
-            if (DataSaved.selectedPoly == null || DataSaved.selectedPoly.getVertices().size() < 2)
-                return null;
-
-            Polyline polyToUse;
-            if (DataSaved.line_Offset == 0) {
-                polyToUse = DataSaved.selectedPoly;
-            } else {
-                polyToUse = JTSOffsetHelper.generateOffsetPolyline(DataSaved.selectedPoly, DataSaved.line_Offset);
-            }
-
-            if (polyToUse == null || polyToUse.getVertices().size() < 2) return null;
-
-            List<Segment> lockedSegments = new ArrayList<>();
-            List<Point3D> verts = polyToUse.getVertices();
-            for (int i = 0; i < verts.size() - 1; i++) {
-                lockedSegments.add(new Segment(verts.get(i), verts.get(i + 1), polyToUse));
-            }
-
-            Segment closestSegment = null;
-            double minDistance = Double.MAX_VALUE;
-
-            for (Segment segment : lockedSegments) {
-                double distance = pointToSegmentDistance(point, segment);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestSegment = segment;
-                }
-            }
-
-            return closestSegment;
         }
+
+        return closestSegment;
     }
 
 
@@ -731,21 +707,21 @@ public class TriangleService extends Service {
         List<Segment> segments = new ArrayList<>();
 
         for (Polyline poly : polylines) {
-            Polyline polyToUse;
+            Polyline geometryPoly;
 
-            //  Se offset == 0, usa direttamente la polyline originale
             if (offset == 0) {
-                polyToUse = poly;
+                geometryPoly = poly;
             } else {
-                polyToUse = JTSOffsetHelper.generateOffsetPolyline(poly, offset);
+                geometryPoly = JTSOffsetHelper.generateOffsetPolyline(poly, offset);
             }
 
-            if (polyToUse == null || polyToUse.getVertices().size() < 2) continue;
+            if (geometryPoly == null || geometryPoly.getVertices().size() < 2) continue;
 
-            List<Point3D> verts = polyToUse.getVertices();
+            List<Point3D> verts = geometryPoly.getVertices();
 
             for (int i = 0; i < verts.size() - 1; i++) {
-                segments.add(new Segment(verts.get(i), verts.get(i + 1), polyToUse));
+                // riferimento SEMPRE alla polyline originale
+                segments.add(new Segment(verts.get(i), verts.get(i + 1), poly));
             }
         }
 

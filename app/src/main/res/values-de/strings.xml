@@ -202,7 +202,7 @@
     <!-- nuove stringhe -->
     <string name="menu_utente">BENUTZEREINSTELLUNGEN</string>
     <string name="menu_macchine">MASCHINENEINSTELLUNGEN</string>
-    <string name="nuovo_progetto">NEUES PROJEKT</string>
+    <string name="nuovo_progetto">NEUER ARBEITSBEREICH</string>
     <string name="lista_lavori">ARBEITSLISTE</string>
     <string name="rimuovi_usb">USB-STICK ENTFERNEN</string>
     <string name="rimozione_sicura">USB SICHER ENTFERNEN VOR DEM BEENDEN</string>

@@ -551,6 +551,9 @@ public class Nuova_User_Settings extends BaseClass {
                 case "ja":
                     imgLocale.setImageResource(R.drawable.jpn);
                     break;
+                case "cscz":
+                    imgLocale.setImageResource(R.drawable.czech);
+                    break;
                 default:
                     imgLocale.setImageResource(R.drawable.baseline_help_96);
                     break;

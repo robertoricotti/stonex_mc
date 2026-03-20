@@ -1,9 +1,12 @@
 package packexcalib.gnss;
 
 import static gui.MyApp.TEST_MODE;
+import static gui.MyApp.licenseType;
 import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
+import static utils.MyTypes.MC_3D_EASY;
+import static utils.MyTypes.MC_3D_EASY_AUTO;
 
 import android.util.Log;
 
@@ -14,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
+import utils.MyData;
+import utils.MyTypes;
 
 
 public class NmeaListener {
@@ -64,6 +69,7 @@ public class NmeaListener {
         if (TEST_MODE) {
             return;
         }
+
         try {
 
             myNmea = NMEA0183.substring(NMEA0183.indexOf("$") + 1, NMEA0183.indexOf("*"));
@@ -77,10 +83,8 @@ public class NmeaListener {
                     case "$PTNL":
                         try {
                             ggaEast = NmeaInput[6].replace("+", "").replace(",", ".");
-                            ;
                             mLon_1 = Double.parseDouble(ggaEast);
                             ggaNord = NmeaInput[4].replace("+", "").replace(",", ".");
-                            ;
                             mLat_1 = Double.parseDouble(ggaNord);
                             ggaQuality = NmeaInput[8];
                             ggaSat = NmeaInput[9];
@@ -152,7 +156,6 @@ public class NmeaListener {
 
                             if (DataSaved.my_comPort != 0) {
                                 try {
-
                                     ggaNord = NmeaInput[2];//Latitudine
                                     ggaNoS = NmeaInput[3];
                                     ggaEast = NmeaInput[4];//Longitudine
@@ -163,7 +166,6 @@ public class NmeaListener {
                                     ggaZ1 = NmeaInput[9];
                                     ggaZ2 = NmeaInput[11];
                                     ggaRtk = NmeaInput[13];
-
                                     quality();
 
                                     //LATITUDINE
@@ -235,7 +237,6 @@ public class NmeaListener {
                         case "$GPGST":
                         case "$GNGST":
                             try {
-                                //$GNGST,161331.00,1.46,2.23,1.80,11.0054,1.886,1.614,2.511*74
                                 String LatCQ = NmeaInput[6];
                                 String LonCQ = NmeaInput[7];
                                 String HgtCQ = NmeaInput[8].substring(0, NmeaInput[8].indexOf("*"));
@@ -254,7 +255,6 @@ public class NmeaListener {
                         case "$GNRMC":
                             if (DataSaved.my_comPort != 0) {
                                 LocalDateTime result = dateTimeFromRMCToLocalDateTime(NMEA0183, DataSaved.UTC_Offset);
-
                                 date_time_D_M_Y = result.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
                                 date_time_Y_M_D = result.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -275,6 +275,9 @@ public class NmeaListener {
 
     public static void NmeaSTX(int id, byte[] data) {
         if (TEST_MODE) {
+            return;
+        }
+        if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
             return;
         }
         switch (id) {
@@ -426,6 +429,9 @@ public class NmeaListener {
 
     public static void NmeaLeica(int id, byte[] data, int dlc) {
         if (TEST_MODE) {
+            return;
+        }
+        if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
             return;
         }
         Can318PositionDecoder.Output o = posDecoder.feed(data, dlc);

@@ -202,7 +202,7 @@
     <!-- nouvelles chaînes -->
     <string name="menu_utente">PARAMÈTRES UTILISATEUR</string>
     <string name="menu_macchine">PARAMÈTRES MACHINE</string>
-    <string name="nuovo_progetto">NOUVEAU PROJET</string>
+    <string name="nuovo_progetto">NOUVEL ESPACE DE TRAVAIL</string>
     <string name="lista_lavori">LISTE DES TRAVAUX</string>
     <string name="rimuovi_usb">RETIRER LA CLÉ USB</string>
     <string name="rimozione_sicura">RETIRER LA CLÉ USB EN TOUTE SÉCURITÉ AVANT DE QUITTER</string>

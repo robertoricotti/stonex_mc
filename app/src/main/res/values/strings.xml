@@ -197,7 +197,7 @@
     <!-- nuove stringhe -->
     <string name="menu_utente">USER SETTINGS</string>
     <string name="menu_macchine">MACHINE SETTINGS</string>
-    <string name="nuovo_progetto">NEW PROJECT</string>
+    <string name="nuovo_progetto">NEW WORKSPACE</string>
     <string name="lista_lavori">JOB LIST</string>
     <string name="rimuovi_usb">REMOVE USB STICK</string>
     <string name="rimozione_sicura">SAFETY USB REMOVE BEFORE EXIT</string>

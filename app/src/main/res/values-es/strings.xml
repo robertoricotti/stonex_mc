@@ -206,7 +206,7 @@
     <!-- nuevas cadenas -->
     <string name="menu_utente">AJUSTES DE USUARIO</string>
     <string name="menu_macchine">AJUSTES DE MÁQUINA</string>
-    <string name="nuovo_progetto">NUEVO PROYECTO</string>
+    <string name="nuovo_progetto">NUEVO ESPACIO DE TRABAJO</string>
     <string name="lista_lavori">LISTA DE TRABAJOS</string>
     <string name="rimuovi_usb">QUITAR MEMORIA USB</string>
     <string name="rimozione_sicura">EXTRAER USB DE FORMA SEGURA ANTES DE SALIR</string>

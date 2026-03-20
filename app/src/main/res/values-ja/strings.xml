@@ -200,7 +200,7 @@
 
     <string name="menu_utente">ユーザー設定</string>
     <string name="menu_macchine">マシン設定</string>
-    <string name="nuovo_progetto">新しいプロジェクト</string>
+    <string name="nuovo_progetto">新しいワークスペース</string>
     <string name="lista_lavori">作業リスト</string>
     <string name="rimuovi_usb">USBメモリを取り外す</string>
     <string name="rimozione_sicura">終了前に安全にUSBを取り外してください</string>

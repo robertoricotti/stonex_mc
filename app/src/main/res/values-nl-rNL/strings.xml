@@ -197,7 +197,7 @@
     <!-- nieuwe strings -->
     <string name="menu_utente">GEBRUIKERSINSTELLINGEN</string>
     <string name="menu_macchine">MACHINE-INSTELLINGEN</string>
-    <string name="nuovo_progetto">NIEUW PROJECT</string>
+    <string name="nuovo_progetto">NIEUWE WERKRUIMTE</string>
     <string name="lista_lavori">WERKLIJST</string>
     <string name="rimuovi_usb">USB-STICK VERWIJDEREN</string>
     <string name="rimozione_sicura">USB VEILIG VERWIJDEREN VOOR HET AFSLUITEN</string>

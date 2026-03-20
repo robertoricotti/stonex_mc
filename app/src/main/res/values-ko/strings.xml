@@ -197,7 +197,7 @@
     <!-- 새로운 문자열 -->
     <string name="menu_utente">사용자 설정</string>
     <string name="menu_macchine">기계 설정</string>
-    <string name="nuovo_progetto">새 프로젝트</string>
+    <string name="nuovo_progetto">새 작업 공간</string>
     <string name="lista_lavori">작업 목록</string>
     <string name="rimuovi_usb">USB 메모리 제거</string>
     <string name="rimozione_sicura">종료 전에 USB 안전하게 제거</string>
