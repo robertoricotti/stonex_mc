@@ -20,6 +20,7 @@ import com.example.stx_dig.R;
 import cloud.WebSocketPlugin;
 import gui.MyApp;
 import packexcalib.exca.DataSaved;
+import utils.FullscreenActivity;
 import utils.MyData;
 
 
@@ -57,6 +58,7 @@ public class Dialog_InfoApp {
         int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
+        FullscreenActivity.setFullScreen(dialog);
         findView();
         onClick();
 
@@ -108,8 +110,8 @@ public class Dialog_InfoApp {
             case 0 :return  "Dig 1D License No AUTO ";
             case 1 :return  "Dig 1D / 2D License No AUTO";
             case 2 :return  "MC 1D / 2D / 3DPRO License No AUTO";
-            case 3 :return  "MC 1D License AUTO ENABLED";
-            case 4 :return  "MC 1D / 2D License AUTO ENABLED";
+            case 3 :return  "MC 1D / 2D / 3DPRO License No ENABLED";
+            case 4 :return  "MC 1D / 2D / 3DEasy License AUTO ENABLED";
             case 5 :return  "MC 1D / 2D / 3DPRO License AUTO ENABLED";
             default :return  "";
         }

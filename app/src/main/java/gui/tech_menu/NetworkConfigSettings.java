@@ -27,10 +27,13 @@ import com.example.stx_dig.R;
 import java.util.List;
 
 import gui.BaseClass;
-import gui.boot_and_choose.Activity_Home_Page;
+import gui.debug_ecu.Serial_Msg_Debug;
 import gui.dialogs_and_toast.GgaLimiterPickerDialog;
 import gui.dialogs_and_toast.MountpointPickerDialog;
+import packexcalib.exca.DataSaved;
 import packexcalib.gnss.NtripClient;
+import serial.OpenSerialPort;
+import serial.SerialPortManager;
 import utils.MyData;
 
 public class NetworkConfigSettings extends AppCompatActivity {
@@ -69,6 +72,7 @@ public class NetworkConfigSettings extends AppCompatActivity {
     private Button btnSimSettings;
     private Button btnChooseMountpoint;
     private Button btnGetUploadGGA;
+    private ImageView debugSerial;
 
     private RadioButton rInternalGnss;
     private RadioButton rDemo;
@@ -105,6 +109,7 @@ public class NetworkConfigSettings extends AppCompatActivity {
         setupButtons();
         setupGnssSelection();
         initializeUiState();
+
     }
 
     // =========================================================
@@ -119,6 +124,7 @@ public class NetworkConfigSettings extends AppCompatActivity {
         selWifi = findViewById(R.id.sel_wifi);
         selSIM = findViewById(R.id.sel_sim);
         selNtrip = findViewById(R.id.sel_ntrip);
+
         selGnssType = findViewById(R.id.sel_gnss_type);
         selNmeaRate = findViewById(R.id.sel_nmea_rate);
 
@@ -139,6 +145,7 @@ public class NetworkConfigSettings extends AppCompatActivity {
         rNmeaRate10 = findViewById(R.id.nmea_rate_10);
         rNmeaRate20 = findViewById(R.id.nmea_rate_20);
 
+        debugSerial=findViewById(R.id.btn_3);
 
         hostIp = findViewById(R.id.ntrip_host_ip);
         port = findViewById(R.id.ntrip_port);
@@ -173,6 +180,12 @@ public class NetworkConfigSettings extends AppCompatActivity {
     }
 
     private void setupButtons() {
+        debugSerial.setOnClickListener(view -> {
+            Intent intent = new Intent(this, Serial_Msg_Debug.class);
+            intent.putExtra("chi", "easy");
+            startActivity(intent);
+            finish();
+        });
         btnBack.setOnClickListener(v -> navigateBackToHome());
         btnWifiSettings.setOnClickListener(v -> openWifiSettings());
         btnSimSettings.setOnClickListener(v -> openSimSettings());
@@ -216,8 +229,16 @@ public class NetworkConfigSettings extends AppCompatActivity {
         // ======================
         // GNSS TYPE
         // ======================
-        String gnssType = MyData.get_String("gnssType");
-        boolean internal = !"DEMO".equalsIgnoreCase(gnssType);
+        int indexOfMachine = MyData.get_Int("MachineSelected");
+        int gpsType = MyData.get_Int("M" + indexOfMachine + "_comPort");
+        if (gpsType == 0 || gpsType == 1 || gpsType == 2) {
+            MyData.push("M" + indexOfMachine + "_comPort", "3");
+            DataSaved.my_comPort = 3;
+        } else if (gpsType == 4) {
+            MyData.push("M" + indexOfMachine + "_comPort", "4");
+            DataSaved.my_comPort = 4;
+        }
+        boolean internal = gpsType != 4;
         applyInitialGnssState(internal);
 
         // ======================
@@ -535,7 +556,7 @@ public class NetworkConfigSettings extends AppCompatActivity {
         String hostText = hostIp.getText().toString().trim();
         String portText = port.getText().toString().trim();
         String mountpointText = mountPoint.getText().toString().trim();
-        String ggaLimiterText = ggaLimiter.getText().toString().trim();
+        String ggaLimiterText = ggaLimiter.getText().toString().trim().replace("S", "").replace("OFF", "0");
         String usernameText = username.getText().toString().trim();
         String passwordText = password.getText().toString().trim();
 
@@ -571,8 +592,10 @@ public class NetworkConfigSettings extends AppCompatActivity {
                 return;
             }
         }
+        int indexOfMachine = MyData.get_Int("MachineSelected");
+        MyData.push("M" + indexOfMachine + "_comPort", isInternalGnss ? "3" : "4");
+        DataSaved.my_comPort = isInternalGnss ? 3 : 4;
 
-        MyData.push("gnssType", isInternalGnss ? "INTERNAL" : "DEMO");
         MyData.push("ntripEnabled", isNtripEnabled ? "ENABLED" : "DISABLED");
         MyData.push("nmeaRate", selectedNmeaRate);
 
@@ -584,8 +607,16 @@ public class NetworkConfigSettings extends AppCompatActivity {
             MyData.push("ntripUsername", usernameText);
             MyData.push("ntripPassword", passwordText);
         }
-
         Toast.makeText(this, "Settings saved successfully", Toast.LENGTH_SHORT).show();
+
+        if(DataSaved.my_comPort==3){
+            new OpenSerialPort(NetworkConfigSettings.this);
+        }
+        if(DataSaved.my_comPort==4){
+            OpenSerialPort.mOpened = false;
+            SerialPortManager.instance().close();
+        }
+
 
     }
 

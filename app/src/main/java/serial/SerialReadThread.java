@@ -20,13 +20,16 @@ import gui.MyApp;
 import gui.debug_ecu.Serial_Msg_Debug;
 import gui.gps.Nuovo_Gps;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.Difference;
 import packexcalib.gnss.NmeaListener;
+import utils.MyData;
 
-
-/**
- * 读串口线程
- */
 public class SerialReadThread extends Thread {
+    //
+
+    private final static String TAG = "SerialReadThread";
+    private Difference difference;
+    //
     private String devicePath;
     static String[] nmeaInput;
     public static boolean serialEmpty;
@@ -34,6 +37,9 @@ public class SerialReadThread extends Thread {
     byte[] readBuffer_Gnss;
     final int[] readBufferPosition_Gnss = new int[1];
     final boolean[] stopWorker_Gnss = new boolean[1];
+    private boolean mIsOpen = false;
+    private int GGA_LIMITER = -1;
+    private int counter = 0;
 
 
     private BufferedInputStream mmInputStream_Gnss;
@@ -41,6 +47,12 @@ public class SerialReadThread extends Thread {
     public SerialReadThread(InputStream is, String devicePath) {
         this.devicePath = devicePath;
         mmInputStream_Gnss = new BufferedInputStream(is);
+        String enabled = MyData.get_String("ntripEnabled");
+        if ("ENABLED".equalsIgnoreCase(enabled)) {
+            difference = new Difference(this);
+            GGA_LIMITER = Integer.parseInt(MyData.get_String("ntripGgaLimiter"));
+            Log.d(TAG, "INIT CONSTRUCTOR GGA RATE LIMITER: " + GGA_LIMITER + " COUNTER: " + counter);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -85,6 +97,13 @@ public class SerialReadThread extends Thread {
                 }
             }
         });
+
+
+        if(difference!=null&&difference.open()){
+            mIsOpen = true;
+            Log.d(TAG, "OPEN");
+        }
+
         workerThread_Gnss.start();
     }
 
@@ -104,6 +123,7 @@ public class SerialReadThread extends Thread {
         handler_tl.postDelayed(timeoutRunnable_tl, 3000);
         serialEmpty = false;
         NmeaListener.NmeaStandard(received);
+
         if (DataSaved.portView >= 2) {
             if (DataSaved.my_comPort == 0 || DataSaved.my_comPort == 3) {
                 if (devicePath.contains("/dev/ttyS0") || devicePath.contains("/dev/ttyWK0")) {
@@ -130,13 +150,23 @@ public class SerialReadThread extends Thread {
 
         }
 
+        if (GGA_LIMITER > 0 && received.contains("GGA")) {
+            counter++;
+
+            int threshold = GGA_LIMITER * 20;
+            if (counter >= threshold) {
+                Log.d(TAG, "DATA RECEIVED GGA RATE LIMITER: " + GGA_LIMITER + " COUNTER: " + counter);
+
+                byte[] data = received.getBytes(StandardCharsets.UTF_8);
+                onGGA(data, data.length);
+
+                counter = 0;
+            }
+        }
+
 
     }
 
-
-    /**
-     * 停止读线程
-     */
     public void close() {
 
         try {
@@ -157,4 +187,13 @@ public class SerialReadThread extends Thread {
 
         }
     };
+
+    public void onGGA(byte[] data, int length) {
+        difference.writeGGA(data, length);
+    }
+
+    public boolean isOpen(){
+        return mIsOpen;
+    }
+
 }

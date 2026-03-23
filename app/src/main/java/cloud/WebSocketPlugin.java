@@ -210,6 +210,7 @@ public class WebSocketPlugin {
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
+                Log.d("WebSocketPlugin","ricevuto: "+text);
                 try {
                     JSONObject response = new JSONObject(text);
                     String status = response.optString("status");
@@ -274,6 +275,7 @@ public class WebSocketPlugin {
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                 Log.e("WebSocketPlugin", "onFailure (" + region + "): " + (t != null ? t.getMessage() : "null"));
+                Log.e("WebSocketPlugin",Log.getStackTraceString(t) );
                 if (!authed.get()) {
                     failAndFallback(region, webSocket);
                 } else {
@@ -485,13 +487,6 @@ public class WebSocketPlugin {
                 FileWriter writer = new FileWriter(outputFile);
                 writer.write(jsonObject.toString());
                 writer.close();
-                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                    DataSaved.my_comPort = 3;
-                    MyData.push("M" + "1" + "_comPort", String.valueOf(DataSaved.my_comPort));
-                    MyData.push("M" + "2" + "_comPort", String.valueOf(DataSaved.my_comPort));
-                    MyData.push("M" + "3" + "_comPort", String.valueOf(DataSaved.my_comPort));
-                    MyData.push("M" + "4" + "_comPort", String.valueOf(DataSaved.my_comPort));
-                }
 
             } catch (JSONException e) {
                 activationCode = "none";

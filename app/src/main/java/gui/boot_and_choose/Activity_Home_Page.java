@@ -21,6 +21,7 @@ import static utils.MyTypes.GRADER;
 import static utils.MyTypes.MC_1D;
 import static utils.MyTypes.MC_2D;
 import static utils.MyTypes.MC_3D_EASY;
+import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.MC_3D_PRO;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.WHEELLOADER;
@@ -260,7 +261,7 @@ public class Activity_Home_Page extends BaseClass {
 
         });
         joblist.setOnClickListener((View v) -> {
-            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO) {
+            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO||licenseType==MC_3D_EASY_AUTO) {
                 enableAll(false);
                 startActivity(new Intent(this, PickProject.class));
                 finish();
@@ -275,7 +276,7 @@ public class Activity_Home_Page extends BaseClass {
         toDig.setOnClickListener((View v) -> {
 
 
-            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO) {
+            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO||licenseType==MC_3D_EASY_AUTO) {
                 enableAll(false);
                     progressBar.setVisibility(View.VISIBLE);
                     stringsStat.setVisibility(View.VISIBLE);

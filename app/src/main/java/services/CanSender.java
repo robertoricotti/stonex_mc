@@ -95,7 +95,6 @@ import packexcalib.exca.DrillLib;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
-import packexcalib.exca.Sensors_Decoder;
 import packexcalib.exca.Sensors_Decoder_Drill;
 import packexcalib.gnss.NmeaListener;
 import utils.MyDeviceManager;
@@ -326,7 +325,9 @@ public class CanSender extends Service {
             bStat[7] = hAlarm;//allarme attivo  vale 128
             byte status = 0;
             status = PLC_DataTypes_BigEndian.Encode_8_bool_be(bStat);
-            double lat = 45.562253273138325, lon = 9.183073136686842;
+             double fLat=Math.random()*0.001;
+            double fLon=Math.random()*0.001;
+            double lat = 45.56225+fLat, lon = 9.18307+fLon;
             if (DataSaved.my_comPort != 4) {
                 lat = mLat_1;
                 lon = mLon_1;
@@ -342,7 +343,6 @@ public class CanSender extends Service {
                 WebSocketPlugin.getWebSocketPluginInstance(MyApp.visibleActivity).sendCommand("data_positioning_ack", payload);
                 payload.clear();
             }
-
         }
     }
 

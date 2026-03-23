@@ -7,11 +7,6 @@
       </config>
     </shared>
     <layouts>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/baseline_monitor_can_96.xml">
-        <config>
-          <theme>@style/Theme.Stx_dig</theme>
-        </config>
-      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_grada.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -581,8 +576,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 prima di implementare 3deasy">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Difference.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/cloud/WebSocketPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Serial_Msg_Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/debug_ecu/Serial_Msg_Debug.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_InfoApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_InfoApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/NetworkConfigSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/NetworkConfigSettings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/serial/SerialReadThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/serial/SerialReadThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_network_config_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_network_config_settings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -622,9 +625,9 @@
         <option value="Enum" />
         <option value="layoutResourceFile" />
         <option value="Exception" />
-        <option value="Class" />
         <option value="valueResourceFile" />
         <option value="resourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -666,6 +669,7 @@
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
@@ -829,22 +833,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00125" summary="4.1.0 TODO testare special machine output CAN">
-      <option name="closed" value="true" />
-      <created>1771956350990</created>
-      <option name="number" value="00125" />
-      <option name="presentableId" value="LOCAL-00125" />
-      <option name="project" value="LOCAL" />
-      <updated>1771956350990</updated>
-    </task>
-    <task id="LOCAL-00126" summary="4.1.0 TODO testare special machine output CAN">
-      <option name="closed" value="true" />
-      <created>1772013098550</created>
-      <option name="number" value="00126" />
-      <option name="presentableId" value="LOCAL-00126" />
-      <option name="project" value="LOCAL" />
-      <updated>1772013098551</updated>
     </task>
     <task id="LOCAL-00127" summary="4.1.0 PRIMA DI RIMUOVERE PROJ4J">
       <option name="closed" value="true" />
@@ -1222,7 +1210,23 @@
       <option name="project" value="LOCAL" />
       <updated>1774021158138</updated>
     </task>
-    <option name="localTasksCounter" value="174" />
+    <task id="LOCAL-00174" summary="4.1.0 prima di implementare 3deasy">
+      <option name="closed" value="true" />
+      <created>1774024230607</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1774024230607</updated>
+    </task>
+    <task id="LOCAL-00175" summary="4.1.0 prima di implementare 3deasy">
+      <option name="closed" value="true" />
+      <created>1774112554523</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1774112554524</updated>
+    </task>
+    <option name="localTasksCounter" value="176" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1270,7 +1274,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1773955396309" />
+            <CheckInfo lastCheckTimestamp="1774260941494" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1280,7 +1284,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1773955396218" />
+            <CheckInfo lastCheckTimestamp="1774260941493" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1290,7 +1294,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1773955396217" />
+            <CheckInfo lastCheckTimestamp="1774260941492" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

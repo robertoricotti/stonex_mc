@@ -22,6 +22,7 @@ import event_bus.SerialEvent;
 import gui.BaseClass;
 import gui.gps.Nuovo_Gps;
 import gui.tech_menu.ExcavatorChooserActivity;
+import gui.tech_menu.NetworkConfigSettings;
 import packexcalib.exca.DataSaved;
 import utils.MyDeviceManager;
 
@@ -74,6 +75,9 @@ public class Serial_Msg_Debug extends BaseClass {
                     break;
                 case "menu":
                     startActivity(new Intent(this, ExcavatorChooserActivity.class));
+                    break;
+                case "easy":
+                    startActivity(new Intent(this, NetworkConfigSettings.class));
                     break;
                 default:
                     startActivity(new Intent(this, ExcavatorChooserActivity.class));
