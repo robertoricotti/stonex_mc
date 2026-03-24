@@ -22,13 +22,14 @@ import java.util.Objects;
 import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
-import utils.MyData;
 
 /*********************************************
  * Class to convert Latitude and Longitude
  * in UTM / Project CRS
  *********************************************/
 public class Deg2UTM {
+    public static NativeCzechTransformer nativeCzechTransformer;
+    public static boolean nativeCzechReady = false;
     private static final ProjCoordinate baseWgs = new ProjCoordinate();
     private static final ProjCoordinate northWgs = new ProjCoordinate();
     private static final ProjCoordinate baseProj = new ProjCoordinate();
@@ -381,54 +382,44 @@ public class Deg2UTM {
                             q = Z;
                             geoidError = false;
                         }
-
-                        if (crs.equals("150580") && heposTransformer != null) {
+                        if(crs.equals("150580") && heposTransformer != null){
                             NmeaListener.AGGIUNTA_HDT = GridShiftTransformer.getAggiuntaHDT();
                             shifted = heposTransformer.transform(Lat, Lon, q);
                             Easting = shifted.x;
                             Northing = shifted.y + 2000000;
                             Quota = shifted.z;
-
+                        }else if (crs.equals("150581")) {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon, "5516");
+                            double[] p = nativeBase5516(Lat, Lon, q);
+                            Easting = p[0]+5000000;
+                            Northing = p[1]+5000000;
+                            Quota = q;
+                        }else if (crs.equals("150582")) {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon, "5516");
+                            double[] p = nativeBase5516(Lat, Lon, q);
+                            Easting = -p[1]-5000000;
+                            Northing = -p[0]-5000000;
+                            Quota = q;
                         }
-                        else if (crs.equals("150581") && cz_Q3 != null) {
-                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
-
-                            if (wgsToUtm != null && result != null) {
-                                inWgs.x = Lon;
-                                inWgs.y = Lat;
-                                inWgs.z = q;
-                                wgsToUtm.transform(inWgs, result);
-
-                                // 5514 base negativo
-                                ProjCoordinate p = new ProjCoordinate(result.x, result.y, q);
-                                boolean ok = cz_Q3.applyInPlace(p);
-
-                                Easting = ok ? p.x : result.x;
-                                Northing = ok ? p.y : result.y;
-                                Quota = q;
-                            }
-                        }
-                        else if (crs.equals("150582") && cz_Q1 != null) {
-                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
-
-                            if (wgsToUtm != null && result != null) {
-                                inWgs.x = Lon;
-                                inWgs.y = Lat;
-                                inWgs.z = q;
-                                wgsToUtm.transform(inWgs, result);
-
-                                // porto il base negativo in positivo per interrogare Q1
-                                ProjCoordinate p = new ProjCoordinate(-result.x, -result.y, q);
-                                boolean ok = cz_Q1.applyInPlace(p);
-
-                                Easting = ok ? p.x : -result.x;
-                                Northing = ok ? p.y : -result.y;
-                                Quota = q;
-                            }
-                        }
-
-
-                        else {
+                        else if (crs.equals("5516")) {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon, "5516");
+                            double[] p = nativeBase5516(Lat, Lon, q);
+                            Easting = p[0];
+                            Northing = p[1];
+                            Quota = q;
+                        }else if (crs.equals("5514") ) {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon, "5514");
+                            double[] p = nativeBase5514(Lat, Lon, q);
+                            Easting = p[0];
+                            Northing = p[1];
+                            Quota = q;
+                        } else if (crs.equals("5513")) {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon, "5513");
+                            double[] p = nativeBase5513(Lat, Lon, q);
+                            Easting = p[0];
+                            Northing = p[1];
+                            Quota = q;
+                        } else {
                             NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
                             if (wgsToUtm != null && result != null) {
                                 wgsToUtm.transform(new ProjCoordinate(Lon, Lat, q), result);
@@ -437,7 +428,6 @@ public class Deg2UTM {
                                 Quota = q;
                             }
                         }
-
 
 
                     } catch (Exception e) {
@@ -469,12 +459,12 @@ public class Deg2UTM {
     /**
      * Delta heading per EPSG:5514.
      * Restituisce i gradi da sommare all'HDT true per allinearlo agli assi EN del sistema Krovak East North.
-     *
+     * <p>
      * Formula numerica:
      * - proietta il punto
      * - proietta un punto leggermente più a nord vero
      * - calcola l'azimut del vero nord nel piano proiettato
-     *
+     * <p>
      * 0 = nord, 90 = est
      */
 
@@ -550,4 +540,78 @@ public class Deg2UTM {
 
         return Math.toDegrees(Math.atan2(dE, dN));
     }
+
+    private static double gridHeadingDeltaDeg(double latDeg, double lonDeg, String crs) {
+        final double epsDeg = 1e-4; // ~11 m
+
+        double e1, n1, e2, n2;
+
+        if ("5514".equals(crs)) {
+            double[] p1 = nativeBase5514(latDeg, lonDeg, 0.0);
+            double[] p2 = nativeBase5514(latDeg + epsDeg, lonDeg, 0.0);
+
+            e1 = p1[0];
+            n1 = p1[1];
+            e2 = p2[0];
+            n2 = p2[1];
+        } else if ("5513".equals(crs)) {
+            double[] p1 = nativeBase5513(latDeg, lonDeg, 0.0);
+            double[] p2 = nativeBase5513(latDeg + epsDeg, lonDeg, 0.0);
+
+            e1 = p1[0];
+            n1 = p1[1];
+            e2 = p2[0];
+            n2 = p2[1];
+        }else if("5516".equals(crs)){
+            double[] p1 = nativeBase5516(latDeg, lonDeg, 0.0);
+            double[] p2 = nativeBase5516(latDeg + epsDeg, lonDeg, 0.0);
+
+            e1 = p1[0];
+            n1 = p1[1];
+            e2 = p2[0];
+            n2 = p2[1];
+        } else {
+            if (wgsToUtm == null) return 0.0;
+
+            baseWgs.x = lonDeg;
+            baseWgs.y = latDeg;
+
+            northWgs.x = lonDeg;
+            northWgs.y = latDeg + epsDeg;
+
+            wgsToUtm.transform(baseWgs, baseProj);
+            wgsToUtm.transform(northWgs, northProj);
+
+            e1 = baseProj.x;
+            n1 = baseProj.y;
+            e2 = northProj.x;
+            n2 = northProj.y;
+        }
+
+        double dE = e2 - e1;
+        double dN = n2 - n1;
+
+        return Math.toDegrees(Math.atan2(dE, dN));
+    }
+
+    private static void ensureNativeCzechReady() {
+        if (!nativeCzechReady) {
+            throw new IllegalStateException("NativeCzechTransformer non inizializzato");
+        }
+    }
+
+    private static double[] nativeBase5514(double lat, double lon, double h) {
+        ensureNativeCzechReady();
+        return nativeCzechTransformer.wgs84To5514(lon, lat, h);
+    }
+
+    private static double[] nativeBase5513(double lat, double lon, double h) {
+        ensureNativeCzechReady();
+        return nativeCzechTransformer.wgs84To5513(lon, lat, h);
+    }
+    private static double[] nativeBase5516(double lat, double lon, double h) {
+        ensureNativeCzechReady();
+        return nativeCzechTransformer.wgs84To5516(lon, lat, h);
+    }
+
 }

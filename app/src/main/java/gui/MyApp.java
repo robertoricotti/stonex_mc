@@ -125,6 +125,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.gnss.CzechGridShiftTransformer;
+import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.NmeaListener;
 import services.CanSender;
@@ -466,7 +467,16 @@ git push
     public void onActivityDestroyed(@NonNull Activity activity) {
 
     }
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
 
+        if (Deg2UTM.nativeCzechTransformer != null) {
+            Deg2UTM.nativeCzechTransformer.close();
+            Deg2UTM.nativeCzechTransformer = null;
+            Deg2UTM.nativeCzechReady = false;
+        }
+    }
 
     @SuppressLint("DiscouragedApi")
     public void m_updateUI(Activity activity, boolean mRunning) {

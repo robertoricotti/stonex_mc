@@ -10,22 +10,72 @@ import java.nio.charset.StandardCharsets;
 
 public final class CzechGridShiftTransformer {
 
+    public enum RowOrder {
+        NORTH_TO_SOUTH,
+        SOUTH_TO_NORTH
+    }
+
+    public enum ColOrder {
+        WEST_TO_EAST,
+        EAST_TO_WEST
+    }
+
+    public enum ShiftMode {
+        ADD,
+        SUBTRACT
+    }
+
+    public enum ComponentOrder {
+        YX,   // primo float = dY, secondo = dX
+        XY    // primo float = dX, secondo = dY
+    }
+
     private final double sLat;
     private final double nLat;
     private final double wLon;
     private final double eLon;
-    private final double step;
+    private final double stepX;
+    private final double stepY;
 
     private final int rows;
     private final int cols;
 
-    // File table_yx: primo float = shift Y, secondo float = shift X
     private final float[] dY;
     private final float[] dX;
 
+    private final RowOrder rowOrder;
+    private final ColOrder colOrder;
+    private final ShiftMode shiftMode;
+    private final ComponentOrder componentOrder;
+
     private static final float NODATA = 9999f;
 
+    /**
+     * Mantiene il comportamento storico:
+     * - righe NORTH_TO_SOUTH
+     * - colonne WEST_TO_EAST
+     * - shift ADD
+     * - componenti YX
+     */
     public CzechGridShiftTransformer(InputStream is) throws IOException {
+        this(is,
+                RowOrder.NORTH_TO_SOUTH,
+                ColOrder.WEST_TO_EAST,
+                ShiftMode.ADD,
+                ComponentOrder.YX);
+    }
+
+    public CzechGridShiftTransformer(InputStream is,
+                                     RowOrder rowOrder,
+                                     ColOrder colOrder,
+                                     ShiftMode shiftMode,
+                                     ComponentOrder componentOrder) throws IOException {
+
+        this.rowOrder = rowOrder;
+        this.colOrder = colOrder;
+        this.shiftMode = shiftMode;
+        this.componentOrder = componentOrder;
+
         DataInputStream in = new DataInputStream(new BufferedInputStream(is));
 
         int numOrec = readIntRecordValueLE(in, "NUM_OREC");
@@ -61,14 +111,14 @@ public final class CzechGridShiftTransformer {
         this.nLat = N;
         this.eLon = E;
         this.wLon = W;
-        this.step = dN;
+        this.stepY = Math.abs(dN);
+        this.stepX = Math.abs(dW);
 
-        this.cols = (int) Math.round((eLon - wLon) / step) + 1;
-        this.rows = (int) Math.round((nLat - sLat) / step) + 1;
+        this.cols = (int) Math.round((eLon - wLon) / stepX) + 1;
+        this.rows = (int) Math.round((nLat - sLat) / stepY) + 1;
 
         int nodeCount = rows * cols;
         if (gsCount > 0 && gsCount != nodeCount) {
-            // non blocco: solo informativo
             System.out.println("CZ grid warning: GS_COUNT=" + gsCount + " computed=" + nodeCount);
         }
 
@@ -82,32 +132,59 @@ public final class CzechGridShiftTransformer {
             float a = leFloat(buf, 0);
             float b = leFloat(buf, 4);
 
-            dY[i] = a;
-            dX[i] = b;
+            if (componentOrder == ComponentOrder.YX) {
+                dY[i] = a;
+                dX[i] = b;
+            } else {
+                dX[i] = a;
+                dY[i] = b;
+            }
         }
     }
 
-    /**
-     * Applica lo shift al punto EN.
-     * x = Easting
-     * y = Northing
-     *
-     * Ritorna true se applicato, false se fuori griglia o nodata.
-     */
     public boolean applyInPlace(ProjCoordinate en) {
-        final double E = en.x;
-        final double N = en.y;
+        ProjCoordinate out = transformInternal(en.x, en.y);
+        if (out == null) return false;
+        en.x = out.x;
+        en.y = out.y;
+        return true;
+    }
 
-        // Convenzione coerente con il vecchio debugShift():
-        // righe indicizzate da nord verso sud
-        final int col = (int) Math.floor((E - wLon) / step);
-        final int row = (int) Math.floor((nLat - N) / step);
+    public boolean applyInPlace(double[] en) {
+        if (en == null || en.length < 2) return false;
+        ProjCoordinate out = transformInternal(en[0], en[1]);
+        if (out == null) return false;
+        en[0] = out.x;
+        en[1] = out.y;
+        return true;
+    }
 
-        if (col < 0 || col >= cols - 1 || row < 0 || row >= rows - 1) {
-            return false;
-        }
+    public ProjCoordinate applyDebug(ProjCoordinate en) {
+        return transformInternal(en.x, en.y);
+    }
 
-        final int i00 = row * cols + col;
+    public ProjCoordinate applyDebug(ProjCoordinate en,
+                                     RowOrder rowOrder,
+                                     ColOrder colOrder,
+                                     ShiftMode shiftMode,
+                                     ComponentOrder componentOrder) {
+        return transformInternal(en.x, en.y, rowOrder, colOrder, shiftMode, componentOrder);
+    }
+
+    private ProjCoordinate transformInternal(double E, double N) {
+        return transformInternal(E, N, rowOrder, colOrder, shiftMode, componentOrder);
+    }
+
+    private ProjCoordinate transformInternal(double E, double N,
+                                             RowOrder rowOrder,
+                                             ColOrder colOrder,
+                                             ShiftMode shiftMode,
+                                             ComponentOrder componentOrder) {
+
+        GridIndex gi = locateCell(E, N, rowOrder, colOrder);
+        if (gi == null) return null;
+
+        final int i00 = gi.row * cols + gi.col;
         final int i10 = i00 + 1;
         final int i01 = i00 + cols;
         final int i11 = i01 + 1;
@@ -124,44 +201,122 @@ public final class CzechGridShiftTransformer {
 
         if (dy00 == NODATA || dy10 == NODATA || dy01 == NODATA || dy11 == NODATA ||
                 dx00 == NODATA || dx10 == NODATA || dx01 == NODATA || dx11 == NODATA) {
-            return false;
+            return null;
         }
 
-        final double e0 = wLon + col * step;
-        final double n0 = nLat - row * step;
-
-        final double t = (E - e0) / step;
-        final double u = (n0 - N) / step;
-
-        final double omt = 1.0 - t;
-        final double omu = 1.0 - u;
+        final double omt = 1.0 - gi.t;
+        final double omu = 1.0 - gi.u;
 
         final double dYb =
                 omt * omu * dy00 +
-                        t   * omu * dy10 +
-                        omt * u   * dy01 +
-                        t   * u   * dy11;
+                        gi.t * omu * dy10 +
+                        omt * gi.u * dy01 +
+                        gi.t * gi.u * dy11;
 
         final double dXb =
                 omt * omu * dx00 +
-                        t   * omu * dx10 +
-                        omt * u   * dx01 +
-                        t   * u   * dx11;
+                        gi.t * omu * dx10 +
+                        omt * gi.u * dx01 +
+                        gi.t * gi.u * dx11;
 
-        en.x = E + dXb;
-        en.y = N + dYb;
-        return true;
+        final double sign = (shiftMode == ShiftMode.ADD) ? 1.0 : -1.0;
+
+        return new ProjCoordinate(
+                E + sign * dXb,
+                N + sign * dYb,
+                0
+        );
     }
 
-    public boolean applyInPlace(double[] en) {
-        if (en == null || en.length < 2) return false;
-        ProjCoordinate tmp = new ProjCoordinate(en[0], en[1], 0);
-        boolean ok = applyInPlace(tmp);
-        if (ok) {
-            en[0] = tmp.x;
-            en[1] = tmp.y;
+    private GridIndex locateCell(double E, double N,
+                                 RowOrder rowOrder,
+                                 ColOrder colOrder) {
+
+        final int col;
+        final int row;
+
+        if (colOrder == ColOrder.WEST_TO_EAST) {
+            col = (int) Math.floor((E - wLon) / stepX);
+        } else {
+            col = (int) Math.floor((eLon - E) / stepX);
         }
-        return ok;
+
+        if (rowOrder == RowOrder.NORTH_TO_SOUTH) {
+            row = (int) Math.floor((nLat - N) / stepY);
+        } else {
+            row = (int) Math.floor((N - sLat) / stepY);
+        }
+
+        if (col < 0 || col >= cols - 1 || row < 0 || row >= rows - 1) {
+            return null;
+        }
+
+        final double e0;
+        final double n0;
+
+        if (colOrder == ColOrder.WEST_TO_EAST) {
+            e0 = wLon + col * stepX;
+        } else {
+            e0 = eLon - col * stepX;
+        }
+
+        if (rowOrder == RowOrder.NORTH_TO_SOUTH) {
+            n0 = nLat - row * stepY;
+        } else {
+            n0 = sLat + row * stepY;
+        }
+
+        final double t;
+        final double u;
+
+        if (colOrder == ColOrder.WEST_TO_EAST) {
+            t = (E - e0) / stepX;
+        } else {
+            t = (e0 - E) / stepX;
+        }
+
+        if (rowOrder == RowOrder.NORTH_TO_SOUTH) {
+            u = (n0 - N) / stepY;
+        } else {
+            u = (N - n0) / stepY;
+        }
+
+        if (t < 0.0 || t > 1.0 || u < 0.0 || u > 1.0) {
+            return null;
+        }
+
+        return new GridIndex(row, col, t, u);
+    }
+
+    public String describe() {
+        return "CzechGridShiftTransformer{" +
+                "sLat=" + sLat +
+                ", nLat=" + nLat +
+                ", wLon=" + wLon +
+                ", eLon=" + eLon +
+                ", stepX=" + stepX +
+                ", stepY=" + stepY +
+                ", rows=" + rows +
+                ", cols=" + cols +
+                ", rowOrder=" + rowOrder +
+                ", colOrder=" + colOrder +
+                ", shiftMode=" + shiftMode +
+                ", componentOrder=" + componentOrder +
+                '}';
+    }
+
+    private static final class GridIndex {
+        final int row;
+        final int col;
+        final double t;
+        final double u;
+
+        GridIndex(int row, int col, double t, double u) {
+            this.row = row;
+            this.col = col;
+            this.t = t;
+            this.u = u;
+        }
     }
 
     private static final class Record {

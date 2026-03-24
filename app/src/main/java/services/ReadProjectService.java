@@ -9,6 +9,7 @@ import static gui.MyApp.heposTransformer;
 import static gui.MyApp.isCRSStarted;
 import static gui.MyApp.licenseType;
 import static packexcalib.gnss.CRS_Strings._NONE;
+import static packexcalib.gnss.Deg2UTM.nativeCzechTransformer;
 import static services.CanSender.GNSS_MSG;
 import static services.TriangleService.scanPNEZD;
 import static services.UpdateValuesService.UTM;
@@ -32,6 +33,7 @@ import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
@@ -82,9 +84,11 @@ import landxml.LandXMLData;
 import landxml.LandXMLParser;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.CzechGridShiftTransformer;
+import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.LocalizationFactory;
 import packexcalib.gnss.LocalizationModel;
+import packexcalib.gnss.NativeCzechTransformer;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -109,6 +113,12 @@ public class ReadProjectService extends Service {
     public static double conversionFactor = 1;
     public static LocalizationModel model;
 
+    public static void stopCRS() {
+        if (Deg2UTM.nativeCzechTransformer != null) {
+            Deg2UTM.nativeCzechTransformer.close();
+            Deg2UTM.nativeCzechTransformer = null;
+        }
+    }
 
     public ReadProjectService() {
     }
@@ -120,6 +130,7 @@ public class ReadProjectService extends Service {
 
     @Override
     public void onCreate() {
+
         numbers = 0;
         mettiPoly = false;
         mettiPunti = false;
@@ -179,9 +190,9 @@ public class ReadProjectService extends Service {
         try {
             String nomeProgettoTRM = MyData.get_String("progettoSelected");
             if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
-                if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
-
-                }else {
+                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
+                    reconnectLayers();
+                } else {
                     reconnectLayers();
                 }
             }
@@ -318,6 +329,7 @@ public class ReadProjectService extends Service {
 
 
     public static void startCRS() {
+        stopCRS();
 
         String s = MyData.get_String("crs");
 
@@ -335,7 +347,6 @@ public class ReadProjectService extends Service {
                             try {
                                 File dEfile = new File(gridFile_GR_dE);
                                 File dNfile = new File(gridFile_GR_dN);
-
                                 heposTransformer = new GridShiftTransformer(dEfile, dNfile);
                             } catch (Exception e) {
                                 Log.e("GridShift", Log.getStackTraceString(e));
@@ -351,39 +362,23 @@ public class ReadProjectService extends Service {
 
                     switch (s) {
                         case "5513":
-                            initBase5513Proj4j();
-                            break;
-                       case "5514":
-                            initBase5514Proj4j();
-                            break;
-
-
+                        case "5514":
+                        case "5516":
                         case "150581":
-                        case "150582": {
-                            initBase5514Proj4j();
-
-                            if (cz_Q1 == null) {
-                                try (InputStream is = MyApp.visibleActivity.getAssets().open("table_yx_3_v1710_Q1.gsb")) {
-                                    cz_Q1 = new CzechGridShiftTransformer(is);
-                                } catch (Exception e) {
-                                    Log.e("GridShiftCZ", Log.getStackTraceString(e));
-                                    cz_Q1 = null;
+                        case "150582":
+                            try {
+                                if (nativeCzechTransformer == null) {
+                                    nativeCzechTransformer = new NativeCzechTransformer();
+                                    nativeCzechTransformer.init(MyApp.visibleActivity.getApplicationContext());
                                 }
+                                Deg2UTM.nativeCzechReady = true;
+                            } catch (Exception e) {
+                                Deg2UTM.nativeCzechReady = false;
+                                Log.e("NativeCzech", Log.getStackTraceString(e));
                             }
+                            break;
 
-                            if (cz_Q3 == null) {
-                                try (InputStream is = MyApp.visibleActivity.getAssets().open("table_yx_3_v1710_Q3.gsb")) {
-                                    cz_Q3 = new CzechGridShiftTransformer(is);
-                                } catch (Exception e) {
-                                    Log.e("GridShiftCZ", Log.getStackTraceString(e));
-                                    cz_Q3 = null;
-                                }
-                            }
-                        }
-                        break;
-
-
-                        default: {
+                            default: {
                             try {
                                 result = new ProjCoordinate();
                                 resultWgs = new ProjCoordinate();
@@ -452,58 +447,6 @@ public class ReadProjectService extends Service {
             MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
         }
         isCRSStarted = true;
-    }
-
-    private static void initBase5514Proj4j() {
-        try {
-            result = new ProjCoordinate();
-            resultWgs = new ProjCoordinate();
-            crsFactory = new CRSFactory();
-            ctFactory = new CoordinateTransformFactory();
-            WGS84 = crsFactory.createFromName("epsg:" + "4326");
-            try {
-                String epsg5514 =
-                        "+proj=krovak +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
-                                "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
-                                "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
-                                "+units=m +no_defs";
-                UTM = crsFactory.createFromParameters("EPSG:5514", epsg5514);
-
-            } catch (InvalidValueException | UnknownAuthorityCodeException |
-                     UnsupportedParameterException e) {
-
-                Log.e("GridShift", Log.getStackTraceString(e));
-            }
-            wgsToUtm = ctFactory.createTransform(WGS84, UTM);
-            utmToWgs = ctFactory.createTransform(UTM, WGS84);
-        } catch (Exception e) {
-        }
-    }
-
-    private static void initBase5513Proj4j() {
-        try {
-            result = new ProjCoordinate();
-            resultWgs = new ProjCoordinate();
-            crsFactory = new CRSFactory();
-            ctFactory = new CoordinateTransformFactory();
-            WGS84 = crsFactory.createFromName("epsg:" + "4326");
-            try {
-                String epsg5513 =
-                        "+proj=krovak +axis=swu +lat_0=49.5 +lon_0=24.8333333333333 +alpha=30.2881397527778 " +
-                                "+k=0.9999 +x_0=0 +y_0=0 +ellps=bessel " +
-                                "+towgs84=572.213,85.334,461.94,4.9732,1.529,5.2484,3.5378 " +
-                                "+units=m +no_defs";
-                UTM = crsFactory.createFromParameters("EPSG:5514", epsg5513);
-
-            } catch (InvalidValueException | UnknownAuthorityCodeException |
-                     UnsupportedParameterException e) {
-
-                Log.e("GridShift", Log.getStackTraceString(e));
-            }
-            wgsToUtm = ctFactory.createTransform(WGS84, UTM);
-            utmToWgs = ctFactory.createTransform(UTM, WGS84);
-        } catch (Exception e) {
-        }
     }
 
     private static String normalizeLayerName(String s) {
@@ -687,9 +630,9 @@ public class ReadProjectService extends Service {
                             }
                             isFeet = uom > 1;
                             if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
-                                if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
-                                    isFinishedDTM=true;
-                                }else {
+                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
+                                    isFinishedDTM = true;
+                                } else {
                                     DataSaved.filteredFaces = new ArrayList<>();
                                     DataSaved.dxfFaces = new ArrayList<>();
                                     dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
@@ -859,9 +802,10 @@ public class ReadProjectService extends Service {
                             isFeet = uom > 1;
                             parserStatus = "Reading TRM...";
                             if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
-                                if(licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO){
-                                    isFinishedDTM=true;
-                                }else {
+                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
+                                    isFinishedDTM = true;
+
+                                } else {
 
                                     DataSaved.filteredFaces = new ArrayList<>();
                                     DataSaved.dxfFaces = new ArrayList<>();

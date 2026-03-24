@@ -24,6 +24,13 @@ public class CZECH_REPUBLICCRSCases {
                 ReadProjectService.startCRS();
                 dialog.dismiss();
                 break;
+                 case "CZECH_REPUBLIC__S_JTSK__KROVAK_MODIFIED__5516.SP":
+                MyData.push("SECONDO_S_CRS", "5516");
+                DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
+                activity.recreate();
+                ReadProjectService.startCRS();
+                dialog.dismiss();
+                break;
 
             case "SJTSK_FERRO_NO_V1710_Grid.SP":
                 MyData.push("SECONDO_S_CRS", "150581");

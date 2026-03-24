@@ -9,21 +9,26 @@ import java.io.InputStream;
 
 public class ProjAssetUtils {
 
-    public static File copyProjDbIfNeeded(Context context) throws Exception {
+    public static File copyProjAssetsIfNeeded(Context context) throws Exception {
         File projDir = new File(context.getFilesDir(), "proj");
         if (!projDir.exists() && !projDir.mkdirs()) {
             throw new RuntimeException("Impossibile creare dir PROJ: " + projDir.getAbsolutePath());
         }
 
-        File projDb = new File(projDir, "proj.db");
-        if (projDb.exists() && projDb.length() > 0) {
-            return projDir;
+        copyAssetIfNeeded(context.getAssets(), "proj/proj.db", new File(projDir, "proj.db"));
+        copyAssetIfNeeded(context.getAssets(), "proj/table_yx_3_v1710_Q1.gsb", new File(projDir, "table_yx_3_v1710_Q1.gsb"));
+        copyAssetIfNeeded(context.getAssets(), "proj/table_yx_3_v1710_Q3.gsb", new File(projDir, "table_yx_3_v1710_Q3.gsb"));
+
+        return projDir;
+    }
+
+    private static void copyAssetIfNeeded(AssetManager assetManager, String assetPath, File outFile) throws Exception {
+        if (outFile.exists() && outFile.length() > 0) {
+            return;
         }
 
-        AssetManager assetManager = context.getAssets();
-
-        try (InputStream in = assetManager.open("proj/proj.db");
-             FileOutputStream out = new FileOutputStream(projDb)) {
+        try (InputStream in = assetManager.open(assetPath);
+             FileOutputStream out = new FileOutputStream(outFile)) {
 
             byte[] buffer = new byte[8192];
             int read;
@@ -32,7 +37,5 @@ public class ProjAssetUtils {
             }
             out.flush();
         }
-
-        return projDir;
     }
 }

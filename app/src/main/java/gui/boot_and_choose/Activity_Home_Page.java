@@ -56,6 +56,7 @@ import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.projects.PickProject;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.NativeCzechGridTransformer;
 import packexcalib.gnss.NativeCzechTransformer;
 import services.ReadProjectService;
 import services.UpdateValuesService;
@@ -108,9 +109,9 @@ public class Activity_Home_Page extends BaseClass {
         }
 
         onClick();
-
         scaricaGeoidi();
-        provaPROJ();
+
+
 
 
     }
@@ -316,7 +317,7 @@ public class Activity_Home_Page extends BaseClass {
             if(isTech){
                 testSP.setVisibility(View.VISIBLE);
             }else {
-                testSP.setVisibility(View.INVISIBLE);
+                testSP.setVisibility(View.VISIBLE);
             }
             if (DataSaved.gpsOk && errorCode == 0) {
                 keyLic.setImageTintList(ColorStateList.valueOf(Color.GREEN));
@@ -460,23 +461,40 @@ public class Activity_Home_Page extends BaseClass {
     }
 
     public void provaPROJ(){
-        NativeCzechTransformer transformer = new NativeCzechTransformer();
         try {
-            transformer.init(getApplicationContext());
-            double lon = 17.304690900;
-            double lat = 49.582911992;
-            double h = 0.0;
+            NativeCzechTransformer base = new NativeCzechTransformer();
+            base.init(getApplicationContext());
 
-            double[] r5514 = transformer.wgs84To5514(lon, lat, h);
-            double[] r5513 = transformer.wgs84To5513(lon, lat, h);
+            NativeCzechGridTransformer grid = new NativeCzechGridTransformer();
+            grid.init(getApplicationContext());
 
-            Log.w("PROJ_TEST", "5514: " + r5514[0] + ", " + r5514[1] + ", " + r5514[2]);
-            Log.d("PROJ_TEST", "5513: " + r5513[0] + ", " + r5513[1] + ", " + r5513[2]);
+            double lon1 = 17.304648715;
+            double lat1 = 49.582821694;
 
+            double[] b1 = base.wgs84To5514(lon1, lat1, 0.0);
+            double[] g1 = grid.wgs84To150581(lon1, lat1, 0.0);
+            double[] q3only1 = grid.wgs84GridOnlyQ3(lon1, lat1, 0.0);
 
-            transformer.close();
-        } catch (Exception e) {
-            Log.e("PROJ_TEST",Log.getStackTraceString(e));
+            Log.d("GRID_TEST", "P1 base5514 = " + b1[0] + ", " + b1[1]);
+            Log.d("GRID_TEST", "P1 150581  = " + g1[0] + ", " + g1[1]);
+            Log.d("GRID_TEST", "P1 Q3only  = " + q3only1[0] + ", " + q3only1[1]);
+
+            double lon2 = 17.87884772222;
+            double lat2 = 49.91787736111;
+
+            double[] b2 = base.wgs84To5514(lon2, lat2, 0.0);
+            double[] g2 = grid.wgs84To150582(lon2, lat2, 0.0);
+            double[] q1only2 = grid.wgs84GridOnlyQ1(lon2, lat2, 0.0);
+
+            Log.d("GRID_TEST", "P2 base5514 = " + b2[0] + ", " + b2[1]);
+            Log.d("GRID_TEST", "P2 150582  = " + g2[0] + ", " + g2[1]);
+            Log.d("GRID_TEST", "P2 Q1only  = " + q1only2[0] + ", " + q1only2[1]);
+
+            grid.close();
+            base.close();
+
+        } catch (Throwable t) {
+            Log.e("GRID_TEST", "Errore GRID_TEST", t);
         }
 
 

@@ -19,7 +19,7 @@ public class NativeCzechTransformer {
             close();
         }
 
-        File projDir = ProjAssetUtils.copyProjDbIfNeeded(context);
+        File projDir = ProjAssetUtils.copyProjAssetsIfNeeded(context);
         handle = nativeInit(projDir.getAbsolutePath());
 
         if (handle == 0) {
@@ -32,6 +32,14 @@ public class NativeCzechTransformer {
         double[] out = nativeWgs84To5514(handle, lon, lat, h);
         if (out == null || out.length < 3) {
             throw new RuntimeException("Trasformazione 5514 fallita");
+        }
+        return out;
+    }
+    public double[] wgs84To5516(double lon, double lat, double h) {
+        checkInit();
+        double[] out = nativeWgs84To5516(handle, lon, lat, h);
+        if (out == null || out.length < 3) {
+            throw new RuntimeException("Trasformazione 5516 fallita");
         }
         return out;
     }
@@ -61,5 +69,6 @@ public class NativeCzechTransformer {
     private static native long nativeInit(String projDataDir);
     private static native double[] nativeWgs84To5514(long handle, double lon, double lat, double h);
     private static native double[] nativeWgs84To5513(long handle, double lon, double lat, double h);
+    private static native double[] nativeWgs84To5516(long handle, double lon, double lat, double h);
     private static native void nativeClose(long handle);
 }

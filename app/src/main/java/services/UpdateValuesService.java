@@ -31,6 +31,7 @@ import gui.MyApp;
 import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
+import packexcalib.gnss.NativeCzechTransformer;
 import utils.MyData;
 
 public class UpdateValuesService extends Service {
@@ -2344,6 +2345,7 @@ public class UpdateValuesService extends Service {
                     } catch (Exception e) {
                         Log.e("Error", "Errore nell'inizializzazione di CanSender: " + e.getMessage());
                     }
+
                     result = new ProjCoordinate();
                     shifted = new ProjCoordinate();
                     resultWgs = new ProjCoordinate();
