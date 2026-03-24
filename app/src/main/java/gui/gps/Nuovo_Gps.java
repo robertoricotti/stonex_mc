@@ -143,17 +143,21 @@ public class Nuovo_Gps extends BaseClass {
 
         }
         try {
-            String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
-            if (ssid != null) {
+            switch (DataSaved.ConnectionStatus){
+                case 0:
+                    wifistate.setImageResource(R.drawable.network_off);
+                    break;
 
-                wifistate.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
-                txssid.setText(ssid.replaceAll("\"", ""));
+                case 1:
+                    wifistate.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                    break;
 
-            } else {
-
-                wifistate.setImageResource(R.drawable.wifi_vuoto);
-                txssid.setText("DISCONNECTED");
-
+                case 2:
+                    wifistate.setImageResource(R.drawable.sim_96);
+                    break;
+                default:
+                    wifistate.setImageResource(R.drawable.network_off);
+                    break;
             }
 
         } catch (Exception e) {

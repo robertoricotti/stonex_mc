@@ -47,6 +47,7 @@ public class NetworkConfigSettings extends AppCompatActivity {
 
     private ImageView networkStatus;
     private ImageView btnBack, btnSave;
+    private ImageView imgSat;
 
     private TextView selWifi;
     private TextView selSIM;
@@ -116,9 +117,16 @@ public class NetworkConfigSettings extends AppCompatActivity {
     // Initialization
     // =========================================================
 
+    public void updateUI(){
+        if(DataSaved.gpsOk){
+            imgSat.setImageTintList(getColorStateList(R.color.green));
+        }else {
+            imgSat.setImageTintList(getColorStateList(R.color.red));
+        }
+    }
     private void bindViews() {
         progressBar = findViewById(R.id.progressBar);
-
+        imgSat=findViewById(R.id.imgSat);
         networkStatus = findViewById(R.id.img00);
 
         selWifi = findViewById(R.id.sel_wifi);

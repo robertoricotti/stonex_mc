@@ -1,6 +1,7 @@
 package gui;
 
 
+import static gui.tech_menu.NetworkConfigSettings.getConnectionType;
 import static services.CanService.boom1Disc;
 import static services.CanService.boom1OK;
 import static services.CanService.boom2Disc;
@@ -28,6 +29,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -109,6 +113,7 @@ import gui.tech_menu.FrameCalib;
 import gui.tech_menu.GPS_Autocalib;
 import gui.tech_menu.LinkageCalib;
 import gui.tech_menu.MastLinkCalib;
+import gui.tech_menu.NetworkConfigSettings;
 import gui.tech_menu.Nuova_Blade_Calib;
 import gui.tech_menu.Nuova_Machine_Settings;
 import gui.tech_menu.StickCalib;
@@ -132,8 +137,12 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+    NetworkConfigSettings.ConnectionType type;
+    /// /////////
     public static volatile boolean TEST_MODE = false;
-    public static volatile boolean isCRSStarted=false;
+    public static volatile boolean isCRSStarted = false;
     public static int MAX_NUMERO_FACCE = 5000;
     public static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio
@@ -179,12 +188,14 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     @Override
     public void onCreate() {
         super.onCreate();
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        type = getConnectionType(this);
         if (Build.BRAND.equals("MEGA_1")) {
             MAX_NUMERO_FACCE = 10000;
         }
         UpdateValuesService.isUpodating = true;
         registerActivityLifecycleCallbacks(this);
-        Log.d("trt", Build.BRAND);
+
         if (Build.BRAND.equals("MEGA_1") || Build.BRAND.equals("TANK2_7_10") || Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("qti") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")) {
             isApollo = true;
             folderPath = "/StonexMC_V4";
@@ -298,6 +309,7 @@ git push
     @Override
     public void onActivityStarted(Activity activity) {
         if (activity != null) {
+            registerNetworkCallback();
 
             if (activity instanceof My3DActivity) {
                 startConditionChecker(activity);
@@ -437,6 +449,9 @@ git push
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
+        if(activity!=null){
+            unregisterNetworkCallback();
+        }
         if (activity instanceof My3DActivity) {
             stopConditionChecker();
             stopSound();
@@ -470,7 +485,6 @@ git push
                         public void run() {
 
                             try {
-                                Log.d("SECONDO_CRS", DataSaved.SECONDO_S_CRS+"   "+DataSaved.DELTA_HDT_SMC+"   "+NmeaListener.AGGIUNTA_HDT);
                                 if (DataSaved.isWL == DRILL) {
                                     DataSaved.lrBucket = DataSaved.lrTool;
                                 }
@@ -736,6 +750,8 @@ git push
             ((Drill_Activity) activity).updateUI();
         } else if (activity instanceof PickReport) {
             ((PickReport) activity).updateUI();
+        } else if (activity instanceof NetworkConfigSettings) {
+            ((NetworkConfigSettings) activity).updateUI();
         }
 
     }
@@ -1003,5 +1019,67 @@ git push
         });
     }
 
+    private void registerNetworkCallback() {
+        if (connectivityManager == null) return;
+
+        if (networkCallback == null) {
+            networkCallback = new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onAvailable(Network network) {
+                    refreshNetworkState();
+                }
+
+                @Override
+                public void onLost(Network network) {
+                    refreshNetworkState();
+                }
+
+                @Override
+                public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                    refreshNetworkState();
+                }
+            };
+        }
+
+        try {
+            connectivityManager.registerDefaultNetworkCallback(networkCallback);
+        } catch (Exception e) {
+            Log.e("MyApp", "registerDefaultNetworkCallback error", e);
+            refreshNetworkState();
+        }
+    }
+
+    private void unregisterNetworkCallback() {
+        if (connectivityManager == null || networkCallback == null) return;
+
+        try {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        } catch (Exception e) {
+            Log.w("MyApp", "unregisterNetworkCallback error", e);
+        }
+    }
+
+    private void refreshNetworkState() {
+        NetworkConfigSettings.ConnectionType type = getConnectionType(this);
+        updateNetworkIcon(type);
+    }
+
+    private void updateNetworkIcon(NetworkConfigSettings.ConnectionType type) {
+        switch (type) {
+            case WIFI:
+                DataSaved.ConnectionStatus = 1;
+                break;
+
+            case MOBILE:
+                DataSaved.ConnectionStatus = 2;
+                break;
+
+            case NONE:
+            default:
+                DataSaved.ConnectionStatus = 0;
+                break;
+        }
+
+    }
 
 }

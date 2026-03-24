@@ -389,67 +389,45 @@ public class Deg2UTM {
                             Northing = shifted.y + 2000000;
                             Quota = shifted.z;
 
-                        } else if (crs.equals("150581") && cz_Q1 != null) {
-                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
-                            if (wgsToUtm != null && result != null) {
-                                inWgs.x = Lon;
-                                inWgs.y = Lat;
-                                inWgs.z = q;
-                                wgsToUtm.transform(inWgs, result);
-
-                                // Base 5514:
-                                // result.x ~ -500000
-                                // result.y ~ -1088000
-                                //
-                                // Q1 vuole coordinate positive:
-                                double gx = -result.x;
-                                double gy = -result.y;
-
-                                double[] dbg = cz_Q1.debugShift(gx, gy);
-                                if (!Double.isNaN(dbg[0]) && !Double.isNaN(dbg[1])) {
-                                    // Dalle prove reali su SJTSK_FERRO_NO_V1710_GRID:
-                                    // il contributo corretto è dbg[1] (dY interpolato)
-                                    gx = gx - dbg[1];
-                                    gy = gy + dbg[1];
-                                }
-
-                                // ritorno alla convenzione runtime dell'app
-                                Easting = -gx;
-                                Northing = -gy;
-                                Quota = q;
-                            }
-
-                        } else if (crs.equals("150582") && cz_Q1 != null) {
-                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
-                            if (wgsToUtm != null && result != null) {
-                                inWgs.x = Lon;
-                                inWgs.y = Lat;
-                                inWgs.z = q;
-                                wgsToUtm.transform(inWgs, result);
-
-                                // Base 5514:
-                                // result.x ~ -500000
-                                // result.y ~ -1088000
-                                //
-                                // Q1 vuole coordinate positive:
-                                double gx = -result.x;
-                                double gy = -result.y;
-
-                                double[] dbg = cz_Q1.debugShift(gx, gy);
-                                if (!Double.isNaN(dbg[0]) && !Double.isNaN(dbg[1])) {
-                                    // Dalle prove reali su SJTSK_FERRO_NO_V1710_GRID:
-                                    // il contributo corretto è dbg[1] (dY interpolato)
-                                    gx = gx - dbg[1];
-                                    gy = gy + dbg[1];
-                                }
-
-                                // ritorno alla convenzione runtime dell'app
-                                Easting = gx;
-                                Northing = gy;
-                                Quota = q;
-                            }
-
                         }
+                        else if (crs.equals("150581") && cz_Q3 != null) {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
+
+                            if (wgsToUtm != null && result != null) {
+                                inWgs.x = Lon;
+                                inWgs.y = Lat;
+                                inWgs.z = q;
+                                wgsToUtm.transform(inWgs, result);
+
+                                // 5514 base negativo
+                                ProjCoordinate p = new ProjCoordinate(result.x, result.y, q);
+                                boolean ok = cz_Q3.applyInPlace(p);
+
+                                Easting = ok ? p.x : result.x;
+                                Northing = ok ? p.y : result.y;
+                                Quota = q;
+                            }
+                        }
+                        else if (crs.equals("150582") && cz_Q1 != null) {
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
+
+                            if (wgsToUtm != null && result != null) {
+                                inWgs.x = Lon;
+                                inWgs.y = Lat;
+                                inWgs.z = q;
+                                wgsToUtm.transform(inWgs, result);
+
+                                // porto il base negativo in positivo per interrogare Q1
+                                ProjCoordinate p = new ProjCoordinate(-result.x, -result.y, q);
+                                boolean ok = cz_Q1.applyInPlace(p);
+
+                                Easting = ok ? p.x : -result.x;
+                                Northing = ok ? p.y : -result.y;
+                                Quota = q;
+                            }
+                        }
+
+
                         else {
                             NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
                             if (wgsToUtm != null && result != null) {

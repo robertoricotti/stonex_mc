@@ -2,166 +2,176 @@ package packexcalib.gnss;
 
 import org.locationtech.proj4j.ProjCoordinate;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public final class CzechGridShiftTransformer {
-    private final double sLat, nLat, wLon, eLon; // METERS
+
+    private final double sLat;
+    private final double nLat;
+    private final double wLon;
+    private final double eLon;
     private final double step;
-    private final int rows, cols;
-    private final float[] dY; // shift su Y/N
-    private final float[] dX; // shift su X/E
+
+    private final int rows;
+    private final int cols;
+
+    // File table_yx: primo float = shift Y, secondo float = shift X
+    private final float[] dY;
+    private final float[] dX;
+
     private static final float NODATA = 9999f;
 
     public CzechGridShiftTransformer(InputStream is) throws IOException {
         DataInputStream in = new DataInputStream(new BufferedInputStream(is));
 
-        // Global header: NUM_OREC=11 record da 16 bytes
         int numOrec = readIntRecordValueLE(in, "NUM_OREC");
-        for (int i = 1; i < numOrec; i++) readRecord(in);
+        for (int i = 1; i < numOrec; i++) {
+            readRecord(in);
+        }
 
-        // Subheader: standard 11 record
-        double S=0, N=0, E=0, W=0, dN=0, dW=0;
+        double S = 0, N = 0, E = 0, W = 0, dN = 0, dW = 0;
         int gsCount = -1;
 
         for (int i = 0; i < 11; i++) {
             Record r = readRecord(in);
             String k = r.key.trim();
-            if (k.equals("S LAT")) S = leDouble(r.val);
-            else if (k.equals("N LAT")) N = leDouble(r.val);
-            else if (k.equals("E LONG")) E = leDouble(r.val);
-            else if (k.equals("W LONG")) W = leDouble(r.val);
-            else if (k.equals("N GRID")) dN = leDouble(r.val);
-            else if (k.equals("W GRID")) dW = leDouble(r.val);
-            else if (k.equals("GS_COUNT")) gsCount = leInt32(r.val);
+
+            if ("S LAT".equals(k)) {
+                S = leDouble(r.val);
+            } else if ("N LAT".equals(k)) {
+                N = leDouble(r.val);
+            } else if ("E LONG".equals(k)) {
+                E = leDouble(r.val);
+            } else if ("W LONG".equals(k)) {
+                W = leDouble(r.val);
+            } else if ("N GRID".equals(k)) {
+                dN = leDouble(r.val);
+            } else if ("W GRID".equals(k)) {
+                dW = leDouble(r.val);
+            } else if ("GS_COUNT".equals(k)) {
+                gsCount = leInt32(r.val);
+            }
         }
 
         this.sLat = S;
         this.nLat = N;
         this.eLon = E;
         this.wLon = W;
-
-        // nei tuoi file N_GRID e W_GRID sono uguali (step 2000)
         this.step = dN;
 
-        this.cols = (int)Math.round((eLon - wLon) / step) + 1;
-        this.rows = (int)Math.round((nLat - sLat) / step) + 1;
+        this.cols = (int) Math.round((eLon - wLon) / step) + 1;
+        this.rows = (int) Math.round((nLat - sLat) / step) + 1;
 
         int nodeCount = rows * cols;
-        // gsCount lo lasciamo come check informativo (non blocchiamo)
-        // if (gsCount > 0 && gsCount != nodeCount) { ... }
+        if (gsCount > 0 && gsCount != nodeCount) {
+            // non blocco: solo informativo
+            System.out.println("CZ grid warning: GS_COUNT=" + gsCount + " computed=" + nodeCount);
+        }
 
         dY = new float[nodeCount];
         dX = new float[nodeCount];
 
-        byte[] buf = new byte[16]; // 4 float LE per nodo
+        byte[] buf = new byte[16];
         for (int i = 0; i < nodeCount; i++) {
             in.readFully(buf);
+
             float a = leFloat(buf, 0);
             float b = leFloat(buf, 4);
+
             dY[i] = a;
             dX[i] = b;
         }
     }
-    public double[] debugShift(double E, double N) {
-        int col = (int) Math.floor((E - wLon) / step);
-        int row = (int) Math.floor((nLat - N) / step);
 
-        if (col < 0 || col >= cols - 1 || row < 0 || row >= rows - 1) {
-            return new double[]{Double.NaN, Double.NaN};
-        }
-
-        int i00 = row * cols + col;
-        int i10 = i00 + 1;
-        int i01 = i00 + cols;
-        int i11 = i01 + 1;
-
-        float dy00 = dY[i00], dy10 = dY[i10], dy01 = dY[i01], dy11 = dY[i11];
-        float dx00 = dX[i00], dx10 = dX[i10], dx01 = dX[i01], dx11 = dX[i11];
-
-        if (dy00 == NODATA || dy10 == NODATA || dy01 == NODATA || dy11 == NODATA ||
-                dx00 == NODATA || dx10 == NODATA || dx01 == NODATA || dx11 == NODATA) {
-            return new double[]{Double.NaN, Double.NaN};
-        }
-
-        double e0 = wLon + col * step;
-        double n0 = nLat - row * step;
-
-        double t = (E - e0) / step;
-        double u = (n0 - N) / step;
-
-        double dYb =
-                (1 - t) * (1 - u) * dy00 +
-                        t * (1 - u) * dy10 +
-                        (1 - t) * u * dy01 +
-                        t * u * dy11;
-
-        double dXb =
-                (1 - t) * (1 - u) * dx00 +
-                        t * (1 - u) * dx10 +
-                        (1 - t) * u * dx01 +
-                        t * u * dx11;
-
-        return new double[]{dXb, dYb};
-    }
-    /** Versione zero-alloc: applica shift in-place su ProjCoordinate (x=E, y=N) */
-    public void applyInPlace(ProjCoordinate en) {
+    /**
+     * Applica lo shift al punto EN.
+     * x = Easting
+     * y = Northing
+     *
+     * Ritorna true se applicato, false se fuori griglia o nodata.
+     */
+    public boolean applyInPlace(ProjCoordinate en) {
         final double E = en.x;
         final double N = en.y;
 
-        final int col = (int)Math.floor((E - wLon) / step);
-        final int row = (int)Math.floor((N - sLat) / step);
+        // Convenzione coerente con il vecchio debugShift():
+        // righe indicizzate da nord verso sud
+        final int col = (int) Math.floor((E - wLon) / step);
+        final int row = (int) Math.floor((nLat - N) / step);
 
-        if (col < 0 || col >= cols - 1 || row < 0 || row >= rows - 1) return;
-
-        final double e0 = wLon + col * step;
-        final double n0 = sLat + row * step;
-        final double t = (E - e0) / step;
-        final double u = (N - n0) / step;
+        if (col < 0 || col >= cols - 1 || row < 0 || row >= rows - 1) {
+            return false;
+        }
 
         final int i00 = row * cols + col;
         final int i10 = i00 + 1;
         final int i01 = i00 + cols;
         final int i11 = i01 + 1;
 
-        final float dy00 = dY[i00], dy10 = dY[i10], dy01 = dY[i01], dy11 = dY[i11];
-        if (dy00 == NODATA || dy10 == NODATA || dy01 == NODATA || dy11 == NODATA) return;
+        final float dy00 = dY[i00];
+        final float dy10 = dY[i10];
+        final float dy01 = dY[i01];
+        final float dy11 = dY[i11];
 
-        final float dx00 = dX[i00], dx10 = dX[i10], dx01 = dX[i01], dx11 = dX[i11];
+        final float dx00 = dX[i00];
+        final float dx10 = dX[i10];
+        final float dx01 = dX[i01];
+        final float dx11 = dX[i11];
 
-        final double oneMinusT = 1.0 - t;
-        final double oneMinusU = 1.0 - u;
+        if (dy00 == NODATA || dy10 == NODATA || dy01 == NODATA || dy11 == NODATA ||
+                dx00 == NODATA || dx10 == NODATA || dx01 == NODATA || dx11 == NODATA) {
+            return false;
+        }
+
+        final double e0 = wLon + col * step;
+        final double n0 = nLat - row * step;
+
+        final double t = (E - e0) / step;
+        final double u = (n0 - N) / step;
+
+        final double omt = 1.0 - t;
+        final double omu = 1.0 - u;
 
         final double dYb =
-                oneMinusT * oneMinusU * dy00 +
-                        t * oneMinusU * dy10 +
-                        oneMinusT * u * dy01 +
-                        t * u * dy11;
+                omt * omu * dy00 +
+                        t   * omu * dy10 +
+                        omt * u   * dy01 +
+                        t   * u   * dy11;
 
         final double dXb =
-                oneMinusT * oneMinusU * dx00 +
-                        t * oneMinusU * dx10 +
-                        oneMinusT * u * dx01 +
-                        t * u * dx11;
+                omt * omu * dx00 +
+                        t   * omu * dx10 +
+                        omt * u   * dx01 +
+                        t   * u   * dx11;
 
         en.x = E + dXb;
         en.y = N + dYb;
+        return true;
     }
 
-    /** (opzionale) compatibilità col tuo codice attuale */
-    public void applyInPlace(double[] en) {
-        // delega senza allocazioni interne
+    public boolean applyInPlace(double[] en) {
+        if (en == null || en.length < 2) return false;
         ProjCoordinate tmp = new ProjCoordinate(en[0], en[1], 0);
-        applyInPlace(tmp);
-        en[0] = tmp.x;
-        en[1] = tmp.y;
+        boolean ok = applyInPlace(tmp);
+        if (ok) {
+            en[0] = tmp.x;
+            en[1] = tmp.y;
+        }
+        return ok;
     }
 
-    // -------- helpers --------
     private static final class Record {
         final String key;
         final byte[] val;
-        Record(String k, byte[] v){ key=k; val=v; }
+
+        Record(String k, byte[] v) {
+            key = k;
+            val = v;
+        }
     }
 
     private static Record readRecord(DataInputStream in) throws IOException {
@@ -180,80 +190,26 @@ public final class CzechGridShiftTransformer {
         return leInt32(r.val);
     }
 
-    private static int leInt32(byte[] v){
-        return (v[0] & 0xff) | ((v[1] & 0xff) << 8) | ((v[2] & 0xff) << 16) | ((v[3] & 0xff) << 24);
+    private static int leInt32(byte[] v) {
+        return (v[0] & 0xff) |
+                ((v[1] & 0xff) << 8) |
+                ((v[2] & 0xff) << 16) |
+                ((v[3] & 0xff) << 24);
     }
 
-    private static double leDouble(byte[] v){
+    private static double leDouble(byte[] v) {
         long bits = 0;
-        for (int i=7;i>=0;i--) bits = (bits<<8) | (v[i] & 0xffL);
+        for (int i = 7; i >= 0; i--) {
+            bits = (bits << 8) | (v[i] & 0xffL);
+        }
         return Double.longBitsToDouble(bits);
     }
 
-    private static float leFloat(byte[] b, int off){
+    private static float leFloat(byte[] b, int off) {
         int bits = (b[off] & 0xff) |
-                ((b[off+1] & 0xff) << 8) |
-                ((b[off+2] & 0xff) << 16) |
-                ((b[off+3] & 0xff) << 24);
+                ((b[off + 1] & 0xff) << 8) |
+                ((b[off + 2] & 0xff) << 16) |
+                ((b[off + 3] & 0xff) << 24);
         return Float.intBitsToFloat(bits);
-    }
-    public String debugCellDetailed(double E, double N) {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("INPUT E=").append(E).append(" N=").append(N).append('\n');
-        sb.append("BOUNDS x=[").append(wLon).append(", ").append(eLon).append("] ")
-                .append("y=[").append(sLat).append(", ").append(nLat).append("] ")
-                .append("step=").append(step).append('\n');
-        sb.append("rows=").append(rows).append(" cols=").append(cols).append('\n');
-
-        // Variante A: righe da sud verso nord
-        int colA = (int) Math.floor((E - wLon) / step);
-        int rowA = (int) Math.floor((N - sLat) / step);
-
-        sb.append("A south->north: col=").append(colA).append(" row=").append(rowA).append('\n');
-        if (colA >= 0 && colA < cols - 1 && rowA >= 0 && rowA < rows - 1) {
-            int i00 = rowA * cols + colA;
-            int i10 = i00 + 1;
-            int i01 = i00 + cols;
-            int i11 = i01 + 1;
-
-            sb.append("A idx: i00=").append(i00)
-                    .append(" i10=").append(i10)
-                    .append(" i01=").append(i01)
-                    .append(" i11=").append(i11).append('\n');
-
-            sb.append("A dY: ").append(dY[i00]).append(", ").append(dY[i10]).append(", ")
-                    .append(dY[i01]).append(", ").append(dY[i11]).append('\n');
-            sb.append("A dX: ").append(dX[i00]).append(", ").append(dX[i10]).append(", ")
-                    .append(dX[i01]).append(", ").append(dX[i11]).append('\n');
-        } else {
-            sb.append("A out of bounds\n");
-        }
-
-        // Variante B: righe da nord verso sud
-        int colB = (int) Math.floor((E - wLon) / step);
-        int rowB = (int) Math.floor((nLat - N) / step);
-
-        sb.append("B north->south: col=").append(colB).append(" row=").append(rowB).append('\n');
-        if (colB >= 0 && colB < cols - 1 && rowB >= 0 && rowB < rows - 1) {
-            int i00 = rowB * cols + colB;
-            int i10 = i00 + 1;
-            int i01 = i00 + cols;
-            int i11 = i01 + 1;
-
-            sb.append("B idx: i00=").append(i00)
-                    .append(" i10=").append(i10)
-                    .append(" i01=").append(i01)
-                    .append(" i11=").append(i11).append('\n');
-
-            sb.append("B dY: ").append(dY[i00]).append(", ").append(dY[i10]).append(", ")
-                    .append(dY[i01]).append(", ").append(dY[i11]).append('\n');
-            sb.append("B dX: ").append(dX[i00]).append(", ").append(dX[i10]).append(", ")
-                    .append(dX[i01]).append(", ").append(dX[i11]).append('\n');
-        } else {
-            sb.append("B out of bounds\n");
-        }
-
-        return sb.toString();
     }
 }

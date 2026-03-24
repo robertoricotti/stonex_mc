@@ -155,15 +155,26 @@ public class ExcavatorChooserActivity extends BaseClass {
             } else {
                 img00.setImageTintList(ColorStateList.valueOf(Color.RED));
             }
-            String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
-            if (ssid != null) {
+            try {
+                switch (DataSaved.ConnectionStatus){
+                    case 0:
+                        img01.setImageResource(R.drawable.network_off);
+                        break;
 
-                img01.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                    case 1:
+                        img01.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                        break;
 
-            } else {
+                    case 2:
+                        img01.setImageResource(R.drawable.sim_96);
+                        break;
+                    default:
+                        img01.setImageResource(R.drawable.network_off);
+                        break;
+                }
 
-                img01.setImageResource(R.drawable.wifi_vuoto);
-
+            } catch (Exception e) {
+                img01.setBackgroundColor(getColor(R.color.light_yellow));
             }
         } catch (Exception e) {
             img01.setImageResource(R.drawable.wifi_off_96);

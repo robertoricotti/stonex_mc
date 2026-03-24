@@ -13,6 +13,8 @@ import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.WHEELLOADER;
 
+import android.util.Log;
+
 import java.util.Arrays;
 
 import gui.MyApp;
@@ -697,7 +699,7 @@ public class ExcavatorLib {
             }
 
         } catch (Exception e) {
-            System.out.println("Error XYZ" + e);
+            Log.e("XYZ",Log.getStackTraceString(e));
         }
 
     }

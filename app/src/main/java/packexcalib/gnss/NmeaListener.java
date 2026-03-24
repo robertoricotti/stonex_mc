@@ -212,7 +212,6 @@ public class NmeaListener {
                         case "$GPHDT":
                         case "$GNHDT":
                         case "$HCHDT":
-
                             if (DataSaved.my_comPort != 0) {
                                 try {
                                     if (NmeaInput[1].equals("0.0000") || NmeaInput[1].equals("")) {
@@ -302,10 +301,11 @@ public class NmeaListener {
                 mZone = (int) data[0];
                 mChar = (char) data[1];
                 mch_Orientation = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{data[2], data[3]}) * 0.01;
+                mch_Orientation+=+AGGIUNTA_HDT;
                 if (mch_Orientation == 655.35) {
                     mch_Hdt_1 = 999.999;
                 } else {
-                    mch_Hdt_1 = wrap360(mch_Orientation+AGGIUNTA_HDT);
+                    mch_Hdt_1 = wrap360(mch_Orientation);
                 }
                 if (DataSaved.portView < 2) {
                     if (DataSaved.my_comPort == 0) {
@@ -441,11 +441,11 @@ public class NmeaListener {
             mLat_1 = o.latDeg;
             mLon_1 = o.lonDeg;
             tmpQuotaUTM = o.alt;
-            mch_Orientation = o.headingDeg;
+            mch_Orientation = o.headingDeg+AGGIUNTA_HDT;
             if (Double.isNaN(mch_Orientation)) {
                 mch_Hdt_1 = 999.999;
             } else {
-                mch_Hdt_1 = mch_Orientation+AGGIUNTA_HDT;
+                mch_Hdt_1 = mch_Orientation;
             }
             if (DataSaved.portView < 2) {
                 if (DataSaved.my_comPort == 0) {

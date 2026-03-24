@@ -57,18 +57,18 @@ public class OpenSerialPort {
                             if (Build.BRAND.equals("APOLLO2_10") || Build.BRAND.equals("APOLLO2_7") || Build.BRAND.equals("APOLLO2_12_PRO") || Build.BRAND.equals("APOLLO2_12_PLUS")
                                     || Build.BRAND.equals("MEGA_1")) {
                                 SerialPortManager.instance().sendCommand("CONFIG UNDULATION AUTO\r\n");
-                                SerialPortManager.instance().sendCommand("RTK TIMEOUT 20\r\n");
-                                //SerialPortManager.instance().sendCommand("GNHDT 0.05\r\n");
+                                SerialPortManager.instance().sendCommand("CONFIG RTK TIMEOUT 20\r\n");
+                                SerialPortManager.instance().sendCommand("CONFIG DGPS TIMEOUT 20\r\n");
                                 SerialPortManager.instance().sendCommand("GPHDT 0.05\r\n");
-                                //SerialPortManager.instance().sendCommand("GNGGA 0.05\r\n");
                                 SerialPortManager.instance().sendCommand("GPGGA 0.05\r\n");
                                 SerialPortManager.instance().sendCommand("GPGST 1.0\r\n");
                                 SerialPortManager.instance().sendCommand("GPRMC 0.1\r\n");
-                                //SerialPortManager.instance().sendCommand("GNRMC 0.1\r\n");
                                 SerialPortManager.instance().sendCommand("GPGSV 10.0\r\n");
                                 SerialPortManager.instance().sendCommand("SAVECONFIG\r\n");
                             } else {
                                 SerialPortManager.instance().sendCommand("CONFIG UNDULATION AUTO\r\n");
+                                SerialPortManager.instance().sendCommand("CONFIG RTK TIMEOUT 20\r\n");
+                                SerialPortManager.instance().sendCommand("CONFIG DGPS TIMEOUT 20\r\n");
                                 SerialPortManager.instance().sendCommand("GNGGA COM1 10\r\n");
                                 SerialPortManager.instance().sendCommand("GPGGA COM1 10\r\n");
                                 SerialPortManager.instance().sendCommand("GPHDT COM1 0.05\r\n");

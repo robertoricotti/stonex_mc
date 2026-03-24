@@ -311,7 +311,6 @@ public class Activity_Home_Page extends BaseClass {
 
     public void updateUI() {
         try {
-
             if(isTech){
                 testSP.setVisibility(View.VISIBLE);
             }else {
@@ -323,18 +322,25 @@ public class Activity_Home_Page extends BaseClass {
                 keyLic.setImageTintList(ColorStateList.valueOf(Color.RED));
             }
             try {
-                String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
-                if (ssid != null) {
+                switch (DataSaved.ConnectionStatus){
+                    case 0:
+                        wif.setImageResource(R.drawable.network_off);
+                        break;
 
-                    wif.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                    case 1:
+                        wif.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                        break;
 
-                } else {
-
-                    wif.setImageResource(R.drawable.wifi_vuoto);
-
+                    case 2:
+                        wif.setImageResource(R.drawable.sim_96);
+                        break;
+                    default:
+                        wif.setImageResource(R.drawable.network_off);
+                        break;
                 }
+
             } catch (Exception e) {
-                wif.setImageResource(R.drawable.wifi_off_96);
+                wif.setBackgroundColor(getColor(R.color.light_yellow));
             }
 
             if (isTech) {

@@ -45,12 +45,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/img00"
+            android:id="@+id/imgSat"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/custom_background_test3d_box"
             android:padding="5dp"
-            android:src="@drawable/baseline_signal_wifi_statusbar_4_bar_96"
+            android:src="@drawable/gnss_setup_btn"
             app:tint="@color/white" />
 
 
@@ -67,6 +67,14 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="italic" />
+        <ImageView
+            android:id="@+id/img00"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/baseline_signal_wifi_statusbar_4_bar_96"
+            app:tint="@color/white" />
 
     </LinearLayout>
 

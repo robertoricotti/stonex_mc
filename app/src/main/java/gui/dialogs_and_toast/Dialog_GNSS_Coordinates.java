@@ -580,7 +580,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                         if(DataSaved.my_comPort!=4){
                             latlon.setText("Lat: "+String.format("%.9f",NmeaListener.mLat_1)+" Lon: "+
-                                    String.format("%.9f",NmeaListener.mLon_1)+"  H: "+String.format("%.3f",(NmeaListener.tmpQuotaUTM+NmeaListener.tmpGeoidSeparator))+"\n"+"Zone: "+NmeaListener.mZone+""+NmeaListener.mChar);
+                                    String.format("%.9f",NmeaListener.mLon_1)+"  H: "+String.format("%.3f",(NmeaListener.Quota1))+"\n"+"Zone: "+NmeaListener.mZone+""+NmeaListener.mChar);
                         }else {
                             latlon.setText("");
                         }
@@ -645,7 +645,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     private static String[]coordShowed(int mode){
         String s0="";
         String s4="";
-        if(nmeaSTX_Disc){
+        if(nmeaSTX_Disc&&DataSaved.my_comPort==0){
             s0="E: --------.---  N: --------.---  Z: ---.---";
 
         }else {
@@ -655,7 +655,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         String s2="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "  " + Utils.getMetriSimbolCoords();
         String s3="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "  " + Utils.getMetriSimbolCoords();
 
-        if(nmeaSTX_Disc){
+        if(nmeaSTX_Disc&&DataSaved.my_comPort==0){
 
             s4="N: --------.---  E: --------.---  Z: ---.---";
         }else {

@@ -476,15 +476,26 @@ public class Nuova_User_Settings extends BaseClass {
             } else {
                 status.setImageTintList(ColorStateList.valueOf(Color.RED));
             }
-            String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
-            if (ssid != null) {
+            try {
+                switch (DataSaved.ConnectionStatus){
+                    case 0:
+                        wifi.setImageResource(R.drawable.network_off);
+                        break;
 
-                wifi.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                    case 1:
+                        wifi.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                        break;
 
-            } else {
+                    case 2:
+                        wifi.setImageResource(R.drawable.sim_96);
+                        break;
+                    default:
+                        wifi.setImageResource(R.drawable.network_off);
+                        break;
+                }
 
-                wifi.setImageResource(R.drawable.wifi_vuoto);
-
+            } catch (Exception e) {
+                wifi.setBackgroundColor(getColor(R.color.light_yellow));
             }
 
             if (MyData.get_Double("Pivot_Height_Alarm") == 10000000.0d) {

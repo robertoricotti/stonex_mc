@@ -26,6 +26,7 @@ import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_SSID;
 import gui.dialogs_user_settings.Dialog_QR;
 import gui.gps.Nuovo_Gps;
+import packexcalib.exca.DataSaved;
 import services.UpdateValuesService;
 import utils.LanguageSetter;
 import utils.MyData;
@@ -230,15 +231,21 @@ public class Drill_MainPage extends BaseClass {
             lock.setImageResource(R.drawable.lock);
         }
         try {
-            String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
-            if (ssid != null) {
-                System.out.println("Connesso al Wi-Fi: " + ssid);
-                wifi.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
-                mSSID.setText(ssid.replaceAll("\"", ""));
-            } else {
-                System.out.println("Non connesso a una rete Wi-Fi");
-                wifi.setImageResource(R.drawable.wifi_vuoto);
-                mSSID.setText("DISCONNECTED");
+            switch (DataSaved.ConnectionStatus){
+                case 0:
+                    wifi.setImageResource(R.drawable.network_off);
+                    break;
+
+                case 1:
+                    wifi.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                    break;
+
+                case 2:
+                    wifi.setImageResource(R.drawable.sim_96);
+                    break;
+                default:
+                    wifi.setImageResource(R.drawable.network_off);
+                    break;
             }
 
         } catch (Exception e) {

@@ -254,18 +254,25 @@ public class Nuova_Blade_Calib extends BaseClass {
             hdt = hdt % 360;
             txtCoord.setText("     E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[0])) + "    N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.bucketCoord[2])) + "   HDT: " + String.format("%.2f", hdt).replace(",", ".") + " °");
             try {
-                String ssid = WifiHelper.getConnectedSSID(getApplicationContext());
-                if (ssid != null) {
+                switch (DataSaved.ConnectionStatus){
+                    case 0:
+                        wifi.setImageResource(R.drawable.network_off);
+                        break;
 
-                    wifi.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                    case 1:
+                        wifi.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                        break;
 
-                } else {
-
-                    wifi.setImageResource(R.drawable.wifi_vuoto);
-
+                    case 2:
+                        wifi.setImageResource(R.drawable.sim_96);
+                        break;
+                    default:
+                        wifi.setImageResource(R.drawable.network_off);
+                        break;
                 }
+
             } catch (Exception e) {
-                wifi.setImageResource(R.drawable.wifi_off_96);
+                wifi.setBackgroundColor(getColor(R.color.light_yellow));
             }
 
 

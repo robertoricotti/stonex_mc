@@ -99,7 +99,7 @@ public class SerialReadThread extends Thread {
         });
 
 
-        if(difference!=null&&difference.open()){
+        if (difference != null && difference.open()) {
             mIsOpen = true;
             Log.d(TAG, "OPEN");
         }
@@ -171,6 +171,9 @@ public class SerialReadThread extends Thread {
 
         try {
             mmInputStream_Gnss.close();
+            if (difference != null) {
+                difference.close();
+            }
         } catch (IOException e) {
             //LogPlus.e("anormale", e);
         } finally {
@@ -192,7 +195,7 @@ public class SerialReadThread extends Thread {
         difference.writeGGA(data, length);
     }
 
-    public boolean isOpen(){
+    public boolean isOpen() {
         return mIsOpen;
     }
 

@@ -108,7 +108,7 @@ public class WebSocketPlugin {
 
     private WebSocketPlugin(Context context) {
         this.appContext = context;
-        this.client = new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).build();
+        this.client = new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).pingInterval(30, TimeUnit.SECONDS).build();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
         this.s3ManagerSingleton = S3ManagerSingleton.getInstance(context);
     }
