@@ -6,11 +6,11 @@ import java.io.File;
 
 public class NativeCzechTransformer {
 
-//    static {
-//        System.loadLibrary("sqlite3");
-//        System.loadLibrary("proj");
-//        System.loadLibrary("nativeczechproj");
-//    }
+    static {
+        System.loadLibrary("sqlite3");
+        System.loadLibrary("proj");
+        System.loadLibrary("nativeczechproj");
+    }
 
     private long handle = 0;
 

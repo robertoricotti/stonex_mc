@@ -56,6 +56,7 @@ import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.projects.PickProject;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.NativeCzechTransformer;
 import services.ReadProjectService;
 import services.UpdateValuesService;
 import utils.LanguageSetter;
@@ -109,6 +110,7 @@ public class Activity_Home_Page extends BaseClass {
         onClick();
 
         scaricaGeoidi();
+        provaPROJ();
 
 
     }
@@ -454,6 +456,29 @@ public class Activity_Home_Page extends BaseClass {
         super.onResume();
        // MyDeviceManager.UsbDebugUtils.logUsbDevices(this);
        // InputDebugUtils.logInputDevices();
+
+    }
+
+    public void provaPROJ(){
+        NativeCzechTransformer transformer = new NativeCzechTransformer();
+        try {
+            transformer.init(getApplicationContext());
+            double lon = 17.304690900;
+            double lat = 49.582911992;
+            double h = 0.0;
+
+            double[] r5514 = transformer.wgs84To5514(lon, lat, h);
+            double[] r5513 = transformer.wgs84To5513(lon, lat, h);
+
+            Log.w("PROJ_TEST", "5514: " + r5514[0] + ", " + r5514[1] + ", " + r5514[2]);
+            Log.d("PROJ_TEST", "5513: " + r5513[0] + ", " + r5513[1] + ", " + r5513[2]);
+
+
+            transformer.close();
+        } catch (Exception e) {
+            Log.e("PROJ_TEST",Log.getStackTraceString(e));
+        }
+
 
     }
 }
