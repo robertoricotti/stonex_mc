@@ -1,3 +1,0 @@
-C:/Developement/mc_bitbucket/app/.cxx/RelWithDebInfo/6dk4j3bh/x86/CMakeFiles/native-lib.dir
-C:/Developement/mc_bitbucket/app/.cxx/RelWithDebInfo/6dk4j3bh/x86/CMakeFiles/edit_cache.dir
-C:/Developement/mc_bitbucket/app/.cxx/RelWithDebInfo/6dk4j3bh/x86/CMakeFiles/rebuild_cache.dir

@@ -1,1 +1,0 @@
-C:\Developement\mc_bitbucket\app\src\main\cpp\CMakeLists.txt
