@@ -16,8 +16,8 @@ public class ProjAssetUtils {
         }
 
         copyAssetIfNeeded(context.getAssets(), "proj/proj.db", new File(projDir, "proj.db"));
-        copyAssetIfNeeded(context.getAssets(), "proj/table_yx_3_v1710_Q1.gsb", new File(projDir, "table_yx_3_v1710_Q1.gsb"));
-        copyAssetIfNeeded(context.getAssets(), "proj/table_yx_3_v1710_Q3.gsb", new File(projDir, "table_yx_3_v1710_Q3.gsb"));
+        copyAssetIfNeeded(context.getAssets(), "proj/cz_cuzk_CR-2005.tif", new File(projDir, "cz_cuzk_CR-2005.tif"));
+        copyAssetIfNeeded(context.getAssets(), "proj/cz_cuzk_table_-y-x_3_v1710.tif", new File(projDir, "cz_cuzk_table_-y-x_3_v1710.tif"));
 
         return projDir;
     }

@@ -31,7 +31,6 @@ import gui.MyApp;
 import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
-import packexcalib.gnss.NativeCzechTransformer;
 import utils.MyData;
 
 public class UpdateValuesService extends Service {

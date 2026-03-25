@@ -1,116 +1,108 @@
 #include <jni.h>
 #include <cstring>
-#include <android/log.h>
+#include <string>
+#include <cmath>
 #include "proj.h"
-
-#define TAG "NativeCzechProj"
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,  TAG, __VA_ARGS__)
 
 struct ProjHolder {
     PJ_CONTEXT* ctx = nullptr;
-    PJ* to5514 = nullptr;
-    PJ* to5513 = nullptr;
-    PJ* to5516 = nullptr;   // custom NO v1710 oppure EPSG:5516 fallback
+    PJ* prepared = nullptr;
+    std::string lastError;
 };
 
-static const char* ctxErr(PJ_CONTEXT* ctx) {
-    int err = proj_context_errno(ctx);
-    return err ? proj_context_errno_string(ctx, err) : "no error";
+static void setLastError(ProjHolder* holder, const std::string& msg) {
+    if (holder) holder->lastError = msg;
 }
 
-static const char* pjErr(PJ* P) {
-    int err = proj_errno(P);
-    return err ? proj_errno_string(err) : "no error";
+static void setLastErrorFromContext(ProjHolder* holder, const std::string& prefix = "") {
+    if (!holder || !holder->ctx) {
+        if (holder) holder->lastError = prefix.empty() ? "Errore PROJ sconosciuto" : prefix;
+        return;
+    }
+
+    int err = proj_context_errno(holder->ctx);
+    const char* errStr = proj_context_errno_string(holder->ctx, err);
+
+    std::string out;
+    if (!prefix.empty()) {
+        out += prefix;
+        out += " | ";
+    }
+    out += "PROJ errno=" + std::to_string(err);
+    if (errStr && *errStr) {
+        out += " | ";
+        out += errStr;
+    }
+
+    holder->lastError = out;
+}
+
+static std::string joinPath(const char* a, const char* b) {
+    if (!a || !*a) return b ? std::string(b) : std::string();
+    std::string s(a);
+    if (!s.empty() && s.back() != '/' && s.back() != '\\') s += "/";
+    if (b) s += b;
+    return s;
 }
 
 static PJ* normalizeIfPossible(PJ_CONTEXT* ctx, PJ* raw) {
     if (!raw) return nullptr;
+
     PJ* normalized = proj_normalize_for_visualization(ctx, raw);
     if (!normalized) {
-        LOGE("proj_normalize_for_visualization fallita: %s", ctxErr(ctx));
         proj_destroy(raw);
         return nullptr;
     }
+
     proj_destroy(raw);
     return normalized;
 }
 
-static PJ* createTransform(PJ_CONTEXT* ctx, const char* src, const char* dst) {
-    PJ* raw = proj_create_crs_to_crs(ctx, src, dst, nullptr);
-    if (!raw) {
-        LOGE("proj_create_crs_to_crs(%s -> %s) fallita: %s", src, dst, ctxErr(ctx));
-        return nullptr;
-    }
-    PJ* normalized = normalizeIfPossible(ctx, raw);
-    if (!normalized) {
-        LOGE("normalize %s -> %s fallita: %s", src, dst, ctxErr(ctx));
-        return nullptr;
-    }
-    LOGI("Transform creata: %s -> %s", src, dst);
-    return normalized;
-}
-
-static PJ* createPipeline(PJ_CONTEXT* ctx, const char* pipeline, const char* label) {
-    PJ* raw = proj_create(ctx, pipeline);
-    if (!raw) {
-        LOGE("proj_create(%s) fallita: %s", label, ctxErr(ctx));
-        return nullptr;
-    }
-    PJ* normalized = normalizeIfPossible(ctx, raw);
-    if (!normalized) {
-        LOGE("normalize pipeline %s fallita: %s", label, ctxErr(ctx));
-        return nullptr;
-    }
-    LOGI("Pipeline creata: %s", label);
-    return normalized;
-}
-
-static jdoubleArray transformInternal(JNIEnv* env, PJ* transform, double lon, double lat, double h) {
+static jdoubleArray transformWithPJ(JNIEnv* env, ProjHolder* holder, PJ* transform, double x, double y, double z) {
     if (!transform) {
-        LOGE("transformInternal: transform nullo");
+        setLastError(holder, "Transform null");
         return nullptr;
     }
 
     proj_errno_reset(transform);
+    //if (holder && holder->ctx) proj_context_errno_set(holder->ctx, 0);
 
     PJ_COORD in;
     std::memset(&in, 0, sizeof(PJ_COORD));
-
-    // Con proj_normalize_for_visualization:
-    // input geografico in gradi = lon, lat, h
-    in.lpzt.lam = lon;
-    in.lpzt.phi = lat;
-    in.lpzt.z   = h;
-    in.lpzt.t   = 0.0;
+    in.xyzt.x = x;
+    in.xyzt.y = y;
+    in.xyzt.z = z;
+    in.xyzt.t = 0.0;
 
     PJ_COORD out = proj_trans(transform, PJ_FWD, in);
 
-    if (proj_errno(transform) != 0) {
-        LOGE("proj_trans fallita: %s", pjErr(transform));
-        return nullptr;
-    }
+    const int pjErr = proj_errno(transform);
+    const int ctxErr = (holder && holder->ctx) ? proj_context_errno(holder->ctx) : 0;
 
-    // Controllo basilare anche sui numeri
-    if (!(out.xyz.x == out.xyz.x) || !(out.xyz.y == out.xyz.y) || !(out.xyz.z == out.xyz.z)) {
-        LOGE("proj_trans ha restituito NaN");
+    if (pjErr != 0 || ctxErr != 0 ||
+        !std::isfinite(out.xyzt.x) || !std::isfinite(out.xyzt.y) || !std::isfinite(out.xyzt.z)) {
+        setLastErrorFromContext(holder, "proj_trans fallita");
         return nullptr;
     }
 
     jdouble result[3];
-    result[0] = out.xyz.x;
-    result[1] = out.xyz.y;
-    result[2] = out.xyz.z;
+    result[0] = out.xyzt.x;
+    result[1] = out.xyzt.y;
+    result[2] = out.xyzt.z;
 
     jdoubleArray arr = env->NewDoubleArray(3);
-    if (!arr) return nullptr;
+    if (!arr) {
+        setLastError(holder, "NewDoubleArray fallita");
+        return nullptr;
+    }
+
     env->SetDoubleArrayRegion(arr, 0, 3, result);
     return arr;
 }
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_packexcalib_gnss_NativeCzechTransformer_nativeInit(
+Java_packexcalib_gnss_NativeProjTransformer_nativeInit(
         JNIEnv* env,
         jclass,
         jstring projDataDir_) {
@@ -125,107 +117,167 @@ Java_packexcalib_gnss_NativeCzechTransformer_nativeInit(
         return 0;
     }
 
+    proj_context_set_enable_network(holder->ctx, false);
+
     const char* searchPaths[1] = { projDataDir };
     proj_context_set_search_paths(holder->ctx, 1, searchPaths);
 
-    // Questi restano come li hai già e ti funzionano
-    holder->to5514 = createTransform(holder->ctx, "EPSG:4326", "EPSG:5514");
-    holder->to5513 = createTransform(holder->ctx, "EPSG:4326", "EPSG:5513");
+    std::string dbPath = joinPath(projDataDir, "proj.db");
+    proj_context_set_database_path(holder->ctx, dbPath.c_str(), nullptr, nullptr);
 
-    // Pipeline custom per il sistema del software topografico:
-    // ETRF2000 / S-JTSK (Ferro) / Krovak Modified (NO) v1710
-    //
-    // ATTENZIONE:
-    // +proj=mod_krovak richiede PROJ >= 9.4.0
-    const char* noV1710Pipeline =
-        "+proj=pipeline "
-        "+step +proj=unitconvert +xy_in=deg +xy_out=rad "
-        "+step +proj=cart +ellps=GRS80 "
-        "+step +proj=helmert "
-        "+x=572.203 +y=85.328 +z=461.934 "
-        "+rx=-4.973117 +ry=-1.529001 +rz=-5.248327 "
-        "+s=3.5393 +convention=position_vector "
-        "+step +inv +proj=cart +ellps=bessel "
-        "+step +proj=mod_krovak "
-        "+pm=ferro "
-        "+lat_0=49.5 "
-        "+lon_0=42.5 "
-        "+k_0=0.9999 "
-        "+x_0=0 +y_0=0";
-
-    holder->to5516 = createPipeline(holder->ctx, noV1710Pipeline, "NO_v1710_mod_krovak");
-
-    // Fallback: se la pipeline custom fallisce, prova EPSG:5516 standard
-    if (!holder->to5516) {
-        LOGE("Pipeline custom 5516 fallita, provo fallback EPSG:5516");
-        holder->to5516 = createTransform(holder->ctx, "EPSG:4326", "EPSG:5516");
-    }
+    holder->lastError = "OK";
 
     env->ReleaseStringUTFChars(projDataDir_, projDataDir);
-
-    if (!holder->to5514 || !holder->to5513 || !holder->to5516) {
-        LOGE("Init fallita: to5514=%p to5513=%p to5516=%p",
-             holder->to5514, holder->to5513, holder->to5516);
-
-        if (holder->to5514) proj_destroy(holder->to5514);
-        if (holder->to5513) proj_destroy(holder->to5513);
-        if (holder->to5516) proj_destroy(holder->to5516);
-        if (holder->ctx) proj_context_destroy(holder->ctx);
-        delete holder;
-        return 0;
-    }
-
     return reinterpret_cast<jlong>(holder);
 }
 
 extern "C"
-JNIEXPORT jdoubleArray JNICALL
-Java_packexcalib_gnss_NativeCzechTransformer_nativeWgs84To5514(
+JNIEXPORT jboolean JNICALL
+Java_packexcalib_gnss_NativeProjTransformer_nativeInitCsToCs(
         JNIEnv* env,
         jclass,
         jlong handle,
-        jdouble lon,
-        jdouble lat,
-        jdouble h) {
+        jstring sourceCrs_,
+        jstring targetCrs_) {
 
     auto* holder = reinterpret_cast<ProjHolder*>(handle);
-    if (!holder) return nullptr;
-    return transformInternal(env, holder->to5514, lon, lat, h);
+    if (!holder || !holder->ctx) return JNI_FALSE;
+
+    const char* sourceCrs = env->GetStringUTFChars(sourceCrs_, nullptr);
+    const char* targetCrs = env->GetStringUTFChars(targetCrs_, nullptr);
+
+    PJ* raw = proj_create_crs_to_crs(holder->ctx, sourceCrs, targetCrs, nullptr);
+
+    env->ReleaseStringUTFChars(sourceCrs_, sourceCrs);
+    env->ReleaseStringUTFChars(targetCrs_, targetCrs);
+
+    if (!raw) {
+        setLastErrorFromContext(holder, "proj_create_crs_to_crs fallita");
+        return JNI_FALSE;
+    }
+
+    PJ* transform = normalizeIfPossible(holder->ctx, raw);
+    if (!transform) {
+        setLastErrorFromContext(holder, "proj_normalize_for_visualization fallita");
+        return JNI_FALSE;
+    }
+
+    if (holder->prepared) {
+        proj_destroy(holder->prepared);
+        holder->prepared = nullptr;
+    }
+
+    holder->prepared = transform;
+    holder->lastError = "OK";
+    return JNI_TRUE;
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_packexcalib_gnss_NativeProjTransformer_nativeInitFromParameters(
+        JNIEnv* env,
+        jclass,
+        jlong handle,
+        jstring sourceParams_,
+        jstring targetParams_) {
+
+    auto* holder = reinterpret_cast<ProjHolder*>(handle);
+    if (!holder || !holder->ctx) return JNI_FALSE;
+
+    const char* sourceParams = env->GetStringUTFChars(sourceParams_, nullptr);
+    const char* targetParams = env->GetStringUTFChars(targetParams_, nullptr);
+
+    PJ* src = proj_create(holder->ctx, sourceParams);
+    PJ* dst = proj_create(holder->ctx, targetParams);
+
+    env->ReleaseStringUTFChars(sourceParams_, sourceParams);
+    env->ReleaseStringUTFChars(targetParams_, targetParams);
+
+    if (!src || !dst) {
+        if (src) proj_destroy(src);
+        if (dst) proj_destroy(dst);
+        setLastErrorFromContext(holder, "proj_create(source/dest) fallita");
+        return JNI_FALSE;
+    }
+
+    PJ* raw = proj_create_crs_to_crs_from_pj(holder->ctx, src, dst, nullptr, nullptr);
+
+    proj_destroy(src);
+    proj_destroy(dst);
+
+    if (!raw) {
+        setLastErrorFromContext(holder, "proj_create_crs_to_crs_from_pj fallita");
+        return JNI_FALSE;
+    }
+
+    PJ* transform = normalizeIfPossible(holder->ctx, raw);
+    if (!transform) {
+        setLastErrorFromContext(holder, "proj_normalize_for_visualization fallita");
+        return JNI_FALSE;
+    }
+
+    if (holder->prepared) {
+        proj_destroy(holder->prepared);
+        holder->prepared = nullptr;
+    }
+
+    holder->prepared = transform;
+    holder->lastError = "OK";
+    return JNI_TRUE;
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_packexcalib_gnss_NativeProjTransformer_nativeInitPipeline(
+        JNIEnv* env,
+        jclass,
+        jlong handle,
+        jstring pipeline_) {
+
+    auto* holder = reinterpret_cast<ProjHolder*>(handle);
+    if (!holder || !holder->ctx) return JNI_FALSE;
+
+    const char* pipeline = env->GetStringUTFChars(pipeline_, nullptr);
+    PJ* raw = proj_create(holder->ctx, pipeline);
+    env->ReleaseStringUTFChars(pipeline_, pipeline);
+
+    if (!raw) {
+        setLastErrorFromContext(holder, "proj_create(pipeline) fallita");
+        return JNI_FALSE;
+    }
+
+    if (holder->prepared) {
+        proj_destroy(holder->prepared);
+        holder->prepared = nullptr;
+    }
+
+    holder->prepared = raw;
+    holder->lastError = "OK";
+    return JNI_TRUE;
 }
 
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
-Java_packexcalib_gnss_NativeCzechTransformer_nativeWgs84To5513(
+Java_packexcalib_gnss_NativeProjTransformer_nativeTransformPrepared(
         JNIEnv* env,
         jclass,
         jlong handle,
-        jdouble lon,
-        jdouble lat,
-        jdouble h) {
+        jdouble x,
+        jdouble y,
+        jdouble z) {
 
     auto* holder = reinterpret_cast<ProjHolder*>(handle);
-    if (!holder) return nullptr;
-    return transformInternal(env, holder->to5513, lon, lat, h);
-}
+    if (!holder || !holder->prepared) {
+        if (holder) setLastError(holder, "Prepared transform non inizializzata");
+        return nullptr;
+    }
 
-extern "C"
-JNIEXPORT jdoubleArray JNICALL
-Java_packexcalib_gnss_NativeCzechTransformer_nativeWgs84To5516(
-        JNIEnv* env,
-        jclass,
-        jlong handle,
-        jdouble lon,
-        jdouble lat,
-        jdouble h) {
-
-    auto* holder = reinterpret_cast<ProjHolder*>(handle);
-    if (!holder) return nullptr;
-    return transformInternal(env, holder->to5516, lon, lat, h);
+    return transformWithPJ(env, holder, holder->prepared, x, y, z);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_packexcalib_gnss_NativeCzechTransformer_nativeClose(
+Java_packexcalib_gnss_NativeProjTransformer_nativeClearPrepared(
         JNIEnv*,
         jclass,
         jlong handle) {
@@ -233,10 +285,165 @@ Java_packexcalib_gnss_NativeCzechTransformer_nativeClose(
     auto* holder = reinterpret_cast<ProjHolder*>(handle);
     if (!holder) return;
 
-    if (holder->to5514) proj_destroy(holder->to5514);
-    if (holder->to5513) proj_destroy(holder->to5513);
-    if (holder->to5516) proj_destroy(holder->to5516);
-    if (holder->ctx) proj_context_destroy(holder->ctx);
+    if (holder->prepared) {
+        proj_destroy(holder->prepared);
+        holder->prepared = nullptr;
+    }
+    holder->lastError = "OK";
+}
+
+extern "C"
+JNIEXPORT jdoubleArray JNICALL
+Java_packexcalib_gnss_NativeProjTransformer_nativeFromCsToCs(
+        JNIEnv* env,
+        jclass,
+        jlong handle,
+        jstring sourceCrs_,
+        jstring targetCrs_,
+        jdouble x,
+        jdouble y,
+        jdouble z) {
+
+    auto* holder = reinterpret_cast<ProjHolder*>(handle);
+    if (!holder || !holder->ctx) return nullptr;
+
+    const char* sourceCrs = env->GetStringUTFChars(sourceCrs_, nullptr);
+    const char* targetCrs = env->GetStringUTFChars(targetCrs_, nullptr);
+
+    PJ* raw = proj_create_crs_to_crs(holder->ctx, sourceCrs, targetCrs, nullptr);
+
+    env->ReleaseStringUTFChars(sourceCrs_, sourceCrs);
+    env->ReleaseStringUTFChars(targetCrs_, targetCrs);
+
+    if (!raw) {
+        setLastErrorFromContext(holder, "proj_create_crs_to_crs one-shot fallita");
+        return nullptr;
+    }
+
+    PJ* transform = normalizeIfPossible(holder->ctx, raw);
+    if (!transform) {
+        setLastErrorFromContext(holder, "proj_normalize_for_visualization one-shot fallita");
+        return nullptr;
+    }
+
+    jdoubleArray result = transformWithPJ(env, holder, transform, x, y, z);
+    proj_destroy(transform);
+    return result;
+}
+
+extern "C"
+JNIEXPORT jdoubleArray JNICALL
+Java_packexcalib_gnss_NativeProjTransformer_nativeFromParameters(
+        JNIEnv* env,
+        jclass,
+        jlong handle,
+        jstring sourceParams_,
+        jstring targetParams_,
+        jdouble x,
+        jdouble y,
+        jdouble z) {
+
+    auto* holder = reinterpret_cast<ProjHolder*>(handle);
+    if (!holder || !holder->ctx) return nullptr;
+
+    const char* sourceParams = env->GetStringUTFChars(sourceParams_, nullptr);
+    const char* targetParams = env->GetStringUTFChars(targetParams_, nullptr);
+
+    PJ* src = proj_create(holder->ctx, sourceParams);
+    PJ* dst = proj_create(holder->ctx, targetParams);
+
+    env->ReleaseStringUTFChars(sourceParams_, sourceParams);
+    env->ReleaseStringUTFChars(targetParams_, targetParams);
+
+    if (!src || !dst) {
+        if (src) proj_destroy(src);
+        if (dst) proj_destroy(dst);
+        setLastErrorFromContext(holder, "proj_create(source/dest) one-shot fallita");
+        return nullptr;
+    }
+
+    PJ* raw = proj_create_crs_to_crs_from_pj(holder->ctx, src, dst, nullptr, nullptr);
+
+    proj_destroy(src);
+    proj_destroy(dst);
+
+    if (!raw) {
+        setLastErrorFromContext(holder, "proj_create_crs_to_crs_from_pj one-shot fallita");
+        return nullptr;
+    }
+
+    PJ* transform = normalizeIfPossible(holder->ctx, raw);
+    if (!transform) {
+        setLastErrorFromContext(holder, "proj_normalize_for_visualization one-shot fallita");
+        return nullptr;
+    }
+
+    jdoubleArray result = transformWithPJ(env, holder, transform, x, y, z);
+    proj_destroy(transform);
+    return result;
+}
+
+extern "C"
+JNIEXPORT jdoubleArray JNICALL
+Java_packexcalib_gnss_NativeProjTransformer_nativeFromPipeline(
+        JNIEnv* env,
+        jclass,
+        jlong handle,
+        jstring pipeline_,
+        jdouble x,
+        jdouble y,
+        jdouble z) {
+
+    auto* holder = reinterpret_cast<ProjHolder*>(handle);
+    if (!holder || !holder->ctx) return nullptr;
+
+    const char* pipeline = env->GetStringUTFChars(pipeline_, nullptr);
+
+    PJ* transform = proj_create(holder->ctx, pipeline);
+
+    env->ReleaseStringUTFChars(pipeline_, pipeline);
+
+    if (!transform) {
+        setLastErrorFromContext(holder, "proj_create(pipeline) one-shot fallita");
+        return nullptr;
+    }
+
+    jdoubleArray result = transformWithPJ(env, holder, transform, x, y, z);
+    proj_destroy(transform);
+    return result;
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_packexcalib_gnss_NativeProjTransformer_nativeGetLastError(
+        JNIEnv* env,
+        jclass,
+        jlong handle) {
+
+    auto* holder = reinterpret_cast<ProjHolder*>(handle);
+    std::string msg = holder ? holder->lastError : "Handle nullo / non inizializzato";
+    return env->NewStringUTF(msg.c_str());
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_packexcalib_gnss_NativeProjTransformer_nativeClose(
+        JNIEnv*,
+        jclass,
+        jlong handle) {
+
+    auto* holder = reinterpret_cast<ProjHolder*>(handle);
+    if (!holder) return;
+
+    if (holder->prepared) {
+        proj_destroy(holder->prepared);
+        holder->prepared = nullptr;
+    }
+
+    if (holder->ctx) {
+        proj_context_destroy(holder->ctx);
+        holder->ctx = nullptr;
+    }
 
     delete holder;
 }

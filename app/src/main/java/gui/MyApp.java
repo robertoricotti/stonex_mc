@@ -471,9 +471,9 @@ git push
     public void onTerminate() {
         super.onTerminate();
 
-        if (Deg2UTM.nativeCzechTransformer != null) {
-            Deg2UTM.nativeCzechTransformer.close();
-            Deg2UTM.nativeCzechTransformer = null;
+        if (Deg2UTM.nativeProjTransformer != null) {
+            Deg2UTM.nativeProjTransformer.close();
+            Deg2UTM.nativeProjTransformer = null;
             Deg2UTM.nativeCzechReady = false;
         }
     }

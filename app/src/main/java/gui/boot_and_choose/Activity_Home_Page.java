@@ -56,14 +56,11 @@ import gui.dialogs_user_settings.Nuova_User_Settings;
 import gui.projects.PickProject;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
-import packexcalib.gnss.NativeCzechGridTransformer;
-import packexcalib.gnss.NativeCzechTransformer;
 import services.ReadProjectService;
 import services.UpdateValuesService;
 import utils.LanguageSetter;
 import utils.MyData;
 import utils.MyDeviceManager;
-import utils.WifiHelper;
 
 public class Activity_Home_Page extends BaseClass {
     public static boolean HasDownloaded;
@@ -460,43 +457,5 @@ public class Activity_Home_Page extends BaseClass {
 
     }
 
-    public void provaPROJ(){
-        try {
-            NativeCzechTransformer base = new NativeCzechTransformer();
-            base.init(getApplicationContext());
 
-            NativeCzechGridTransformer grid = new NativeCzechGridTransformer();
-            grid.init(getApplicationContext());
-
-            double lon1 = 17.304648715;
-            double lat1 = 49.582821694;
-
-            double[] b1 = base.wgs84To5514(lon1, lat1, 0.0);
-            double[] g1 = grid.wgs84To150581(lon1, lat1, 0.0);
-            double[] q3only1 = grid.wgs84GridOnlyQ3(lon1, lat1, 0.0);
-
-            Log.d("GRID_TEST", "P1 base5514 = " + b1[0] + ", " + b1[1]);
-            Log.d("GRID_TEST", "P1 150581  = " + g1[0] + ", " + g1[1]);
-            Log.d("GRID_TEST", "P1 Q3only  = " + q3only1[0] + ", " + q3only1[1]);
-
-            double lon2 = 17.87884772222;
-            double lat2 = 49.91787736111;
-
-            double[] b2 = base.wgs84To5514(lon2, lat2, 0.0);
-            double[] g2 = grid.wgs84To150582(lon2, lat2, 0.0);
-            double[] q1only2 = grid.wgs84GridOnlyQ1(lon2, lat2, 0.0);
-
-            Log.d("GRID_TEST", "P2 base5514 = " + b2[0] + ", " + b2[1]);
-            Log.d("GRID_TEST", "P2 150582  = " + g2[0] + ", " + g2[1]);
-            Log.d("GRID_TEST", "P2 Q1only  = " + q1only2[0] + ", " + q1only2[1]);
-
-            grid.close();
-            base.close();
-
-        } catch (Throwable t) {
-            Log.e("GRID_TEST", "Errore GRID_TEST", t);
-        }
-
-
-    }
 }

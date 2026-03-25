@@ -1,16 +1,16 @@
 package services;
 
 
-import static gui.MyApp.cz_Q1;
-import static gui.MyApp.cz_Q3;
 import static gui.MyApp.gridFile_GR_dE;
 import static gui.MyApp.gridFile_GR_dN;
 import static gui.MyApp.heposTransformer;
 import static gui.MyApp.isCRSStarted;
 import static gui.MyApp.licenseType;
 import static packexcalib.gnss.CRS_Strings._NONE;
-import static packexcalib.gnss.Deg2UTM.nativeCzechTransformer;
+import static packexcalib.gnss.Deg2UTM.nativeProjTransformer;
+import static packexcalib.gnss.Deg2UTM.nativeProjTransformer_2;
 import static services.CanSender.GNSS_MSG;
+import static services.CanSender.deviationFromSetpoint;
 import static services.TriangleService.scanPNEZD;
 import static services.UpdateValuesService.UTM;
 import static services.UpdateValuesService.WGS84;
@@ -33,7 +33,6 @@ import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
@@ -50,7 +49,6 @@ import org.locationtech.proj4j.UnsupportedParameterException;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -83,17 +81,25 @@ import iredes.Point3D_Drill;
 import landxml.LandXMLData;
 import landxml.LandXMLParser;
 import packexcalib.exca.DataSaved;
-import packexcalib.gnss.CzechGridShiftTransformer;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.LocalizationFactory;
 import packexcalib.gnss.LocalizationModel;
-import packexcalib.gnss.NativeCzechTransformer;
+import packexcalib.gnss.NativeProjTransformer;
 import utils.MyData;
 import utils.MyDeviceManager;
 
 
 public class ReadProjectService extends Service {
+    static String pipe5514to5516 =
+            "+proj=pipeline " +
+                    "+step +proj=hgridshift +grids=cz_cuzk_table_-y-x_3_v1710.tif " +
+                    "+step +proj=affine +xoff=-5000000 +yoff=-5000000";
+
+    static String pipe5516to5514 =
+            "+proj=pipeline " +
+                    "+step +proj=affine +xoff=5000000 +yoff=5000000 " +
+                    "+step +inv +proj=hgridshift +grids=cz_cuzk_table_-y-x_3_v1710.tif";
 
     public static ProjectReportXlsxWriter reportXlsxWriter;
     public static ProjectStateCsvStore stateStore;
@@ -114,10 +120,15 @@ public class ReadProjectService extends Service {
     public static LocalizationModel model;
 
     public static void stopCRS() {
-        if (Deg2UTM.nativeCzechTransformer != null) {
-            Deg2UTM.nativeCzechTransformer.close();
-            Deg2UTM.nativeCzechTransformer = null;
+        if (nativeProjTransformer != null) {
+            nativeProjTransformer.close();
+            nativeProjTransformer = null;
         }
+        if (nativeProjTransformer_2 != null) {
+            nativeProjTransformer_2.close();
+            nativeProjTransformer_2 = null;
+        }
+
     }
 
     public ReadProjectService() {
@@ -358,48 +369,62 @@ public class ReadProjectService extends Service {
                         e.printStackTrace();
                     }
                 } else {
-
-
-                    switch (s) {
-                        case "5513":
-                        case "5514":
-                        case "5516":
-                        case "150581":
-                        case "150582":
-                            try {
-                                if (nativeCzechTransformer == null) {
-                                    nativeCzechTransformer = new NativeCzechTransformer();
-                                    nativeCzechTransformer.init(MyApp.visibleActivity.getApplicationContext());
-                                }
-                                Deg2UTM.nativeCzechReady = true;
-                            } catch (Exception e) {
-                                Deg2UTM.nativeCzechReady = false;
-                                Log.e("NativeCzech", Log.getStackTraceString(e));
+                    try {
+                        if (nativeProjTransformer == null) {
+                            nativeProjTransformer = new NativeProjTransformer();
+                            nativeProjTransformer.init(MyApp.visibleActivity.getApplicationContext());
+                            switch (s){
+                                case "150581":
+                                    nativeProjTransformer.initCsToCs("EPSG:4326", "EPSG:5514");
+                                    break;
+                                default:
+                                    nativeProjTransformer.initCsToCs("EPSG:4326", "EPSG:"+s);
+                                    break;
                             }
-                            break;
 
-                            default: {
-                            try {
-                                result = new ProjCoordinate();
-                                resultWgs = new ProjCoordinate();
-                                crsFactory = new CRSFactory();
-                                ctFactory = new CoordinateTransformFactory();
-                                WGS84 = crsFactory.createFromName("epsg:" + "4326");
-                                try {
-                                    UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
-                                } catch (InvalidValueException | UnknownAuthorityCodeException |
-                                         UnsupportedParameterException e) {
-
-                                    Log.e("GridShift", Log.getStackTraceString(e));
-                                }
-                                wgsToUtm = ctFactory.createTransform(WGS84, UTM);
-                                utmToWgs = ctFactory.createTransform(UTM, WGS84);
-                            } catch (Exception e) {
-                            }
                         }
-                        break;
+                        Deg2UTM.nativeCzechReady = true;
+                    } catch (Exception e) {
+                        Deg2UTM.nativeCzechReady = false;
+                        Log.e("NativeCzech", Log.getStackTraceString(e));
                     }
-                    ///////////
+                    try {
+                        if (nativeProjTransformer_2 == null) {
+                            nativeProjTransformer_2 = new NativeProjTransformer();
+                            nativeProjTransformer_2.init(MyApp.visibleActivity.getApplicationContext());
+                            File projDir = new File(MyApp.visibleActivity.getFilesDir(), "proj");
+                            File grid = new File(projDir, "cz_cuzk_table_-y-x_3_v1710.tif");
+
+                            Log.d("NativeCzech", "proj dir = " + projDir.getAbsolutePath());
+                            Log.d("NativeCzech", "grid path = " + grid.getAbsolutePath());
+                            Log.d("NativeCzech", "grid exists = " + grid.exists());
+                            Log.d("NativeCzech", "grid length = " + grid.length());
+                            nativeProjTransformer_2.initPipeline(pipe5514to5516);
+                        }
+                        Deg2UTM.nativeCzechReady_2 = true;
+                    } catch (Exception e) {
+                        Deg2UTM.nativeCzechReady_2 = false;
+                        Log.e("NativeCzech", Log.getStackTraceString(e));
+                    }
+                    try {
+                        result = new ProjCoordinate();
+                        resultWgs = new ProjCoordinate();
+                        crsFactory = new CRSFactory();
+                        ctFactory = new CoordinateTransformFactory();
+                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
+                        try {
+                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
+                        } catch (InvalidValueException | UnknownAuthorityCodeException |
+                                 UnsupportedParameterException e) {
+
+                            Log.e("GridShift", Log.getStackTraceString(e));
+                        }
+                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
+                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
+                    } catch (Exception e) {
+                    }
+
+
                 }
             } else if (s.equals(_NONE)) {
                 String CRS_ESTERNO = MyData.get_String("CRS_ESTERNO");

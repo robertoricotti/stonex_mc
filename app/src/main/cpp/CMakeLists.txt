@@ -3,8 +3,7 @@ cmake_minimum_required(VERSION 3.22.1)
 project(nativeczechproj)
 
 add_library(nativeczechproj SHARED
-        native_czech_proj.cpp
-        native_czech_grid.cpp)
+        native_czech_proj.cpp)
 
 find_library(log-lib log)
 
