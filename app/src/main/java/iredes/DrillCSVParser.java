@@ -340,11 +340,30 @@ public class DrillCSVParser {
 
     private static Double parseDoubleSafe(String s) {
         if (s == null) return null;
+
         s = s.trim();
         if (s.isEmpty()) return null;
-        s = s.replace(',', '.');
+
+        // Rimuove BOM UTF-8 eventuale all'inizio del primo campo
+        if (!s.isEmpty() && s.charAt(0) == '\uFEFF') {
+            s = s.substring(1);
+        }
+
         try {
+            // Caso già supportato: decimale con virgola
+            if (s.indexOf(',') >= 0 && s.indexOf('.') < 0) {
+                return Double.parseDouble(s.replace(',', '.'));
+            }
+
+            // Nuovo caso: più punti => verosimilmente separatori delle migliaia
+            long dotCount = s.chars().filter(ch -> ch == '.').count();
+            if (dotCount > 1 && s.indexOf(',') < 0) {
+                return Double.parseDouble(s.replace(".", ""));
+            }
+
+            // Caso già funzionante: decimale con punto o intero
             return Double.parseDouble(s);
+
         } catch (Exception ignore) {
             return null;
         }

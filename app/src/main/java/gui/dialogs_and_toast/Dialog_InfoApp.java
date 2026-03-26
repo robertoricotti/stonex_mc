@@ -57,8 +57,9 @@ public class Dialog_InfoApp {
         int width = (int) (displayMetrics.widthPixels * 0.75);
         int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(width, height);
-        dialog.show();
         FullscreenActivity.setFullScreen(dialog);
+        dialog.show();
+
         findView();
         onClick();
 

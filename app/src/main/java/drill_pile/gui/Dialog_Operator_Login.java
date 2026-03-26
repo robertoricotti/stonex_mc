@@ -55,10 +55,11 @@ public class Dialog_Operator_Login {
         int width = (int) (displayMetrics.widthPixels * 0.85);
         int height = (int) (displayMetrics.heightPixels * 0.8);
         dialog.getWindow().setLayout(width, height);
+        FullscreenActivity.setFullScreen(dialog);
         dialog.show();
         findView();
         onClick();
-        FullscreenActivity.setFullScreen(dialog);
+
 
     }
     private void findView(){

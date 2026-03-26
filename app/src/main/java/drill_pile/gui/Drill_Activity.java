@@ -530,13 +530,17 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     public void updateUI() {
         if(NOME_OPERATORE!=null) {
+            if( DataSaved.ShowText==1){
+                mostratesto.setAlpha(1.0f);
+            }else {
+                mostratesto.setAlpha(0.4f);
+            }
             if (DataSaved.isCanOpen == JOYSTICKS) {
                 marcia.setVisibility(View.VISIBLE);
                 marcia.setText(DPadHelper.getMarcia(DPadHelper.getInstance().getStep()));
             } else {
                 marcia.setVisibility(View.GONE);
             }
-
             // =========================
             // 0) Allineamento AB (SOLARFARM)
             // =========================
@@ -553,7 +557,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     );
                 }
             }
-
             // =========================
             // 1) UI comune (testi, gps status, hole id, depth text, etc.)
             // =========================
