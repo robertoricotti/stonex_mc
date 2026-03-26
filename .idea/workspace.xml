@@ -575,29 +575,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 pre-PROJ">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 PROJ funzionante anche per cz">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/ProjCoordinate.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/loc_data/CZECH_REPUBLIC/CZECH_REPUBLICCRSCases.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/loc_data/CZECH_REPUBLIC/CZECH_REPUBLICCRSCases.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/loc_data/CZECH_REPUBLIC/CZECH_REPUBLIC__S_JTSK__KROVAK_EAST_NORTH__FERRO__5221.SP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/loc_data/CZECH_REPUBLIC/SJTSK_FERRO_NO_V1710_Grid.SP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/loc_data/CZECH_REPUBLIC/SJTSK_FERRO_SO_V1710_Grid.SP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/proj/proj.db" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/proj/proj.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/sp_data/CZECH_REPUBLIC/CZECH_REPUBLICCRSCases.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/sp_data/CZECH_REPUBLIC/CZECH_REPUBLICCRSCases.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/sp_data/CZECH_REPUBLIC/CZECH_REPUBLIC__S_JTSK__KROVAK_EAST_NORTH__FERRO__5221.SP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/sp_data/CZECH_REPUBLIC/SJTSK_FERRO_NO_V1710_Grid.SP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/sp_data/CZECH_REPUBLIC/SJTSK_FERRO_SO_V1710_Grid.SP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/table_yx_3_v1202_Q1.gsb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/table_yx_3_v1202_Q3.gsb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/table_yx_3_v1710_Q1.gsb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/table_yx_3_v1710_Q3.gsb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/cpp/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/native_czech_proj.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/cpp/native_czech_proj.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/Deg2UTM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/GridShiftTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/GridShiftTransformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NativeProjTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/NativeProjTransformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyEpsgNumber.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyEpsgNumber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/jniLibs/arm64-v8a/libsqlite3.so" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/jniLibs/arm64-v8a/libsqlite3.so" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -607,7 +587,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -846,14 +826,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00132" summary="4.1.0 Implementazione CZ completata OK">
-      <option name="closed" value="true" />
-      <created>1772199664358</created>
-      <option name="number" value="00132" />
-      <option name="presentableId" value="LOCAL-00132" />
-      <option name="project" value="LOCAL" />
-      <updated>1772199664358</updated>
     </task>
     <task id="LOCAL-00133" summary="4.1.0 Implementazione CZ completata OK">
       <option name="closed" value="true" />
@@ -1239,7 +1211,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774452596273</updated>
     </task>
-    <option name="localTasksCounter" value="181" />
+    <task id="LOCAL-00181" summary="4.1.0 PROJ funzionante anche per cz">
+      <option name="closed" value="true" />
+      <created>1774485132225</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1774485132225</updated>
+    </task>
+    <option name="localTasksCounter" value="182" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1255,7 +1235,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate, dialog add aste" />
     <MESSAGE value="4.1.0 TODO= implementazione drill time duration nel report, implementazione Penetration rate" />
     <MESSAGE value="4.1.0 TODO protocollo special machine" />
     <MESSAGE value="4.1.0 TODO testare special machine output CAN" />
@@ -1280,7 +1259,8 @@
     <MESSAGE value="4.1.0 ritornati a 2D piana GL" />
     <MESSAGE value="4.1.0 prima di implementare 3deasy" />
     <MESSAGE value="4.1.0 pre-PROJ" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 pre-PROJ" />
+    <MESSAGE value="4.1.0 PROJ funzionante anche per cz" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 PROJ funzionante anche per cz" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
