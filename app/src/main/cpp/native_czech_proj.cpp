@@ -20,7 +20,7 @@ static void setLastErrorFromContext(ProjHolder* holder, const std::string& prefi
         return;
     }
 
-    int err = proj_context_errno(holder->ctx);
+    const int err = proj_context_errno(holder->ctx);
     const char* errStr = proj_context_errno_string(holder->ctx, err);
 
     std::string out;
@@ -33,15 +33,13 @@ static void setLastErrorFromContext(ProjHolder* holder, const std::string& prefi
         out += " | ";
         out += errStr;
     }
-
     holder->lastError = out;
 }
 
-static std::string joinPath(const char* a, const char* b) {
-    if (!a || !*a) return b ? std::string(b) : std::string();
-    std::string s(a);
+static std::string joinPath(const char* base, const char* file) {
+    std::string s = base ? std::string(base) : std::string();
     if (!s.empty() && s.back() != '/' && s.back() != '\\') s += "/";
-    if (b) s += b;
+    if (file) s += file;
     return s;
 }
 
@@ -65,7 +63,6 @@ static jdoubleArray transformWithPJ(JNIEnv* env, ProjHolder* holder, PJ* transfo
     }
 
     proj_errno_reset(transform);
-    //if (holder && holder->ctx) proj_context_errno_set(holder->ctx, 0);
 
     PJ_COORD in;
     std::memset(&in, 0, sizeof(PJ_COORD));
@@ -85,11 +82,7 @@ static jdoubleArray transformWithPJ(JNIEnv* env, ProjHolder* holder, PJ* transfo
         return nullptr;
     }
 
-    jdouble result[3];
-    result[0] = out.xyzt.x;
-    result[1] = out.xyzt.y;
-    result[2] = out.xyzt.z;
-
+    const jdouble result[3] = { out.xyzt.x, out.xyzt.y, out.xyzt.z };
     jdoubleArray arr = env->NewDoubleArray(3);
     if (!arr) {
         setLastError(holder, "NewDoubleArray fallita");
@@ -246,12 +239,18 @@ Java_packexcalib_gnss_NativeProjTransformer_nativeInitPipeline(
         return JNI_FALSE;
     }
 
+    PJ* transform = normalizeIfPossible(holder->ctx, raw);
+    if (!transform) {
+        setLastErrorFromContext(holder, "proj_normalize_for_visualization(pipeline) fallita");
+        return JNI_FALSE;
+    }
+
     if (holder->prepared) {
         proj_destroy(holder->prepared);
         holder->prepared = nullptr;
     }
 
-    holder->prepared = raw;
+    holder->prepared = transform;
     holder->lastError = "OK";
     return JNI_TRUE;
 }
@@ -398,13 +397,17 @@ Java_packexcalib_gnss_NativeProjTransformer_nativeFromPipeline(
     if (!holder || !holder->ctx) return nullptr;
 
     const char* pipeline = env->GetStringUTFChars(pipeline_, nullptr);
-
-    PJ* transform = proj_create(holder->ctx, pipeline);
-
+    PJ* raw = proj_create(holder->ctx, pipeline);
     env->ReleaseStringUTFChars(pipeline_, pipeline);
 
-    if (!transform) {
+    if (!raw) {
         setLastErrorFromContext(holder, "proj_create(pipeline) one-shot fallita");
+        return nullptr;
+    }
+
+    PJ* transform = normalizeIfPossible(holder->ctx, raw);
+    if (!transform) {
+        setLastErrorFromContext(holder, "proj_normalize_for_visualization(pipeline) one-shot fallita");
         return nullptr;
     }
 

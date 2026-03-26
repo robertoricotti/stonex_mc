@@ -32,7 +32,7 @@ public class CZECH_REPUBLICCRSCases {
                 dialog.dismiss();
                 break;
 
-            case "SJTSK_FERRO_NO_V1710_Grid.SP":
+            case "SJTSK_FERRO_NO_V1710_Krovak_Modified.SP":
                 MyData.push("SECONDO_S_CRS", "150581");
                 DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
                 activity.recreate();
@@ -40,7 +40,7 @@ public class CZECH_REPUBLICCRSCases {
                 dialog.dismiss();
                 break;
 
-            case "SJTSK_FERRO_SO_V1710_Grid.SP":
+            case "SJTSK_FERRO_SO_V1710_Krovak_Modified.SP":
                 MyData.push("SECONDO_S_CRS", "150582");
                 DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
                 activity.recreate();

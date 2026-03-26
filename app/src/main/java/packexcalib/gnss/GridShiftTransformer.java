@@ -203,7 +203,8 @@ public class GridShiftTransformer {
         return Math.toDegrees(Math.atan2(dE, dN));
     }
 
-    public static double getAggiuntaHDT() {
+    public  double getAggiuntaHDT() {
         return aggiuntaHDT;
     }
+
 }

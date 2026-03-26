@@ -8,7 +8,6 @@ import static gui.MyApp.isCRSStarted;
 import static gui.MyApp.licenseType;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.Deg2UTM.nativeProjTransformer;
-import static packexcalib.gnss.Deg2UTM.nativeProjTransformer_2;
 import static services.CanSender.GNSS_MSG;
 import static services.CanSender.deviationFromSetpoint;
 import static services.TriangleService.scanPNEZD;
@@ -124,10 +123,7 @@ public class ReadProjectService extends Service {
             nativeProjTransformer.close();
             nativeProjTransformer = null;
         }
-        if (nativeProjTransformer_2 != null) {
-            nativeProjTransformer_2.close();
-            nativeProjTransformer_2 = null;
-        }
+
 
     }
 
@@ -375,37 +371,21 @@ public class ReadProjectService extends Service {
                             nativeProjTransformer.init(MyApp.visibleActivity.getApplicationContext());
                             switch (s){
                                 case "150581":
-                                    nativeProjTransformer.initCsToCs("EPSG:4326", "EPSG:5514");
+                                case "150582":
+                                    nativeProjTransformer.initCsToCs("EPSG:9067", "EPSG:5514");
                                     break;
+
                                 default:
                                     nativeProjTransformer.initCsToCs("EPSG:4326", "EPSG:"+s);
                                     break;
                             }
-
                         }
                         Deg2UTM.nativeCzechReady = true;
                     } catch (Exception e) {
                         Deg2UTM.nativeCzechReady = false;
                         Log.e("NativeCzech", Log.getStackTraceString(e));
                     }
-                    try {
-                        if (nativeProjTransformer_2 == null) {
-                            nativeProjTransformer_2 = new NativeProjTransformer();
-                            nativeProjTransformer_2.init(MyApp.visibleActivity.getApplicationContext());
-                            File projDir = new File(MyApp.visibleActivity.getFilesDir(), "proj");
-                            File grid = new File(projDir, "cz_cuzk_table_-y-x_3_v1710.tif");
 
-                            Log.d("NativeCzech", "proj dir = " + projDir.getAbsolutePath());
-                            Log.d("NativeCzech", "grid path = " + grid.getAbsolutePath());
-                            Log.d("NativeCzech", "grid exists = " + grid.exists());
-                            Log.d("NativeCzech", "grid length = " + grid.length());
-                            nativeProjTransformer_2.initPipeline(pipe5514to5516);
-                        }
-                        Deg2UTM.nativeCzechReady_2 = true;
-                    } catch (Exception e) {
-                        Deg2UTM.nativeCzechReady_2 = false;
-                        Log.e("NativeCzech", Log.getStackTraceString(e));
-                    }
                     try {
                         result = new ProjCoordinate();
                         resultWgs = new ProjCoordinate();

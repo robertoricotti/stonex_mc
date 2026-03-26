@@ -27,9 +27,8 @@ import services.ReadProjectService;
  * in UTM / Project CRS
  *********************************************/
 public class Deg2UTM {
-    public static NativeProjTransformer nativeProjTransformer,nativeProjTransformer_2;
+    public static NativeProjTransformer nativeProjTransformer;
     public static boolean nativeCzechReady = false;
-    public static boolean nativeCzechReady_2 = false;
 
     private static final ProjCoordinate baseWgs = new ProjCoordinate();
     private static final ProjCoordinate northWgs = new ProjCoordinate();
@@ -384,31 +383,24 @@ public class Deg2UTM {
                             geoidError = false;
                         }
                         if(crs.equals("150580") && heposTransformer != null){
-                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg150581(Lat,Lon);
+                            NmeaListener.AGGIUNTA_HDT =heposTransformer.getAggiuntaHDT();
                             shifted = heposTransformer.transform(Lat, Lon, q);
                             Easting = shifted.x;
                             Northing = shifted.y + 2000000;
                             Quota = shifted.z;
                         }else if (crs.equals("150581")) {
-                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon, "5516");
-                            double[] p5514 = trasformCS2CS(Lon, Lat, q);              // 4326 -> 5514
-                            double[] p5516 = trasformPipe(p5514[0], p5514[1], p5514[2]); // 5514 -> 5516
-                            Easting = p5516[0];
-                            Northing = p5516[1];
+                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon, "5514");
+                            double[] p = trasformCS2CS(Lon, Lat, q);
+                            Easting = p[0];
+                            Northing = p[1];
                             Quota = q;
-
-                            Log.d("CZ", "4326->5514 = " + Arrays.toString(p5514));
-
-
-                            Log.d("CZ", "5514->5516(grid) = " + Arrays.toString(p5516));
-
 
 
                         }else if (crs.equals("150582")) {
-                            NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon, "5516");
-                            double[] p = trasformCS2CS(Lon, Lat, 0);
-                            Easting = -p[1]-500000;
-                            Northing = -p[0]-500000;
+                            NmeaListener.AGGIUNTA_HDT = wrap180(gridHeadingDeltaDeg(Lat, Lon, "5514") + 180.0);
+                            double[] p = trasformCS2CS(Lon, Lat, q);
+                            Easting = -p[0];
+                            Northing = -p[1];
                             Quota = q;
                         }
                         else if (crs.equals("5516")) {
@@ -635,31 +627,26 @@ public class Deg2UTM {
         ensureNativeCzechReady();
         return nativeProjTransformer.transformPrepared(x,y,z);
     }
-    private static void ensureNativeCzechReady_2() {
-        if (!nativeCzechReady_2) {
-            throw new IllegalStateException("NativeProjTransformer_2 non inizializzato");
-        }
-    }
-    private static double[] trasformPipe(double x,double y,double z){
-        ensureNativeCzechReady_2();
-        return nativeProjTransformer_2.transformPrepared(x,y,z);
+
+    private static double wrap180(double deg) {
+        while (deg <= -180.0) deg += 360.0;
+        while (deg > 180.0) deg -= 360.0;
+        return deg;
     }
 
-    private static double gridHeadingDeltaDeg150581(double latDeg, double lonDeg) {
+    private static double gridHeadingDeltaDeg150580(double latDeg, double lonDeg, double h) {
+        if (heposTransformer == null) return 0.0;
+
         final double epsDeg = 1e-4;
 
-        double[] a5514 = trasformCS2CS(lonDeg, latDeg, 0.0);
-        double[] b5514 = trasformCS2CS(lonDeg, latDeg + epsDeg, 0.0);
+        ProjCoordinate shifted1 = heposTransformer.transform(latDeg, lonDeg, h);
+        ProjCoordinate shifted2 = heposTransformer.transform(latDeg + epsDeg, lonDeg, h);
 
-        double[] a5516 = trasformPipe(a5514[0], a5514[1], a5514[2]);
-        double[] b5516 = trasformPipe(b5514[0], b5514[1], b5514[2]);
-
-        double dE = b5516[0] - a5516[0];
-        double dN = b5516[1] - a5516[1];
+        double dE = shifted2.x - shifted1.x;
+        double dN = shifted2.y - shifted1.y;
 
         return Math.toDegrees(Math.atan2(dE, dN));
     }
-
 
 
 }
