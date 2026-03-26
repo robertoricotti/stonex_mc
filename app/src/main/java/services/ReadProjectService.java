@@ -8,17 +8,9 @@ import static gui.MyApp.isCRSStarted;
 import static gui.MyApp.licenseType;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.Deg2UTM.nativeProjTransformer;
+import static packexcalib.gnss.Deg2UTM.nativeProjTransformerToGeo;
 import static services.CanSender.GNSS_MSG;
-import static services.CanSender.deviationFromSetpoint;
 import static services.TriangleService.scanPNEZD;
-import static services.UpdateValuesService.UTM;
-import static services.UpdateValuesService.WGS84;
-import static services.UpdateValuesService.crsFactory;
-import static services.UpdateValuesService.ctFactory;
-import static services.UpdateValuesService.result;
-import static services.UpdateValuesService.resultWgs;
-import static services.UpdateValuesService.utmToWgs;
-import static services.UpdateValuesService.wgsToUtm;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DRILL;
@@ -32,19 +24,13 @@ import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
-
-import org.locationtech.proj4j.CRSFactory;
-import org.locationtech.proj4j.CoordinateTransformFactory;
-import org.locationtech.proj4j.InvalidValueException;
-import org.locationtech.proj4j.ProjCoordinate;
-import org.locationtech.proj4j.UnknownAuthorityCodeException;
-import org.locationtech.proj4j.UnsupportedParameterException;
 
 import java.io.File;
 import java.io.IOException;
@@ -120,11 +106,30 @@ public class ReadProjectService extends Service {
 
     public static void stopCRS() {
         if (nativeProjTransformer != null) {
-            nativeProjTransformer.close();
+            try {
+                nativeProjTransformer.close();
+            } catch (Exception ignored) {
+            }
             nativeProjTransformer = null;
         }
+        if (nativeProjTransformerToGeo != null) {
+            try {
+                nativeProjTransformerToGeo.close();
+            } catch (Exception ignored) {
+            }
+            nativeProjTransformerToGeo = null;
+        }
 
+        if (heposTransformer != null) {
+            try {
+                heposTransformer.close();
+            } catch (Exception ignored) {
+            }
+            heposTransformer = null;
+        }
 
+        model = null;
+        Deg2UTM.nativeCzechReady = false;
     }
 
     public ReadProjectService() {
@@ -339,118 +344,113 @@ public class ReadProjectService extends Service {
         stopCRS();
 
         String s = MyData.get_String("crs");
+        if (s == null) {
+            isCRSStarted = true;
+            return;
+        }
 
-        if (s != null) {
-            if (!s.equals("UTM") && !s.equals(_NONE)) {
-                if (s.equals("150580")) {
+        try {
+            final Context ctx = MyApp.visibleActivity.getApplicationContext();
+
+            if (!"UTM".equals(s) && !_NONE.equals(s)) {
+
+                if ("150580".equals(s)) {
                     try {
-                        crsFactory = new CRSFactory();
-                        ctFactory = new CoordinateTransformFactory();
-                        WGS84 = crsFactory.createFromName("epsg:4326");
-
-                        // >>> Non usare Proj4J per EGSA87 con griglia!
-                        // Inizializza il nostro trasformatore
-                        if (heposTransformer == null) {
-                            try {
-                                File dEfile = new File(gridFile_GR_dE);
-                                File dNfile = new File(gridFile_GR_dN);
-                                heposTransformer = new GridShiftTransformer(dEfile, dNfile);
-                            } catch (Exception e) {
-                                Log.e("GridShift", Log.getStackTraceString(e));
-                                heposTransformer = null;
-                            }
-                        }
-
+                        File dEfile = new File(gridFile_GR_dE);
+                        File dNfile = new File(gridFile_GR_dN);
+                        heposTransformer = new GridShiftTransformer(dEfile, dNfile);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        heposTransformer = null;
+                        Log.e("GridShift", Log.getStackTraceString(e));
                     }
+
                 } else {
                     try {
-                        if (nativeProjTransformer == null) {
-                            nativeProjTransformer = new NativeProjTransformer();
-                            nativeProjTransformer.init(MyApp.visibleActivity.getApplicationContext());
-                            switch (s){
-                                case "150581":
-                                case "150582":
-                                    nativeProjTransformer.initCsToCs("EPSG:9067", "EPSG:5514");
-                                    break;
+                        nativeProjTransformer = new NativeProjTransformer();
+                        nativeProjTransformer.init(ctx);
+                        nativeProjTransformerToGeo = new NativeProjTransformer();
+                        nativeProjTransformerToGeo.init(ctx);
 
-                                default:
-                                    nativeProjTransformer.initCsToCs("EPSG:4326", "EPSG:"+s);
-                                    break;
-                            }
+                        switch (s) {
+                            case "150581":
+                            case "150582":
+                                nativeProjTransformer.initCsToCs("EPSG:9067", "EPSG:5514");
+                                nativeProjTransformerToGeo.initCsToCs( "EPSG:5514","EPSG:9067");
+                                break;
+
+                            default:
+                                nativeProjTransformer.initCsToCs("EPSG:4326", "EPSG:" + s);
+                                nativeProjTransformerToGeo.initCsToCs(  "EPSG:" + s,"EPSG:4326");
+                                break;
                         }
+
                         Deg2UTM.nativeCzechReady = true;
+
                     } catch (Exception e) {
                         Deg2UTM.nativeCzechReady = false;
-                        Log.e("NativeCzech", Log.getStackTraceString(e));
+                        nativeProjTransformer = null;
+                        nativeProjTransformerToGeo = null;
+                        Log.e("NativeProj", Log.getStackTraceString(e));
                     }
-
-                    try {
-                        result = new ProjCoordinate();
-                        resultWgs = new ProjCoordinate();
-                        crsFactory = new CRSFactory();
-                        ctFactory = new CoordinateTransformFactory();
-                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
-                        try {
-                            UTM = crsFactory.createFromName("epsg:" + DataSaved.S_CRS);
-                        } catch (InvalidValueException | UnknownAuthorityCodeException |
-                                 UnsupportedParameterException e) {
-
-                            Log.e("GridShift", Log.getStackTraceString(e));
-                        }
-                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
-                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
-                    } catch (Exception e) {
-                    }
-
-
                 }
-            } else if (s.equals(_NONE)) {
-                String CRS_ESTERNO = MyData.get_String("CRS_ESTERNO");
-                if (CRS_ESTERNO != null) {
-                    try {
-                        result = new ProjCoordinate();
-                        resultWgs = new ProjCoordinate();
-                        crsFactory = new CRSFactory();
-                        ctFactory = new CoordinateTransformFactory();
-                        WGS84 = crsFactory.createFromName("epsg:" + "4326");
-                        try {
-                            UTM = crsFactory.createFromName("epsg:" + DataSaved.SECONDO_S_CRS);
-                        } catch (InvalidValueException | UnknownAuthorityCodeException |
-                                 UnsupportedParameterException e) {
 
-                            Log.e("GridShift", Log.getStackTraceString(e));
-                        }
-                        wgsToUtm = ctFactory.createTransform(WGS84, UTM);
-                        utmToWgs = ctFactory.createTransform(UTM, WGS84);
-                        model = LocalizationFactory.fromFile(new File(CRS_ESTERNO), wgsToUtm, utmToWgs);
+            } else if (_NONE.equals(s)) {
+                String CRS_ESTERNO = MyData.get_String("CRS_ESTERNO");
+
+                if (CRS_ESTERNO != null && !CRS_ESTERNO.trim().isEmpty()) {
+                    try {
+                        nativeProjTransformer = new NativeProjTransformer();
+                        nativeProjTransformer.init(ctx);
+                        nativeProjTransformer.initCsToCs("EPSG:4326", "EPSG:" + DataSaved.SECONDO_S_CRS);
+
+                        nativeProjTransformerToGeo = new NativeProjTransformer();
+                        nativeProjTransformerToGeo.init(ctx);
+                        nativeProjTransformerToGeo.initCsToCs("EPSG:" + DataSaved.SECONDO_S_CRS,"EPSG:4326" );
+
+                        // VERSIONE NUOVA DELLA FACTORY, SENZA Proj4J
+                        model = LocalizationFactory.fromFile(
+                                new File(CRS_ESTERNO),
+                                nativeProjTransformer,
+                                nativeProjTransformerToGeo
+                        );
+
                     } catch (Exception e) {
+                        model = null;
                         Log.e("CRS_ESTERNO", Log.getStackTraceString(e));
                     }
                 }
             }
-            byte speed = 0;
-            switch (DataSaved.reqSpeed) {
-                case 0:
-                    speed = 5;
-                    break;
-                case 1:
-                    speed = 4;
-                    break;
-                case 2:
-                    speed = 3;
-                    break;
-                case 3:
-                    speed = 0;
-                    break;
 
-            }
-            DataSaved.gpsOk = false;
-
-
-            MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
+        } catch (Exception e) {
+            Log.e("startCRS", Log.getStackTraceString(e));
         }
+
+        byte speed = 0;
+        switch (DataSaved.reqSpeed) {
+            case 0:
+                speed = 5;
+                break;
+            case 1:
+                speed = 4;
+                break;
+            case 2:
+                speed = 3;
+                break;
+            case 3:
+                speed = 0;
+                break;
+        }
+
+        DataSaved.gpsOk = false;
+
+        MyDeviceManager.CanWrite(
+                true,
+                0,
+                0x18FF0001,
+                4,
+                new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03}
+        );
+
         isCRSStarted = true;
     }
 

@@ -1,6 +1,6 @@
 package packexcalib.gnss;
 
-import org.locationtech.proj4j.ProjCoordinate;
+
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;

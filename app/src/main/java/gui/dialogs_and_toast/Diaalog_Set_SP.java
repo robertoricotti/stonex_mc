@@ -42,6 +42,7 @@ import gui.MyApp;
 import gui.projects.ProjectFileAdapter;
 import packexcalib.exca.CreateUTMFiles;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.LocalizationFactory;
 import serial.SerialPortManager;
 import services.ReadProjectService;
@@ -308,7 +309,7 @@ public class Diaalog_Set_SP {
                             }
 
                             ReadProjectService.model = LocalizationFactory.fromFile(new File(ASSET_SP_ROOT + "/" + selectedFolder + "/" + selectedFileName),
-                                    UpdateValuesService.wgsToUtm, UpdateValuesService.utmToWgs);
+                                    Deg2UTM.nativeProjTransformer, Deg2UTM.nativeProjTransformer);
                             usaSP.setEnabled(true);
                         }
 

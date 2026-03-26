@@ -424,7 +424,7 @@ Java_packexcalib_gnss_NativeProjTransformer_nativeGetLastError(
         jlong handle) {
 
     auto* holder = reinterpret_cast<ProjHolder*>(handle);
-    std::string msg = holder ? holder->lastError : "Handle nullo / non inizializzato";
+    std::string msg = holder ? holder->lastError : "Handle null / not init";
     return env->NewStringUTF(msg.c_str());
 }
 

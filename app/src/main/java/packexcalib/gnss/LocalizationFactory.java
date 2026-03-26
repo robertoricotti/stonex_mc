@@ -1,7 +1,5 @@
 package packexcalib.gnss;
 
-import org.locationtech.proj4j.CoordinateTransform;
-
 import java.io.File;
 import java.util.Locale;
 
@@ -12,15 +10,18 @@ public final class LocalizationFactory {
     private LocalizationFactory() {}
 
     public static LocalizationModel fromFile(File f,
-                                             CoordinateTransform geoToProj,
-                                             CoordinateTransform projToGeo) throws Exception {
+                                             NativeProjTransformer geoToProj,
+                                             NativeProjTransformer projToGeo) throws Exception {
         String name = f.getName().toLowerCase(Locale.ROOT);
+
         if (name.endsWith(".sp")) {
             return SpLocalization.fromSpFile(f);
         }
+
         if (name.endsWith(".loc")) {
             return ProjectedLocLocalization.fromLocFile(f, geoToProj, projToGeo);
         }
+
         throw new IllegalArgumentException("Formato non supportato: " + f.getName());
     }
 }

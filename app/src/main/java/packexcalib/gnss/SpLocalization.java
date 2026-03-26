@@ -1,10 +1,7 @@
 package packexcalib.gnss;
 
-import org.locationtech.proj4j.CRSFactory;
-import org.locationtech.proj4j.CoordinateReferenceSystem;
-import org.locationtech.proj4j.CoordinateTransform;
-import org.locationtech.proj4j.CoordinateTransformFactory;
-import org.locationtech.proj4j.ProjCoordinate;
+import android.content.Context;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -15,6 +12,7 @@ import java.util.Locale;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import gui.MyApp;
 import packexcalib.exca.DataSaved;
 
 /**
@@ -23,10 +21,10 @@ import packexcalib.exca.DataSaved;
  * Convenzioni adottate:
  * - Input geo: lat/lon in gradi, quota ellissoidale
  * - Output locale: E, N, Z
- * - PROJ4J usa x=lon, y=lat
+ * - PROJ usa x=lon, y=lat
  *
  * Parsing:
- * - robusto su Android (setFeature / setXIncludeAware / setExpandEntityReferences in try/catch)
+ * - robusto su Android
  * - tollera decimal comma
  * - tollera NaN / tag mancanti
  *
@@ -45,11 +43,11 @@ import packexcalib.exca.DataSaved;
  */
 public final class SpLocalization implements LocalizationModel {
 
-    private static final CRSFactory CRS_FACTORY = new CRSFactory();
-    private static final CoordinateTransformFactory CT_FACTORY = new CoordinateTransformFactory();
+    private static final String WGS84_DEF =
+            "+proj=longlat +datum=WGS84 +no_defs +type=crs";
 
-    private final CoordinateTransform geoToProj;
-    private final CoordinateTransform projToGeo;
+    private final NativeProjTransformer geoToProj;
+    private final NativeProjTransformer projToGeo;
 
     // 4 parametri
     private final boolean use4;
@@ -64,12 +62,8 @@ public final class SpLocalization implements LocalizationModel {
     private final double a0, a1, a2, a3, a4, a5;
     private final double hfX0, hfY0;
 
-    // buffer riusabili
-    private final ThreadLocal<ProjCoordinate> tlGeo = ThreadLocal.withInitial(ProjCoordinate::new);
-    private final ThreadLocal<ProjCoordinate> tlProj = ThreadLocal.withInitial(ProjCoordinate::new);
-
-    private SpLocalization(CoordinateTransform geoToProj,
-                           CoordinateTransform projToGeo,
+    private SpLocalization(NativeProjTransformer geoToProj,
+                           NativeProjTransformer projToGeo,
                            boolean use4,
                            double Cx, double Cy, double CaRad, double Ck, double Orgx, double Orgy,
                            double headingDeltaDeg,
@@ -124,7 +118,6 @@ public final class SpLocalization implements LocalizationModel {
             throw new IllegalArgumentException("SP non valido: root mancante");
         }
 
-        // In alcuni file la root è HEAD e i nodi utili stanno sotto CoordinateSystem.
         Element cs = (Element) head.getElementsByTagName("CoordinateSystem").item(0);
         if (cs == null) {
             cs = head;
@@ -176,49 +169,50 @@ public final class SpLocalization implements LocalizationModel {
         switch (type) {
             case 162: // Lambert Conformal Conic 2SP
                 projDef = String.format(Locale.US,
-                        "+proj=lcc +lat_1=%.10f +lat_2=%.10f +lat_0=%.10f +lon_0=%.10f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs",
+                        "+proj=lcc +lat_1=%.10f +lat_2=%.10f +lat_0=%.10f +lon_0=%.10f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs +type=crs",
                         lat1deg, lat2deg, lat0deg, lon0deg, Ty, Tx, ellps);
                 break;
 
             case 151: // Mercator
                 projDef = String.format(Locale.US,
-                        "+proj=merc +lon_0=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs",
+                        "+proj=merc +lon_0=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs +type=crs",
                         lon0deg, tk, Ty, Tx, ellps);
                 break;
 
             case 180: // Oblique Mercator
                 projDef = String.format(Locale.US,
-                        "+proj=omerc +lat_0=0 +lonc=%.10f +alpha=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs",
+                        "+proj=omerc +lat_0=0 +lonc=%.10f +alpha=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs +type=crs",
                         lon0deg, azDeg, tk, Ty, Tx, ellps);
                 break;
 
             case 182: // Stereographic
                 projDef = String.format(Locale.US,
-                        "+proj=stere +lat_0=%.10f +lon_0=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs",
+                        "+proj=stere +lat_0=%.10f +lon_0=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs +type=crs",
                         lat0deg, lon0deg, tk, Ty, Tx, ellps);
                 break;
 
             case 183: // Lambert Azimuthal Equal Area
                 projDef = String.format(Locale.US,
-                        "+proj=laea +lat_0=%.10f +lon_0=%.10f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs",
+                        "+proj=laea +lat_0=%.10f +lon_0=%.10f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs +type=crs",
                         lat0deg, lon0deg, Ty, Tx, ellps);
                 break;
 
             default: // Transverse Mercator / UTM-like
                 projDef = String.format(Locale.US,
-                        "+proj=tmerc +lat_0=0 +lon_0=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs",
+                        "+proj=tmerc +lat_0=0 +lon_0=%.10f +k=%.12f +x_0=%.3f +y_0=%.3f +ellps=%s +units=m +no_defs +type=crs",
                         lon0deg, tk, Ty, Tx, ellps);
                 break;
         }
 
-        CoordinateReferenceSystem wgs84 = CRS_FACTORY.createFromParameters(
-                "WGS84",
-                "+proj=longlat +datum=WGS84 +no_defs"
-        );
-        CoordinateReferenceSystem projected = CRS_FACTORY.createFromParameters("SP_PROJ", projDef);
+        Context ctx = requireAppContext();
 
-        CoordinateTransform geoToProj = CT_FACTORY.createTransform(wgs84, projected);
-        CoordinateTransform projToGeo = CT_FACTORY.createTransform(projected, wgs84);
+        NativeProjTransformer geoToProj = new NativeProjTransformer();
+        geoToProj.init(ctx);
+        geoToProj.initFromParameters(WGS84_DEF, projDef);
+
+        NativeProjTransformer projToGeo = new NativeProjTransformer();
+        projToGeo.init(ctx);
+        projToGeo.initFromParameters(projDef, WGS84_DEF);
 
         // ------------------ 4 parametri ------------------
         Element four = (Element) cs.getElementsByTagName("CoordinateSystem_FourParameter").item(0);
@@ -236,12 +230,10 @@ public final class SpLocalization implements LocalizationModel {
             Orgy = d(txt(four, "Orgy", "0")); // E
         }
 
-        // Ca nel file: radianti se piccolo, altrimenti gradi
         double CaRad = (Math.abs(CaRaw) <= (2.0 * Math.PI + 1e-12))
                 ? CaRaw
                 : Math.toRadians(CaRaw);
 
-        // SurPad: Ca da convertire in gradi e sommare direttamente all'HDT
         double headingDeltaDeg = use4 ? Math.toDegrees(CaRad) : 0.0;
         DataSaved.DELTA_HDT_SMC = headingDeltaDeg;
 
@@ -272,27 +264,28 @@ public final class SpLocalization implements LocalizationModel {
         );
     }
 
+    private static Context requireAppContext() {
+        if (MyApp.visibleActivity == null || MyApp.visibleActivity.getApplicationContext() == null) {
+            throw new IllegalStateException("Context Android non disponibile per inizializzare PROJ");
+        }
+        return MyApp.visibleActivity.getApplicationContext();
+    }
+
     // ---------------------------------------------------------------------
     // Trasformazioni
     // ---------------------------------------------------------------------
     @Override
     public void toLocalFast(double latDeg, double lonDeg, double hEll, double[] out) {
-        ProjCoordinate g = tlGeo.get();
-        ProjCoordinate p = tlProj.get();
+        double[] p = geoToProj.transformPrepared(lonDeg, latDeg, hEll);
 
-        g.x = lonDeg;
-        g.y = latDeg;
-        geoToProj.transform(g, p);
-
-        double E = p.x;
-        double N = p.y;
+        double E = p[0];
+        double N = p[1];
 
         if (use4) {
             // SurPad: Orgx=N, Orgy=E
             double dE = E - Orgy;
             double dN = N - Orgx;
 
-            // Formula corretta per il file SP
             double Ep = dE * cosA + dN * sinA;
             double Np = -dE * sinA + dN * cosA;
 
@@ -302,7 +295,6 @@ public final class SpLocalization implements LocalizationModel {
 
         double Zloc = hEll;
         if (useHF) {
-            // Height fitting riferito a x0/y0 del file, non a Orgx+Cx / Orgy+Cy
             double dx = N - hfX0; // north
             double dy = E - hfY0; // east
             double dh = a0 + a1 * dx + a2 * dy + a3 * dx * dx + a4 * dy * dy + a5 * dx * dy;
@@ -316,9 +308,6 @@ public final class SpLocalization implements LocalizationModel {
 
     @Override
     public void toGeoFast(double Eloc, double Nloc, double Zloc, double[] out) {
-        ProjCoordinate p = tlProj.get();
-        ProjCoordinate g = tlGeo.get();
-
         double e = Eloc;
         double n = Nloc;
 
@@ -336,7 +325,6 @@ public final class SpLocalization implements LocalizationModel {
             double dE = (e - (Orgy + Cy)) / Ck;
             double dN = (n - (Orgx + Cx)) / Ck;
 
-            // inversa coerente della formula forward
             double Ei = dE * cosA - dN * sinA;
             double Ni = dE * sinA + dN * cosA;
 
@@ -345,22 +333,13 @@ public final class SpLocalization implements LocalizationModel {
         }
 
         // 3) proj -> geo
-        p.x = e;
-        p.y = n;
-        projToGeo.transform(p, g);
+        double[] g = projToGeo.transformPrepared(e, n, hEll);
 
-        out[0] = g.y; // lat
-        out[1] = g.x; // lon
+        out[0] = g[1]; // lat
+        out[1] = g[0]; // lon
         out[2] = hEll;
     }
 
-    /**
-     * out[3] = delta in gradi da sommare all'HDT true:
-     *
-     * headingLocal = wrap360(headingTrue + out[3])
-     *
-     * Su conferma SurPad: delta = degrees(Ca)
-     */
     @Override
     public void toLocalFastWithHeadingDelta(double latDeg, double lonDeg, double hEll, double[] out) {
         toLocalFast(latDeg, lonDeg, hEll, out);
@@ -369,7 +348,6 @@ public final class SpLocalization implements LocalizationModel {
         }
     }
 
-    // opzionale, utile per debug/UI
     public double getHeadingDeltaDeg() {
         return headingDeltaDeg;
     }

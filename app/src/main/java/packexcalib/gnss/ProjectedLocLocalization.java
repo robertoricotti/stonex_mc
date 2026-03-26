@@ -1,7 +1,5 @@
 package packexcalib.gnss;
 
-import org.locationtech.proj4j.CoordinateTransform;
-import org.locationtech.proj4j.ProjCoordinate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -20,19 +18,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * Convenzioni adottate:
  * - Input geo: lat/lon in gradi, quota ellissoidale
  * - Output locale: E, N, Z
- * - PROJ4J usa x=lon, y=lat
+ * - PROJ usa x=lon, y=lat
  *
  * Semantica heading:
  * - per coerenza col tuo uso macchina e con SpLocalization,
  *   out[3] = Ca in gradi
- * - quindi:
- *
- *     headingLocal = wrap360(headingTrue + out[3])
- *
- * dove headingTrue è l'HDT della doppia antenna GNSS.
  *
  * Modello XY stimato dal LOC:
- * - grid -> local con stessa convenzione della classe SP
  *
  *     E_loc = (Orgy + Cy) + Ck * ( dE*cosA + dN*sinA )
  *     N_loc = (Orgx + Cx) + Ck * (-dE*sinA + dN*cosA )
@@ -42,8 +34,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
  *       dN = Ngrid - Orgx
  *
  * Quota:
- * - fit polinomiale tra quota ellissoidale e quota locale
- * - in coordinate LOCALI:
  *
  *     dh = a0 + a1*dx + a2*dy + a3*dx^2 + a4*dy^2 + a5*dx*dy
  *     dx = Nloc - x0
@@ -53,8 +43,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 public final class ProjectedLocLocalization implements LocalizationModel {
 
-    private final CoordinateTransform geoToProj;
-    private final CoordinateTransform projToGeo;
+    private final NativeProjTransformer geoToProj;
+    private final NativeProjTransformer projToGeo;
 
     // 4 parametri in convenzione SP/CubeA
     private final boolean use4;
@@ -69,12 +59,8 @@ public final class ProjectedLocLocalization implements LocalizationModel {
     private final double a0, a1, a2, a3, a4, a5;
     private final double hfX0, hfY0;
 
-    // buffer riusabili
-    private final ThreadLocal<ProjCoordinate> tlGeo  = ThreadLocal.withInitial(ProjCoordinate::new);
-    private final ThreadLocal<ProjCoordinate> tlProj = ThreadLocal.withInitial(ProjCoordinate::new);
-
-    private ProjectedLocLocalization(CoordinateTransform geoToProj,
-                                     CoordinateTransform projToGeo,
+    private ProjectedLocLocalization(NativeProjTransformer geoToProj,
+                                     NativeProjTransformer projToGeo,
                                      boolean use4,
                                      double Cx, double Cy, double CaRad, double Ck, double Orgx, double Orgy,
                                      double headingDeltaDeg,
@@ -112,8 +98,8 @@ public final class ProjectedLocLocalization implements LocalizationModel {
     // Factory
     // ---------------------------------------------------------------------
     public static ProjectedLocLocalization fromLocFile(File locFile,
-                                                       CoordinateTransform geoToProj,
-                                                       CoordinateTransform projToGeo) throws Exception {
+                                                       NativeProjTransformer geoToProj,
+                                                       NativeProjTransformer projToGeo) throws Exception {
         if (geoToProj == null || projToGeo == null) {
             throw new IllegalArgumentException("Transform geo<->proj null.");
         }
@@ -135,19 +121,13 @@ public final class ProjectedLocLocalization implements LocalizationModel {
         boolean[] useH = new boolean[n];
         boolean[] useV = new boolean[n];
 
-        ProjCoordinate g = new ProjCoordinate();
-        ProjCoordinate p = new ProjCoordinate();
-
         for (int i = 0; i < n; i++) {
             RawPoint rp = pts.get(i);
 
-            g.x = rp.lon;
-            g.y = rp.lat;
-            g.z = rp.hEll;
-            geoToProj.transform(g, p);
+            double[] p = geoToProj.transformPrepared(rp.lon, rp.lat, rp.hEll);
 
-            E[i] = p.x;
-            N[i] = p.y;
+            E[i] = p[0];
+            N[i] = p[1];
 
             EL[i] = rp.eLocal;
             NL[i] = rp.nLocal;
@@ -175,20 +155,11 @@ public final class ProjectedLocLocalization implements LocalizationModel {
             double[] w = new double[n];
 
             for (int i = 0; i < n; i++) {
-                // Convenzione identica alla SP:
                 // Zloc = hEll - dh  => dh = hEll - Zloc
                 dH[i] = Hell[i] - ZL[i];
                 w[i] = useV[i] ? 1.0 : 0.0;
             }
 
-           /* double[] coeff = fitPoly2DLocal(EL, NL, dH, w, hfY0, hfX0, 1e-12);
-            a0 = coeff[0];
-            a1 = coeff[1];
-            a2 = coeff[2];
-            a3 = coeff[3];
-            a4 = coeff[4];
-            a5 = coeff[5];
-            useHF = true;*/
             double[] coeff = fitPlaneLocal(EL, NL, dH, w, hfY0, hfX0);
             a0 = coeff[0];
             a1 = coeff[1];
@@ -197,11 +168,8 @@ public final class ProjectedLocLocalization implements LocalizationModel {
             a4 = 0.0;
             a5 = 0.0;
             useHF = true;
-
         }
 
-        // Per il tuo uso operativo:
-        // out[3] deve essere Ca in gradi
         double headingDeltaDeg = Math.toDegrees(fp.CaRad);
 
         return new ProjectedLocLocalization(
@@ -220,16 +188,10 @@ public final class ProjectedLocLocalization implements LocalizationModel {
     // ---------------------------------------------------------------------
     @Override
     public void toLocalFast(double latDeg, double lonDeg, double hEll, double[] out) {
-        ProjCoordinate g = tlGeo.get();
-        ProjCoordinate p = tlProj.get();
+        double[] p = geoToProj.transformPrepared(lonDeg, latDeg, hEll);
 
-        g.x = lonDeg;
-        g.y = latDeg;
-        g.z = hEll;
-        geoToProj.transform(g, p);
-
-        double E = p.x;
-        double N = p.y;
+        double E = p[0];
+        double N = p[1];
 
         if (use4) {
             double dE = E - Orgy;
@@ -257,9 +219,6 @@ public final class ProjectedLocLocalization implements LocalizationModel {
 
     @Override
     public void toGeoFast(double Eloc, double Nloc, double Zloc, double[] out) {
-        ProjCoordinate p = tlProj.get();
-        ProjCoordinate g = tlGeo.get();
-
         double e = Eloc;
         double n = Nloc;
 
@@ -285,19 +244,15 @@ public final class ProjectedLocLocalization implements LocalizationModel {
         }
 
         // 3) projected -> geo
-        p.x = e;
-        p.y = n;
-        p.z = hEll;
-        projToGeo.transform(p, g);
+        double[] g = projToGeo.transformPrepared(e, n, hEll);
 
-        out[0] = g.y; // lat
-        out[1] = g.x; // lon
+        out[0] = g[1]; // lat
+        out[1] = g[0]; // lon
         out[2] = hEll;
     }
 
     /**
      * out[3] = delta heading da sommare all'HDT true.
-     *
      * Per coerenza con SP e con il tuo uso macchina:
      * out[3] = CaDeg
      */
@@ -694,9 +649,9 @@ public final class ProjectedLocLocalization implements LocalizationModel {
         if ("no".equalsIgnoreCase(v) || "false".equalsIgnoreCase(v) || "0".equals(v)) return false;
         return def;
     }
+
     private static double[] fitPlaneLocal(double[] EL, double[] NL, double[] dH, double[] w,
                                           double y0, double x0) {
-        // Modello:
         // dh = a0 + a1*dx + a2*dy
         // dx = Nloc - x0
         // dy = Eloc - y0

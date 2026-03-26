@@ -135,7 +135,7 @@ public class NativeProjTransformer implements AutoCloseable {
 
     private void checkInit() {
         if (handle == 0) {
-            throw new IllegalStateException("NativeProjTransformer non inizializzato");
+            throw new IllegalStateException("NativeProjTransformer not init");
         }
     }
 

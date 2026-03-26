@@ -4,13 +4,13 @@ import static gui.MyApp.heposTransformer;
 import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
-import static services.UpdateValuesService.result;
+
 import static services.UpdateValuesService.shifted;
-import static services.UpdateValuesService.wgsToUtm;
+
 
 import android.util.Log;
 
-import org.locationtech.proj4j.ProjCoordinate;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +28,7 @@ import services.ReadProjectService;
  *********************************************/
 public class Deg2UTM {
     public static NativeProjTransformer nativeProjTransformer;
+    public static NativeProjTransformer nativeProjTransformerToGeo;
     public static boolean nativeCzechReady = false;
 
     private static final ProjCoordinate baseWgs = new ProjCoordinate();
@@ -384,10 +385,10 @@ public class Deg2UTM {
                         }
                         if(crs.equals("150580") && heposTransformer != null){
                             NmeaListener.AGGIUNTA_HDT =heposTransformer.getAggiuntaHDT();
-                            shifted = heposTransformer.transform(Lat, Lon, q);
-                            Easting = shifted.x;
-                            Northing = shifted.y + 2000000;
-                            Quota = shifted.z;
+                            double[] p = heposTransformer.transform(Lat, Lon, q);
+                            Easting = p[0];
+                            Northing = p[1] + 2000000;
+                            Quota = p[2];
                         }else if (crs.equals("150581")) {
                             NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon, "5514");
                             double[] p = trasformCS2CS(Lon, Lat, q);
@@ -423,12 +424,10 @@ public class Deg2UTM {
                             Quota = q;
                         } else {
                             NmeaListener.AGGIUNTA_HDT = gridHeadingDeltaDeg(Lat, Lon);
-                            if (wgsToUtm != null && result != null) {
-                                wgsToUtm.transform(new ProjCoordinate(Lon, Lat, q), result);
-                                Easting = result.x;
-                                Northing = result.y;
-                                Quota = q;
-                            }
+                            double[] p = trasformCS2CS(Lon, Lat, q);
+                            Easting = p[0];
+                            Northing = p[1];
+                            Quota = q;
                         }
 
 
@@ -436,12 +435,10 @@ public class Deg2UTM {
                         Log.e("GridShift", "Transform error", e);
                         geoidError = true;
                         NmeaListener.AGGIUNTA_HDT = 0;
-                        if (wgsToUtm != null && result != null) {
-                            wgsToUtm.transform(new ProjCoordinate(Lon, Lat, Z), result);
-                            Easting = result.x;
-                            Northing = result.y;
-                            Quota = Z;
-                        }
+                        double[] p = trasformCS2CS(Lon, Lat, Z);
+                        Easting = p[0];
+                        Northing = p[1];
+                        Quota = Z;
 
 
                     }
@@ -523,22 +520,15 @@ public class Deg2UTM {
     }
 
     private static double gridHeadingDeltaDeg(double latDeg, double lonDeg) {
-
-        if (wgsToUtm == null) return 0.0;
+        if (nativeProjTransformer == null) return 0.0;
 
         final double epsDeg = 1e-4; // ~11 m
 
-        baseWgs.x = lonDeg;
-        baseWgs.y = latDeg;
+        double[] p1 = nativeProjTransformer.transformPrepared(lonDeg, latDeg, 0.0);
+        double[] p2 = nativeProjTransformer.transformPrepared(lonDeg, latDeg + epsDeg, 0.0);
 
-        northWgs.x = lonDeg;
-        northWgs.y = latDeg + epsDeg;
-
-        wgsToUtm.transform(baseWgs, baseProj);
-        wgsToUtm.transform(northWgs, northProj);
-
-        double dE = northProj.x - baseProj.x;
-        double dN = northProj.y - baseProj.y;
+        double dE = p2[0] - p1[0];
+        double dN = p2[1] - p1[1];
 
         return Math.toDegrees(Math.atan2(dE, dN));
     }
@@ -546,80 +536,40 @@ public class Deg2UTM {
     private static double gridHeadingDeltaDeg(double latDeg, double lonDeg, String crs) {
         final double epsDeg = 1e-4; // ~11 m
 
-        double e1, n1, e2, n2;
+        try {
+            double[] p1;
+            double[] p2;
 
-        if ("5514".equals(crs)) {
-            double[] p1 = trasformCS2CS(lonDeg, latDeg, 0.0);
-            double[] p2 = trasformCS2CS(lonDeg, latDeg + epsDeg, 0.0);
+            if ("5514".equals(crs) ||
+                    "5513".equals(crs) ||
+                    "5516".equals(crs) ||
+                    "150581".equals(crs) ||
+                    "150582".equals(crs)) {
 
-            e1 = p1[0];
-            n1 = p1[1];
-            e2 = p2[0];
-            n2 = p2[1];
+                p1 = trasformCS2CS(lonDeg, latDeg, 0.0);
+                p2 = trasformCS2CS(lonDeg, latDeg + epsDeg, 0.0);
 
-        } else if ("5513".equals(crs)) {
-            double[] p1 = trasformCS2CS( lonDeg, latDeg, 0.0);
-            double[] p2 = trasformCS2CS(lonDeg, latDeg + epsDeg, 0.0);
+            } else {
+                if (nativeProjTransformer == null) return 0.0;
 
-            e1 = p1[0];
-            n1 = p1[1];
-            e2 = p2[0];
-            n2 = p2[1];
+                p1 = nativeProjTransformer.transformPrepared(lonDeg, latDeg, 0.0);
+                p2 = nativeProjTransformer.transformPrepared(lonDeg, latDeg + epsDeg, 0.0);
+            }
 
-        } else if ("5516".equals(crs)) {
-            double[] p1 = trasformCS2CS( lonDeg, latDeg, 0.0);
-            double[] p2 = trasformCS2CS(lonDeg, latDeg + epsDeg, 0.0);
+            if (p1 == null || p2 == null) return 0.0;
 
-            e1 = p1[0];
-            n1 = p1[1];
-            e2 = p2[0];
-            n2 = p2[1];
+            double dE = p2[0] - p1[0];
+            double dN = p2[1] - p1[1];
 
-        } else if ("150581".equals(crs)) {
-            double[] p1 = trasformCS2CS( lonDeg, latDeg, 0.0);
-            double[] p2 = trasformCS2CS( lonDeg, latDeg + epsDeg, 0.0);
-
-            e1 = p1[0];
-            n1 = p1[1];
-            e2 = p2[0];
-            n2 = p2[1];
-
-        } else if ("150582".equals(crs)) {
-            double[] p1 = trasformCS2CS( lonDeg, latDeg, 0.0);
-            double[] p2 = trasformCS2CS( lonDeg, latDeg + epsDeg, 0.0);
-
-            e1 = p1[0];
-            n1 = p1[1];
-            e2 = p2[0];
-            n2 = p2[1];
-
-        } else {
-            if (wgsToUtm == null) return 0.0;
-
-            baseWgs.x = lonDeg;
-            baseWgs.y = latDeg;
-
-            northWgs.x = lonDeg;
-            northWgs.y = latDeg + epsDeg;
-
-            wgsToUtm.transform(baseWgs, baseProj);
-            wgsToUtm.transform(northWgs, northProj);
-
-            e1 = baseProj.x;
-            n1 = baseProj.y;
-            e2 = northProj.x;
-            n2 = northProj.y;
+            return Math.toDegrees(Math.atan2(dE, dN));
+        } catch (Exception e) {
+            return 0.0;
         }
-
-        double dE = e2 - e1;
-        double dN = n2 - n1;
-
-        return Math.toDegrees(Math.atan2(dE, dN));
     }
 
     private static void ensureNativeCzechReady() {
         if (!nativeCzechReady) {
-            throw new IllegalStateException("NativeProjTransformer non inizializzato");
+            throw new IllegalStateException("NativeProjTransformer not init");
         }
     }
 
@@ -633,20 +583,5 @@ public class Deg2UTM {
         while (deg > 180.0) deg -= 360.0;
         return deg;
     }
-
-    private static double gridHeadingDeltaDeg150580(double latDeg, double lonDeg, double h) {
-        if (heposTransformer == null) return 0.0;
-
-        final double epsDeg = 1e-4;
-
-        ProjCoordinate shifted1 = heposTransformer.transform(latDeg, lonDeg, h);
-        ProjCoordinate shifted2 = heposTransformer.transform(latDeg + epsDeg, lonDeg, h);
-
-        double dE = shifted2.x - shifted1.x;
-        double dN = shifted2.y - shifted1.y;
-
-        return Math.toDegrees(Math.atan2(dE, dN));
-    }
-
 
 }

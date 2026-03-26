@@ -17,12 +17,6 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
-import org.locationtech.proj4j.CRSFactory;
-import org.locationtech.proj4j.CoordinateReferenceSystem;
-import org.locationtech.proj4j.CoordinateTransform;
-import org.locationtech.proj4j.CoordinateTransformFactory;
-import org.locationtech.proj4j.ProjCoordinate;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,14 +25,11 @@ import gui.MyApp;
 import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
+import packexcalib.gnss.ProjCoordinate;
 import utils.MyData;
 
 public class UpdateValuesService extends Service {
-    public static CRSFactory crsFactory;
-    public static CoordinateReferenceSystem WGS84, UTM;
-    public static CoordinateTransformFactory ctFactory;
-    public static CoordinateTransform wgsToUtm, utmToWgs;
-    public static ProjCoordinate shifted, result, resultWgs;
+    public static ProjCoordinate shifted,result, resultWgs;
     long startTime, stopTime;
     public static boolean startedService;
     public static boolean isUpodating;
@@ -82,14 +73,14 @@ public class UpdateValuesService extends Service {
         ((ExecutorService) mExecutor).shutdown();
         stopTime = System.currentTimeMillis();
         long result = Math.abs(stopTime - startTime);
-        Log.d("Servizzio","TRerminato");
+        Log.d("Servizzio", "TRerminato");
     }
 
     private class MyAsync_Excecutor implements Runnable {
         @Override
         public void run() {
             try {
-                Log.d("Servizzio","iniziato");
+                Log.d("Servizzio", "iniziato");
                 isUpodating = true;
                 String m = MyData.get_String("MachineSelected");
                 if (m == null) {
@@ -147,11 +138,11 @@ public class UpdateValuesService extends Service {
                     String offset_Tool_Roll = MyData.get_String("M" + i + "offset_Tool_Roll");
                     String offset_Tool_Pitch = MyData.get_String("M" + i + "offset_Tool_Pitch");
                     String Dozer_UpsideDown = MyData.get_String("M" + i + "Dozer_UpsideDown");
-                   //TODO DELTE
-                    String Tool_Delta_X=MyData.get_String("M" + i + "Tool_Delta_X");
-                    String Tool_Delta_Y=MyData.get_String("M" + i + "Tool_Delta_Y");
-                    String Tool_Delta_Z=MyData.get_String("M" + i + "Tool_Delta_Z");
-                    String offset_Boom_Tool=MyData.get_String("M" + i + "offset_Boom_Tool");
+                    //TODO DELTE
+                    String Tool_Delta_X = MyData.get_String("M" + i + "Tool_Delta_X");
+                    String Tool_Delta_Y = MyData.get_String("M" + i + "Tool_Delta_Y");
+                    String Tool_Delta_Z = MyData.get_String("M" + i + "Tool_Delta_Z");
+                    String offset_Boom_Tool = MyData.get_String("M" + i + "offset_Boom_Tool");
                     String drill_Bit_Len = MyData.get_String("M" + i + "drill_Bit_Len");
                     String drill_Bit_Width = MyData.get_String("M" + i + "drill_Bit_Width");
                     String drill_Rod_Len = MyData.get_String("M" + i + "drill_Rod_Len");
@@ -607,7 +598,6 @@ public class UpdateValuesService extends Service {
                     }
 
 
-
                     if (Use_Blade_Pitch == null) {
                         MyData.push("M" + i + "Use_Blade_Pitch", "1");
                     }
@@ -687,7 +677,6 @@ public class UpdateValuesService extends Service {
                     }
 
 
-
                     ///
                 }
 
@@ -708,7 +697,7 @@ public class UpdateValuesService extends Service {
                         String offsettilA = MyData.get_String("M" + i + "_Tilt_Offset_Angle" + j);
 
                         String degwtilt = MyData.get_String("M" + i + "_Offset_DegWTilt" + j);
-                        String L_RotoToBucket=MyData.get_String("M"+i+"L_RotoToBucket"+j);
+                        String L_RotoToBucket = MyData.get_String("M" + i + "L_RotoToBucket" + j);
 
 
                         if (name == null) {
@@ -784,7 +773,7 @@ public class UpdateValuesService extends Service {
                 String licenza = MyData.get_String("licenza");
                 String UTC_Offset = MyData.get_String("UTC_Offset");
                 String Raggio_Drill = MyData.get_String("Raggio_Drill");
-                String Drill_Text_Mode=MyData.get_String("Drill_Text_Mode");
+                String Drill_Text_Mode = MyData.get_String("Drill_Text_Mode");
                 String Mainfall_Distance = MyData.get_String("Mainfall_Distance");
                 String coordOrder = MyData.get_String("coordOrder");
                 String screenOr = MyData.get_String("screenOr");
@@ -1995,7 +1984,6 @@ public class UpdateValuesService extends Service {
                 }
 
 
-
                 try {
                     DataSaved.isWL = MyData.get_Int("M" + indexMach + "_isWL");
                 } catch (Exception e) {
@@ -2049,7 +2037,6 @@ public class UpdateValuesService extends Service {
                 DataSaved.progettoSelected = MyData.get_String("progettoSelected");
                 DataSaved.progettoSelected_POLY = MyData.get_String("progettoSelected_POLY");
                 DataSaved.progettoSelected_POINT = MyData.get_String("progettoSelected_POINT");
-
 
 
                 try {
@@ -2344,10 +2331,9 @@ public class UpdateValuesService extends Service {
                     } catch (Exception e) {
                         Log.e("Error", "Errore nell'inizializzazione di CanSender: " + e.getMessage());
                     }
-
-                    result = new ProjCoordinate();
                     shifted = new ProjCoordinate();
-                    resultWgs = new ProjCoordinate();
+                    result =  new ProjCoordinate();
+                    resultWgs =  new ProjCoordinate();
                     ReadProjectService.startCRS();
 
                     startedService = true;
@@ -2356,7 +2342,7 @@ public class UpdateValuesService extends Service {
                 }
 
                 isUpodating = false;
-                Log.w("Servizzio","TRerminato");
+                Log.w("Servizzio", "TRerminato");
             } catch (Exception e) {
                 Log.e("Servizzio", "Exception non gestita");
             }

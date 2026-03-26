@@ -49,6 +49,7 @@ import gui.dialogs_and_toast.Diaalog_Set_SP;
 import gui.dialogs_and_toast.Dialog_Add_Surfaces;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.LocalizationFactory;
 import serial.SerialPortManager;
 import services.ReadProjectService;
@@ -542,7 +543,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                                 Log.d("TESTR","Usa file SP "+DataSaved.S_CRS);
                             }
                             ReadProjectService.model = LocalizationFactory.fromFile(new File(spAdapter.getSelectedFilePathAbs()),
-                                    UpdateValuesService.wgsToUtm,UpdateValuesService.utmToWgs);
+                                    Deg2UTM.nativeProjTransformer,Deg2UTM.nativeProjTransformerToGeo);
                             usaSP.setEnabled(true);
 
                         }
