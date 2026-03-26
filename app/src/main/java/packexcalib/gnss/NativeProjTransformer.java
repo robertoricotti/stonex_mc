@@ -8,7 +8,7 @@ import java.io.File;
 public class NativeProjTransformer implements AutoCloseable {
 
     static {
-        System.loadLibrary("nativeczechproj");
+        System.loadLibrary("nativeproj");
     }
 
     private long handle = 0;
@@ -108,7 +108,7 @@ public class NativeProjTransformer implements AutoCloseable {
         double[] out = nativeFromPipeline(handle, pipeline, x, y, z);
         if (out == null || out.length < 3) {
             throw new RuntimeException(
-                    "Trasformazione pipeline fallita\n" +
+                    "Transformtion pipeline failed\n" +
                             "pipeline = " + pipeline + "\n" +
                             "nativeErr = " + safeLastError(handle)
             );

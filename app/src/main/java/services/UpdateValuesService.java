@@ -25,11 +25,10 @@ import gui.MyApp;
 import gui.draw_class.MyColorClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
-import packexcalib.gnss.ProjCoordinate;
 import utils.MyData;
 
 public class UpdateValuesService extends Service {
-    public static ProjCoordinate shifted,result, resultWgs;
+
     long startTime, stopTime;
     public static boolean startedService;
     public static boolean isUpodating;
@@ -2331,9 +2330,7 @@ public class UpdateValuesService extends Service {
                     } catch (Exception e) {
                         Log.e("Error", "Errore nell'inizializzazione di CanSender: " + e.getMessage());
                     }
-                    shifted = new ProjCoordinate();
-                    result =  new ProjCoordinate();
-                    resultWgs =  new ProjCoordinate();
+
                     ReadProjectService.startCRS();
 
                     startedService = true;

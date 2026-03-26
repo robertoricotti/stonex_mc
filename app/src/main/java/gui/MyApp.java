@@ -124,7 +124,6 @@ import gui.tech_menu.XYZ_Calib;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
-import packexcalib.gnss.CzechGridShiftTransformer;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.NmeaListener;
@@ -143,7 +142,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     NetworkConfigSettings.ConnectionType type;
     /// /////////
     public static volatile boolean TEST_MODE = false;
-    public static volatile boolean isCRSStarted = false;
     public static int MAX_NUMERO_FACCE = 5000;
     public static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio
@@ -166,8 +164,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static GridShiftTransformer heposTransformer;
     public static String gridFile_GR_dE = "";
     public static String gridFile_GR_dN = "";
-    public static CzechGridShiftTransformer cz_Q1;
-    public static CzechGridShiftTransformer cz_Q3;
     public static String DEVICE_SN = "";
     public static Activity visibleActivity;
     public static String Actualactivity;
@@ -474,7 +470,7 @@ git push
         if (Deg2UTM.nativeProjTransformer != null) {
             Deg2UTM.nativeProjTransformer.close();
             Deg2UTM.nativeProjTransformer = null;
-            Deg2UTM.nativeCzechReady = false;
+            Deg2UTM.nativeProjReady = false;
         }
     }
 

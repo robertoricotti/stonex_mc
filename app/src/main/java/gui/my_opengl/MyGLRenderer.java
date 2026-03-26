@@ -30,9 +30,7 @@ import services.TriangleService;
 import utils.MyData;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
-
     public static float orthoBaseSize = 5f;
-
     private static final float MIN_2D_SCALE = 0.001f;
     private static final float DEFAULT_CAMERA_Z = -5f;
     private static final float ORTHO_NEAR = -50f;
@@ -40,36 +38,28 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private static final float PERSPECTIVE_NEAR = 0.1f;
     private static final float PERSPECTIVE_FAR = 100f;
     private static final float PERSPECTIVE_FOV = 45f;
-
     private int surfaceWidth;
     private int surfaceHeight;
-
     boolean is2D, is3D;
     public static float scale = 1f;
     public static float angleX = -60f;
     public static float angleY, angleY_extra;
     public static float panX;
     public static float panY = -0.3f;
-
     public static float scale_2d = 1f;
     public static float panX_2d;
     public static float panY_2d = -1f;
-
     private boolean isXML, isXMLPoint;
-
     public static float[] coloreEsterno = new float[]{0.4f, 0.4f, 0.4f, 1f};
     public static float[] coloreInterno = new float[]{0.4f, 0.4f, 0.4f, 1f};
     public static float[] coloreAttacco = new float[]{0.4f, 0.4f, 0.4f, 1f};
     public static float[] coloreAttaccoScuro = new float[]{0.4f, 0.4f, 0.4f, 1f};
     public static float[] coloreBoom = new float[]{0.4f, 0.4f, 0.4f, 1f};
     public static float[] coloreBoomScuro = new float[]{0.4f, 0.4f, 0.4f, 1f};
-
     public static FontAtlas atlas;
     public static FontAtlas atlasPNEZD;
     public static float charSpacingFactor = 0.5f;
-
     private final GL11 gl11 = new GL11();
-
     private final float[] projectionMatrix = new float[16];
     private final float[] viewMatrix = new float[16];
     private final float[] vpMatrix = new float[16];
@@ -111,14 +101,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         surfaceWidth = Math.max(1, width);
         surfaceHeight = Math.max(1, height);
-
         coloreEsterno = GL_Methods.darkenColor(GL_Methods.parseColorToGL(MyColorClass.colorBucket), 1, 1);
         coloreInterno = GL_Methods.darkenColor(coloreEsterno, 0.5f, 0.95f);
         coloreAttacco = GL_Methods.darkenColor(GL_Methods.parseColorToGL(Color.GRAY), 1, 1);
         coloreAttaccoScuro = GL_Methods.darkenColor(coloreAttacco, 0.75f, 1f);
         coloreBoom = GL_Methods.darkenColor(GL_Methods.parseColorToGL(MyColorClass.colorStick), 1, 1);
         coloreBoomScuro = GL_Methods.darkenColor(coloreBoom, 0.75f, 1f);
-
         GLES20.glViewport(0, 0, surfaceWidth, surfaceHeight);
         GLDrawer.setViewportSize(surfaceWidth, surfaceHeight);
     }
@@ -263,7 +251,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             Matrix.rotateM(viewMatrix, 0, angleTest, 0f, 0f, 1f);
         }
     }
-
     private void drawTerrain3D() {
         float scale=1f;
         if (!My3DActivity.glFilter) {
@@ -318,11 +305,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         }
     }
-
     private void drawTerrain2D() {
         if (!My3DActivity.glFilter) {
             if (My3DActivity.glFace || My3DActivity.glFill) {
-                GLDrawer.drawFaces(gl11, DataSaved.dxfFacesGL_2D,  0.8f,1f, isXML);
+                GLDrawer.drawFaces2D(gl11, DataSaved.dxfFacesGL_2D,  0.8f,1f, isXML);
             }
             if (My3DActivity.glGradient) {
                 GLDrawer.drawFacesGradient2D(gl11, DataSaved.dxfFaces, 1f, TriangleService.minZ, TriangleService.maxZ);
@@ -353,7 +339,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         } else {
             if (My3DActivity.glFace || My3DActivity.glFill) {
-                GLDrawer.drawFaces(gl11, DataSaved.filteredFacesGL_2D,  0.8f,1f, isXML);
+                GLDrawer.drawFaces2D(gl11, DataSaved.filteredFacesGL_2D,  0.8f,1f, isXML);
             }
             if (My3DActivity.glGradient) {
                 GLDrawer.drawFacesGradient2D(gl11, DataSaved.filteredFaces, 1f, TriangleService.minZ, TriangleService.maxZ);

@@ -5,7 +5,6 @@ import static gui.my_opengl.GL_Methods.getJetColor;
 import static packexcalib.exca.DataSaved.GL_BENNA;
 import static packexcalib.exca.DataSaved.GL_LAMA;
 import static packexcalib.exca.DataSaved.GL_WHEEL;
-
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.EXCAVATOR;
@@ -17,13 +16,12 @@ import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
+
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import gui.my_opengl.compat.GL11;
 
 import dxf.Arc;
 import dxf.AutoCADColor;
@@ -36,13 +34,13 @@ import dxf.PNEZDPoint;
 import dxf.Point3D;
 import dxf.Polyline;
 import dxf.Polyline_2D;
-import gui.draw_class.MyColorClass;
+import gui.my_opengl.compat.GL11;
 import packexcalib.exca.DataSaved;
 
 public class GLDrawer {
-//CULLING HELPERS
-private static final float CULL_MARGIN_XY = 0.15f;
-    private static final float CULL_MARGIN_Z  = 0.10f;
+    //CULLING HELPERS
+    private static final float CULL_MARGIN_XY = 0.15f;
+    private static final float CULL_MARGIN_Z = 0.10f;
 
     private static boolean isAabbVisible(
             float minX, float minY, float minZ,
@@ -63,12 +61,12 @@ private static final float CULL_MARGIN_XY = 0.15f;
                 {maxX, maxY, maxZ, 1f}
         };
 
-        boolean allLeft   = true;
-        boolean allRight  = true;
+        boolean allLeft = true;
+        boolean allRight = true;
         boolean allBottom = true;
-        boolean allTop    = true;
-        boolean allNear   = true;
-        boolean allFar    = true;
+        boolean allTop = true;
+        boolean allNear = true;
+        boolean allFar = true;
 
         for (float[] c : corners) {
             Matrix.multiplyMV(out, 0, sVpMatrix, 0, c, 0);
@@ -81,13 +79,13 @@ private static final float CULL_MARGIN_XY = 0.15f;
             float nz = out[2] / w;
 
             if (nx >= -1f - CULL_MARGIN_XY) allLeft = false;
-            if (nx <=  1f + CULL_MARGIN_XY) allRight = false;
+            if (nx <= 1f + CULL_MARGIN_XY) allRight = false;
 
             if (ny >= -1f - CULL_MARGIN_XY) allBottom = false;
-            if (ny <=  1f + CULL_MARGIN_XY) allTop = false;
+            if (ny <= 1f + CULL_MARGIN_XY) allTop = false;
 
             if (nz >= -1f - CULL_MARGIN_Z) allNear = false;
-            if (nz <=  1f + CULL_MARGIN_Z) allFar = false;
+            if (nz <= 1f + CULL_MARGIN_Z) allFar = false;
         }
 
         return !(allLeft || allRight || allBottom || allTop || allNear || allFar);
@@ -178,6 +176,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
 
         return isAabbVisible(minX, minY, -0.01f, maxX, maxY, 0.01f);
     }
+
     private static boolean isPoint3DVisible(Point3D p, double[] bucketCenter, float scale, float radiusPx) {
         if (p == null) return false;
 
@@ -193,7 +192,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         );
     }
 
-    ///////////////////////////////////////
+    /// ////////////////////////////////////
 
     private static int viewportWidth = 1;
     private static int viewportHeight = 1;
@@ -227,7 +226,8 @@ private static final float CULL_MARGIN_XY = 0.15f;
     private static final float ARC_SEGMENT_PIXELS = 8f;
     private static final float ROUND_JOIN_STEP_DEG = 10f;
 
-    private GLDrawer() {}
+    private GLDrawer() {
+    }
 
     // =========================
     // PUBLIC SETUP
@@ -235,6 +235,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
     private static float currentScale() {
         return MyGLRenderer.currentRenderScale();
     }
+
     public static void init() {
         if (colorProgram == null) {
             colorProgram = new ColorProgram();
@@ -264,6 +265,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         }
         return hasVpMatrix;
     }
+
     public static void drawFaces(GL11 gl, List<Face3D> faces, float lineW, float scala, boolean isXML) {
         if (faces == null || faces.isEmpty()) return;
         if (!ensureReady()) return;
@@ -285,7 +287,8 @@ private static final float CULL_MARGIN_XY = 0.15f;
                 totalFaces++;
 
                 if (face == null) continue;
-                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName())) continue;
+                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName()))
+                    continue;
                 if (!isFace3DVisible(face, bucketCenter, scala)) continue;
 
                 visibleFaces.add(face);
@@ -301,7 +304,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
 
             for (Face3D face : visibleFaces) {
                 face.prepareVertexBuffer(bucketCenter, scala);
-                FloatBuffer buffer = face.getVertexBuffer();
+                FloatBuffer buffer = face.getVertexBuffer3D();
                 if (buffer == null) continue;
 
                 int color = isXML
@@ -329,6 +332,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
             Log.e(TAG, "drawFaces", e);
         }
     }
+
     public static void drawFacesGradientPRO(GL11 gl, List<Face3D> faces, float scala, double zMax, double zMin) {
         if (faces == null || faces.isEmpty()) return;
         if (!ensureReady()) return;
@@ -345,7 +349,8 @@ private static final float CULL_MARGIN_XY = 0.15f;
                 totalFaces++;
 
                 if (face == null) continue;
-                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName())) continue;
+                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName()))
+                    continue;
                 if (!isFace3DVisible(face, bucketCenter, scala)) continue;
 
                 visibleFaces.add(face);
@@ -364,7 +369,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
 
             for (Face3D face : visibleFaces) {
                 face.prepareVertexBuffer(bucketCenter, scala);
-                FloatBuffer vertexBuffer = face.getVertexBuffer();
+                FloatBuffer vertexBuffer = face.getVertexBuffer3D();
                 if (vertexBuffer == null) continue;
 
                 List<Point3D> points = face.getVertices();
@@ -399,6 +404,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
             Log.e(TAG, "drawFacesGradientPRO", e);
         }
     }
+
     public static void drawFacesGradient2D(GL11 gl, List<Face3D> faces, float scala, double zMax, double zMin) {
         if (faces == null || faces.isEmpty()) return;
         if (!ensureReady()) return;
@@ -415,7 +421,8 @@ private static final float CULL_MARGIN_XY = 0.15f;
                 totalFaces++;
 
                 if (face == null) continue;
-                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName())) continue;
+                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName()))
+                    continue;
                 if (!isFace3DVisible2D(face, bucketCenter, scala)) continue;
 
                 visibleFaces.add(face);
@@ -434,7 +441,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
 
             for (Face3D face : visibleFaces) {
                 face.prepareVertexBuffer2DForGradient(bucketCenter, scala);
-                FloatBuffer vertexBuffer = face.getVertexBuffer();
+                FloatBuffer vertexBuffer = face.getVertexBuffer2D();
                 if (vertexBuffer == null) continue;
 
                 List<Point3D> points = face.getVerticesWithZ();
@@ -457,8 +464,13 @@ private static final float CULL_MARGIN_XY = 0.15f;
                 colorBuffer.position(0);
                 drawGradientVertices(vertexBuffer, colorBuffer, vertexCount, drawMode, identity);
 
-                vertexBuffer.position(0);
-                drawColoredVertices(vertexBuffer, vertexCount, GLES20.GL_LINE_LOOP, identity, 1f, 1f, 1f, 1f);
+                float[] outlineCoords = buildFaceOutlineCoords2D(face, bucketCenter, scala);
+                if (outlineCoords != null) {
+                    float outlineWidth = Math.max(1.0f, 1.2f * scala);
+                    drawThickSegments2D(outlineCoords, outlineWidth, new float[]{
+                            1f, 1f, 1f, 1f
+                    });
+                }
             }
         } catch (Exception e) {
             Log.e(TAG, "drawFacesGradient2D", e);
@@ -480,7 +492,8 @@ private static final float CULL_MARGIN_XY = 0.15f;
         float[] identity = identity();
 
         for (Polyline polyline : polylines) {
-            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName())) continue;
+            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName()))
+                continue;
             if (!isPolylineVisible(polyline, bucketCenter, scala)) continue;
 
             FloatBuffer buffer = polyline.getOrBuildGlBuffer(bucketCenter, scala);
@@ -493,6 +506,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
             drawColoredVertices(buffer, vertexCount, GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 0.85f);
         }
     }
+
     public static void drawSelectedPoly(GL11 gl, Polyline polyline, float lineW, int color, float scala) {
         if (polyline == null) return;
         if (!ensureReady()) return;
@@ -699,10 +713,11 @@ private static final float CULL_MARGIN_XY = 0.15f;
         if (!ensureReady()) return;
 
         double[] bucket = DataSaved.glL_AnchorView;
-        float width = Math.max(1f, lineW );
+        float width = Math.max(1f, lineW);
 
         for (Line line : lines) {
-            if (line.getLayer() == null || !isLayerEnabled(line.getLayer().getLayerName())) continue;
+            if (line.getLayer() == null || !isLayerEnabled(line.getLayer().getLayerName()))
+                continue;
 
             float[] coords = new float[6];
             coords[0] = (float) ((line.getStart().getX() - bucket[0]) * scala);
@@ -729,7 +744,8 @@ private static final float CULL_MARGIN_XY = 0.15f;
         float width = Math.max(1f, lineW);
 
         for (Circle circle : circles) {
-            if (circle.getLayer() == null || !isLayerEnabled(circle.getLayer().getLayerName())) continue;
+            if (circle.getLayer() == null || !isLayerEnabled(circle.getLayer().getLayerName()))
+                continue;
 
             float cx = (float) ((circle.getCenter().getX() - bucket[0]) * scala);
             float cy = (float) ((circle.getCenter().getY() - bucket[1]) * scala);
@@ -795,7 +811,8 @@ private static final float CULL_MARGIN_XY = 0.15f;
         float width = Math.max(1f, lineW);
 
         for (Polyline_2D polyline : polylines) {
-            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName())) continue;
+            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName()))
+                continue;
 
             List<Point3D> vertices = polyline.getVertices();
             if (vertices == null || vertices.size() < 2) continue;
@@ -855,6 +872,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
             );
         }
     }
+
     private static void drawThickLineStrip2D_GLSpace(List<Point3D> points, float widthPx, float[] color) {
         if (points == null || points.size() < 2) return;
         if (!ensureReady()) return;
@@ -991,6 +1009,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         }
         return flat;
     }
+
     public static void drawCircle(GL11 gl, float cx, float cy, float cz, float radius, int segments, float[] color) {
         if (!ensureReady()) return;
 
@@ -1018,6 +1037,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
                 color.length > 3 ? color[3] : 1f
         );
     }
+
     public static void drawCircle(GL11 gl, float cx, float cy, float cz, float radius, int segments) {
         if (!ensureReady()) return;
 
@@ -1036,6 +1056,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         FloatBuffer buffer = createFloatBuffer(coords);
         drawColoredVertices(buffer, segments + 2, GLES20.GL_TRIANGLE_FAN, identity(), 1f, 1f, 1f, 1f);
     }
+
     public static void drawRawLines3D(float[] coords, int vertexCount, float[] color, float lineWidth) {
         if (coords == null || coords.length < vertexCount * 3) return;
         if (!ensureReady()) return;
@@ -1186,6 +1207,31 @@ private static final float CULL_MARGIN_XY = 0.15f;
     // =========================
     // SHADERS
     // =========================
+    private static float[] buildFaceOutlineCoords2D(Face3D face, double[] bucketCenter, float scala) {
+        if (face == null) return null;
+
+        List<Point3D> pts = face.getVertices();
+        if (pts == null || pts.size() < 3) return null;
+
+        int count = pts.size();
+        float[] coords = new float[count * 6]; // 2 punti per segmento, 3 float ciascuno
+        int idx = 0;
+
+        for (int i = 0; i < count; i++) {
+            Point3D a = pts.get(i);
+            Point3D b = pts.get((i + 1) % count);
+
+            coords[idx++] = (float) ((a.getX() - bucketCenter[0]) * scala);
+            coords[idx++] = (float) ((a.getY() - bucketCenter[1]) * scala);
+            coords[idx++] = 0f;
+
+            coords[idx++] = (float) ((b.getX() - bucketCenter[0]) * scala);
+            coords[idx++] = (float) ((b.getY() - bucketCenter[1]) * scala);
+            coords[idx++] = 0f;
+        }
+
+        return coords;
+    }
 
     private static class ColorProgram {
         final int program;
@@ -1195,6 +1241,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         final int uColor;
         final int uUseVertexColor;
         final int uPointSize;
+
         ColorProgram() {
             String vertex =
                     "uniform mat4 uMVPMatrix;\n" +
@@ -1202,7 +1249,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
                             "attribute vec4 aColor;\n" +
                             "uniform vec4 uColor;\n" +
                             "uniform int uUseVertexColor;\n" +
-                            "uniform float uPointSize;\n"+
+                            "uniform float uPointSize;\n" +
                             "varying vec4 vColor;\n" +
                             "void main() {\n" +
                             "  gl_Position = uMVPMatrix * aPosition;\n" +
@@ -1309,6 +1356,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         }
         return shader;
     }
+
     public static void drawRawLineStrip3D(float[] coords, int vertexCount, float[] color, float lineWidth) {
         if (coords == null || coords.length < vertexCount * 3) return;
         if (!ensureReady()) return;
@@ -1333,7 +1381,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
             case 1:
             case 3:
                 if (DataSaved.nearestPoint != null) {
-                    switch (DataSaved.isWL){
+                    switch (DataSaved.isWL) {
                         case EXCAVATOR:
                             drawPointDist_EXCA(gl11, 5f, Color.GREEN, s);
                             break;
@@ -1368,7 +1416,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
 
 
                 }
-                switch (DataSaved.isWL){
+                switch (DataSaved.isWL) {
                     case EXCAVATOR:
                         drawLineDist_EXCA(gl11, 5f, Color.GREEN, s);
                         break;
@@ -1386,6 +1434,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
                 break;
         }
     }
+
     private static void drawLineDist_DOZER(GL11 gl, float lineW, int color, float scala) {
         try {
             float[] coords = new float[]{
@@ -1403,6 +1452,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         } catch (Exception ignored) {
         }
     }
+
     private static void drawPointDist_DOZER(GL11 gl, float lineW, int color, float scala) {
         try {
             float[] coords = new float[]{
@@ -1440,6 +1490,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         } catch (Exception ignored) {
         }
     }
+
     private static void drawPointDist_WHEEL(GL11 gl, float lineW, int color, float scala) {
         try {
             float[] coords = new float[]{
@@ -1477,6 +1528,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         } catch (Exception ignored) {
         }
     }
+
     private static void drawPointDist_EXCA(GL11 gl, float lineW, int color, float scala) {
         try {
             float[] coords = new float[]{
@@ -1513,6 +1565,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         GLDrawer.drawCircle(gl, cx, cy, cz, rOuter, segments, green);
         GLDrawer.drawCircle(gl, cx, cy, cz, rInner, segments, green);
     }
+
     public static void drawThickLineStrip2D(List<Point3D> points, double[] anchor, float scala, float widthPx, float[] color) {
         if (points == null || points.size() < 2) return;
         if (!ensureReady()) return;
@@ -1700,9 +1753,15 @@ private static final float CULL_MARGIN_XY = 0.15f;
             float x = cx + (float) Math.cos(a) * radiusX;
             float y = cy + (float) Math.sin(a) * radiusY;
 
-            out.add(cx); out.add(cy); out.add(cz);
-            out.add(prevX); out.add(prevY); out.add(cz);
-            out.add(x); out.add(y); out.add(cz);
+            out.add(cx);
+            out.add(cy);
+            out.add(cz);
+            out.add(prevX);
+            out.add(prevY);
+            out.add(cz);
+            out.add(x);
+            out.add(y);
+            out.add(cz);
 
             prevX = x;
             prevY = y;
@@ -1755,20 +1814,34 @@ private static final float CULL_MARGIN_XY = 0.15f;
         float cx = x2 + ox, cy = y2 + oy;
         float dx2 = x2 - ox, dy2 = y2 - oy;
 
-        out.add(ax);  out.add(ay);  out.add(z1);
-        out.add(bx);  out.add(by);  out.add(z1);
-        out.add(cx);  out.add(cy);  out.add(z2);
+        out.add(ax);
+        out.add(ay);
+        out.add(z1);
+        out.add(bx);
+        out.add(by);
+        out.add(z1);
+        out.add(cx);
+        out.add(cy);
+        out.add(z2);
 
-        out.add(cx);  out.add(cy);  out.add(z2);
-        out.add(bx);  out.add(by);  out.add(z1);
-        out.add(dx2); out.add(dy2); out.add(z2);
+        out.add(cx);
+        out.add(cy);
+        out.add(z2);
+        out.add(bx);
+        out.add(by);
+        out.add(z1);
+        out.add(dx2);
+        out.add(dy2);
+        out.add(z2);
     }
+
     public static void resetGlState() {
         colorProgram = null;
         textureProgram = null;
         hasVpMatrix = false;
         hasViewMatrix = false;
     }
+
     private static float pixelsToWorldX(float px) {
         if (!isOrtho2D) return px;
         return (2f * orthoWorldHalfWidth / (float) viewportWidth) * px;
@@ -1778,6 +1851,7 @@ private static final float CULL_MARGIN_XY = 0.15f;
         if (!isOrtho2D) return px;
         return (2f * orthoWorldHalfHeight / (float) viewportHeight) * px;
     }
+
     public static void setViewportSize(int width, int height) {
         viewportWidth = Math.max(1, width);
         viewportHeight = Math.max(1, height);
@@ -1787,6 +1861,80 @@ private static final float CULL_MARGIN_XY = 0.15f;
         isOrtho2D = ortho2D;
         orthoWorldHalfWidth = Math.max(1e-6f, halfWidth);
         orthoWorldHalfHeight = Math.max(1e-6f, halfHeight);
+    }
+
+    public static void drawFaces2D(GL11 gl, List<Face3D> faces, float lineW, float scala, boolean isXML) {
+        if (faces == null || faces.isEmpty()) return;
+        if (!ensureReady()) return;
+        if (My3DActivity.glGradient) return;
+
+        try {
+            double[] bucketCenter = DataSaved.glL_AnchorView;
+
+            List<Face3D> visibleFaces = new ArrayList<>();
+
+            for (Face3D face : faces) {
+                if (face == null) continue;
+                if (face.getLayer() == null || !isLayerEnabled(face.getLayer().getLayerName()))
+                    continue;
+                if (!isFace3DVisible2D(face, bucketCenter, scala)) continue;
+
+                visibleFaces.add(face);
+            }
+
+            visibleFaces.sort((f1, f2) ->
+                    Double.compare(
+                            GL_Methods.averageZ(f2, bucketCenter),
+                            GL_Methods.averageZ(f1, bucketCenter)
+                    )
+            );
+
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+            float[] identity = identity();
+
+            for (Face3D face : visibleFaces) {
+                face.prepareVertexBuffer2DForGradient(bucketCenter, scala);
+                FloatBuffer buffer = face.getVertexBuffer2D();
+                if (buffer == null) continue;
+
+                int color = isXML
+                        ? GL_Methods.myParseColor(
+                        AutoCADColor.getColor(String.valueOf(face.getLayer().getColorState()))
+                )
+                        : GL_Methods.myParseColor(face.getLayer().getColorState());
+
+                float[] rgb = GL_Methods.parseColorToGL(color);
+
+                boolean isTriangle = face.getP4().equals(face.getP3());
+                int vertexCount = isTriangle ? 3 : 4;
+                int drawMode = isTriangle ? GLES20.GL_TRIANGLES : GLES20.GL_TRIANGLE_FAN;
+
+                if (My3DActivity.glFill) {
+                    buffer.position(0);
+                    drawColoredVertices(
+                            buffer,
+                            vertexCount,
+                            drawMode,
+                            identity,
+                            rgb[0], rgb[1], rgb[2], 0.30f
+                    );
+                }
+
+                if (My3DActivity.glFace) {
+                    float[] outlineCoords = buildFaceOutlineCoords2D(face, bucketCenter, scala);
+                    if (outlineCoords != null) {
+                        float outlineWidth = Math.max(1.0f, lineW * scala);
+                        drawThickSegments2D(outlineCoords, outlineWidth, new float[]{
+                                rgb[0], rgb[1], rgb[2], 1f
+                        });
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "drawFaces2D", e);
+        }
     }
 }
 

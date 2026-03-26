@@ -5,7 +5,7 @@ import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static packexcalib.gnss.CRS_Strings._UTM;
 
-import static services.UpdateValuesService.shifted;
+
 
 
 import android.util.Log;
@@ -14,7 +14,6 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -29,15 +28,8 @@ import services.ReadProjectService;
 public class Deg2UTM {
     public static NativeProjTransformer nativeProjTransformer;
     public static NativeProjTransformer nativeProjTransformerToGeo;
-    public static boolean nativeCzechReady = false;
+    public static boolean nativeProjReady = false;
 
-    private static final ProjCoordinate baseWgs = new ProjCoordinate();
-    private static final ProjCoordinate northWgs = new ProjCoordinate();
-    private static final ProjCoordinate baseProj = new ProjCoordinate();
-    private static final ProjCoordinate northProj = new ProjCoordinate();
-
-    // buffer input WGS riusabile
-    private static final ProjCoordinate inWgs = new ProjCoordinate();
 
     // ====== lettori geoide (cache condivisa per tutte le istanze) ======
     private static GeoideInterpolation UGF_READER;
@@ -84,7 +76,6 @@ public class Deg2UTM {
                     break;
 
                 case _NONE:
-
                     ReadProjectService.model.toLocalFastWithHeadingDelta(Lat, Lon, Z, out);
                     Easting = out[0];
                     Northing = out[1];
@@ -567,14 +558,14 @@ public class Deg2UTM {
         }
     }
 
-    private static void ensureNativeCzechReady() {
-        if (!nativeCzechReady) {
+    private static void ensureNativeProjReady() {
+        if (!nativeProjReady) {
             throw new IllegalStateException("NativeProjTransformer not init");
         }
     }
 
     private static double[] trasformCS2CS(double x,double y,double z){
-        ensureNativeCzechReady();
+        ensureNativeProjReady();
         return nativeProjTransformer.transformPrepared(x,y,z);
     }
 

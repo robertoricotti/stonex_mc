@@ -22,9 +22,14 @@ public class Face3D implements Serializable {
     Point3D p1, p2, p3, p4;
     int color;
     Layer layer;
-    private FloatBuffer vertexBuffer = null;
-    private float lastScale = -1f;
-    private double[] lastBucketCenter = null;
+    private FloatBuffer vertexBuffer3D = null;
+    private FloatBuffer vertexBuffer2D = null;
+
+    private float lastScale3D = -1f;
+    private double[] lastBucketCenter3D = null;
+
+    private float lastScale2D = -1f;
+    private double[] lastBucketCenter2D = null;
 
     public Face3D(Point3D p1, Point3D p2, Point3D p3, Point3D p4, int color,Layer layer) {
         this.p1 = p1;
@@ -100,17 +105,16 @@ public class Face3D implements Serializable {
 
 
     public void prepareVertexBuffer(double[] bucketCenter, float scale) {
-        if (vertexBuffer != null && lastBucketCenter != null &&
-                bucketCenter[0] == lastBucketCenter[0] &&
-                bucketCenter[1] == lastBucketCenter[1] &&
-                bucketCenter[2] == lastBucketCenter[2] &&
-                scale == lastScale) {
-            return; // niente da aggiornare
+        if (vertexBuffer3D != null && lastBucketCenter3D != null &&
+                bucketCenter[0] == lastBucketCenter3D[0] &&
+                bucketCenter[1] == lastBucketCenter3D[1] &&
+                bucketCenter[2] == lastBucketCenter3D[2] &&
+                scale == lastScale3D) {
+            return;
         }
-        // altrimenti aggiorna
-        lastBucketCenter = bucketCenter.clone(); // oppure copia manuale
-        lastScale = scale;
 
+        lastBucketCenter3D = bucketCenter.clone();
+        lastScale3D = scale;
 
         Point3D[] pts;
         if (getP4().equals(getP3())) {
@@ -128,15 +132,19 @@ public class Face3D implements Serializable {
 
         ByteBuffer bb = ByteBuffer.allocateDirect(coords.length * 4);
         bb.order(ByteOrder.nativeOrder());
-        vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(coords);
-        vertexBuffer.position(0);
+        vertexBuffer3D = bb.asFloatBuffer();
+        vertexBuffer3D.put(coords);
+        vertexBuffer3D.position(0);
+
         setDirty(true);
-        lastScale = scale;
     }
 
-    public FloatBuffer getVertexBuffer() {
-        return vertexBuffer;
+    public FloatBuffer getVertexBuffer3D() {
+        return vertexBuffer3D;
+    }
+
+    public FloatBuffer getVertexBuffer2D() {
+        return vertexBuffer2D;
     }
 
     public void prepareVertexBuffer2D() {
@@ -146,7 +154,7 @@ public class Face3D implements Serializable {
                 (float) (p3.getX()), (float) (p3.getY()), 0f,
                 (float) (p4.getX()), (float) (p4.getY()), 0f
         };
-        vertexBuffer = GL_Methods.createFloatBuffer(coords);
+        vertexBuffer2D = GL_Methods.createFloatBuffer(coords);
     }
     public List<Point3D> getVertices() {
         if (p4.equals(p3)) {
@@ -156,20 +164,33 @@ public class Face3D implements Serializable {
         }
     }
     public void prepareVertexBuffer2DForGradient(double[] bucketCenter, float scale) {
-        Point3D[] pts = p4.equals(p3) ? new Point3D[]{p1, p2, p3} : new Point3D[]{p1, p2, p3, p4};
+        if (vertexBuffer2D != null && lastBucketCenter2D != null &&
+                bucketCenter[0] == lastBucketCenter2D[0] &&
+                bucketCenter[1] == lastBucketCenter2D[1] &&
+                bucketCenter[2] == lastBucketCenter2D[2] &&
+                scale == lastScale2D) {
+            return;
+        }
+
+        lastBucketCenter2D = bucketCenter.clone();
+        lastScale2D = scale;
+
+        Point3D[] pts = p4.equals(p3)
+                ? new Point3D[]{p1, p2, p3}
+                : new Point3D[]{p1, p2, p3, p4};
 
         float[] coords = new float[pts.length * 3];
         for (int i = 0; i < pts.length; i++) {
             coords[i * 3] = (float) ((pts[i].getX() - bucketCenter[0]) * scale);
             coords[i * 3 + 1] = (float) ((pts[i].getY() - bucketCenter[1]) * scale);
-            coords[i * 3 + 2] = 0f; // appiattimento per 2D
+            coords[i * 3 + 2] = 0f;
         }
 
         ByteBuffer bb = ByteBuffer.allocateDirect(coords.length * 4);
         bb.order(ByteOrder.nativeOrder());
-        vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(coords);
-        vertexBuffer.position(0);
+        vertexBuffer2D = bb.asFloatBuffer();
+        vertexBuffer2D.put(coords);
+        vertexBuffer2D.position(0);
     }
 
     public List<Point3D> getVerticesWithZ() {
@@ -177,10 +198,22 @@ public class Face3D implements Serializable {
     }
 
     public int getOrCreateVboId(GL11 gl) {
-        if (vboId == 0 && vertexBuffer != null) {
-            vboId = VBOHelper.createVbo(gl, vertexBuffer);
+        if (vboId == 0 && vertexBuffer3D != null) {
+            vboId = VBOHelper.createVbo(gl, vertexBuffer3D);
         }
         return vboId;
+    }
+
+    public void uploadToVbo(GL11 gl) {
+        if (vertexBuffer3D == null) return;
+
+        if (vboId == 0) {
+            vboId = VBOHelper.createVbo(gl, vertexBuffer3D);
+        } else if (isDirty) {
+            VBOHelper.uploadVertexBuffer(gl, vboId, vertexBuffer3D);
+        }
+
+        isDirty = false;
     }
     public void resetVbo() {
         this.vboId = 0;
@@ -193,19 +226,7 @@ public class Face3D implements Serializable {
     public void setDirty(boolean dirty) {
         this.isDirty = dirty;
     }
-    public void uploadToVbo(GL11 gl) {
-        if (vertexBuffer == null) return;
 
-        if (vboId == 0) {
-            // Primo caricamento
-            vboId = VBOHelper.createVbo(gl, vertexBuffer);
-        } else if (isDirty) {
-            // Ricarica i dati se sono cambiati
-            VBOHelper.uploadVertexBuffer(gl, vboId, vertexBuffer);
-        }
-
-        isDirty = false; // Reset stato dirty dopo l'upload
-    }
 
     @Override
     public Face3D clone() {

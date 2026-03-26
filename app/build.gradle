@@ -51,7 +51,6 @@ android {
         pickFirst 'lib/x86_64/libcputils.so'
         exclude 'lib/armeabi-v7a/libsysmcu.so'
 
-
     }
 
     variantFilter { variant ->
@@ -81,8 +80,6 @@ android {
             debug {
 
             }
-
-
             flavorDimensions "generation"
             productFlavors {
                 gen2 {
@@ -217,6 +214,11 @@ android {
         implementation "org.apache.commons:commons-collections4:4.4"
         implementation "org.apache.commons:commons-compress:1.26.1"
 
+        implementation 'androidx.appcompat:appcompat:1.7.1'
+        implementation 'com.google.android.material:material:1.13.0'
+        implementation 'androidx.activity:activity:1.11.0'
+        implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+
     }
     buildTypes {
         release {
@@ -247,11 +249,6 @@ android {
     }
 
 }
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.13.0'
-    implementation 'androidx.activity:activity:1.11.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-}
+
 
 

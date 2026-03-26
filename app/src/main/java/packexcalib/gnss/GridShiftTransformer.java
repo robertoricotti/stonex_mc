@@ -26,7 +26,7 @@ import gui.MyApp;
  * NOTE IMPORTANTI:
  * - Input pubblico del metodo transform(): lat, lon, h
  * - Internamente PROJ lavora con x=lon, y=lat
- * - Manteniamo ProjCoordinate SOLO come DTO di ritorno per compatibilità plug&play
+ *
  *   con il codice esistente (shifted.x / shifted.y / shifted.z).
  */
 public final class GridShiftTransformer implements AutoCloseable {

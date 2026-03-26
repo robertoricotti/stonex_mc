@@ -2,7 +2,6 @@ package gui.boot_and_choose;
 
 
 import static gui.MyApp.TEST_MODE;
-import static gui.MyApp.isCRSStarted;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -146,9 +145,8 @@ public class SpTestActivity extends Activity {
 
     private void init() {
 
-        if(!isCRSStarted) {
             ReadProjectService.startCRS();
-        }
+
     }
 
 

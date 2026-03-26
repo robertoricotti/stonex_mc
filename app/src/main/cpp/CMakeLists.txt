@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project(nativeczechproj)
+project(nativeproj)
 
-add_library(nativeczechproj SHARED native_czech_proj.cpp)
+add_library(nativeproj SHARED native_proj.cpp)
 
-target_include_directories(nativeczechproj PRIVATE
+target_include_directories(nativeproj PRIVATE
     ${CMAKE_SOURCE_DIR}/third_party/arm64-v8a/include
 )
 
@@ -36,7 +36,7 @@ find_library(log-lib log)
 find_library(android-lib android)
 find_library(m-lib m)
 
-target_link_libraries(nativeczechproj
+target_link_libraries(nativeproj
     proj
     tiff
     zlibstatic
