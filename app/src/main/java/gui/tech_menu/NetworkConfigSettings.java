@@ -117,13 +117,7 @@ public class NetworkConfigSettings extends AppCompatActivity {
     // Initialization
     // =========================================================
 
-    public void updateUI(){
-        if(DataSaved.gpsOk){
-            imgSat.setImageTintList(getColorStateList(R.color.green));
-        }else {
-            imgSat.setImageTintList(getColorStateList(R.color.red));
-        }
-    }
+
     private void bindViews() {
         progressBar = findViewById(R.id.progressBar);
         imgSat=findViewById(R.id.imgSat);
@@ -230,9 +224,7 @@ public class NetworkConfigSettings extends AppCompatActivity {
 
         closeAllMenus();
 
-        ConnectionType type = getConnectionType(this);
-        logConnection(type);
-        updateNetworkIcon(type);
+
 
         // ======================
         // GNSS TYPE
@@ -295,64 +287,24 @@ public class NetworkConfigSettings extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        registerNetworkCallback();
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterNetworkCallback();
+
     }
 
     // =========================================================
     // Network callback
     // =========================================================
 
-    private void registerNetworkCallback() {
-        if (connectivityManager == null) return;
 
-        if (networkCallback == null) {
-            networkCallback = new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onAvailable(Network network) {
-                    runOnUiThread(NetworkConfigSettings.this::refreshNetworkState);
-                }
 
-                @Override
-                public void onLost(Network network) {
-                    runOnUiThread(NetworkConfigSettings.this::refreshNetworkState);
-                }
 
-                @Override
-                public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
-                    runOnUiThread(NetworkConfigSettings.this::refreshNetworkState);
-                }
-            };
-        }
 
-        try {
-            connectivityManager.registerDefaultNetworkCallback(networkCallback);
-        } catch (Exception e) {
-            Log.e(TAG, "registerDefaultNetworkCallback error", e);
-            refreshNetworkState();
-        }
-    }
 
-    private void unregisterNetworkCallback() {
-        if (connectivityManager == null || networkCallback == null) return;
-
-        try {
-            connectivityManager.unregisterNetworkCallback(networkCallback);
-        } catch (Exception e) {
-            Log.w(TAG, "unregisterNetworkCallback error", e);
-        }
-    }
-
-    private void refreshNetworkState() {
-        ConnectionType type = getConnectionType(this);
-        logConnection(type);
-        updateNetworkIcon(type);
-    }
 
     // =========================================================
     // Navigation / Settings
@@ -628,47 +580,6 @@ public class NetworkConfigSettings extends AppCompatActivity {
 
     }
 
-    // =========================================================
-    // Network UI
-    // =========================================================
-
-    private void logConnection(ConnectionType type) {
-        switch (type) {
-            case WIFI:
-                Log.d("NETWORK", "Connesso tramite WIFI");
-                break;
-            case MOBILE:
-                Log.d("NETWORK", "Connesso tramite DATI MOBILI");
-                break;
-            case NONE:
-            default:
-                Log.d("NETWORK", "Nessuna connessione");
-                break;
-        }
-    }
-
-    private void updateNetworkIcon(ConnectionType type) {
-        switch (type) {
-            case WIFI:
-                networkStatus.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
-                break;
-
-            case MOBILE:
-                networkStatus.setImageResource(R.drawable.sim_96);
-                break;
-
-            case NONE:
-            default:
-                networkStatus.setImageResource(R.drawable.network_off);
-                break;
-        }
-
-        networkStatus.setVisibility(View.VISIBLE);
-    }
-
-    // =========================================================
-    // Utilities
-    // =========================================================
 
     public enum ConnectionType {
         WIFI,
@@ -736,5 +647,29 @@ public class NetworkConfigSettings extends AppCompatActivity {
 
         btnBack.setEnabled(enabled);
         btnSave.setEnabled(enabled);
+    }
+    public void updateUI() {
+        if(DataSaved.gpsOk){
+            imgSat.setImageTintList(getColorStateList(R.color.green));
+        }else {
+            imgSat.setImageTintList(getColorStateList(R.color.red));
+        }
+        switch (DataSaved.ConnectionStatus) {
+            case 1:
+                networkStatus.setImageResource(R.drawable.baseline_signal_wifi_statusbar_4_bar_96);
+                break;
+
+            case 2:
+                networkStatus.setImageResource(R.drawable.sim_96);
+                break;
+
+            case 0:
+            default:
+                networkStatus.setImageResource(R.drawable.network_off);
+                break;
+        }
+
+
+
     }
 }

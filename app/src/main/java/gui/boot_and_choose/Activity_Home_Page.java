@@ -9,6 +9,7 @@ import static gui.MyApp.errorCode;
 import static gui.MyApp.listFilesInFolderGeoid;
 import static gui.MyApp.numGeoidiInterni;
 import static gui.MyApp.updateGeoidFolderFromCloud;
+import static gui.MyApp.usa;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static services.ReadProjectService.numbers;
 import static services.UpdateValuesService.firstLaunch;
@@ -314,7 +315,7 @@ public class Activity_Home_Page extends BaseClass {
             if(isTech){
                 testSP.setVisibility(View.VISIBLE);
             }else {
-                testSP.setVisibility(View.VISIBLE);
+                testSP.setVisibility(View.INVISIBLE);
             }
             if (DataSaved.gpsOk && errorCode == 0) {
                 keyLic.setImageTintList(ColorStateList.valueOf(Color.GREEN));
@@ -423,6 +424,7 @@ public class Activity_Home_Page extends BaseClass {
                 }
 
                 newGeoidAll[originalLength] = deu;
+                newGeoidAll[originalLength+1] = usa;
                 geoidAll = newGeoidAll;
             } catch (Exception e) {
                 HasDownloaded=false;
@@ -442,6 +444,8 @@ public class Activity_Home_Page extends BaseClass {
                     System.arraycopy(geoidAll, 0, newGeoidAll, 0, originalLength);
                 }
                 newGeoidAll[originalLength] = deu;
+                newGeoidAll[originalLength+1] = usa;
+
                 geoidAll = newGeoidAll;
             } catch (Exception ignored) {
 
@@ -452,8 +456,7 @@ public class Activity_Home_Page extends BaseClass {
     @Override
     protected void onResume() {
         super.onResume();
-       // MyDeviceManager.UsbDebugUtils.logUsbDevices(this);
-       // InputDebugUtils.logInputDevices();
+
 
     }
 

@@ -38,7 +38,7 @@ public class Sensors_Decoder_Drill {
     static short Gy;
     static short Gz;
     static long K = 0x02000000;
-
+static double[] mPosition=new double[3];
 
     public static void decode(int id, byte[] data) {
         try {
@@ -294,7 +294,6 @@ public class Sensors_Decoder_Drill {
                         //demo ROLLER
                         switch (id) {
                             case 0x195:
-
                                 boolean[] boo = PLC_DataTypes_LittleEndian.U8_to_bitmask(data[0]);
                                 latP = boo[6];
                                 latM = boo[7];
@@ -335,6 +334,7 @@ public class Sensors_Decoder_Drill {
 
                         if (keyEvents[2]) {
                             // lat+
+                            //mPosition=Exca_Quaternion.endPoint()
                             DataSaved.demoNORD += 0.005;
 
                         }
@@ -361,6 +361,9 @@ public class Sensors_Decoder_Drill {
                         if (keyEvents[7]) {
                             DataSaved.demoZ -= 0.001;
                         }
+
+                        //TODO
+
                     }
                     DrillLib.Drill();
                     break;

@@ -503,7 +503,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/_____cancel_text"
-                            android:text="ANTENNA AT BOOM"
+                            android:text="ANTENNA AT MAST"
                             android:textColor="@color/_____cancel_text"
                             android:textSize="18sp"
                             android:ems="12"

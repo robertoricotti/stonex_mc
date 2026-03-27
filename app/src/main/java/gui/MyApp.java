@@ -143,7 +143,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     /// /////////
     public static volatile boolean TEST_MODE = false;
     public static int MAX_NUMERO_FACCE = 5000;
-    public static final int numGeoidiInterni = 1;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
+    public static final int numGeoidiInterni = 2;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
     //audio
     public static boolean isAlto, isBasso, isCentro;
     private MediaPlayer mediaPlayer;
@@ -169,7 +169,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static String Actualactivity;
     public static boolean hAlarm, isApollo, canError, isOffgrid;
     public static String folderPath;
-    public static String deu;
+    public static String deu,usa;
     public double h;
     SensorAlertDialog sensorAlertDialog1, sensorAlertDialog2, sensorAlertDialog3, sensorAlertDialog4, sensorAlertDialog5, sensorAlertDialog6, sensorAlertDialogBLADE;
     int frameCounter;
@@ -186,6 +186,8 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public void onCreate() {
         super.onCreate();
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        registerNetworkCallback();
+        refreshNetworkState(); // stato iniziale subito
         type = getConnectionType(this);
         if (Build.BRAND.equals("MEGA_1")) {
             MAX_NUMERO_FACCE = 10000;
@@ -228,6 +230,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         }
 
         deu = copyGeoidFromAssets(this, "DEUTSCH_GEOID.GGF", "DEUTSCH_GEOID.GGF");
+        usa = copyGeoidFromAssets(this, "g2018u0.bin", "g2018u0.bin");
 
 
         String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
@@ -245,6 +248,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         }
 
         newGeoidAll[originalLength] = deu;
+        newGeoidAll[originalLength+1] = usa;
         geoidAll = newGeoidAll;
         try {
             gridFile_GR_dE = copyGeoidFromAssets(this, "dE_2km_V1-0.grd", "dE_2km_V1-0.grd");
@@ -306,7 +310,7 @@ git push
     @Override
     public void onActivityStarted(Activity activity) {
         if (activity != null) {
-            registerNetworkCallback();
+
 
             if (activity instanceof My3DActivity) {
                 startConditionChecker(activity);
@@ -446,9 +450,7 @@ git push
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
-        if(activity!=null){
-            unregisterNetworkCallback();
-        }
+
         if (activity instanceof My3DActivity) {
             stopConditionChecker();
             stopSound();
@@ -489,7 +491,7 @@ git push
                         @SuppressLint({"SetTextI18n", "DefaultLocale"})
                         @Override
                         public void run() {
-
+                            Log.d("DDDDDDIO", String.valueOf(DataSaved.L_RotoToBucket));
                             try {
                                 if (DataSaved.isWL == DRILL) {
                                     DataSaved.lrBucket = DataSaved.lrTool;
@@ -774,8 +776,6 @@ git push
 
         } else {
             canError = tiltDisc && DataSaved.lrBucket != 0;
-
-
         }
 
 
@@ -1066,26 +1066,39 @@ git push
     }
 
     private void refreshNetworkState() {
-        NetworkConfigSettings.ConnectionType type = getConnectionType(this);
-        updateNetworkIcon(type);
-    }
-
-    private void updateNetworkIcon(NetworkConfigSettings.ConnectionType type) {
-        switch (type) {
-            case WIFI:
-                DataSaved.ConnectionStatus = 1;
-                break;
-
-            case MOBILE:
-                DataSaved.ConnectionStatus = 2;
-                break;
-
-            case NONE:
-            default:
-                DataSaved.ConnectionStatus = 0;
-                break;
+        if (connectivityManager == null) {
+            DataSaved.ConnectionStatus = 0;
+            return;
         }
 
+        Network network = connectivityManager.getActiveNetwork();
+        if (network == null) {
+            DataSaved.ConnectionStatus = 0;
+            return;
+        }
+
+        NetworkCapabilities caps = connectivityManager.getNetworkCapabilities(network);
+        if (caps == null) {
+            DataSaved.ConnectionStatus = 0;
+            return;
+        }
+
+        boolean hasInternet = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        boolean isValidated = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+
+        if (!hasInternet || !isValidated) {
+            DataSaved.ConnectionStatus = 0;
+            return;
+        }
+
+        if (caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+            DataSaved.ConnectionStatus = 1;
+        } else if (caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+            DataSaved.ConnectionStatus = 2;
+        } else {
+            DataSaved.ConnectionStatus = 0;
+        }
     }
+
 
 }

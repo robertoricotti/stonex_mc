@@ -1,6 +1,7 @@
 package gui.tech_menu;
 
 import static gui.MyApp.errorCode;
+import static gui.MyApp.licenseType;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
 import static packexcalib.exca.DataSaved.isCanOpen;
 import static utils.MyTypes.AT_BODY;
@@ -17,6 +18,10 @@ import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.MAST_FORWARD;
 import static utils.MyTypes.MAST_LEFT;
 import static utils.MyTypes.MAST_RIGHT;
+import static utils.MyTypes.MC_1D;
+import static utils.MyTypes.MC_2D;
+import static utils.MyTypes.MC_3D_EASY;
+import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.ROCKDRILL_MODE;
 import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.TSM_ACC;
@@ -156,9 +161,10 @@ public class Nuova_Machine_Settings extends BaseClass {
         ckAtFwd = findViewById(R.id.ckAtFwd);
         ckAtRight = findViewById(R.id.ckAtRight);
         toRoto = findViewById(R.id.toRoto);
-
-
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
+        if(licenseType==MC_3D_EASY||licenseType==MC_1D||licenseType==MC_2D||licenseType==MC_3D_EASY_AUTO){
+            drill.setVisibility(View.INVISIBLE);
+        }
 
     }
 

@@ -24,6 +24,8 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
 
+import java.util.Arrays;
+
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
@@ -337,14 +339,33 @@ public class BucketCalibTilt extends BaseClass {
 
 
         setTiltLevelAngle.setOnLongClickListener((View v) -> {
-            setTiltLevelAngle.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+
+            int previous = DataSaved.isTiltRotator;
+            DataSaved.isTiltRotator = 0;
+
+            setTiltLevelAngle.setBackgroundTintList(
+                    ContextCompat.getColorStateList(this, R.color.blue)
+            );
+
             DataSaved.offsetTilt = Sensors_Decoder.Deg_tilt;
 
-            DataSaved.L_RotoToBucket=routine_LRoto();
-            try {
-                MyData.push("M" + indexMachineSelected + "L_RotoToBucket" + indexBucket, (String.valueOf(DataSaved.L_RotoToBucket)));
-            } catch (Exception ignored) {
-            }
+            // ⏱ delay 500 ms NON bloccante
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+
+                if (DataSaved.lrTilt != 0 && previous != 0) {
+                    DataSaved.L_RotoToBucket = routine_LRoto();
+
+                    try {
+                        MyData.push(
+                                "M" + indexMachineSelected + "L_RotoToBucket" + indexBucket,
+                                String.valueOf(DataSaved.L_RotoToBucket)
+                        );
+                    } catch (Exception ignored) {}
+                }
+
+                DataSaved.isTiltRotator = previous;
+
+            }, 500); // <-- 500 ms
 
             return true;
         });
@@ -384,7 +405,7 @@ public class BucketCalibTilt extends BaseClass {
                 Deg_Boom_Roll,
                 DataSaved.Offset_Engcon_Forward, hdt_BOOM
         );
-
+Log.e("DioMaiali", Arrays.toString(coordRotoTop));
         //3 centro rotazione ROTOTILT, ultimo punto della catena cinematica vincolata al BOOM
 
         double[] coordRotoCenter = Exca_Quaternion.endPoint(
@@ -395,6 +416,9 @@ public class BucketCalibTilt extends BaseClass {
                 hdt_BOOM + yawSensor
 
         );
+        Log.e("DioMaiali", Arrays.toString(coordRotoCenter));
+        Log.e("DioMaiali", Arrays.toString(ExcavatorLib.bucketCoord));
+        Log.e("DioMaiali", DistToPoint.dist3D(coordRotoCenter,ExcavatorLib.bucketCoord)+"");
         return DistToPoint.dist3D(coordRotoCenter,ExcavatorLib.bucketCoord);
     }
 

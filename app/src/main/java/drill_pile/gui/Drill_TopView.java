@@ -32,6 +32,20 @@ import services.ReadProjectService;
 
 
 public class Drill_TopView extends View {
+    // picking: dimensioni desiderate A SCHERMO
+    // ===== AB UI =====
+    private static final float UI_MIN_SCALE = 0.1f;
+    private static final float UI_MACHINE_TARGET_FREEZE_BELOW = 0.6f;
+
+    private static final float UI_MIN_MACHINE_SCALE = 0.6f;
+    // macchina + target: sotto 0.6 non si rimpiccioliscono più
+    private static final float UI_MIN_MACHINE_TARGET_SCALE = 0.6f;
+    private static final float UI_AB_STROKE_PX = 4.2f;
+    private static final float UI_AB_OUTLINE_EXTRA_PX = 2.2f;
+    private static final float UI_AB_ENDPOINT_RADIUS_PX = 7.5f;
+
+    private static final float PICK_RADIUS_SCREEN_PX = 34f;
+    private static final float GRID_CELL_SCREEN_PX = 72f;
     int coloreCingolo;
     private boolean drawMachineSchema = false;
     private float uiRotDeg = 0f;
@@ -124,10 +138,7 @@ public class Drill_TopView extends View {
         this.canvas = canvas;
 
         paint.setAntiAlias(true);
-         w1 = screenToWorld(0, 0);
-         w2 = screenToWorld(getWidth(), 0);
-         w3 = screenToWorld(0, getHeight());
-         w4 = screenToWorld(getWidth(), getHeight());
+
 
         try {
 
@@ -169,6 +180,10 @@ public class Drill_TopView extends View {
             headNord = ExcavatorLib.coordTool[1];
             toolX = originPointTool.x;
             toolY = originPointTool.y;
+            w1 = screenToWorld(0, 0);
+            w2 = screenToWorld(getWidth(), 0);
+            w3 = screenToWorld(0, getHeight());
+            w4 = screenToWorld(getWidth(), getHeight());
             if (DataSaved.isAutoSnap == 2) {
                 ensurePickCache();
             }
@@ -179,76 +194,86 @@ public class Drill_TopView extends View {
             }
 
             PointF toolScreen = new PointF(toolX, toolY);
-            //0)MCH Frame
+
+// scala UI dedicata a macchina/target
+            float mts = targetScale;
+
+// 0) MCH Frame
             if (drawMachineSchema) {
-                // qui metti i tuoi flag reali (da dove li prendi tu)
-                boolean mastSX = DataSaved.Drill_Mast_Position.equals(MAST_LEFT); // esempio
-                boolean mastFW = DataSaved.Drill_Mast_Position.equals(MAST_FORWARD); // esempio
-                boolean mastDX = DataSaved.Drill_Mast_Position.equals(MAST_RIGHT); // esempio
+                boolean mastSX = DataSaved.Drill_Mast_Position.equals(MAST_LEFT);
+                boolean mastFW = DataSaved.Drill_Mast_Position.equals(MAST_FORWARD);
+                boolean mastDX = DataSaved.Drill_Mast_Position.equals(MAST_RIGHT);
 
                 drawMachineSchemaNearTool(canvas, paint, toolScreen, mastSX, mastFW, mastDX);
             }
-            // 1) target giallo: drillbit (fisso sullo schermo)
 
-
-            drawTarget(toolScreen, colorTarget_Basso,
-                    Math.max(18f, scala * 0.55f) * targetScale,
-                    Math.max(11f, scala * 0.28f) * targetScale,
-                    Math.max(13f, scala * 0.38f) * targetScale,
+// 1) target giallo: drillbit
+            drawTarget(
+                    toolScreen,
+                    colorTarget_Basso,
+                    machineTargetPx(Math.max(18f, scala * 0.55f)) * targetScale,
+                    machineTargetPx(Math.max(11f, scala * 0.28f)) * targetScale,
+                    machineTargetPx(Math.max(13f, scala * 0.38f)) * targetScale,
                     true
             );
-            paint.setStrokeWidth(Math.max(1f, scala * 0.002f));
-            if (showCroce) {
 
-                float stroke = Math.max(0.8f, scala * 0.001f) * targetScale;
-                float arm = 100f * targetScale;
+            paint.setStrokeWidth(machineTargetPx(1.2f, 1.0f) * mts);
+
+            if (showCroce) {
+                float stroke = machineTargetPx(Math.max(0.8f, scala * 0.001f)) * targetScale;
+                float arm = machineTargetPx(100f) * targetScale;
 
                 paint.setColor(coloreCroce);
                 paint.setStrokeWidth(stroke);
 
-                // croce
-                canvas.drawLine(toolX, toolY, toolX + arm, toolY, paint); // destra
-                canvas.drawLine(toolX, toolY, toolX - arm, toolY, paint); // sinistra
-                canvas.drawLine(toolX, toolY, toolX, toolY + arm, paint); // dietro
-                canvas.drawLine(toolX, toolY, toolX, toolY - arm * 0.5f, paint); // avanti
+                canvas.drawLine(toolX, toolY, toolX + arm, toolY, paint);          // destra
+                canvas.drawLine(toolX, toolY, toolX - arm, toolY, paint);          // sinistra
+                canvas.drawLine(toolX, toolY, toolX, toolY + arm, paint);          // dietro
+                canvas.drawLine(toolX, toolY, toolX, toolY - arm * 0.5f, paint);   // avanti
 
-                // 👇 triangolo in testa (verso avanti = Y negativo)
-                drawCrossDirectionTriangle(canvas, paint, toolX, toolY - arm * 0.5f, stroke, targetScale);
+                drawCrossDirectionTriangle(
+                        canvas,
+                        paint,
+                        toolX,
+                        toolY - arm * 0.5f,
+                        stroke,
+                        mts
+                );
             }
 
-
-            // 2) target ciano: drillhead (si muove rispetto al tool)
+// 2) target ciano: drillhead
             PointF headScreen = worldToScreen(headEast, headNord);
-            drawTarget(headScreen, colorTarget_Alto,
 
-
-                    Math.max(22f, scala * 0.65f) * targetScale,
-                    Math.max(0f, scala * 0.00f) * targetScale,
-                    Math.max(16f, scala * 0.5f) * targetScale,
+            drawTarget(
+                    headScreen,
+                    colorTarget_Alto,
+                    machineTargetPx(Math.max(22f, scala * 0.65f)) * targetScale,
+                    machineTargetPx(Math.max(0f, scala * 0.00f)) * targetScale,
+                    machineTargetPx(Math.max(16f, scala * 0.5f)) * targetScale,
                     false
-
-
             );
 
-
-            // dashed più “profondo”: stesso colore ma alpha (trasparente)
-            int dashed = Color.argb(155, 0, 255, 255); // ciano trasparente
-
-            // se sei in OK totale, fallo verde anche nella guida
+// dashed più “profondo”
+            int dashed = Color.argb(155, 0, 255, 255);
 
             if (isBitOnHoleHead) {
-
                 dashed = Color.argb(140, 0, 255, 0);
             }
 
             drawGuidelineExtended(toolScreen, headScreen, colorDashed_Line, dashed, shouldDrawDashedForSelected());
+
             if (isBitOnHoleHead) {
+                float okArm = machineTargetPx(10f);
                 paint.setColor(Color.DKGRAY);
-                paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f));
-                canvas.drawLine(toolX, toolY, toolX + 10f, toolY, paint);//destra
-                canvas.drawLine(toolX, toolY, toolX, toolY + 10f, paint);//dietro
-                canvas.drawLine(toolX, toolY, toolX - 10f, toolY, paint);//sinistra
-                canvas.drawLine(toolX, toolY, toolX, toolY - 10f, paint);//avanti
+                paint.setStrokeWidth(machineTargetPx(1.0f, 0.8f));
+
+
+                paint.setStrokeWidth(machineTargetPx(Math.max(0.8f, scala * 0.001f)));
+
+                canvas.drawLine(toolX, toolY, toolX + okArm, toolY, paint); // destra
+                canvas.drawLine(toolX, toolY, toolX, toolY + okArm, paint); // dietro
+                canvas.drawLine(toolX, toolY, toolX - okArm, toolY, paint); // sinistra
+                canvas.drawLine(toolX, toolY, toolX, toolY - okArm, paint); // avanti
             }
 
 
@@ -275,7 +300,7 @@ public class Drill_TopView extends View {
             float maxN = Math.max(Math.max(w1.y, w2.y), Math.max(w3.y, w4.y));
 
 // margine
-            float margin = (float) (30f / DataSaved.scale_Factor3D);
+            float margin = uiPx(48f);
 
             minE -= margin;
             maxE += margin;
@@ -435,56 +460,51 @@ public class Drill_TopView extends View {
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public void onLongPress(@NonNull MotionEvent e) {
-            if (DataSaved.isAutoSnap != 2 && !DataSaved.isDefiningAB) {
-                return; // picking attivo solo in manuale
+            boolean canPickNormal = (DataSaved.isAutoSnap == 2);
+            boolean canPickAB = DataSaved.isDefiningAB;
+
+            if (!canPickNormal && !canPickAB) {
+                return;
             }
 
             Point3D_Drill hit = pickPoint(e.getX(), e.getY());
             if (hit == null) return;
 
-            // --- DEFINIZIONE AB ---
+            // doppia sicurezza: DONE / ABORTED non selezionabili
+            if (!isPointPickable(hit)) return;
+
             // --- DEFINIZIONE AB ---
             if (DataSaved.isDefiningAB) {
-
-                String key = buildPointKey(hit); // <-- ROW-ID se esiste, altrimenti solo ID
+                String key = buildPointKey(hit);
                 if (key == null || key.isEmpty()) return;
 
-                // 1° punto -> A
                 if (DataSaved.alignAId == null || DataSaved.alignAId.trim().isEmpty()) {
                     DataSaved.alignAId = key;
-
-                    // feedback
-                    // new CustomToast(getContext(), "A set: " + key).show_alert();
-
                     invalidate();
                     return;
                 }
 
-                // 2° punto -> B (evita A==B)
                 if (key.equalsIgnoreCase(DataSaved.alignAId.trim())) {
-                    // new CustomToast(getContext(), "Pick a different point for B").show_alert();
                     return;
                 }
 
                 DataSaved.alignBId = key;
 
-                // Persistenza + uscita modalità
                 persistAlignmentAB(DataSaved.alignAId, DataSaved.alignBId);
 
                 DataSaved.isDefiningAB = false;
                 DataSaved.isAutoSnap = Drill_Activity.previousState;
-                // new CustomToast(getContext(), "Alignment set: A=" + DataSaved.alignAId + " B=" + DataSaved.alignBId).show_alert();
                 invalidate();
                 return;
             }
 
-
-            // --- COMPORTAMENTO STANDARD: selezione punto ---
+            // --- SELEZIONE STANDARD ---
             if (isSamePoint(hit, DataSaved.Selected_Point3D_Drill)) {
-                DataSaved.Selected_Point3D_Drill = null;   // toggle off
+                DataSaved.Selected_Point3D_Drill = null;
             } else {
                 DataSaved.Selected_Point3D_Drill = hit;
             }
+
             invalidate();
         }
 
@@ -611,13 +631,15 @@ public class Drill_TopView extends View {
         if (DataSaved.filtered_drill_points == null) return;
 
         boolean changed =
-                lastScaleFactor != DataSaved.scale_Factor3D ||
+                pickCacheDirty ||
+                        lastScaleFactor != DataSaved.scale_Factor3D ||
                         lastRot != rotationAngle ||
                         lastToolE != toolEast ||
                         lastToolN != toolNord ||
-                        lastUiRotDeg != uiRotDeg;     // <--- AGGIUNGI;
+                        lastUiRotDeg != uiRotDeg;
 
-        if (!pickCacheDirty && !changed) return;
+        if (!changed) return;
+
         lastUiRotDeg = uiRotDeg;
         pickCacheDirty = false;
         lastScaleFactor = (float) DataSaved.scale_Factor3D;
@@ -627,56 +649,50 @@ public class Drill_TopView extends View {
         lastToolE = toolEast;
         lastToolN = toolNord;
 
-        // tuning soglie: aumentano un po' con zoom, ma restano in px (non world)
-        pickRadiusPx = (float) Math.max(18f, 30f * DataSaved.scale_Factor3D);
-        gridCellPx = (float) Math.max(40f, 70f * DataSaved.scale_Factor3D);
+        // IMPORTANTISSIMO:
+        // touch viene convertito in local coords con invDrawMatrix,
+        // quindi anche griglia e soglia devono stare in LOCAL SPACE
+        pickRadiusPx = toLocalFromScreenPx(PICK_RADIUS_SCREEN_PX);
+        gridCellPx = toLocalFromScreenPx(GRID_CELL_SCREEN_PX);
 
         screenPts.clear();
         grid.clear();
 
-        // build: punti in coordinate schermo (post-transform canvas.translate/scale)
-        // NOTA: qui stai già disegnando in un canvas scalato/traslato, ma pick usa MotionEvent in px "view".
-        // Quindi dobbiamo mappare correttamente: il modo più semplice è convertire il tap in "canvas space"
-        // (vedi pickPoint). Qui memorizziamo in "canvas space" coerente con worldToScreen.
-        // worldToScreen già restituisce coordinate nello stesso spazio in cui disegni (dopo translate/scale nel canvas).
-        // Quindi è OK memorizzare worldToScreen.
-
         for (int i = 0; i < DataSaved.filtered_drill_points.size(); i++) {
             Point3D_Drill p = DataSaved.filtered_drill_points.get(i);
-            if (p == null || p.getHeadX() == null || p.getHeadY() == null) continue;
+            if (p == null) continue;
+            if (p.getHeadX() == null || p.getHeadY() == null) continue;
+            if (!isPointPickable(p)) continue; // DONE/ABORTED non pickabili
 
-            // usa le coordinate "head" (o quello che rappresenta il punto in top view)
-            double e = p.getHeadX();
-            double n = p.getHeadY();
-
-            PointF s = worldToScreen(e, n);
+            PointF s = worldToScreen(p.getHeadX(), p.getHeadY());
 
             ScreenPt sp = new ScreenPt();
             sp.x = s.x;
             sp.y = s.y;
             sp.index = i;
+
             int idx = screenPts.size();
             screenPts.add(sp);
 
             int cx = cellX(sp.x);
             int cy = cellY(sp.y);
             long k = key(cx, cy);
+
             java.util.ArrayList<Integer> bucket = grid.get(k);
             if (bucket == null) {
                 bucket = new java.util.ArrayList<>();
                 grid.put(k, bucket);
             }
-            bucket.add(idx); // idx in screenPts
+            bucket.add(idx);
         }
     }
 
     private Point3D_Drill pickPoint(float touchX_view, float touchY_view) {
-
-        if (DataSaved.isAutoSnap != 2) return null;
-        if (DataSaved.filtered_drill_points == null || DataSaved.filtered_drill_points.isEmpty())
+        if (DataSaved.filtered_drill_points == null || DataSaved.filtered_drill_points.isEmpty()) {
             return null;
+        }
 
-        // touch in view coords -> local coords (quelle usate da worldToScreen e draw)
+        // view coords -> local coords (stesso spazio di worldToScreen)
         tmpPt[0] = touchX_view;
         tmpPt[1] = touchY_view;
         invDrawMatrix.mapPoints(tmpPt);
@@ -686,7 +702,6 @@ public class Drill_TopView extends View {
 
         ensurePickCache();
 
-        // ora usa xLocal/yLocal per cercare nella grid/cache
         int cx = cellX(xLocal);
         int cy = cellY(yLocal);
 
@@ -700,12 +715,20 @@ public class Drill_TopView extends View {
 
                 for (int b = 0; b < bucket.size(); b++) {
                     ScreenPt sp = screenPts.get(bucket.get(b));
+
                     float dx = sp.x - xLocal;
                     float dy = sp.y - yLocal;
                     float d2 = dx * dx + dy * dy;
+
                     if (d2 < bestD2) {
-                        bestD2 = d2;
-                        bestIndex = sp.index;
+                        int idx = sp.index;
+                        if (idx >= 0 && idx < DataSaved.filtered_drill_points.size()) {
+                            Point3D_Drill candidate = DataSaved.filtered_drill_points.get(idx);
+                            if (isPointPickable(candidate)) {
+                                bestD2 = d2;
+                                bestIndex = idx;
+                            }
+                        }
                     }
                 }
             }
@@ -714,6 +737,7 @@ public class Drill_TopView extends View {
         if (bestIndex >= 0 && bestIndex < DataSaved.filtered_drill_points.size()) {
             return DataSaved.filtered_drill_points.get(bestIndex);
         }
+
         return null;
     }
 
@@ -889,8 +913,8 @@ public class Drill_TopView extends View {
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
 
-        float strokeMain = Math.max(3f, scala * 0.015f);      // scala-based
-        float strokeOutline = strokeMain + Math.max(2f, strokeMain * 0.55f);
+        float strokeMain = uiPx(UI_AB_STROKE_PX, 2.5f);
+        float strokeOutline = strokeMain + uiPx(UI_AB_OUTLINE_EXTRA_PX, 1.5f);
 
         // outline scuro
         paint.setStrokeWidth(strokeOutline);
@@ -903,7 +927,7 @@ public class Drill_TopView extends View {
         canvas.drawLine(ax, ay, bx, by, paint);
         drawDirectionTriangle(canvas, paint, ax, ay, bx, by, strokeMain);
         // (opzionale) pallini A/B per chiarezza
-        float r = Math.max(6f, strokeMain * 1.1f);
+        float r = uiPx(UI_AB_ENDPOINT_RADIUS_PX, 4.5f);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(android.graphics.Color.argb(230, 255, 235, 0));
         canvas.drawCircle(ax, ay, r, paint);
@@ -952,8 +976,8 @@ public class Drill_TopView extends View {
         float cy = (ay + by) * 0.5f;
 
         // dimensioni triangolo (scalate)
-        float triLen = Math.max(16f, strokeMain * 3.2f);   // lunghezza punta
-        float triHalfW = Math.max(10f, strokeMain * 2.4f); // metà base
+        float triLen = uiPx(18f, 12f);
+        float triHalfW = uiPx(11f, 8f);
 
         // punta verso B
         float tipX = cx + ux * triLen;
@@ -985,7 +1009,7 @@ public class Drill_TopView extends View {
 
         // (opzionale) bordo giallo più “pulito”
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(Math.max(2f, strokeMain * 0.6f));
+        paint.setStrokeWidth(uiPx(2.0f, 1.2f));
         paint.setColor(android.graphics.Color.argb(240, 255, 255, 120));
         canvas.drawPath(p, paint);
     }
@@ -1063,45 +1087,35 @@ public class Drill_TopView extends View {
             boolean mastFW,
             boolean mastDX
     ) {
-        // --- dimensioni base (in px nel canvas già trasformato da drawMatrix) ---
-        float s = targetScale;                 // usa la tua scala UI
-        float bodyW = 90f * s;
-        float bodyH = 85f * s;
+        float s = targetScale;
 
-        float trackW = 35f * s;
-        float gap = -25f * s;
-        float trackStroke = 4f * s;
+        float bodyW = machineTargetPx(90f) * s;
+        float bodyH = machineTargetPx(85f) * s;
 
-        // ingombro totale orizzontale dello schema (cingolo + gap + corpo + gap + cingolo)
+        float trackW = machineTargetPx(35f) * s;
+        float gap = machineTargetPx(-25f) * s;
+        float trackStroke = machineTargetPx(4f, 2f) * s;
+
         float totalW = bodyW + 2f * (gap + trackW);
-        // un margine dal target
-        float margin = 35f * s;
+        float margin = machineTargetPx(35f) * s;
 
-        // offset macchina rispetto al target (frame DISPLAY: X destra, Y giù)
         float offX = 0f;
         float offY = 0f;
 
-        // Priorità: se più flag attivi, sommiamo (es: SX+FW => diagonale).
-        // Se invece sono mutuamente esclusivi nel tuo UI, andrà comunque bene.
-        if (mastSX) offX += (totalW * 0.5f + margin);   // macchina a DESTRA del target
-        if (mastDX) offX -= (totalW * 0.5f + margin);   // macchina a SINISTRA del target
-        if (mastFW) offY += (bodyH * 0.5f + 70f * s);   // macchina SOTTO al target (come la tua immagine)
+        if (mastSX) offX += (totalW * 0.5f + margin);
+        if (mastDX) offX -= (totalW * 0.5f + margin);
+        if (mastFW) offY += (bodyH * 0.5f + machineTargetPx(70f) * s);
 
-        // --- pivot schema = punto blu (fulcro dell’icona) ---
-        // Il blu nella tua immagine è vicino al bordo alto del corpo (~20% dall’alto).
-        // Quindi: se conosci pivot, il corpo lo piazziamo relativo a pivot.
         float pivotX = toolScreen.x + offX;
         float pivotY = toolScreen.y + offY;
 
-        // corpo: pivot ~20% dall’alto
         float bodyTop = pivotY - bodyH * 0.20f;
         float bodyLeft = pivotX - bodyW * 0.5f;
         float bodyRight = bodyLeft + bodyW;
         float bodyBottom = bodyTop + bodyH;
 
-        // cingoli (stessa altezza del corpo + extra)
-        float trackH = bodyH + 55f * s;
-        float trackTop = bodyTop - 45f * s;
+        float trackH = bodyH + machineTargetPx(55f) * s;
+        float trackTop = bodyTop - machineTargetPx(45f) * s;
         float trackBottom = trackTop + trackH;
 
         float leftTrackLeft = bodyLeft - gap - trackW;
@@ -1110,17 +1124,16 @@ public class Drill_TopView extends View {
         float rightTrackLeft = bodyRight + gap;
         float rightTrackRight = rightTrackLeft + trackW;
 
-        float corner = 10f * s;
+        float corner = machineTargetPx(10f) * s;
+        float bodyCorner = machineTargetPx(5f) * s;
 
-        // --- salva stato paint ---
         Paint.Style oldStyle = paint.getStyle();
         int oldColor = paint.getColor();
         float oldStroke = paint.getStrokeWidth();
         Paint.Cap oldCap = paint.getStrokeCap();
+        int oldAlpha = paint.getAlpha();
 
         paint.setAntiAlias(true);
-
-        // --- cingoli neri ---
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(coloreCingolo);
@@ -1131,24 +1144,18 @@ public class Drill_TopView extends View {
         canvas.drawRoundRect(leftTrackLeft, trackTop, leftTrackRight, trackBottom, corner, corner, paint);
         canvas.drawRoundRect(rightTrackLeft, trackTop, rightTrackRight, trackBottom, corner, corner, paint);
 
-        // --- corpo macchina ---
-
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(MyColorClass.colorStick);
         paint.setAlpha(128);
-        canvas.drawRoundRect(bodyLeft, bodyTop, bodyRight, bodyBottom,5f,5f, paint);
+        canvas.drawRoundRect(bodyLeft, bodyTop, bodyRight, bodyBottom, bodyCorner, bodyCorner, paint);
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(coloreCingolo);
         paint.setAlpha(128);
-        canvas.drawRoundRect(bodyLeft, bodyTop, bodyRight, bodyBottom,5f,5f, paint);
+        paint.setStrokeWidth(machineTargetPx(1.8f, 1.0f) * s);
+        canvas.drawRoundRect(bodyLeft, bodyTop, bodyRight, bodyBottom, bodyCorner, bodyCorner, paint);
 
-        // --- punto blu (fulcro icona) ---
-        //float dotR = 12f * s;
-        //paint.setColor(Color.BLUE);
-        //canvas.drawCircle(pivotX, pivotY, dotR, paint);
-
-        // --- ripristina paint ---
-        paint.setAlpha(255);
+        paint.setAlpha(oldAlpha);
         paint.setStyle(oldStyle);
         paint.setColor(oldColor);
         paint.setStrokeWidth(oldStroke);
@@ -1163,6 +1170,85 @@ public class Drill_TopView extends View {
         double worldN = toolNord + (-dx * Math.sin(rotationAngle) + dy * Math.cos(rotationAngle)) / scala;
 
         return new PointF((float) worldE, (float) worldN);
+    }
+    private float getPickSpaceScale() {
+        return Math.max(0.1f, (float) DataSaved.scale_Factor3D);
+    }
+
+    private float toLocalFromScreenPx(float screenPx) {
+        return screenPx / getPickSpaceScale();
+    }
+
+    private static boolean isPointPickable(Point3D_Drill p) {
+        if (p == null) return false;
+        Integer st = p.getStatus();
+        return !(st != null && (st == 1 || st == -1)); // no DONE, no ABORTED
+    }
+    private float getUiCompensationScale() {
+        float s = Math.max(UI_MIN_SCALE, (float) DataSaved.scale_Factor3D);
+        return Math.min(s, 1f); // sotto 1 compensa, sopra 1 smette
+    }
+
+    private float uiPx(float desiredScreenPx) {
+        return desiredScreenPx / getUiCompensationScale();
+    }
+
+    private float uiPx(float desiredScreenPx, float minScreenPx) {
+        return Math.max(minScreenPx / getUiCompensationScale(),
+                desiredScreenPx / getUiCompensationScale());
+    }
+    private float getMachineUiScale() {
+        float s = Math.max(UI_MIN_SCALE, (float) DataSaved.scale_Factor3D);
+        return Math.max(s, UI_MIN_MACHINE_SCALE);
+    }
+    private float machinePx(float desiredScreenPx) {
+        return desiredScreenPx / getMachineUiScale();
+    }
+
+    private float machinePx(float desiredScreenPx, float minScreenPx) {
+        return Math.max(minScreenPx / getMachineUiScale(),
+                desiredScreenPx / getMachineUiScale());
+    }
+    private PointF viewToWorld(float viewX, float viewY) {
+        tmpPt[0] = viewX;
+        tmpPt[1] = viewY;
+
+        // view -> local canvas (prima di drawMatrix)
+        invDrawMatrix.mapPoints(tmpPt);
+
+        float localX = tmpPt[0];
+        float localY = tmpPt[1];
+
+        double dx = localX - toolX;
+        double dy = localY - toolY;
+
+        double worldE = toolEast + (dx * Math.cos(rotationAngle) + dy * Math.sin(rotationAngle)) / scala;
+        double worldN = toolNord + (-dx * Math.sin(rotationAngle) + dy * Math.cos(rotationAngle)) / scala;
+
+        return new PointF((float) worldE, (float) worldN);
+    }
+    private float getMachineTargetScale() {
+        float s = Math.max(UI_MIN_SCALE, (float) DataSaved.scale_Factor3D);
+        return Math.max(s, UI_MIN_MACHINE_TARGET_SCALE);
+    }
+
+
+    private float getScaleFactorSafe() {
+        return Math.max(UI_MIN_SCALE, (float) DataSaved.scale_Factor3D);
+    }
+
+    private float machineTargetPx(float baseLocalPx) {
+        float s = getScaleFactorSafe();
+
+        if (s < UI_MACHINE_TARGET_FREEZE_BELOW) {
+            return baseLocalPx * (UI_MACHINE_TARGET_FREEZE_BELOW / s);
+        }
+
+        return baseLocalPx;
+    }
+
+    private float machineTargetPx(float baseLocalPx, float minLocalPx) {
+        return Math.max(minLocalPx, machineTargetPx(baseLocalPx));
     }
 
 }

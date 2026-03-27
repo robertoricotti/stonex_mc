@@ -1,16 +1,14 @@
 package drill_pile.gui;
 
+import static drill_pile.gui.ProjectStateCsvStore.canonicalHoleId;
 import static gui.MyApp.errorCode;
 import static packexcalib.exca.DataSaved.Selected_Point3D_Drill;
 import static packexcalib.exca.ExcavatorLib.coordTool;
 import static packexcalib.exca.ExcavatorLib.correctToolPitch;
 import static packexcalib.exca.ExcavatorLib.correctToolRoll;
-import static packexcalib.exca.ExcavatorLib.swing_boom_angle;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
 import static services.PointService.AB_REVERSED;
-import static services.PointService.Solar_Delta_X;
-import static services.PointService.Solar_Delta_Y;
 import static services.PointService.valoriTabella;
 import static utils.MyMCUtils.projectPointOnAxis3D;
 import static utils.MyTypes.JETGROUTING_MODE;
@@ -23,13 +21,10 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -53,6 +48,7 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.draw_class.MyColorClass;
+import iredes.DateTimeIsoCompat;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.My_LocationCalc;
@@ -101,7 +97,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView marcia,idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual, diration;
+    TextView marcia, idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual, diration;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
@@ -117,9 +113,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drill);
-        dialogOperatorLogin=new Dialog_Operator_Login(this);
-        if(NOME_OPERATORE==null){
-            if(!dialogOperatorLogin.dialog.isShowing()){
+        dialogOperatorLogin = new Dialog_Operator_Login(this);
+        if (NOME_OPERATORE == null) {
+            if (!dialogOperatorLogin.dialog.isShowing()) {
                 dialogOperatorLogin.show();
             }
         }
@@ -148,7 +144,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void findView() {
-        marcia=findViewById(R.id.marcia);
+        marcia = findViewById(R.id.marcia);
         diration = findViewById(R.id.diration);
         divisorioC = findViewById(R.id.divisorioC);
         divisorioDx = findViewById(R.id.divisorioDx);
@@ -529,10 +525,10 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     public void updateUI() {
-        if(NOME_OPERATORE!=null) {
-            if( DataSaved.ShowText==1){
+        if (NOME_OPERATORE != null) {
+            if (DataSaved.ShowText == 1) {
                 mostratesto.setAlpha(1.0f);
-            }else {
+            } else {
                 mostratesto.setAlpha(0.4f);
             }
             if (DataSaved.isCanOpen == JOYSTICKS) {
@@ -1427,8 +1423,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (Selected_Point3D_Drill == null) return;
 
         // HoleId uniforme: SOLO ID (se hai già buildHoleId ok, ma deve tornare point.getId())
-        currentHoleId = buildHoleId(Selected_Point3D_Drill);
-        startIso = NmeaListener.date_time_Y_M_D;// Es. 2025-02-22 17:45:52
+        currentHoleId = canonicalHoleId(Selected_Point3D_Drill);
+        startIso = DateTimeIsoCompat.normalize(NmeaListener.date_time_Y_M_D);
 
         // Stato runtime (in memoria)
         Selected_Point3D_Drill.setStatus(0); // TODO
@@ -1448,7 +1444,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             throw new RuntimeException(e);
         }
         StartForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
-        FineForo  = (toolEndCoord != null) ? toolEndCoord.clone() : null;
+        FineForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
         isDrilling = true;
         refreshAfterStateChange();
     }
@@ -1458,8 +1454,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (Selected_Point3D_Drill == null) return;
 
         final iredes.Point3D_Drill p = Selected_Point3D_Drill; // snapshot
-        final String holeId = buildHoleId(p);
-        final String endIso = NmeaListener.date_time_Y_M_D;
+        final String holeId = canonicalHoleId(p);
+        final String endIso = DateTimeIsoCompat.normalize(NmeaListener.date_time_Y_M_D);
 
         // Stato runtime (in memoria)
         p.setStatus(1); // DONE
@@ -1491,11 +1487,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             final Double headE = toUserUnitsMeters(p.getHeadX());
             final Double headZ = toUserUnitsMeters(p.getHeadZ());
 
-            final Double endN  = toUserUnitsMeters(p.getEndY());
-            final Double endE  = toUserUnitsMeters(p.getEndX());
-            final Double endZ  = toUserUnitsMeters(p.getEndZ());
+            final Double endN = toUserUnitsMeters(p.getEndY());
+            final Double endE = toUserUnitsMeters(p.getEndX());
+            final Double endZ = toUserUnitsMeters(p.getEndZ());
 
-            final Double depth  = toUserUnitsMeters(p.getDepth());
+            final Double depth = toUserUnitsMeters(p.getDepth());
             final Double length = toUserUnitsMeters(p.getLength());
 
             final Double sdN = toUserUnitsMeters(Start_dN);
@@ -1508,13 +1504,13 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             // Angoli invariati
             final Double bearing = p.getHeadingDeg();
-            final Double tilt    = p.getTilt();
-            final Double embedmentM = (StartForo != null && FineForo != null )
+            final Double tilt = p.getTilt();
+            final Double embedmentM = (StartForo != null && FineForo != null)
                     ? (StartForo[2] - FineForo[2])
                     : 0;
 
             final Double embedmentUser = toUserUnitsMeters(Math.abs(embedmentM));
-            final Double dTilt    = delta_Tilt;
+            final Double dTilt = delta_Tilt;
             final Double dBearing = delta_Bearing;
 
             switch (DataSaved.Drilling_Mode) {
@@ -1667,7 +1663,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (Selected_Point3D_Drill == null) return;
 
         final iredes.Point3D_Drill p = Selected_Point3D_Drill; // snapshot
-        final String holeId = buildHoleId(p);
+        final String holeId = canonicalHoleId(p);
         final String endIso = NmeaListener.date_time_Y_M_D;
 
         // Stato runtime (in memoria)
@@ -1698,11 +1694,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             final Double headE = toUserUnitsMeters(p.getHeadX());
             final Double headZ = toUserUnitsMeters(p.getHeadZ());
 
-            final Double endN  = toUserUnitsMeters(p.getEndY());
-            final Double endE  = toUserUnitsMeters(p.getEndX());
-            final Double endZ  = toUserUnitsMeters(p.getEndZ());
+            final Double endN = toUserUnitsMeters(p.getEndY());
+            final Double endE = toUserUnitsMeters(p.getEndX());
+            final Double endZ = toUserUnitsMeters(p.getEndZ());
 
-            final Double depth  = toUserUnitsMeters(p.getDepth());
+            final Double depth = toUserUnitsMeters(p.getDepth());
             final Double length = toUserUnitsMeters(p.getLength());
 
             final Double sdN = toUserUnitsMeters(Start_dN);
@@ -1714,13 +1710,13 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             final Double edZ = toUserUnitsMeters(End_dZ);
 
             final Double bearing = p.getHeadingDeg();
-            final Double tilt    = p.getTilt();
+            final Double tilt = p.getTilt();
             final Double embedmentM = (p.getHeadZ() != null && FineForo != null && FineForo.length >= 3)
                     ? (p.getHeadZ() - FineForo[2])
                     : null;
 
             final Double embedmentUser = toUserUnitsMeters(embedmentM);
-            final Double dTilt    = delta_Tilt;
+            final Double dTilt = delta_Tilt;
             final Double dBearing = delta_Bearing;
 
             switch (DataSaved.Drilling_Mode) {
@@ -1924,7 +1920,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             final Double headZ = toUserUnitsMeters(p.getHeadZ());
 
             final Double bearing = p.getHeadingDeg();
-            final Double tilt    = p.getTilt();
+            final Double tilt = p.getTilt();
 
             switch (DataSaved.Drilling_Mode) {
 
@@ -2097,7 +2093,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     Start_dZ = Math.abs(Selected_Point3D_Drill.getHeadZ() - toolEndCoord[2]);
                     delta_Tilt = Math.abs(Selected_Point3D_Drill.getTilt() - MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll));
                     double ori = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
-                    double ab  = normalizeAngle(DataSaved.ALLINEAMENTO_AB);
+                    double ab = normalizeAngle(DataSaved.ALLINEAMENTO_AB);
                     // delta firmato rispetto alla linea AB/BA
                     delta_Bearing = signedLineDeltaDeg(ori, ab);
                     Start_Foro();
@@ -2128,12 +2124,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 }
                 break;
         }
-    }
-
-    private String buildHoleId(iredes.Point3D_Drill p) {
-        String id = p.getId() != null ? p.getId() : "";
-        String row = p.getRowId() != null ? p.getRowId() : "";
-        return row + id;
     }
 
 
@@ -2434,7 +2424,10 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 Math.abs(y1 - y2) <= tol &&
                 Math.abs(z1 - z2) <= tol;
     }
-    /** Converte metri -> unità utente (metri/ft survey/ft international) come Utils.showCoords, ma torna Double numerico. */
+
+    /**
+     * Converte metri -> unità utente (metri/ft survey/ft international) come Utils.showCoords, ma torna Double numerico.
+     */
     private static Double toUserUnitsMeters(Double meters) {
         if (meters == null || meters.isNaN() || meters.isInfinite()) return null;
 
@@ -2453,17 +2446,25 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         }
     }
 
-    /** Overload per primitive (se ti è comodo). */
+    /**
+     * Overload per primitive (se ti è comodo).
+     */
     private static Double toUserUnitsMeters(double meters) {
         return toUserUnitsMeters(Double.valueOf(meters));
     }
-    /** mm/s -> ft/s (international), SEMPRE, indipendente dalla UOM scelta nel software */
+
+    /**
+     * mm/s -> ft/s (international), SEMPRE, indipendente dalla UOM scelta nel software
+     */
     private static Double mmPerSecToFtPerSecAlways(Double mmps) {
         if (mmps == null) return null;
         if (mmps.isNaN() || mmps.isInfinite()) return null;
         return mmps / 304.8; // ft INTERNATIONAL sempre
     }
-    /** Calcola penetration rate mm/s con la regola: se foro "punto" -> verticale down only, altrimenti lungo asse */
+
+    /**
+     * Calcola penetration rate mm/s con la regola: se foro "punto" -> verticale down only, altrimenti lungo asse
+     */
     private static Double computePenRateMmS(
             String startIso, String endIso,
             double[] startForoENZ, double[] fineForoENZ,
@@ -2476,7 +2477,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         boolean verticalPoint = samePoint(
                 p.getHeadX(), p.getHeadY(), p.getHeadZ(),
-                p.getEndX(),  p.getEndY(),  p.getEndZ(),
+                p.getEndX(), p.getEndY(), p.getEndZ(),
                 1e-6
         );
 
@@ -2489,7 +2490,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         } else {
             // array richiesti in [E,N,Z]
             double[] headENZ = new double[]{p.getHeadX(), p.getHeadY(), p.getHeadZ()};
-            double[] endENZ  = new double[]{p.getEndX(),  p.getEndY(),  p.getEndZ()};
+            double[] endENZ = new double[]{p.getEndX(), p.getEndY(), p.getEndZ()};
 
             mmps = penetrationRateMmPerSecAlongAxisForwardOnly(
                     startIso, endIso,
@@ -2501,11 +2502,14 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (Double.isNaN(mmps) || Double.isInfinite(mmps)) return null;
         return mmps;
     }
-    /** Delta orientamento firmato rispetto a una LINEA (AB/BA equivalenti): risultato in [-90..+90] */
+
+    /**
+     * Delta orientamento firmato rispetto a una LINEA (AB/BA equivalenti): risultato in [-90..+90]
+     */
     private static double signedLineDeltaDeg(double angleDeg, double lineDeg) {
         // normalizza a [0..360)
         double a = ((angleDeg % 360) + 360) % 360;
-        double l = ((lineDeg  % 360) + 360) % 360;
+        double l = ((lineDeg % 360) + 360) % 360;
 
         // differenza su cerchio 360 in [-180..+180]
         double diff = a - l;

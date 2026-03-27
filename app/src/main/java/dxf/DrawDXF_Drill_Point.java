@@ -2,8 +2,7 @@ package dxf;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
-import org.apache.poi.xdgf.util.Util;
+import android.util.Log;
 
 import gui.draw_class.MyColorClass;
 import iredes.Point3D_Drill;
@@ -11,30 +10,95 @@ import packexcalib.exca.DataSaved;
 import utils.Utils;
 
 public class DrawDXF_Drill_Point {
+
+    // =========================================================
+    // CUSTOM UI SIZE (pixel desiderati A SCHERMO)
+    // Questi valori vengono automaticamente compensati con
+    // / DataSaved.scale_Factor3D
+    // =========================================================
+
+    // --- NORMAL ---
+    private static final float UI_HEAD_RADIUS_PX = 10.0f;          // cerchio testa
+    private static final float UI_END_RADIUS_RATIO = 0.78f;        // raggio fondo = head * ratio
+
+    private static final float UI_TEXT_SIZE_PX = 21.0f;            // testo normale
+    private static final float UI_TEXT_OFFSET_X_PX = 5.0f;         // offset testo X
+    private static final float UI_TEXT_OFFSET_Y_PX = 5.0f;         // offset testo Y
+
+    private static final float UI_STROKE_PX = 2.4f;                // bordo cerchi
+    private static final float UI_LINK_STROKE_PX = 1.9f;           // generatrici laterali
+    private static final float UI_AXIS_STROKE_PX = 1.5f;           // asse cilindro
+    private static final float UI_CENTER_POINT_STROKE_PX = 1.4f;   // puntino centrale
+
+    private static final float UI_RING_RADIUS_MULT = 1.55f;        // anello rosso attorno alla testa
+    private static final float UI_RING_STROKE_PX = 2.8f;           // spessore anello rosso
+
+    private static final float UI_AXIS_SHADOW_EXTRA_PX = 1.2f;     // bordo scuro asse
+    private static final float UI_LINK_SHADOW_EXTRA_PX = 1.0f;     // bordo scuro lati
+
+    // --- SELECTED ---
+    private static final float UI_SELECTED_HEAD_RADIUS_PX = 13.0f;
+    private static final float UI_SELECTED_END_RADIUS_RATIO = 0.75f;
+
+    private static final float UI_SELECTED_TEXT_SIZE_PX = 31.0f;
+    private static final float UI_SELECTED_TEXT_OFFSET_X_PX = 7.0f;
+    private static final float UI_SELECTED_TEXT_OFFSET_Y_PX = 7.0f;
+
+    private static final float UI_SELECTED_STROKE_PX = 2.8f;
+    private static final float UI_SELECTED_LINK_STROKE_PX = 2.2f;
+    private static final float UI_SELECTED_AXIS_STROKE_PX = 1.8f;
+
+    private static final float UI_SELECTED_AXIS_SHADOW_EXTRA_PX = 1.5f;
+    private static final float UI_SELECTED_HIGHLIGHT_STROKE_PX = 1.0f;
+
+    // --- MINIMI DI SICUREZZA ---
+    private static final float UI_MIN_STROKE_PX = 1.0f;
+    private static final float UI_MIN_SCALE = 0.1f;
+
     public static void draw(Canvas canvas, Paint paint, Point3D_Drill point,
                             float bucketX, float bucketY,
                             double bucketEst, double bucketNord,
                             float scala, double rotationAngle,
                             boolean txt, float uiDeg) {
-
+        //Log.d("myScala",DataSaved.scale_Factor3D+"");
         if (point == null) return;
         if (point.getHeadX() == null || point.getHeadY() == null) return;
 
-        // se è il selected, non lo ridisegno qui (lo disegni con drawSelected)
+        // se è selected, non lo ridisegno qui
         Point3D_Drill sel = DataSaved.Selected_Point3D_Drill;
         if (isSamePoint(point, sel)) return;
 
-        // coordinate head
+        // ---------------------------------------------------------
+        // POSIZIONE: continua a dipendere da scala (corretto)
+        // ---------------------------------------------------------
         double diffHX = (point.getHeadX() - bucketEst) * scala;
         double diffHY = (point.getHeadY() - bucketNord) * scala;
+
         float headX = (float) (bucketX + diffHX * Math.cos(rotationAngle) - diffHY * Math.sin(rotationAngle));
         float headY = (float) (bucketY - diffHX * Math.sin(rotationAngle) - diffHY * Math.cos(rotationAngle));
 
-        // dimensioni (un pelo più piccole del selected)
-        float rHead = 0.145f * scala;
-        float rEnd = rHead * 0.78f;
+        // ---------------------------------------------------------
+        // DIMENSIONI VISIVE: fisse a schermo (compensate col canvas scale)
+        // ---------------------------------------------------------
+        float uiScale = getUiCompensationScale();
 
-        // Colore in base allo stato: 0/TODO = default, 1/DONE = verde, -1/ABORTED = magenta
+        float rHead = px(UI_HEAD_RADIUS_PX);
+        float rEnd = rHead * UI_END_RADIUS_RATIO;
+
+        float stroke = px(UI_STROKE_PX, UI_MIN_STROKE_PX);
+        float linkStroke = px(UI_LINK_STROKE_PX, UI_MIN_STROKE_PX);
+        float axisStroke = px(UI_AXIS_STROKE_PX, UI_MIN_STROKE_PX);
+        float centerPointStroke = px(UI_CENTER_POINT_STROKE_PX, UI_MIN_STROKE_PX);
+
+        float axisShadowExtra = px(UI_AXIS_SHADOW_EXTRA_PX);
+        float linkShadowExtra = px(UI_LINK_SHADOW_EXTRA_PX);
+
+        // ---------------------------------------------------------
+        // STATO / COLORI
+        // 0/TODO = default
+        // 1/DONE = verde
+        // -1/ABORTED = rosso
+        // ---------------------------------------------------------
         Integer st = point.getStatus();
         final boolean isDone = (st != null && st == 1);
         final boolean isAborted = (st != null && st == -1);
@@ -43,25 +107,21 @@ public class DrawDXF_Drill_Point {
         int strokeColor;
 
         if (isDone) {
-            fillColor = android.graphics.Color.argb(190, 0, 200, 0);      // verde (fill)
-            strokeColor = android.graphics.Color.argb(230, 0, 140, 0);    // verde scuro (stroke)
+            fillColor = android.graphics.Color.argb(190, 0, 200, 0);
+            strokeColor = android.graphics.Color.argb(230, 0, 140, 0);
         } else if (isAborted) {
-            fillColor = android.graphics.Color.argb(190, 255, 0, 0);    // magenta (fill)
-            strokeColor = android.graphics.Color.argb(230, 250, 0, 55);  // magenta scuro (stroke)
+            fillColor = android.graphics.Color.argb(190, 255, 0, 0);
+            strokeColor = android.graphics.Color.argb(230, 250, 0, 55);
         } else {
             fillColor = MyColorClass.colorConstraint;
             strokeColor = MyColorClass.colorConstraint;
         }
 
-
-        // stroke
-        float stroke = Math.max(1.5f, (float) (0.045 * scala));
-        float linkStroke = Math.max(1.5f, (float) (0.040 * scala));
-        float axisStroke = Math.max(1.5f, (float) (0.030 * scala));
-
         paint.setAntiAlias(true);
 
-        // controllo fondo
+        // ---------------------------------------------------------
+        // END POINT
+        // ---------------------------------------------------------
         boolean hasEnd = (point.getEndX() != null && point.getEndY() != null);
 
         float endX = headX;
@@ -70,11 +130,14 @@ public class DrawDXF_Drill_Point {
         if (hasEnd) {
             double diffEX = (point.getEndX() - bucketEst) * scala;
             double diffEY = (point.getEndY() - bucketNord) * scala;
+
             endX = (float) (bucketX + diffEX * Math.cos(rotationAngle) - diffEY * Math.sin(rotationAngle));
             endY = (float) (bucketY - diffEX * Math.sin(rotationAngle) - diffEY * Math.cos(rotationAngle));
         }
 
-        // 1) Se ho fondo: disegno linee cilindro + tappo fondo (sempre colorConstraint)
+        // ---------------------------------------------------------
+        // CILINDRO / FONDO
+        // ---------------------------------------------------------
         if (hasEnd) {
             float vx = endX - headX;
             float vy = endY - headY;
@@ -98,30 +161,31 @@ public class DrawDXF_Drill_Point {
 
                 int lineColor = (isDone || isAborted) ? strokeColor : getCylinderLineColor();
 
-
-                // asse centrale (doppio stroke per contrasto)
+                // asse centrale - shadow
                 paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth(axisStroke + 1.2f);
+                paint.setStrokeWidth(axisStroke + axisShadowExtra);
                 paint.setColor(android.graphics.Color.argb(160, 0, 0, 0));
                 canvas.drawLine(headX, headY, endX, endY, paint);
 
+                // asse centrale - main
                 paint.setStrokeWidth(axisStroke);
                 paint.setColor(lineColor);
                 canvas.drawLine(headX, headY, endX, endY, paint);
 
-                // generatrici laterali (doppio stroke)
-                paint.setStrokeWidth(linkStroke + 1.0f);
+                // generatrici - shadow
+                paint.setStrokeWidth(linkStroke + linkShadowExtra);
                 paint.setColor(android.graphics.Color.argb(140, 0, 0, 0));
                 canvas.drawLine(headLx, headLy, endLx, endLy, paint);
                 canvas.drawLine(headRx, headRy, endRx, endRy, paint);
 
+                // generatrici - main
                 paint.setStrokeWidth(linkStroke);
                 paint.setColor(lineColor);
                 canvas.drawLine(headLx, headLy, endLx, endLy, paint);
                 canvas.drawLine(headRx, headRy, endRx, endRy, paint);
             }
 
-            // tappo fondo (end) - colorConstraint
+            // tappo fondo
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(fillColor);
             canvas.drawCircle(endX, endY, rEnd, paint);
@@ -134,11 +198,13 @@ public class DrawDXF_Drill_Point {
             // puntino fondo
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(MyColorClass.colorSfondo);
-            paint.setStrokeWidth(Math.max(1f, (float) (0.04 * scala)));
+            paint.setStrokeWidth(centerPointStroke);
             canvas.drawPoint(endX, endY, paint);
         }
 
-        // 2) Tappo testa (head) - sempre
+        // ---------------------------------------------------------
+        // TAPPO TESTA
+        // ---------------------------------------------------------
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(fillColor);
         canvas.drawCircle(headX, headY, rHead, paint);
@@ -147,45 +213,50 @@ public class DrawDXF_Drill_Point {
         paint.setStrokeWidth(stroke);
         paint.setColor(strokeColor);
         canvas.drawCircle(headX, headY, rHead, paint);
-        // 🔴 Se sto definendo AB e questo punto è A: cerchio rosso attorno
+
+        // cerchio rosso se A
         if (isAlignA(point)) {
-            drawRedRing(canvas, paint, headX, headY, rHead * 1.55f, scala);
+            drawRedRing(canvas, paint, headX, headY, rHead * UI_RING_RADIUS_MULT);
         }
 
         // puntino testa
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(MyColorClass.colorSfondo);
-        paint.setStrokeWidth(Math.max(1f, (float) (0.04 * scala)));
+        paint.setStrokeWidth(centerPointStroke);
         canvas.drawPoint(headX, headY, paint);
 
-        // 3) Testo: SEMPRE se txt == true (anche senza fondo)
+        // ---------------------------------------------------------
+        // TESTO
+        // ---------------------------------------------------------
         if (txt) {
             canvas.rotate(-uiDeg, headX, headY);
+
             String testo = point.getRowId() + "-" + point.getId();
             if (point.getRowId() == null || point.getRowId().isEmpty()) {
                 testo = point.getId();
             }
-            String des=" ";
-            if(point.getDescription()!=null){
-                des=point.getDescription();
+
+            String des = " ";
+            if (point.getDescription() != null) {
+                des = point.getDescription();
             }
+
             testo = switch (DataSaved.Drill_Text_Mode) {
                 case 0 -> testo;
                 case 1 -> testo + "\n" + des;
-                case 2 ->
-                        testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-                case 3 ->
-                        testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 2 -> testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 3 -> testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                 case 4 -> des;
-                case 5 ->
-                        des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 5 -> des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                 case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                 default -> "?";
             };
-            paint.setTextSize(Math.max(18f, 0.22f * scala));
+
+            paint.setTextSize(px(UI_TEXT_SIZE_PX));
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(fillColor); // oppure fillColor, a gusto
-            canvas.drawText(testo, headX + 3f, headY - 3f, paint);
+            paint.setColor(fillColor);
+            canvas.drawText(testo, headX + px(UI_TEXT_OFFSET_X_PX), headY - px(UI_TEXT_OFFSET_Y_PX), paint);
+
             canvas.rotate(uiDeg, headX, headY);
         }
 
@@ -202,17 +273,34 @@ public class DrawDXF_Drill_Point {
         if (point == null) return;
         if (point.getHeadX() == null || point.getHeadY() == null) return;
 
-        // --- head (alto) ---
+        // ---------------------------------------------------------
+        // HEAD POSITION
+        // ---------------------------------------------------------
         double diffHX = (point.getHeadX() - bucketEst) * scala;
         double diffHY = (point.getHeadY() - bucketNord) * scala;
 
         float headX = (float) (bucketX + diffHX * Math.cos(rotationAngle) - diffHY * Math.sin(rotationAngle));
         float headY = (float) (bucketY - diffHX * Math.sin(rotationAngle) - diffHY * Math.cos(rotationAngle));
 
-        float rHead = (float) (size * scala);
-        float rEnd = rHead * 0.75f;
+        // ---------------------------------------------------------
+        // DIMENSIONI VISIVE FISSE A SCHERMO
+        // ---------------------------------------------------------
+        float uiScale = getUiCompensationScale();
 
-        // --- end (basso) ---
+        float rHead = px(UI_SELECTED_HEAD_RADIUS_PX);
+        float rEnd = rHead * UI_SELECTED_END_RADIUS_RATIO;
+
+        float stroke = px(UI_SELECTED_STROKE_PX, UI_MIN_STROKE_PX);
+        float linkStroke = px(UI_SELECTED_LINK_STROKE_PX, UI_MIN_STROKE_PX);
+        float axisStroke = px(UI_SELECTED_AXIS_STROKE_PX, UI_MIN_STROKE_PX);
+
+        float axisShadowExtra = px(UI_SELECTED_AXIS_SHADOW_EXTRA_PX);
+        float highlightStroke = px(UI_SELECTED_HIGHLIGHT_STROKE_PX, UI_MIN_STROKE_PX);
+        float centerPointStroke = px(UI_CENTER_POINT_STROKE_PX, UI_MIN_STROKE_PX);
+
+        // ---------------------------------------------------------
+        // END POSITION
+        // ---------------------------------------------------------
         boolean hasEnd = (point.getEndX() != null && point.getEndY() != null);
 
         float endX = headX;
@@ -226,11 +314,12 @@ public class DrawDXF_Drill_Point {
             endY = (float) (bucketY - diffEX * Math.sin(rotationAngle) - diffEY * Math.cos(rotationAngle));
         }
 
-        paint.setStrokeWidth(Math.max(0.8f, scala * 0.001f));
+        // linea bucket -> head
+        paint.setStrokeWidth(px(1.2f, 0.8f));
         paint.setColor(MyColorClass.colorConstraint);
         canvas.drawLine(bucketX, bucketY, headX, headY, paint);
-        // Colori: alto blu, basso rosso, alpha < 1
-        // (metti alpha tra 90..200 a gusto; 150 è un buon compromesso)
+
+        // colori selected
         final int aFill = 150;
         final int aStroke = 200;
 
@@ -240,12 +329,9 @@ public class DrawDXF_Drill_Point {
         final int redFill = android.graphics.Color.argb(aFill, 255, 70, 70);
         final int redStroke = android.graphics.Color.argb(aStroke, 200, 40, 40);
 
-        // spessori scalati
-        float stroke = Math.max(2f, (float) (0.06 * scala));
-        float linkStroke = Math.max(2f, (float) (0.05 * scala));
-        float axisStroke = Math.max(2f, (float) (0.035 * scala));
-
-        // --- se non ho end: disegno solo head "pro" ---
+        // ---------------------------------------------------------
+        // CASO SENZA END
+        // ---------------------------------------------------------
         if (!hasEnd) {
             paint.setAntiAlias(true);
 
@@ -257,56 +343,64 @@ public class DrawDXF_Drill_Point {
             paint.setStrokeWidth(stroke);
             paint.setColor(blueStroke);
             canvas.drawCircle(headX, headY, rHead, paint);
-            if (isAlignA(point)) {
-                drawRedRing(canvas, paint, headX, headY, rHead * 1.55f, scala);
-            }
 
+            if (isAlignA(point)) {
+                drawRedRing(canvas, paint, headX, headY, rHead * UI_RING_RADIUS_MULT);
+            }
 
             // puntino centrale
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(MyColorClass.colorSfondo);
-            paint.setStrokeWidth(Math.max(1f, (float) (0.04 * scala)));
+            paint.setStrokeWidth(centerPointStroke);
             canvas.drawPoint(headX, headY, paint);
+
             if (txt) {
                 canvas.rotate(-uiDeg, headX, headY);
-                float offX = 6f;
-                float offY = 6f;
+
                 String testo = point.getRowId() + "-" + point.getId();
                 if (point.getRowId() == null || point.getRowId().isEmpty()) {
                     testo = point.getId();
                 }
-                String des=" ";
-                if(point.getDescription()!=null){
-                    des=point.getDescription();
+
+                String des = " ";
+                if (point.getDescription() != null) {
+                    des = point.getDescription();
                 }
+
                 testo = switch (DataSaved.Drill_Text_Mode) {
                     case 0 -> testo;
                     case 1 -> testo + "\n" + des;
-                    case 2 ->
-                            testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-                    case 3 ->
-                            testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 2 -> testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 3 -> testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     case 4 -> des;
-                    case 5 ->
-                            des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 5 -> des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     default -> "?";
                 };
-                paint.setTextSize(28);
+
+                paint.setTextSize(px(UI_SELECTED_TEXT_SIZE_PX));
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(MyColorClass.colorConstraint);
-                canvas.drawText(testo, headX + offX, headY - offY, paint);
+                canvas.drawText(testo,
+                        headX + px(UI_SELECTED_TEXT_OFFSET_X_PX),
+                        headY - px(UI_SELECTED_TEXT_OFFSET_Y_PX),
+                        paint);
+
                 canvas.rotate(uiDeg, headX, headY);
             }
+
+            paint.setStrokeWidth(10f);
             return;
         }
 
-        // --- calcolo asse head->end per costruire le "generatrici" laterali ---
+        // ---------------------------------------------------------
+        // CASO CON END
+        // ---------------------------------------------------------
         float vx = endX - headX;
         float vy = endY - headY;
         float len = (float) Math.hypot(vx, vy);
 
-        // se head == end (len ~0), fallback a disegno singolo
+        // fallback se head == end
         if (len < 1e-3f) {
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(blueFill);
@@ -316,53 +410,61 @@ public class DrawDXF_Drill_Point {
             paint.setStrokeWidth(stroke);
             paint.setColor(blueStroke);
             canvas.drawCircle(headX, headY, rHead, paint);
+
             if (isAlignA(point)) {
-                drawRedRing(canvas, paint, headX, headY, rHead * 1.55f, scala);
+                drawRedRing(canvas, paint, headX, headY, rHead * UI_RING_RADIUS_MULT);
             }
+
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(MyColorClass.colorSfondo);
+            paint.setStrokeWidth(centerPointStroke);
+            canvas.drawPoint(headX, headY, paint);
 
             if (txt) {
                 canvas.rotate(-uiDeg, headX, headY);
-                float offX = 6f;
-                float offY = 6f;
+
                 String testo = point.getRowId() + "-" + point.getId();
                 if (point.getRowId() == null || point.getRowId().isEmpty()) {
                     testo = point.getId();
                 }
-                String des=" ";
-                if(point.getDescription()!=null){
-                    des=point.getDescription();
+
+                String des = " ";
+                if (point.getDescription() != null) {
+                    des = point.getDescription();
                 }
+
                 testo = switch (DataSaved.Drill_Text_Mode) {
                     case 0 -> testo;
                     case 1 -> testo + "\n" + des;
-                    case 2 ->
-                            testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-                    case 3 ->
-                            testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 2 -> testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 3 -> testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     case 4 -> des;
-                    case 5 ->
-                            des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                    case 5 -> des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
                     default -> "?";
                 };
-                paint.setTextSize(28);
+
+                paint.setTextSize(px(UI_SELECTED_TEXT_SIZE_PX));
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(MyColorClass.colorConstraint);
-                canvas.drawText(testo, headX + offX, headY - offY, paint);
+                canvas.drawText(testo,
+                        headX + px(UI_SELECTED_TEXT_OFFSET_X_PX),
+                        headY - px(UI_SELECTED_TEXT_OFFSET_Y_PX),
+                        paint);
+
                 canvas.rotate(uiDeg, headX, headY);
             }
+
+            paint.setStrokeWidth(10f);
             return;
         }
 
-        // unit vector asse
         float ux = vx / len;
         float uy = vy / len;
 
-        // normale (perpendicolare) per i lati cilindro
         float nx = -uy;
         float ny = ux;
 
-        // punti laterali su head (alto) e su end (basso)
         float headLx = headX + nx * rHead;
         float headLy = headY + ny * rHead;
         float headRx = headX - nx * rHead;
@@ -377,29 +479,24 @@ public class DrawDXF_Drill_Point {
 
         int baseLineColor = getCylinderLineColor();
 
-// --- asse centrale (doppio stroke per contrasto) ---
-
-// bordo scuro (ombra)
+        // asse shadow
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(axisStroke + 1.5f);
-        paint.setColor(android.graphics.Color.argb(180, 0, 0, 0)); // nero semi
+        paint.setStrokeWidth(axisStroke + axisShadowExtra);
+        paint.setColor(android.graphics.Color.argb(180, 0, 0, 0));
         canvas.drawLine(headX, headY, endX, endY, paint);
 
-// linea principale (chiara o scura in base allo sfondo)
+        // asse main
         paint.setStrokeWidth(axisStroke);
         paint.setColor(baseLineColor);
         canvas.drawLine(headX, headY, endX, endY, paint);
 
-
-        // generatrici laterali (destra/sinistra)
+        // generatrici laterali
         paint.setStrokeWidth(linkStroke);
-        // per look più "3D": uso un colore neutro semi-trasparente
         paint.setColor(android.graphics.Color.argb(180, 40, 40, 40));
         canvas.drawLine(headLx, headLy, endLx, endLy, paint);
         canvas.drawLine(headRx, headRy, endRx, endRy, paint);
 
-        // 2) dischi: prima il basso (rosso) poi l’alto (blu) così l’alto “sta sopra”
-        // fondo (rosso)
+        // fondo rosso
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(redFill);
         canvas.drawCircle(endX, endY, rEnd, paint);
@@ -409,7 +506,7 @@ public class DrawDXF_Drill_Point {
         paint.setColor(redStroke);
         canvas.drawCircle(endX, endY, rEnd, paint);
 
-        // testa (blu)
+        // testa blu
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(blueFill);
         canvas.drawCircle(headX, headY, rHead, paint);
@@ -418,65 +515,66 @@ public class DrawDXF_Drill_Point {
         paint.setStrokeWidth(stroke);
         paint.setColor(blueStroke);
         canvas.drawCircle(headX, headY, rHead, paint);
+
         if (isAlignA(point)) {
-            drawRedRing(canvas, paint, headX, headY, rHead * 1.55f, scala);
+            drawRedRing(canvas, paint, headX, headY, rHead * UI_RING_RADIUS_MULT);
         }
 
-        // 3) highlight per effetto “cilindro” (leggero)
-        // linea sottile lungo l'asse (sopra), molto trasparente
+        // highlight leggero
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(Math.max(1f, stroke * 0.35f));
+        paint.setStrokeWidth(highlightStroke);
         paint.setColor(android.graphics.Color.argb(70, 255, 255, 255));
         canvas.drawLine(headX + nx * (rHead * 0.25f), headY + ny * (rHead * 0.25f),
                 endX + nx * (rEnd * 0.25f), endY + ny * (rEnd * 0.25f), paint);
 
-        // 4) puntini centrali (opzionali)
+        // puntini centrali
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(MyColorClass.colorSfondo);
-        paint.setStrokeWidth(Math.max(1f, (float) (0.04 * scala)));
+        paint.setStrokeWidth(centerPointStroke);
         canvas.drawPoint(headX, headY, paint);
         canvas.drawPoint(endX, endY, paint);
 
-        // 5) testo (se ti serve)
+        // testo
+        if (txt) {
+            String testo = point.getRowId() + "-" + point.getId();
+            if (point.getRowId() == null || point.getRowId().isEmpty()) {
+                testo = point.getId();
+            }
 
-        float offX = 6f;
-        float offY = 6f;
-        String testo = point.getRowId() + "-" + point.getId();
-        if (point.getRowId() == null || point.getRowId().isEmpty()) {
-            testo = point.getId();
+            String des = " ";
+            if (point.getDescription() != null) {
+                des = point.getDescription();
+            }
+
+            testo = switch (DataSaved.Drill_Text_Mode) {
+                case 0 -> testo;
+                case 1 -> testo + "\n" + des;
+                case 2 -> testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 3 -> testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 4 -> des;
+                case 5 -> des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
+                default -> "?";
+            };
+
+            paint.setTextSize(px(UI_SELECTED_TEXT_SIZE_PX));
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(MyColorClass.colorConstraint);
+
+            canvas.rotate(-uiDeg, headX, headY);
+            canvas.drawText(testo,
+                    headX + px(UI_SELECTED_TEXT_OFFSET_X_PX),
+                    headY - px(UI_SELECTED_TEXT_OFFSET_Y_PX),
+                    paint);
+            canvas.rotate(uiDeg, headX, headY);
         }
-        String des=" ";
-        if(point.getDescription()!=null){
-            des=point.getDescription();
-        }
-        testo = switch (DataSaved.Drill_Text_Mode) {
-            case 0 -> testo;
-            case 1 -> testo + "\n" + des;
-            case 2 ->
-                    testo + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-            case 3 ->
-                    testo + "\n" + des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-            case 4 -> des;
-            case 5 ->
-                    des + "\n" + Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-            case 6 -> Utils.readUnitOfMeasureLITE(String.valueOf(point.getHeadZ()));
-            default -> "?";
-        };
-        paint.setTextSize(28);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(MyColorClass.colorConstraint);
-        canvas.rotate(-uiDeg, headX, headY);
-        canvas.drawText(testo, headX + offX, headY - offY, paint);
-        canvas.rotate(uiDeg, headX, headY);
 
-
-        paint.setStrokeWidth(10f); // ripristino come fai tu altrove
+        paint.setStrokeWidth(10f);
     }
 
 
     private static boolean isSamePoint(Point3D_Drill a, Point3D_Drill b) {
         if (a == null || b == null) return false;
-        // se id/rowId sono Integer/String, gestisci null
         return safeEq(a.getRowId(), b.getRowId()) && safeEq(a.getId(), b.getId());
     }
 
@@ -486,17 +584,14 @@ public class DrawDXF_Drill_Point {
 
     private static int getCylinderLineColor() {
         if (DataSaved.temaSoftware == 0) {
-            // sfondo nero → linee chiare
-            return android.graphics.Color.argb(200, 200, 200, 200); // grigio chiaro
-            // oppure più “tech”:
-            // return Color.argb(200, 120, 200, 255); // azzurro chiaro
+            // sfondo nero -> linee chiare
+            return android.graphics.Color.argb(200, 200, 200, 200);
         } else {
-            // sfondo chiaro → linee scure
-            return android.graphics.Color.argb(180, 40, 40, 40); // grigio scuro
+            // sfondo chiaro -> linee scure
+            return android.graphics.Color.argb(180, 40, 40, 40);
         }
     }
 
-    //Helpers nuovi
     private static boolean isAlignA(Point3D_Drill p) {
         if (p == null) return false;
         if (!DataSaved.isDefiningAB) return false;
@@ -527,17 +622,26 @@ public class DrawDXF_Drill_Point {
         return id;
     }
 
-
-    private static void drawRedRing(Canvas canvas, Paint paint, float cx, float cy, float radius, float scala) {
-        // anello rosso visibile, scalato
-        float ringStroke = Math.max(2.5f, (float) (0.06 * scala));
-
+    private static void drawRedRing(Canvas canvas, Paint paint, float cx, float cy, float radius) {
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(ringStroke);
-        paint.setColor(android.graphics.Color.argb(230, 255, 0, 0)); // rosso
-
+        paint.setStrokeWidth(px(UI_RING_STROKE_PX, UI_MIN_STROKE_PX));
+        paint.setColor(android.graphics.Color.argb(230, 255, 0, 0));
         canvas.drawCircle(cx, cy, radius, paint);
+    }
+
+    private static float getUiCompensationScale() {
+        float s = (float)Math.max(UI_MIN_SCALE, DataSaved.scale_Factor3D);
+        return Math.min(s, 1f);
+    }
+
+    private static float px(float desiredScreenPx) {
+        return desiredScreenPx / getUiCompensationScale();
+    }
+
+    private static float px(float desiredScreenPx, float minLocalValue) {
+        return Math.max(minLocalValue / getUiCompensationScale(),
+                desiredScreenPx / getUiCompensationScale());
     }
 
 }

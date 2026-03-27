@@ -52,7 +52,6 @@ public class DataSaved {
     public static String Drill_Antenna_Mounting = "BODY";
     public static String Drill_Mast_Position = "FORWARD";
 
-
     //settaggi idraulici
     public static String OUTPUT_HYDRO = "";
     public static int Interface_Type;

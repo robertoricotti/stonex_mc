@@ -235,8 +235,6 @@ public class CanSender extends Service {
                         if (DataSaved.portView == 1) {
                             NmeaListener.roof_Orientation = HEADING;
                         }
-
-
                         ExcavatorLib.Excavator();
                         break;
 

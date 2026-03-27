@@ -1,6 +1,7 @@
 package services;
 
 
+import static drill_pile.gui.ProjectStateCsvStore.canonicalHoleId;
 import static gui.MyApp.gridFile_GR_dE;
 import static gui.MyApp.gridFile_GR_dN;
 import static gui.MyApp.heposTransformer;
@@ -1415,25 +1416,16 @@ public class ReadProjectService extends Service {
     }
 
     private void generaState(String projectFolderName) {
-        File outDir = new File(Environment.getExternalStorageDirectory().toString() + "/StonexMC_V4" + "/Exported/" + projectFolderName + "_OUT");
+        File outDir = new File(
+                Environment.getExternalStorageDirectory().toString()
+                        + "/StonexMC_V4/Exported/" + projectFolderName + "_OUT"
+        );
 
         stateStore = new ProjectStateCsvStore(outDir, projectFolderName);
         try {
-            stateStore.initAndLoad(); // crea file se non esiste + carica cache
+            stateStore.initAndLoad();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-
-// Poi, quando costruisci/riempi drill_points:
-// per ogni punto, applichi lo stato salvato:
-        for (Point3D_Drill p : DataSaved.drill_points) {
-            String id = p.getRowId() + p.getId();
-            ProjectStateCsvStore.HoleState st = stateStore.getState(id);
-
-            // mappa sui tuoi status int: 0=TODO, 1=DONE, 2=ABORTED (esempio)
-            if (st == ProjectStateCsvStore.HoleState.DONE) p.setStatus(1);
-            else if (st == ProjectStateCsvStore.HoleState.ABORTED) p.setStatus(2);
-            else p.setStatus(0);
         }
     }
 
@@ -1444,7 +1436,7 @@ public class ReadProjectService extends Service {
         for (iredes.Point3D_Drill p : DataSaved.drill_points) {
             if (p == null) continue;
 
-            String holeId = p.getRowId() + p.getId();
+            String holeId =canonicalHoleId(p);
             if (holeId.isEmpty()) continue;
 
             ProjectStateCsvStore.HoleState st = stateStore.getState(holeId);

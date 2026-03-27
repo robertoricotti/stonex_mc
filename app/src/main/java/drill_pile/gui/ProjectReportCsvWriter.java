@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import iredes.DateTimeIsoCompat;
+
 public class ProjectReportCsvWriter {
     private final String machineId;
     // Header richiesto (ordine fisso)
@@ -138,22 +140,26 @@ public class ProjectReportCsvWriter {
     public static String durationHHmmssSSS(String startIso, String endIso) {
         if (startIso == null || startIso.isEmpty() || endIso == null || endIso.isEmpty()) return "";
 
-        LocalDateTime a = LocalDateTime.parse(startIso, ISO_FMT);
-        LocalDateTime b = LocalDateTime.parse(endIso, ISO_FMT);
+        try {
+            LocalDateTime a = DateTimeIsoCompat.parse(startIso);
+            LocalDateTime b = DateTimeIsoCompat.parse(endIso);
+            if (a == null || b == null) return "";
 
-        long ms = Duration.between(a, b).toMillis();
-        if (ms < 0) ms = 0;
+            long ms = Duration.between(a, b).toMillis();
+            if (ms < 0) ms = 0;
 
-        long hours = ms / 3_600_000;
-        ms %= 3_600_000;
-        long minutes = ms / 60_000;
-        ms %= 60_000;
-        long seconds = ms / 1_000;
-        long millis = ms % 1_000;
+            long hours = ms / 3_600_000;
+            ms %= 3_600_000;
+            long minutes = ms / 60_000;
+            ms %= 60_000;
+            long seconds = ms / 1_000;
+            long millis = ms % 1_000;
 
-        return String.format(Locale.US, "%02d:%02d:%02d.%03d", hours, minutes, seconds, millis);
+            return String.format(Locale.US, "%02d:%02d:%02d.%03d", hours, minutes, seconds, millis);
+        } catch (Exception e) {
+            return "";
+        }
     }
-
     // ---------------- CSV writing ----------------
 
     private static void writePreamble(BufferedWriter bw, LinkedHashMap<String, String> preambleLines) throws IOException {

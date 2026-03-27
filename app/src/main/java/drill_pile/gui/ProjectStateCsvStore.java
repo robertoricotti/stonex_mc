@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import iredes.Point3D_Drill;
+
 public class ProjectStateCsvStore {
     public static final String KEY_ALIGN_A = "__ALIGN_A";
     public static final String KEY_ALIGN_B = "__ALIGN_B";
@@ -121,6 +123,16 @@ public class ProjectStateCsvStore {
         List<HoleStateEntry> all = new ArrayList<>(cache.values());
         all.sort(Comparator.comparing(a -> a.holeId, String.CASE_INSENSITIVE_ORDER));
         writeAllToDisk(all);
+    }
+    public static String canonicalHoleId(Point3D_Drill p) {
+        String row = p.getRowId() == null ? "" : p.getRowId().trim();
+        String id  = p.getId() == null ? "" : p.getId().trim();
+
+        // ⚠️ ATTENZIONE: se getId() è già "11-1", NON concatenare di nuovo
+        if (id.contains("-")) return id;
+
+        if (!row.isEmpty() && !id.isEmpty()) return row + "-" + id;
+        return id.isEmpty() ? row : id;
     }
 
     /**
