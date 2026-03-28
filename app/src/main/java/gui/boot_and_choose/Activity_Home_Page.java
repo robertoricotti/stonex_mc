@@ -213,10 +213,14 @@ public class Activity_Home_Page extends BaseClass {
             if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){
                 new CustomToast(this,"Device Not Supported").show_error();
             }else {
-                if (DataSaved.ConnectionStatus == 1 || DataSaved.ConnectionStatus == 2) {
-                    updateCheck();
-                } else {
-                    new CustomToast(this,"No Internet Connection").show_error();
+                if(isTech) {
+                    if (DataSaved.ConnectionStatus == 1 || DataSaved.ConnectionStatus == 2) {
+                        updateCheck();
+                    } else {
+                        new CustomToast(this, "No Internet Connection").show_error();
+                    }
+                }else {
+
                 }
             }
         });
@@ -331,9 +335,11 @@ public class Activity_Home_Page extends BaseClass {
     public void updateUI() {
         try {
             if(isTech){
+                checkUpdates.setVisibility(View.VISIBLE);
                 testSP.setVisibility(View.VISIBLE);
             }else {
                 testSP.setVisibility(View.INVISIBLE);
+                checkUpdates.setVisibility(View.INVISIBLE);
             }
             if (DataSaved.gpsOk && errorCode == 0) {
                 keyLic.setImageTintList(ColorStateList.valueOf(Color.GREEN));

@@ -590,13 +590,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 github release">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/drill_fw/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/drill_fw/MC024_130_nl_T.scs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/drill_fw/ProjectParameters.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/drill_fw/ProjectParameters.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/drill_fw/drill_fw.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/drill_fw/drill_fw.p1m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/Activity_Home_Page.java" afterDir="false" />
-    </list>
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 update apk da github" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -847,14 +841,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00139" summary="4.1.0 primo giorno conexpo">
-      <option name="closed" value="true" />
-      <created>1772640478051</created>
-      <option name="number" value="00139" />
-      <option name="presentableId" value="LOCAL-00139" />
-      <option name="project" value="LOCAL" />
-      <updated>1772640478051</updated>
     </task>
     <task id="LOCAL-00140" summary="4.1.0 tentativo 5514">
       <option name="closed" value="true" />
@@ -1240,7 +1226,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774697940241</updated>
     </task>
-    <option name="localTasksCounter" value="188" />
+    <task id="LOCAL-00188" summary="4.1.0 update apk da github">
+      <option name="closed" value="true" />
+      <created>1774708550801</created>
+      <option name="number" value="00188" />
+      <option name="presentableId" value="LOCAL-00188" />
+      <option name="project" value="LOCAL" />
+      <updated>1774708550802</updated>
+    </task>
+    <option name="localTasksCounter" value="189" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1256,7 +1250,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.0 Implementazione CZ completata OK" />
     <MESSAGE value="4.1.0 primo giorno conexpo" />
     <MESSAGE value="4.1.0 tentativo 5514" />
     <MESSAGE value="4.1.0 tentativo aggiunta hdt" />
@@ -1281,7 +1274,8 @@
     <MESSAGE value="4.1.0 migrazione a PROJ9 OK" />
     <MESSAGE value="4.1.0 migrazione a PROJ9 OK to be tested" />
     <MESSAGE value="4.1.0 github release" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 github release" />
+    <MESSAGE value="4.1.0 update apk da github" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 update apk da github" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
