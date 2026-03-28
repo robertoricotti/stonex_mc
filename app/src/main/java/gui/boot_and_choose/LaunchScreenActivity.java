@@ -3,6 +3,7 @@ package gui.boot_and_choose;
 import static gui.MyApp.activationCode;
 import static gui.MyApp.deviceBuild;
 import static gui.MyApp.folderPath;
+import static gui.MyApp.gnssFirmware;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.visibleActivity;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
@@ -260,7 +261,7 @@ public class LaunchScreenActivity extends BaseClass {
             } else {
                 new CustomToast(this, "Unable to rename 'Stx_MC' folder please check").show_alert();
             }
-        }
+        }//Environment.getExternalStorageDirectory().toString() + folderPath+"/GNSS FirmWare";
         String path = Environment.getExternalStorageDirectory().toString() + folderPath;
         File directory = new File(path);
         if (!directory.exists()) {
@@ -312,6 +313,19 @@ public class LaunchScreenActivity extends BaseClass {
             }
         } catch (Exception e) {
             //do nothing
+        }
+        try {
+            String fpath = Environment.getExternalStorageDirectory().toString()
+                    + folderPath + "/GNSS FirmWare";
+
+            String result = MyApp.copyGeoidFromAssetsIfFolderExists(
+                    this,
+                    gnssFirmware,     // nome file in assets
+                    fpath,
+                    gnssFirmware     // nome file output
+            );
+        }catch (Exception ignored){
+
         }
 
     }

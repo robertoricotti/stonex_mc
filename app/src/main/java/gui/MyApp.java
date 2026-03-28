@@ -137,6 +137,7 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
+    public static final String gnssFirmware="STX-SMC-App2.12.260320-BootV114-KernelV108.bin";
     public static boolean UPDATE_CHECKED=false;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
@@ -252,6 +253,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         newGeoidAll[originalLength+1] = usa;
         geoidAll = newGeoidAll;
         try {
+
             gridFile_GR_dE = copyGeoidFromAssets(this, "dE_2km_V1-0.grd", "dE_2km_V1-0.grd");
             gridFile_GR_dN = copyGeoidFromAssets(this, "dN_2km_V1-0.grd", "dN_2km_V1-0.grd");
             if (heposTransformer == null) {
@@ -899,6 +901,40 @@ git push
             while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
             }
+            return outFile.getAbsolutePath();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String copyGeoidFromAssetsIfFolderExists(
+            Context context,
+            String assetFileName,
+            String destinationFolderPath,
+            String outFileName
+    ) {
+
+        File destFolder = new File(destinationFolderPath);
+
+        // Se la cartella NON esiste → non fare nulla
+        if (!destFolder.exists() || !destFolder.isDirectory()) {
+            return null;
+        }
+
+        File outFile = new File(destFolder, outFileName);
+
+        try (InputStream inputStream = context.getAssets().open(assetFileName);
+             OutputStream outputStream = new FileOutputStream(outFile)) {
+
+            byte[] buffer = new byte[4096];
+            int length;
+
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
             return outFile.getAbsolutePath();
 
         } catch (IOException e) {
