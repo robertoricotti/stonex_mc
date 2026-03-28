@@ -211,12 +211,12 @@ public class Activity_Home_Page extends BaseClass {
     private void onClick() {
         checkUpdates.setOnClickListener(view -> {
             if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){
-                Toast.makeText(this,"Device Not Compatible",Toast.LENGTH_SHORT).show();
+                new CustomToast(this,"Device Not Supported").show_error();
             }else {
                 if (DataSaved.ConnectionStatus == 1 || DataSaved.ConnectionStatus == 2) {
                     updateCheck();
                 } else {
-                    Toast.makeText(this, "No Connection", Toast.LENGTH_SHORT).show();
+                    new CustomToast(this,"No Internet Connection").show_error();
                 }
             }
         });
@@ -479,17 +479,17 @@ public class Activity_Home_Page extends BaseClass {
     }
     public void updateCheck() {
         Log.d("CheckUpdate", "START.." + UPDATE_CHECKED);
-        Toast.makeText(this, "Check update START", Toast.LENGTH_SHORT).show();
+        new CustomToast(this,"Check update START").show_alert();
 
         if (UPDATE_CHECKED) {
             Log.d("CheckUpdate", "SKIPPED, already running");
-            Toast.makeText(this, "Check already running", Toast.LENGTH_SHORT).show();
+            new CustomToast(this,"Check already running").show_alert();
             return;
         }
 
         UPDATE_CHECKED = true;
         Log.d("CheckUpdate", "STARTED.." + UPDATE_CHECKED);
-        Toast.makeText(this, "Check update STARTED", Toast.LENGTH_SHORT).show();
+        new CustomToast(this,"Check update STARTED").show_alert();
 
         UpdateChecker.checkForUpdate(this, new UpdateChecker.Callback() {
             @Override
@@ -497,17 +497,17 @@ public class Activity_Home_Page extends BaseClass {
                 UPDATE_CHECKED = false;
 
                 Log.d("CheckUpdate", "onResult called");
-                Toast.makeText(Activity_Home_Page.this, "Response received", Toast.LENGTH_SHORT).show();
+                new CustomToast(Activity_Home_Page.this, "Response received").show_alert();
 
                 if (isFinishing() || isDestroyed()) {
                     Log.d("CheckUpdate", "Activity closing, abort");
-                    Toast.makeText(Activity_Home_Page.this, "Activity closing", Toast.LENGTH_SHORT).show();
+                    new CustomToast(Activity_Home_Page.this, "Activity closing").show_alert();
                     return;
                 }
 
                 if (info == null) {
                     Log.d("CheckUpdate", "info is null");
-                    Toast.makeText(Activity_Home_Page.this, "No update info", Toast.LENGTH_SHORT).show();
+                    new CustomToast(Activity_Home_Page.this, "No update info").show_alert();
                     return;
                 }
 
@@ -518,46 +518,30 @@ public class Activity_Home_Page extends BaseClass {
                 Log.d("CheckUpdate", "releaseNotes=" + info.releaseNotes);
 
                 if (!info.updateAvailable) {
-                    Toast.makeText(
-                            Activity_Home_Page.this,
-                            "No update available (" + info.remoteVersionName + ")",
-                            Toast.LENGTH_LONG
-                    ).show();
+                    new CustomToast(Activity_Home_Page.this, "No update available (" + info.remoteVersionName + ")").show_alert();
                     return;
                 }
 
                 if (info.apkUrl == null || info.apkUrl.isEmpty()) {
                     Log.d("CheckUpdate", "apkUrl is null or empty");
-                    Toast.makeText(Activity_Home_Page.this, "APK URL missing", Toast.LENGTH_LONG).show();
+                    new CustomToast(Activity_Home_Page.this, "APK URL missing").show_alert();
+
                     return;
                 }
 
                 String notes = info.releaseNotes == null ? "" : info.releaseNotes;
-
-                Toast.makeText(
-                        Activity_Home_Page.this,
-                        "Update found: " + info.remoteVersionName,
-                        Toast.LENGTH_LONG
-                ).show();
+                new CustomToast(Activity_Home_Page.this, "Update found: " + info.remoteVersionName).show_alert();
 
                 new AlertDialog.Builder(Activity_Home_Page.this)
                         .setTitle("Update available")
                         .setMessage("Version " + info.remoteVersionName + "\n\n" + notes)
                         .setPositiveButton("Download", (dialog, which) -> {
                             Log.d("CheckUpdate", "Download button pressed");
-                            Toast.makeText(
-                                    Activity_Home_Page.this,
-                                    "Download starting...",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            new CustomToast(Activity_Home_Page.this, "Download starting...").show_alert();
 
                             if (!ApkInstaller.canInstallUnknownApps(Activity_Home_Page.this)) {
                                 Log.d("CheckUpdate", "Install unknown apps permission missing");
-                                Toast.makeText(
-                                        Activity_Home_Page.this,
-                                        "Permission needed to install updates",
-                                        Toast.LENGTH_LONG
-                                ).show();
+                                new CustomToast(Activity_Home_Page.this, "Permission needed to install updates").show_alert();
                                 ApkInstaller.openUnknownAppsSettings(Activity_Home_Page.this);
                                 return;
                             }
@@ -569,19 +553,11 @@ public class Activity_Home_Page extends BaseClass {
                             );
 
                             Log.d("CheckUpdate", "Download started, id=" + downloadId);
-                            Toast.makeText(
-                                    Activity_Home_Page.this,
-                                    "Download started, id=" + downloadId,
-                                    Toast.LENGTH_LONG
-                            ).show();
+                            new CustomToast(Activity_Home_Page.this, "Download started, id=" + downloadId).show_alert();
                         })
                         .setNegativeButton("Later", (dialog, which) -> {
                             Log.d("CheckUpdate", "Download postponed");
-                            Toast.makeText(
-                                    Activity_Home_Page.this,
-                                    "Update postponed",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            new CustomToast(Activity_Home_Page.this, "Update postponed").show_alert();
                         })
                         .setCancelable(true)
                         .show();
@@ -592,11 +568,7 @@ public class Activity_Home_Page extends BaseClass {
                 UPDATE_CHECKED = false;
 
                 Log.e("CheckUpdate", "Update check failed", e);
-                Toast.makeText(
-                        Activity_Home_Page.this,
-                        "Update error: " + e.getMessage(),
-                        Toast.LENGTH_LONG
-                ).show();
+                new CustomToast(Activity_Home_Page.this, "Update error: " + e.getMessage()).show_error();
             }
         });
 

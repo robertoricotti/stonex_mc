@@ -1,0 +1,11 @@
+# ninja log v5
+1	490	7962315529257577	build.ninja	e9c8acae164bc774
+5	664	7962202266965334	CMakeFiles/nativeczechproj.dir/native_czech_proj.cpp.o	91a74e53bb784943
+0	9	0	clean	3f910abda4e23497
+664	1419	7962202274101291	D:/Development/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/5z293x17/obj/arm64-v8a/libnativeczechproj.so	86d2e1e57a23c5f7
+20	12067	7961280050735145	CMakeFiles/nativeczechproj.dir/native_czech_grid.cpp.o	6b3d65e4c482f377
+0	10	0	clean	3f910abda4e23497
+0	10	0	clean	3f910abda4e23497
+1	11	0	clean	3f910abda4e23497
+0	689	7962316105893177	CMakeFiles/nativeproj.dir/native_proj.cpp.o	462638fc740ea07d
+690	995	7962316108513730	D:/Development/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/5z293x17/obj/arm64-v8a/libnativeproj.so	1244da22ea93a7db
