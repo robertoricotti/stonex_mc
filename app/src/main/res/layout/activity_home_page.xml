@@ -111,13 +111,16 @@
 
 
         <ImageView
+            android:id="@+id/checkUpdates"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="4"
-            android:padding="15dp"
-            android:scaleType="centerInside" />
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/bottone_update"
+            app:tint="@color/white"/>
         <ImageView
             android:id="@+id/testSP"
             android:layout_width="wrap_content"

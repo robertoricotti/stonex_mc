@@ -1,6 +1,7 @@
 package gui.boot_and_choose;
 
 import static gui.MyApp.DEVICE_SN;
+import static gui.MyApp.UPDATE_CHECKED;
 import static gui.MyApp.deu;
 import static gui.MyApp.folderPath;
 import static gui.MyApp.geoidAll;
@@ -31,6 +32,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -39,6 +41,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.stx_dig.R;
 
@@ -65,7 +70,7 @@ import utils.MyDeviceManager;
 
 public class Activity_Home_Page extends BaseClass {
     public static boolean HasDownloaded;
-    ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo,testSP;
+    ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo,testSP,checkUpdates;
     CloseAppDialog closeAppDialog;
     ProgressBar progressBar;
     TextView stringsStat, titolo,txt2d;
@@ -112,6 +117,7 @@ public class Activity_Home_Page extends BaseClass {
 
 
 
+
     }
 
     private void enableAll() {
@@ -133,6 +139,7 @@ public class Activity_Home_Page extends BaseClass {
     }
 
     private void findView() {
+        checkUpdates=findViewById(R.id.checkUpdates);
         txt2d=findViewById(R.id.textView3);
         closeAppDialog = new CloseAppDialog(this);
         dialogPassword = new DialogPassword(this);
@@ -202,6 +209,17 @@ public class Activity_Home_Page extends BaseClass {
     }
 
     private void onClick() {
+        checkUpdates.setOnClickListener(view -> {
+            if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){
+                Toast.makeText(this,"Device Not Compatible",Toast.LENGTH_SHORT).show();
+            }else {
+                if (DataSaved.ConnectionStatus == 1 || DataSaved.ConnectionStatus == 2) {
+                    updateCheck();
+                } else {
+                    Toast.makeText(this, "No Connection", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         testSP.setOnClickListener(view -> {
             enableAll(false);
             startActivity(new Intent(this, SpTestActivity.class));
@@ -458,6 +476,131 @@ public class Activity_Home_Page extends BaseClass {
         super.onResume();
 
 
+    }
+    public void updateCheck() {
+        Log.d("CheckUpdate", "START.." + UPDATE_CHECKED);
+        Toast.makeText(this, "Check update START", Toast.LENGTH_SHORT).show();
+
+        if (UPDATE_CHECKED) {
+            Log.d("CheckUpdate", "SKIPPED, already running");
+            Toast.makeText(this, "Check already running", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        UPDATE_CHECKED = true;
+        Log.d("CheckUpdate", "STARTED.." + UPDATE_CHECKED);
+        Toast.makeText(this, "Check update STARTED", Toast.LENGTH_SHORT).show();
+
+        UpdateChecker.checkForUpdate(this, new UpdateChecker.Callback() {
+            @Override
+            public void onResult(UpdateChecker.UpdateInfo info) {
+                UPDATE_CHECKED = false;
+
+                Log.d("CheckUpdate", "onResult called");
+                Toast.makeText(Activity_Home_Page.this, "Response received", Toast.LENGTH_SHORT).show();
+
+                if (isFinishing() || isDestroyed()) {
+                    Log.d("CheckUpdate", "Activity closing, abort");
+                    Toast.makeText(Activity_Home_Page.this, "Activity closing", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (info == null) {
+                    Log.d("CheckUpdate", "info is null");
+                    Toast.makeText(Activity_Home_Page.this, "No update info", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Log.d("CheckUpdate", "updateAvailable=" + info.updateAvailable);
+                Log.d("CheckUpdate", "remoteVersionName=" + info.remoteVersionName);
+                Log.d("CheckUpdate", "remoteVersionCode=" + info.remoteVersionCode);
+                Log.d("CheckUpdate", "apkUrl=" + info.apkUrl);
+                Log.d("CheckUpdate", "releaseNotes=" + info.releaseNotes);
+
+                if (!info.updateAvailable) {
+                    Toast.makeText(
+                            Activity_Home_Page.this,
+                            "No update available (" + info.remoteVersionName + ")",
+                            Toast.LENGTH_LONG
+                    ).show();
+                    return;
+                }
+
+                if (info.apkUrl == null || info.apkUrl.isEmpty()) {
+                    Log.d("CheckUpdate", "apkUrl is null or empty");
+                    Toast.makeText(Activity_Home_Page.this, "APK URL missing", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                String notes = info.releaseNotes == null ? "" : info.releaseNotes;
+
+                Toast.makeText(
+                        Activity_Home_Page.this,
+                        "Update found: " + info.remoteVersionName,
+                        Toast.LENGTH_LONG
+                ).show();
+
+                new AlertDialog.Builder(Activity_Home_Page.this)
+                        .setTitle("Update available")
+                        .setMessage("Version " + info.remoteVersionName + "\n\n" + notes)
+                        .setPositiveButton("Download", (dialog, which) -> {
+                            Log.d("CheckUpdate", "Download button pressed");
+                            Toast.makeText(
+                                    Activity_Home_Page.this,
+                                    "Download starting...",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            if (!ApkInstaller.canInstallUnknownApps(Activity_Home_Page.this)) {
+                                Log.d("CheckUpdate", "Install unknown apps permission missing");
+                                Toast.makeText(
+                                        Activity_Home_Page.this,
+                                        "Permission needed to install updates",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                                ApkInstaller.openUnknownAppsSettings(Activity_Home_Page.this);
+                                return;
+                            }
+
+                            long downloadId = ApkDownloader.downloadApk(
+                                    Activity_Home_Page.this,
+                                    info.apkUrl,
+                                    "stonex_mc-update.apk"
+                            );
+
+                            Log.d("CheckUpdate", "Download started, id=" + downloadId);
+                            Toast.makeText(
+                                    Activity_Home_Page.this,
+                                    "Download started, id=" + downloadId,
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        })
+                        .setNegativeButton("Later", (dialog, which) -> {
+                            Log.d("CheckUpdate", "Download postponed");
+                            Toast.makeText(
+                                    Activity_Home_Page.this,
+                                    "Update postponed",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        })
+                        .setCancelable(true)
+                        .show();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                UPDATE_CHECKED = false;
+
+                Log.e("CheckUpdate", "Update check failed", e);
+                Toast.makeText(
+                        Activity_Home_Page.this,
+                        "Update error: " + e.getMessage(),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
+
+        Log.d("CheckUpdate", "REQUEST SENT.." + UPDATE_CHECKED);
     }
 
 

@@ -137,13 +137,14 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
+    public static boolean UPDATE_CHECKED=false;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
     NetworkConfigSettings.ConnectionType type;
     /// /////////
     public static volatile boolean TEST_MODE = false;
     public static int MAX_NUMERO_FACCE = 5000;
-    public static final int numGeoidiInterni = 2;//TODO DECIDERE QUALI GEOIDI METTERE DI BUILTIN
+    public static final int numGeoidiInterni = 2;
     //audio
     public static boolean isAlto, isBasso, isCentro;
     private MediaPlayer mediaPlayer;

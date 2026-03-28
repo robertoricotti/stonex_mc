@@ -36,7 +36,9 @@ import com.example.stx_dig.R;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import drill_pile.gui.Drill_Activity;
 import gui.BaseClass;
@@ -198,32 +200,71 @@ public class Dialog_PRJ_Folder extends BaseClass {
 
             if (geoidAll == null || geoidAll.length == 0) {
                 new CustomToast(activity, "No Geoid Found").show_error();
-                MyData.push("geoidPath",null);
-                MyApp.GEOIDE_PATH=null;
+                MyData.push("geoidPath", null);
+                MyApp.GEOIDE_PATH = null;
                 return;
             }
 
-            // Crea un nuovo array con spazio per "DISABLED" + tutti gli elementi di geoidAll
-            String[] menuItems = new String[geoidAll.length + 1];
-            menuItems[0] = activity.getResources().getString(R.string.disabled);
-            System.arraycopy(geoidAll, 0, menuItems, 1, geoidAll.length);
+            // Lista nomi visibili
+            List<String> menuItemsL = new ArrayList<>();
 
-            List<String> menuItemsL = Arrays.asList(menuItems);
+            // Mappa nome -> path completo
+            Map<String, String> geoidMap = new HashMap<>();
 
-            customMenu.show(menuItemsL, new CustomMenu.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(String selectedItem) {
-                    new CustomToast(activity, "Geoid: " + selectedItem).show_added();
-                    if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
-                        MyData.push("geoidPath","null");
-                        MyApp.GEOIDE_PATH=null;
-                    } else {
-                        MyData.push("geoidPath",selectedItem);
-                        MyApp.GEOIDE_PATH=selectedItem;
-                    }
+            String disabled = activity.getResources().getString(R.string.disabled);
+            menuItemsL.add(disabled);
+
+            for (String fullPath : geoidAll) {
+                String fileName = new File(fullPath).getName(); // 👈 solo nome file
+                menuItemsL.add(fileName);
+                geoidMap.put(fileName, fullPath); // 👈 salva associazione
+            }
+
+            customMenu.show(menuItemsL, selectedItem -> {
+                new CustomToast(activity, "Geoid: " + selectedItem).show_added();
+
+                if (selectedItem.equals(disabled)) {
+                    MyData.push("geoidPath", "null");
+                    MyApp.GEOIDE_PATH = null;
+                } else {
+                    String fullPath = geoidMap.get(selectedItem); // 👈 recupera path reale
+                    MyData.push("geoidPath", fullPath);
+                    MyApp.GEOIDE_PATH = fullPath;
                 }
             });
         });
+
+//        setGeoide.setOnClickListener(view -> {
+//            CustomMenuLista customMenu = new CustomMenuLista(activity, "");
+//
+//            if (geoidAll == null || geoidAll.length == 0) {
+//                new CustomToast(activity, "No Geoid Found").show_error();
+//                MyData.push("geoidPath",null);
+//                MyApp.GEOIDE_PATH=null;
+//                return;
+//            }
+//
+//            // Crea un nuovo array con spazio per "DISABLED" + tutti gli elementi di geoidAll
+//            String[] menuItems = new String[geoidAll.length + 1];
+//            menuItems[0] = activity.getResources().getString(R.string.disabled);
+//            System.arraycopy(geoidAll, 0, menuItems, 1, geoidAll.length);
+//
+//            List<String> menuItemsL = Arrays.asList(menuItems);
+//
+//            customMenu.show(menuItemsL, new CustomMenu.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(String selectedItem) {
+//                    new CustomToast(activity, "Geoid: " + selectedItem).show_added();
+//                    if (selectedItem.equals(activity.getResources().getString(R.string.disabled))) {
+//                        MyData.push("geoidPath","null");
+//                        MyApp.GEOIDE_PATH=null;
+//                    } else {
+//                        MyData.push("geoidPath",selectedItem);
+//                        MyApp.GEOIDE_PATH=selectedItem;
+//                    }
+//                }
+//            });
+//        });
         setSP.setOnClickListener(view -> {
             if (!diaalogSetSp.dialog.isShowing()) {
                 diaalogSetSp.show(mPath, spAdapter);

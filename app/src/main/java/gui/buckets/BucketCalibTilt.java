@@ -405,7 +405,7 @@ public class BucketCalibTilt extends BaseClass {
                 Deg_Boom_Roll,
                 DataSaved.Offset_Engcon_Forward, hdt_BOOM
         );
-Log.e("DioMaiali", Arrays.toString(coordRotoTop));
+//Log.e("TestRoto", Arrays.toString(coordRotoTop));
         //3 centro rotazione ROTOTILT, ultimo punto della catena cinematica vincolata al BOOM
 
         double[] coordRotoCenter = Exca_Quaternion.endPoint(
@@ -416,9 +416,9 @@ Log.e("DioMaiali", Arrays.toString(coordRotoTop));
                 hdt_BOOM + yawSensor
 
         );
-        Log.e("DioMaiali", Arrays.toString(coordRotoCenter));
-        Log.e("DioMaiali", Arrays.toString(ExcavatorLib.bucketCoord));
-        Log.e("DioMaiali", DistToPoint.dist3D(coordRotoCenter,ExcavatorLib.bucketCoord)+"");
+//        Log.e("TestRoto", Arrays.toString(coordRotoCenter));
+//        Log.e("TestRoto", Arrays.toString(ExcavatorLib.bucketCoord));
+//        Log.e("TestRoto", DistToPoint.dist3D(coordRotoCenter,ExcavatorLib.bucketCoord)+"");
         return DistToPoint.dist3D(coordRotoCenter,ExcavatorLib.bucketCoord);
     }
 

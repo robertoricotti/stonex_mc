@@ -25,9 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
-import com.cpdevice.cpcomm.common.CPCommConfig;
 import com.example.stx_dig.BuildConfig;
 import com.example.stx_dig.R;
 
@@ -38,7 +38,6 @@ import java.io.File;
 import java.io.FileReader;
 
 import cloud.WebSocketPlugin;
-import drill_pile.gui.Drill_MainPage;
 import gui.BaseClass;
 import gui.MyApp;
 import gui.dialogs_and_toast.CustomToast;
@@ -50,10 +49,7 @@ import packexcalib.exca.ExcavatorLib;
 import services.UpdateValuesService;
 import utils.MyData;
 import utils.MyDeviceManager;
-import utils.MyMCUtils;
 import utils.NetworkUtils;
-import utils.TestAxio;
-import utils.Utils;
 
 
 @SuppressLint("CustomSplashScreen")
@@ -96,7 +92,7 @@ public class LaunchScreenActivity extends BaseClass {
         Dialog_Trench.leftW_d = 0.5f;
         Dialog_Trench.rightW_d = 0.5f;
         LayerAdapter.selectA = true;
-        deviceBuild=MyDeviceManager.getBuildVersion(this);
+        deviceBuild = MyDeviceManager.getBuildVersion(this);
         if (licenseType == -1) {
             if (NetworkUtils.isInternetAvailable(this)) {
                 //cerca dal server
@@ -124,18 +120,18 @@ public class LaunchScreenActivity extends BaseClass {
 
             private void startMe() {
                 try {
-                    if(MyData.get_String("ckSchermo")!=null) {
+                    if (MyData.get_String("ckSchermo") != null) {
                         if (MyData.get_String("ckSchermo").equals("1")) {
                             MyDeviceManager.showBar(visibleActivity);
                         } else {
                             MyDeviceManager.hideBar(visibleActivity);
                         }
-                    }else {
+                    } else {
                         MyDeviceManager.hideBar(visibleActivity);
                     }
 
-                    if(!activationCode.equals(MyData.get_String("licenza"))){
-                        licenseType=-1;
+                    if (!activationCode.equals(MyData.get_String("licenza"))) {
+                        licenseType = -1;
                     }
                     if (licenseType > -1) {
                         createSystemFolders();
@@ -307,7 +303,7 @@ public class LaunchScreenActivity extends BaseClass {
                 Log.d("DeleteM", path + " Deleted: " + deleted);
             }
         } catch (Exception e) {
-            Log.e("DeleteM",Log.getStackTraceString(e));
+            Log.e("DeleteM", Log.getStackTraceString(e));
         }
         try {
             File f = new File(path + "/As-Built");
@@ -384,7 +380,7 @@ public class LaunchScreenActivity extends BaseClass {
                 MyColorClass.colorGroundX = (getResources().getColor(R.color.GROUNDred));
                 MyColorClass.colorGroundY = (getResources().getColor(R.color.cyan));
                 //MyColorClass.colorStick = (getResources().getColor(R.color.orange));
-               // MyColorClass.colorBucket = (getResources().getColor(R.color.orange));
+                // MyColorClass.colorBucket = (getResources().getColor(R.color.orange));
                 MyColorClass.colorPoint = (getResources().getColor(R.color.red));
                 MyColorClass.colorPoly = (getResources().getColor(R.color.teal_200));
 
@@ -511,6 +507,7 @@ public class LaunchScreenActivity extends BaseClass {
             e.printStackTrace();
         }
     }
+
     public static boolean deleteRecursive(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory()) {
             File[] children = fileOrDirectory.listFiles();
@@ -522,5 +519,6 @@ public class LaunchScreenActivity extends BaseClass {
         }
         return fileOrDirectory.delete();
     }
+
 
 }
