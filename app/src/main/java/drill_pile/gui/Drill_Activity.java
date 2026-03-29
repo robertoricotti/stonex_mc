@@ -21,8 +21,12 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -60,6 +64,8 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean isRepeating = false;
     public static String NOME_OPERATORE;
     static double[] StartForo, FineForo;
 
@@ -407,11 +413,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             }
             return true;
         });
-        zoom_P.setOnClickListener(view -> {
+        setupAutoRepeat(zoom_P,()->{
             DataSaved.scale_Factor3D *= kostant;
             DataSaved.scale_Factor3D = Math.max(0.1f, Math.min(DataSaved.scale_Factor3D, 6.5f));
         });
-        zoom_M.setOnClickListener(view -> {
+        setupAutoRepeat(zoom_M,()->{
             DataSaved.scale_Factor3D /= kostant;
             DataSaved.scale_Factor3D = Math.max(0.1f, Math.min(DataSaved.scale_Factor3D, 6.5f));
         });
@@ -2526,12 +2532,41 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
      * AGGIUNGERE STATO TO-DO ABORTED REFUSED DONE
      * REFUSED apre dialog per commento
      * ABORTED può essere continuato e posso snappare su quello
-     * FUNCTION TO DEFINE THE TEXT TO SHOW ID+DESCRIPTON+Z ETC
      * PDF EXPORT SU REPORT XLS
      * ICON STONEX IN FILE REPORT SIA PDF CHE XLS
      * Priorità bassa AUTO REFUSAL
      * password personalizzabile
      * opertor password per funzione di azzeramento
      */
+    private void setupAutoRepeat(ImageView button, Runnable action) {
+        button.setOnClickListener(v -> action.run());
+
+        button.setOnLongClickListener(v -> {
+            isRepeating = true;
+
+            // Primo ritardo di 500ms prima di iniziare la ripetizione
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isRepeating) {
+                        action.run();
+                        handler.postDelayed(this, 50); // ripeti ogni 50ms
+                    }
+                }
+            }, 500);
+
+            return true; // segnala che il long click è gestito
+        });
+
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    isRepeating = false; // stop
+                    break;
+            }
+            return false;
+        });
+    }
 
 }

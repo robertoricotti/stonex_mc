@@ -32,6 +32,9 @@ import services.ReadProjectService;
 
 
 public class Drill_TopView extends View {
+
+    private static final float UI_ROW_ALIGN_STROKE_PX = 1.8f;
+    private static final int ROW_ALIGN_COLOR = android.graphics.Color.argb(150, 255, 235, 0);
     // picking: dimensioni desiderate A SCHERMO
     // ===== AB UI =====
     private static final float UI_MIN_SCALE = 0.1f;
@@ -338,6 +341,11 @@ public class Drill_TopView extends View {
         }
         if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
             if (DataSaved.alignAId != null && DataSaved.alignBId != null) {
+                drawRowAlignmentLines(canvas, paint,
+                        toolX, toolY,
+                        toolEast, toolNord,
+                        scala, rotationAngle,
+                        uiRotDeg);
                 drawAlignmentAB(canvas, paint,
                         toolX, toolY,
                         toolEast, toolNord,
@@ -897,7 +905,7 @@ public class Drill_TopView extends View {
                         DataSaved.alignAId,
                         DataSaved.alignBId
                 );
-        Log.d("AB_DEBUG", "A=" + DataSaved.alignAId + " B=" + DataSaved.alignBId);
+        //Log.d("AB_DEBUG", "A=" + DataSaved.alignAId + " B=" + DataSaved.alignBId);
         if (ab == null || !ab.isValid()) return;
         if (ab.A.getHeadX() == null || ab.A.getHeadY() == null) return;
         if (ab.B.getHeadX() == null || ab.B.getHeadY() == null) return;
@@ -1249,6 +1257,125 @@ public class Drill_TopView extends View {
 
     private float machineTargetPx(float baseLocalPx, float minLocalPx) {
         return Math.max(minLocalPx, machineTargetPx(baseLocalPx));
+    }
+    private void drawRowAlignmentLines(Canvas canvas, Paint paint,
+                                       float bucketX, float bucketY,
+                                       double bucketEst, double bucketNord,
+                                       float scala, double rotationAngle,
+                                       float uiDeg) {
+
+        ReadProjectService.AlignmentPair ab =
+                ReadProjectService.findAlignmentPoints(
+                        DataSaved.drill_points,
+                        DataSaved.alignAId,
+                        DataSaved.alignBId
+                );
+
+        if (ab == null || !ab.isValid()) return;
+        if (ab.A.getHeadX() == null || ab.A.getHeadY() == null) return;
+        if (ab.B.getHeadX() == null || ab.B.getHeadY() == null) return;
+        if (DataSaved.filtered_drill_points == null || DataSaved.filtered_drill_points.isEmpty()) return;
+
+        // direzione dell'allineamento AB nel mondo
+        double vx = ab.B.getHeadX() - ab.A.getHeadX();
+        double vy = ab.B.getHeadY() - ab.A.getHeadY();
+        double len = Math.hypot(vx, vy);
+        if (len < 1e-6) return;
+
+        double ux = vx / len;
+        double uy = vy / len;
+
+        // raggruppo i punti per filare e per "offset" rispetto ad AB
+        // chiave = filare + allineamento parallelo
+        java.util.LinkedHashMap<String, java.util.ArrayList<Point3D_Drill>> groups = new java.util.LinkedHashMap<>();
+
+        for (Point3D_Drill p : DataSaved.filtered_drill_points) {
+            if (p == null) continue;
+            if (p.getHeadX() == null || p.getHeadY() == null) continue;
+            if (!isPointPickable(p)) continue;
+
+            String key = buildRowAlignmentKey(p, ab.A, ux, uy);
+            if (key == null) continue;
+
+            java.util.ArrayList<Point3D_Drill> list = groups.get(key);
+            if (list == null) {
+                list = new java.util.ArrayList<>();
+                groups.put(key, list);
+            }
+            list.add(p);
+        }
+
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setPathEffect(null);
+        paint.setColor(ROW_ALIGN_COLOR);
+
+        // più sottile della AB
+        float stroke = uiPx(UI_ROW_ALIGN_STROKE_PX, 1.0f);
+        paint.setStrokeWidth(stroke);
+
+        for (java.util.ArrayList<Point3D_Drill> rowPoints : groups.values()) {
+            if (rowPoints == null || rowPoints.size() < 2) continue;
+
+            Point3D_Drill first = null;
+            Point3D_Drill last = null;
+            double minProj = Double.POSITIVE_INFINITY;
+            double maxProj = Double.NEGATIVE_INFINITY;
+
+            for (Point3D_Drill p : rowPoints) {
+                double px = p.getHeadX() - ab.A.getHeadX();
+                double py = p.getHeadY() - ab.A.getHeadY();
+
+                // proiezione lungo AB
+                double proj = px * ux + py * uy;
+
+                if (proj < minProj) {
+                    minProj = proj;
+                    first = p;
+                }
+                if (proj > maxProj) {
+                    maxProj = proj;
+                    last = p;
+                }
+            }
+
+            if (first == null || last == null || first == last) continue;
+
+            float x1 = worldToScreenX(first.getHeadX(), first.getHeadY(), bucketX, bucketEst, bucketNord, scala, rotationAngle);
+            float y1 = worldToScreenY(first.getHeadX(), first.getHeadY(), bucketY, bucketEst, bucketNord, scala, rotationAngle);
+
+            float x2 = worldToScreenX(last.getHeadX(), last.getHeadY(), bucketX, bucketEst, bucketNord, scala, rotationAngle);
+            float y2 = worldToScreenY(last.getHeadX(), last.getHeadY(), bucketY, bucketEst, bucketNord, scala, rotationAngle);
+
+            canvas.drawLine(x1, y1, x2, y2, paint);
+        }
+    }
+
+    private String buildRowAlignmentKey(Point3D_Drill p,
+                                        Point3D_Drill a,
+                                        double ux, double uy) {
+
+        if (p == null || a == null) return null;
+        if (p.getHeadX() == null || p.getHeadY() == null) return null;
+        if (a.getHeadX() == null || a.getHeadY() == null) return null;
+
+        // normale ad AB
+        double nx = -uy;
+        double ny = ux;
+
+        double dx = p.getHeadX() - a.getHeadX();
+        double dy = p.getHeadY() - a.getHeadY();
+
+        // distanza dalla linea AB
+        double offset = dx * nx + dy * ny;
+
+        // quantizzazione → identifica "stessa linea parallela"
+        long bucket = Math.round(offset / 0.05);
+
+        // FILARE (vero)
+        String rowId = p.getRowId(); // già gestito null → ""
+
+        return rowId + "|" + bucket;
     }
 
 }

@@ -189,7 +189,7 @@ public class CanSender extends Service {
                         }
                         break;
                     case DRILL:
-                        //TODO a 25mS
+                        //TODO a 25mS Solar_Delta_X Solar_Delta_Y
                         break;
                 }
 
