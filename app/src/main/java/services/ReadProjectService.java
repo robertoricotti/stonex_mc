@@ -1265,6 +1265,7 @@ public class ReadProjectService extends Service {
                                     File f = new File(DataSaved.progettoSelected_POINT);
                                     DataSaved.drill_points = DrillCSVParser.parse(f, 0, DataSaved.xyz_yxz, conversionFactor);
 
+
                                     break;
                                 case "ird":
                                     if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {

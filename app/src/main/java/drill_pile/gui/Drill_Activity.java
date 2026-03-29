@@ -356,9 +356,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     private void onClick() {
         uomesure.setOnClickListener(view -> {
-            if (!dialogRaggioDrill.dialog.isShowing()) {
+          /*  if (!dialogRaggioDrill.dialog.isShowing()) {
                 dialogRaggioDrill.show();
-            }
+            }*/
         });
         mostratesto.setOnClickListener(view -> {
             DataSaved.ShowText += 1;

@@ -9,6 +9,13 @@ import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
 import static utils.MyTypes.JETGROUTING_MODE;
 import static utils.MyTypes.SOLARFARM_MODE;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -44,6 +51,8 @@ import utils.Utils;
  * 4) sleep senza Math.abs e ciclo più stabile
  */
 public class PointService extends Service {
+    private static Double lastRowsAB = null;
+    private static int lastRowsPointCount = -1;
     public static double Solar_Delta_X=0.0d,Solar_Delta_Y=0.0d;
     static double mRaggio;
     public static boolean AB_REVERSED=false;
@@ -91,6 +100,7 @@ public class PointService extends Service {
 
     public static double remainingZ = Double.NaN;        // per pali verticali
     public static double remainingAxis = Double.NaN;     // per pali inclinati
+    private static int countAggiornaAB;
 
 
     @Override
@@ -104,6 +114,8 @@ public class PointService extends Service {
         countTabella = 0;
         // un singolo thread basta (eviti concorrenza)
         executor = Executors.newSingleThreadExecutor();
+        countAggiornaAB=0;
+
     }
 
     @Override
@@ -137,8 +149,13 @@ public class PointService extends Service {
             final long startTime = System.currentTimeMillis();
 
             try {
+
                 // Aggiorna posizione “filtrata” (FIX: clone)
                 updateCurrentPosition(ExcavatorLib.toolEndCoord, DataSaved.Raggio_Drill);
+                countAggiornaAB++;
+                if(countAggiornaAB%10==0){
+                    rebuildSolarRowsIfNeeded();
+                }
 
                 // --- autosnap / selezione punto ---
                 switch (DataSaved.isAutoSnap) {
@@ -149,7 +166,7 @@ public class PointService extends Service {
                     case 1:
                         // auto-selezione solo se non drilling
                         if (!isDrilling) {
-                            if (DataSaved.filtered_drill_points != null && !DataSaved.filtered_drill_points.isEmpty()) {
+                            if (DataSaved.drill_points != null && !DataSaved.drill_points.isEmpty()) {
 
                                 boolean isBA = AB_REVERSED; // o come si chiama il tuo boolean
 
@@ -157,7 +174,7 @@ public class PointService extends Service {
 
                                     Selected_Point3D_Drill = findNearestDrillPointSolarAligned(
                                             toolEndCoord[0], toolEndCoord[1],
-                                            DataSaved.filtered_drill_points,
+                                            DataSaved.drill_points,
                                             DataSaved.ALLINEAMENTO_AB,
                                             isBA
                                     );
@@ -165,7 +182,7 @@ public class PointService extends Service {
                                 } else {
                                     Selected_Point3D_Drill = findNearestDrillPointPlain(
                                             toolEndCoord[0], toolEndCoord[1],
-                                            DataSaved.filtered_drill_points
+                                            DataSaved.drill_points
                                     );
                                 }
                             }
@@ -861,6 +878,200 @@ public class PointService extends Service {
 
             return new Delta(deltaY, deltaX, distance);
         }
+    }
+
+
+
+    public static class RowSegment {
+        public final double startX;
+        public final double startY;
+        public final double endX;
+        public final double endY;
+        public final int pointCount;
+        public final double offset;
+
+        public RowSegment(double startX, double startY,
+                          double endX, double endY,
+                          int pointCount, double offset) {
+            this.startX = startX;
+            this.startY = startY;
+            this.endX = endX;
+            this.endY = endY;
+            this.pointCount = pointCount;
+            this.offset = offset;
+        }
+    }
+
+    private static class PointProj {
+        final Point3D_Drill p;
+        final double along;
+        final double perpSigned;
+
+        PointProj(Point3D_Drill p, double along, double perpSigned) {
+            this.p = p;
+            this.along = along;
+            this.perpSigned = perpSigned;
+        }
+    }
+
+    public static final List<RowSegment> solarRowSegments = new ArrayList<>();
+    private static double normalizeDeg360(double deg) {
+        deg = deg % 360.0;
+        if (deg < 0) deg += 360.0;
+        return deg;
+    }
+
+    private static double angularDistanceDeg(double a, double b) {
+        double aa = normalizeDeg360(a);
+        double bb = normalizeDeg360(b);
+        double d = Math.abs(aa - bb);
+        return Math.min(d, 360.0 - d);
+    }
+
+    private static double computeHeadingDeg(double x1, double y1, double x2, double y2) {
+        double dx = x2 - x1; // Est
+        double dy = y2 - y1; // Nord
+        double h = Math.toDegrees(Math.atan2(dx, dy));
+        return normalizeDeg360(h);
+    }
+    public static void rebuildSolarRowSegments(List<Point3D_Drill> points, Double allineamentoABDeg) {
+        synchronized (solarRowSegments) {
+            solarRowSegments.clear();
+        }
+
+        if (points == null || points.isEmpty()) return;
+        if (allineamentoABDeg == null) return;
+
+        double bearing = normalizeAngle(allineamentoABDeg);
+        double brad = Math.toRadians(bearing);
+
+        // versore AB (X=Est, Y=Nord)
+        double ux = Math.sin(brad);
+        double uy = Math.cos(brad);
+
+        // normale ad AB
+        double nx = -uy;
+        double ny = ux;
+
+        Point3D_Drill origin = null;
+        for (Point3D_Drill p : points) {
+            if (p != null && p.getHeadX() != null && p.getHeadY() != null) {
+                origin = p;
+                break;
+            }
+        }
+        if (origin == null) return;
+
+        final double ox = origin.getHeadX();
+        final double oy = origin.getHeadY();
+
+        // TUNING
+        final double OFFSET_BUCKET = 1.0;      // stessa logica della tolleranza laterale autosnap
+        final int MIN_POINTS_PER_ROW = 2;      // se vuoi più severità, metti 3
+        final double HEADING_TOL_DEG = 1.0;
+
+        Map<Long, List<PointProj>> buckets = new LinkedHashMap<>();
+
+        for (Point3D_Drill p : points) {
+            if (p == null || p.getHeadX() == null || p.getHeadY() == null) continue;
+
+            Integer status = p.getStatus();
+            boolean isTodo = (status == null || status == 0);
+            if (!isTodo) continue;
+
+            double vx = p.getHeadX() - ox;
+            double vy = p.getHeadY() - oy;
+
+            double along = ux * vx + uy * vy;
+            double perpSigned = nx * vx + ny * vy;
+
+            long bucket = Math.round(perpSigned / OFFSET_BUCKET);
+
+            buckets.computeIfAbsent(bucket, k -> new ArrayList<>())
+                    .add(new PointProj(p, along, perpSigned));
+        }
+
+        List<RowSegment> out = new ArrayList<>();
+
+        for (List<PointProj> group : buckets.values()) {
+            if (group == null || group.size() < MIN_POINTS_PER_ROW) continue;
+
+            PointProj first = null;
+            PointProj last = null;
+            double minAlong = Double.POSITIVE_INFINITY;
+            double maxAlong = Double.NEGATIVE_INFINITY;
+
+            for (PointProj pp : group) {
+                if (pp.along < minAlong) {
+                    minAlong = pp.along;
+                    first = pp;
+                }
+                if (pp.along > maxAlong) {
+                    maxAlong = pp.along;
+                    last = pp;
+                }
+            }
+
+            if (first == null || last == null) continue;
+            if (first.p == null || last.p == null) continue;
+
+            double sx = first.p.getHeadX();
+            double sy = first.p.getHeadY();
+            double ex = last.p.getHeadX();
+            double ey = last.p.getHeadY();
+
+            double len = dist2D(sx, sy, ex, ey);
+            if (len < 0.5) continue;
+
+            double rowHeading = computeHeadingDeg(sx, sy, ex, ey);
+
+            boolean aligned =
+                    angularDistanceDeg(rowHeading, bearing) <= HEADING_TOL_DEG ||
+                            angularDistanceDeg(rowHeading, bearing + 180.0) <= HEADING_TOL_DEG;
+
+            if (!aligned) continue;
+
+            double avgOffset = 0.0;
+            for (PointProj pp : group) avgOffset += pp.perpSigned;
+            avgOffset /= group.size();
+
+            out.add(new RowSegment(
+                    sx, sy,
+                    ex, ey,
+                    group.size(),
+                    avgOffset
+            ));
+        }
+
+        synchronized (solarRowSegments) {
+            solarRowSegments.clear();
+            solarRowSegments.addAll(out);
+        }
+    }
+
+
+    public static List<RowSegment> getSolarRowSegments() {
+        synchronized (solarRowSegments) {
+            return new ArrayList<>(solarRowSegments);
+        }
+    }
+    public static void rebuildSolarRowsIfNeeded() {
+        if (DataSaved.Drilling_Mode != SOLARFARM_MODE) return;
+        if (DataSaved.drill_points == null || DataSaved.drill_points.isEmpty()) return;
+
+
+        int pointCount = DataSaved.drill_points.size();
+        double ab = normalizeAngle(DataSaved.ALLINEAMENTO_AB);
+
+        boolean abChanged = (lastRowsAB == null || Math.abs(normalizeAngle(lastRowsAB) - ab) > 1e-6);
+        boolean pointsChanged = (lastRowsPointCount != pointCount);
+
+        if (!abChanged && !pointsChanged) return;
+
+        rebuildSolarRowSegments(DataSaved.drill_points, ab);
+
+        lastRowsAB = ab;
+        lastRowsPointCount = pointCount;
     }
 }
 

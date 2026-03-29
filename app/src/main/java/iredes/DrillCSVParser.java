@@ -406,5 +406,104 @@ public class DrillCSVParser {
         if (horiz == 0 && vert == 0) return 0.0;
         return Math.toDegrees(Math.atan2(horiz, vert));
     }
+    // -------------------------------------------------
+// COSTRUZIONE FILARI DA POINT-ONLY CSV
+// -------------------------------------------------
+    public static void assignSyntheticRowsFromAlignment(List<Point3D_Drill> pts,
+                                                        Point3D_Drill a,
+                                                        Point3D_Drill b) {
+
+        if (pts == null || pts.isEmpty()) return;
+        if (a == null || b == null) return;
+        if (a.getHeadX() == null || a.getHeadY() == null) return;
+        if (b.getHeadX() == null || b.getHeadY() == null) return;
+
+        double vx = b.getHeadX() - a.getHeadX();
+        double vy = b.getHeadY() - a.getHeadY();
+        double len = Math.hypot(vx, vy);
+        if (len < 1e-6) return;
+
+        double ux = vx / len;
+        double uy = vy / len;
+
+        double nx = -uy;
+        double ny = ux;
+
+        double offsetStep = 0.10;   // distanza tra filari (regolabile)
+        double maxGap = 8.0;        // distanza max tra punti consecutivi
+
+        // 1) Raggruppa per parallela ad AB
+        Map<Long, List<Point3D_Drill>> groups = new LinkedHashMap<>();
+
+        for (Point3D_Drill p : pts) {
+            if (p == null) continue;
+            if (p.getHeadX() == null || p.getHeadY() == null) continue;
+
+            double dx = p.getHeadX() - a.getHeadX();
+            double dy = p.getHeadY() - a.getHeadY();
+
+            double offset = dx * nx + dy * ny;
+            long bucket = Math.round(offset / offsetStep);
+
+            groups.computeIfAbsent(bucket, k -> new ArrayList<>()).add(p);
+        }
+
+        int rowCounter = 0;
+
+        // 2) Dentro ogni gruppo → spezza per gap e assegna rowId
+        for (List<Point3D_Drill> group : groups.values()) {
+
+            if (group.size() < 2) continue;
+
+            // ordina lungo AB
+            group.sort((p1, p2) -> {
+                double pr1 = projection(p1, a, ux, uy);
+                double pr2 = projection(p2, a, ux, uy);
+                return Double.compare(pr1, pr2);
+            });
+
+            List<Point3D_Drill> segment = new ArrayList<>();
+            segment.add(group.get(0));
+
+            for (int i = 1; i < group.size(); i++) {
+                Point3D_Drill prev = group.get(i - 1);
+                Point3D_Drill curr = group.get(i);
+
+                double d = distance(prev, curr);
+
+                if (d <= maxGap) {
+                    segment.add(curr);
+                } else {
+                    assignRow(segment, rowCounter++);
+                    segment.clear();
+                    segment.add(curr);
+                }
+            }
+
+            assignRow(segment, rowCounter++);
+        }
+    }
+
+    private static void assignRow(List<Point3D_Drill> segment, int rowId) {
+        if (segment == null || segment.size() < 2) return;
+
+        String id = "ROW_" + rowId;
+
+        for (Point3D_Drill p : segment) {
+            p.setRowId(id);
+        }
+    }
+
+    private static double projection(Point3D_Drill p, Point3D_Drill a, double ux, double uy) {
+        double dx = p.getHeadX() - a.getHeadX();
+        double dy = p.getHeadY() - a.getHeadY();
+        return dx * ux + dy * uy;
+    }
+
+    private static double distance(Point3D_Drill p1, Point3D_Drill p2) {
+        double dx = p2.getHeadX() - p1.getHeadX();
+        double dy = p2.getHeadY() - p1.getHeadY();
+        return Math.hypot(dx, dy);
+    }
 
 }

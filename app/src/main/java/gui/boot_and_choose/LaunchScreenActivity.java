@@ -317,7 +317,7 @@ public class LaunchScreenActivity extends BaseClass {
         try {
             String fpath = Environment.getExternalStorageDirectory().toString()
                     + folderPath + "/GNSS FirmWare";
-            File ffile=new File(fpath);
+            File ffile=new File(fpath+"/"+gnssFirmware);
             if(!ffile.exists()) {
                 String result = MyApp.copyGeoidFromAssetsIfFolderExists(
                         this,

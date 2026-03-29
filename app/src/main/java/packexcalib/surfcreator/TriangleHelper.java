@@ -111,7 +111,7 @@ public class TriangleHelper {
     }
 
     public void updatePointRaius(double[] currentPosition, double radius){
-        List<Point3D_Drill> filteredPunti = new ArrayList<>();
+       /* List<Point3D_Drill> filteredPunti = new ArrayList<>();
         for (Point3D_Drill point : DataSaved.drill_points) {
             if (distance2d(currentPosition, point) <= radius) {
 
@@ -130,7 +130,7 @@ public class TriangleHelper {
             filteredPunti = filteredPunti.subList(0, 30000);
         }
 
-        DataSaved.filtered_drill_points = filteredPunti;
+        DataSaved.filtered_drill_points = filteredPunti;*/
     }
 
     // Calcola la distanza minima tra la currentPosition e una Face3D
