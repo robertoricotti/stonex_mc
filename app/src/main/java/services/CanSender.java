@@ -350,7 +350,7 @@ public class CanSender extends Service {
         @Override
         public void run() {
 
-            Log.d("CanSender",DataSaved.reqSpeed+" "+connections);
+           // Log.d("CanSender",DataSaved.reqSpeed+" "+connections);
             try {
                 if (isTech) {
                     isTechCount++;

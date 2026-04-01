@@ -706,7 +706,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         switch (mode) {
             case 0:
                 //Excavatore
-                ckAtBoomExca.setVisibility(View.VISIBLE);
+                ckAtBoomExca.setVisibility(View.GONE);
                 tvMast.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);

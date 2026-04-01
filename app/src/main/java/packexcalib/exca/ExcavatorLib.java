@@ -113,7 +113,7 @@ public class ExcavatorLib {
                 if(DataSaved.Exca_Antenna_Mounting==0){
                     Execute_Normal();
                 }else {
-                    Execute_Body();
+                    Execute_Normal();
                 }
             } else {
                 startXYZ = new double[]{0, 0, 0};
