@@ -247,6 +247,7 @@ public class UpdateValuesService extends Service {
                     String Rotary_Diam = MyData.get_String("M" + i + "Rotary_Diam");
                     String Drill_Antenna_Mounting = MyData.get_String("M" + i + "Drill_Antenna_Mounting");
                     String Drill_Mast_Position = MyData.get_String("M" + i + "Drill_Mast_Position");
+                    String Exca_Antenna_Mounting = MyData.get_String("M" + i + "Exca_Antenna_Mounting");
 
                     if (nameM == null) {
                         MyData.push("M" + i + "_Name", ("DEFAULT " + i).toUpperCase());
@@ -673,6 +674,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (Drill_Mast_Position == null) {
                         MyData.push("M" + i + "Drill_Mast_Position", "FORWARD");
+                    }
+                    if (Exca_Antenna_Mounting == null) {
+                        MyData.push("M" + i + "Exca_Antenna_Mounting", "0");
                     }
 
 
@@ -1742,7 +1746,12 @@ public class UpdateValuesService extends Service {
                 try {
                     DataSaved.Drill_Antenna_Mounting = MyData.get_String("M" + indexMach + "Drill_Antenna_Mounting");
                 } catch (Exception e) {
-                    Log.e("Error", "Errore nell'inizializzazione di Rotary_Diam: " + e.getMessage());
+                    Log.e("Error", "Errore nell'inizializzazione di Drill_Antenna_Mounting: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Exca_Antenna_Mounting = MyData.get_Int("M" + indexMach + "Exca_Antenna_Mounting");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Exca_Antenna_Mounting: " + e.getMessage());
                 }
 
                 try {

@@ -61,7 +61,7 @@ public class Nuova_Machine_Settings extends BaseClass {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
     CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2, ckJ, ckRock, ckJet, ckSolar;
-    CheckBox ckBody, ckBoom, ckAtLeft, ckAtFwd, ckAtRight;
+    CheckBox ckBody, ckBoom, ckAtLeft, ckAtFwd, ckAtRight,ckAtBoomExca;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
@@ -107,6 +107,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         linear_3 = findViewById(R.id.linear_3);
         machineSel = MyData.get_Int("MachineSelected");
         mode = MyData.get_Int("M" + machineSel + "_isWL");
+        ckAtBoomExca=findViewById(R.id.ckAtBoomExca);
         back = findViewById(R.id.btn_1);
         exca = findViewById(R.id.sel_exca);
         wheel = findViewById(R.id.sel_wheel);
@@ -164,11 +165,25 @@ public class Nuova_Machine_Settings extends BaseClass {
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
         if(licenseType==MC_3D_EASY||licenseType==MC_1D||licenseType==MC_2D||licenseType==MC_3D_EASY_AUTO){
             drill.setVisibility(View.INVISIBLE);
+            ck22.setVisibility(View.INVISIBLE);
         }
 
     }
 
     private void onClick() {
+        ckAtBoomExca.setOnClickListener(view -> {
+            ckAtBoomExca.setChecked(!ckAtBoomExca.isChecked());
+            if (ckAtBoomExca.isChecked()) {
+                ckAtBoomExca.setChecked(false);
+                MyData.push("M" + machineSel + "Exca_Antenna_Mounting", "0");
+                DataSaved.Exca_Antenna_Mounting = 0;
+            } else if (!ckAtBoomExca.isChecked()) {
+                ckAtBoomExca.setChecked(true);
+                MyData.push("M" + machineSel + "Exca_Antenna_Mounting", "1");
+                DataSaved.Exca_Antenna_Mounting+=1;
+            }
+
+        });
         toRoto.setOnClickListener(view -> {
             startActivity(new Intent(this, Tilt_Rot_Activity.class));
             finish();
@@ -691,10 +706,15 @@ public class Nuova_Machine_Settings extends BaseClass {
         switch (mode) {
             case 0:
                 //Excavatore
+                ckAtBoomExca.setVisibility(View.VISIBLE);
                 tvMast.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);
-                tvFrame.setVisibility(View.VISIBLE);
+                if(DataSaved.Exca_Antenna_Mounting==0) {
+                    tvFrame.setVisibility(View.VISIBLE);
+                }else {
+                    tvFrame.setVisibility(View.GONE);
+                }
                 if (DataSaved.Extra_Heading > 0) {
                     tvSwing.setVisibility(View.VISIBLE);
                     tvSwing.setText("SWING BOOM");
@@ -716,6 +736,7 @@ public class Nuova_Machine_Settings extends BaseClass {
                 break;
             case 1:
                 //Wheel
+                ckAtBoomExca.setVisibility(View.GONE);
                 tvMast.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 if (DataSaved.Extra_Heading > 0) {
@@ -748,6 +769,7 @@ public class Nuova_Machine_Settings extends BaseClass {
             case 2:
             case 3:
                 //Dozer
+                ckAtBoomExca.setVisibility(View.GONE);
                 tvMast.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);
@@ -772,6 +794,7 @@ public class Nuova_Machine_Settings extends BaseClass {
                 break;
             case 4:
                 //Grader
+                ckAtBoomExca.setVisibility(View.GONE);
                 tvMast.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 toExtraSensor.setVisibility(View.GONE);
@@ -796,6 +819,7 @@ public class Nuova_Machine_Settings extends BaseClass {
                 break;
             case 10:
                 //DRILL
+                ckAtBoomExca.setVisibility(View.GONE);
                 if (DataSaved.Drill_Antenna_Mounting.equals(AT_BODY)) {
                     tvMast.setVisibility(View.VISIBLE);
                     drillEnc.setVisibility(View.VISIBLE);
@@ -837,7 +861,6 @@ public class Nuova_Machine_Settings extends BaseClass {
                     tvBoom2.setVisibility(View.GONE);
                     tvStick.setVisibility(View.GONE);
                     tvStick.setText("MAST LINK");
-
                     tvLink.setVisibility(View.VISIBLE);
                     tvLink.setText("TOOL ΔX ΔY ΔZ");
                     tvTilt.setVisibility(View.GONE);
@@ -1017,7 +1040,7 @@ public class Nuova_Machine_Settings extends BaseClass {
                 drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 break;
         }
-
+        ckAtBoomExca.setChecked(MyData.get_Int("M"+machineSel+"Exca_Antenna_Mounting")==1);
         ckUHF.setChecked(MyData.get_Int("M" + machineSel + "useQuickSwitch") == 1);
         ck22.setChecked(MyData.get_Int("M" + machineSel + "Extra_Heading") != 0);
         ckDO.setChecked(MyData.get_Int("M" + machineSel + "_enOUT") != 0);

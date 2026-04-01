@@ -609,7 +609,6 @@ public class Diaalog_Set_SP {
         }
 
 
-        MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
         if (crs.equals(_NONE)) {
             //setup LLQ
 

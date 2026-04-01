@@ -28,6 +28,7 @@ import utils.DistToPoint;
 import utils.MyMCUtils;
 
 public class ExcavatorLib {
+    static double hdt0;
     public static ToolFrame currentToolFrame;
     public static double hdt_BOOM, hdt_LAMA;
     static int lowerEdge;
@@ -82,7 +83,7 @@ public class ExcavatorLib {
             Len_Roll = DataSaved.L_Roll;
             larghezzabenna = DataSaved.W_Bucket;
 
-            double hdt0 = ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
+            hdt0 = ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
             if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == DOZER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == GRADER) {
                 if (DataSaved.Extra_Heading != 0) {
 
@@ -109,354 +110,11 @@ public class ExcavatorLib {
             }
 
             if (GPS_Enabled) {
-
-
-                myPitchLen = 0;
-                myRollLen = 0;
-
-                ////////
-
-
-                double hdtR = ((hdt0 + 90) % 360 + 360) % 360;
-
-                double hdtL = ((hdt0 - 90) % 360 + 360) % 360;
-
-                double hdtReverse = ((hdt0 + 180) % 360 + 360) % 360;
-
-                // with GPS
-
-                startXYZ = new double[]{NmeaListener.Est1, NmeaListener.Nord1, NmeaListener.Quota1};
-                switch (DataSaved.isWL) {
-                    case EXCAVATOR:
-                    case WHEELLOADER:
-                        double deltaYY = DataSaved.deltaY;
-                        if (DataSaved.Extra_Heading != 0) {
-                            if (DataSaved.deltaY < 0) {
-                                deltaYY = DataSaved.deltaY + DataSaved.miniPitch_L;
-                            } else {
-                                deltaYY = DataSaved.deltaY - DataSaved.miniPitch_L;
-                            }
-                        }
-                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ, hdt0);
-                        if (DataSaved.deltaX < 0) {
-                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, DataSaved.deltaX, hdtL);
-                        } else {
-                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, DataSaved.deltaX, hdtR);
-                        }
-                        if (deltaYY < 0) {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(deltaYY), hdtReverse);
-                        } else {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, deltaYY, hdt0);
-                        }//DY = Centro perno boom1
-
-                        if (DataSaved.Extra_Heading != 0) {
-                            coordMiniPitch = Exca_Quaternion.endPoint(coordinateDY, correctPitch, Deg_Boom_Roll, DataSaved.miniPitch_L, hdt_BOOM);
-                        } else {
-                            coordMiniPitch = coordinateDY;
-                        }
-                        overturn = Math.abs(correctRoll) > 85.0d || Math.abs(correctPitch) > 85.0d;
-                        coordB1 = Exca_Quaternion.endPoint(coordMiniPitch, correctBoom1, Deg_Boom_Roll, DataSaved.L_Boom1, hdt_BOOM);
-                        if (DataSaved.lrBoom2 != 0) {
-                            coordB2 = Exca_Quaternion.endPoint(coordB1, correctBoom2, Deg_Boom_Roll, DataSaved.L_Boom2, hdt_BOOM);
-
-                        } else {
-                            coordB2 = coordB1;
-                        }
-                        coordiLSV = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.LSV, hdt_BOOM);
-                        coordLSH = Exca_Quaternion.endPoint(coordiLSV, correctStick + (90 * Double.compare(DataSaved.LSH, 0)), Deg_Boom_Roll, DataSaved.LSH, hdt_BOOM);
-                        coordinateLASER = coordLSH;
-                        coordST = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.L_Stick + ExtensionBoom, hdt_BOOM);
-                        if (DataSaved.lrTilt == 0) {
-                            yawSensor = 0;
-                            coordPivoTilt = coordST;
-                            bucketCoord = Exca_Quaternion.endPoint(coordST, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket, hdt_BOOM);
-                            bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90);
-                            bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270);
-
-                        } else {
-
-
-                            yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(
-                                    correctTilt - Deg_Boom_Roll,
-                                    correctBucket,
-                                    piccolaBucket,
-                                    L_Bucket
-                            );
-                            yawSensor = MyMCUtils.wrap(yawSensor);
-                            if (!hasRoto) {
-
-
-                                coordPivoTilt = Exca_Quaternion.endPoint(
-                                        coordST,
-                                        correctDeltaAngle,
-                                        Deg_Boom_Roll,
-                                        DataSaved.L_Tilt,
-                                        hdt_BOOM
-                                );
-
-                                bucketCoord = Exca_Quaternion.endPoint(
-                                        coordPivoTilt,
-                                        correctWTilt,
-                                        correctTilt,
-                                        DataSaved.piccolaBucket,
-                                        hdt_BOOM + yawSensor
-                                );
-
-                                bucketRightCoord = Exca_Quaternion.endPoint(
-                                        bucketCoord,
-                                        -correctTilt,
-                                        0,
-                                        DataSaved.W_Bucket * 0.5d,
-                                        hdt_BOOM + 90 + yawSensor
-                                );
-
-                                bucketLeftCoord = Exca_Quaternion.endPoint(
-                                        bucketCoord,
-                                        correctTilt,
-                                        0,
-                                        DataSaved.W_Bucket * 0.5d,
-                                        hdt_BOOM + 270 + yawSensor
-                                );
-
-                            } else {
-
-                                // =========================================
-                                // ROTOTILT CINEMATICA CORRETTA
-                                // roto applicato al vettore reale
-                                // =========================================
-
-                                // 1) pivot tilt
-                                coordPivoTilt = Exca_Quaternion.endPoint(
-                                        coordST,
-                                        correctDeltaAngle,
-                                        Deg_Boom_Roll,
-                                        DataSaved.L_Tilt,
-                                        hdt_BOOM
-                                );
-
-                                // 2) centro perno di tilt all'altezza del centro di rotazione
-                                coordRotoTop = Exca_Quaternion.endPoint(
-                                        coordPivoTilt,
-                                        correctDeltaAngle + 90,
-                                        Deg_Boom_Roll,
-                                        DataSaved.Offset_Engcon_Forward, hdt_BOOM
-                                );
-
-                                //3 centro rotazione ROTOTILT, ultimo punto della catena cinematica vincolata al BOOM
-
-                                coordRotoCenter = Exca_Quaternion.endPoint(
-                                        coordRotoTop,
-                                        correctDeltaAngle,
-                                        correctTilt,
-                                        DataSaved.Offset_Engcon_Down,
-                                        hdt_BOOM + yawSensor
-
-                                );
-
-                                // =====================================================
-// COMPLETAMENTO ROTOTILT DEFINITIVO
-// =====================================================
-
-                                double[] P = coordPivoTilt;    // punto noto sulla retta rossa
-                                double[] R = coordRotoCenter;  // centro roto
-                                double[] T = coordRotoTop;     // punto sull'asse roto
-
-// -------------------------------------------------
-// 1) ASSE ROTO
-// -------------------------------------------------
-                                double[] k = normalize(sub(T, R));
-
-// -------------------------------------------------
-// 2) COSTRUISCO LA DIREZIONE DEL ROSSO
-//    usando la stessa cinematica già valida del tilt normale
-// -------------------------------------------------
-                                double testLen = Math.max(1.0d, DataSaved.L_RotoToBucket + DataSaved.L_Tilt + 1.0d);
-
-                                double[] Q = Exca_Quaternion.endPoint(
-                                        P,
-                                        correctWTilt,
-                                        correctTilt,
-                                        testLen,
-                                        hdt_BOOM + yawSensor
-                                );
-
-// direzione della retta rossa
-                                double[] d = normalize(sub(Q, P));
-
-// -------------------------------------------------
-// 3) INTERSEZIONE RETTA - SFERA
-//    B0 = P + t*d
-//    |B0 - R| = L
-// -------------------------------------------------
-                                double L = DataSaved.L_RotoToBucket;
-
-                                double[] PR = sub(P, R);
-
-                                double B_q = 2.0 * dot(d, PR);
-                                double C_q = dot(PR, PR) - (L * L);
-
-                                double disc = B_q * B_q - 4.0 * C_q;
-                                if (disc < 0.0) disc = 0.0;
-
-                                double sqrtDisc = Math.sqrt(disc);
-
-                                double t1 = (-B_q + sqrtDisc) * 0.5d;
-                                double t2 = (-B_q - sqrtDisc) * 0.5d;
-
-// scelgo il punto "in avanti" lungo la retta rossa
-                                double t;
-                                if (t1 >= 0.0 && t2 >= 0.0) {
-                                    t = Math.max(t1, t2);
-                                } else if (t1 >= 0.0) {
-                                    t = t1;
-                                } else if (t2 >= 0.0) {
-                                    t = t2;
-                                } else {
-                                    t = Math.max(t1, t2);
-                                }
-
-// centro benna PRE-roto
-                                double[] B0 = add(P, scale(d, t));
-
-// -------------------------------------------------
-// 4) VETTORE ROTO -> BENNA PRE-ROTO
-// -------------------------------------------------
-                                double[] v0 = sub(B0, R);
-
-// -------------------------------------------------
-// 5) APPLICO IL ROTO
-// -------------------------------------------------
-                                double rotoDeg = -MyMCUtils.wrap(Sensors_Decoder.Deg_Roto);
-
-                                double[] v = rotateAroundAxisRaw(v0, k, rotoDeg);
-
-// centro benna finale
-                                bucketCoord = add(R, v);
-
-// -------------------------------------------------
-// 6) ASSE TRASVERSALE BENNA
-// -------------------------------------------------
-                                double[] right0 = normalize(cross(k, v0));
-
-// fallback sicurezza
-                                if (norm(right0) < 1e-9) {
-                                    // asse laterale arbitrario ma ortogonale a k
-                                    right0 = normalize(cross(k, d));
-                                    if (norm(right0) < 1e-9) {
-                                        right0 = new double[]{1.0, 0.0, 0.0};
-                                    }
-                                }
-
-                                double[] right = rotateAroundAxisRaw(right0, k, rotoDeg);
-                                right = normalize(right);
-
-// -------------------------------------------------
-// 7) SPIGOLI DX / SX
-// -------------------------------------------------
-                                double halfW = DataSaved.W_Bucket * 0.5d;
-
-                                bucketRightCoord = add(bucketCoord, scale(right, halfW));
-                                bucketLeftCoord  = add(bucketCoord, scale(right, -halfW));
-
-
-
-                            }
-
-
-                        }
-
-
-                        //qui abbiamo le coordinate GPS della benna UTM nostre
-                        arr = new double[]{coordB1[2], coordB2[2], coordST[2], bucketCoord[2], bucketLeftCoord[2], bucketRightCoord[2]};
-                        Arrays.sort(arr);
-                        highestPoint = arr[arr.length - 1];
-
-                        if (DataSaved.isLowerEdge) {
-                            double sinistra, centro, destra;
-
-                            if (TriangleService.ltOffGrid) {
-                                sinistra = Double.MAX_VALUE;
-                            } else {
-                                sinistra = Math.abs(TriangleService.quota3D_SX);
-                            }
-                            if (TriangleService.ctOffGrid) {
-                                centro = Double.MAX_VALUE;
-                            } else {
-                                centro = Math.abs(TriangleService.quota3D_CT);
-                            }
-                            if (TriangleService.rtOffGrid) {
-                                destra = Double.MAX_VALUE;
-                            } else {
-                                destra = Math.abs(TriangleService.quota3D_DX);
-                            }
-                            arrLower = new double[]{sinistra, centro, destra};
-                            int minIndex = 0;
-                            for (int i = 1; i < arrLower.length; i++) {
-                                if (arrLower[i] < arrLower[minIndex]) {
-                                    minIndex = i;
-                                }
-                            }
-                            lowerEdge = minIndex;
-                            switch (lowerEdge) {
-                                case 0:
-                                    DataSaved.bucketEdge = -1;
-                                    break;
-                                case 1:
-                                    DataSaved.bucketEdge = 0;
-                                    break;
-                                case 2:
-                                    DataSaved.bucketEdge = 1;
-                                    break;
-                            }
-                        }
-                        break;
-                    case DOZER:
-                    case DOZER_SIX:
-                    case GRADER:
-                        //dozer e grader
-                        hdt_LAMA = hdt0;
-                        yawSensor = 0;
-
-                        coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ + DataSaved.usuraLamaCX, hdt0);
-                        if (DataSaved.deltaX < 0) {
-                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, DataSaved.deltaX, hdtL);
-                        } else {
-                            coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, DataSaved.deltaX, hdtR);
-                        }
-                        if (DataSaved.deltaY < 0) {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(DataSaved.deltaY), hdtReverse + yawSensor);
-                        } else {
-                            coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, DataSaved.deltaY, hdt0);
-                        }//DY = Centro LAMA
-                        bucketCoord = coordinateDY;
-                        bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctRoll, correctPitch, DataSaved.W_Blade_RIGHT, hdt0 + 90 + yawSensor);
-                        bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, correctRoll, -correctPitch, DataSaved.W_Blade_LEFT, hdt0 + 270 + yawSensor);
-                        if (DataSaved.isLowerEdge) {
-                            arrLower = new double[]{bucketLeftCoord[2], bucketCoord[2], bucketRightCoord[2]};
-                            int minIndex = 0;
-                            for (int i = 1; i < arrLower.length; i++) {
-                                if (arrLower[i] < arrLower[minIndex]) {
-                                    minIndex = i;
-                                }
-                            }
-                            lowerEdge = minIndex;
-                            switch (lowerEdge) {
-                                case 0:
-                                    DataSaved.bucketEdge = -1;
-                                    break;
-                                case 1:
-                                    DataSaved.bucketEdge = 0;
-                                    break;
-                                case 2:
-                                    DataSaved.bucketEdge = 1;
-                                    break;
-                            }
-                        }
-
-                        break;
+                if(DataSaved.Exca_Antenna_Mounting==0){
+                    Execute_Normal();
+                }else {
+                    Execute_Body();
                 }
-
-
             } else {
                 startXYZ = new double[]{0, 0, 0};
                 //To Do 2D
@@ -836,6 +494,688 @@ public class ExcavatorLib {
             this.up = up;
             this.rotoCenter = rotoCenter;
             this.tiltPivot = tiltPivot;
+        }
+    }
+
+    private static void Execute_Normal(){
+        {
+            myPitchLen = 0;
+            myRollLen = 0;
+            double hdtR = ((hdt0 + 90) % 360 + 360) % 360;
+
+            double hdtL = ((hdt0 - 90) % 360 + 360) % 360;
+
+            double hdtReverse = ((hdt0 + 180) % 360 + 360) % 360;
+
+            // with GPS
+
+            startXYZ = new double[]{NmeaListener.Est1, NmeaListener.Nord1, NmeaListener.Quota1};
+            switch (DataSaved.isWL) {
+                case EXCAVATOR:
+                case WHEELLOADER:
+                    double deltaYY = DataSaved.deltaY;
+                    if (DataSaved.Extra_Heading != 0) {
+                        if (DataSaved.deltaY < 0) {
+                            deltaYY = DataSaved.deltaY + DataSaved.miniPitch_L;
+                        } else {
+                            deltaYY = DataSaved.deltaY - DataSaved.miniPitch_L;
+                        }
+                    }
+                    coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ, hdt0);
+                    if (DataSaved.deltaX < 0) {
+                        coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, DataSaved.deltaX, hdtL);
+                    } else {
+                        coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, DataSaved.deltaX, hdtR);
+                    }
+                    if (deltaYY < 0) {
+                        coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(deltaYY), hdtReverse);
+                    } else {
+                        coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, deltaYY, hdt0);
+                    }//DY = Centro perno boom1
+
+                    if (DataSaved.Extra_Heading != 0) {
+                        coordMiniPitch = Exca_Quaternion.endPoint(coordinateDY, correctPitch, Deg_Boom_Roll, DataSaved.miniPitch_L, hdt_BOOM);
+                    } else {
+                        coordMiniPitch = coordinateDY;
+                    }
+                    overturn = Math.abs(correctRoll) > 85.0d || Math.abs(correctPitch) > 85.0d;
+                    coordB1 = Exca_Quaternion.endPoint(coordMiniPitch, correctBoom1, Deg_Boom_Roll, DataSaved.L_Boom1, hdt_BOOM);
+                    if (DataSaved.lrBoom2 != 0) {
+                        coordB2 = Exca_Quaternion.endPoint(coordB1, correctBoom2, Deg_Boom_Roll, DataSaved.L_Boom2, hdt_BOOM);
+
+                    } else {
+                        coordB2 = coordB1;
+                    }
+                    coordiLSV = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.LSV, hdt_BOOM);
+                    coordLSH = Exca_Quaternion.endPoint(coordiLSV, correctStick + (90 * Double.compare(DataSaved.LSH, 0)), Deg_Boom_Roll, DataSaved.LSH, hdt_BOOM);
+                    coordinateLASER = coordLSH;
+                    coordST = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.L_Stick + ExtensionBoom, hdt_BOOM);
+                    if (DataSaved.lrTilt == 0) {
+                        yawSensor = 0;
+                        coordPivoTilt = coordST;
+                        bucketCoord = Exca_Quaternion.endPoint(coordST, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket, hdt_BOOM);
+                        bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90);
+                        bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270);
+
+                    } else {
+
+
+                        yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(
+                                correctTilt - Deg_Boom_Roll,
+                                correctBucket,
+                                piccolaBucket,
+                                L_Bucket
+                        );
+                        yawSensor = MyMCUtils.wrap(yawSensor);
+                        if (!hasRoto) {
+
+
+                            coordPivoTilt = Exca_Quaternion.endPoint(
+                                    coordST,
+                                    correctDeltaAngle,
+                                    Deg_Boom_Roll,
+                                    DataSaved.L_Tilt,
+                                    hdt_BOOM
+                            );
+
+                            bucketCoord = Exca_Quaternion.endPoint(
+                                    coordPivoTilt,
+                                    correctWTilt,
+                                    correctTilt,
+                                    DataSaved.piccolaBucket,
+                                    hdt_BOOM + yawSensor
+                            );
+
+                            bucketRightCoord = Exca_Quaternion.endPoint(
+                                    bucketCoord,
+                                    -correctTilt,
+                                    0,
+                                    DataSaved.W_Bucket * 0.5d,
+                                    hdt_BOOM + 90 + yawSensor
+                            );
+
+                            bucketLeftCoord = Exca_Quaternion.endPoint(
+                                    bucketCoord,
+                                    correctTilt,
+                                    0,
+                                    DataSaved.W_Bucket * 0.5d,
+                                    hdt_BOOM + 270 + yawSensor
+                            );
+
+                        } else {
+
+                            // =========================================
+                            // ROTOTILT CINEMATICA CORRETTA
+                            // roto applicato al vettore reale
+                            // =========================================
+
+                            // 1) pivot tilt
+                            coordPivoTilt = Exca_Quaternion.endPoint(
+                                    coordST,
+                                    correctDeltaAngle,
+                                    Deg_Boom_Roll,
+                                    DataSaved.L_Tilt,
+                                    hdt_BOOM
+                            );
+
+                            // 2) centro perno di tilt all'altezza del centro di rotazione
+                            coordRotoTop = Exca_Quaternion.endPoint(
+                                    coordPivoTilt,
+                                    correctDeltaAngle + 90,
+                                    Deg_Boom_Roll,
+                                    DataSaved.Offset_Engcon_Forward, hdt_BOOM
+                            );
+
+                            //3 centro rotazione ROTOTILT, ultimo punto della catena cinematica vincolata al BOOM
+
+                            coordRotoCenter = Exca_Quaternion.endPoint(
+                                    coordRotoTop,
+                                    correctDeltaAngle,
+                                    correctTilt,
+                                    DataSaved.Offset_Engcon_Down,
+                                    hdt_BOOM + yawSensor
+
+                            );
+
+                            // =====================================================
+// COMPLETAMENTO ROTOTILT DEFINITIVO
+// =====================================================
+
+                            double[] P = coordPivoTilt;    // punto noto sulla retta rossa
+                            double[] R = coordRotoCenter;  // centro roto
+                            double[] T = coordRotoTop;     // punto sull'asse roto
+
+// -------------------------------------------------
+// 1) ASSE ROTO
+// -------------------------------------------------
+                            double[] k = normalize(sub(T, R));
+
+// -------------------------------------------------
+// 2) COSTRUISCO LA DIREZIONE DEL ROSSO
+//    usando la stessa cinematica già valida del tilt normale
+// -------------------------------------------------
+                            double testLen = Math.max(1.0d, DataSaved.L_RotoToBucket + DataSaved.L_Tilt + 1.0d);
+
+                            double[] Q = Exca_Quaternion.endPoint(
+                                    P,
+                                    correctWTilt,
+                                    correctTilt,
+                                    testLen,
+                                    hdt_BOOM + yawSensor
+                            );
+
+// direzione della retta rossa
+                            double[] d = normalize(sub(Q, P));
+
+// -------------------------------------------------
+// 3) INTERSEZIONE RETTA - SFERA
+//    B0 = P + t*d
+//    |B0 - R| = L
+// -------------------------------------------------
+                            double L = DataSaved.L_RotoToBucket;
+
+                            double[] PR = sub(P, R);
+
+                            double B_q = 2.0 * dot(d, PR);
+                            double C_q = dot(PR, PR) - (L * L);
+
+                            double disc = B_q * B_q - 4.0 * C_q;
+                            if (disc < 0.0) disc = 0.0;
+
+                            double sqrtDisc = Math.sqrt(disc);
+
+                            double t1 = (-B_q + sqrtDisc) * 0.5d;
+                            double t2 = (-B_q - sqrtDisc) * 0.5d;
+
+// scelgo il punto "in avanti" lungo la retta rossa
+                            double t;
+                            if (t1 >= 0.0 && t2 >= 0.0) {
+                                t = Math.max(t1, t2);
+                            } else if (t1 >= 0.0) {
+                                t = t1;
+                            } else if (t2 >= 0.0) {
+                                t = t2;
+                            } else {
+                                t = Math.max(t1, t2);
+                            }
+
+// centro benna PRE-roto
+                            double[] B0 = add(P, scale(d, t));
+
+// -------------------------------------------------
+// 4) VETTORE ROTO -> BENNA PRE-ROTO
+// -------------------------------------------------
+                            double[] v0 = sub(B0, R);
+
+// -------------------------------------------------
+// 5) APPLICO IL ROTO
+// -------------------------------------------------
+                            double rotoDeg = -MyMCUtils.wrap(Sensors_Decoder.Deg_Roto);
+
+                            double[] v = rotateAroundAxisRaw(v0, k, rotoDeg);
+
+// centro benna finale
+                            bucketCoord = add(R, v);
+
+// -------------------------------------------------
+// 6) ASSE TRASVERSALE BENNA
+// -------------------------------------------------
+                            double[] right0 = normalize(cross(k, v0));
+
+// fallback sicurezza
+                            if (norm(right0) < 1e-9) {
+                                // asse laterale arbitrario ma ortogonale a k
+                                right0 = normalize(cross(k, d));
+                                if (norm(right0) < 1e-9) {
+                                    right0 = new double[]{1.0, 0.0, 0.0};
+                                }
+                            }
+
+                            double[] right = rotateAroundAxisRaw(right0, k, rotoDeg);
+                            right = normalize(right);
+
+// -------------------------------------------------
+// 7) SPIGOLI DX / SX
+// -------------------------------------------------
+                            double halfW = DataSaved.W_Bucket * 0.5d;
+
+                            bucketRightCoord = add(bucketCoord, scale(right, halfW));
+                            bucketLeftCoord  = add(bucketCoord, scale(right, -halfW));
+
+
+
+                        }
+
+
+                    }
+
+
+                    //qui abbiamo le coordinate GPS della benna UTM nostre
+                    arr = new double[]{coordB1[2], coordB2[2], coordST[2], bucketCoord[2], bucketLeftCoord[2], bucketRightCoord[2]};
+                    Arrays.sort(arr);
+                    highestPoint = arr[arr.length - 1];
+
+                    if (DataSaved.isLowerEdge) {
+                        double sinistra, centro, destra;
+
+                        if (TriangleService.ltOffGrid) {
+                            sinistra = Double.MAX_VALUE;
+                        } else {
+                            sinistra = Math.abs(TriangleService.quota3D_SX);
+                        }
+                        if (TriangleService.ctOffGrid) {
+                            centro = Double.MAX_VALUE;
+                        } else {
+                            centro = Math.abs(TriangleService.quota3D_CT);
+                        }
+                        if (TriangleService.rtOffGrid) {
+                            destra = Double.MAX_VALUE;
+                        } else {
+                            destra = Math.abs(TriangleService.quota3D_DX);
+                        }
+                        arrLower = new double[]{sinistra, centro, destra};
+                        int minIndex = 0;
+                        for (int i = 1; i < arrLower.length; i++) {
+                            if (arrLower[i] < arrLower[minIndex]) {
+                                minIndex = i;
+                            }
+                        }
+                        lowerEdge = minIndex;
+                        switch (lowerEdge) {
+                            case 0:
+                                DataSaved.bucketEdge = -1;
+                                break;
+                            case 1:
+                                DataSaved.bucketEdge = 0;
+                                break;
+                            case 2:
+                                DataSaved.bucketEdge = 1;
+                                break;
+                        }
+                    }
+                    break;
+                case DOZER:
+                case DOZER_SIX:
+                case GRADER:
+                    //dozer e grader
+                    hdt_LAMA = hdt0;
+                    yawSensor = 0;
+
+                    coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ + DataSaved.usuraLamaCX, hdt0);
+                    if (DataSaved.deltaX < 0) {
+                        coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, DataSaved.deltaX, hdtL);
+                    } else {
+                        coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, DataSaved.deltaX, hdtR);
+                    }
+                    if (DataSaved.deltaY < 0) {
+                        coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(DataSaved.deltaY), hdtReverse + yawSensor);
+                    } else {
+                        coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, DataSaved.deltaY, hdt0);
+                    }//DY = Centro LAMA
+                    bucketCoord = coordinateDY;
+                    bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctRoll, correctPitch, DataSaved.W_Blade_RIGHT, hdt0 + 90 + yawSensor);
+                    bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, correctRoll, -correctPitch, DataSaved.W_Blade_LEFT, hdt0 + 270 + yawSensor);
+                    if (DataSaved.isLowerEdge) {
+                        arrLower = new double[]{bucketLeftCoord[2], bucketCoord[2], bucketRightCoord[2]};
+                        int minIndex = 0;
+                        for (int i = 1; i < arrLower.length; i++) {
+                            if (arrLower[i] < arrLower[minIndex]) {
+                                minIndex = i;
+                            }
+                        }
+                        lowerEdge = minIndex;
+                        switch (lowerEdge) {
+                            case 0:
+                                DataSaved.bucketEdge = -1;
+                                break;
+                            case 1:
+                                DataSaved.bucketEdge = 0;
+                                break;
+                            case 2:
+                                DataSaved.bucketEdge = 1;
+                                break;
+                        }
+                    }
+
+                    break;
+            }
+
+
+        }
+    }
+    private static void Execute_Body(){
+        {
+            myPitchLen = 0;
+            myRollLen = 0;
+            double hdtR = ((hdt0 + 90) % 360 + 360) % 360;
+
+            double hdtL = ((hdt0 - 90) % 360 + 360) % 360;
+
+            double hdtReverse = ((hdt0 + 180) % 360 + 360) % 360;
+            hdt_BOOM=hdt0;
+
+            // with GPS
+
+            startXYZ = new double[]{NmeaListener.Est1, NmeaListener.Nord1, NmeaListener.Quota1};
+            switch (DataSaved.isWL) {
+                case EXCAVATOR:
+                case WHEELLOADER:
+                    double deltaYY = DataSaved.deltaY;
+                    coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctBoom1 - 90, Deg_Boom_Roll, DataSaved.deltaZ, hdt0);
+                    if (DataSaved.deltaX < 0) {
+                        coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, Deg_Boom_Roll, -correctBoom1, DataSaved.deltaX, hdtL);
+                    } else {
+                        coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -Deg_Boom_Roll, correctBoom1, DataSaved.deltaX, hdtR);
+                    }
+                    if (deltaYY < 0) {
+                        coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctBoom1, -Deg_Boom_Roll, Math.abs(deltaYY), hdtReverse);
+                    } else {
+                        coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctBoom1, Deg_Boom_Roll, deltaYY, hdt0);
+                    }//DY = Centro perno boom1
+
+                    coordMiniPitch = coordinateDY;
+                    coordB1 = coordinateDY;
+                    if (DataSaved.lrBoom2 != 0) {
+                        coordB2 = Exca_Quaternion.endPoint(coordB1, correctBoom2, Deg_Boom_Roll, DataSaved.L_Boom2, hdt_BOOM);
+
+                    } else {
+                        coordB2 = coordB1;
+                    }
+                    coordiLSV = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.LSV, hdt_BOOM);
+                    coordLSH = Exca_Quaternion.endPoint(coordiLSV, correctStick + (90 * Double.compare(DataSaved.LSH, 0)), Deg_Boom_Roll, DataSaved.LSH, hdt_BOOM);
+                    coordinateLASER = coordLSH;
+                    coordST = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.L_Stick + ExtensionBoom, hdt_BOOM);
+                    if (DataSaved.lrTilt == 0) {
+                        yawSensor = 0;
+                        coordPivoTilt = coordST;
+                        bucketCoord = Exca_Quaternion.endPoint(coordST, correctBucket, Deg_Boom_Roll, DataSaved.L_Bucket, hdt_BOOM);
+                        bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 90);
+                        bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, Deg_Boom_Roll, 0, DataSaved.W_Bucket * 0.5d, hdt_BOOM + 270);
+
+                    } else {
+
+
+                        yawSensor = MyMCUtils.computeDeltaYawFromTiltAndCurl(
+                                correctTilt - Deg_Boom_Roll,
+                                correctBucket,
+                                piccolaBucket,
+                                L_Bucket
+                        );
+                        yawSensor = MyMCUtils.wrap(yawSensor);
+                        if (!hasRoto) {
+
+
+                            coordPivoTilt = Exca_Quaternion.endPoint(
+                                    coordST,
+                                    correctDeltaAngle,
+                                    Deg_Boom_Roll,
+                                    DataSaved.L_Tilt,
+                                    hdt_BOOM
+                            );
+
+                            bucketCoord = Exca_Quaternion.endPoint(
+                                    coordPivoTilt,
+                                    correctWTilt,
+                                    correctTilt,
+                                    DataSaved.piccolaBucket,
+                                    hdt_BOOM + yawSensor
+                            );
+
+                            bucketRightCoord = Exca_Quaternion.endPoint(
+                                    bucketCoord,
+                                    -correctTilt,
+                                    0,
+                                    DataSaved.W_Bucket * 0.5d,
+                                    hdt_BOOM + 90 + yawSensor
+                            );
+
+                            bucketLeftCoord = Exca_Quaternion.endPoint(
+                                    bucketCoord,
+                                    correctTilt,
+                                    0,
+                                    DataSaved.W_Bucket * 0.5d,
+                                    hdt_BOOM + 270 + yawSensor
+                            );
+
+                        } else {
+
+                            // =========================================
+                            // ROTOTILT CINEMATICA CORRETTA
+                            // roto applicato al vettore reale
+                            // =========================================
+
+                            // 1) pivot tilt
+                            coordPivoTilt = Exca_Quaternion.endPoint(
+                                    coordST,
+                                    correctDeltaAngle,
+                                    Deg_Boom_Roll,
+                                    DataSaved.L_Tilt,
+                                    hdt_BOOM
+                            );
+
+                            // 2) centro perno di tilt all'altezza del centro di rotazione
+                            coordRotoTop = Exca_Quaternion.endPoint(
+                                    coordPivoTilt,
+                                    correctDeltaAngle + 90,
+                                    Deg_Boom_Roll,
+                                    DataSaved.Offset_Engcon_Forward, hdt_BOOM
+                            );
+
+                            //3 centro rotazione ROTOTILT, ultimo punto della catena cinematica vincolata al BOOM
+
+                            coordRotoCenter = Exca_Quaternion.endPoint(
+                                    coordRotoTop,
+                                    correctDeltaAngle,
+                                    correctTilt,
+                                    DataSaved.Offset_Engcon_Down,
+                                    hdt_BOOM + yawSensor
+
+                            );
+
+                            // =====================================================
+// COMPLETAMENTO ROTOTILT DEFINITIVO
+// =====================================================
+
+                            double[] P = coordPivoTilt;    // punto noto sulla retta rossa
+                            double[] R = coordRotoCenter;  // centro roto
+                            double[] T = coordRotoTop;     // punto sull'asse roto
+
+// -------------------------------------------------
+// 1) ASSE ROTO
+// -------------------------------------------------
+                            double[] k = normalize(sub(T, R));
+
+// -------------------------------------------------
+// 2) COSTRUISCO LA DIREZIONE DEL ROSSO
+//    usando la stessa cinematica già valida del tilt normale
+// -------------------------------------------------
+                            double testLen = Math.max(1.0d, DataSaved.L_RotoToBucket + DataSaved.L_Tilt + 1.0d);
+
+                            double[] Q = Exca_Quaternion.endPoint(
+                                    P,
+                                    correctWTilt,
+                                    correctTilt,
+                                    testLen,
+                                    hdt_BOOM + yawSensor
+                            );
+
+// direzione della retta rossa
+                            double[] d = normalize(sub(Q, P));
+
+// -------------------------------------------------
+// 3) INTERSEZIONE RETTA - SFERA
+//    B0 = P + t*d
+//    |B0 - R| = L
+// -------------------------------------------------
+                            double L = DataSaved.L_RotoToBucket;
+
+                            double[] PR = sub(P, R);
+
+                            double B_q = 2.0 * dot(d, PR);
+                            double C_q = dot(PR, PR) - (L * L);
+
+                            double disc = B_q * B_q - 4.0 * C_q;
+                            if (disc < 0.0) disc = 0.0;
+
+                            double sqrtDisc = Math.sqrt(disc);
+
+                            double t1 = (-B_q + sqrtDisc) * 0.5d;
+                            double t2 = (-B_q - sqrtDisc) * 0.5d;
+
+// scelgo il punto "in avanti" lungo la retta rossa
+                            double t;
+                            if (t1 >= 0.0 && t2 >= 0.0) {
+                                t = Math.max(t1, t2);
+                            } else if (t1 >= 0.0) {
+                                t = t1;
+                            } else if (t2 >= 0.0) {
+                                t = t2;
+                            } else {
+                                t = Math.max(t1, t2);
+                            }
+
+// centro benna PRE-roto
+                            double[] B0 = add(P, scale(d, t));
+
+// -------------------------------------------------
+// 4) VETTORE ROTO -> BENNA PRE-ROTO
+// -------------------------------------------------
+                            double[] v0 = sub(B0, R);
+
+// -------------------------------------------------
+// 5) APPLICO IL ROTO
+// -------------------------------------------------
+                            double rotoDeg = -MyMCUtils.wrap(Sensors_Decoder.Deg_Roto);
+
+                            double[] v = rotateAroundAxisRaw(v0, k, rotoDeg);
+
+// centro benna finale
+                            bucketCoord = add(R, v);
+
+// -------------------------------------------------
+// 6) ASSE TRASVERSALE BENNA
+// -------------------------------------------------
+                            double[] right0 = normalize(cross(k, v0));
+
+// fallback sicurezza
+                            if (norm(right0) < 1e-9) {
+                                // asse laterale arbitrario ma ortogonale a k
+                                right0 = normalize(cross(k, d));
+                                if (norm(right0) < 1e-9) {
+                                    right0 = new double[]{1.0, 0.0, 0.0};
+                                }
+                            }
+
+                            double[] right = rotateAroundAxisRaw(right0, k, rotoDeg);
+                            right = normalize(right);
+
+// -------------------------------------------------
+// 7) SPIGOLI DX / SX
+// -------------------------------------------------
+                            double halfW = DataSaved.W_Bucket * 0.5d;
+
+                            bucketRightCoord = add(bucketCoord, scale(right, halfW));
+                            bucketLeftCoord  = add(bucketCoord, scale(right, -halfW));
+
+
+
+                        }
+
+
+                    }
+
+
+                    //qui abbiamo le coordinate GPS della benna UTM nostre
+                    arr = new double[]{coordB1[2], coordB2[2], coordST[2], bucketCoord[2], bucketLeftCoord[2], bucketRightCoord[2]};
+                    Arrays.sort(arr);
+                    highestPoint = arr[arr.length - 1];
+
+                    if (DataSaved.isLowerEdge) {
+                        double sinistra, centro, destra;
+
+                        if (TriangleService.ltOffGrid) {
+                            sinistra = Double.MAX_VALUE;
+                        } else {
+                            sinistra = Math.abs(TriangleService.quota3D_SX);
+                        }
+                        if (TriangleService.ctOffGrid) {
+                            centro = Double.MAX_VALUE;
+                        } else {
+                            centro = Math.abs(TriangleService.quota3D_CT);
+                        }
+                        if (TriangleService.rtOffGrid) {
+                            destra = Double.MAX_VALUE;
+                        } else {
+                            destra = Math.abs(TriangleService.quota3D_DX);
+                        }
+                        arrLower = new double[]{sinistra, centro, destra};
+                        int minIndex = 0;
+                        for (int i = 1; i < arrLower.length; i++) {
+                            if (arrLower[i] < arrLower[minIndex]) {
+                                minIndex = i;
+                            }
+                        }
+                        lowerEdge = minIndex;
+                        switch (lowerEdge) {
+                            case 0:
+                                DataSaved.bucketEdge = -1;
+                                break;
+                            case 1:
+                                DataSaved.bucketEdge = 0;
+                                break;
+                            case 2:
+                                DataSaved.bucketEdge = 1;
+                                break;
+                        }
+                    }
+                    break;
+                case DOZER:
+                case DOZER_SIX:
+                case GRADER:
+                    //dozer e grader
+                    hdt_LAMA = hdt0;
+                    yawSensor = 0;
+
+                    coordinateDZ = Exca_Quaternion.endPoint(startXYZ, correctPitch - 90, correctRoll, DataSaved.deltaZ + DataSaved.usuraLamaCX, hdt0);
+                    if (DataSaved.deltaX < 0) {
+                        coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, correctRoll, -correctPitch, DataSaved.deltaX, hdtL);
+                    } else {
+                        coordinateDX = Exca_Quaternion.endPoint(coordinateDZ, -correctRoll, correctPitch, DataSaved.deltaX, hdtR);
+                    }
+                    if (DataSaved.deltaY < 0) {
+                        coordinateDY = Exca_Quaternion.endPoint(coordinateDX, -correctPitch, -correctRoll, Math.abs(DataSaved.deltaY), hdtReverse + yawSensor);
+                    } else {
+                        coordinateDY = Exca_Quaternion.endPoint(coordinateDX, correctPitch, correctRoll, DataSaved.deltaY, hdt0);
+                    }//DY = Centro LAMA
+                    bucketCoord = coordinateDY;
+                    bucketRightCoord = Exca_Quaternion.endPoint(bucketCoord, -correctRoll, correctPitch, DataSaved.W_Blade_RIGHT, hdt0 + 90 + yawSensor);
+                    bucketLeftCoord = Exca_Quaternion.endPoint(bucketCoord, correctRoll, -correctPitch, DataSaved.W_Blade_LEFT, hdt0 + 270 + yawSensor);
+                    if (DataSaved.isLowerEdge) {
+                        arrLower = new double[]{bucketLeftCoord[2], bucketCoord[2], bucketRightCoord[2]};
+                        int minIndex = 0;
+                        for (int i = 1; i < arrLower.length; i++) {
+                            if (arrLower[i] < arrLower[minIndex]) {
+                                minIndex = i;
+                            }
+                        }
+                        lowerEdge = minIndex;
+                        switch (lowerEdge) {
+                            case 0:
+                                DataSaved.bucketEdge = -1;
+                                break;
+                            case 1:
+                                DataSaved.bucketEdge = 0;
+                                break;
+                            case 2:
+                                DataSaved.bucketEdge = 1;
+                                break;
+                        }
+                    }
+
+                    break;
+            }
+
+
         }
     }
 

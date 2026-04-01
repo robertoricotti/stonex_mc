@@ -329,6 +329,7 @@ public class DataSaved {
 
 
     //MC
+    public static int Exca_Antenna_Mounting;
     public static int useLowResolution;
     public static String projectTAG;
     public static String progettoSelected;

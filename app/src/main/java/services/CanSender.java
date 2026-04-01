@@ -65,6 +65,7 @@ import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.MC_2D;
+import static utils.MyTypes.MC_3D_PRO;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.WHEELLOADER;
 
@@ -348,6 +349,8 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
+
+            Log.d("CanSender",DataSaved.reqSpeed+" "+connections);
             try {
                 if (isTech) {
                     isTechCount++;
@@ -367,10 +370,34 @@ public class CanSender extends Service {
                 if(DataSaved.isCanOpen==JOYSTICKS){
                     DataSaved.gpsOk=true;
                 }else {
-                    if (licenseType > MC_2D) {
+                    if (licenseType == MC_3D_PRO_AUTO||licenseType==MC_3D_PRO||licenseType==MC_2D) {
                         switch (DataSaved.my_comPort) {
                             case 0:
                                 if (DataSaved.gpsType == 0) {
+                                    connections++;
+                                    if (connections == 20) {
+                                        connections = 0;
+                                        switch (DataSaved.reqSpeed) {
+                                            case 0:
+                                                Log.d("CanSender",DataSaved.reqSpeed+" "+"Inviato");
+                                                MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, 0x03, 0x05, (byte) 0x03});
+                                                break;
+                                            case 1:
+                                                Log.d("CanSender",DataSaved.reqSpeed+" ");
+                                                MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, 0x03, 0x04, (byte) 0x03});
+                                                break;
+                                            case 2:
+                                                Log.d("CanSender",DataSaved.reqSpeed+" ");
+                                                MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, 0x03, 0x03, (byte) 0x03});
+                                                break;
+                                            case 3:
+                                                Log.d("CanSender",DataSaved.reqSpeed+" ");
+                                                MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, 0x03, 0x0, (byte) 0x03});
+                                                break;
+                                        }
+
+
+                                    }
                                     double vrms = 0;
                                     try {
                                         vrms = Double.parseDouble(NmeaListener.VRMS_);
@@ -378,44 +405,12 @@ public class CanSender extends Service {
                                         vrms = 0.002;
                                     }
                                     if (!nmeaSTX_Disc) {
-                                        if (NmeaListener.ggaQuality.equals("4") && vrms < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt_1 != 999.999) {
-                                            DataSaved.gpsOk = true;
-                                        } else {
-                                            DataSaved.gpsOk = false;
-                                            connections++;
-                                        }
+                                        DataSaved.gpsOk = NmeaListener.ggaQuality.equals("4") && vrms < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt_1 != 999.999;
                                     } else {
                                         DataSaved.gpsOk = false;
-                                        connections++;
                                     }
 
-                                    if (connections == 20) {
-                                        byte speed = 0;
-                                        switch (DataSaved.reqSpeed) {
-                                            case 0:
-                                                speed = 5;
-                                                break;
-                                            case 1:
-                                                speed = 4;
-                                                break;
-                                            case 2:
-                                                speed = 3;
-                                                break;
-                                            case 3:
-                                                speed = 0;
-                                                break;
 
-                                        }
-                                        if (DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)) {
-                                            GNSS_MSG = 0x03;
-                                        } else {
-                                            GNSS_MSG = 0x01;
-                                        }
-
-
-                                        MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
-                                        connections = 0;
-                                    }
                                 } else if (DataSaved.gpsType == 3) {
                                     try {
                                         double vrms = 0;
@@ -456,35 +451,7 @@ public class CanSender extends Service {
 
                 MyDeviceManager.CanWrite(true,0, 160, 8, new byte[]{d0, 0, onGrade, 0, 0, (byte) 160, (byte) 168, 0});
             } catch (Exception e) {
-                connections++;
-                if (connections == 30) {
-                    byte speed = 0;
-                    switch (DataSaved.reqSpeed) {
-                        case 0:
-                            speed = 5;
-                            break;
-                        case 1:
-                            speed = 4;
-                            break;
-                        case 2:
-                            speed = 3;
-                            break;
-                        case 3:
-                            speed = 0;
-                            break;
 
-                    }
-                    DataSaved.gpsOk = false;
-                    if (DataSaved.S_CRS.equals(_LOCAL_COORDINATES_FROM_GNSS)) {
-                        GNSS_MSG = 0x03;
-                    } else {
-                        GNSS_MSG = 0x01;
-                    }
-
-
-                    MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
-                    connections = 0;
-                }
             }
 
 

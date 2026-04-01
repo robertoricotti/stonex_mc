@@ -17,9 +17,8 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JETGROUTING_MODE;
+import static utils.MyTypes.MC_1D;
 import static utils.MyTypes.MC_2D;
-import static utils.MyTypes.MC_3D_EASY;
-import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.MC_3D_PRO;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.SOLARFARM_MODE;
@@ -175,10 +174,18 @@ public class ReadProjectService extends Service {
                 case DOZER_SIX:
                 case WHEELLOADER:
                 case GRADER:
-                    Execute_MC();
+                    if (licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO) {
+                        Execute_MC();
+                    } else {
+                        Execute_MC_Easy();
+                    }
                     break;
                 case DRILL:
-                    Excecute_DRILL();
+                    if (licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO) {
+                        Excecute_DRILL();
+                    } else {
+                        Execute_MC_Easy();
+                    }
                     break;
             }
         }
@@ -196,11 +203,7 @@ public class ReadProjectService extends Service {
         try {
             String nomeProgettoTRM = MyData.get_String("progettoSelected");
             if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
-                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                    reconnectLayers();
-                } else {
-                    reconnectLayers();
-                }
+                reconnectLayers();
             }
         } catch (Exception e) {
             ((ExecutorService) mExecutor).shutdown();
@@ -367,12 +370,12 @@ public class ReadProjectService extends Service {
                             case "150581":
                             case "150582":
                                 nativeProjTransformer.initCsToCs("EPSG:9067", "EPSG:5514");
-                                nativeProjTransformerToGeo.initCsToCs( "EPSG:5514","EPSG:9067");
+                                nativeProjTransformerToGeo.initCsToCs("EPSG:5514", "EPSG:9067");
                                 break;
 
                             default:
                                 nativeProjTransformer.initCsToCs("EPSG:4326", "EPSG:" + s);
-                                nativeProjTransformerToGeo.initCsToCs(  "EPSG:" + s,"EPSG:4326");
+                                nativeProjTransformerToGeo.initCsToCs("EPSG:" + s, "EPSG:4326");
                                 break;
                         }
 
@@ -398,7 +401,7 @@ public class ReadProjectService extends Service {
 
                         nativeProjTransformerToGeo = new NativeProjTransformer();
                         nativeProjTransformerToGeo.init(ctx);
-                        nativeProjTransformerToGeo.initCsToCs("EPSG:" + DataSaved.SECONDO_S_CRS,"EPSG:4326" );
+                        nativeProjTransformerToGeo.initCsToCs("EPSG:" + DataSaved.SECONDO_S_CRS, "EPSG:4326");
 
                         // VERSIONE NUOVA DELLA FACTORY, SENZA Proj4J
                         model = LocalizationFactory.fromFile(
@@ -411,7 +414,7 @@ public class ReadProjectService extends Service {
                         model = null;
                         Log.e("TestDeg2UTM", Log.getStackTraceString(e));
                     }
-                }else {
+                } else {
                     Log.e("TestDeg2UTM", "Error Reading File");
                 }
             }
@@ -540,6 +543,241 @@ public class ReadProjectService extends Service {
         }
     }
 
+    private void Execute_MC_Easy() {
+        startCRS();
+        if (DataSaved.dxfLayers_DTM == null) {
+            DataSaved.dxfLayers_DTM = new ArrayList<>();
+        }
+        if (DataSaved.dxfLayers_POLY == null) {
+            DataSaved.dxfLayers_POLY = new ArrayList<>();
+        }
+        if (DataSaved.dxfLayers_POINT == null) {
+            DataSaved.dxfLayers_POINT = new ArrayList<>();
+        }
+        String nomeProgettoTRM = MyData.get_String("progettoSelected");
+        int lastIndexTRM = nomeProgettoTRM.lastIndexOf(".");
+        String fileExtensionTRM = nomeProgettoTRM.substring(lastIndexTRM + 1);
+
+        String nomeProgettoPOLY = MyData.get_String("progettoSelected_POLY");
+        mettiPoly = nomeProgettoPOLY != null && !nomeProgettoPOLY.equals("");
+        if (nomeProgettoPOLY == null || nomeProgettoPOLY.equals("")) {
+            isFinishedPOLY = true;
+        }
+
+        String nomeProgettoPOINT = MyData.get_String("progettoSelected_POINT");
+        mettiPunti = nomeProgettoPOINT != null && !nomeProgettoPOINT.equals("");
+        if (nomeProgettoPOINT == null || nomeProgettoPOINT.equals("")) {
+            isFinishedPOINT = true;
+        }
+        if (!nomeProgettoTRM.equals("")) {
+            try {
+                if (mettiPoly) {
+                    int lastIndexPOLY = nomeProgettoPOLY.lastIndexOf(".");
+                    fileExtensionPOLY = nomeProgettoPOLY.substring(lastIndexPOLY + 1);
+                    DataSaved.progettoSelected_POLY = nomeProgettoPOLY;
+                } else {
+                    if (DataSaved.polylines != null) {
+                        DataSaved.polylines.clear();
+                    }
+                    if (DataSaved.polylines_2D != null) {
+                        DataSaved.polylines_2D.clear();
+                    }
+                    if (DataSaved.arcs != null) {
+                        DataSaved.arcs.clear();
+                    }
+                    if (DataSaved.circles != null) {
+                        DataSaved.circles.clear();
+                    }
+                    if (DataSaved.lines_2D != null) {
+                        DataSaved.lines_2D.clear();
+                    }
+                    if (DataSaved.dxfLayers_POLY != null) {
+                        DataSaved.dxfLayers_POLY.clear();
+                    }
+
+
+                }
+                if (mettiPunti) {
+                    int lastIndexPOINT = nomeProgettoPOINT.lastIndexOf(".");
+                    fileExtensionPOINT = nomeProgettoPOINT.substring(lastIndexPOINT + 1);
+                    DataSaved.progettoSelected_POINT = nomeProgettoPOINT;
+                } else {
+                    if (DataSaved.dxfTexts != null) {
+                        DataSaved.dxfTexts.clear();
+                    }
+                    if (DataSaved.points != null) {
+                        DataSaved.points.clear();
+                    }
+                    if (DataSaved.dxfLayers_POINT != null) {
+                        DataSaved.dxfLayers_POINT.clear();
+                    }
+                }
+                parserStatus = "Reading TRM...";
+
+                switch (fileExtensionTRM.toLowerCase()) {
+                    case "pstx":
+                        isFinishedDTM = false;
+                        DataSaved.projectTAG = "DXF";
+                        if (MyData.get_String("ZDXF") == null) {
+                            MyData.push("ZDXF", "0.0");
+                            DataSaved.offset_Z_antenna = 0;
+                        } else {
+                            DataSaved.offset_Z_antenna = MyData.get_Double("ZDXF");
+                        }
+                        try {
+                            uom = MyData.get_Int("Unit_Of_Measure");
+                        } catch (NumberFormatException e) {
+                            uom = 0;
+                        }
+                        isFeet = uom > 1;
+                        if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
+
+                            DataSaved.filteredFaces = new ArrayList<>();
+                            DataSaved.dxfFaces = new ArrayList<>();
+                            dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
+                            dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
+                            DataSaved.dxfFaces = dxfData.getFaces();
+                            DataSaved.dxfLayers_DTM = dxfData.getLayers();
+                            copiaFacce();
+
+                        } else {
+                            isFinishedDTM = true;
+                        }
+                        if (!DataSaved.lastProjectNamePOLY.equals(nomeProgettoPOLY)) {
+                            isFinishedPOLY = false;
+                            DataSaved.polylines = new ArrayList<>();
+                            DataSaved.polylines_2D = new ArrayList<>();
+                            DataSaved.arcs = new ArrayList<>();
+                            DataSaved.circles = new ArrayList<>();
+                            DataSaved.lines_2D = new ArrayList<>();
+
+                            if (mettiPoly) {
+                                switch (fileExtensionPOLY.toLowerCase()) {
+                                    case "pstx":
+                                        parserStatus = "Reading Polylines...";
+                                        dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                        dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
+                                        DataSaved.polylines = dxfDataPoly.getPolylines();
+                                        DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
+                                        DataSaved.arcs = dxfDataPoly.getArcs();
+                                        DataSaved.circles = dxfDataPoly.getCircles();
+                                        DataSaved.lines_2D = dxfDataPoly.getLines();
+                                        DataSaved.dxfLayers_POLY = dxfDataPoly.getLayers();
+                                        copiaPoly();
+                                        break;
+                                }
+
+                            }
+
+
+                        } else {
+                            isFinishedPOLY = true;
+                        }
+                        if (!DataSaved.lastProjectNamePOINT.equals(nomeProgettoPOINT)) {
+                            isFinishedPOINT = false;
+                            DataSaved.points = new ArrayList<>();
+                            DataSaved.dxfTexts = new ArrayList<>();
+
+                            if (mettiPunti) {
+                                switch (fileExtensionPOINT.toLowerCase()) {
+                                    case "dxf":
+
+                                        parserStatus = "Reading Points...";
+                                        dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                        dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                        DataSaved.points = dxfDataPoint.getPoints();
+                                        DataSaved.dxfTexts = dxfDataPoint.getTexts();
+                                        DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
+                                        break;
+                                    case "pstx":
+                                        parserStatus = "Reading Points...";
+                                        dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                        dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
+                                        DataSaved.points = dxfDataPoint.getPoints();
+                                        DataSaved.dxfTexts = dxfDataPoint.getTexts();
+                                        DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
+                                        break;
+                                    case "xml":
+
+                                        parserStatus = "Reading Points...";
+                                        landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
+                                        DataSaved.points = landXMLPOINT.getPoints();
+                                        DataSaved.dxfTexts = landXMLPOINT.getTexts();
+                                        DataSaved.dxfLayers_POINT = landXMLPOINT.getLayers();
+                                        break;
+
+                                    case "csv":
+                                        //parsare pnezd
+                                        scanPNEZD(conversionFactor);
+                                        isFinishedPOINT = true;
+                                        My3DActivity.PNEZD_FUNCTION = true;
+                                        break;
+                                }
+                            }
+
+                        } else {
+                            isFinishedPOINT = true;
+                        }
+
+
+                        if (DataSaved.dxfFaces != null && (!DataSaved.lastProjectName.equals(nomeProgettoTRM))) {
+
+                            if (DataSaved.dxfFaces.size() <= 2500) {
+                                DataSaved.RaggioDXF = 10000d;
+                                MyData.push("glFilter", String.valueOf(false));
+                            } else {
+
+                                DataSaved.RaggioDXF = 40;
+                                MyData.push("glFilter", String.valueOf(true));
+                            }
+                        }
+                        // Imposta isReading su false
+                        if (DataSaved.polylines == null && DataSaved.points == null) {
+                            DataSaved.isAutoSnap = 0;
+                        }
+
+                        DataSaved.lastProjectName = nomeProgettoTRM;
+                        DataSaved.lastProjectNamePOLY = nomeProgettoPOLY;
+                        DataSaved.lastProjectNamePOINT = nomeProgettoPOINT;
+
+
+                        waitForWLThenStartActivity();
+
+
+                        break;
+
+                    default:
+                        DataSaved.isAutoSnap = 0;
+                        Intent intent = new Intent(MyApp.visibleActivity, PickProject.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        MyApp.visibleActivity.finish();
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                DataSaved.isAutoSnap = 0;
+                ERRORE_PROGETTO = true;
+
+                DataSaved.offset_Z_antenna = 0;
+                Intent intent = new Intent(MyApp.visibleActivity, PickProject.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                MyApp.visibleActivity.finish();
+
+            }
+        } else {
+
+            DataSaved.isAutoSnap = 0;
+            Intent intent = new Intent(MyApp.visibleActivity, PickProject.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            MyApp.visibleActivity.finish();
+
+        }
+    }
+
     private void Execute_MC() {
         startCRS();
         if (DataSaved.dxfLayers_DTM == null) {
@@ -613,178 +851,8 @@ public class ReadProjectService extends Service {
                     }
                     parserStatus = "Reading TRM...";
 
-                    switch (fileExtensionTRM.toLowerCase()){
+                    switch (fileExtensionTRM.toLowerCase()) {
                         case "dxf":
-                            if (MyApp.licenseType > MC_2D&&(licenseType!=MC_3D_EASY&&licenseType!=MC_3D_EASY_AUTO)) {
-                                isFinishedDTM = false;
-                                DataSaved.projectTAG = "DXF";
-                                if (MyData.get_String("ZDXF") == null) {
-                                    MyData.push("ZDXF", "0.0");
-                                    DataSaved.offset_Z_antenna = 0;
-                                } else {
-                                    DataSaved.offset_Z_antenna = MyData.get_Double("ZDXF");
-                                }
-                                try {
-                                    uom = MyData.get_Int("Unit_Of_Measure");
-                                } catch (NumberFormatException e) {
-                                    uom = 0;
-                                }
-                                isFeet = uom > 1;
-                                if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
-                                    if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                        isFinishedDTM = true;
-                                    } else {
-                                        DataSaved.filteredFaces = new ArrayList<>();
-                                        DataSaved.dxfFaces = new ArrayList<>();
-                                        dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
-
-                                        dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
-                                        DataSaved.dxfFaces = dxfData.getFaces();
-                                        DataSaved.dxfLayers_DTM = dxfData.getLayers();
-                                        copiaFacce();
-                                    }
-                                } else {
-                                    isFinishedDTM = true;
-                                }
-                                if (!DataSaved.lastProjectNamePOLY.equals(nomeProgettoPOLY)) {
-                                    isFinishedPOLY = false;
-                                    DataSaved.polylines = new ArrayList<>();
-                                    DataSaved.polylines_2D = new ArrayList<>();
-                                    DataSaved.arcs = new ArrayList<>();
-                                    DataSaved.circles = new ArrayList<>();
-                                    DataSaved.lines_2D = new ArrayList<>();
-
-                                    if (mettiPoly) {
-                                        switch (fileExtensionPOLY.toLowerCase()) {
-                                            case "dxf":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOLY = true;
-                                                    break;
-                                                }
-                                                parserStatus = "Reading Polylines...";
-                                                dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
-                                                dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
-                                                DataSaved.polylines = dxfDataPoly.getPolylines();
-                                                DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
-                                                DataSaved.arcs = dxfDataPoly.getArcs();
-                                                DataSaved.circles = dxfDataPoly.getCircles();
-                                                DataSaved.lines_2D = dxfDataPoly.getLines();
-                                                DataSaved.dxfLayers_POLY = dxfDataPoly.getLayers();
-                                                copiaPoly();
-                                                break;
-                                            case "pstx":
-                                                parserStatus = "Reading Polylines...";
-                                                dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
-                                                dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
-                                                DataSaved.polylines = dxfDataPoly.getPolylines();
-                                                DataSaved.polylines_2D = dxfDataPoly.getPolylines_2D();
-                                                DataSaved.arcs = dxfDataPoly.getArcs();
-                                                DataSaved.circles = dxfDataPoly.getCircles();
-                                                DataSaved.lines_2D = dxfDataPoly.getLines();
-                                                DataSaved.dxfLayers_POLY = dxfDataPoly.getLayers();
-                                                copiaPoly();
-                                                break;
-                                            case "xml":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOLY = true;
-                                                    break;
-                                                }
-                                                parserStatus = "Reading Polylines...";
-                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
-                                                DataSaved.polylines = landXMLPOLY.getPolylines();
-                                                DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
-                                                copiaPoly();
-                                                break;
-                                        }
-
-                                    }
-
-
-                                } else {
-                                    isFinishedPOLY = true;
-                                }
-                                if (!DataSaved.lastProjectNamePOINT.equals(nomeProgettoPOINT)) {
-                                    isFinishedPOINT = false;
-                                    DataSaved.points = new ArrayList<>();
-                                    DataSaved.dxfTexts = new ArrayList<>();
-
-                                    if (mettiPunti) {
-                                        switch (fileExtensionPOINT.toLowerCase()) {
-                                            case "dxf":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOINT = true;
-                                                    break;
-                                                }
-                                                parserStatus = "Reading Points...";
-                                                dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
-                                                dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
-                                                DataSaved.points = dxfDataPoint.getPoints();
-                                                DataSaved.dxfTexts = dxfDataPoint.getTexts();
-                                                DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
-                                                break;
-                                            case "pstx":
-                                                parserStatus = "Reading Points...";
-                                                dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
-                                                dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
-                                                DataSaved.points = dxfDataPoint.getPoints();
-                                                DataSaved.dxfTexts = dxfDataPoint.getTexts();
-                                                DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
-                                                break;
-                                            case "xml":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOINT = true;
-                                                    break;
-                                                }
-                                                parserStatus = "Reading Points...";
-                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
-                                                DataSaved.points = landXMLPOINT.getPoints();
-                                                DataSaved.dxfTexts = landXMLPOINT.getTexts();
-                                                DataSaved.dxfLayers_POINT = landXMLPOINT.getLayers();
-                                                break;
-
-                                            case "csv":
-                                                //parsare pnezd
-                                                scanPNEZD(conversionFactor);
-                                                isFinishedPOINT = true;
-                                                My3DActivity.PNEZD_FUNCTION = true;
-                                                break;
-                                        }
-                                    }
-
-                                } else {
-                                    isFinishedPOINT = true;
-                                }
-
-
-                                if (DataSaved.dxfFaces != null && (!DataSaved.lastProjectName.equals(nomeProgettoTRM))) {
-
-                                    if (DataSaved.dxfFaces.size() <= 2500) {
-                                        DataSaved.RaggioDXF = 10000d;
-                                        MyData.push("glFilter", String.valueOf(false));
-                                    } else {
-
-                                        DataSaved.RaggioDXF = 40;
-                                        MyData.push("glFilter", String.valueOf(true));
-                                    }
-                                }
-                                // Imposta isReading su false
-                                if (DataSaved.polylines == null && DataSaved.points == null) {
-                                    DataSaved.isAutoSnap = 0;
-                                }
-
-                                DataSaved.lastProjectName = nomeProgettoTRM;
-                                DataSaved.lastProjectNamePOLY = nomeProgettoPOLY;
-                                DataSaved.lastProjectNamePOINT = nomeProgettoPOINT;
-
-
-                                waitForWLThenStartActivity();
-
-
-                            } else {
-                                goToLicense();
-                            }
-                            break;
-
                         case "pstx":
                             if (MyApp.licenseType > MC_2D) {
                                 isFinishedDTM = false;
@@ -802,18 +870,16 @@ public class ReadProjectService extends Service {
                                 }
                                 isFeet = uom > 1;
                                 if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
-                                    if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                        isFinishedDTM = true;
-                                    } else {
-                                        DataSaved.filteredFaces = new ArrayList<>();
-                                        DataSaved.dxfFaces = new ArrayList<>();
-                                        dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
 
-                                        dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
-                                        DataSaved.dxfFaces = dxfData.getFaces();
-                                        DataSaved.dxfLayers_DTM = dxfData.getLayers();
-                                        copiaFacce();
-                                    }
+                                    DataSaved.filteredFaces = new ArrayList<>();
+                                    DataSaved.dxfFaces = new ArrayList<>();
+                                    dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
+
+                                    dxfData = DXFParser_20.parseDXF(nomeProgettoTRM, conversionFactor);
+                                    DataSaved.dxfFaces = dxfData.getFaces();
+                                    DataSaved.dxfLayers_DTM = dxfData.getLayers();
+                                    copiaFacce();
+
                                 } else {
                                     isFinishedDTM = true;
                                 }
@@ -828,10 +894,7 @@ public class ReadProjectService extends Service {
                                     if (mettiPoly) {
                                         switch (fileExtensionPOLY.toLowerCase()) {
                                             case "dxf":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOLY = true;
-                                                    break;
-                                                }
+
                                                 parserStatus = "Reading Polylines...";
                                                 dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                                 dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
@@ -856,10 +919,7 @@ public class ReadProjectService extends Service {
                                                 copiaPoly();
                                                 break;
                                             case "xml":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOLY = true;
-                                                    break;
-                                                }
+
                                                 parserStatus = "Reading Polylines...";
                                                 landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
                                                 DataSaved.polylines = landXMLPOLY.getPolylines();
@@ -882,10 +942,7 @@ public class ReadProjectService extends Service {
                                     if (mettiPunti) {
                                         switch (fileExtensionPOINT.toLowerCase()) {
                                             case "dxf":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOINT = true;
-                                                    break;
-                                                }
+
                                                 parserStatus = "Reading Points...";
                                                 dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                                 dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
@@ -902,10 +959,7 @@ public class ReadProjectService extends Service {
                                                 DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
                                                 break;
                                             case "xml":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOINT = true;
-                                                    break;
-                                                }
+
                                                 parserStatus = "Reading Points...";
                                                 landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
                                                 DataSaved.points = landXMLPOINT.getPoints();
@@ -957,7 +1011,7 @@ public class ReadProjectService extends Service {
                             break;
 
                         case "xml":
-                            if (MyApp.licenseType > MC_2D&&(licenseType!=MC_3D_EASY&&licenseType!=MC_3D_EASY_AUTO)) {
+                            if (MyApp.licenseType > MC_2D) {
 
                                 isFinishedDTM = false;
                                 DataSaved.projectTAG = "XML";
@@ -975,19 +1029,14 @@ public class ReadProjectService extends Service {
                                 isFeet = uom > 1;
                                 parserStatus = "Reading TRM...";
                                 if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
-                                    if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                        isFinishedDTM = true;
+                                    DataSaved.filteredFaces = new ArrayList<>();
+                                    DataSaved.dxfFaces = new ArrayList<>();
+                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor);
+                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor);
+                                    DataSaved.dxfFaces = landXMLData.getFaces();
+                                    DataSaved.dxfLayers_DTM = landXMLData.getLayers();
+                                    copiaFacce();
 
-                                    } else {
-
-                                        DataSaved.filteredFaces = new ArrayList<>();
-                                        DataSaved.dxfFaces = new ArrayList<>();
-                                        landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor);
-                                        landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor);
-                                        DataSaved.dxfFaces = landXMLData.getFaces();
-                                        DataSaved.dxfLayers_DTM = landXMLData.getLayers();
-                                        copiaFacce();
-                                    }
                                 } else {
                                     isFinishedDTM = true;
                                 }
@@ -1001,10 +1050,7 @@ public class ReadProjectService extends Service {
                                     if (mettiPoly) {
                                         switch (fileExtensionPOLY.toLowerCase()) {
                                             case "dxf":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOLY = true;
-                                                    break;
-                                                }
+
 
                                                 parserStatus = "Reading Polylines...";
                                                 dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
@@ -1030,10 +1076,7 @@ public class ReadProjectService extends Service {
                                                 copiaPoly();
                                                 break;
                                             case "xml":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOLY = true;
-                                                    break;
-                                                }
+
                                                 parserStatus = "Reading Polylines...";
                                                 landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
                                                 DataSaved.polylines = landXMLPOLY.getPolylines();
@@ -1056,10 +1099,7 @@ public class ReadProjectService extends Service {
                                     if (mettiPunti) {
                                         switch (fileExtensionPOINT.toLowerCase()) {
                                             case "dxf":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOINT = true;
-                                                    break;
-                                                }
+
                                                 parserStatus = "Reading Points...";
                                                 dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                                 dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
@@ -1076,10 +1116,7 @@ public class ReadProjectService extends Service {
                                                 DataSaved.dxfLayers_POINT = dxfDataPoint.getLayers();
                                                 break;
                                             case "xml":
-                                                if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                                    isFinishedPOINT = true;
-                                                    break;
-                                                }
+
                                                 parserStatus = "Reading Points...";
                                                 landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
                                                 DataSaved.points = landXMLPOINT.getPoints();
@@ -1124,7 +1161,8 @@ public class ReadProjectService extends Service {
 
 
                             } else {
-                                goToLicense();}
+                                goToLicense();
+                            }
                             break;
 
                         default:
@@ -1179,7 +1217,7 @@ public class ReadProjectService extends Service {
         if (nomeProgettoPOLY == null || nomeProgettoPOLY.equals("")) {
             isFinishedPOLY = true;
         }
-        if (MyApp.licenseType ==MC_3D_PRO|| licenseType==MC_3D_PRO_AUTO) {
+        if (MyApp.licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO) {
             if (nomeProgettoPOINT != null && !nomeProgettoPOINT.equals("")) {
                 //TODO Read DRrill
                 try {
@@ -1240,19 +1278,13 @@ public class ReadProjectService extends Service {
 
                             switch (fileExtensionPOINT.toLowerCase()) {
                                 case "dxf":
-                                    if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                        isFinishedPOINT = true;
-                                        break;
-                                    }
+
                                     parserStatus = "Reading Points...";
                                     dxfDataPoint = DXFParser_20.parseDXF(DataSaved.progettoSelected_POINT, conversionFactor);
                                     DataSaved.drill_points = dxfDataPoint.getDrill_points();
                                     break;
                                 case "xml":
-                                    if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                        isFinishedPOINT = true;
-                                        break;
-                                    }
+
                                     //TODO CGPOINTS
                                     parserStatus = "Reading Points...";
                                     landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor);
@@ -1268,19 +1300,13 @@ public class ReadProjectService extends Service {
 
                                     break;
                                 case "ird":
-                                    if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                        isFinishedPOINT = true;
-                                        break;
-                                    }
+
                                     parserStatus = "Reading Points...";
                                     DataSaved.drill_points = IrdParser.parseIrd(DataSaved.progettoSelected_POINT, 0, conversionFactor);
                                     break;
                                 case "xlsx":
                                 case "xls":
-                                    if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                        isFinishedPOINT = true;
-                                        break;
-                                    }
+
                                     parserStatus = "Reading Points..." + "\n...WAIT...";
                                     DataSaved.drill_points = JetXlsxParser.parseJetXlsx(
                                             DataSaved.progettoSelected_POINT,
@@ -1326,9 +1352,7 @@ public class ReadProjectService extends Service {
                         if (mettiPoly) {
                             switch (fileExtensionPOLY.toLowerCase()) {
                                 case "dxf":
-                                    if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                        break;
-                                    }
+
                                     parserStatus = "Reading Polylines...";
                                     dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
                                     dxfDataPoly = DXFParser_20.parseDXF(DataSaved.progettoSelected_POLY, conversionFactor);
@@ -1341,9 +1365,7 @@ public class ReadProjectService extends Service {
                                     copiaPoly();
                                     break;
                                 case "xml":
-                                    if (licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
-                                        break;
-                                    }
+
                                     parserStatus = "Reading Polylines...";
                                     landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
                                     DataSaved.polylines = landXMLPOLY.getPolylines();
@@ -1437,7 +1459,7 @@ public class ReadProjectService extends Service {
         for (iredes.Point3D_Drill p : DataSaved.drill_points) {
             if (p == null) continue;
 
-            String holeId =canonicalHoleId(p);
+            String holeId = canonicalHoleId(p);
             if (holeId.isEmpty()) continue;
 
             ProjectStateCsvStore.HoleState st = stateStore.getState(holeId);

@@ -3,10 +3,10 @@ package gui.boot_and_choose;
 import static gui.MyApp.DEVICE_SN;
 import static gui.MyApp.UPDATE_CHECKED;
 import static gui.MyApp.deu;
+import static gui.MyApp.errorCode;
 import static gui.MyApp.folderPath;
 import static gui.MyApp.geoidAll;
 import static gui.MyApp.licenseType;
-import static gui.MyApp.errorCode;
 import static gui.MyApp.listFilesInFolderGeoid;
 import static gui.MyApp.numGeoidiInterni;
 import static gui.MyApp.updateGeoidFolderFromCloud;
@@ -41,7 +41,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -70,10 +69,10 @@ import utils.MyDeviceManager;
 
 public class Activity_Home_Page extends BaseClass {
     public static boolean HasDownloaded;
-    ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo,testSP,checkUpdates;
+    ImageView close, toDig, joblist, lock, keyLic, wif, newProj, toDueD, toMachines, toUser, appInfo, testSP, checkUpdates;
     CloseAppDialog closeAppDialog;
     ProgressBar progressBar;
-    TextView stringsStat, titolo,txt2d;
+    TextView stringsStat, titolo, txt2d;
     DialogPassword dialogPassword;
     Dialog_Create_New_Prj dialogCreateNewPrj;
     Dialog_InfoApp dialogInfoApp;
@@ -90,7 +89,7 @@ public class Activity_Home_Page extends BaseClass {
             MyData.push("language", "en_GB");
         }
         setContentView(R.layout.activity_home_page);
-        DataSaved.portView=2;
+        DataSaved.portView = 2;
         findView();
 
         if (!startedService) {
@@ -113,9 +112,17 @@ public class Activity_Home_Page extends BaseClass {
 
         onClick();
         scaricaGeoidi();
+        if (licenseType == MC_1D ||
+                licenseType == MC_2D ||
+                licenseType == MC_3D_EASY ||
+                licenseType == MC_3D_EASY_AUTO) {
+            DataSaved.Extra_Heading =0;
+            MyData.push("M" + 1 + "Extra_Heading", "0");
+            MyData.push("M" + 2 + "Extra_Heading", "0");
+            MyData.push("M" + 3 + "Extra_Heading", "0");
+            MyData.push("M" + 4 + "Extra_Heading", "0");
 
-
-
+        }
 
 
     }
@@ -139,15 +146,15 @@ public class Activity_Home_Page extends BaseClass {
     }
 
     private void findView() {
-        checkUpdates=findViewById(R.id.checkUpdates);
-        txt2d=findViewById(R.id.textView3);
+        checkUpdates = findViewById(R.id.checkUpdates);
+        txt2d = findViewById(R.id.textView3);
         closeAppDialog = new CloseAppDialog(this);
         dialogPassword = new DialogPassword(this);
         dialogCreateNewPrj = new Dialog_Create_New_Prj(this);
         dialogInfoApp = new Dialog_InfoApp(this);
-        dialogGnssCoordinates=new Dialog_GNSS_Coordinates(this);
-        dialogDrillGnss=new Dialog_Drill_GNSS(this);
-        dialogToDueDi=new Dialog_To_DueDi(this);
+        dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
+        dialogDrillGnss = new Dialog_Drill_GNSS(this);
+        dialogToDueDi = new Dialog_To_DueDi(this);
         close = findViewById(R.id.btn_1);
         progressBar = findViewById(R.id.progressBar);
         stringsStat = findViewById(R.id.stringastat);
@@ -162,7 +169,7 @@ public class Activity_Home_Page extends BaseClass {
         toUser = findViewById(R.id.img_1);
         newProj = findViewById(R.id.img_4);
         appInfo = findViewById(R.id.btn_3);
-        testSP=findViewById(R.id.testSP);
+        testSP = findViewById(R.id.testSP);
         try {
             String s = MyData.get_String("progettoSelected");
             s = s.replace("/storage/emulated/0/StonexMC_V4", "");
@@ -176,15 +183,15 @@ public class Activity_Home_Page extends BaseClass {
 
         progressBar.setVisibility(View.INVISIBLE);
         stringsStat.setVisibility(View.INVISIBLE);
-        if (licenseType ==MC_1D||licenseType==MC_2D) {
+        if (licenseType == MC_1D || licenseType == MC_2D) {
             newProj.setAlpha(0.3f);
             toDig.setAlpha(0.3f);
             joblist.setAlpha(0.3f);
 
-        }else {
-            DataSaved.portView=2;
+        } else {
+            DataSaved.portView = 2;
         }
-        switch (DataSaved.isWL){
+        switch (DataSaved.isWL) {
             case EXCAVATOR:
                 toDueD.setAlpha(1.0f);
                 toDueD.setImageResource(R.drawable.bottone_duedi);
@@ -210,16 +217,16 @@ public class Activity_Home_Page extends BaseClass {
 
     private void onClick() {
         checkUpdates.setOnClickListener(view -> {
-            if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){
-                new CustomToast(this,"Device Not Supported").show_error();
-            }else {
-                if(isTech) {
+            if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS")) {
+                new CustomToast(this, "Device Not Supported").show_error();
+            } else {
+                if (isTech) {
                     if (DataSaved.ConnectionStatus == 1 || DataSaved.ConnectionStatus == 2) {
                         updateCheck();
                     } else {
                         new CustomToast(this, "No Internet Connection").show_error();
                     }
-                }else {
+                } else {
 
                 }
             }
@@ -240,9 +247,9 @@ public class Activity_Home_Page extends BaseClass {
             }
         });
         toDueD.setOnClickListener(view -> {
-            switch (DataSaved.isWL){
+            switch (DataSaved.isWL) {
                 case EXCAVATOR:
-                    if(!dialogToDueDi.dialog.isShowing()){
+                    if (!dialogToDueDi.dialog.isShowing()) {
                         dialogToDueDi.show();
                     }
                     break;
@@ -258,18 +265,18 @@ public class Activity_Home_Page extends BaseClass {
 
         });
         keyLic.setOnClickListener(view -> {
-            if(DataSaved.isWL==DRILL){
+            if (DataSaved.isWL == DRILL) {
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
                 }
-            }else {
+            } else {
                 if (!dialogGnssCoordinates.alertDialog.isShowing()) {
                     dialogGnssCoordinates.show();
                 }
             }
         });
         newProj.setOnClickListener(view -> {
-            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO) {
+            if (licenseType == MC_3D_EASY || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO|| licenseType == MC_3D_EASY_AUTO) {
                 if (!dialogCreateNewPrj.dialog.isShowing()) {
                     dialogCreateNewPrj.show();
                 }
@@ -284,7 +291,7 @@ public class Activity_Home_Page extends BaseClass {
 
         });
         joblist.setOnClickListener((View v) -> {
-            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO||licenseType==MC_3D_EASY_AUTO) {
+            if (licenseType == MC_3D_EASY || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO || licenseType == MC_3D_EASY_AUTO) {
                 enableAll(false);
                 startActivity(new Intent(this, PickProject.class));
                 finish();
@@ -299,13 +306,13 @@ public class Activity_Home_Page extends BaseClass {
         toDig.setOnClickListener((View v) -> {
 
 
-            if (licenseType ==MC_3D_EASY||licenseType==MC_3D_PRO||licenseType==MC_3D_PRO_AUTO||licenseType==MC_3D_EASY_AUTO) {
+            if (licenseType == MC_3D_EASY || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO || licenseType == MC_3D_EASY_AUTO) {
                 enableAll(false);
-                    progressBar.setVisibility(View.VISIBLE);
-                    stringsStat.setVisibility(View.VISIBLE);
-                    startService(new Intent(this, ReadProjectService.class));
-            }else {
-                new CustomToast(this,"No License").show_alert();
+                progressBar.setVisibility(View.VISIBLE);
+                stringsStat.setVisibility(View.VISIBLE);
+                startService(new Intent(this, ReadProjectService.class));
+            } else {
+                new CustomToast(this, "No License").show_alert();
             }
 
         });
@@ -334,10 +341,10 @@ public class Activity_Home_Page extends BaseClass {
 
     public void updateUI() {
         try {
-            if(isTech){
+            if (isTech) {
                 checkUpdates.setVisibility(View.VISIBLE);
                 testSP.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 testSP.setVisibility(View.INVISIBLE);
                 checkUpdates.setVisibility(View.INVISIBLE);
             }
@@ -347,7 +354,7 @@ public class Activity_Home_Page extends BaseClass {
                 keyLic.setImageTintList(ColorStateList.valueOf(Color.RED));
             }
             try {
-                switch (DataSaved.ConnectionStatus){
+                switch (DataSaved.ConnectionStatus) {
                     case 0:
                         wif.setImageResource(R.drawable.network_off);
                         break;
@@ -421,11 +428,12 @@ public class Activity_Home_Page extends BaseClass {
 
 
     }
-    private void scaricaGeoidi(){
 
-        if(!HasDownloaded) {
+    private void scaricaGeoidi() {
+
+        if (!HasDownloaded) {
             try {
-                HasDownloaded=true;
+                HasDownloaded = true;
                 String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
                 updateGeoidFolderFromCloud(
                         pp,
@@ -448,13 +456,13 @@ public class Activity_Home_Page extends BaseClass {
                 }
 
                 newGeoidAll[originalLength] = deu;
-                newGeoidAll[originalLength+1] = usa;
+                newGeoidAll[originalLength + 1] = usa;
                 geoidAll = newGeoidAll;
             } catch (Exception e) {
-                HasDownloaded=false;
+                HasDownloaded = false;
                 Log.e("S3Test", "Manager initialized: " + e.getMessage());
             }
-        }else {
+        } else {
             try {
                 String pp = Environment.getExternalStorageDirectory().toString() + folderPath + "/Geoids/";
                 geoidAll = listFilesInFolderGeoid(pp);
@@ -468,7 +476,7 @@ public class Activity_Home_Page extends BaseClass {
                     System.arraycopy(geoidAll, 0, newGeoidAll, 0, originalLength);
                 }
                 newGeoidAll[originalLength] = deu;
-                newGeoidAll[originalLength+1] = usa;
+                newGeoidAll[originalLength + 1] = usa;
 
                 geoidAll = newGeoidAll;
             } catch (Exception ignored) {
@@ -483,19 +491,20 @@ public class Activity_Home_Page extends BaseClass {
 
 
     }
+
     public void updateCheck() {
         Log.d("CheckUpdate", "START.." + UPDATE_CHECKED);
-        new CustomToast(this,"Check update START").show_alert();
+        new CustomToast(this, "Check update START").show_alert();
 
         if (UPDATE_CHECKED) {
             Log.d("CheckUpdate", "SKIPPED, already running");
-            new CustomToast(this,"Check already running").show_alert();
+            new CustomToast(this, "Check already running").show_alert();
             return;
         }
 
         UPDATE_CHECKED = true;
         Log.d("CheckUpdate", "STARTED.." + UPDATE_CHECKED);
-        new CustomToast(this,"Check update STARTED").show_alert();
+        new CustomToast(this, "Check update STARTED").show_alert();
 
         UpdateChecker.checkForUpdate(this, new UpdateChecker.Callback() {
             @Override

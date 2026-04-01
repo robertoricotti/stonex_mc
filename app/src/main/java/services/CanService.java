@@ -621,7 +621,6 @@ public class CanService extends Service {
 
             }
 
-            MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, CanSender.GNSS_MSG, speed, (byte) 0x03});
             new OpenSerialPort(this);
         } catch (Exception e) {
             System.out.println(e);
