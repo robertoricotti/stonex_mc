@@ -39,6 +39,7 @@ import packexcalib.exca.DataSaved;
 
 public class GLDrawer {
     //CULLING HELPERS
+    private static final float BILLBOARD_TEXT_SCALE = 0.50f;
     private static final float CULL_MARGIN_XY = 0.15f;
     private static final float CULL_MARGIN_Z = 0.10f;
 
@@ -598,8 +599,8 @@ public class GLDrawer {
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-        float charW = atlas.getCellSize() * scala * 0.01f;
-        float charH = atlas.getCellSize() * scala * 0.01f;
+        float charW = getBillboardCharWidth(atlas, scala);
+        float charH = getBillboardCharHeight(atlas, scala);
 
         float[] right = getCameraRight();
         float[] up = getCameraUp();
@@ -620,8 +621,8 @@ public class GLDrawer {
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-        float charW = atlas.getCellSize() * scala * 0.01f;
-        float charH = atlas.getCellSize() * scala * 0.01f;
+        float charW = getBillboardCharWidth(atlas, scala);
+        float charH = getBillboardCharHeight(atlas, scala);
 
         float[] right = getCameraRight();
         float[] up = getCameraUp();
@@ -636,6 +637,28 @@ public class GLDrawer {
 
             drawBillboardString(str, baseX, baseY, baseZ, charW, charH, charSpacingFactor, atlas, right, up);
         }
+    }
+
+    private static float getBillboardCharWidth(FontAtlas atlas, float scala) {
+        if (atlas == null) return 0f;
+
+        if (isOrtho2D) {
+            float targetPx = Math.max(8f, atlas.getCellSize() * BILLBOARD_TEXT_SCALE);
+            return pixelsToWorldX(targetPx);
+        }
+
+        return atlas.getCellSize() * scala * 0.01f * BILLBOARD_TEXT_SCALE;
+    }
+
+    private static float getBillboardCharHeight(FontAtlas atlas, float scala) {
+        if (atlas == null) return 0f;
+
+        if (isOrtho2D) {
+            float targetPx = Math.max(8f, atlas.getCellSize() * BILLBOARD_TEXT_SCALE);
+            return pixelsToWorldY(targetPx);
+        }
+
+        return atlas.getCellSize() * scala * 0.01f * BILLBOARD_TEXT_SCALE;
     }
 
     private static void drawBillboardString(String str, float baseX, float baseY, float baseZ,
@@ -1936,6 +1959,7 @@ public class GLDrawer {
             Log.e(TAG, "drawFaces2D", e);
         }
     }
+
 }
 
 

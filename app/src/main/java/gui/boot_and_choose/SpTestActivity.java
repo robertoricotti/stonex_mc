@@ -19,6 +19,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.gnss.CoordinateXYZ;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.NmeaListener;
+import packexcalib.gnss.UTM2Deg;
 import services.ReadProjectService;
 import utils.MyData;
 
@@ -65,7 +66,7 @@ public class SpTestActivity extends Activity {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        btnToGeo.setVisibility(TextView.INVISIBLE);
+        //btnToGeo.setVisibility(TextView.INVISIBLE);
         etEst.setText("");
         etNord.setText("");
         etZ.setText("");
@@ -109,11 +110,11 @@ public class SpTestActivity extends Activity {
                     etEst.setText(sE);
                     etNord.setText(sN);
                     etZ.setText(sH);
-                    etDH.setText(String.format(Locale.US, "%.3f", NmeaListener.AGGIUNTA_HDT));
+                    etDH.setText(String.format(Locale.US, "%.2f", NmeaListener.AGGIUNTA_HDT)+" °");
 
 
-                    MyData.push("Test_sLat", String.format(Locale.US, "%.9f", lat));
-                    MyData.push("Test_sLon", String.format(Locale.US, "%.9f", lon));
+                    MyData.push("Test_sLat", String.format(Locale.US, "%.11f", lat));
+                    MyData.push("Test_sLon", String.format(Locale.US, "%.11f", lon));
                     MyData.push("Test_sHll", String.format(Locale.US, "%.3f", h));
                     updateLLQ();
 
@@ -122,6 +123,27 @@ public class SpTestActivity extends Activity {
                 }
 
 
+        });
+
+        btnToGeo.setOnClickListener(view -> {
+            try {
+                double est = Double.parseDouble(etEst.getText().toString().replace(",", "."));
+                double nord = Double.parseDouble(etNord.getText().toString().replace(",", "."));
+                double quota = Double.parseDouble(etZ.getText().toString().replace(",", "."));
+
+                double[] coordinates = UTM2Deg.toGeo(est, nord, quota, DataSaved.S_CRS);
+
+                sLat = String.format(Locale.US, "%.11f", coordinates[0]);
+                sLon = String.format(Locale.US, "%.11f", coordinates[1]);
+                sHll = String.format(Locale.US, "%.3f", coordinates[2]);
+
+                etLat.setText(sLat);
+                etLon.setText(sLon);
+                etH.setText(sHll);
+
+            } catch (Exception e) {
+                log("Error: " + e.getMessage());
+            }
         });
 
 

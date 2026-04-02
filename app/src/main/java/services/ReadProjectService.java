@@ -423,31 +423,7 @@ public class ReadProjectService extends Service {
             Log.e("TestDeg2UTM", Log.getStackTraceString(e));
         }
 
-        byte speed = 0;
-        switch (DataSaved.reqSpeed) {
-            case 0:
-                speed = 5;
-                break;
-            case 1:
-                speed = 4;
-                break;
-            case 2:
-                speed = 3;
-                break;
-            case 3:
-                speed = 0;
-                break;
-        }
 
-        DataSaved.gpsOk = false;
-
-        MyDeviceManager.CanWrite(
-                true,
-                0,
-                0x18FF0001,
-                4,
-                new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03}
-        );
 
     }
 

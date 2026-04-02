@@ -146,7 +146,7 @@ public class CanSender extends Service {
         handlerThread = new HandlerThread("CanSenderWorker");
         handlerThread.start();
 
-        handler = new Handler(handlerThread.getLooper());  // <-- ADESSO funziona!
+        handler = new Handler(handlerThread.getLooper());
 
         super.onCreate();
     }
@@ -170,7 +170,7 @@ public class CanSender extends Service {
 
         scheduledExecutorService1min.scheduleAtFixedRate(new AsyncSender1min(), 1000, 60000, TimeUnit.MILLISECONDS);
 
-        handler.post(task); // o postDelayed...
+        handler.post(task);
 
 
         return START_STICKY;
@@ -449,7 +449,7 @@ public class CanSender extends Service {
                     }
                 }
 
-                MyDeviceManager.CanWrite(true,0, 160, 8, new byte[]{d0, 0, onGrade, 0, 0, (byte) 160, (byte) 168, 0});
+                //MyDeviceManager.CanWrite(true,0, 160, 8, new byte[]{d0, 0, onGrade, 0, 0, (byte) 160, (byte) 168, 0});
             } catch (Exception e) {
 
             }
