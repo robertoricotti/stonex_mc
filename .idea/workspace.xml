@@ -27,6 +27,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_savemch.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_update.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -590,31 +595,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 Pre Release test 3deasy">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/gnss/UTM2Deg.java" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.0 Pre Release test 3deasy OK">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/bottone_savemch.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/cache-v2-287fed60c10bf5cdb353.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/cmakeFiles-v1-828e7a14a437cbed6842.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/index-2026-03-26T12-32-33-0059.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/android_gradle_build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/android_gradle_build_mini.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/build.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/compile_commands.json.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/compile_commands.json.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/metadata_generation_command.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/metadata_generation_command.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/prefab_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/prefab_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/.cmake/api/v1/reply/index-2026-03-26T12-31-11-0745.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/hash_key.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/hash_key.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/SpTestActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GLDrawer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GLDrawer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_network_config_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_network_config_settings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -866,14 +851,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00147" summary="4.1.0 da testare a runtime">
-      <option name="closed" value="true" />
-      <created>1773170659759</created>
-      <option name="number" value="00147" />
-      <option name="presentableId" value="LOCAL-00147" />
-      <option name="project" value="LOCAL" />
-      <updated>1773170659759</updated>
     </task>
     <task id="LOCAL-00148" summary="4.1.0 rototilt da finire di fixare.BIG ISSUE">
       <option name="closed" value="true" />
@@ -1259,7 +1236,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775062172689</updated>
     </task>
-    <option name="localTasksCounter" value="196" />
+    <task id="LOCAL-00196" summary="4.1.0 Pre Release test 3deasy OK">
+      <option name="closed" value="true" />
+      <created>1775140892550</created>
+      <option name="number" value="00196" />
+      <option name="presentableId" value="LOCAL-00196" />
+      <option name="project" value="LOCAL" />
+      <updated>1775140892551</updated>
+    </task>
+    <option name="localTasksCounter" value="197" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1275,7 +1260,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.0 tentativo aggiunta hdt" />
     <MESSAGE value="4.1.0 da finire crs nederland" />
     <MESSAGE value="4.1.0 SP ok" />
     <MESSAGE value="4.1.0 da testare a runtime" />
@@ -1300,7 +1284,8 @@
     <MESSAGE value="4.1.0 update apk da github" />
     <MESSAGE value="4.1.0 Pre Release" />
     <MESSAGE value="4.1.0 Pre Release test 3deasy" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 Pre Release test 3deasy" />
+    <MESSAGE value="4.1.0 Pre Release test 3deasy OK" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.0 Pre Release test 3deasy OK" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
