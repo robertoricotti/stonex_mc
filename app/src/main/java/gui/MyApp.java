@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -127,6 +128,7 @@ import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.GridShiftTransformer;
 import packexcalib.gnss.NmeaListener;
+import packexcalib.gnss.UTM2Deg;
 import services.CanSender;
 import services.CanService;
 import services.TriangleService;
@@ -494,7 +496,9 @@ git push
                         @SuppressLint({"SetTextI18n", "DefaultLocale"})
                         @Override
                         public void run() {
-                            Log.d("DDDDDDIO", String.valueOf(DataSaved.L_RotoToBucket));
+
+
+
                             try {
                                 if (DataSaved.isWL == DRILL) {
                                     DataSaved.lrBucket = DataSaved.lrTool;
@@ -626,7 +630,7 @@ git push
                                 }
 
                             } catch (Exception e) {
-                                Log.e("TestCRSSS", Log.getStackTraceString(e));
+                                //Log.e("TestCRSSS", Log.getStackTraceString(e));
                                 hAlarm = false;
                                 isOffgrid = false;
                             }

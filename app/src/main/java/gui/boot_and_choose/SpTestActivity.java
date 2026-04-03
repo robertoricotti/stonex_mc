@@ -70,7 +70,7 @@ public class SpTestActivity extends Activity {
         etEst.setText("");
         etNord.setText("");
         etZ.setText("");
-        btnToLocal.setText("→ Transform in Local (N, E ,Z");
+        btnToLocal.setText("→ Transform in Local (N, E ,Z)");
 
         try {
 

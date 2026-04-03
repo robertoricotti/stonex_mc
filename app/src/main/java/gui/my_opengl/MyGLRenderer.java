@@ -128,12 +128,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
             setupProjection();
             setupViewMatrix(angleTest);
-
             Matrix.multiplyMM(vpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
             GL11.setCurrentViewProjectionMatrix(vpMatrix);
             GLDrawer.setViewMatrix(viewMatrix);
             GLDrawer.setViewProjectionMatrix(vpMatrix);
-
             setupCompatMatrix(angleTest);
 
             if (is3D) {
@@ -210,6 +208,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 break;
             case DOZER:
             case DOZER_SIX:
+                GL_DrawDozer.draw(gl11);
+//               if (DataSaved.drwaMachieSchema > 0) {
+//                   GL_DrawDozer.drawMachine(gl11);  // carro + cingoli + cabina
+//               }
             case GRADER:
                 GL_DrawDozer.draw(gl11);
                 break;

@@ -65,6 +65,8 @@ import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.MC_2D;
+import static utils.MyTypes.MC_3D_EASY;
+import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.MC_3D_PRO;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.WHEELLOADER;
@@ -354,9 +356,9 @@ public class CanSender extends Service {
             try {
                 if (isTech) {
                     isTechCount++;
-                    if (isTechCount >= 900) {
+                    if (isTechCount >= 2000) {
                         isTechCount = 0;
-                        isTech = false;//Tech LogIn dosabled after 8 minutes inside a Work Activity
+                        isTech = false;//Tech LogIn dosabled after 20 minutes inside a Work Activity
                         isTech2 = false;
                     }
                 }
@@ -370,7 +372,7 @@ public class CanSender extends Service {
                 if(DataSaved.isCanOpen==JOYSTICKS){
                     DataSaved.gpsOk=true;
                 }else {
-                    if (licenseType == MC_3D_PRO_AUTO||licenseType==MC_3D_PRO||licenseType==MC_2D) {
+                    if (licenseType == MC_3D_PRO_AUTO||licenseType==MC_3D_PRO||licenseType==MC_2D||licenseType==MC_3D_EASY||licenseType==MC_3D_EASY_AUTO) {
                         switch (DataSaved.my_comPort) {
                             case 0:
                                 if (DataSaved.gpsType == 0) {

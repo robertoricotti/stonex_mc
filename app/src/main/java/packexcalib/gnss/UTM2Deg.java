@@ -12,9 +12,6 @@ public class UTM2Deg {
     static double[] out = new double[4];
 
     public static double[] toGeo(double e, double n, double z, String crs) {
-        if (DataSaved.my_comPort == 4) {
-            return new double[]{0, 0, 0};
-        }
 
         switch (crs) {
             case _LOCAL_COORDINATES_FROM_GNSS:

@@ -3,12 +3,10 @@ package gui.dialogs_and_toast;
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static packexcalib.gnss.CRS_Strings._150580;
-
 import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.CanSender.GNSS_MSG;
 import static services.CanService.nmeaSTX_Disc;
-import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.GRADER;
@@ -16,11 +14,11 @@ import static utils.MyTypes.SMC;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -32,6 +30,8 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
+import java.util.Locale;
+
 import gui.BaseClass;
 import gui.MyApp;
 import packexcalib.exca.DataSaved;
@@ -39,6 +39,7 @@ import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.NmeaListener;
+import packexcalib.gnss.UTM2Deg;
 import utils.CPCanHelper;
 import utils.FullscreenActivity;
 import utils.LanguageSetter;
@@ -47,13 +48,13 @@ import utils.MyDeviceManager;
 import utils.Utils;
 
 public class Dialog_GNSS_Coordinates extends BaseClass {
-    TextView textViewPW,datetim;
+    TextView textViewPW, datetim;
     Dialog_Edit_Zeta_DXF dialogEditZetaDxf;
     ProgressBar progressBar;
     Activity activity;
     public Dialog alertDialog;
     ImageView save, title, serialCon, editZ, rtkMode;
-    TextView txmchdt,latlon, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon, extraAng,hdtoffset;
+    TextView txmchdt, latlon, txtant1, txtbennasx, txtbennacx, txtbennadx, txSat, txAge, txQual, txCrs, txCq, txCon, extraAng, hdtoffset;
     TextView framA, boomA, boom2A, stickA, bucketA, tiltA;
     TextView framO, boomO, boom2O, stickO, bucketO, tiltO;
     Button cqpiu, cqmeno;
@@ -108,7 +109,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         cqmeno = alertDialog.findViewById(R.id.cqmeno);//
         tvCq = alertDialog.findViewById(R.id.tvcq);//
         txCon = alertDialog.findViewById(R.id.txconnected);//
-        datetim=alertDialog.findViewById(R.id.datetim);
+        datetim = alertDialog.findViewById(R.id.datetim);
 
         serialCon = alertDialog.findViewById(R.id.serialCon);
         txtbennasx = alertDialog.findViewById(R.id.txtbennasx);
@@ -154,13 +155,13 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
             imbc.setImageResource(R.drawable.lama_misura_cnt);
             imbr.setImageResource(R.drawable.lama_misura_destra);
         }
-        MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x01, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
+        MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x01, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
         progressBar.setVisibility(View.INVISIBLE);
         indexMach = MyData.get_Int("MachineSelected");
         DataSaved.radioMode = MyData.get_Int("M" + indexMach + "radioMode");
 
         if (isTech) {
-            if (DataSaved.useQuickSwitch == 1&&DataSaved.gpsType==SMC) {
+            if (DataSaved.useQuickSwitch == 1 && DataSaved.gpsType == SMC) {
                 rtkMode.setVisibility(View.VISIBLE);
             } else {
                 rtkMode.setVisibility(View.GONE);
@@ -188,7 +189,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
     }
 
     public void switchingRadio() {
-        MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
+        MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x20, 0x11, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});//NTRIP PSW REQUEST
         if (progressBar.getVisibility() == View.VISIBLE) {
             progressBar.setVisibility(View.INVISIBLE);
             new CustomToast(activity, "Wait for DataLink mode switching\nand check Fix...").show_alert();
@@ -217,8 +218,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
             }
 
 
-
-            MyDeviceManager.CanWrite(true,0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
+            MyDeviceManager.CanWrite(true, 0, 0x18FF0001, 4, new byte[]{0x20, GNSS_MSG, speed, (byte) 0x03});
         });
         imbl.setOnClickListener(view -> {
             DataSaved.bucketEdge = -1;
@@ -251,9 +251,9 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     case 0:
                         //SMC
                         if (DataSaved.my_comPort == 0) {
-                            MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0, (byte) DataSaved.priorityNet, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0, (byte) DataSaved.priorityNet, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                             MyData.push("M" + indexMach + "radioMode", "0");
-                            MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
 
                         } else {
 
@@ -277,9 +277,9 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     case 0:
                         //SMC
                         if (DataSaved.my_comPort == 0) {
-                            MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0x1, (byte) DataSaved.priorityNet, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x11, 0x1, (byte) DataSaved.priorityNet, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
                             MyData.push("M" + indexMach + "radioMode", "1");
-                            MyDeviceManager.CanWrite(true,0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
+                            MyDeviceManager.CanWrite(true, 0, 0x18FF1A01, 8, new byte[]{0x20, (byte) 0x73, 0x61, (byte) 0x76, (byte) 0x65, (byte) 0x61, (byte) 0x6C, (byte) 0x6C});
 
                         }
                         break;
@@ -331,9 +331,9 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
             alertDialog.dismiss();
         });
         txtant1.setOnClickListener(view -> {
-            DataSaved.coordOrder+=1;
-            DataSaved.coordOrder=DataSaved.coordOrder%2;
-            MyData.push("coordOrder",String.valueOf(DataSaved.coordOrder));
+            DataSaved.coordOrder += 1;
+            DataSaved.coordOrder = DataSaved.coordOrder % 2;
+            MyData.push("coordOrder", String.valueOf(DataSaved.coordOrder));
         });
 
 
@@ -363,18 +363,18 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                 datetim.setText(NmeaListener.date_time_Y_M_D);
                 // Update coord TextView with new coordinates
                 try {
-                    if(Build.BRAND.equals("SRT8PROS")||Build.BRAND.equals("SRT7PROS")){
+                    if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS")) {
                         textViewPW.setText("");
-                    }else {
+                    } else {
                         textViewPW.setText(CPCanHelper.voltApollo2 + " V");
                     }
                     if (DataSaved.Extra_Heading != 0) {
                         try {
-                            hdtoffset.setText(String.format("%.2f",DataSaved.offsetSwingExca)+" °");
-                            double valore= NmeaListener.roof_Orientation+DataSaved.offsetSwingExca;
-                            if(NmeaListener.roof_Orientation==999.999) {
+                            hdtoffset.setText(String.format("%.2f", DataSaved.offsetSwingExca) + " °");
+                            double valore = NmeaListener.roof_Orientation + DataSaved.offsetSwingExca;
+                            if (NmeaListener.roof_Orientation == 999.999) {
                                 extraAng.setText("Error");
-                            }else{
+                            } else {
                                 extraAng.setText(String.format("%.2f", valore) + " °");
                             }
 
@@ -384,7 +384,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                     } else {
                         extraAng.setText("NOT USED");
-                        hdtoffset.setText(String.format("%.2f",DataSaved.offsetSwingExca)+" °");
+                        hdtoffset.setText(String.format("%.2f", DataSaved.offsetSwingExca) + " °");
                     }
                     if (DataSaved.isWL < 2) {
                         boolean[] b = PLC_DataTypes_BigEndian.U8_to_bitmask_be((byte) errorCode);
@@ -500,11 +500,10 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                             tilt.setBackgroundColor(Color.RED);
                             tilt.setTextColor(Color.WHITE);
                         }
-                        tiltA.setText(String.format("%.02f",ExcavatorLib.correctRoll).replace(",", ".")+ "°");
-                        tiltO.setText(String.format("%.02f",DataSaved.offsetRoll).replace(",", ".") + "°");
+                        tiltA.setText(String.format("%.02f", ExcavatorLib.correctRoll).replace(",", ".") + "°");
+                        tiltO.setText(String.format("%.02f", DataSaved.offsetRoll).replace(",", ".") + "°");
 
                     }
-
 
 
                     if (DataSaved.radioMode == 0) {
@@ -514,7 +513,6 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     }
 
                     double hdt = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
-
 
 
                     txSat.setText(" " + NmeaListener.ggaSat);
@@ -560,7 +558,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                             title.setImageResource(R.drawable.gps_no);
                         }
-                    }  else {
+                    } else {
                         if (DataSaved.gpsOk) {
                             title.setImageResource(R.drawable.gps_si);
                             txCon.setText("NMEA OK");
@@ -578,11 +576,12 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
                     try {
 
-                        if(DataSaved.my_comPort!=4){
-                            latlon.setText("Lat: "+String.format("%.9f",NmeaListener.mLat_1)+" Lon: "+
-                                    String.format("%.9f",NmeaListener.mLon_1)+"  H: "+String.format("%.3f",(NmeaListener.Quota1))+"\n"+"Zone: "+NmeaListener.mZone+""+NmeaListener.mChar);
-                        }else {
-                            latlon.setText("");
+                        if (DataSaved.my_comPort != 4) {
+                            latlon.setText("Lat: " + String.format("%.9f", NmeaListener.mLat_1) + " Lon: " +
+                                    String.format("%.9f", NmeaListener.mLon_1) + "  H: " + String.format("%.3f", (NmeaListener.Quota1)) + "\n" + "Zone: " + NmeaListener.mZone + "" + NmeaListener.mChar);
+                        } else {
+                            latlon.setText("Lat: " + showLatLon()[0] + " Lon: " +
+                                    showLatLon()[1] + "  H: " + showLatLon()[2] + "\n" + "Zone: " + NmeaListener.mZone + "" + NmeaListener.mChar);
                         }
 
                         txtant1.setText(coordShowed(DataSaved.coordOrder)[0]);
@@ -614,7 +613,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                     }
 
 
-                    if(DataSaved.my_comPort==0) {
+                    if (DataSaved.my_comPort == 0) {
                         if (NmeaListener.mch_Hdt_1 == 999.999) {
                             txmchdt.setText("HDT Error");
 
@@ -622,8 +621,8 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
                             txmchdt.setText(String.format("%.2f", hdt).replace(",", ".") + " °");
 
                         }
-                    }else {
-                        if (NmeaListener.mch_Hdt== 999.999) {
+                    } else {
+                        if (NmeaListener.mch_Hdt == 999.999) {
                             txmchdt.setText("HDT Error");
 
                         } else {
@@ -642,39 +641,51 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         }, 100);
     }
 
-    private static String[]coordShowed(int mode){
-        String s0="";
-        String s4="";
-        if(nmeaSTX_Disc&&DataSaved.my_comPort==0){
-            s0="E: --------.---  N: --------.---  Z: ---.---";
+    private static String[] coordShowed(int mode) {
+        String s0 = "";
+        String s4 = "";
+        if (nmeaSTX_Disc && DataSaved.my_comPort == 0) {
+            s0 = "E: --------.---  N: --------.---  Z: ---.---";
 
-        }else {
+        } else {
             s0 = "E: " + Utils.showCoords(String.valueOf(NmeaListener.Est1)) + "   N: " + Utils.showCoords(String.valueOf(NmeaListener.Nord1)) + "  Z: " + Utils.showCoords(String.valueOf(NmeaListener.Quota1)) + "  " + Utils.getMetriSimbolCoords();
         }
-        String s1="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])) + "  " + Utils.getMetriSimbolCoords();
-        String s2="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "  " + Utils.getMetriSimbolCoords();
-        String s3="E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s1 = "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s2 = "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s3 = "E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "   N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "  " + Utils.getMetriSimbolCoords();
 
-        if(nmeaSTX_Disc&&DataSaved.my_comPort==0){
+        if (nmeaSTX_Disc && DataSaved.my_comPort == 0) {
 
-            s4="N: --------.---  E: --------.---  Z: ---.---";
-        }else {
-            s4="N: " + Utils.showCoords(String.valueOf(NmeaListener.Nord1)) + "   E: " + Utils.showCoords(String.valueOf(NmeaListener.Est1)) + "  Z: " + Utils.showCoords(String.valueOf(NmeaListener.Quota1)) + "  " + Utils.getMetriSimbolCoords();
+            s4 = "N: --------.---  E: --------.---  Z: ---.---";
+        } else {
+            s4 = "N: " + Utils.showCoords(String.valueOf(NmeaListener.Nord1)) + "   E: " + Utils.showCoords(String.valueOf(NmeaListener.Est1)) + "  Z: " + Utils.showCoords(String.valueOf(NmeaListener.Quota1)) + "  " + Utils.getMetriSimbolCoords();
         }
-        String s5="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "   E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])) + "  " + Utils.getMetriSimbolCoords();
-        String s6="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "   E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "  " + Utils.getMetriSimbolCoords();
-        String s7="N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "   E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s5 = "N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[1])) + "   E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[0])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketLeftCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s6 = "N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[1])) + "   E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[0])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketCoord[2])) + "  " + Utils.getMetriSimbolCoords();
+        String s7 = "N: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[1])) + "   E: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[0])) + "  " + "  Z: " + Utils.showCoords(String.valueOf(ExcavatorLib.bucketRightCoord[2])) + "  " + Utils.getMetriSimbolCoords();
 
-        if(mode==0){
-            return new String[]{s0,s1,s2,s3};
-        }else {
-            return new String[]{s4,s5,s6,s7};
+        if (mode == 0) {
+            return new String[]{s0, s1, s2, s3};
+        } else {
+            return new String[]{s4, s5, s6, s7};
         }
     }
+
     private static double normalizeAngle(double a) {
         a = a % 360.0;
         if (a < 0) a += 360.0;
         return a;
     }
+
+    private static String[] showLatLon() {
+
+        double[] coordinates = UTM2Deg.toGeo(NmeaListener.Est1, NmeaListener.Nord1, NmeaListener.Quota1, DataSaved.S_CRS);
+        String sLat = String.format( "%.9f", coordinates[0]);
+        String sLon = String.format( "%.9f", coordinates[1]);
+        String sHll = Utils.showCoords(String.valueOf(coordinates[2]));
+        Log.d("Coords",sLat+"  "+sLon);
+        return new String[]{sLat, sLon, sHll};
+    }
+
 
 }

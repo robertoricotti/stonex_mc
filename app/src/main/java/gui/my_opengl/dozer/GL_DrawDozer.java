@@ -127,6 +127,10 @@ public class GL_DrawDozer {
         drawAlignHelpers(gl11);
     }
 
+    public static void drawMachine(GL11 gl11) {
+        GL_DrawDozerBody.draw(gl11);
+    }
+
     private static void drawBucketEdge(GL11 gl11) {
         Cylinder spigolo;
         int colore = Color.BLUE;
@@ -203,6 +207,4 @@ public class GL_DrawDozer {
                 3f
         );
     }
-
-
 }

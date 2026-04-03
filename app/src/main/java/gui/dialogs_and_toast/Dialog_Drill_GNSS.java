@@ -31,6 +31,8 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
+import java.util.Locale;
+
 import gui.MyApp;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
@@ -38,6 +40,7 @@ import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.NmeaListener;
+import packexcalib.gnss.UTM2Deg;
 import utils.CPCanHelper;
 import utils.FullscreenActivity;
 import utils.LanguageSetter;
@@ -531,7 +534,8 @@ public class Dialog_Drill_GNSS {
                             latlon.setText("Lat: "+String.format("%.9f",NmeaListener.mLat_1)+" Lon: "+
                                     String.format("%.9f",NmeaListener.mLon_1)+"  H: "+String.format("%.3f",(NmeaListener.Quota1))+"\n"+"Zone: "+NmeaListener.mZone+""+NmeaListener.mChar);
                         }else {
-                            latlon.setText("");
+                            latlon.setText("Lat: "+showLatLon()[0]+" Lon: "+
+                                    showLatLon()[1]+"  H: "+showLatLon()[2]+"\n"+"Zone: "+NmeaListener.mZone+""+NmeaListener.mChar);
                         }
 
                         txtant1.setText(coordShowed(DataSaved.coordOrder)[0]);
@@ -632,5 +636,13 @@ public class Dialog_Drill_GNSS {
             alertDialog.dismiss();
         }
 
+    }
+    private static String[] showLatLon(){
+        double[] coordinates = UTM2Deg.toGeo(NmeaListener.Est1, NmeaListener.Nord1, NmeaListener.Quota1, DataSaved.S_CRS);
+
+        String sLat = String.format( "%.9f", coordinates[0]);
+        String sLon = String.format( "%.9f", coordinates[1]);
+        String sHll = Utils.showCoords(String.valueOf(coordinates[2]));
+        return new String[]{sLat,sLon,sHll};
     }
 }

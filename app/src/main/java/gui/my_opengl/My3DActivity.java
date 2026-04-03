@@ -376,9 +376,7 @@ public class My3DActivity extends BaseClass {
 
                     case 1:
                         hydroPoint.setImageResource((R.drawable.cent_left_pg));
-
                         break;
-
 
                 }
             }

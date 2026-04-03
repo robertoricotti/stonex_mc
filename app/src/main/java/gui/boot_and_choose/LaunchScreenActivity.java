@@ -6,6 +6,7 @@ import static gui.MyApp.folderPath;
 import static gui.MyApp.gnssFirmware;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.visibleActivity;
+import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
 
 import android.Manifest;
@@ -146,7 +147,8 @@ public class LaunchScreenActivity extends BaseClass {
                         startActivity(new Intent(LaunchScreenActivity.this, LicenseFail_Activity.class));
                         finish();
                     }
-                    hasAuto = licenseType == MC_3D_PRO_AUTO;
+                    hasAuto= licenseType == MC_3D_PRO_AUTO || licenseType == MC_3D_EASY_AUTO;
+
                 } catch (Exception e) {
                     new CustomToast(LaunchScreenActivity.this, "No License CODE").show_error();
                     finishAndRemoveTask();

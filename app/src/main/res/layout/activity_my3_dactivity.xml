@@ -483,7 +483,7 @@
                 android:src="@drawable/correcting_new"
                 app:tint="@color/white" />
             <ImageView
-                android:visibility="gone"
+
                 android:id="@+id/gl_bright"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -494,6 +494,7 @@
                 android:src="@drawable/ligth_96"
                 app:tint="@color/white" />
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/gl_sound"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
