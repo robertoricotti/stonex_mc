@@ -1,6 +1,8 @@
 package services;
 
 import static packexcalib.exca.DataSaved.offsetH;
+import static utils.MyTypes.CASE_BUS;
+import static utils.MyTypes.CAT_SEA;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
@@ -8,7 +10,11 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JD_LIEBHERR;
 import static utils.MyTypes.JOYSTICKS;
+import static utils.MyTypes.KOMATSU_CAN;
+import static utils.MyTypes.NOBAS;
+import static utils.MyTypes.STX_ECU;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
 
@@ -28,6 +34,7 @@ import gui.debug_ecu.Can_Msg_Debug;
 import gui.gps.Nuovo_Gps;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.PGNExtractor;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
 import packexcalib.exca.Sensors_Decoder_Drill;
@@ -43,10 +50,11 @@ public class CanService extends Service {
     public CanService() {
     }
 
-    public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck, CASE_Joystick;
+    public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck, CASE_Joystick,NOBAS_Joystick;
     public static int SteerConnected, isAuto;
     public static int m;
-    public static boolean Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS, ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
+    public static boolean NOBAS_Auto_Left,NOBAS_Auto_Right,NOBAS_Auto_SS,NOBAS_Connected,Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS,
+            ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
     public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser, flagDefault,toolOK;
     CanFileReceiver receiver = new CanFileReceiver();
     public static boolean boom1Disc, boom2Disc, stickDisc, bucketDisc, frameDisc, tiltDisc, nmeaSTX_Disc,toolDisc;
@@ -106,6 +114,7 @@ public class CanService extends Service {
         handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 3000);
         handler_KOM_Connected.postDelayed(timeoutRunnable_KOM_Connected, 3000);
         handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
+        handler_NOBAS_Connected.postDelayed(timeoutRunnable_NOBAS_Connected, 3000);
 
 
         super.onCreate();
@@ -464,7 +473,7 @@ public class CanService extends Service {
             if (channel == 2) {
                 //FMI_Decoder.decode(id,msg);
                 //CAN2
-                if (id == 0x18F00DE3 && DataSaved.Interface_Type == 4) {
+                if (id == 0x18F00DE3 && DataSaved.Interface_Type == CASE_BUS) {
                     CASE_Connected = true;
                     handler_CASE_Connected.removeCallbacks(timeoutRunnable_CASE_Connected);
                     handler_CASE_Connected.postDelayed(timeoutRunnable_CASE_Connected, 2000);
@@ -478,7 +487,7 @@ public class CanService extends Service {
                     }
 
                 }
-                if (id == 0x1CF00D22 && DataSaved.Interface_Type == 1) {
+                if (id == 0x1CF00D22 && DataSaved.Interface_Type == CAT_SEA) {
                     CAT_Connected = true;
                     handler_CAT_Connected.removeCallbacks(timeoutRunnable_CAT_Connected);
                     handler_CAT_Connected.postDelayed(timeoutRunnable_CAT_Connected, 2000);
@@ -522,7 +531,7 @@ public class CanService extends Service {
                     }
 
                 }
-                if (id == 0x0CF00D80 && (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0)) {
+                if (id == 0x0CF00D80 && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)) {
                     JD_Connected = true;
                     handler_JD_Connected.removeCallbacks(timeoutRunnable_JD_Connected);
                     handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 2000);
@@ -543,7 +552,7 @@ public class CanService extends Service {
                     }
 
                 }
-                if (id == 0x0CF00DD5 && (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0)) {
+                if (id == 0x0CF00DD5 && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)) {
                     JD_Connected = true;
                     handler_JD_Connected.removeCallbacks(timeoutRunnable_JD_Connected);
                     handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 2000);
@@ -567,7 +576,7 @@ public class CanService extends Service {
                     }
                     Log.d("JDD", Grader_Auto_Left + " " + Grader_AutoRight + " " + Grader_Auto_SS);
                 }
-                if (id == 0x0CFF3302 && DataSaved.Interface_Type == 3) {
+                if (id == 0x0CFF3302 && DataSaved.Interface_Type == KOMATSU_CAN) {
                     KOM_Connected = true;
                     handler_KOM_Connected.removeCallbacks(timeoutRunnable_KOM_Connected);
                     handler_KOM_Connected.postDelayed(timeoutRunnable_KOM_Connected, 2000);
@@ -590,6 +599,37 @@ public class CanService extends Service {
                     ECU_Connected = true;
                     handler_ECU_Connected.removeCallbacks(timeoutRunnable_ECU_Connected);
                     handler_ECU_Connected.postDelayed(timeoutRunnable_ECU_Connected, 1000);
+                }
+                //todo NOBAS Verificare mappatura
+                if (PGNExtractor.extractPGN(id)==0xF00D && DataSaved.Interface_Type == NOBAS) {
+                    NOBAS_Connected = true;
+                    handler_NOBAS_Connected.removeCallbacks(timeoutRunnable_NOBAS_Connected);
+                    handler_NOBAS_Connected.postDelayed(timeoutRunnable_CAT_Connected, 2000);
+                    NOBAS_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
+                    boolean[] bGrad_Left = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[1]);
+                    boolean[] bGrad_Right = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[2]);
+                    boolean[] bGrad_SS = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[3]);
+
+                    if (MyApp.visibleActivity instanceof My3DActivity) {
+                            AutoManToggle.updateLEFT(bGrad_Left[3]);
+                            AutoManToggle.updateRIGHT(bGrad_Right[7]);
+                            AutoManToggle.updateSS(bGrad_SS[3]);
+                            OffsetAdjuster.update(bGrad_SS[6], bGrad_SS[7]);
+                            OffsetAdjuster.update(bGrad_Right[2], bGrad_Right[3]);
+                            NOBAS_Auto_Left = AutoManToggle.Can_Toggled_Auto_L;
+                            NOBAS_Auto_Right = AutoManToggle.Can_Toggled_Auto_R;
+                            NOBAS_Auto_SS = AutoManToggle.Can_Toggled_Auto_SS;
+
+                    } else {
+                        NOBAS_Auto_Left = false;
+                        NOBAS_Auto_Right = false;
+                        NOBAS_Auto_SS = false;
+                        AutoManToggle.Can_Toggled_Auto = false;
+                        AutoManToggle.Can_Toggled_Auto_L = false;
+                        AutoManToggle.Can_Toggled_Auto_R = false;
+                        AutoManToggle.Can_Toggled_Auto_SS = false;
+                    }
+
                 }
             }
 
@@ -821,6 +861,14 @@ public class CanService extends Service {
         @Override
         public void run() {
             KOM_Connected = false;
+        }
+    };
+
+    private final Handler handler_NOBAS_Connected = new Handler();
+    private final Runnable timeoutRunnable_NOBAS_Connected = new Runnable() {
+        @Override
+        public void run() {
+            NOBAS_Connected = false;
         }
     };
 

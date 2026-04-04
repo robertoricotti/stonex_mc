@@ -51,4 +51,14 @@ public class MyTypes {
     public static final String MAST_BACKWARD="BACKWARD";
 
 
+    public static final int STX_ECU=0;
+    public static final int CAT_SEA=1;
+    public static final int JD_LIEBHERR=2;
+    public static final int KOMATSU_CAN=3;
+    public static final int CASE_BUS=4;
+    public static final int NOBAS=5;
+    public static final int OEM_PROTO=255;
+
+
+
 }

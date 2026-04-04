@@ -9,6 +9,7 @@ import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.OEM_PROTO;
 
 import android.app.Service;
 import android.content.Intent;
@@ -178,7 +179,7 @@ public class TriangleService extends Service {
 
                         quota3D_DX = quotas[2] - (DataSaved.offsetH * -1);
 
-                        if (DataSaved.Interface_Type == 255) {
+                        if (DataSaved.Interface_Type == OEM_PROTO) {
                             double QuotaMedia = (minZ + maxZ) / 2.0d;
 
                             DGM_Letf = bucketLeftCoord[2] - QuotaMedia;

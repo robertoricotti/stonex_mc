@@ -17,13 +17,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.33333" />
+        app:layout_constraintGuide_percent="0.25" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/v2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.66666" />
+        app:layout_constraintGuide_percent="0.5" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/v3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/centa"
@@ -84,7 +90,7 @@
         android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:text="CAT-SEA"
-        android:textSize="40sp"
+        android:textSize="32sp"
         android:gravity="center"
         android:textStyle="bold|italic"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -99,7 +105,7 @@
         android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:text="JOHN DEERE\nLIEBHERR\nCAN-J1939"
-        android:textSize="40sp"
+        android:textSize="32sp"
         android:gravity="center"
         android:textStyle="bold|italic"
         app:layout_constraintLeft_toLeftOf="@id/v1"
@@ -114,13 +120,13 @@
         android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:text="KOMATSU\nCAN-J1939"
-        android:textSize="40sp"
+        android:textSize="32sp"
         android:gravity="center"
         android:textStyle="bold|italic"
         app:layout_constraintLeft_toRightOf="@id/v2"
         app:layout_constraintTop_toBottomOf="@id/topla"
         app:layout_constraintBottom_toTopOf="@id/centa"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="@id/v3"/>
     <TextView
         android:id="@+id/img_4"
         android:layout_width="0dp"
@@ -129,7 +135,7 @@
         android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:text="CASE\nCAN-Bus"
-        android:textSize="40sp"
+        android:textSize="32sp"
         android:gravity="center"
         android:textStyle="bold|italic"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -144,7 +150,7 @@
         android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:text="OEM\nCAN OUTPUT"
-        android:textSize="40sp"
+        android:textSize="32sp"
         android:gravity="center"
         android:textStyle="bold|italic"
         app:layout_constraintLeft_toRightOf="@id/v1"
@@ -159,13 +165,28 @@
         android:background="@drawable/sfondo_bottone_bianco"
         android:padding="5dp"
         android:text="STONEX\nECU"
-        android:textSize="40sp"
+        android:textSize="32sp"
         android:gravity="center"
         android:textStyle="bold|italic"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toRightOf="@id/v3"
         app:layout_constraintTop_toBottomOf="@id/centa"
         app:layout_constraintBottom_toTopOf="@id/botla"
         app:layout_constraintLeft_toRightOf="@id/v2"/>
+    <TextView
+        android:id="@+id/img_nobas"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="35dp"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:padding="5dp"
+        android:text="NO-BRAND\nBUS-J1939"
+        android:textSize="32sp"
+        android:gravity="center"
+        android:textStyle="bold|italic"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topla"
+        app:layout_constraintBottom_toTopOf="@id/centa"
+        app:layout_constraintLeft_toRightOf="@id/v3"/>
     <LinearLayout
         android:id="@+id/lowerView"
         android:layout_width="0dp"

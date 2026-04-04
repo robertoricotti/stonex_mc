@@ -18,7 +18,9 @@ import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
+import static utils.MyTypes.JD_LIEBHERR;
 import static utils.MyTypes.JOYSTICKS;
+import static utils.MyTypes.STX_ECU;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -191,7 +193,7 @@ public class My3DActivity extends BaseClass {
             bucketName = "";
         }
 
-        if (DataSaved.Interface_Type == 2 || DataSaved.Interface_Type == 0) {
+        if (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU) {
 
             MyDeviceManager.CanWrite(true, 1, 0x18EEFF85, 8,
                     new byte[]{(byte) 0xF4,

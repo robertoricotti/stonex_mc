@@ -11,8 +11,8 @@ android {
         applicationId "com.example.stx_mc"
         minSdk 26
         targetSdk 34
-        versionCode 4018
-        versionName "4.0.18"
+        versionCode 4100
+        versionName "4.1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildFeatures.buildConfig = true
@@ -248,6 +248,12 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
+}
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'androidx.activity:activity:1.13.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 }
 
 

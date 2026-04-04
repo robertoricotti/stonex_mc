@@ -64,7 +64,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
-
         android:name="gui.MyApp"
         android:allowBackup="true"
         android:configChanges="orientation|screenSize|screenLayout"
@@ -80,6 +79,12 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:targetApi="31">
+        <activity
+            android:name="gui.hydro.NOBAS_Activity"
+            android:autoRemoveFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name="gui.tech_menu.NetworkConfigSettings"
             android:autoRemoveFromRecents="true"
@@ -527,7 +532,6 @@
                 <action android:name="com.example.stx_digging.USB_PERMISSION" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name="gui.boot_and_choose.StartActivityOnBootReceiver"
             android:enabled="true"
@@ -551,6 +555,7 @@
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
