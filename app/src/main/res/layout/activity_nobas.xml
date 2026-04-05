@@ -34,7 +34,7 @@
         android:layout_height="0dp"
         android:background="@color/_____cancel_text"
         android:gravity="center"
-        android:text="CAT - SEA"
+        android:text="NO BRAND J1939 BLADE CONTROL"
         android:textColor="@color/white"
         android:textSize="36sp"
         android:textStyle="bold|italic"

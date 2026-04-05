@@ -65,9 +65,8 @@ public class NOBAS_Activity extends BaseClass {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nobas);
-        setContentView(R.layout.activity_cat_sea);
         CanService.NOBAS_Joystick = "NOT CONNECTED";
-        maxMenu = 12;
+        maxMenu = 13;
         findView();
         onClick();
         updateUI();

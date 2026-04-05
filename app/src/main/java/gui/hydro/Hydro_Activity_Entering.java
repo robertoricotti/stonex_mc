@@ -26,7 +26,7 @@ import utils.MyTypes;
 public class Hydro_Activity_Entering extends AppCompatActivity {
     int indexMachine;
 
-    ImageView exit,to_calib;
+    ImageView exit;
     TextView cat,komatsu,deere,cnh,doosan,valve,nobas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,6 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
 
     private void findView(){
         exit=findViewById(R.id.btn_1);
-        to_calib=findViewById(R.id.btn_2);
         cat=findViewById(R.id.img_1);
         deere=findViewById(R.id.img_2);
         komatsu=findViewById(R.id.img_3);
@@ -58,100 +57,74 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
 
     }
     private void onClick(){
+        cat.setOnClickListener(view -> {
+            if(DataSaved.Interface_Type==CAT_SEA){
+                cat.setEnabled(false);
+                startActivity(new Intent(Hydro_Activity_Entering.this, CAT_SEA_Activity.class));
+                finish();
+            }
+            DataSaved.Interface_Type= CAT_SEA;
+            MyData.push("M"+indexMachine+"Interface_Type","1");
+        });
+        deere.setOnClickListener(view -> {
+            if(DataSaved.Interface_Type==JD_LIEBHERR){
+                deere.setEnabled(false);
+                startActivity(new Intent(Hydro_Activity_Entering.this, DEERE_LIEBHERR_Activity.class));
+                finish();
+            }
+            DataSaved.Interface_Type=JD_LIEBHERR;
+            MyData.push("M"+indexMachine+"Interface_Type","2");
+        });
+        komatsu.setOnClickListener(view -> {
+            if(DataSaved.Interface_Type==KOMATSU_CAN){
+                komatsu.setEnabled(false);
+                startActivity(new Intent(Hydro_Activity_Entering.this, KOMATSU_Activity.class));
+                finish();
+            }
+            DataSaved.Interface_Type=KOMATSU_CAN;
+            MyData.push("M"+indexMachine+"Interface_Type","3");
+        });
+        nobas.setOnClickListener(view -> {
+            if(DataSaved.Interface_Type==NOBAS){
+                nobas.setEnabled(false);
+                startActivity(new Intent(Hydro_Activity_Entering.this, NOBAS_Activity.class));
+                finish();
+            }
+            DataSaved.Interface_Type=NOBAS;
+            MyData.push("M"+indexMachine+"Interface_Type","5");
+        });
+        doosan.setOnClickListener(view -> {
+            if(DataSaved.Interface_Type==OEM_PROTO){
+                doosan.setEnabled(false);
+                startActivity(new Intent(Hydro_Activity_Entering.this, OEM_Activity.class));
+                finish();
+            }
+            DataSaved.Interface_Type=OEM_PROTO;
+            MyData.push("M"+indexMachine+"Interface_Type","255");
+        });
+        valve.setOnClickListener(view -> {
+            if(DataSaved.Interface_Type==STX_ECU){
+                valve.setEnabled(false);
+                startActivity(new Intent(Hydro_Activity_Entering.this, ECU_Activity.class));
+                finish();
+            }
+            DataSaved.Interface_Type=STX_ECU;
+            MyData.push("M"+indexMachine+"Interface_Type","0");
+        });
+        cnh.setOnClickListener(view -> {
+            if(DataSaved.Interface_Type==CAT_SEA){
+                cnh.setEnabled(false);
+                startActivity(new Intent(Hydro_Activity_Entering.this, CASE_Activity.class));
+                finish();
+            }
+            DataSaved.Interface_Type=CASE_BUS;
+            MyData.push("M"+indexMachine+"Interface_Type","4");
+        });
         exit.setOnClickListener(view -> {
             exit.setEnabled(false);
             startActivity(new Intent(this, ExcavatorChooserActivity.class));
             finish();
 
-        });
-        to_calib.setOnClickListener(view -> {
-
-            switch (DataSaved.Interface_Type){
-                case STX_ECU:
-                    to_calib.setEnabled(false);
-                    startActivity(new Intent(Hydro_Activity_Entering.this, ECU_Activity.class));
-                    finish();
-                    break;
-
-                case CAT_SEA:
-                    to_calib.setEnabled(false);
-                    startActivity(new Intent(Hydro_Activity_Entering.this, CAT_SEA_Activity.class));
-                    finish();
-                    break;
-
-                case JD_LIEBHERR:
-                    to_calib.setEnabled(false);
-                    startActivity(new Intent(Hydro_Activity_Entering.this, DEERE_LIEBHERR_Activity.class));
-                    finish();
-                    break;
-
-                case KOMATSU_CAN:
-                    to_calib.setEnabled(false);
-                    startActivity(new Intent(Hydro_Activity_Entering.this, KOMATSU_Activity.class));
-                    finish();
-
-                    break;
-                case CASE_BUS:
-                    to_calib.setEnabled(false);
-                    startActivity(new Intent(Hydro_Activity_Entering.this, CASE_Activity.class));
-                    finish();
-
-                    break;
-                case OEM_PROTO:
-                    to_calib.setEnabled(false);
-                    startActivity(new Intent(Hydro_Activity_Entering.this, OEM_Activity.class));
-                    finish();
-                    break;
-                case NOBAS:
-                    to_calib.setEnabled(false);
-                    startActivity(new Intent(Hydro_Activity_Entering.this, ECU_Activity.class));
-                    finish();
-                    break;
-            }
-
-
-        });
-        cat.setOnLongClickListener(view -> {
-            DataSaved.Interface_Type= CAT_SEA;
-            MyData.push("M"+indexMachine+"Interface_Type","1");
-            return false;
-
-        });
-        deere.setOnLongClickListener(view -> {
-            DataSaved.Interface_Type=JD_LIEBHERR;
-            MyData.push("M"+indexMachine+"Interface_Type","2");
-            return false;
-        });
-        komatsu.setOnLongClickListener(view -> {
-            DataSaved.Interface_Type=KOMATSU_CAN;
-            MyData.push("M"+indexMachine+"Interface_Type","3");
-            return false;
-        });
-        cnh.setOnLongClickListener(view -> {
-            DataSaved.Interface_Type=CASE_BUS;
-            MyData.push("M"+indexMachine+"Interface_Type","4");
-
-
-            return false;
-        });
-        doosan.setOnLongClickListener(view -> {
-
-
-            DataSaved.Interface_Type=OEM_PROTO;
-            MyData.push("M"+indexMachine+"Interface_Type","255");
-
-
-            return false;
-        });
-        nobas.setOnLongClickListener(view -> {
-            DataSaved.Interface_Type=NOBAS;
-            MyData.push("M"+indexMachine+"Interface_Type","5");
-            return false;
-        });
-        valve.setOnLongClickListener(view -> {
-            DataSaved.Interface_Type=STX_ECU;
-            MyData.push("M"+indexMachine+"Interface_Type","0");
-            return false;
         });
 
     }
@@ -229,6 +202,5 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
         }
 
     }
-
 
 }

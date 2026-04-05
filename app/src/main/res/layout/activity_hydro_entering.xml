@@ -255,18 +255,7 @@
             app:tint="@color/_____cancel_text"
             android:scaleType="centerInside"
             />
-        <ImageView
-            android:id="@+id/btn_2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="1.5dp"
-            android:layout_marginTop="2dp"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/btn_selection_ok"
-            app:tint="@color/white"
-            />
+
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

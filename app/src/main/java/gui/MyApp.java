@@ -95,6 +95,7 @@ import gui.hydro.DEERE_LIEBHERR_Activity;
 import gui.hydro.ECU_Activity;
 import gui.hydro.Hydro_Activity_Entering;
 import gui.hydro.KOMATSU_Activity;
+import gui.hydro.NOBAS_Activity;
 import gui.my_opengl.My3DActivity;
 import gui.profiles.ProfileCalibAuto;
 import gui.profiles.ProfileCalibManual;
@@ -749,7 +750,9 @@ git push
             ((KOMATSU_Activity) activity).updateUI();
         } else if (activity instanceof CASE_Activity) {
             ((CASE_Activity) activity).updateUI();
-        } else if (activity instanceof MastLinkCalib) {
+        } else if (activity instanceof NOBAS_Activity) {
+            ((NOBAS_Activity) activity).updateUI();
+        }else if (activity instanceof MastLinkCalib) {
             ((MastLinkCalib) activity).updateUI();
         } else if (activity instanceof DrillEncoder) {
             ((DrillEncoder) activity).updateUI();
