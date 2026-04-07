@@ -197,6 +197,21 @@
         app:layout_constraintStart_toStartOf="@id/cbxRight"
         app:layout_constraintBottom_toTopOf="@id/guideline32"/>
 
+    <CheckBox
+        android:id="@+id/disableRoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/_____cancel_text"
+        android:text="ENABLE\nROTOTILT  "
+        android:textAllCaps="true"
+        android:textColor="@color/_____cancel_text"
+        android:textSize="22sp"
+        android:padding="2dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintTop_toBottomOf="@+id/cbxOff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/cbTop"
+        app:layout_constraintBottom_toTopOf="@id/guideline32"/>
 
 
     <TextView
@@ -555,6 +570,68 @@
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutRoto"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline89"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline101"
+        app:layout_constraintTop_toBottomOf="@+id/guideline68">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/dark_gray"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/txtRoto"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="0.00"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/setOffsetRoto"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/light_yellow"
+            android:text="ROTOTILT\nZERO"
+            android:textColor="@color/_____cancel_text"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/dark_gray"
+            android:text="+"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
     </LinearLayout>
 
     <TextView

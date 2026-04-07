@@ -165,6 +165,8 @@ public class UpdateValuesService extends Service {
                     String Offset_Engcon_Forward = MyData.get_String("M" + i + "Offset_Engcon_Forward");
                     String Offset_Engcon_Down = MyData.get_String("M" + i + "Offset_Engcon_Down");
 
+                    String OffsetDegRoto = MyData.get_String("M" + i + "OffsetDegRoto");
+
 
                     String iswl = MyData.get_String("M" + i + "_isWL");
                     String enOUT = MyData.get_String("M" + i + "_enOUT");
@@ -413,6 +415,10 @@ public class UpdateValuesService extends Service {
                     }
                     if (Offset_Engcon_Down == null) {
                         MyData.push("M" + i + "Offset_Engcon_Down", "0.1");
+                    }
+
+                    if (OffsetDegRoto == null) {
+                        MyData.push("M" + i + "OffsetDegRoto", "0.0");
                     }
 
                     //draw
@@ -1989,6 +1995,12 @@ public class UpdateValuesService extends Service {
                     DataSaved.Offset_Engcon_Down = MyData.get_Double("M" + indexMach + "Offset_Engcon_Down");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Offset_Engcon_Down: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.OffsetDegRoto = MyData.get_Double("M" + indexMach + "OffsetDegRoto");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di OffsetDegRoto: " + e.getMessage());
                 }
 
 

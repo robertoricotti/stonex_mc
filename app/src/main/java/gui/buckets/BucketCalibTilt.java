@@ -6,25 +6,24 @@ import static packexcalib.exca.ExcavatorLib.correctTilt;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
+import static packexcalib.exca.Sensors_Decoder.Deg_Roto;
 import static utils.Utils.isNumeric;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.stx_dig.R;
-
-import java.util.Arrays;
 
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
@@ -38,18 +37,18 @@ import packexcalib.exca.Sensors_Decoder;
 import services.UpdateValuesService;
 import utils.DistToPoint;
 import utils.MyData;
-import utils.MyMCUtils;
 import utils.Utils;
 
 public class BucketCalibTilt extends BaseClass {
-    TextView bucketLengthT, bucketWidthT, L4T, tinyBukt;
+    TextView bucketLengthT, bucketWidthT, L4T, tinyBukt, txtRoto;
     EditText name, bucketLength, bucketWidth, L4;
-    Button minusTiltLevelAngle, plusTiltLevelAngle, setTiltLevelAngle;
+    Button minusTiltLevelAngle, plusTiltLevelAngle, setTiltLevelAngle, setOffsetRoto;
     Button setFlatAngle, offsetZero, plusBuck, minusBuck;
     ImageView save, exit;
     TextView offsetBucketAngle, offsetFlatAngle, offsetTiltLevelAngle;
     TextView bucketAngleTv, flatAngleTv, tiltLevelAngleTv;
-    CheckBox cbxOff, cbxLeft, cbxRight, cbTOff, cbTL, cbTR, top, topRev;
+    CheckBox cbxOff, cbxLeft, cbxRight, cbTOff, cbTL, cbTR, top, topRev,disableRoto;
+    LinearLayout linearLayoutRoto;
     int indexBucket;
     int indexMachineSelected;
     CustomNumberDialog numberDialog;
@@ -73,6 +72,10 @@ public class BucketCalibTilt extends BaseClass {
     }
 
     private void findView() {
+        disableRoto=findViewById(R.id.disableRoto);
+        linearLayoutRoto = findViewById(R.id.linearLayoutRoto);
+        txtRoto = findViewById(R.id.txtRoto);
+        setOffsetRoto = findViewById(R.id.setOffsetRoto);
         bucketLengthT = findViewById(R.id.bkl);
         bucketWidthT = findViewById(R.id.bwdt);
         L4T = findViewById(R.id.l4);
@@ -176,10 +179,17 @@ public class BucketCalibTilt extends BaseClass {
             case -1:
                 cbTR.setChecked(true);
         }
+
     }
 
     public void updateUI() {
+        if (DataSaved.isTiltRotator == 1) {
+            linearLayoutRoto.setVisibility(View.VISIBLE);
 
+        } else {
+            linearLayoutRoto.setVisibility(View.INVISIBLE);
+        }
+        disableRoto.setChecked(DataSaved.isTiltRotator==1);
         tinyBukt.setText(" (" + String.format("%.3f", DataSaved.piccolaBucket) + ")");
         tiltLevelAngleTv.setText((getResources().getString(R.string.txt_tiltangle) + String.format("%.2f", correctTilt) + " °").replace(",", "."));
         offsetTiltLevelAngle.setText((String.format("%.2f", DataSaved.offsetTilt) + " °").replace(",", "."));
@@ -187,6 +197,7 @@ public class BucketCalibTilt extends BaseClass {
         offsetBucketAngle.setText((String.format("%.2f", DataSaved.offsetDegWTilt) + " °").replace(",", "."));
         flatAngleTv.setText(((getResources().getString(R.string.bucket_flat_angle) + String.format("%.2f", ExcavatorLib.correctFlat) + " °").replace(",", ".")));
         offsetFlatAngle.setText((String.format("%.2f", DataSaved.offsetFlat) + " °").replace(",", "."));
+        txtRoto.setText((String.format("%.2f", Sensors_Decoder.Deg_Roto) + " °").replace(",", "."));
         if (isNumeric(L4.getText().toString())) {
             DataSaved.L4 = Double.parseDouble(Utils.writeMetri(L4.getText().toString().trim()));
         } else {
@@ -213,6 +224,11 @@ public class BucketCalibTilt extends BaseClass {
     }
 
     private void onClick() {
+        disableRoto.setOnClickListener(view -> {
+            DataSaved.isTiltRotator+=1;
+            DataSaved.isTiltRotator=DataSaved.isTiltRotator%2;
+            MyData.push("M"+indexMachineSelected+"isTiltRotator",String.valueOf(DataSaved.isTiltRotator));
+        });
         bucketLength.setOnClickListener((View v) -> {
             if (indexMeasure == 4 || indexMeasure == 5) {
                 if (!numberDialogFtIn.dialog.isShowing())
@@ -320,6 +336,12 @@ public class BucketCalibTilt extends BaseClass {
     }
 
     private void onLongClick() {
+        setOffsetRoto.setOnLongClickListener(view -> {
+            setOffsetRoto.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+            DataSaved.OffsetDegRoto=Deg_Roto;
+            MyData.push("M"+indexMachineSelected+"OffsetDegRoto",String.valueOf(Deg_Roto));
+            return true;
+        });
         offsetZero.setOnLongClickListener((View v) -> {
             offsetZero.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
             if (DataSaved.L1 > 0) {
@@ -360,7 +382,8 @@ public class BucketCalibTilt extends BaseClass {
                                 "M" + indexMachineSelected + "L_RotoToBucket" + indexBucket,
                                 String.valueOf(DataSaved.L_RotoToBucket)
                         );
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 DataSaved.isTiltRotator = previous;
@@ -399,7 +422,7 @@ public class BucketCalibTilt extends BaseClass {
 
     private double routine_LRoto() {
         // 2) centro perno di tilt all'altezza del centro di rotazione
-        double []coordRotoTop = Exca_Quaternion.endPoint(
+        double[] coordRotoTop = Exca_Quaternion.endPoint(
                 coordPivoTilt,
                 correctDeltaAngle + 90,
                 Deg_Boom_Roll,
@@ -419,7 +442,7 @@ public class BucketCalibTilt extends BaseClass {
 //        Log.e("TestRoto", Arrays.toString(coordRotoCenter));
 //        Log.e("TestRoto", Arrays.toString(ExcavatorLib.bucketCoord));
 //        Log.e("TestRoto", DistToPoint.dist3D(coordRotoCenter,ExcavatorLib.bucketCoord)+"");
-        return DistToPoint.dist3D(coordRotoCenter,ExcavatorLib.bucketCoord);
+        return DistToPoint.dist3D(coordRotoCenter, ExcavatorLib.bucketCoord);
     }
 
     @Override

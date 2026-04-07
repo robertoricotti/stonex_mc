@@ -1,6 +1,9 @@
 package services;
 
 import static packexcalib.exca.DataSaved.offsetH;
+import static packexcalib.exca.Sensors_Decoder.PGN_TiltRotator_EngCon;
+import static packexcalib.exca.Sensors_Decoder.PGN_Tiltrotator;
+import static packexcalib.exca.Sensors_Decoder.PGN_TiltrotatorEPS;
 import static utils.MyTypes.CASE_BUS;
 import static utils.MyTypes.CAT_SEA;
 import static utils.MyTypes.DEMO_BAG;
@@ -116,6 +119,8 @@ public class CanService extends Service {
         handler_DEFAULT.postDelayed(timeoutRunnable_DEFAULT, 3000);
         handler_NOBAS_Connected.postDelayed(timeoutRunnable_NOBAS_Connected, 3000);
 
+        handler_rotoTilt.postDelayed(timeoutRunnable_rotoTilt, 3000);
+
 
         super.onCreate();
     }
@@ -129,12 +134,18 @@ public class CanService extends Service {
 
         try {
 
+
             if (MyApp.visibleActivity instanceof Nuovo_Gps || MyApp.visibleActivity instanceof Can_Msg_Debug) {
 
                 EventBus.getDefault().post(new CanEvents(channel, null, id, dlc, msg));
             }
 
             if (channel == 1) {
+
+
+
+
+
 
                 if (DataSaved.isCanOpen == TSM_ACC ||  DataSaved.isCanOpen == FMI_SENS) {
                     if (id == 0x581) {
@@ -228,6 +239,10 @@ public class CanService extends Service {
 
                 switch (DataSaved.isCanOpen) {
                     case FMI_SENS:
+                        if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
+                            handler_rotoTilt.removeCallbacks(timeoutRunnable_rotoTilt);
+                            handler_rotoTilt.postDelayed(timeoutRunnable_rotoTilt, 3000);
+                        }
                         if (id == 0x1FF) {
                             flagDefault = true;
                             handler_DEFAULT.removeCallbacks(timeoutRunnable_DEFAULT);
@@ -311,6 +326,10 @@ public class CanService extends Service {
                         }
                         break;
                     case TSM_ACC:
+                        if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
+                            handler_rotoTilt.removeCallbacks(timeoutRunnable_rotoTilt);
+                            handler_rotoTilt.postDelayed(timeoutRunnable_rotoTilt, 3000);
+                        }
                         //moba o tsm
                         if (id == 899) {
                             flagDefault = true;
@@ -473,7 +492,7 @@ public class CanService extends Service {
             if (channel == 2) {
                 //FMI_Decoder.decode(id,msg);
                 //CAN2
-                if (id == 0x18F00DE3 && DataSaved.Interface_Type == CASE_BUS) {
+                if (PGNExtractor.extractPGN(id)==0xF00D && DataSaved.Interface_Type == CASE_BUS) {
                     CASE_Connected = true;
                     handler_CASE_Connected.removeCallbacks(timeoutRunnable_CASE_Connected);
                     handler_CASE_Connected.postDelayed(timeoutRunnable_CASE_Connected, 2000);
@@ -487,7 +506,7 @@ public class CanService extends Service {
                     }
 
                 }
-                if (id == 0x1CF00D22 && DataSaved.Interface_Type == CAT_SEA) {
+                if (PGNExtractor.extractPGN(id)==0xF00D && DataSaved.Interface_Type == CAT_SEA) {
                     CAT_Connected = true;
                     handler_CAT_Connected.removeCallbacks(timeoutRunnable_CAT_Connected);
                     handler_CAT_Connected.postDelayed(timeoutRunnable_CAT_Connected, 2000);
@@ -502,7 +521,7 @@ public class CanService extends Service {
                         if (DataSaved.CAT_Type == 0) {
                             AutoManToggle.update(booleans[6]);
                             Dozer_Auto_Main = AutoManToggle.Can_Toggled_Auto;
-                            Log.d("JDD", (String.valueOf(-offsetH)));
+                            //Log.d("JDD", (String.valueOf(-offsetH)));
                             OffsetAdjuster.update(booleans[2], booleans[3]);
                         } else if (DataSaved.CAT_Type == 1) {
                             Dozer_Auto_Main = booleans[6];
@@ -531,7 +550,7 @@ public class CanService extends Service {
                     }
 
                 }
-                if (id == 0x0CF00D80 && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)) {
+                if (PGNExtractor.extractPGN(id)==0xF00D && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)) {
                     JD_Connected = true;
                     handler_JD_Connected.removeCallbacks(timeoutRunnable_JD_Connected);
                     handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 2000);
@@ -552,7 +571,7 @@ public class CanService extends Service {
                     }
 
                 }
-                if (id == 0x0CF00DD5 && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)) {
+                if (PGNExtractor.extractPGN(id)==0xF00D && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)) {
                     JD_Connected = true;
                     handler_JD_Connected.removeCallbacks(timeoutRunnable_JD_Connected);
                     handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 2000);
@@ -871,6 +890,14 @@ public class CanService extends Service {
             NOBAS_Connected = false;
         }
     };
+    private final Handler handler_rotoTilt = new Handler();
+    private final Runnable timeoutRunnable_rotoTilt = new Runnable() {
+        @Override
+        public void run() {
+            Sensors_Decoder.Deg_Roto=0;
+        }
+    };
+
 
 
     private String byte2String(byte[] array) {

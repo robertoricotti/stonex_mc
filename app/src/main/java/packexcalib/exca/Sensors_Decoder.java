@@ -11,7 +11,6 @@ import static utils.MyTypes.JOYSTICKS;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.WHEELLOADER;
 
-
 import packexcalib.gnss.NmeaListener;
 import utils.MyMCUtils;
 
@@ -19,24 +18,23 @@ import utils.MyMCUtils;
 public class Sensors_Decoder {
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
     public static double Deg_roll, Deg_pitch, Deg_boom1, Deg_boom2, Deg_stick, Deg_bucket, Deg_tilt, Deg_Benna_W_Tilt, Deg_bucket_DEMO,
-            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom, Deg_Tool_Roll,Deg_Tool_Pitch;
+            Deg_Boom_Roll, Deg_Yaw_Tilt, Deg_Yaw_Frame, Deg_Roto, ExtensionBoom, Deg_Tool_Roll, Deg_Tool_Pitch;
     public static int V_Laser = 255, WheelSteer;
     static double norm, ax_norm, ay_norm, az_norm;
     static short acc_x;
     static short acc_y;
     static short acc_z;
 
-    final static int PGN_Tiltrotator = 61460;
-    final static int PGN_TiltrotatorEPS = 65488;
-    final static int PGN_TiltRotator_EngCon = 131024;
-    static int countTiltRot;
+    public final static int PGN_Tiltrotator = 61460;
+    public final static int PGN_TiltrotatorEPS = 65488;
+    public final static int PGN_TiltRotator_EngCon = 131024;
 
     public static void Sensors_Decoder() {
 
     }
 
     public static void decode(int id, byte[] data) {
-        if(DataSaved.isCanOpen==JOYSTICKS){
+        if (DataSaved.isCanOpen == JOYSTICKS) {
             return;
         }
         try {
@@ -72,9 +70,7 @@ public class Sensors_Decoder {
                 case WHEELLOADER://wheel loader
                     switch (DataSaved.isCanOpen) {
                         case FMI_SENS:
-                            countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
-                                countTiltRot = 0;
                                 if (PGNExtractor.extractPGN(id) == PGN_Tiltrotator) {
                                     double cost = (PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[2], data[3]}) * 100d) * 0.01d;
 
@@ -92,9 +88,9 @@ public class Sensors_Decoder {
                                 if (DataSaved.revTiltRot == 1) {
                                     Deg_Roto = Deg_Roto * -1;
                                 }
+                                Deg_Roto-=DataSaved.OffsetDegRoto;
+                                Deg_Roto=normalizeAngle(Deg_Roto);
 
-                            }
-                            if (countTiltRot > 500) {
 
                             }
 
@@ -161,9 +157,7 @@ public class Sensors_Decoder {
 
                         case TSM_ACC:
 
-                            countTiltRot++;
                             if (id > 2048 && (PGNExtractor.extractPGN(id) == PGN_Tiltrotator || PGNExtractor.extractPGN(id) == PGN_TiltrotatorEPS || PGNExtractor.extractPGN(id) == PGN_TiltRotator_EngCon)) {
-                                countTiltRot = 0;
 
 
                                 if (PGNExtractor.extractPGN(id) == PGN_Tiltrotator) {
@@ -183,12 +177,12 @@ public class Sensors_Decoder {
                                 if (DataSaved.revTiltRot == 1) {
                                     Deg_Roto = Deg_Roto * -1;
                                 }
+                                Deg_Roto-=DataSaved.OffsetDegRoto;
+                                Deg_Roto=normalizeAngle(Deg_Roto);
 
 
                             }
-                            if (countTiltRot > 500) {
 
-                            }
                             //TSM gravity vector
                             switch (id & 0x1FFFFFFF) {
 
@@ -210,7 +204,7 @@ public class Sensors_Decoder {
                                     break;
 
                                 case 0x384:
-                                   // double [] moutS=TiltEncript.encriptTSM_Boom(data, 1);
+                                    // double [] moutS=TiltEncript.encriptTSM_Boom(data, 1);
                                     //Log.d("TestTSM","384:  Pitch:"+String.format("%.2f",moutS[0])+"    Roll:"+String.format("%.2f",moutS[1]));
                                     double[] out1 = TiltEncript.encriptTSM_Boom(data, DataSaved.lrStick);
                                     Deg_stick = out1[0];
@@ -297,10 +291,10 @@ public class Sensors_Decoder {
                             Deg_Yaw_Frame = eulers[2];
                             break;
                     }
-                        if(DataSaved.Dozer_UpsideDown>0){
-                            Deg_roll*=-1;
-                            Deg_pitch*=-1;
-                        }
+                    if (DataSaved.Dozer_UpsideDown > 0) {
+                        Deg_roll *= -1;
+                        Deg_pitch *= -1;
+                    }
                     ExcavatorLib.Excavator();
                     break;
 
@@ -430,6 +424,8 @@ public class Sensors_Decoder {
                             if (DataSaved.revTiltRot == 1) {
                                 Deg_Roto = Deg_Roto * -1;
                             }
+                            Deg_Roto -= DataSaved.OffsetDegRoto;
+                            Deg_Roto = normalizeAngle(Deg_Roto);
 
                         }
                         break;
@@ -444,6 +440,8 @@ public class Sensors_Decoder {
                             if (DataSaved.revTiltRot == 1) {
                                 Deg_Roto = Deg_Roto * -1;
                             }
+                            Deg_Roto-=DataSaved.OffsetDegRoto;
+                            Deg_Roto=normalizeAngle(Deg_Roto);
                         }
 
 
