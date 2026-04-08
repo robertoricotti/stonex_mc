@@ -600,16 +600,17 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.1 NOBAS IMPLEMENTATION 75%">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.1 NOBAS IMPLEMENTATION 75%+rototilt offset">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/buckets/BucketCalibTilt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/dozer_grader.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/dozer_grader.p1m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/UpdateChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/UpdateChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/GL_DrawExca.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/GL_DrawExca.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/exca/My_Benna.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_bucket_tilt_calib_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_bucket_tilt_calib_7.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -619,7 +620,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -865,14 +866,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00152" summary="4.1.0 rototilt da testare 80%">
-      <option name="closed" value="true" />
-      <created>1773270654065</created>
-      <option name="number" value="00152" />
-      <option name="presentableId" value="LOCAL-00152" />
-      <option name="project" value="LOCAL" />
-      <updated>1773270654065</updated>
     </task>
     <task id="LOCAL-00153" summary="4.1.0 rototilt da testare 50%">
       <option name="closed" value="true" />
@@ -1258,7 +1251,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775429283415</updated>
     </task>
-    <option name="localTasksCounter" value="201" />
+    <task id="LOCAL-00201" summary="4.1.1 NOBAS IMPLEMENTATION 75%+rototilt offset">
+      <option name="closed" value="true" />
+      <created>1775560059454</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1775560059454</updated>
+    </task>
+    <option name="localTasksCounter" value="202" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1274,7 +1275,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.0 rototilt da finire di fixare.BIG ISSUE" />
     <MESSAGE value="4.1.0 rototilt da testare 50%" />
     <MESSAGE value="4.1.0 rototilt da testare 80%" />
     <MESSAGE value="4.1.0 rototilt da testare 90%" />
@@ -1299,7 +1299,8 @@
     <MESSAGE value="4.1.0 Release Deploy Gen1 e Gen2" />
     <MESSAGE value="4.1.1 NOBAS IMPLEMENTATION" />
     <MESSAGE value="4.1.1 NOBAS IMPLEMENTATION 75%" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.1 NOBAS IMPLEMENTATION 75%" />
+    <MESSAGE value="4.1.1 NOBAS IMPLEMENTATION 75%+rototilt offset" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.1 NOBAS IMPLEMENTATION 75%+rototilt offset" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

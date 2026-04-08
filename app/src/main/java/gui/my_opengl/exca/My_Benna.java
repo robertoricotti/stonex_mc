@@ -30,7 +30,6 @@ import gui.my_opengl.Point3DF;
 import gui.my_opengl.Polyline2DArc;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
-import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.My_LocationCalc;
 import utils.DistToPoint;
 
@@ -168,8 +167,7 @@ public class My_Benna {
             spcB = Exca_Quaternion.endPoint(bucketCoord, -90, 0, 0.05, mhdt);
             sprB = Exca_Quaternion.endPoint(bucketRightCoord, -90, 0, 0.05, mhdt);
 
-        }
-        else if (DataSaved.isTiltRotator!=1) {
+        } else if (DataSaved.isTiltRotator != 1) {
             // TILT NORMALE
             flatLen = Math.sin(Math.toRadians(DataSaved.flat)) * DataSaved.piccolaBucket;
             flatTop = Math.max(0.18, flatLen * 0.8);
@@ -203,8 +201,7 @@ public class My_Benna {
             spcB = Exca_Quaternion.endPoint(bucketCoord, -90, 0, 0.05, mhdt + yawSensor);
             sprB = Exca_Quaternion.endPoint(bucketRightCoord, -90, 0, 0.05, mhdt + yawSensor);
 
-        }
-        else {
+        } else {
             // TILTROTATOR
             BucketFrame f = buildBucketFrameRototilt();
 
@@ -272,7 +269,7 @@ public class My_Benna {
             lt = Exca_Quaternion.endPoint(pos, Deg_Boom_Roll, 0, 10, mhdt + 270);
             rt = Exca_Quaternion.endPoint(pos, -Deg_Boom_Roll, 0, 10, mhdt + 90);
 
-        } else if (DataSaved.isTiltRotator!=1) {
+        } else if (DataSaved.isTiltRotator != 1) {
             fw = Exca_Quaternion.endPoint(pos, 0, 0, 50, mhdt + yawSensor);
             bw = Exca_Quaternion.endPoint(pos, 0, 0, 15, mhdt + yawSensor + 180);
             lt = Exca_Quaternion.endPoint(pos, correctTilt, 0, 10, mhdt + yawSensor + 270);
@@ -423,7 +420,6 @@ public class My_Benna {
         SPIG_RB = pTransform(sprB, DataSaved.glL_AnchorView, rs());
 
 
-
         return new Point3DF[]{
                 P1_sx, PM2_sx, PM1_sx, P3_sx, P4_sx, P7_sx, P5_sx, P6_sx, P8_sx, P2_sx, P1_sx
         };
@@ -477,7 +473,7 @@ public class My_Benna {
             p5 = Exca_Quaternion.endPoint(p6, correctBucket + 90 + (90 - segments[2].angleDegrees), Deg_Boom_Roll, segments[2].length, mhdt);
             p7 = Exca_Quaternion.endPoint(p5, correctBucket + 90 + (90 - segments[3].angleDegrees), Deg_Boom_Roll, segments[3].length, mhdt);
 
-        } else if (DataSaved.isTiltRotator!=1) {
+        } else if (DataSaved.isTiltRotator != 1) {
             flatLen = Math.sin(Math.toRadians(DataSaved.flat)) * DataSaved.piccolaBucket;
             flatTop = Math.max(0.18, flatLen * 0.8);
 
@@ -584,7 +580,7 @@ public class My_Benna {
             PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, rs());
             PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, rs());
 
-        } else if(DataSaved.isTiltRotator==0) {
+        } else if (DataSaved.isTiltRotator == 0) {
             altezza = DataSaved.L_Bucket - (DataSaved.piccolaBucket * 0.95) - DataSaved.L_Tilt;
             altezzaAttacco = (float) (altezza * rs());
 
@@ -608,7 +604,7 @@ public class My_Benna {
             PBASE_ALTA_H = pTransform(pmAH, DataSaved.glL_AnchorView, rs());
             PBASE_H = pTransform(pmBH, DataSaved.glL_AnchorView, rs());
 
-        }      else {
+        } else {
             // ROTOTILT:
             // 1) coordPivoTilt -> coordRotoTop      r = 0.10 m
             // 2) coordRotoTop  -> coordRotoCenter   r = 0.22 m
@@ -619,21 +615,21 @@ public class My_Benna {
             altezzaAttacco = 0f;
 
             // cilindro 1
-            PBASE      = pTransform(coordPivoTilt,   DataSaved.glL_AnchorView, rs());
-            PBASE_ALTA = pTransform(coordRotoTop,    DataSaved.glL_AnchorView, rs());
+            PBASE = pTransform(coordPivoTilt, DataSaved.glL_AnchorView, rs());
+            PBASE_ALTA = pTransform(coordRotoTop, DataSaved.glL_AnchorView, rs());
 
             // cilindro 2
-            P_A_Front  = pTransform(coordRotoTop,    DataSaved.glL_AnchorView, rs());
-            P_A_Back   = pTransform(coordRotoCenter, DataSaved.glL_AnchorView, rs());
+            P_A_Front = pTransform(coordRotoTop, DataSaved.glL_AnchorView, rs());
+            P_A_Back = pTransform(coordRotoCenter, DataSaved.glL_AnchorView, rs());
 
             // cilindro 3
-            P_A_FF       = pTransform(coordST,         DataSaved.glL_AnchorView, rs());
-            PBASE_ALTA_H = pTransform(coordPivoTilt,   DataSaved.glL_AnchorView, rs());
+            P_A_FF = pTransform(coordST, DataSaved.glL_AnchorView, rs());
+            PBASE_ALTA_H = pTransform(coordPivoTilt, DataSaved.glL_AnchorView, rs());
 
             // riempimento sicurezza
             PBASE_H = PBASE_ALTA_H;
 
-    }
+        }
 
         return new float[]{
                 PBASE.getX(), PBASE.getY(), PBASE.getZ(),
@@ -757,7 +753,7 @@ public class My_Benna {
         U = normalize(cross(B, R));
 
         // correzione fine del piano benna attorno all'asse laterale
-        double bucketClockwiseFixDeg =DataSaved.flat;   // prova iniziale con flat
+        double bucketClockwiseFixDeg = DataSaved.flat;   // prova iniziale con flat
         B = normalize(rotateAroundAxis(B, R, bucketClockwiseFixDeg));
         U = normalize(rotateAroundAxis(U, R, bucketClockwiseFixDeg));
 
@@ -827,6 +823,7 @@ public class My_Benna {
     private static double[] moveBU(double[] origin, BucketFrame f, double alphaDeg, double len) {
         return add(origin, s3(dirBU(f, alphaDeg), len));
     }
+
     private static double[] rotateAroundAxis(double[] v, double[] axisUnit, double angleDeg) {
         double a = Math.toRadians(angleDeg);
 

@@ -55,7 +55,7 @@ public class CanService extends Service {
 
     public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck, CASE_Joystick,NOBAS_Joystick;
     public static int SteerConnected, isAuto;
-    public static int m;
+    public static int m,ECU_VALVE_TYPE;
     public static boolean NOBAS_Auto_Left,NOBAS_Auto_Right,NOBAS_Auto_SS,NOBAS_Connected,Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS,
             ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
     public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser, flagDefault,toolOK;
@@ -616,6 +616,7 @@ public class CanService extends Service {
                 }
                 if (id == 2166) {
                     ECU_Connected = true;
+                    ECU_VALVE_TYPE=msg[0];
                     handler_ECU_Connected.removeCallbacks(timeoutRunnable_ECU_Connected);
                     handler_ECU_Connected.postDelayed(timeoutRunnable_ECU_Connected, 1000);
                 }

@@ -103,7 +103,7 @@ public class GL_DrawExca {
             );
             cingoli.draw(gl);
 
-            if (DataSaved.lrTilt != 0) {
+
                 if (DataSaved.isTiltRotator == 1) {
                     Cylinder cyl1 = new Cylinder(
                             new float[]{DataSaved.GL_ATTACCO[0], DataSaved.GL_ATTACCO[1], DataSaved.GL_ATTACCO[2]},
@@ -183,7 +183,7 @@ public class GL_DrawExca {
                     );
                     cylinder3.draw(gl);
                 }
-            }
+
 
             Cylinder boccolaStick = new Cylinder(
                     p3tof(DataSaved.GL_STICK[0]),

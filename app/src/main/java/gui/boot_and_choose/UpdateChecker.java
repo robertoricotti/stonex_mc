@@ -30,6 +30,8 @@ public class UpdateChecker {
         public boolean updateAvailable;
         public long remoteVersionCode;
         public String remoteVersionName;
+        public long localVersionCode;
+        public String localVersionName;
         public String apkUrl;
         public String releaseNotes;
     }
@@ -53,8 +55,10 @@ public class UpdateChecker {
                     throw new IOException("HTTP " + responseCode);
                 }
 
-                InputStream is = connection.getInputStream();
-                String json = readAll(is);
+                String json;
+                try (InputStream is = connection.getInputStream()) {
+                    json = readAll(is);
+                }
 
                 JSONObject root = new JSONObject(json);
 
@@ -78,20 +82,25 @@ public class UpdateChecker {
                     }
                 }
 
-                String localVersionName = getLocalVersionName(context);
+                String localVersionName = parseVersionName(getLocalVersionName(context));
                 long localVersionCode = getLocalVersionCode(context);
 
-                boolean updateAvailable;
+                boolean updateAvailable = false;
 
-                if (remoteVersionCode > 0 && localVersionCode > 0) {
-                    updateAvailable = apkUrl != null && remoteVersionCode > localVersionCode;
-                } else {
-                    updateAvailable = apkUrl != null && isRemoteVersionNewer(remoteVersionName, localVersionName);
+                // Priorità assoluta al versionCode, ma solo se nel tag remoto esiste davvero
+                if (apkUrl != null) {
+                    if (remoteVersionCode > 0) {
+                        updateAvailable = remoteVersionCode > localVersionCode;
+                    } else {
+                        updateAvailable = isRemoteVersionNewer(remoteVersionName, localVersionName);
+                    }
                 }
 
                 UpdateInfo info = new UpdateInfo();
                 info.remoteVersionCode = remoteVersionCode;
                 info.remoteVersionName = remoteVersionName;
+                info.localVersionCode = localVersionCode;
+                info.localVersionName = localVersionName;
                 info.apkUrl = apkUrl;
                 info.releaseNotes = body;
                 info.updateAvailable = updateAvailable;
@@ -136,7 +145,13 @@ public class UpdateChecker {
     }
 
     private static long parseVersionCode(String tag) {
-        // Supporta: v4.1.0+410  oppure  4.1.0+410
+        // Esempi supportati:
+        // v4.1.1+4101
+        // 4.1.1+4101
+        if (tag == null) {
+            return 0;
+        }
+
         int plus = tag.lastIndexOf('+');
         if (plus >= 0 && plus < tag.length() - 1) {
             try {
@@ -149,9 +164,11 @@ public class UpdateChecker {
     }
 
     private static String parseVersionName(String tag) {
-        // Supporta: v4.1.0+410 -> 4.1.0
-        //           4.1.0      -> 4.1.0
-        String cleaned = tag == null ? "" : tag.trim();
+        if (tag == null) {
+            return "";
+        }
+
+        String cleaned = tag.trim();
 
         if (cleaned.startsWith("v") || cleaned.startsWith("V")) {
             cleaned = cleaned.substring(1);
@@ -160,6 +177,12 @@ public class UpdateChecker {
         int plus = cleaned.indexOf('+');
         if (plus >= 0) {
             cleaned = cleaned.substring(0, plus);
+        }
+
+        // rimuove eventuali suffix tipo " -GEN2"
+        int suffixIndex = cleaned.indexOf(" -");
+        if (suffixIndex >= 0) {
+            cleaned = cleaned.substring(0, suffixIndex);
         }
 
         return cleaned.trim();
@@ -194,13 +217,13 @@ public class UpdateChecker {
             return 0;
         }
 
-        String digitsOnly = value.replaceAll("[^0-9]", "");
-        if (digitsOnly.isEmpty()) {
+        value = value.trim();
+        if (value.isEmpty()) {
             return 0;
         }
 
         try {
-            return Integer.parseInt(digitsOnly);
+            return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             return 0;
         }

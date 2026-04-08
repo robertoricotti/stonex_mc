@@ -1355,6 +1355,18 @@ public class CanSender extends Service {
                                 (byte) valoreSS0[0],
                                 (byte) valoreSS0[1]});
 
+//                MyDeviceManager.CanWrite(sending, 1, 2168, 8,
+//                        new byte[]{
+//                                0,//TODO Tipo Valvola richiesto qui 0= Danfoss / 1=PWM Duty 250Hz / 2=PWM Current 150Hz / 3=OnOff
+//                                (byte) 0xFF,
+//                                (byte) 0xFF,
+//                                (byte) 0xFF,
+//                                (byte) 0xFF,
+//                                (byte) 0xFF,
+//                                (byte) 0xFF,
+//                                (byte) 0xFF});
+
+
 
                 break;
 
