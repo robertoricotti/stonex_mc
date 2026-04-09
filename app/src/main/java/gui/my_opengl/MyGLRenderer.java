@@ -209,9 +209,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             case DOZER:
             case DOZER_SIX:
                 GL_DrawDozer.draw(gl11);
-//               if (DataSaved.drwaMachieSchema > 0) {
-//                   GL_DrawDozer.drawMachine(gl11);  // carro + cingoli + cabina
-//               }
+
+
             case GRADER:
                 GL_DrawDozer.draw(gl11);
                 break;

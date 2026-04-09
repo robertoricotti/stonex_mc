@@ -5,12 +5,16 @@ import static gui.MyApp.isApollo;
 import static gui.MyApp.licenseType;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static gui.dialogs_and_toast.DialogPassword.isTech2;
+import static gui.hydro.NOBAS_Activity.convertByte;
 import static packexcalib.exca.DataSaved.GAIN_LEFT;
 import static packexcalib.exca.DataSaved.GAIN_RIGHT;
 import static packexcalib.exca.DataSaved.HEADING;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_DOZER;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_GRADER;
 import static packexcalib.exca.DataSaved.OUTPUT_HYDRO;
+import static packexcalib.exca.DataSaved.REVERSE_LEFT;
+import static packexcalib.exca.DataSaved.REVERSE_RIGHT;
+import static packexcalib.exca.DataSaved.REVERSE_SS;
 import static packexcalib.exca.DataSaved.maxSpeedRightDW;
 import static packexcalib.exca.DataSaved.maxSpeedRightUP;
 import static packexcalib.exca.DataSaved.minSpeedRightDW;
@@ -71,7 +75,6 @@ import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.MC_3D_PRO;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.NOBAS;
-import static utils.MyTypes.NO_SENSORS;
 import static utils.MyTypes.OEM_PROTO;
 import static utils.MyTypes.STX_ECU;
 import static utils.MyTypes.WHEELLOADER;
@@ -1084,8 +1087,8 @@ public class CanSender extends Service {
         if (Grader_Auto_SS) {
             //TODO sideshift
             switch (DataSaved.Interface_Type) {
-                case 0:
-                case 2:
+                case STX_ECU:
+                case JD_LIEBHERR:
                     //SS JD ECU
 
                     if (!isInRange(DataSaved.tolleranza_XY, dist) && Math.abs(dist) < MAX_SCALE) {
@@ -1115,7 +1118,8 @@ public class CanSender extends Service {
 
                     break;
 
-                case 1:
+                case CAT_SEA:
+                case NOBAS:
                     //SS CAT
                     if (!isInRange(DataSaved.tolleranza_XY, dist) && Math.abs(dist) < MAX_SCALE) {
                         if (rot > 30 && rot < 120) {
@@ -1175,37 +1179,6 @@ public class CanSender extends Service {
                     }
                     // output 3e PARTI
                     byte[] left, cent, right;
-                    byte[] dist = new byte[2];
-                    byte[] Cq = new byte[2];
-                    byte satN = 0, qFix = 0;
-                    try {
-                        satN = Byte.parseByte(NmeaListener.ggaSat);
-                    } catch (Exception e) {
-                        satN = 0;
-                    }
-                    try {
-                        qFix = Byte.parseByte(NmeaListener.ggaQuality);
-                    } catch (Exception e) {
-                        qFix = 0;
-                    }
-                    try {
-                        Cq = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (Double.parseDouble(NmeaListener.VRMS_) * 1000));
-                    } catch (Exception e) {
-                        Cq = new byte[2];
-                    }
-
-                    switch (DataSaved.bucketEdge) {
-                        case -1:
-                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000 * multSS), (short) -32768, (short) 32767));
-                            break;
-                        case 0:
-                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000 * multSS), (short) -32768, (short) 32767));
-                            break;
-                        case 1:
-                            dist = PLC_DataTypes_LittleEndian.S16_to_bytes(MyMCUtils.limitShort((short) (TriangleService.dist3D_SX * 1000 * multSS), (short) -32768, (short) 32767));
-                            break;
-                    }
-
                     if (ltOffGrid) {
                         left = new byte[]{0x0, (byte) 0x80};
                     } else {
@@ -1339,7 +1312,7 @@ public class CanSender extends Service {
                 valoreSX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultL);
                 valoreDX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
                 valoreSS0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
-                OUTPUT_HYDRO = "L:" + resultL + "\n" + "R:" + resultR;
+                OUTPUT_HYDRO = "L:" + resultL + "\n" + "R:" + resultR+"\n"+"SS:"+valoreSS0;
                 byte mD0 = 0;
                 if (DataSaved.gpsOk) {
                     mD0 = 1;
@@ -1367,16 +1340,15 @@ public class CanSender extends Service {
 //                                (byte) 0xFF});
 
 
-
                 break;
 
             case CAT_SEA:
                 //CAT
-                OUTPUT_HYDRO = "L:" + valueCATL + "\n" + "R:" + valueCATR;
+                OUTPUT_HYDRO = "L:" + valueCATL + "\n" + "R:" + valueCATR+"\n"+"SS:"+valueCATSS;;
                 MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x18FE3185, 8,
                         new byte[]{(byte) valueCATL,
                                 (byte) 0xFF,
-                                dirCAT_L,//F2=Up F1=Down
+                                convertByte(dirCAT_L,REVERSE_LEFT==1),//F2=Up F1=Down
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
@@ -1386,7 +1358,7 @@ public class CanSender extends Service {
                 MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x18FE3285, 8,
                         new byte[]{(byte) valueCATR,
                                 (byte) 0xFF,
-                                dirCAT_R,//F2=Up F1=Down
+                                convertByte(dirCAT_R,REVERSE_RIGHT==1),//F2=Up F1=Down
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
@@ -1396,7 +1368,7 @@ public class CanSender extends Service {
                 MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x18FE3385, 8,
                         new byte[]{(byte) valueCATSS,
                                 (byte) 0xFF,
-                                dirCAT_SS,//F2=Right F1=Left
+                                convertByte(dirCAT_SS,REVERSE_SS==1),//F2=Right F1=Left
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
@@ -1432,7 +1404,7 @@ public class CanSender extends Service {
                 valoreSX = PLC_DataTypes_LittleEndian.U16_to_bytes(resultL2);
                 valoreDX = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR2);
                 valoreSS = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS2);
-                OUTPUT_HYDRO = "L:" + resultL2 + "\n" + "R:" + resultR2;
+                OUTPUT_HYDRO = "L:" + resultL2 + "\n" + "R:" + resultR2+"\n"+"SS:"+valoreSS;;
                 MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,
@@ -1496,43 +1468,32 @@ public class CanSender extends Service {
                 break;
             case NOBAS:
                 //NOBAS
-                byte dirL=(byte)0x32;
-                byte dirR=0x32;
-                byte dirSS=0x32;
-                if(dirCAT_L==(byte)0xF1){
-                    dirL=(byte)0x31;
-                }
-                if(dirCase_R==(byte)0xF1){
-                    dirR=(byte)0x31;
-                }
-                if(dirCAT_SS==(byte)0xF1){
-                    dirSS=(byte)0x31;
-                }
-                OUTPUT_HYDRO = "L:" + valueCATL + "\n" + "R:" + valueCATR;
-                MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x18FE3185, 8,
+
+                OUTPUT_HYDRO = "L:" + valueCATL + "\n" + "R:" + valueCATR+"\n"+"SS:"+valueCATSS;
+                MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x18FE31F6, 8,
                         new byte[]{(byte) valueCATL,
                                 (byte) 0xFF,
-                                dirL,//F2=Up F1=Down
+                                convertByte(dirCAT_L,REVERSE_LEFT==1),//F2=Up F1=Down
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x18FE3285, 8,
+                MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x18FE32F6, 8,
                         new byte[]{(byte) valueCATR,
                                 (byte) 0xFF,
-                                dirR,//F2=Up F1=Down
+                                convertByte(dirCAT_R,REVERSE_RIGHT==1),//F2=Up F1=Down
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x18FE3385, 8,
+                MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x18FE33F6, 8,
                         new byte[]{(byte) valueCATSS,
                                 (byte) 0xFF,
-                                dirSS,//F2=Right F1=Left
+                                convertByte(dirCAT_SS,REVERSE_SS==1),//F2=Right F1=Left
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,

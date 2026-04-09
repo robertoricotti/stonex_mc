@@ -51,7 +51,7 @@ public class My_Lama {
         Point3D mC2 = new Point3D(p12[0], p12[1], p12[2]);
         Point3D centro = mC1.interpolate(mC2, 1.0 / 2.0);
         c1 = new double[]{centro.getX(), centro.getY(), centro.getZ()};
-        c2 = Exca_Quaternion.endPoint(c1, correctPitch + 180, correctRoll, (DataSaved.altezzaLama+DataSaved.usuraLamaCX) * 0.1, hdt_LAMA);
+        c2 = Exca_Quaternion.endPoint(c1, correctPitch + 180, correctRoll, (DataSaved.altezzaLama+DataSaved.usuraLamaCX) * 0.1, hdt_LAMA);//TODO punto REALE ENZ DOVE PARTE FRAME
         ant1_a = startXYZ;
         ant2_a = Exca_Quaternion.endPoint(startXYZ, -correctRoll, correctPitch, DataSaved.W_Blade_TOT - (DataSaved.W_Blade_LEFT - DataSaved.deltaX) - DataSaved.distBetween, NmeaListener.mch_Orientation);
         ant1_b = Exca_Quaternion.endPoint(ant1_a, correctPitch - 90, correctRoll, DataSaved.altezzaPali, hdt_LAMA);

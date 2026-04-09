@@ -47,7 +47,7 @@ public class GL_DrawDozer {
             lama.draw(gl11);
         }
 
-        Cylinder attacco = new Cylinder(
+        Cylinder attacco = new Cylinder(//TODO Da qui si sviluppa la macchina
                 p3tof(GL_LAMA[14]),
                 p3tof(GL_LAMA[15]),
                 (float) (DataSaved.altezzaLama * 0.15f * rs()),

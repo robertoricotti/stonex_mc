@@ -1,6 +1,10 @@
 package gui.hydro;
 
+import static gui.hydro.NOBAS_Activity.convertByte;
 import static packexcalib.exca.DataSaved.CAT_Type;
+import static packexcalib.exca.DataSaved.REVERSE_LEFT;
+import static packexcalib.exca.DataSaved.REVERSE_RIGHT;
+import static packexcalib.exca.DataSaved.REVERSE_SS;
 import static packexcalib.exca.DataSaved.maxSpeedLeftDW;
 import static packexcalib.exca.DataSaved.maxSpeedLeftUP;
 import static packexcalib.exca.DataSaved.maxSpeedRightDW;
@@ -22,6 +26,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
 
+import packexcalib.exca.DataSaved;
 import services.CanService;
 import utils.MyMCUtils;
 import utils.MyData;
@@ -46,6 +52,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
     TextView testValve, testo, funzione, tipo, pagina;
     int maxMenu;
     EditText valore;
+    CheckBox rev_left,rev_right,rev_ss;
     byte leftDir = (byte) 0xF2;
     byte rightDir = (byte) 0xF2;
     byte ssDir = (byte) 0xF2;
@@ -74,6 +81,9 @@ public class CAT_SEA_Activity extends AppCompatActivity {
     }
 
     private void findView() {
+        rev_left=findViewById(R.id.rev_left);
+        rev_right=findViewById(R.id.rev_right);
+        rev_ss=findViewById(R.id.rev_ss);
         back = findViewById(R.id.btn_1);
         menuP = findViewById(R.id.toright);
         menuM = findViewById(R.id.toleft);
@@ -90,6 +100,31 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void onClick() {
+        rev_left.setOnClickListener(view -> {
+            if(REVERSE_LEFT>0){
+                REVERSE_LEFT=0;
+            }else {
+                REVERSE_LEFT=1;
+            }
+            MyData.push("M"+indexMachine+"REVERSE_LEFT",String.valueOf(REVERSE_LEFT));
+
+        });
+        rev_right.setOnClickListener(view -> {
+            if(REVERSE_RIGHT>0){
+                REVERSE_RIGHT=0;
+            }else {
+                REVERSE_RIGHT=1;
+            }
+            MyData.push("M"+indexMachine+"REVERSE_RIGHT",String.valueOf(REVERSE_RIGHT));
+        });
+        rev_ss.setOnClickListener(view -> {
+            if(REVERSE_SS>0){
+                REVERSE_SS=0;
+            }else {
+                REVERSE_SS=1;
+            }
+            MyData.push("M"+indexMachine+"REVERSE_SS",String.valueOf(REVERSE_SS));
+        });
         testValve.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -413,6 +448,27 @@ public class CAT_SEA_Activity extends AppCompatActivity {
 
     public void updateUI() {
         pagina.setText((voceMenu + 1) + " / " + (maxMenu));
+        rev_left.setChecked(DataSaved.REVERSE_LEFT == 1);
+        rev_right.setChecked(DataSaved.REVERSE_RIGHT == 1);
+        rev_ss.setChecked(DataSaved.REVERSE_SS == 1);
+
+        if(REVERSE_LEFT==1){
+            rev_left.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+        }else {
+            rev_left.setBackground(getDrawable(R.drawable.sfondo_manuale));
+        }
+
+        if(REVERSE_RIGHT==1){
+            rev_right.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+        }else {
+            rev_right.setBackground(getDrawable(R.drawable.sfondo_manuale));
+        }
+
+        if(REVERSE_SS==1){
+            rev_ss.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+        }else {
+            rev_ss.setBackground(getDrawable(R.drawable.sfondo_manuale));
+        }
         switch (CAT_Type) {
             case 0:
                 tipo.setText("CAT K - N Series");
@@ -693,7 +749,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 MyDeviceManager.CanWrite(true,1, 0x18FE3185, 8,
                         new byte[]{valueLEFT,
                                 (byte) 0xFF,
-                                leftDir,//F2=Up F1=Down
+                                convertByte(leftDir,REVERSE_LEFT==1),//F2=Up F1=Down
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
@@ -703,7 +759,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 MyDeviceManager.CanWrite(true,1, 0x18FE3285, 8,
                         new byte[]{valueRIGHT,
                                 (byte) 0xFF,
-                                rightDir,//F2=Up F1=Down
+                                convertByte(rightDir,REVERSE_RIGHT==1),//F2=Up F1=Down
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
@@ -713,7 +769,7 @@ public class CAT_SEA_Activity extends AppCompatActivity {
                 MyDeviceManager.CanWrite(true,1, 0x18FE3385, 8,
                         new byte[]{valueSS,
                                 (byte) 0xFF,
-                                ssDir,//F2=Right F1=Left
+                                convertByte(ssDir,REVERSE_SS==1),//F2=Right F1=Left
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,

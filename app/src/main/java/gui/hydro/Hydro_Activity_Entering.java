@@ -112,7 +112,7 @@ public class Hydro_Activity_Entering extends AppCompatActivity {
             MyData.push("M"+indexMachine+"Interface_Type","0");
         });
         cnh.setOnClickListener(view -> {
-            if(DataSaved.Interface_Type==CAT_SEA){
+            if(DataSaved.Interface_Type==CASE_BUS){
                 cnh.setEnabled(false);
                 startActivity(new Intent(Hydro_Activity_Entering.this, CASE_Activity.class));
                 finish();

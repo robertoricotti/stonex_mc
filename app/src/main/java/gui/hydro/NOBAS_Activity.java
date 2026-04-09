@@ -1,6 +1,8 @@
 package gui.hydro;
 
-import static packexcalib.exca.DataSaved.CAT_Type;
+import static packexcalib.exca.DataSaved.REVERSE_LEFT;
+import static packexcalib.exca.DataSaved.REVERSE_RIGHT;
+import static packexcalib.exca.DataSaved.REVERSE_SS;
 import static packexcalib.exca.DataSaved.maxSpeedLeftDW;
 import static packexcalib.exca.DataSaved.maxSpeedLeftUP;
 import static packexcalib.exca.DataSaved.maxSpeedRightDW;
@@ -13,7 +15,7 @@ import static packexcalib.exca.DataSaved.minSpeedRightDW;
 import static packexcalib.exca.DataSaved.minSpeedRightUP;
 import static packexcalib.exca.DataSaved.minSpeedSS_A;
 import static packexcalib.exca.DataSaved.minSpeedSS_B;
-import static services.CanService.CAT_Connected;
+
 import static services.CanService.NOBAS_Connected;
 
 import android.annotation.SuppressLint;
@@ -23,21 +25,18 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.stx_dig.R;
 
 import java.util.Base64;
 
 import gui.BaseClass;
+import packexcalib.exca.DataSaved;
 import services.CanService;
 import utils.MyData;
 import utils.MyDeviceManager;
@@ -53,9 +52,10 @@ public class NOBAS_Activity extends BaseClass {
     TextView testValve, testo, funzione, pagina;
     int maxMenu;
     EditText valore;
-    byte leftDir = (byte) 0x32;
-    byte rightDir = (byte) 0x32;
-    byte ssDir = (byte) 0x32;
+    CheckBox rev_left,rev_right,rev_ss;
+    byte leftDir = (byte) 0xF2;
+    byte rightDir = (byte) 0xF2;
+    byte ssDir = (byte) 0xF2;
     byte valueLEFT = 0;
     byte valueRIGHT = 0;
     byte valueSS = 0;
@@ -79,6 +79,9 @@ public class NOBAS_Activity extends BaseClass {
         sendMsg();
     }
     private void findView() {
+        rev_left=findViewById(R.id.rev_left);
+        rev_right=findViewById(R.id.rev_right);
+        rev_ss=findViewById(R.id.rev_ss);
         back = findViewById(R.id.btn_1);
         menuP = findViewById(R.id.toright);
         menuM = findViewById(R.id.toleft);
@@ -93,6 +96,31 @@ public class NOBAS_Activity extends BaseClass {
     }
     @SuppressLint("ClickableViewAccessibility")
     private void onClick() {
+        rev_left.setOnClickListener(view -> {
+            if(REVERSE_LEFT>0){
+                REVERSE_LEFT=0;
+            }else {
+                REVERSE_LEFT=1;
+            }
+            MyData.push("M"+indexMachine+"REVERSE_LEFT",String.valueOf(REVERSE_LEFT));
+
+        });
+        rev_right.setOnClickListener(view -> {
+            if(REVERSE_RIGHT>0){
+                REVERSE_RIGHT=0;
+            }else {
+                REVERSE_RIGHT=1;
+            }
+            MyData.push("M"+indexMachine+"REVERSE_RIGHT",String.valueOf(REVERSE_RIGHT));
+        });
+        rev_ss.setOnClickListener(view -> {
+            if(REVERSE_SS>0){
+                REVERSE_SS=0;
+            }else {
+                REVERSE_SS=1;
+            }
+            MyData.push("M"+indexMachine+"REVERSE_SS",String.valueOf(REVERSE_SS));
+        });
         testValve.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -102,50 +130,50 @@ public class NOBAS_Activity extends BaseClass {
                             valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftUP, 0, 250);
                             valueRIGHT = 0;
                             valueSS = 0;
-                            leftDir = (byte) 0x32;
+                            leftDir = (byte) 0xF2;
                             break;
                         case 0:
                             valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftUP, 0, 250);
                             valueRIGHT = 0;
                             valueSS = 0;
-                            leftDir = (byte) 0x32;
+                            leftDir = (byte) 0xF2;
                             break;
                         case 3:
                             valueLEFT = (byte) MyMCUtils.limitInt(minSpeedLeftDW, 0, 250);
                             valueRIGHT = 0;
                             valueSS = 0;
-                            leftDir = (byte) 0x31;
+                            leftDir = (byte) 0xF1;
                             break;
                         case 2:
                             valueLEFT = (byte) MyMCUtils.limitInt(maxSpeedLeftDW, 0, 250);
                             valueRIGHT = 0;
                             valueSS = 0;
-                            leftDir = (byte) 0x31;
+                            leftDir = (byte) 0xF1;
                             break;
 
                         case 5:
                             valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightUP, 0, 250);
                             valueLEFT = 0;
                             valueSS = 0;
-                            rightDir = (byte) 0x32;
+                            rightDir = (byte) 0xF2;
                             break;
                         case 4:
                             valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightUP, 0, 250);
                             valueLEFT = 0;
                             valueSS = 0;
-                            rightDir = (byte) 0x32;
+                            rightDir = (byte) 0xF2;
                             break;
                         case 7:
                             valueRIGHT = (byte) MyMCUtils.limitInt(minSpeedRightDW, 0, 250);
                             valueLEFT = 0;
                             valueSS = 0;
-                            rightDir = (byte) 0x31;
+                            rightDir = (byte) 0xF1;
                             break;
                         case 6:
                             valueRIGHT = (byte) MyMCUtils.limitInt(maxSpeedRightDW, 0, 250);
                             valueLEFT = 0;
                             valueSS = 0;
-                            rightDir = (byte) 0x31;
+                            rightDir = (byte) 0xF1;
                             break;
 
                         case 9:
@@ -178,9 +206,9 @@ public class NOBAS_Activity extends BaseClass {
                     return true;
                 case MotionEvent.ACTION_UP:
                     testValve.setAlpha(1.0f);
-                    leftDir = (byte) 0x32;
-                    rightDir = (byte) 0x32;
-                    ssDir = (byte) 0x32;
+                    leftDir = (byte) 0xF2;
+                    rightDir = (byte) 0xF2;
+                    ssDir = (byte) 0xF2;
                     valueLEFT = 0;
                     valueRIGHT = 0;
                     valueSS = 0;
@@ -401,7 +429,27 @@ public class NOBAS_Activity extends BaseClass {
     }
     public void updateUI() {
         pagina.setText((voceMenu + 1) + " / " + (maxMenu));
+        rev_left.setChecked(DataSaved.REVERSE_LEFT == 1);
+        rev_right.setChecked(DataSaved.REVERSE_RIGHT == 1);
+        rev_ss.setChecked(DataSaved.REVERSE_SS == 1);
 
+        if(REVERSE_LEFT==1){
+            rev_left.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+        }else {
+            rev_left.setBackground(getDrawable(R.drawable.sfondo_manuale));
+        }
+
+        if(REVERSE_RIGHT==1){
+            rev_right.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+        }else {
+            rev_right.setBackground(getDrawable(R.drawable.sfondo_manuale));
+        }
+
+        if(REVERSE_SS==1){
+            rev_ss.setBackground(getDrawable(R.drawable.sfondo_auto_prepared));
+        }else {
+            rev_ss.setBackground(getDrawable(R.drawable.sfondo_manuale));
+        }
 
         switch (voceMenu) {
             case 1:
@@ -595,11 +643,8 @@ public class NOBAS_Activity extends BaseClass {
             case 10:
                 if (maxSpeedSS_B > 0) maxSpeedSS_B--;
                 break;
-            case 12:
-                CAT_Type--;
-                CAT_Type = Math.abs(CAT_Type) % 3;
-                MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
-                break;
+
+
             default:
                 break;
         }
@@ -643,11 +688,7 @@ public class NOBAS_Activity extends BaseClass {
             case 10:
                 if (maxSpeedSS_B < 255) maxSpeedSS_B++;
                 break;
-            case 12:
-                CAT_Type++;
-                CAT_Type = Math.abs(CAT_Type) % 3;
-                MyData.push("M" + indexMachine + "CAT_Type", String.valueOf(CAT_Type));
-                break;
+
             default:
                 break;
         }
@@ -657,30 +698,30 @@ public class NOBAS_Activity extends BaseClass {
         sendRunnable = new Runnable() {
             @Override
             public void run() {
-                MyDeviceManager.CanWrite(true,1, 0x18FE3185, 8,
+                MyDeviceManager.CanWrite(true,1, 0x18FE31F6, 8,
                         new byte[]{valueLEFT,
                                 (byte) 0xFF,
-                                leftDir,//32=Up 31=Down
+                                convertByte(leftDir,REVERSE_LEFT==1),//32=Up 31=Down
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(true,1, 0x18FE3285, 8,
+                MyDeviceManager.CanWrite(true,1, 0x18FE32F6, 8,
                         new byte[]{valueRIGHT,
                                 (byte) 0xFF,
-                                rightDir,//32=Up 31=Down
+                                convertByte(rightDir,REVERSE_RIGHT==1),//32=Up 31=Down
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF});
 
-                MyDeviceManager.CanWrite(true,1, 0x18FE3385, 8,
+                MyDeviceManager.CanWrite(true,1, 0x18FE33F6, 8,
                         new byte[]{valueSS,
                                 (byte) 0xFF,
-                                ssDir,//32=Right 31=Left
+                                convertByte(ssDir,REVERSE_SS==1),//32=Right 31=Left
                                 (byte) 0xFF,
                                 (byte) 0xFF,
                                 (byte) 0xFF,
@@ -693,5 +734,19 @@ public class NOBAS_Activity extends BaseClass {
         };
         sendHandler.postDelayed(sendRunnable, 500); // primo repeat dopo 500ms
     }
+    public static byte convertByte(byte input, boolean toggle) {
+        if (!toggle) {
+            return input;
+        }
 
+        if (input == (byte) 0xF1) {
+            return (byte) 0xF2;
+        }
+
+        if (input == (byte) 0xF2) {
+            return (byte) 0xF1;
+        }
+
+        return input; // oppure lanciare eccezione se non vuoi altri valori
+    }
 }

@@ -27,6 +27,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serial;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 
 import kotlin.ExposedCopyVisibility;

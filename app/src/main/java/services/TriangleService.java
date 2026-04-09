@@ -8,8 +8,10 @@ import static packexcalib.exca.ExcavatorLib.hdt_LAMA;
 import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.OEM_PROTO;
+import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
 import android.content.Intent;
@@ -400,7 +402,7 @@ public class TriangleService extends Service {
 
 
                     switch (DataSaved.isWL) {
-                        case 0:
+                        case EXCAVATOR:
                             DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
                             DataSaved.GL_Bucket_Coord = PuntiBenna.GLBucketCoord();
                             DataSaved.GL_BENNA = My_Benna.puntiBenna();
@@ -416,7 +418,7 @@ public class TriangleService extends Service {
 
                             break;
 
-                        case 1:
+                        case WHEELLOADER:
                             DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
                             DataSaved.GL_WHEEL = My_Wheel.puntiBenna();
                             break;
@@ -426,6 +428,7 @@ public class TriangleService extends Service {
                         case GRADER:
                             DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
                             DataSaved.GL_LAMA = My_Lama.puntiLama();
+                            //TODO machine frame
                             break;
                         //TODO altre macchine
                     }

@@ -1,5 +1,6 @@
 package services;
 
+import static packexcalib.exca.DataSaved.Dozer_UpsideDown;
 import static packexcalib.exca.DataSaved.offsetH;
 import static packexcalib.exca.Sensors_Decoder.PGN_TiltRotator_EngCon;
 import static packexcalib.exca.Sensors_Decoder.PGN_Tiltrotator;
@@ -56,7 +57,7 @@ public class CanService extends Service {
     public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck, CASE_Joystick,NOBAS_Joystick;
     public static int SteerConnected, isAuto;
     public static int m,ECU_VALVE_TYPE;
-    public static boolean NOBAS_Auto_Left,NOBAS_Auto_Right,NOBAS_Auto_SS,NOBAS_Connected,Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS,
+    public static boolean NOBAS_Connected,Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS,
             ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
     public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser, flagDefault,toolOK;
     CanFileReceiver receiver = new CanFileReceiver();
@@ -550,7 +551,8 @@ public class CanService extends Service {
                     }
 
                 }
-                if (PGNExtractor.extractPGN(id)==0xF00D && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)) {
+                if (PGNExtractor.extractPGN(id)==0xF00D && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)
+                &&DataSaved.isWL==DOZER) {
                     JD_Connected = true;
                     handler_JD_Connected.removeCallbacks(timeoutRunnable_JD_Connected);
                     handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 2000);
@@ -571,7 +573,8 @@ public class CanService extends Service {
                     }
 
                 }
-                if (PGNExtractor.extractPGN(id)==0xF00D && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)) {
+                if (PGNExtractor.extractPGN(id)==0xF00D && (DataSaved.Interface_Type == JD_LIEBHERR || DataSaved.Interface_Type == STX_ECU)
+                        &&DataSaved.isWL==GRADER) {
                     JD_Connected = true;
                     handler_JD_Connected.removeCallbacks(timeoutRunnable_JD_Connected);
                     handler_JD_Connected.postDelayed(timeoutRunnable_JD_Connected, 2000);
@@ -624,26 +627,29 @@ public class CanService extends Service {
                 if (PGNExtractor.extractPGN(id)==0xF00D && DataSaved.Interface_Type == NOBAS) {
                     NOBAS_Connected = true;
                     handler_NOBAS_Connected.removeCallbacks(timeoutRunnable_NOBAS_Connected);
-                    handler_NOBAS_Connected.postDelayed(timeoutRunnable_CAT_Connected, 2000);
+                    handler_NOBAS_Connected.postDelayed(timeoutRunnable_NOBAS_Connected, 2000);
                     NOBAS_Joystick = "0x" + Integer.toHexString(id).toUpperCase() + " " + dlc + " " + bytesToHex(msg);
-                    boolean[] bGrad_Left = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[1]);
-                    boolean[] bGrad_Right = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[2]);
-                    boolean[] bGrad_SS = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[3]);
+                    //byte 0 = offset 2F=up 1F=down
+                    //byte 1 = 20 manual 22 auto
+                    //boolean[] bGrad_Left = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[1]);
+                    boolean[] bAuto = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[1]);
+                    boolean[] bGrad_SS = PLC_DataTypes_LittleEndian.U8_to_bitmask(msg[0]);
 
                     if (MyApp.visibleActivity instanceof My3DActivity) {
-                            AutoManToggle.updateLEFT(bGrad_Left[3]);
-                            AutoManToggle.updateRIGHT(bGrad_Right[7]);
-                            AutoManToggle.updateSS(bGrad_SS[3]);
-                            OffsetAdjuster.update(bGrad_SS[6], bGrad_SS[7]);
-                            OffsetAdjuster.update(bGrad_Right[2], bGrad_Right[3]);
-                            NOBAS_Auto_Left = AutoManToggle.Can_Toggled_Auto_L;
-                            NOBAS_Auto_Right = AutoManToggle.Can_Toggled_Auto_R;
-                            NOBAS_Auto_SS = AutoManToggle.Can_Toggled_Auto_SS;
+                            //AutoManToggle.updateLEFT(bGrad_Left[1]);
+                            //AutoManToggle.updateRIGHT(bGrad_Right[7]);
+                            //AutoManToggle.updateSS(bGrad_SS[3]);
+                            OffsetAdjuster.update(bGrad_SS[2], bGrad_SS[3]);
+                            Dozer_Auto_Main =!bAuto[6] ;
+                            Grader_Auto_Left =!bAuto[6] ;
+                            Grader_AutoRight =!bAuto[6] ;
+
 
                     } else {
-                        NOBAS_Auto_Left = false;
-                        NOBAS_Auto_Right = false;
-                        NOBAS_Auto_SS = false;
+                        Dozer_Auto_Main = false;
+                        Grader_Auto_Left = false;
+                        Grader_AutoRight = false;
+                        Grader_Auto_SS = false;
                         AutoManToggle.Can_Toggled_Auto = false;
                         AutoManToggle.Can_Toggled_Auto_L = false;
                         AutoManToggle.Can_Toggled_Auto_R = false;
