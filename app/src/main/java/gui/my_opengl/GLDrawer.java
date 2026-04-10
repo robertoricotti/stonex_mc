@@ -1425,6 +1425,7 @@ public class GLDrawer {
 
             case 2:
             case 4:
+            case 20:
                 Polyline polyToDraw = null;
 
                 if (DataSaved.selectedPoly_OFFSET != null && DataSaved.line_Offset != 0) {

@@ -51,7 +51,7 @@ public class Dialog_Point_Poly {
     public Dialog dialog;
     RecyclerView recyclerView;
     ImageView  exit,img_search,img_clean;
-    CheckBox ckBoxPOINT, ckBoxPOLY, ckNone;
+    CheckBox ckBoxPOINT, ckBoxPOLY, ckNone,ckPickPoly;
 
     CustomQwertyDialog customQwertyDialog;
     int select = 0;
@@ -152,6 +152,7 @@ public class Dialog_Point_Poly {
         ckBoxPOINT = dialog.findViewById(R.id.ckAutoSnap);
         ckBoxPOLY = dialog.findViewById(R.id.ckAutoSnapPoly);
         ckNone = dialog.findViewById(R.id.ckNone);
+        ckPickPoly=dialog.findViewById(R.id.ckPickPoly);
         recyclerView = dialog.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         layoff = dialog.findViewById(R.id.lineoff_lay);
@@ -176,6 +177,7 @@ public class Dialog_Point_Poly {
                 ckNone.setChecked(true);
                 ckBoxPOLY.setChecked(false);
                 ckBoxPOINT.setChecked(false);
+                ckPickPoly.setChecked(false);
                 layoff.setVisibility(View.INVISIBLE);
                 cercaPunto.setVisibility(View.INVISIBLE);
                 break;
@@ -183,6 +185,7 @@ public class Dialog_Point_Poly {
                 ckNone.setChecked(false);
                 ckBoxPOLY.setChecked(false);
                 ckBoxPOINT.setChecked(true);
+                ckPickPoly.setChecked(false);
                 layoff.setVisibility(View.INVISIBLE);
                 cercaPunto.setVisibility(View.VISIBLE);
                 break;
@@ -191,6 +194,15 @@ public class Dialog_Point_Poly {
                 ckNone.setChecked(false);
                 ckBoxPOLY.setChecked(true);
                 ckBoxPOINT.setChecked(false);
+                ckPickPoly.setChecked(false);
+                layoff.setVisibility(View.VISIBLE);
+                cercaPunto.setVisibility(View.INVISIBLE);
+                break;
+            case 20:
+                ckNone.setChecked(false);
+                ckBoxPOLY.setChecked(false);
+                ckBoxPOINT.setChecked(false);
+                ckPickPoly.setChecked(true);
                 layoff.setVisibility(View.VISIBLE);
                 cercaPunto.setVisibility(View.INVISIBLE);
                 break;
@@ -273,6 +285,13 @@ public class Dialog_Point_Poly {
             refreshRecyclerView();
 
         });
+        ckPickPoly.setOnClickListener(view -> {
+            DataSaved.isAutoSnap = 20;
+            DataSaved.lockUnlock = 0;
+            update();
+            refreshRecyclerView();
+
+        });
         ckBoxPOINT.setOnClickListener(view -> {
 
             DataSaved.isAutoSnap = 1;
@@ -290,7 +309,7 @@ public class Dialog_Point_Poly {
 
 
         exit.setOnClickListener(view -> {
-            if (DataSaved.isAutoSnap == 2) {
+            if (DataSaved.isAutoSnap == 2||DataSaved.isAutoSnap==20) {
                 MyData.push("line_Offset", String.valueOf(DataSaved.line_Offset));
             }
             dialog.dismiss();
@@ -324,6 +343,7 @@ public class Dialog_Point_Poly {
                 break;
 
             case 2: // polilinee
+            case 20:
                 // Filtra solo polilinee con layer abilitato
                 List<Polyline> activePolys = new ArrayList<>();
                 for (Polyline poly : polylines) {

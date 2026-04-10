@@ -373,6 +373,49 @@ public class TriangleService extends Service {
                                 }
 
                                 break;
+                            case 20:
+                                if (DataSaved.lockUnlock == 0 || DataSaved.selectedPoly == null) {
+                                    dist3D_SX = 0;
+                                    dist3D_CT = 0;
+                                    dist3D_DX = 0;
+                                    orientamentoFreccia = 0;
+                                    break;
+                                }
+
+                                Point3D referencePoint20 = new Point3D(bucketCoord[0], bucketCoord[1], 0);
+
+                                switch (DataSaved.bucketEdge) {
+                                    case -1:
+                                        referencePoint20 = new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], 0);
+                                        break;
+                                    case 0:
+                                        referencePoint20 = new Point3D(bucketCoord[0], bucketCoord[1], 0);
+                                        break;
+                                    case 1:
+                                        referencePoint20 = new Point3D(bucketRightCoord[0], bucketRightCoord[1], 0);
+                                        break;
+                                }
+
+                                Polyline activeOriginalPoly20 = DataSaved.selectedPoly;
+                                Polyline activeOffsetPoly20 = (DataSaved.line_Offset != 0)
+                                        ? JTSOffsetHelper.generateOffsetPolyline(activeOriginalPoly20, DataSaved.line_Offset)
+                                        : activeOriginalPoly20;
+
+                                DataSaved.selectedPoly_OFFSET = activeOffsetPoly20;
+
+                                List<Segment> lockedSegments20 = new ArrayList<>();
+                                List<Point3D> verts20 = activeOffsetPoly20.getVertices();
+
+                                for (int i = 0; i < verts20.size() - 1; i++) {
+                                    lockedSegments20.add(new Segment(verts20.get(i), verts20.get(i + 1), activeOriginalPoly20));
+                                }
+
+                                Segment closestSegment20 = findClosestSegment(referencePoint20, lockedSegments20);
+                                DataSaved.nearestSegment = closestSegment20;
+
+                                // qui puoi riusare pari pari il blocco che hai già nel case 2
+                                // per dist3D_SX / CT / DX e orientamentoFreccia
+                                break;
 
 
                         }
@@ -885,4 +928,105 @@ public class TriangleService extends Service {
     }
 
 
+    public static class PolyPickResult {
+        public final Polyline polyline;
+        public final Polyline offsetPolyline;
+        public final Segment closestSegment;
+        public final int candidateCount;
+
+        public PolyPickResult(Polyline polyline,
+                              Polyline offsetPolyline,
+                              Segment closestSegment,
+                              int candidateCount) {
+            this.polyline = polyline;
+            this.offsetPolyline = offsetPolyline;
+            this.closestSegment = closestSegment;
+            this.candidateCount = candidateCount;
+        }
+    }
+
+    private static class PolyCandidate {
+        final Polyline originalPolyline;
+        final Polyline offsetPolyline;
+        final Segment closestSegment;
+        final double distance;
+
+        PolyCandidate(Polyline originalPolyline,
+                      Polyline offsetPolyline,
+                      Segment closestSegment,
+                      double distance) {
+            this.originalPolyline = originalPolyline;
+            this.offsetPolyline = offsetPolyline;
+            this.closestSegment = closestSegment;
+            this.distance = distance;
+        }
+    }
+
+    public static PolyPickResult pickPolylineNear(Point3D point,
+                                                  List<Polyline> polylines,
+                                                  double offset,
+                                                  double maxDistance) {
+        if (point == null || polylines == null || polylines.isEmpty()) {
+            return new PolyPickResult(null, null, null, 0);
+        }
+
+        List<PolyCandidate> candidates = new ArrayList<>();
+
+        for (Polyline original : polylines) {
+            if (original == null || original.getVertices() == null || original.getVertices().size() < 2) {
+                continue;
+            }
+
+            Polyline geometryPolyline = (offset != 0)
+                    ? JTSOffsetHelper.generateOffsetPolyline(original, offset)
+                    : original;
+
+            if (geometryPolyline == null
+                    || geometryPolyline.getVertices() == null
+                    || geometryPolyline.getVertices().size() < 2) {
+                continue;
+            }
+
+            Segment bestSegmentForPolyline = null;
+            double bestDistanceForPolyline = Double.MAX_VALUE;
+
+            List<Point3D> verts = geometryPolyline.getVertices();
+            for (int i = 0; i < verts.size() - 1; i++) {
+                Segment segment = new Segment(verts.get(i), verts.get(i + 1), original);
+                double distance = pointToSegmentDistance(point, segment);
+
+                if (distance < bestDistanceForPolyline) {
+                    bestDistanceForPolyline = distance;
+                    bestSegmentForPolyline = segment;
+                }
+            }
+
+            if (bestSegmentForPolyline != null && bestDistanceForPolyline <= maxDistance) {
+                candidates.add(new PolyCandidate(
+                        original,
+                        geometryPolyline,
+                        bestSegmentForPolyline,
+                        bestDistanceForPolyline
+                ));
+            }
+        }
+
+        if (candidates.isEmpty()) {
+            return new PolyPickResult(null, null, null, 0);
+        }
+
+        candidates.sort((a, b) -> Double.compare(a.distance, b.distance));
+
+        if (candidates.size() > 1) {
+            return new PolyPickResult(null, null, null, candidates.size());
+        }
+
+        PolyCandidate chosen = candidates.get(0);
+        return new PolyPickResult(
+                chosen.originalPolyline,
+                chosen.offsetPolyline,
+                chosen.closestSegment,
+                1
+        );
+    }
 }

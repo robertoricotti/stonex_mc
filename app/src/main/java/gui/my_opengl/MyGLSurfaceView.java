@@ -21,7 +21,16 @@ import javax.microedition.khronos.egl.EGLDisplay;
 
 import packexcalib.exca.DataSaved;
 
+
+import android.widget.Toast;
+
+import dxf.Point3D;
+import packexcalib.gnss.NmeaListener;
+import services.TriangleService;
+
 public class MyGLSurfaceView extends GLSurfaceView {
+    private static final float PICK_RADIUS_PX = 28f;
+    private boolean suppressMoveUntilUp = false;
 
     private static final float ROTATION_SENSITIVITY = 0.1f;
     private static final long ZOOM_GUARD_MS = 250L;
@@ -76,6 +85,15 @@ public class MyGLSurfaceView extends GLSurfaceView {
         scaleDetector.onTouchEvent(event);
 
         boolean recentlyZoomed = (System.currentTimeMillis() - lastZoomTime) < ZOOM_GUARD_MS;
+
+        if (suppressMoveUntilUp) {
+            if (event.getActionMasked() == MotionEvent.ACTION_UP
+                    || event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+                suppressMoveUntilUp = false;
+                isZooming = false;
+            }
+            return true;
+        }
 
         if (!isZooming && !recentlyZoomed && event.getPointerCount() == 1) {
             gestureDetector.onTouchEvent(event);
@@ -302,6 +320,15 @@ public class MyGLSurfaceView extends GLSurfaceView {
             setDoubleTap();
             return true;
         }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            if (!renderer.is2D) return;
+            if (DataSaved.isAutoSnap != 20) return;
+            if (isZooming) return;
+
+            handlePolylineLongPress(e.getX(), e.getY());
+        }
     }
 
 
@@ -319,6 +346,88 @@ public class MyGLSurfaceView extends GLSurfaceView {
             // circa 25% sotto il centro
             panY_2d = -halfHeight * 0.25f;
         }
+    }
+
+
+    private void handlePolylineLongPress(float screenX, float screenY) {
+        Point3D pickPoint = screenToWorld2D(screenX, screenY);
+        double pickRadiusWorld = pixelsToWorldRadius(PICK_RADIUS_PX);
+
+        TriangleService.PolyPickResult result =
+                TriangleService.pickPolylineNear(
+                        pickPoint,
+                        DataSaved.filteredPolylines != null ? DataSaved.filteredPolylines
+                                : TriangleService.getFilteredPolylines(),
+                        DataSaved.line_Offset,
+                        pickRadiusWorld
+                );
+
+        if (result.candidateCount > 1) {
+            Toast.makeText(getContext(),
+                    "Increase zoom level to pick",
+                    Toast.LENGTH_SHORT).show();
+            suppressMoveUntilUp = true;
+            return;
+        }
+
+        if (result.polyline == null) {
+            return;
+        }
+
+        DataSaved.selectedPoly = result.polyline;
+        DataSaved.selectedPoly_OFFSET = result.offsetPolyline;
+        DataSaved.nearestSegment = result.closestSegment;
+        DataSaved.lockUnlock = 1;
+
+        suppressMoveUntilUp = true;
+        requestRender();
+    }
+
+    private Point3D screenToWorld2D(float screenX, float screenY) {
+        float viewWidth = Math.max(1f, getWidth());
+        float viewHeight = Math.max(1f, getHeight());
+
+        float ndcX = (2f * screenX / viewWidth) - 1f;
+        float ndcY = 1f - (2f * screenY / viewHeight);
+
+        float zoom = Math.max(scale_2d, 0.001f);
+        float halfHeight = renderer.orthoBaseSize / zoom;
+        float halfWidth = (viewWidth / viewHeight) * halfHeight;
+
+        float eyeX = ndcX * halfWidth;
+        float eyeY = ndcY * halfHeight;
+
+        float translatedX = eyeX - panX_2d;
+        float translatedY = eyeY - panY_2d;
+
+        float angleDeg = (float) ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360f);
+        double angleRad = Math.toRadians(angleDeg);
+
+        double cos = Math.cos(angleRad);
+        double sin = Math.sin(angleRad);
+
+        double glX = translatedX * cos + translatedY * sin;
+        double glY = -translatedX * sin + translatedY * cos;
+
+        return new Point3D(
+                glX + DataSaved.glL_AnchorView[0],
+                glY + DataSaved.glL_AnchorView[1],
+                0d
+        );
+    }
+
+    private double pixelsToWorldRadius(float px) {
+        float viewWidth = Math.max(1f, getWidth());
+        float viewHeight = Math.max(1f, getHeight());
+
+        float zoom = Math.max(scale_2d, 0.001f);
+        float halfHeight = renderer.orthoBaseSize / zoom;
+        float halfWidth = (viewWidth / viewHeight) * halfHeight;
+
+        double worldX = (2d * halfWidth / viewWidth) * px;
+        double worldY = (2d * halfHeight / viewHeight) * px;
+
+        return Math.max(worldX, worldY);
     }
 }
 
