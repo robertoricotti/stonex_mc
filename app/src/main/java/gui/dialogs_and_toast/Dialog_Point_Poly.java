@@ -76,8 +76,6 @@ public class Dialog_Point_Poly {
         customNumberDialog = new CustomNumberDialog(activity, -1);
         customNumberDialogFtIn = new CustomNumberDialogFtIn(activity, -1);
         displayMetrics = new DisplayMetrics();
-
-
     }
 
 
@@ -287,7 +285,7 @@ public class Dialog_Point_Poly {
         });
         ckPickPoly.setOnClickListener(view -> {
             DataSaved.isAutoSnap = 20;
-            DataSaved.lockUnlock = 0;
+            DataSaved.lockUnlock = 1;
             update();
             refreshRecyclerView();
 

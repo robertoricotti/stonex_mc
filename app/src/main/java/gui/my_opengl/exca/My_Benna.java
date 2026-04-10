@@ -347,6 +347,7 @@ public class My_Benna {
                 break;
 
             case 2:
+            case 20:
                 if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
                     switch (DataSaved.bucketEdge) {
                         case -1: {

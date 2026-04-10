@@ -31,10 +31,11 @@ public class My_Wheel {
     private static float rs() {
         return MyGLRenderer.currentRenderScale();
     }
+
     static Point3DF P1_sx, P2_sx, P3_sx, P4_sx, P5_sx, P6_sx, P7_sx, P8_sx;
     static Point3DF P1_dx, P2_dx, P3_dx, P4_dx, P5_dx, P6_dx, P7_dx, P8_dx;
     static Point3DF SPIG_L, SPIG_C, SPIG_R, SPIG_LB, SPIG_CB, SPIG_RB;
-    static Point3DF fwF, bwF, ltF, rtF, start,PIVOT_IN,PIVOT_OUT;
+    static Point3DF fwF, bwF, ltF, rtF, start, PIVOT_IN, PIVOT_OUT;
     static double[] fw, lt, rt, bw;
 
     private static Point3DF[] fiancataSX() {
@@ -56,10 +57,10 @@ public class My_Wheel {
         double[] splB;
         double[] spcB;
         double[] sprB;
-        double[] pivot_in,pivot_out;
+        double[] pivot_in, pivot_out;
 
-        pivot_in=ExcavatorLib.coordST;
-        pivot_out=Exca_Quaternion.endPoint(pivot_in,correctBucket+180,Deg_Boom_Roll,0.1,hdt_BOOM);
+        pivot_in = ExcavatorLib.coordST;
+        pivot_out = Exca_Quaternion.endPoint(pivot_in, correctBucket + 180, Deg_Boom_Roll, 0.1, hdt_BOOM);
 
         flatLen = 0.9 * DataSaved.L_Bucket;
         flatTop = flatLen * 0.6;
@@ -178,6 +179,7 @@ public class My_Wheel {
                 break;
 
             case 2:
+            case 20:
 
                 if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
                     switch (DataSaved.bucketEdge) {
@@ -253,8 +255,8 @@ public class My_Wheel {
         SPIG_LB = pTransform(splB, DataSaved.glL_AnchorView, rs());
         SPIG_CB = pTransform(spcB, DataSaved.glL_AnchorView, rs());
         SPIG_RB = pTransform(sprB, DataSaved.glL_AnchorView, rs());
-        PIVOT_IN=pTransform(pivot_in,DataSaved.glL_AnchorView,rs());
-        PIVOT_OUT=pTransform(pivot_out,DataSaved.glL_AnchorView,rs());
+        PIVOT_IN = pTransform(pivot_in, DataSaved.glL_AnchorView, rs());
+        PIVOT_OUT = pTransform(pivot_out, DataSaved.glL_AnchorView, rs());
         return new Point3DF[]{
                 //sequenza 1,3,4,7,5,6,8,2,1
                 P1_sx, P3_sx, P7_sx, P7_sx, P5_sx, P6_sx, P8_sx, P2_sx, P1_sx

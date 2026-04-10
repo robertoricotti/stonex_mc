@@ -14,20 +14,14 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLDisplay;
-
 import packexcalib.exca.DataSaved;
-
-
-import android.widget.Toast;
-
 import dxf.Point3D;
 import packexcalib.gnss.NmeaListener;
 import services.TriangleService;
-
+import androidx.appcompat.app.AlertDialog;
 public class MyGLSurfaceView extends GLSurfaceView {
     private static final float PICK_RADIUS_PX = 28f;
     private boolean suppressMoveUntilUp = false;
@@ -348,6 +342,17 @@ public class MyGLSurfaceView extends GLSurfaceView {
         }
     }
 
+    private void applyPolylineSelection(TriangleService.PolyCandidate candidate) {
+        if (candidate == null) return;
+
+        DataSaved.selectedPoly = candidate.originalPolyline;
+        DataSaved.selectedPoly_OFFSET = candidate.offsetPolyline;
+        DataSaved.nearestSegment = candidate.closestSegment;
+        DataSaved.lockUnlock = 1;
+
+        suppressMoveUntilUp = true;
+        requestRender();
+    }
 
     private void handlePolylineLongPress(float screenX, float screenY) {
         Point3D pickPoint = screenToWorld2D(screenX, screenY);
@@ -363,10 +368,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 );
 
         if (result.candidateCount > 1) {
-            Toast.makeText(getContext(),
-                    "Increase zoom level to pick",
-                    Toast.LENGTH_SHORT).show();
             suppressMoveUntilUp = true;
+            showPolylinePickerDialog(result);
             return;
         }
 
@@ -374,13 +377,12 @@ public class MyGLSurfaceView extends GLSurfaceView {
             return;
         }
 
-        DataSaved.selectedPoly = result.polyline;
-        DataSaved.selectedPoly_OFFSET = result.offsetPolyline;
-        DataSaved.nearestSegment = result.closestSegment;
-        DataSaved.lockUnlock = 1;
-
-        suppressMoveUntilUp = true;
-        requestRender();
+        applyPolylineSelection(new TriangleService.PolyCandidate(
+                result.polyline,
+                result.offsetPolyline,
+                result.closestSegment,
+                0
+        ));
     }
 
     private Point3D screenToWorld2D(float screenX, float screenY) {
@@ -428,6 +430,26 @@ public class MyGLSurfaceView extends GLSurfaceView {
         double worldY = (2d * halfHeight / viewHeight) * px;
 
         return Math.max(worldX, worldY);
+    }
+    private void showPolylinePickerDialog(TriangleService.PolyPickResult result) {
+        if (result == null || result.candidates == null || result.candidates.isEmpty()) {
+            return;
+        }
+
+        String[] items = new String[result.candidates.size()];
+        for (int i = 0; i < result.candidates.size(); i++) {
+            items[i] = result.candidates.get(i).getLabel();
+        }
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("Select polyline")
+                .setItems(items, (dialog, which) -> {
+                    if (which >= 0 && which < result.candidates.size()) {
+                        applyPolylineSelection(result.candidates.get(which));
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 }
 

@@ -142,6 +142,7 @@ public class My_Lama {
                 break;
 
             case 2:
+            case 20:
 
                 if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
                     switch (DataSaved.bucketEdge) {

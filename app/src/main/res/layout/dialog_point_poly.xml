@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
         android:gravity="center"
-        android:text="Polyline\nSnap"
+        android:text="Polyline\nAutoSnap"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"

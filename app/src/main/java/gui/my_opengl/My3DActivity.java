@@ -431,6 +431,9 @@ public class My3DActivity extends BaseClass {
             }
         });
         lucchetto.setOnClickListener(view -> {
+            if(DataSaved.isAutoSnap==20){
+                return;
+            }
             DataSaved.lockUnlock += 1;
             DataSaved.lockUnlock = DataSaved.lockUnlock % 2;
         });
@@ -1398,7 +1401,8 @@ public class My3DActivity extends BaseClass {
                 rot = rot % 360;
                 freccia.setRotation((float) rot);
 
-            } else if (DataSaved.isAutoSnap == 2 || DataSaved.isAutoSnap == 4) {
+            }
+            else if (DataSaved.isAutoSnap == 2 || DataSaved.isAutoSnap == 4|| DataSaved.isAutoSnap == 20) {
                 offsetS = "\n" + "(" + Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)) + ")";
                 rot = TriangleService.orientamentoFreccia + rotFix;
                 rot = rot % 360;

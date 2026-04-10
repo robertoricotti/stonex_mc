@@ -375,6 +375,7 @@ public class TriangleService extends Service {
                                 break;
                             case 20:
                                 if (DataSaved.lockUnlock == 0 || DataSaved.selectedPoly == null) {
+                                    DataSaved.nearestSegment = null;
                                     dist3D_SX = 0;
                                     dist3D_CT = 0;
                                     dist3D_DX = 0;
@@ -382,17 +383,26 @@ public class TriangleService extends Service {
                                     break;
                                 }
 
-                                Point3D referencePoint20 = new Point3D(bucketCoord[0], bucketCoord[1], 0);
+                                Point3D referencePoint20;
+                                double refE20;
+                                double refN20;
 
                                 switch (DataSaved.bucketEdge) {
                                     case -1:
                                         referencePoint20 = new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], 0);
-                                        break;
-                                    case 0:
-                                        referencePoint20 = new Point3D(bucketCoord[0], bucketCoord[1], 0);
+                                        refE20 = bucketLeftCoord[0];
+                                        refN20 = bucketLeftCoord[1];
                                         break;
                                     case 1:
                                         referencePoint20 = new Point3D(bucketRightCoord[0], bucketRightCoord[1], 0);
+                                        refE20 = bucketRightCoord[0];
+                                        refN20 = bucketRightCoord[1];
+                                        break;
+                                    case 0:
+                                    default:
+                                        referencePoint20 = new Point3D(bucketCoord[0], bucketCoord[1], 0);
+                                        refE20 = bucketCoord[0];
+                                        refN20 = bucketCoord[1];
                                         break;
                                 }
 
@@ -401,11 +411,17 @@ public class TriangleService extends Service {
                                         ? JTSOffsetHelper.generateOffsetPolyline(activeOriginalPoly20, DataSaved.line_Offset)
                                         : activeOriginalPoly20;
 
+                                if (activeOffsetPoly20 == null || activeOffsetPoly20.getVertices() == null
+                                        || activeOffsetPoly20.getVertices().size() < 2) {
+                                    DataSaved.nearestSegment = null;
+                                    orientamentoFreccia = 0;
+                                    break;
+                                }
+
                                 DataSaved.selectedPoly_OFFSET = activeOffsetPoly20;
 
                                 List<Segment> lockedSegments20 = new ArrayList<>();
                                 List<Point3D> verts20 = activeOffsetPoly20.getVertices();
-
                                 for (int i = 0; i < verts20.size() - 1; i++) {
                                     lockedSegments20.add(new Segment(verts20.get(i), verts20.get(i + 1), activeOriginalPoly20));
                                 }
@@ -413,8 +429,63 @@ public class TriangleService extends Service {
                                 Segment closestSegment20 = findClosestSegment(referencePoint20, lockedSegments20);
                                 DataSaved.nearestSegment = closestSegment20;
 
-                                // qui puoi riusare pari pari il blocco che hai già nel case 2
-                                // per dist3D_SX / CT / DX e orientamentoFreccia
+                                if (closestSegment20 == null) {
+                                    orientamentoFreccia = 0;
+                                    break;
+                                }
+
+                                dist3D_SX = 0;
+                                dist3D_CT = 0;
+                                dist3D_DX = 0;
+
+                                double lineDist20 = Math.abs(new DistToLine(
+                                        refE20, refN20,
+                                        closestSegment20.getStart().getX(), closestSegment20.getStart().getY(),
+                                        closestSegment20.getEnd().getX(), closestSegment20.getEnd().getY()
+                                ).getLinedistance());
+
+                                switch (DataSaved.bucketEdge) {
+                                    case -1: dist3D_SX = lineDist20; break;
+                                    case  0: dist3D_CT = lineDist20; break;
+                                    case  1: dist3D_DX = lineDist20; break;
+                                }
+
+                                Point3D p20 = closestSegment20.getClosestPoint(refE20, refN20);
+                                double dE20 = p20.getX() - refE20;
+                                double dN20 = p20.getY() - refN20;
+
+                                double yawRad20 = Math.toRadians(ExcavatorLib.hdt_BOOM + yawSensor);
+                                double latX20 = Math.cos(yawRad20);
+                                double latY20 = -Math.sin(yawRad20);
+                                double lateral20 = dE20 * latX20 + dN20 * latY20;
+
+                                segnoLinea = (lateral20 > 0) ? -1 : 1;
+
+                                // se la freccia usa questo campo, aggiornalo qui e non lasciarlo stale
+                                orientamentoFreccia = Math.toDegrees(Math.atan2(
+                                        closestSegment20.getEnd().getY() - closestSegment20.getStart().getY(),
+                                        closestSegment20.getEnd().getX() - closestSegment20.getStart().getX()
+                                ));
+
+                                Point2D cut1_20 = Geometry2D.projectPointOnSegment(
+                                        referencePoint20.getX(),
+                                        referencePoint20.getY(),
+                                        closestSegment20.getStart(),
+                                        closestSegment20.getEnd()
+                                );
+                                DataSaved.cutWorldX_1 = cut1_20.getX();
+                                DataSaved.cutWorldY_1 = cut1_20.getY();
+
+                                // importante: qui NON bucketCoord fisso, ma lo stesso ref selezionato
+                                Point2D cut2_20 = Geometry2D.projectPointOnSegment(
+                                        refE20,
+                                        refN20,
+                                        closestSegment20.getStart(),
+                                        closestSegment20.getEnd()
+                                );
+                                DataSaved.cutWorldX_2 = cut2_20.getX();
+                                DataSaved.cutWorldY_2 = cut2_20.getY();
+
                                 break;
 
 
@@ -933,32 +1004,50 @@ public class TriangleService extends Service {
         public final Polyline offsetPolyline;
         public final Segment closestSegment;
         public final int candidateCount;
+        public final List<PolyCandidate> candidates;
 
         public PolyPickResult(Polyline polyline,
                               Polyline offsetPolyline,
                               Segment closestSegment,
-                              int candidateCount) {
+                              int candidateCount,
+                              List<PolyCandidate> candidates) {
             this.polyline = polyline;
             this.offsetPolyline = offsetPolyline;
             this.closestSegment = closestSegment;
             this.candidateCount = candidateCount;
+            this.candidates = candidates != null ? candidates : new ArrayList<>();
         }
     }
 
-    private static class PolyCandidate {
-        final Polyline originalPolyline;
-        final Polyline offsetPolyline;
-        final Segment closestSegment;
-        final double distance;
+    public static class PolyCandidate {
+        public final Polyline originalPolyline;
+        public final Polyline offsetPolyline;
+        public final Segment closestSegment;
+        public final double distance;
 
-        PolyCandidate(Polyline originalPolyline,
-                      Polyline offsetPolyline,
-                      Segment closestSegment,
-                      double distance) {
+        public PolyCandidate(Polyline originalPolyline,
+                             Polyline offsetPolyline,
+                             Segment closestSegment,
+                             double distance) {
             this.originalPolyline = originalPolyline;
             this.offsetPolyline = offsetPolyline;
             this.closestSegment = closestSegment;
             this.distance = distance;
+        }
+
+        public String getLabel() {
+            String layerName = "NO_LAYER";
+            try {
+                if (originalPolyline != null
+                        && originalPolyline.getLayer() != null
+                        && originalPolyline.getLayer().getLayerName() != null
+                        && !originalPolyline.getLayer().getLayerName().isEmpty()) {
+                    layerName = originalPolyline.getLayer().getLayerName();
+                }
+            } catch (Exception ignored) {
+            }
+
+            return layerName + " • d=" + String.format(java.util.Locale.US, "%.2f", distance);
         }
     }
 
@@ -967,7 +1056,7 @@ public class TriangleService extends Service {
                                                   double offset,
                                                   double maxDistance) {
         if (point == null || polylines == null || polylines.isEmpty()) {
-            return new PolyPickResult(null, null, null, 0);
+            return new PolyPickResult(null, null, null, 0, new ArrayList<>());
         }
 
         List<PolyCandidate> candidates = new ArrayList<>();
@@ -1012,13 +1101,13 @@ public class TriangleService extends Service {
         }
 
         if (candidates.isEmpty()) {
-            return new PolyPickResult(null, null, null, 0);
+            return new PolyPickResult(null, null, null, 0, candidates);
         }
 
         candidates.sort((a, b) -> Double.compare(a.distance, b.distance));
 
         if (candidates.size() > 1) {
-            return new PolyPickResult(null, null, null, candidates.size());
+            return new PolyPickResult(null, null, null, candidates.size(), candidates);
         }
 
         PolyCandidate chosen = candidates.get(0);
@@ -1026,7 +1115,16 @@ public class TriangleService extends Service {
                 chosen.originalPolyline,
                 chosen.offsetPolyline,
                 chosen.closestSegment,
-                1
+                1,
+                candidates
         );
     }
+
+
+//////////////////
+
+
+
+
+
 }
