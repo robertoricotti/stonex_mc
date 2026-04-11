@@ -27,6 +27,8 @@ import iredes.Point3D_IR;
 import iredes.RigStatus_IR;
 
 public class DataSaved {
+    public static int REVERSE_DRILL_X=1;
+    public static int REVERSE_DRILL_Y=1;
     public static double OffsetDegRoto;
     public static int ConnectionStatus;
     public static double L_RotoToBucket;

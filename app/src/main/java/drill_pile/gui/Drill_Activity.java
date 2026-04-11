@@ -57,6 +57,7 @@ import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
+import services.CanSender;
 import services.PointService;
 import services.ReadProjectService;
 import utils.MyData;
@@ -78,20 +79,13 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     private boolean stop = false;
     private boolean abort = false;
     private double Start_dE, Start_dN, Start_dZ, End_dE, End_dN, End_dZ, delta_Tilt, delta_Bearing;
-
     private String currentHoleId;
     private String startIso;
-
     int coloreAlto = Color.CYAN;
     int coloreBasso = Color.YELLOW;
     int coloreDashed = Color.BLUE;
-    double poleHDT = 0;
-    double poleTilt = 0;
     double mastHDT = 0;
     double mastTilt = 0;
-    static int ringColor = MyColorClass.colorConstraint;
-    static int tricolor = MyColorClass.colorConstraint;
-    static int arrowColor = MyColorClass.colorConstraint;
     static float kostant = 1.2f;
     public static boolean isDrilling = false;
     int flip = 0;
@@ -1043,6 +1037,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             quotaIndicator.setBackgroundColor(Color.DKGRAY);
             txtdepth.setBackgroundColor(Color.DKGRAY);
             txtdepth.setText("");
+            CanSender.remainingZed=0;
             return;
         }
 
@@ -1055,6 +1050,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             quotaIndicator.setBackgroundColor(getColor(R.color._____cancel_text));
             txtdepth.setBackgroundColor(getColor(R.color._____cancel_text));
             txtdepth.setText(""); // ✅
+            CanSender.remainingZed=0;
             return;
         }
 
@@ -1065,6 +1061,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (vertical) {
             // ✅ testo: quanto manca al fondo in Z
             double remainingZ = bit[2] - ezObj;  // >0 manca ancora
+            CanSender.remainingZed=remainingZ;
             txtdepth.setText(fmtM((remainingZ)));
 
             // Frecce: se remainingZ > tol => devi scendere (down)
@@ -1097,6 +1094,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 txtdepth.setBackgroundColor(getColor(R.color._____cancel_text));
                 quotaIndicator.setBackgroundColor(getColor(R.color._____cancel_text));
                 txtdepth.setText(""); // ✅
+                CanSender.remainingZed=0;
                 return;
             }
 
@@ -1111,6 +1109,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             // ✅ testo: remainingAxis (metri lungo asse)
             txtdepth.setText(fmtM((remainingAxisRaw)));
+            CanSender.remainingZed=remainingAxisRaw;
 
             if (remainingAxisRaw > tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);

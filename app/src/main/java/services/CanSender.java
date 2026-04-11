@@ -12,6 +12,8 @@ import static packexcalib.exca.DataSaved.HEADING;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_DOZER;
 import static packexcalib.exca.DataSaved.HYDRAULIC_CONTROL_POINT_GRADER;
 import static packexcalib.exca.DataSaved.OUTPUT_HYDRO;
+import static packexcalib.exca.DataSaved.REVERSE_DRILL_X;
+import static packexcalib.exca.DataSaved.REVERSE_DRILL_Y;
 import static packexcalib.exca.DataSaved.REVERSE_LEFT;
 import static packexcalib.exca.DataSaved.REVERSE_RIGHT;
 import static packexcalib.exca.DataSaved.REVERSE_SS;
@@ -55,6 +57,8 @@ import static services.CanService.tiltDisc;
 import static services.CanService.tiltOK;
 import static services.CanService.toolDisc;
 import static services.CanService.toolOK;
+import static services.PointService.Solar_Delta_X;
+import static services.PointService.Solar_Delta_Y;
 import static services.TriangleService.ctOffGrid;
 import static services.TriangleService.ltOffGrid;
 import static services.TriangleService.rtOffGrid;
@@ -98,6 +102,7 @@ import DPAD.DPadHelper;
 import DPAD.DPadMapperLeft;
 import DPAD.DPadMapperRight;
 import cloud.WebSocketPlugin;
+import drill_pile.gui.Drill_Activity;
 import gui.MyApp;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
@@ -119,6 +124,7 @@ public class CanSender extends Service {
     byte MUX = 0x01;
     //private long lastCall = 0;
     public final static double MAX_SCALE = 0.3;
+    public static double remainingZed;
     static boolean sending;
     public static double QL, QC, QR;
     public static double GroundSlope;
@@ -134,8 +140,6 @@ public class CanSender extends Service {
 
     private HandlerThread handlerThread;
     private Handler handler;
-
-
     private ScheduledExecutorService senderExecutor500;
     private ScheduledExecutorService senderExecutor2000;
     private ScheduledExecutorService scheduledExecutorService1min;
@@ -200,6 +204,9 @@ public class CanSender extends Service {
                         break;
                     case DRILL:
                         //TODO a 25mS Solar_Delta_X Solar_Delta_Y
+
+                        AutoDrillHandling();
+
                         break;
                 }
 
@@ -358,8 +365,6 @@ public class CanSender extends Service {
         @SuppressLint("NewApi")
         @Override
         public void run() {
-
-            // Log.d("CanSender",DataSaved.reqSpeed+" "+connections);
             try {
                 if (isTech) {
                     isTechCount++;
@@ -1570,6 +1575,29 @@ public class CanSender extends Service {
             dirCAT_SS = (byte) 0xF2;
         }
 
+    }
+
+    private void AutoDrillHandling(){
+        byte stake=0;
+        if(MyApp.visibleActivity instanceof Drill_Activity){
+            stake=1;
+        }
+        MyDeviceManager.CanWrite(true,1,0x83,8,new byte[]{
+                stake,0,0,0,0,4,0,0
+        });
+        int deltaZeta= (int) (remainingZed*1000);
+        byte [] zetazeta=PLC_DataTypes_LittleEndian.S16_to_bytes((short)deltaZeta);
+
+        MyDeviceManager.CanWrite(true,1,0x192,8,new byte[]{
+               zetazeta[0],zetazeta[1],0,0,0,0,0,0
+        });
+        int deltax=(int)(Solar_Delta_X*1000*REVERSE_DRILL_X);
+        int deltay=(int)(Solar_Delta_Y*1000*REVERSE_DRILL_Y);
+        byte[] delyaXX=PLC_DataTypes_LittleEndian.S16_to_bytes((short) deltax);
+        byte[] delyaYY=PLC_DataTypes_LittleEndian.S16_to_bytes((short) deltay);
+        MyDeviceManager.CanWrite(true,1,0x7D,8,new byte[]{
+        delyaXX[0],delyaXX[1],0,delyaYY[0],delyaYY[1],0,0,0
+        });
     }
 
 

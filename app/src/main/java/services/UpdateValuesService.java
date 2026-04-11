@@ -219,6 +219,8 @@ public class UpdateValuesService extends Service {
                     String REVERSE_SS = MyData.get_String("M" + i + "REVERSE_SS");
                     String Use_Blade_Pitch = MyData.get_String("M" + i + "Use_Blade_Pitch");
 
+                    String REVERSE_DRILL_X = MyData.get_String("M" + i + "REVERSE_DRILL_X");
+                    String REVERSE_DRILL_Y = MyData.get_String("M" + i + "REVERSE_DRILL_Y");
                     //OEM
                     String OEM_REV_MAINFALL = MyData.get_String("M" + i + "OEM_REV_MAINFALL");
                     String OEM_REV_UPDW = MyData.get_String("M" + i + "OEM_REV_UPDW");
@@ -591,7 +593,12 @@ public class UpdateValuesService extends Service {
                     if (REVERSE_SS == null) {
                         MyData.push("M" + i + "REVERSE_SS", "0");
                     }
-
+                    if (REVERSE_DRILL_X == null) {
+                        MyData.push("M" + i + "REVERSE_DRILL_X", "1");
+                    }
+                    if (REVERSE_DRILL_Y == null) {
+                        MyData.push("M" + i + "REVERSE_DRILL_Y", "1");
+                    }
                     /// /
                     if (OEM_REV_MAINFALL == null) {
                         MyData.push("M" + i + "OEM_REV_MAINFALL", "0");
@@ -1618,7 +1625,16 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di Use_Blade_Pitch: " + e.getMessage());
                 }
 
-
+                try {
+                    DataSaved.REVERSE_DRILL_X = MyData.get_Int("M" + indexMach + "REVERSE_DRILL_X");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di REVERSE_DRILL_X: " + e.getMessage());
+                }
+                try {
+                    DataSaved.REVERSE_DRILL_Y = MyData.get_Int("M" + indexMach + "REVERSE_DRILL_Y");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di REVERSE_DRILL_Y: " + e.getMessage());
+                }
                 /// ///////
                 try {
                     DataSaved.OEM_REV_MAINFALL = MyData.get_Int("M" + indexMach + "OEM_REV_MAINFALL");
