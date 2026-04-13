@@ -2,6 +2,7 @@ package drill_pile.gui;
 
 import static drill_pile.gui.ProjectStateCsvStore.canonicalHoleId;
 import static gui.MyApp.errorCode;
+import static packexcalib.exca.DataSaved.DRILL_STATUS;
 import static packexcalib.exca.DataSaved.Selected_Point3D_Drill;
 import static packexcalib.exca.ExcavatorLib.coordTool;
 import static packexcalib.exca.ExcavatorLib.correctToolPitch;
@@ -98,7 +99,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView marcia, idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual, diration;
+    TextView marcia, idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual, diration,einauto;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
@@ -146,6 +147,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void findView() {
+        einauto=findViewById(R.id.hydroStat);
         marcia = findViewById(R.id.marcia);
         diration = findViewById(R.id.diration);
         divisorioC = findViewById(R.id.divisorioC);
@@ -742,6 +744,22 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 }
             }*/
 
+                switch (DRILL_STATUS){
+                    case 0:
+                        einauto.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
+                        break;
+                    case 1:
+                    case 2:
+                    case 3:
+                        einauto.setBackground(getResources().getDrawable(R.drawable.sfondo_auto_enabled));
+                        break;
+
+                    default:
+                        einauto.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
+                        break;
+
+                }
+               
             } else {
                 lineReference.setVisibility(View.INVISIBLE);
             }

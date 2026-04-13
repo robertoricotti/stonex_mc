@@ -38,6 +38,7 @@ public class Sensors_Decoder_Drill {
     static short Gz;
     static long K = 0x02000000;
 
+
     static double[] mPosition = new double[3];
 
     public static void decode(int id, byte[] data) {

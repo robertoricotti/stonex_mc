@@ -349,6 +349,21 @@
         app:layout_constraintLeft_toRightOf="@id/cent_v"
         app:layout_constraintTop_toBottomOf="@id/alta">
 
+        <TextView
+
+            android:id="@+id/hydroStat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:alpha="0.5"
+            android:background="@drawable/sfondo_bottone_grigio"
+            android:gravity="center"
+            android:paddingHorizontal="5dp"
+            android:text="AUTO"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="70dp"
+            tools:layout_editor_absoluteY="7dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bubble"
@@ -665,22 +680,5 @@
         app:layout_constraintTop_toBottomOf="@id/compass"
         app:layout_constraintLeft_toLeftOf="@id/compass"
         app:layout_constraintRight_toRightOf="@id/compass"/>
-    <TextView
-
-        android:alpha="0.5"
-        android:id="@+id/hydroStat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="AUTO"
-        android:paddingHorizontal="5dp"
-        android:layout_marginHorizontal="15dp"
-        android:background="@drawable/sfondo_bottone_grigio"
-        app:layout_constraintTop_toTopOf="@id/compass"
-        app:layout_constraintBottom_toBottomOf="@id/compass"
-        app:layout_constraintLeft_toRightOf="@id/compass"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

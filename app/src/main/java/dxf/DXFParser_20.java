@@ -1,3 +1,4 @@
+
 package dxf;
 
 import static services.ReadProjectService.isFinishedDTM;
@@ -17,848 +18,66 @@ import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 import services.ReadProjectService;
 
+/**
+ * Parser DXF riscritto da zero con una logica più tollerante e meno fragile.
+ *
+ * Obiettivi:
+ * - non scartare entità solo perché il layer non è definito nella TABLE LAYER
+ * - supportare layer color, entity color (ACI 62) e true color (420)
+ * - gestire POLYLINE/VERTEX/SEQEND e LWPOLYLINE senza dipendere dall'ordine perfetto
+ * - mantenere compatibilità con i model esistenti del progetto
+ */
 public class DXFParser_20 {
 
-    // Colori associati ai layer (nome layer -> colore ARGB)
+    private static final String TAG = "DXFParser_20";
+    private static final int DEFAULT_ARGB = AutoCADColor.getColor("7"); // fallback classico AutoCAD
     static Map<String, Integer> layerColors = new HashMap<>();
     static long drillPointNr = 0;
 
     public static DXFData parseDXF(String filePath, double conversionFactor) {
         DXFData dxfData = new DXFData();
-
-        // Sempre reset della mappa colori per evitare "memory" tra file diversi
         layerColors.clear();
 
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(filePath));
+        ParserState state = new ParserState(filePath, conversionFactor, dxfData);
 
-            String code;
-            String value;
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
-            // Stato "globale"
-            String currentSection = null;   // HEADER / TABLES / BLOCKS / ENTITIES / OBJECTS...
-            String currentTable = null;     // LAYER / STYLE ...
-            String lastZeroValue = null;    // ultimo "valore" letto con groupCode 0
-
-            // Stato TAB LAYER
-            boolean inLayerRecord = false;
-            Layer currentLayerRec = null;
-            String currentLayerName = null;
-            String colorCode = "";
-
-            // Stato ENTITÀ
-            Face3D currentFace = null;
-            Polyline currentPolyline = null;       // POLYLINE (2D/3D old style)
-            Polyline_2D currentPolyline_2D = null; // LWPOLYLINE
-            int lwExpectedVertexCount = 0;
-            int lwCurrentVertexCount = 0;
-            boolean inVertex = false;              // <-- SIAMO DENTRO UN VERTEX DI UNA POLYLINE
-
-            Point3D p1 = null;
-            Point3D p2 = null;
-            Point3D p3 = null;
-            Point3D p4 = null;
-            Point3D_Drill currentDrillPoint = null;
-            Point3D currentPoint = null;
-
-            Circle currentCircle = null;
-            Arc currentArc = null;
-            Line currentLine = null;
-            DxfText currentText = null;
-            DxfText currentMText = null; // MTEXT mappato su DxfText
-
-            // BLOCK / INSERT
-            DxfBlock currentBlock = null;     // se non null, siamo dentro una definizione di blocco
-            DxfInsert currentInsert = null;   // entità INSERT corrente
-
-            // LOOP PRINCIPALE: sempre a coppie (groupCode / value)
             while (true) {
-                code = br.readLine();
+                String code = br.readLine();
                 if (code == null) break;
-                code = code.trim();
 
-                // DXF è sempre: groupCode -> value
-                value = br.readLine();
+                String value = br.readLine();
                 if (value == null) break;
+
+                code = code.trim();
                 value = value.trim();
 
                 try {
-
-                    // ======================================
-                    //   GESTIONE SPECIAL CASE: groupCode == 0
-                    //   (nuova entità / record / sezione)
-                    // ======================================
                     if ("0".equals(code)) {
-
-                        // Prima di passare a una nuova entità, chiudiamo quelle che
-                        // terminano implicitamente quando appare un nuovo "0" generico.
-                        // (esclusi: VERTEX e SEQEND, gestiti a parte)
-                        if (!"VERTEX".equals(value) && !"SEQEND".equals(value)) {
-
-                            // usciamo comunque da un eventuale VERTEX
-                            inVertex = false;
-
-                            // Chiudi 3DFACE se attivo
-                            if (currentFace != null) {
-                                if (currentFace.p1 != null && currentFace.p2 != null && currentFace.p3 != null) {
-                                    if (currentFace.p4 == null) currentFace.p4 = currentFace.p3;
-                                    if (currentFace.getLayer() != null &&
-                                            currentFace.getLayer().getColorState() != null &&
-                                            currentFace.getLayer().getColorState() != -1) {
-                                        addFaceToContainer(dxfData, currentBlock, currentFace);
-                                    }
-                                }
-                                currentFace = null;
-                            }
-
-                            // Chiudi POINT se attivo
-                            if (currentPoint != null) {
-                                if ((currentPoint.x != 0 || currentPoint.y != 0) &&
-                                        currentPoint.getLayer() != null &&
-                                        currentPoint.getLayer().getColorState() != null &&
-                                        currentPoint.getLayer().getColorState() != -1) {
-                                    addPointToContainer(dxfData, currentBlock, currentPoint);
-                                }
-                                currentPoint = null;
-                            }
-                            //Chiudi DRILLPOINT se attiva
-                            if (currentDrillPoint != null) {
-                                if(currentDrillPoint.getHeadX()!=null&&currentDrillPoint.getHeadY()!=null){
-                                    addDrillPointToContainer(dxfData,currentBlock,currentDrillPoint);
-                                }
-                                currentDrillPoint = null;
-                            }
-
-                            // Chiudi TEXT se attivo
-                            if (currentText != null) {
-                                if (currentText.getText() != null &&
-                                        !currentText.getText().isEmpty() &&
-                                        currentText.getLayer() != null &&
-                                        currentText.getLayer().getColorState() != null &&
-                                        currentText.getLayer().getColorState() != -1) {
-                                    addTextToContainer(dxfData, currentBlock, currentText);
-                                }
-                                currentText = null;
-                            }
-
-                            // Chiudi MTEXT se attivo (mappato su DxfText)
-                            if (currentMText != null) {
-                                if (currentMText.getText() != null &&
-                                        !currentMText.getText().isEmpty() &&
-                                        currentMText.getLayer() != null &&
-                                        currentMText.getLayer().getColorState() != null &&
-                                        currentMText.getLayer().getColorState() != -1) {
-                                    addTextToContainer(dxfData, currentBlock, currentMText);
-                                }
-                                currentMText = null;
-                            }
-
-                            // Chiudi CIRCLE
-                            if (currentCircle != null) {
-                                if (currentCircle.radius > 0 &&
-                                        currentCircle.getLayer() != null &&
-                                        currentCircle.getLayer().getColorState() != null &&
-                                        currentCircle.getLayer().getColorState() != -1) {
-                                    addCircleToContainer(dxfData, currentBlock, currentCircle);
-                                }
-                                currentCircle = null;
-                            }
-
-                            // Chiudi ARC
-                            if (currentArc != null) {
-                                if (currentArc.radius > 0 &&
-                                        currentArc.startAngle != currentArc.endAngle &&
-                                        currentArc.getLayer() != null &&
-                                        currentArc.getLayer().getColorState() != null &&
-                                        currentArc.getLayer().getColorState() != -1) {
-                                    addArcToContainer(dxfData, currentBlock, currentArc);
-                                }
-                                currentArc = null;
-                            }
-
-                            // Chiudi LINE
-                            if (currentLine != null) {
-                                try {
-                                    if (currentLine.start.x != currentLine.end.x ||
-                                            currentLine.start.y != currentLine.end.y) {
-                                        if (currentLine.getLayer() != null &&
-                                                currentLine.getLayer().getColorState() != null &&
-                                                currentLine.getLayer().getColorState() > -1) {
-                                            addLineToContainer(dxfData, currentBlock, currentLine);
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    Log.e("ERROR_DXF", Log.getStackTraceString(e));
-                                }
-                                currentLine = null;
-                            }
-
-                            // Chiudi LWPOLYLINE
-                            if (currentPolyline_2D != null) {
-                                currentPolyline_2D.markGlDirty();   // <-- QUI
-                                if (!currentPolyline_2D.getVertices().isEmpty() &&
-                                        currentPolyline_2D.getLayer() != null &&
-                                        currentPolyline_2D.getLayer().getColorState() != null &&
-                                        currentPolyline_2D.getLayer().getColorState() != -1) {
-                                    addPolyline2DToContainer(dxfData, currentBlock, currentPolyline_2D);
-                                }
-                                currentPolyline_2D = null;
-                                lwExpectedVertexCount = 0;
-                                lwCurrentVertexCount = 0;
-                            }
-
-                            // Chiudi INSERT
-                            if (currentInsert != null) {
-                                dxfData.addInsert(currentInsert);
-                                currentInsert = null;
-                            }
-                        }
-
-                        // Gestione "0" = SECTION / TABLE / ecc.
-                        switch (value) {
-                            case "SECTION":
-                                lastZeroValue = "SECTION";
-                                currentSection = null;
-                                break;
-
-                            case "ENDSEC":
-                                currentSection = null;
-                                currentTable = null;
-                                inLayerRecord = false;
-                                currentLayerRec = null;
-                                currentLayerName = null;
-                                lastZeroValue = "ENDSEC";
-                                break;
-
-                            case "TABLE":
-                                lastZeroValue = "TABLE";
-                                currentTable = null;
-                                break;
-
-                            case "ENDTAB":
-                                currentTable = null;
-                                inLayerRecord = false;
-                                currentLayerRec = null;
-                                currentLayerName = null;
-                                lastZeroValue = "ENDTAB";
-                                break;
-
-                            case "LAYER":
-                                // Siamo dentro TABLE LAYER?
-                                if ("TABLES".equals(currentSection) && "LAYER".equals(currentTable)) {
-                                    inLayerRecord = true;
-                                    currentLayerRec = new Layer(filePath, null, null, true);
-                                    currentLayerName = null;
-                                }
-                                lastZeroValue = "LAYER";
-                                break;
-
-                            case "3DFACE":
-                                currentFace = new Face3D(null, null, null, null, MyColorClass.colorTriangle, null);
-                                lastZeroValue = "3DFACE";
-                                break;
-
-                            case "POLYLINE":
-                                currentPolyline = new Polyline();
-                                currentPolyline.setFilename(filePath);
-                                inVertex = false;
-                                lastZeroValue = "POLYLINE";
-                                break;
-
-                            case "LWPOLYLINE":
-                                currentPolyline_2D = new Polyline_2D();
-                                lwExpectedVertexCount = 0;
-                                lwCurrentVertexCount = 0;
-                                lastZeroValue = "LWPOLYLINE";
-                                break;
-
-                            case "VERTEX":
-                                // Siamo dentro una POLYLINE: i 10/20/30 che seguono
-                                // appartengono a un vertice, NON all'header della polyline.
-                                if (currentPolyline != null) {
-                                    inVertex = true;
-                                }
-                                lastZeroValue = "VERTEX";
-                                break;
-
-                            case "SEQEND":
-                                // chiusura POLYLINE 3D/2D old style
-                                inVertex = false;
-                                if (currentPolyline != null) {
-                                    currentPolyline.markGlDirty();   // <-- QUI
-                                    if (currentPolyline.getLayer() != null &&
-                                            currentPolyline.getLayer().getColorState() != null &&
-                                            currentPolyline.getLayer().getColorState() != -1) {
-                                        addPolylineToContainer(dxfData, currentBlock, currentPolyline);
-                                    }
-                                    currentPolyline = null;
-                                }
-                                lastZeroValue = "SEQEND";
-                                break;
-
-                            case "POINT":
-                                currentPoint = new Point3D(0, 0, 0);
-                                currentPoint.setFilename(filePath);
-                                currentDrillPoint = new Point3D_Drill(null);
-                                currentDrillPoint.setId(String.valueOf(drillPointNr));
-                                drillPointNr++;
-                                ReadProjectService.parserStatus = "Reading Points..."+"\n"+drillPointNr;
-                                lastZeroValue = "POINT";
-                                break;
-
-                            case "TEXT":
-                                currentText = new DxfText("", 0, 0, 0, -1, null);
-                                lastZeroValue = "TEXT";
-                                break;
-
-                            case "MTEXT":
-                                currentMText = new DxfText("", 0, 0, 0, -1, null);
-                                lastZeroValue = "MTEXT";
-                                break;
-
-                            case "CIRCLE":
-                                currentCircle = new Circle(new Point3D(0, 0, 0), 0, -1, null);
-                                lastZeroValue = "CIRCLE";
-                                break;
-
-                            case "ARC":
-                                currentArc = new Arc(new Point3D(0, 0, 0), 0, 0, 0, -1, null);
-                                lastZeroValue = "ARC";
-                                break;
-
-                            case "LINE":
-                                currentLine = new Line(new Point3D(0, 0, 0),
-                                        new Point3D(0, 0, 0),
-                                        -1,
-                                        null);
-                                lastZeroValue = "LINE";
-                                break;
-
-                            case "BLOCK":
-                                currentBlock = new DxfBlock(null);
-                                lastZeroValue = "BLOCK";
-                                break;
-
-                            case "ENDBLK":
-                                if (currentBlock != null) {
-                                    dxfData.addBlock(currentBlock);
-                                    currentBlock = null;
-                                }
-                                lastZeroValue = "ENDBLK";
-                                break;
-
-                            case "INSERT":
-                                currentInsert = new DxfInsert(null);
-                                lastZeroValue = "INSERT";
-                                break;
-
-                            case "EOF":
-                                // fine file DXF
-                                lastZeroValue = "EOF";
-                                code = null;
-                                break;
-
-                            default:
-                                lastZeroValue = value;
-                                break;
-                        }
-
-                        if (code == null) break; // EOF gestito
-
-                        continue; // passa alla prossima coppia groupCode/value
+                        state.handleZero(value);
+                        if (state.eofReached) break;
+                    } else {
+                        state.handleCodeValue(code, value);
                     }
-
-                    // ======================================
-                    //   GESTIONE groupCode != 0
-                    // ======================================
-
-                    // --------------------------
-                    // SECTION / TABLE / LAYER
-                    // --------------------------
-                    if ("2".equals(code)) {
-                        // Nome della SECTION
-                        if ("SECTION".equals(lastZeroValue)) {
-                            currentSection = value;
-                        }
-                        // Nome della TABLE
-                        else if ("TABLE".equals(lastZeroValue)) {
-                            currentTable = value;
-                        }
-                        // Nome LAYER (dentro tabella LAYER)
-                        else if (inLayerRecord && currentLayerRec != null && currentLayerName == null) {
-                            currentLayerName = value;
-                            currentLayerRec.setProjName(filePath);
-                            currentLayerRec.setLayerName(currentLayerName);
-                        }
-                        // Nome blocco
-                        else if (currentBlock != null && "BLOCK".equals(lastZeroValue) && currentBlock.getName() == null) {
-                            currentBlock.setName(value);
-                        }
-                        // Nome blocco per INSERT
-                        else if (currentInsert != null && "INSERT".equals(lastZeroValue) && currentInsert.getBlockName() == null) {
-                            currentInsert.setBlockName(value);
-                        }
-                    } else if ("62".equals(code)) {
-                        // colore layer nella TAB LAYER
-                        if (inLayerRecord && currentLayerRec != null && currentLayerName != null) {
-                            colorCode = value;
-                            try {
-                                currentLayerRec.setColorState(Integer.parseInt(colorCode));
-                            } catch (Exception ignore) {
-                                // fallback handled below
-                            }
-                            int argb = AutoCADColor.getColor(colorCode);
-                            layerColors.put(currentLayerName, argb);
-                            dxfData.addLayer(currentLayerRec);
-
-                            // debug opzionale
-                            Log.d("DXF_LAYERS", "Layer=" + currentLayerName + " colorIndex=" + colorCode + " argb=" + argb);
-
-                            currentLayerRec = null;
-                            currentLayerName = null;
-                            inLayerRecord = false;
-                        }
-                    }
-
-                    // --------------------------
-                    //   LAYER DI ENTITÀ (groupCode 8)
-                    // --------------------------
-                    if ("8".equals(code)) {
-                        String lname = value;
-                        Integer color = layerColors.get(lname);
-                        Layer entLayer;
-                        if (color != null) {
-                            entLayer = new Layer(filePath, lname, color, true);
-                        } else {
-                            entLayer = new Layer(filePath, lname, -1, false);
-                        }
-
-                        if (currentFace != null) {
-                            if (color != null && color != -1) {
-                                MyColorClass.colorTriangle = color;
-                            }
-                            currentFace.setLayer(entLayer);
-                        } else if (currentPolyline != null) {
-                            if (color != null && color != -1) {
-                                currentPolyline.setLineColor(color);
-                            }
-                            currentPolyline.setLayer(entLayer);
-                        } else if (currentPolyline_2D != null) {
-                            if (color != null && color != -1) {
-                                currentPolyline_2D.setLineColor(color);
-                            }
-                            currentPolyline_2D.setLayer(entLayer);
-                        } else if (currentPoint != null) {
-                            if (color != null && color != -1) {
-                                currentPoint.setColore(color);
-                            }
-                            currentPoint.setLayer(entLayer);
-                        } else if (currentText != null) {
-                            if (color != null && color != -1) {
-                                currentText.setColore(color);
-                            }
-                            currentText.setLayer(entLayer);
-                        } else if (currentMText != null) {
-                            if (color != null && color != -1) {
-                                currentMText.setColore(color);
-                            }
-                            currentMText.setLayer(entLayer);
-                        } else if (currentCircle != null) {
-                            if (color != null && color != -1) {
-                                currentCircle.setColor(color);
-                            }
-                            currentCircle.setLayer(entLayer);
-                        } else if (currentArc != null) {
-                            if (color != null && color != -1) {
-                                currentArc.setColor(color);
-                            }
-                            currentArc.setLayer(entLayer);
-                        } else if (currentLine != null) {
-                            if (color != null && color != -1) {
-                                currentLine.setColor(color);
-                            }
-                            currentLine.setLayer(entLayer);
-                        } else if (currentInsert != null) {
-                            currentInsert.setLayer(entLayer);
-                        }
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ 3DFACE
-                    // --------------------------
-                    if (currentFace != null) {
-                        switch (code) {
-                            case "10": {
-                                double x = safeDouble(value, conversionFactor);
-                                p1 = new Point3D(x, 0, 0);
-                                currentFace.p1 = p1;
-                                break;
-                            }
-                            case "20":
-                                if (currentFace.p1 != null) {
-                                    currentFace.p1.y = safeDouble(value, conversionFactor);
-                                }
-                                break;
-                            case "30":
-                                if (currentFace.p1 != null) {
-                                    currentFace.p1.z = safeDouble(value, conversionFactor);
-                                }
-                                break;
-
-                            case "11": {
-                                double x = safeDouble(value, conversionFactor);
-                                p2 = new Point3D(x, 0, 0);
-                                currentFace.p2 = p2;
-                                break;
-                            }
-                            case "21":
-                                if (currentFace.p2 != null) {
-                                    currentFace.p2.y = safeDouble(value, conversionFactor);
-                                }
-                                break;
-                            case "31":
-                                if (currentFace.p2 != null) {
-                                    currentFace.p2.z = safeDouble(value, conversionFactor);
-                                }
-                                break;
-
-                            case "12": {
-                                double x = safeDouble(value, conversionFactor);
-                                p3 = new Point3D(x, 0, 0);
-                                currentFace.p3 = p3;
-                                break;
-                            }
-                            case "22":
-                                if (currentFace.p3 != null) {
-                                    currentFace.p3.y = safeDouble(value, conversionFactor);
-                                }
-                                break;
-                            case "32":
-                                if (currentFace.p3 != null) {
-                                    currentFace.p3.z = safeDouble(value, conversionFactor);
-                                }
-                                break;
-
-                            case "13": {
-                                double x = safeDouble(value, conversionFactor);
-                                p4 = new Point3D(x, 0, 0);
-                                currentFace.p4 = p4;
-                                break;
-                            }
-                            case "23":
-                                if (currentFace.p4 != null) {
-                                    currentFace.p4.y = safeDouble(value, conversionFactor);
-                                }
-                                break;
-                            case "33":
-                                if (currentFace.p4 != null) {
-                                    currentFace.p4.z = safeDouble(value, conversionFactor);
-                                }
-                                break;
-                        }
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ POLYLINE (old style 2D/3D)
-                    // --------------------------
-                    if (currentPolyline != null && inVertex) {
-                        // ATTENZIONE: leggiamo i 10/20/30 SOLO DENTRO UN VERTEX
-                        if ("10".equals(code)) {
-                            double x = safeDouble(value, conversionFactor);
-                            currentPolyline.vertices.add(new Point3D(x, 0, 0));
-                        } else if ("20".equals(code)) {
-                            if (!currentPolyline.vertices.isEmpty()) {
-                                Point3D last = currentPolyline.vertices.get(currentPolyline.vertices.size() - 1);
-                                last.y = safeDouble(value, conversionFactor);
-                            }
-                        } else if ("30".equals(code)) {
-                            if (!currentPolyline.vertices.isEmpty()) {
-                                Point3D last = currentPolyline.vertices.get(currentPolyline.vertices.size() - 1);
-                                last.z = safeDouble(value, conversionFactor);
-                            }
-                        }
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ LWPOLYLINE
-                    // --------------------------
-                    if (currentPolyline_2D != null) {
-                        switch (code) {
-                            case "90":
-                                try {
-                                    lwExpectedVertexCount = Integer.parseInt(value.trim());
-                                } catch (NumberFormatException ignore) {
-                                }
-                                break;
-
-                            case "10": {
-                                double x = safeDouble(value, conversionFactor);
-                                currentPolyline_2D.addVertex(new Point3D(x, 0, 0));
-                                break;
-                            }
-
-                            case "20": {
-                                double y = safeDouble(value, conversionFactor);
-                                if (!currentPolyline_2D.getVertices().isEmpty()) {
-                                    Point3D last = currentPolyline_2D.getVertices()
-                                            .get(currentPolyline_2D.getVertices().size() - 1);
-                                    last.y = y;
-                                    last.z = 0;
-                                    lwCurrentVertexCount++;
-                                }
-                                break;
-                            }
-
-                            case "42": {
-                                double bulge;
-                                try {
-                                    bulge = Double.parseDouble(value.trim());
-                                } catch (NumberFormatException e) {
-                                    break;
-                                }
-                                if (!currentPolyline_2D.getVertices().isEmpty()) {
-                                    Point3D last = currentPolyline_2D.getVertices()
-                                            .get(currentPolyline_2D.getVertices().size() - 1);
-                                    last.setBulge(bulge);
-                                }
-                                break;
-                            }
-                        }
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ POINT
-                    // --------------------------
-                    if (currentPoint != null) {
-                        switch (code) {
-                            case "10":
-                                currentPoint.x = safeDouble(value, conversionFactor);
-                                break;
-                            case "20":
-                                currentPoint.y = safeDouble(value, conversionFactor);
-                                break;
-                            case "30":
-                                currentPoint.z = safeDouble(value, conversionFactor);
-                                break;
-                        }
-                    }
-                    if (currentDrillPoint != null) {
-                        currentDrillPoint.setTilt(0.0d);
-                        switch (code) {
-                            case "10":
-                                currentDrillPoint.setHeadX(safeDouble(value, conversionFactor));
-                                currentDrillPoint.setEndX(safeDouble(value, conversionFactor));
-                                break;
-                            case "20":
-                                currentDrillPoint.setHeadY(safeDouble(value, conversionFactor));
-                                currentDrillPoint.setEndY(safeDouble(value, conversionFactor));
-
-                                break;
-                            case "30":
-
-                                currentDrillPoint.setHeadZ(safeDouble(value, conversionFactor));
-                                currentDrillPoint.setEndZ(safeDouble(value, conversionFactor));
-                                break;
-                        }
-                        currentDrillPoint.recomputeDerived();
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ TEXT
-                    // --------------------------
-                    if (currentText != null) {
-                        switch (code) {
-                            case "10":
-                                currentText.x = safeDouble(value, conversionFactor);
-                                break;
-                            case "20":
-                                currentText.y = safeDouble(value, conversionFactor);
-                                break;
-                            case "30":
-                                currentText.z = safeDouble(value, conversionFactor);
-                                break;
-                            case "1":
-                                currentText.setText(value);
-                                break;
-                        }
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ MTEXT (come DxfText)
-                    // --------------------------
-                    if (currentMText != null) {
-                        switch (code) {
-                            case "10":
-                                currentMText.x = safeDouble(value, conversionFactor);
-                                break;
-                            case "20":
-                                currentMText.y = safeDouble(value, conversionFactor);
-                                break;
-                            case "30":
-                                currentMText.z = safeDouble(value, conversionFactor);
-                                break;
-
-                            case "1":
-                            case "2":
-                            case "3": {
-                                String existing = currentMText.getText();
-                                if (existing == null || existing.isEmpty()) {
-                                    currentMText.setText(value);
-                                } else {
-                                    currentMText.setText(existing + "\n" + value);
-                                }
-                                break;
-                            }
-                        }
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ CIRCLE
-                    // --------------------------
-                    if (currentCircle != null) {
-                        switch (code) {
-                            case "10":
-                                currentCircle.center.x = safeDouble(value, conversionFactor);
-                                break;
-                            case "20":
-                                currentCircle.center.y = safeDouble(value, conversionFactor);
-                                break;
-                            case "30":
-                                currentCircle.center.z = safeDouble(value, conversionFactor);
-                                break;
-                            case "40":
-                                currentCircle.radius = safeDouble(value, conversionFactor);
-                                break;
-                        }
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ ARC
-                    // --------------------------
-                    if (currentArc != null) {
-                        switch (code) {
-                            case "10":
-                                currentArc.center.x = safeDouble(value, conversionFactor);
-                                break;
-                            case "20":
-                                currentArc.center.y = safeDouble(value, conversionFactor);
-                                break;
-                            case "30":
-                                currentArc.center.z = safeDouble(value, conversionFactor);
-                                break;
-                            case "40":
-                                currentArc.radius = safeDouble(value, conversionFactor);
-                                break;
-                            case "50":
-                                currentArc.setStartAngle(safeDouble(value, 1.0));
-                                break;
-                            case "51":
-                                currentArc.setEndAngle(safeDouble(value, 1.0));
-                                break;
-                        }
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ LINE
-                    // --------------------------
-                    if (currentLine != null) {
-                        switch (code) {
-                            case "10":
-                                currentLine.start.x = safeDouble(value, conversionFactor);
-                                break;
-                            case "20":
-                                currentLine.start.y = safeDouble(value, conversionFactor);
-                                break;
-                            case "30":
-                                currentLine.start.z = 0;
-                                break;
-                            case "11":
-                                currentLine.end.x = safeDouble(value, conversionFactor);
-                                break;
-                            case "21":
-                                currentLine.end.y = safeDouble(value, conversionFactor);
-                                break;
-                            case "31":
-                                currentLine.end.z = 0;
-                                break;
-                        }
-                    }
-
-                    // --------------------------
-                    //   ENTITÀ INSERT
-                    // --------------------------
-                    if (currentInsert != null) {
-                        switch (code) {
-                            case "10":
-                                currentInsert.setPosition(
-                                        safeDouble(value, conversionFactor),
-                                        currentInsert.getY(),
-                                        currentInsert.getZ());
-                                break;
-                            case "20":
-                                currentInsert.setPosition(
-                                        currentInsert.getX(),
-                                        safeDouble(value, conversionFactor),
-                                        currentInsert.getZ());
-                                break;
-                            case "30":
-                                currentInsert.setPosition(
-                                        currentInsert.getX(),
-                                        currentInsert.getY(),
-                                        safeDouble(value, conversionFactor));
-                                break;
-                            case "50":
-                                currentInsert.setRotation(safeDouble(value, 1.0));
-                                break;
-                            case "41":
-                                currentInsert.setScaleX(safeDouble(value, 1.0));
-                                break;
-                            case "42":
-                                currentInsert.setScaleY(safeDouble(value, 1.0));
-                                break;
-                            case "43":
-                                currentInsert.setScaleZ(safeDouble(value, 1.0));
-                                break;
-                        }
-                    }
-
-                } catch (NumberFormatException e) {
-                    ReadProjectService.parserStatus = e.toString() + "\n";
-                    if (filePath.equals(DataSaved.progettoSelected)) {
-                        isFinishedDTM = true;
-                    }
-                    if (filePath.equals(DataSaved.progettoSelected_POLY)) {
-                        isFinishedPOLY = true;
-                    }
-                    if (filePath.equals(DataSaved.progettoSelected_POINT)) {
-                        isFinishedPOINT = true;
-                        drillPointNr=0;
-                    }
+                } catch (Exception entityEx) {
+                    Log.e(TAG, "Errore durante parsing gruppo [" + code + " -> " + value + "]", entityEx);
                 }
             }
 
+            state.finishOpenObjectsAtEOF();
+
         } catch (IOException e) {
             ReadProjectService.parserStatus = e.toString() + "\n";
-            if (filePath.equals(DataSaved.progettoSelected)) {
-                isFinishedDTM = true;
-            }
-            if (filePath.equals(DataSaved.progettoSelected_POLY)) {
-                isFinishedPOLY = true;
-            }
-            if (filePath.equals(DataSaved.progettoSelected_POINT)) {
-                isFinishedPOINT = true;
-                drillPointNr=0;
-            }
-            e.printStackTrace();
-            Log.e("ErroDXF", Log.getStackTraceString(e));
+            Log.e(TAG, Log.getStackTraceString(e));
         } finally {
-            try {
-                if (br != null) br.close();
-            } catch (IOException ignore) {
-            }
+            markParserFinished(filePath);
         }
 
+        explodeBlocks(dxfData);
+        return dxfData;
+    }
+
+    private static void markParserFinished(String filePath) {
         if (filePath.equals(DataSaved.progettoSelected)) {
             isFinishedDTM = true;
         }
@@ -867,19 +86,1122 @@ public class DXFParser_20 {
         }
         if (filePath.equals(DataSaved.progettoSelected_POINT)) {
             isFinishedPOINT = true;
-            drillPointNr=0;
+            drillPointNr = 0;
         }
-
-        explodeBlocks(dxfData);
-        return dxfData;
     }
 
-    // Lettura sicura di un double con fattore di conversione
-    private static double safeDouble(String s, double factor) {
+    private static final class ParserState {
+
+        final String filePath;
+        final double conversionFactor;
+        final DXFData data;
+
+        String currentSection = null;
+        String currentTable = null;
+        String lastZeroValue = null;
+        boolean eofReached = false;
+
+        // TABLES -> LAYER
+        boolean inLayerRecord = false;
+        Layer currentLayerRec = null;
+        String currentLayerName = null;
+
+        // BLOCK
+        DxfBlock currentBlock = null;
+
+        // Entità aperte
+        Face3D currentFace = null;
+        Polyline currentPolyline = null;
+        Polyline_2D currentLWPolyline = null;
+        Point3D currentPoint = null;
+        Point3D_Drill currentDrillPoint = null;
+        Circle currentCircle = null;
+        Arc currentArc = null;
+        Line currentLine = null;
+        DxfText currentText = null;
+        DxfText currentMText = null;
+        DxfInsert currentInsert = null;
+
+        // Stato entità
+        boolean inVertex = false;
+        boolean currentPolylineClosed = false;
+        boolean currentLWPolylineClosed = false;
+        double currentLWPolylineElevation = 0.0;
+
+        boolean pointTouched = false;
+        boolean drillTouched = false;
+        boolean lineStartTouched = false;
+        boolean lineEndTouched = false;
+        boolean circleCenterTouched = false;
+        boolean circleRadiusTouched = false;
+        boolean arcCenterTouched = false;
+        boolean arcRadiusTouched = false;
+        boolean arcAnglesTouched = false;
+
+        // Colore entità corrente
+        boolean hasExplicitEntityColor = false;
+        int currentEntityArgb = DEFAULT_ARGB;
+
+        ParserState(String filePath, double conversionFactor, DXFData data) {
+            this.filePath = filePath;
+            this.conversionFactor = conversionFactor;
+            this.data = data;
+        }
+
+        void handleZero(String value) {
+            // Se stiamo entrando in un nuovo record/entità, chiudiamo l'entità attuale.
+            // Eccezioni: VERTEX e SEQEND fanno parte di una POLYLINE già aperta.
+            if (!"VERTEX".equals(value) && !"SEQEND".equals(value)) {
+                finishCurrentEntities(false);
+                inVertex = false;
+            }
+
+            switch (value) {
+                case "SECTION":
+                    lastZeroValue = "SECTION";
+                    currentSection = null;
+                    return;
+
+                case "ENDSEC":
+                    finishCurrentEntities(false);
+                    currentSection = null;
+                    currentTable = null;
+                    closeLayerRecordIfNeeded();
+                    lastZeroValue = "ENDSEC";
+                    return;
+
+                case "TABLE":
+                    lastZeroValue = "TABLE";
+                    currentTable = null;
+                    return;
+
+                case "ENDTAB":
+                    closeLayerRecordIfNeeded();
+                    currentTable = null;
+                    lastZeroValue = "ENDTAB";
+                    return;
+
+                case "LAYER":
+                    if ("TABLES".equals(currentSection) && "LAYER".equals(currentTable)) {
+                        closeLayerRecordIfNeeded();
+                        inLayerRecord = true;
+                        currentLayerRec = new Layer(filePath, null, DEFAULT_ARGB, true);
+                        currentLayerName = null;
+                    }
+                    lastZeroValue = "LAYER";
+                    return;
+
+                case "3DFACE":
+                    resetEntityStyle();
+                    currentFace = new Face3D(null, null, null, null, MyColorClass.colorTriangle, null);
+                    lastZeroValue = "3DFACE";
+                    return;
+
+                case "POLYLINE":
+                    resetEntityStyle();
+                    currentPolyline = new Polyline();
+                    currentPolyline.setFilename(filePath);
+                    currentPolylineClosed = false;
+                    inVertex = false;
+                    lastZeroValue = "POLYLINE";
+                    return;
+
+                case "VERTEX":
+                    if (currentPolyline != null) {
+                        inVertex = true;
+                    }
+                    lastZeroValue = "VERTEX";
+                    return;
+
+                case "SEQEND":
+                    inVertex = false;
+                    finishCurrentPolyline();
+                    lastZeroValue = "SEQEND";
+                    return;
+
+                case "LWPOLYLINE":
+                    resetEntityStyle();
+                    currentLWPolyline = new Polyline_2D();
+                    currentLWPolylineClosed = false;
+                    currentLWPolylineElevation = 0.0;
+                    lastZeroValue = "LWPOLYLINE";
+                    return;
+
+                case "POINT":
+                    resetEntityStyle();
+                    currentPoint = new Point3D(0, 0, 0);
+                    currentPoint.setFilename(filePath);
+                    pointTouched = false;
+
+                    currentDrillPoint = new Point3D_Drill(null);
+                    currentDrillPoint.setId(String.valueOf(drillPointNr));
+                    drillPointNr++;
+                    drillTouched = false;
+                    ReadProjectService.parserStatus = "Reading Points...\n" + drillPointNr;
+                    lastZeroValue = "POINT";
+                    return;
+
+                case "TEXT":
+                    resetEntityStyle();
+                    currentText = new DxfText("", 0, 0, 0, -1, null);
+                    lastZeroValue = "TEXT";
+                    return;
+
+                case "MTEXT":
+                    resetEntityStyle();
+                    currentMText = new DxfText("", 0, 0, 0, -1, null);
+                    lastZeroValue = "MTEXT";
+                    return;
+
+                case "CIRCLE":
+                    resetEntityStyle();
+                    currentCircle = new Circle(new Point3D(0, 0, 0), 0, -1, null);
+                    circleCenterTouched = false;
+                    circleRadiusTouched = false;
+                    lastZeroValue = "CIRCLE";
+                    return;
+
+                case "ARC":
+                    resetEntityStyle();
+                    currentArc = new Arc(new Point3D(0, 0, 0), 0, 0, 0, -1, null);
+                    arcCenterTouched = false;
+                    arcRadiusTouched = false;
+                    arcAnglesTouched = false;
+                    lastZeroValue = "ARC";
+                    return;
+
+                case "LINE":
+                    resetEntityStyle();
+                    currentLine = new Line(new Point3D(0, 0, 0), new Point3D(0, 0, 0), -1, null);
+                    lineStartTouched = false;
+                    lineEndTouched = false;
+                    lastZeroValue = "LINE";
+                    return;
+
+                case "BLOCK":
+                    currentBlock = new DxfBlock(null);
+                    lastZeroValue = "BLOCK";
+                    return;
+
+                case "ENDBLK":
+                    finishCurrentEntities(false);
+                    if (currentBlock != null) {
+                        data.addBlock(currentBlock);
+                        currentBlock = null;
+                    }
+                    lastZeroValue = "ENDBLK";
+                    return;
+
+                case "INSERT":
+                    resetEntityStyle();
+                    currentInsert = new DxfInsert(null);
+                    currentInsert.setScaleX(1.0);
+                    currentInsert.setScaleY(1.0);
+                    currentInsert.setScaleZ(1.0);
+                    currentInsert.setRotation(0.0);
+                    lastZeroValue = "INSERT";
+                    return;
+
+                case "EOF":
+                    finishCurrentEntities(false);
+                    closeLayerRecordIfNeeded();
+                    eofReached = true;
+                    lastZeroValue = "EOF";
+                    return;
+
+                default:
+                    lastZeroValue = value;
+            }
+        }
+
+        void handleCodeValue(String code, String value) {
+            // SECTION / TABLE / LAYER NAME / BLOCK NAME / INSERT BLOCK NAME
+            if ("2".equals(code)) {
+                if ("SECTION".equals(lastZeroValue)) {
+                    currentSection = value;
+                    return;
+                }
+                if ("TABLE".equals(lastZeroValue)) {
+                    currentTable = value;
+                    return;
+                }
+                if (inLayerRecord && currentLayerRec != null && currentLayerName == null) {
+                    currentLayerName = value;
+                    currentLayerRec.setProjName(filePath);
+                    currentLayerRec.setLayerName(currentLayerName);
+                    return;
+                }
+                if (currentBlock != null && "BLOCK".equals(lastZeroValue) && currentBlock.getName() == null) {
+                    currentBlock.setName(value);
+                    return;
+                }
+                if (currentInsert != null && "INSERT".equals(lastZeroValue) && currentInsert.getBlockName() == null) {
+                    currentInsert.setBlockName(value);
+                    return;
+                }
+            }
+
+            // Colore layer in TABLE LAYER
+            if ("62".equals(code) && inLayerRecord && currentLayerRec != null && currentLayerName != null) {
+                Integer aci = parseInt(value);
+                if (aci == null) aci = 7;
+                currentLayerRec.setColorState(aci);
+                layerColors.put(currentLayerName, AutoCADColor.getColor(String.valueOf(aci)));
+                data.addLayer(currentLayerRec);
+                currentLayerRec = null;
+                currentLayerName = null;
+                inLayerRecord = false;
+                return;
+            }
+
+            // Layer entità
+            if ("8".equals(code)) {
+                applyLayerToActiveEntity(value);
+                return;
+            }
+
+            // Colore entità (ACI)
+            if ("62".equals(code)) {
+                Integer aci = parseInt(value);
+                if (aci != null) {
+                    int argb = AutoCADColor.getColor(String.valueOf(Math.abs(aci)));
+                    applyExplicitEntityColor(argb);
+                }
+                return;
+            }
+
+            // True color entità (420 = 0x00RRGGBB)
+            if ("420".equals(code)) {
+                Integer rgb = parseInt(value);
+                if (rgb != null) {
+                    int argb = 0xFF000000 | (rgb & 0x00FFFFFF);
+                    applyExplicitEntityColor(argb);
+                }
+                return;
+            }
+
+            // Flag polyline chiusa
+            if ("70".equals(code)) {
+                Integer flags = parseInt(value);
+                if (flags != null) {
+                    if (currentPolyline != null && !inVertex) {
+                        currentPolylineClosed = (flags & 1) != 0;
+                    } else if (currentLWPolyline != null) {
+                        currentLWPolylineClosed = (flags & 1) != 0;
+                    }
+                }
+            }
+
+            // Elevation LWPOLYLINE
+            if ("38".equals(code) && currentLWPolyline != null) {
+                Double z = parseDouble(value, conversionFactor);
+                if (z != null) currentLWPolylineElevation = z;
+                return;
+            }
+
+            // BLOCK base point: lasciato volutamente ignorato finché non abbiamo setter certi sul model.
+            // Se hai setBaseX/setBaseY/setBaseZ nel tuo DxfBlock, si possono collegare qui.
+
+            // 3DFACE
+            if (currentFace != null) {
+                parseFace(code, value);
+            }
+
+            // POLYLINE old style
+            if (currentPolyline != null && inVertex) {
+                parsePolylineVertex(code, value);
+            }
+
+            // LWPOLYLINE
+            if (currentLWPolyline != null) {
+                parseLWPolyline(code, value);
+            }
+
+            // POINT
+            if (currentPoint != null) {
+                parsePoint(code, value);
+            }
+
+            // DRILL POINT
+            if (currentDrillPoint != null) {
+                parseDrillPoint(code, value);
+            }
+
+            // TEXT
+            if (currentText != null) {
+                parseText(currentText, code, value, false);
+            }
+
+            // MTEXT
+            if (currentMText != null) {
+                parseText(currentMText, code, value, true);
+            }
+
+            // CIRCLE
+            if (currentCircle != null) {
+                parseCircle(code, value);
+            }
+
+            // ARC
+            if (currentArc != null) {
+                parseArc(code, value);
+            }
+
+            // LINE
+            if (currentLine != null) {
+                parseLine(code, value);
+            }
+
+            // INSERT
+            if (currentInsert != null) {
+                parseInsert(code, value);
+            }
+        }
+
+        void finishOpenObjectsAtEOF() {
+            finishCurrentEntities(false);
+            closeLayerRecordIfNeeded();
+            if (currentBlock != null) {
+                data.addBlock(currentBlock);
+                currentBlock = null;
+            }
+        }
+
+        private void resetEntityStyle() {
+            hasExplicitEntityColor = false;
+            currentEntityArgb = DEFAULT_ARGB;
+        }
+
+        private void closeLayerRecordIfNeeded() {
+            if (!inLayerRecord || currentLayerRec == null || currentLayerName == null) {
+                inLayerRecord = false;
+                currentLayerRec = null;
+                currentLayerName = null;
+                return;
+            }
+
+            if (!layerColors.containsKey(currentLayerName)) {
+                currentLayerRec.setColorState(7);
+                layerColors.put(currentLayerName, DEFAULT_ARGB);
+                data.addLayer(currentLayerRec);
+            }
+
+            inLayerRecord = false;
+            currentLayerRec = null;
+            currentLayerName = null;
+        }
+
+        private void applyLayerToActiveEntity(String layerName) {
+            Layer layer = resolveLayer(layerName);
+
+            if (currentFace != null) {
+                currentFace.setLayer(layer);
+                if (hasExplicitEntityColor) {
+                    MyColorClass.colorTriangle = currentEntityArgb;
+                } else if (layer.getColorState() != null) {
+                    MyColorClass.colorTriangle = layer.getColorState();
+                }
+                return;
+            }
+
+            if (currentPolyline != null) {
+                currentPolyline.setLayer(layer);
+                currentPolyline.setLineColor(hasExplicitEntityColor ? currentEntityArgb : safeLayerColor(layer));
+                return;
+            }
+
+            if (currentLWPolyline != null) {
+                currentLWPolyline.setLayer(layer);
+                currentLWPolyline.setLineColor(hasExplicitEntityColor ? currentEntityArgb : safeLayerColor(layer));
+                return;
+            }
+
+            if (currentPoint != null) {
+                currentPoint.setLayer(layer);
+                currentPoint.setColore(hasExplicitEntityColor ? currentEntityArgb : safeLayerColor(layer));
+                return;
+            }
+
+            if (currentText != null) {
+                currentText.setLayer(layer);
+                currentText.setColore(hasExplicitEntityColor ? currentEntityArgb : safeLayerColor(layer));
+                return;
+            }
+
+            if (currentMText != null) {
+                currentMText.setLayer(layer);
+                currentMText.setColore(hasExplicitEntityColor ? currentEntityArgb : safeLayerColor(layer));
+                return;
+            }
+
+            if (currentCircle != null) {
+                currentCircle.setLayer(layer);
+                currentCircle.setColor(hasExplicitEntityColor ? currentEntityArgb : safeLayerColor(layer));
+                return;
+            }
+
+            if (currentArc != null) {
+                currentArc.setLayer(layer);
+                currentArc.setColor(hasExplicitEntityColor ? currentEntityArgb : safeLayerColor(layer));
+                return;
+            }
+
+            if (currentLine != null) {
+                currentLine.setLayer(layer);
+                currentLine.setColor(hasExplicitEntityColor ? currentEntityArgb : safeLayerColor(layer));
+                return;
+            }
+
+            if (currentInsert != null) {
+                currentInsert.setLayer(layer);
+            }
+        }
+
+        private void applyExplicitEntityColor(int argb) {
+            hasExplicitEntityColor = true;
+            currentEntityArgb = argb;
+
+            if (currentFace != null) {
+                MyColorClass.colorTriangle = argb;
+                return;
+            }
+            if (currentPolyline != null) {
+                currentPolyline.setLineColor(argb);
+                return;
+            }
+            if (currentLWPolyline != null) {
+                currentLWPolyline.setLineColor(argb);
+                return;
+            }
+            if (currentPoint != null) {
+                currentPoint.setColore(argb);
+                return;
+            }
+            if (currentText != null) {
+                currentText.setColore(argb);
+                return;
+            }
+            if (currentMText != null) {
+                currentMText.setColore(argb);
+                return;
+            }
+            if (currentCircle != null) {
+                currentCircle.setColor(argb);
+                return;
+            }
+            if (currentArc != null) {
+                currentArc.setColor(argb);
+                return;
+            }
+            if (currentLine != null) {
+                currentLine.setColor(argb);
+                return;
+            }
+            if (currentInsert != null) {
+                Layer existing = currentInsert.getLayer();
+                currentInsert.setLayer(new Layer(filePath, "0", argb, existing != null && existing.getColorState() != null));
+            }
+        }
+
+        private Layer resolveLayer(String layerName) {
+            if (layerName == null || layerName.trim().isEmpty()) {
+                layerName = "0";
+            }
+
+            Integer argb = layerColors.get(layerName);
+            if (argb != null) {
+                return new Layer(filePath, layerName, argb, true);
+            }
+
+            Integer layer0 = layerColors.get("0");
+            int fallback = layer0 != null ? layer0 : DEFAULT_ARGB;
+            return new Layer(filePath, layerName, fallback, false);
+        }
+
+        private int safeLayerColor(Layer layer) {
+            if (layer == null || layer.getColorState() == null || layer.getColorState() == -1) {
+                return DEFAULT_ARGB;
+            }
+            return layer.getColorState();
+        }
+
+        private void ensureDefaultLayerOnActiveEntities() {
+            Layer defaultLayer = resolveLayer("0");
+
+            if (currentFace != null && currentFace.getLayer() == null) {
+                currentFace.setLayer(defaultLayer);
+            }
+            if (currentPolyline != null && currentPolyline.getLayer() == null) {
+                currentPolyline.setLayer(defaultLayer);
+                if (!hasExplicitEntityColor) currentPolyline.setLineColor(safeLayerColor(defaultLayer));
+            }
+            if (currentLWPolyline != null && currentLWPolyline.getLayer() == null) {
+                currentLWPolyline.setLayer(defaultLayer);
+                if (!hasExplicitEntityColor) currentLWPolyline.setLineColor(safeLayerColor(defaultLayer));
+            }
+            if (currentPoint != null && currentPoint.getLayer() == null) {
+                currentPoint.setLayer(defaultLayer);
+                if (!hasExplicitEntityColor) currentPoint.setColore(safeLayerColor(defaultLayer));
+            }
+            if (currentText != null && currentText.getLayer() == null) {
+                currentText.setLayer(defaultLayer);
+                if (!hasExplicitEntityColor) currentText.setColore(safeLayerColor(defaultLayer));
+            }
+            if (currentMText != null && currentMText.getLayer() == null) {
+                currentMText.setLayer(defaultLayer);
+                if (!hasExplicitEntityColor) currentMText.setColore(safeLayerColor(defaultLayer));
+            }
+            if (currentCircle != null && currentCircle.getLayer() == null) {
+                currentCircle.setLayer(defaultLayer);
+                if (!hasExplicitEntityColor) currentCircle.setColor(safeLayerColor(defaultLayer));
+            }
+            if (currentArc != null && currentArc.getLayer() == null) {
+                currentArc.setLayer(defaultLayer);
+                if (!hasExplicitEntityColor) currentArc.setColor(safeLayerColor(defaultLayer));
+            }
+            if (currentLine != null && currentLine.getLayer() == null) {
+                currentLine.setLayer(defaultLayer);
+                if (!hasExplicitEntityColor) currentLine.setColor(safeLayerColor(defaultLayer));
+            }
+            if (currentInsert != null && currentInsert.getLayer() == null) {
+                currentInsert.setLayer(defaultLayer);
+            }
+        }
+
+        private void finishCurrentEntities(boolean force) {
+            ensureDefaultLayerOnActiveEntities();
+            finishFace();
+            finishPoint();
+            finishDrillPoint();
+            finishText();
+            finishMText();
+            finishCircle();
+            finishArc();
+            finishLine();
+            finishLWPolyline();
+            finishInsert();
+            if (force || currentPolyline != null) {
+                finishCurrentPolyline();
+            }
+        }
+
+        private void finishFace() {
+            if (currentFace == null) return;
+
+            if (currentFace.p1 != null && currentFace.p2 != null && currentFace.p3 != null) {
+                if (currentFace.p4 == null) currentFace.p4 = currentFace.p3;
+                addFaceToContainer(data, currentBlock, currentFace);
+            }
+            currentFace = null;
+        }
+
+        private void finishCurrentPolyline() {
+            if (currentPolyline == null) return;
+
+            if (currentPolylineClosed) {
+                closeIfNeeded(currentPolyline.getVertices());
+            }
+
+            currentPolyline.markGlDirty();
+            if (currentPolyline.getVertices() != null && currentPolyline.getVertices().size() >= 2) {
+                addPolylineToContainer(data, currentBlock, currentPolyline);
+            }
+            currentPolyline = null;
+            currentPolylineClosed = false;
+        }
+
+        private void finishLWPolyline() {
+            if (currentLWPolyline == null) return;
+
+            if (currentLWPolylineClosed) {
+                closeIfNeeded(currentLWPolyline.getVertices());
+            }
+
+            currentLWPolyline.markGlDirty();
+            if (currentLWPolyline.getVertices() != null && currentLWPolyline.getVertices().size() >= 2) {
+                addPolyline2DToContainer(data, currentBlock, currentLWPolyline);
+            }
+            currentLWPolyline = null;
+            currentLWPolylineClosed = false;
+            currentLWPolylineElevation = 0.0;
+        }
+
+        private void finishPoint() {
+            if (currentPoint == null) return;
+
+            if (pointTouched) {
+                addPointToContainer(data, currentBlock, currentPoint);
+            }
+            currentPoint = null;
+            pointTouched = false;
+        }
+
+        private void finishDrillPoint() {
+            if (currentDrillPoint == null) return;
+
+            currentDrillPoint.recomputeDerived();
+            Double tilt = computeTiltFromEndpoints(currentDrillPoint);
+            if (tilt != null) {
+                currentDrillPoint.setTilt(tilt);
+            }
+
+            if (drillTouched && currentDrillPoint.getHeadX() != null && currentDrillPoint.getHeadY() != null) {
+                addDrillPointToContainer(data, currentBlock, currentDrillPoint);
+            }
+            currentDrillPoint = null;
+            drillTouched = false;
+        }
+
+        private void finishText() {
+            if (currentText == null) return;
+
+            String txt = currentText.getText();
+            if (txt != null && !txt.trim().isEmpty()) {
+                addTextToContainer(data, currentBlock, currentText);
+            }
+            currentText = null;
+        }
+
+        private void finishMText() {
+            if (currentMText == null) return;
+
+            String txt = currentMText.getText();
+            if (txt != null && !txt.trim().isEmpty()) {
+                currentMText.setText(normalizeMText(txt));
+                addTextToContainer(data, currentBlock, currentMText);
+            }
+            currentMText = null;
+        }
+
+        private void finishCircle() {
+            if (currentCircle == null) return;
+
+            if (circleCenterTouched && circleRadiusTouched && currentCircle.radius > 0) {
+                addCircleToContainer(data, currentBlock, currentCircle);
+            }
+            currentCircle = null;
+            circleCenterTouched = false;
+            circleRadiusTouched = false;
+        }
+
+        private void finishArc() {
+            if (currentArc == null) return;
+
+            if (arcCenterTouched && arcRadiusTouched && arcAnglesTouched && currentArc.radius > 0) {
+                addArcToContainer(data, currentBlock, currentArc);
+            }
+            currentArc = null;
+            arcCenterTouched = false;
+            arcRadiusTouched = false;
+            arcAnglesTouched = false;
+        }
+
+        private void finishLine() {
+            if (currentLine == null) return;
+
+            if (lineStartTouched && lineEndTouched && !samePoint(currentLine.start, currentLine.end)) {
+                addLineToContainer(data, currentBlock, currentLine);
+            }
+            currentLine = null;
+            lineStartTouched = false;
+            lineEndTouched = false;
+        }
+
+        private void finishInsert() {
+            if (currentInsert == null) return;
+
+            if (currentInsert.getBlockName() != null && !currentInsert.getBlockName().trim().isEmpty()) {
+                data.addInsert(currentInsert);
+            }
+            currentInsert = null;
+        }
+
+        private void parseFace(String code, String value) {
+            Double d = parseDouble(value, conversionFactor);
+            if (d == null) return;
+
+            switch (code) {
+                case "10":
+                    currentFace.p1 = new Point3D(d, 0, 0);
+                    return;
+                case "20":
+                    if (currentFace.p1 != null) currentFace.p1.y = d;
+                    return;
+                case "30":
+                    if (currentFace.p1 != null) currentFace.p1.z = d;
+                    return;
+                case "11":
+                    currentFace.p2 = new Point3D(d, 0, 0);
+                    return;
+                case "21":
+                    if (currentFace.p2 != null) currentFace.p2.y = d;
+                    return;
+                case "31":
+                    if (currentFace.p2 != null) currentFace.p2.z = d;
+                    return;
+                case "12":
+                    currentFace.p3 = new Point3D(d, 0, 0);
+                    return;
+                case "22":
+                    if (currentFace.p3 != null) currentFace.p3.y = d;
+                    return;
+                case "32":
+                    if (currentFace.p3 != null) currentFace.p3.z = d;
+                    return;
+                case "13":
+                    currentFace.p4 = new Point3D(d, 0, 0);
+                    return;
+                case "23":
+                    if (currentFace.p4 != null) currentFace.p4.y = d;
+                    return;
+                case "33":
+                    if (currentFace.p4 != null) currentFace.p4.z = d;
+            }
+        }
+
+        private void parsePolylineVertex(String code, String value) {
+            switch (code) {
+                case "10": {
+                    Double x = parseDouble(value, conversionFactor);
+                    if (x != null) currentPolyline.getVertices().add(new Point3D(x, 0, 0));
+                    return;
+                }
+                case "20": {
+                    Double y = parseDouble(value, conversionFactor);
+                    if (y != null && !currentPolyline.getVertices().isEmpty()) {
+                        Point3D last = currentPolyline.getVertices().get(currentPolyline.getVertices().size() - 1);
+                        last.y = y;
+                    }
+                    return;
+                }
+                case "30": {
+                    Double z = parseDouble(value, conversionFactor);
+                    if (z != null && !currentPolyline.getVertices().isEmpty()) {
+                        Point3D last = currentPolyline.getVertices().get(currentPolyline.getVertices().size() - 1);
+                        last.z = z;
+                    }
+                }
+            }
+        }
+
+        private void parseLWPolyline(String code, String value) {
+            switch (code) {
+                case "10": {
+                    Double x = parseDouble(value, conversionFactor);
+                    if (x != null) {
+                        currentLWPolyline.addVertex(new Point3D(x, 0, currentLWPolylineElevation));
+                    }
+                    return;
+                }
+                case "20": {
+                    Double y = parseDouble(value, conversionFactor);
+                    if (y != null && !currentLWPolyline.getVertices().isEmpty()) {
+                        Point3D last = currentLWPolyline.getVertices().get(currentLWPolyline.getVertices().size() - 1);
+                        last.y = y;
+                        last.z = currentLWPolylineElevation;
+                    }
+                    return;
+                }
+                case "42": {
+                    Double bulge = parseDouble(value, 1.0);
+                    if (bulge != null && !currentLWPolyline.getVertices().isEmpty()) {
+                        Point3D last = currentLWPolyline.getVertices().get(currentLWPolyline.getVertices().size() - 1);
+                        last.setBulge(bulge);
+                    }
+                }
+            }
+        }
+
+        private void parsePoint(String code, String value) {
+            Double d = parseDouble(value, conversionFactor);
+            if (d == null) return;
+
+            switch (code) {
+                case "10":
+                    currentPoint.x = d;
+                    pointTouched = true;
+                    return;
+                case "20":
+                    currentPoint.y = d;
+                    pointTouched = true;
+                    return;
+                case "30":
+                    currentPoint.z = d;
+                    pointTouched = true;
+            }
+        }
+
+        private void parseDrillPoint(String code, String value) {
+            Double d = parseDouble(value, conversionFactor);
+            if (d == null) return;
+
+            currentDrillPoint.setTilt(0.0d);
+
+            switch (code) {
+                case "10":
+                    currentDrillPoint.setHeadX(d);
+                    if (currentDrillPoint.getEndX() == null) currentDrillPoint.setEndX(d);
+                    drillTouched = true;
+                    break;
+                case "20":
+                    currentDrillPoint.setHeadY(d);
+                    if (currentDrillPoint.getEndY() == null) currentDrillPoint.setEndY(d);
+                    drillTouched = true;
+                    break;
+                case "30":
+                    currentDrillPoint.setHeadZ(d);
+                    if (currentDrillPoint.getEndZ() == null) currentDrillPoint.setEndZ(d);
+                    drillTouched = true;
+                    break;
+                case "11":
+                    currentDrillPoint.setEndX(d);
+                    drillTouched = true;
+                    break;
+                case "21":
+                    currentDrillPoint.setEndY(d);
+                    drillTouched = true;
+                    break;
+                case "31":
+                    currentDrillPoint.setEndZ(d);
+                    drillTouched = true;
+                    break;
+                default:
+                    break;
+            }
+
+            currentDrillPoint.recomputeDerived();
+        }
+
+        private void parseText(DxfText target, String code, String value, boolean multiLine) {
+            switch (code) {
+                case "10": {
+                    Double x = parseDouble(value, conversionFactor);
+                    if (x != null) target.x = x;
+                    return;
+                }
+                case "20": {
+                    Double y = parseDouble(value, conversionFactor);
+                    if (y != null) target.y = y;
+                    return;
+                }
+                case "30": {
+                    Double z = parseDouble(value, conversionFactor);
+                    if (z != null) target.z = z;
+                    return;
+                }
+                case "1":
+                    appendText(target, value, multiLine);
+                    return;
+                case "3":
+                    if (multiLine) appendText(target, value, true);
+                    return;
+                case "50": {
+                    Double rot = parseDouble(value, 1.0);
+                    if (rot != null) target.setRotation(rot);
+                }
+            }
+        }
+
+        private void parseCircle(String code, String value) {
+            Double d = parseDouble(value, conversionFactor);
+            if (d == null) return;
+
+            switch (code) {
+                case "10":
+                    currentCircle.center.x = d;
+                    circleCenterTouched = true;
+                    return;
+                case "20":
+                    currentCircle.center.y = d;
+                    circleCenterTouched = true;
+                    return;
+                case "30":
+                    currentCircle.center.z = d;
+                    circleCenterTouched = true;
+                    return;
+                case "40":
+                    currentCircle.radius = d;
+                    circleRadiusTouched = true;
+            }
+        }
+
+        private void parseArc(String code, String value) {
+            switch (code) {
+                case "10": {
+                    Double x = parseDouble(value, conversionFactor);
+                    if (x != null) {
+                        currentArc.center.x = x;
+                        arcCenterTouched = true;
+                    }
+                    return;
+                }
+                case "20": {
+                    Double y = parseDouble(value, conversionFactor);
+                    if (y != null) {
+                        currentArc.center.y = y;
+                        arcCenterTouched = true;
+                    }
+                    return;
+                }
+                case "30": {
+                    Double z = parseDouble(value, conversionFactor);
+                    if (z != null) {
+                        currentArc.center.z = z;
+                        arcCenterTouched = true;
+                    }
+                    return;
+                }
+                case "40": {
+                    Double r = parseDouble(value, conversionFactor);
+                    if (r != null) {
+                        currentArc.radius = r;
+                        arcRadiusTouched = true;
+                    }
+                    return;
+                }
+                case "50": {
+                    Double a = parseDouble(value, 1.0);
+                    if (a != null) {
+                        currentArc.setStartAngle(a);
+                        arcAnglesTouched = true;
+                    }
+                    return;
+                }
+                case "51": {
+                    Double a = parseDouble(value, 1.0);
+                    if (a != null) {
+                        currentArc.setEndAngle(a);
+                        arcAnglesTouched = true;
+                    }
+                }
+            }
+        }
+
+        private void parseLine(String code, String value) {
+            Double d = parseDouble(value, conversionFactor);
+            if (d == null) return;
+
+            switch (code) {
+                case "10":
+                    currentLine.start.x = d;
+                    lineStartTouched = true;
+                    return;
+                case "20":
+                    currentLine.start.y = d;
+                    lineStartTouched = true;
+                    return;
+                case "30":
+                    currentLine.start.z = d;
+                    lineStartTouched = true;
+                    return;
+                case "11":
+                    currentLine.end.x = d;
+                    lineEndTouched = true;
+                    return;
+                case "21":
+                    currentLine.end.y = d;
+                    lineEndTouched = true;
+                    return;
+                case "31":
+                    currentLine.end.z = d;
+                    lineEndTouched = true;
+            }
+        }
+
+        private void parseInsert(String code, String value) {
+            switch (code) {
+                case "10": {
+                    Double x = parseDouble(value, conversionFactor);
+                    if (x != null) currentInsert.setPosition(x, currentInsert.getY(), currentInsert.getZ());
+                    return;
+                }
+                case "20": {
+                    Double y = parseDouble(value, conversionFactor);
+                    if (y != null) currentInsert.setPosition(currentInsert.getX(), y, currentInsert.getZ());
+                    return;
+                }
+                case "30": {
+                    Double z = parseDouble(value, conversionFactor);
+                    if (z != null) currentInsert.setPosition(currentInsert.getX(), currentInsert.getY(), z);
+                    return;
+                }
+                case "41": {
+                    Double sx = parseDouble(value, 1.0);
+                    if (sx != null) currentInsert.setScaleX(sx);
+                    return;
+                }
+                case "42": {
+                    Double sy = parseDouble(value, 1.0);
+                    if (sy != null) currentInsert.setScaleY(sy);
+                    return;
+                }
+                case "43": {
+                    Double sz = parseDouble(value, 1.0);
+                    if (sz != null) currentInsert.setScaleZ(sz);
+                    return;
+                }
+                case "50": {
+                    Double rot = parseDouble(value, 1.0);
+                    if (rot != null) currentInsert.setRotation(rot);
+                }
+            }
+        }
+
+        private void appendText(DxfText target, String piece, boolean multiLine) {
+            if (piece == null) return;
+
+            String existing = target.getText();
+            if (existing == null || existing.isEmpty()) {
+                target.setText(piece);
+            } else if (multiLine) {
+                target.setText(existing + "\n" + piece);
+            } else {
+                target.setText(existing + piece);
+            }
+        }
+
+        private String normalizeMText(String s) {
+            if (s == null) return null;
+            return s
+                    .replace("\\P", "\n")
+                    .replace("\\~", " ")
+                    .replace("\\\\", "\\");
+        }
+    }
+
+    private static Double parseDouble(String s, double factor) {
         try {
             return Double.parseDouble(s.trim()) * factor;
         } catch (Exception e) {
-            return 0.0;
+            return null;
+        }
+    }
+
+    private static Integer parseInt(String s) {
+        try {
+            return Integer.parseInt(s.trim());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static boolean samePoint(Point3D a, Point3D b) {
+        if (a == null || b == null) return false;
+        return Double.compare(a.x, b.x) == 0
+                && Double.compare(a.y, b.y) == 0
+                && Double.compare(a.z, b.z) == 0;
+    }
+
+    private static void closeIfNeeded(java.util.List<Point3D> vertices) {
+        if (vertices == null || vertices.size() < 2) return;
+
+        Point3D first = vertices.get(0);
+        Point3D last = vertices.get(vertices.size() - 1);
+
+        if (!samePoint(first, last)) {
+            Point3D copy = new Point3D(first.x, first.y, first.z);
+            copy.setBulge(first.getBulge());
+            vertices.add(copy);
         }
     }
 
@@ -906,8 +1228,9 @@ public class DXFParser_20 {
         if (block != null) block.addPoint(p);
         else data.addPoint(p);
     }
-    private static void addDrillPointToContainer(DXFData data,DxfBlock block,Point3D_Drill point3DDrill){
-        if(block!=null) block.addPointDrill(point3DDrill);
+
+    private static void addDrillPointToContainer(DXFData data, DxfBlock block, Point3D_Drill point3DDrill) {
+        if (block != null) block.addPointDrill(point3DDrill);
         else data.addDrill_points(point3DDrill);
     }
 
@@ -932,7 +1255,7 @@ public class DXFParser_20 {
     }
 
     // =====================================================
-    //   EXPLODE BLOCKS (tua implementazione, invariata)
+    //   EXPLODE BLOCKS
     // =====================================================
     private static void explodeBlocks(DXFData data) {
 
@@ -959,58 +1282,58 @@ public class DXFParser_20 {
             for (Line ln : block.getLines()) {
                 Line c = ln.clone();
                 transformLine(c, ins, bx, by, bz, cosA, sinA);
-                c.setLayer(ins.getLayer());
+                if (ins.getLayer() != null) c.setLayer(ins.getLayer());
                 data.addLine(c);
             }
 
             for (Polyline pl : block.getPolylines()) {
                 Polyline c = clonePolyline(pl);
                 transformPolyline(c, ins, bx, by, bz, cosA, sinA);
-                c.setLayer(ins.getLayer());
-                c.markGlDirty();   // <-- QUI
+                if (ins.getLayer() != null) c.setLayer(ins.getLayer());
+                c.markGlDirty();
                 data.addPolyline(c);
             }
 
             for (Polyline_2D pl : block.getPolylines2D()) {
                 Polyline_2D c = clonePolyline2D(pl);
                 transformPolyline2D(c, ins, bx, by, bz, cosA, sinA);
-                c.setLayer(ins.getLayer());
-                c.markGlDirty();   // <-- QUI
+                if (ins.getLayer() != null) c.setLayer(ins.getLayer());
+                c.markGlDirty();
                 data.addPolyline2D(c);
             }
 
             for (Circle cc : block.getCircles()) {
                 Circle c = cc.clone();
                 transformCircle(c, ins, bx, by, bz, cosA, sinA);
-                c.setLayer(ins.getLayer());
+                if (ins.getLayer() != null) c.setLayer(ins.getLayer());
                 data.addCircle(c);
             }
 
             for (Arc ac : block.getArcs()) {
                 Arc c = ac.clone();
                 transformArc(c, ins, bx, by, bz, cosA, sinA);
-                c.setLayer(ins.getLayer());
+                if (ins.getLayer() != null) c.setLayer(ins.getLayer());
                 data.addArc(c);
             }
 
             for (Point3D p : block.getPoints()) {
                 Point3D c = new Point3D(p.x, p.y, p.z);
                 transformPoint(c, ins, bx, by, bz, cosA, sinA);
-                c.setLayer(ins.getLayer());
+                if (ins.getLayer() != null) c.setLayer(ins.getLayer());
                 data.addPoint(c);
             }
 
             for (DxfText t : block.getTexts()) {
                 DxfText c = t.clone();
                 transformText(c, ins, bx, by, bz, cosA, sinA);
-                c.setLayer(ins.getLayer());
+                if (ins.getLayer() != null) c.setLayer(ins.getLayer());
                 data.addText(c);
             }
 
             for (Face3D f : block.getFaces()) {
                 Face3D c = f.clone();
                 transformFace3D(c, ins, bx, by, bz, cosA, sinA);
-                c.setLayer(ins.getLayer());
+                if (ins.getLayer() != null) c.setLayer(ins.getLayer());
                 data.addFace(c);
             }
         }
@@ -1102,9 +1425,11 @@ public class DXFParser_20 {
         c.setLayer(pl.getLayer());
         c.setLineColor(pl.getLineColor());
         for (Point3D p : pl.getVertices()) {
-            c.getVertices().add(new Point3D(p.x, p.y, p.z));
+            Point3D pp = new Point3D(p.x, p.y, p.z);
+            pp.setBulge(p.getBulge());
+            c.getVertices().add(pp);
         }
-        c.markGlDirty();   // <-- QUI
+        c.markGlDirty();
         return c;
     }
 
@@ -1117,7 +1442,7 @@ public class DXFParser_20 {
             pp.setBulge(p.getBulge());
             c.getVertices().add(pp);
         }
-        c.markGlDirty();   // <-- QUI
+        c.markGlDirty();
         return c;
     }
 
@@ -1127,6 +1452,7 @@ public class DXFParser_20 {
         transformPoint(l.start, ins, bx, by, bz, cosA, sinA);
         transformPoint(l.end, ins, bx, by, bz, cosA, sinA);
     }
+
     private static Double computeTiltFromEndpoints(Point3D_Drill p) {
         if (p.getHeadX() == null || p.getHeadY() == null || p.getHeadZ() == null ||
                 p.getEndX() == null || p.getEndY() == null || p.getEndZ() == null) {
