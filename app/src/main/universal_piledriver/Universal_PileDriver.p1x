@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Project ID="{8275DC4B-60B8-4B57-9EBD-A12FD76F0ED0}" FileName="Universal_PileDriver.p1x">
+  <FileFormat>008D</FileFormat>
+  <GUIVersion>2025.1.2.6475</GUIVersion>
+  <ProgrammableHW PartNumber="11144803" Description="MC024-130/132-0_lg ver:70123517v170 (SYS:70123519v170)" Comment="MC024_130_lg" HwdName="70123517" HwdVersion="1.70.0">
+    <SystemFile FileName="70123519v170.sys" Parameters="W1:DISABLE">
+      <APIDocument FileName="70123519.pdf"/>
+    </SystemFile>
+    <Application Name="Universal_PileDriver">
+      <PID Description="Universal_PileDriver"/>
+      <MainModule ModuleName="MAINTASK" FileName="MC024_130_132lgT.scs"/>
+      <Parameters FileName="ProjectParameters.json"/>
+    </Application>
+    <Output>
+      <Hexfile FileName="Universal_PileDriver.lhx"/>
+      <OutputTargetPartNumber></OutputTargetPartNumber>
+      <OutputTargetSerialNumber></OutputTargetSerialNumber>
+    </Output>
+    <TargetPartNumber></TargetPartNumber>
+  </ProgrammableHW>
+</Project>

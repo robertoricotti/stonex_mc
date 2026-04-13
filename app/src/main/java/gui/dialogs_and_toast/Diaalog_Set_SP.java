@@ -2,7 +2,6 @@ package gui.dialogs_and_toast;
 
 import static gui.MyApp.geoidAll;
 import static packexcalib.gnss.CRS_Strings._NONE;
-import static services.CanSender.GNSS_MSG;
 
 import android.app.Activity;
 import android.app.Dialog;

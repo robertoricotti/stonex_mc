@@ -12,8 +12,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,6 +25,7 @@ import dxf.DxfText;
 import dxf.Face3D;
 import dxf.Layer;
 import dxf.Point3D;
+import dxf.Polyline;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
 
@@ -125,7 +128,14 @@ public class LandXMLParser {
                 }
             }
 
+            // ------------------------------------------------------------
+            // Polyline / PlanFeature / CoordGeom / Line
+            // ------------------------------------------------------------
+            colorIndex = parsePlanFeaturesAsPolylines(doc, landXMLData, filePath, xyz, conversionFactor, colorIndex);
 
+            // ------------------------------------------------------------
+            // CGPoints / CgPoints
+            // ------------------------------------------------------------
             parseCGPoints(doc, landXMLData, xyz, conversionFactor);
 
         } catch (Exception e) {
@@ -134,6 +144,173 @@ public class LandXMLParser {
 
         isFinished(filePath);
         return landXMLData;
+    }
+
+    private static int parsePlanFeaturesAsPolylines(Document doc,
+                                                    LandXMLData landXMLData,
+                                                    String filePath,
+                                                    int xyz,
+                                                    double conversionFactor,
+                                                    int colorIndex) {
+        NodeList planFeatureNodes = doc.getElementsByTagName("PlanFeature");
+        if (planFeatureNodes == null || planFeatureNodes.getLength() == 0) {
+            return colorIndex;
+        }
+
+        for (int i = 0; i < planFeatureNodes.getLength(); i++) {
+            Node node = planFeatureNodes.item(i);
+            if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+
+            Element planFeature = (Element) node;
+
+            Element coordGeom = firstDirectChildElement(planFeature, "CoordGeom");
+            if (coordGeom == null) continue;
+
+            NodeList lineNodes = coordGeom.getElementsByTagName("Line");
+            if (lineNodes == null || lineNodes.getLength() == 0) continue;
+
+            String baseLayerName = extractPlanFeatureLayerName(planFeature);
+            if (baseLayerName == null || baseLayerName.isEmpty()) {
+                baseLayerName = normalizeLayerName(planFeature.getAttribute("name"));
+            }
+            if (baseLayerName == null || baseLayerName.isEmpty()) {
+                baseLayerName = "Polyline_" + (i + 1);
+            }
+
+            Layer layer = findLayerByName(landXMLData, baseLayerName);
+            if (layer == null) {
+                String uniqueLayerName = baseLayerName;
+                int counter = 2;
+                while (landXMLData.layerExists(uniqueLayerName)) {
+                    uniqueLayerName = baseLayerName + " (" + counter + ")";
+                    counter++;
+                }
+
+                layer = new Layer(filePath, uniqueLayerName, colorIndex++, true);
+                landXMLData.addLayer(layer);
+            }
+
+            List<Point3D> vertices = new ArrayList<>();
+
+            for (int j = 0; j < lineNodes.getLength(); j++) {
+                Node lineNode = lineNodes.item(j);
+                if (lineNode.getNodeType() != Node.ELEMENT_NODE) continue;
+
+                Element lineElement = (Element) lineNode;
+
+                Double[] start = firstCoordFromChildren(lineElement, xyz, conversionFactor, "Start");
+                Double[] end = firstCoordFromChildren(lineElement, xyz, conversionFactor, "End");
+
+                if (start == null || end == null) {
+                    Log.w("LandXML-POLYLINE",
+                            "Segmento ignorato in PlanFeature index=" + i +
+                                    " perché Start/End non validi");
+                    continue;
+                }
+
+                Point3D pStart = new Point3D("PF_" + i + "_" + j + "_S", start[0], start[1], start[2]);
+                pStart.setLayer(layer);
+                pStart.setFilename(filePath);
+
+                Point3D pEnd = new Point3D("PF_" + i + "_" + j + "_E", end[0], end[1], end[2]);
+                pEnd.setLayer(layer);
+                pEnd.setFilename(filePath);
+
+                if (vertices.isEmpty()) {
+                    vertices.add(pStart);
+                } else if (!samePoint(vertices.get(vertices.size() - 1), pStart, 1e-6)) {
+                    vertices.add(pStart);
+                }
+
+                if (vertices.isEmpty() || !samePoint(vertices.get(vertices.size() - 1), pEnd, 1e-6)) {
+                    vertices.add(pEnd);
+                }
+            }
+
+            if (vertices.size() >= 2) {
+                Polyline polyline = new Polyline(vertices, filePath, layer);
+                polyline.setLayer(layer);
+                polyline.setFilename(filePath);
+                polyline.setLineColor(layer.getColorState());
+                polyline.markGlDirty();
+
+                landXMLData.addPolyline(polyline);
+            }
+        }
+
+        return colorIndex;
+    }
+
+    private static Layer findLayerByName(LandXMLData landXMLData, String name) {
+        if (name == null) return null;
+        String normalized = normalizeLayerName(name);
+        if (normalized.isEmpty()) return null;
+
+        for (Layer l : landXMLData.getLayers()) {
+            if (l != null && l.getLayerName() != null &&
+                    l.getLayerName().equalsIgnoreCase(normalized)) {
+                return l;
+            }
+        }
+        return null;
+    }
+
+    private static String extractPlanFeatureLayerName(Element planFeature) {
+        NodeList children = planFeature.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() != Node.ELEMENT_NODE) continue;
+
+            Element childElement = (Element) child;
+            if (!matchesTag(childElement, "Feature")) continue;
+
+            String code = normalizeLayerName(childElement.getAttribute("code"));
+            if (!"trimbleCADProperties".equalsIgnoreCase(code)) continue;
+
+            NodeList properties = childElement.getElementsByTagName("Property");
+            for (int j = 0; j < properties.getLength(); j++) {
+                Node p = properties.item(j);
+                if (p.getNodeType() != Node.ELEMENT_NODE) continue;
+
+                Element prop = (Element) p;
+                String label = normalizeLayerName(prop.getAttribute("label"));
+                if ("layer".equalsIgnoreCase(label)) {
+                    return normalizeLayerName(prop.getAttribute("value"));
+                }
+            }
+        }
+        return null;
+    }
+
+    private static Element firstDirectChildElement(Element parent, String tagName) {
+        NodeList children = parent.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() != Node.ELEMENT_NODE) continue;
+
+            Element el = (Element) child;
+            if (matchesTag(el, tagName)) {
+                return el;
+            }
+        }
+        return null;
+    }
+
+    private static boolean matchesTag(Element e, String expected) {
+        if (e == null || expected == null) return false;
+
+        String nodeName = e.getNodeName();
+        String localName = e.getLocalName();
+
+        return expected.equals(nodeName) || expected.equals(localName);
+    }
+
+    private static boolean samePoint(Point3D a, Point3D b, double eps) {
+        if (a == null || b == null) return false;
+
+        return Math.abs(a.getX() - b.getX()) <= eps
+                && Math.abs(a.getY() - b.getY()) <= eps
+                && Math.abs(a.getZ() - b.getZ()) <= eps;
     }
 
     private static void isFinished(String filePath) {
@@ -155,8 +332,8 @@ public class LandXMLParser {
     }
 
     // ------------------------------------------------------------
-// CGPoints / CgPoints
-// ------------------------------------------------------------
+    // CGPoints / CgPoints
+    // ------------------------------------------------------------
     private static void parseCGPoints(Document doc, LandXMLData landXMLData, int xyz, double conversionFactor) {
         // LandXML standard: <CgPoints><CgPoint name="...">y x z</CgPoint></CgPoints>
         // Alcuni software usano tag/attributi custom: cerchiamo in modo robusto.
@@ -307,9 +484,18 @@ public class LandXMLParser {
     private static Double[] coordFromAttributes(Element e, int xyz, double conv,
                                                 String[] xNames, String[] yNames, String[] zNames) {
         Double x = null, y = null, z = null;
-        for (String n : xNames) { x = parseDoubleSafe(e.getAttribute(n)); if (x != null) break; }
-        for (String n : yNames) { y = parseDoubleSafe(e.getAttribute(n)); if (y != null) break; }
-        for (String n : zNames) { z = parseDoubleSafe(e.getAttribute(n)); if (z != null) break; }
+        for (String n : xNames) {
+            x = parseDoubleSafe(e.getAttribute(n));
+            if (x != null) break;
+        }
+        for (String n : yNames) {
+            y = parseDoubleSafe(e.getAttribute(n));
+            if (y != null) break;
+        }
+        for (String n : zNames) {
+            z = parseDoubleSafe(e.getAttribute(n));
+            if (z != null) break;
+        }
         if (x == null || y == null || z == null) return null;
 
         // Adegua swap X/Y come nel resto del parser
@@ -358,5 +544,4 @@ public class LandXMLParser {
         double y2 = xyz == 1 ? a2 : b2;
         return new Double[]{x1 * conv, y1 * conv, c1 * conv, x2 * conv, y2 * conv, c2 * conv};
     }
-
 }

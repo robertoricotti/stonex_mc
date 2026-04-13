@@ -4,15 +4,16 @@ import static packexcalib.exca.DataSaved.Unit_Of_Measure;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,32 +23,33 @@ import com.example.stx_dig.R;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomToast;
-import gui.tech_menu.Nuova_Machine_Settings;
 import packexcalib.exca.DataSaved;
-import services.UpdateValuesService;
+import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import utils.FullscreenActivity;
 import utils.MyData;
+import utils.MyDeviceManager;
 import utils.Utils;
 
 public class Dialog_DrillSet {
     Activity activity;
     public Dialog dialog;
-    ImageView close,toLeft,toWard,toRight;
-    int tempScreen,finalScreen;
-    TextView angleTit,distTit;
-    EditText tv1,tv2,tv3,tv4,tv5;
+    ImageView close, toLeft, toWard, toRight;
+    int tempScreen, finalScreen;
+    TextView angleTit, distTit;
+    EditText tv1, tv2, tv3, tv4, tv5;
+    CheckBox ckRevX, ckRevY;
     CustomNumberDialog customNumberDialog;
     CustomNumberDialogFtIn customNumberDialogFtIn;
+    int mchint;
 
 
-
-
-    public Dialog_DrillSet(Activity activity){
+    public Dialog_DrillSet(Activity activity) {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
     }
+
     public void show() {
-        finalScreen=-2;
+        finalScreen = -2;
         dialog.create();
         dialog.setContentView(R.layout.dialog_drillset);
         dialog.setCancelable(true);
@@ -67,7 +69,7 @@ public class Dialog_DrillSet {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = (int) (displayMetrics.widthPixels * 1);
-        int height = (int) (displayMetrics.heightPixels *1);
+        int height = (int) (displayMetrics.heightPixels * 1);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
         findView();
@@ -76,51 +78,73 @@ public class Dialog_DrillSet {
 
     }
 
-    private void findView(){
-        customNumberDialog=new CustomNumberDialog(activity,-1);
-        customNumberDialogFtIn=new CustomNumberDialogFtIn(activity,-1);
-        close=dialog.findViewById(R.id.chiudi);
-        angleTit=dialog.findViewById(R.id.angleTit);
-        distTit=dialog.findViewById(R.id.distTit);
-        distTit.setText("DISTANCES  " +Utils.getMetriSimbol());
-        tv1=dialog.findViewById(R.id.tv1);
-        tv2=dialog.findViewById(R.id.tv2);
-        tv3=dialog.findViewById(R.id.tv3);
-        tv4=dialog.findViewById(R.id.tv4);
-        tv5=dialog.findViewById(R.id.tv5);
-
+    private void findView() {
+        mchint = MyData.get_Int("MachineSelected");
+        customNumberDialog = new CustomNumberDialog(activity, -1);
+        customNumberDialogFtIn = new CustomNumberDialogFtIn(activity, -1);
+        close = dialog.findViewById(R.id.chiudi);
+        angleTit = dialog.findViewById(R.id.angleTit);
+        distTit = dialog.findViewById(R.id.distTit);
+        distTit.setText("DISTANCES  " + Utils.getMetriSimbol());
+        tv1 = dialog.findViewById(R.id.tv1);
+        tv2 = dialog.findViewById(R.id.tv2);
+        tv3 = dialog.findViewById(R.id.tv3);
+        tv4 = dialog.findViewById(R.id.tv4);
+        tv5 = dialog.findViewById(R.id.tv5);
+        ckRevX = dialog.findViewById(R.id.ckRevX);
+        ckRevY = dialog.findViewById(R.id.ckRevY);
         tv1.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_XY)));
         tv2.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_Axis)));
         tv3.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_Z)));
         tv4.setText((String.valueOf(DataSaved.Drill_tolleranza_Angolo)));
         tv5.setText((String.valueOf(DataSaved.Drill_tolleranza_HDT)));
-        toLeft=dialog.findViewById(R.id.screetoLeft);
-        toWard=dialog.findViewById(R.id.screetoTop);
-        toRight=dialog.findViewById(R.id.screetoRight);
+        toLeft = dialog.findViewById(R.id.screetoLeft);
+        toWard = dialog.findViewById(R.id.screetoTop);
+        toRight = dialog.findViewById(R.id.screetoRight);
 
-        tempScreen=DataSaved.Drill_Screen;
+        tempScreen = DataSaved.Drill_Screen;
         updateImage(tempScreen);
-
+        ckRevX.setChecked(DataSaved.REVERSE_DRILL_X == -1);
+        ckRevY.setChecked(DataSaved.REVERSE_DRILL_Y == -1);
 
 
     }
-    private void onClick(){
+
+    private void onClick() {
+        ckRevX.setOnClickListener(view -> {
+            if (DataSaved.REVERSE_DRILL_X == 1) {
+                DataSaved.REVERSE_DRILL_X = -1;
+            } else if (DataSaved.REVERSE_DRILL_X == -1) {
+                DataSaved.REVERSE_DRILL_X = 1;
+            }
+            ckRevX.setChecked(DataSaved.REVERSE_DRILL_X == -1);
+            MyData.push("M" + mchint + "REVERSE_DRILL_X", String.valueOf(DataSaved.REVERSE_DRILL_X));
+        });
+        ckRevY.setOnClickListener(view -> {
+            if (DataSaved.REVERSE_DRILL_Y == 1) {
+                DataSaved.REVERSE_DRILL_Y = -1;
+            } else if (DataSaved.REVERSE_DRILL_Y == -1) {
+                DataSaved.REVERSE_DRILL_Y = 1;
+            }
+            ckRevY.setChecked(DataSaved.REVERSE_DRILL_Y == -1);
+            MyData.push("M" + mchint + "REVERSE_DRILL_Y", String.valueOf(DataSaved.REVERSE_DRILL_Y));
+        });
         toLeft.setOnClickListener(view -> {
-            tempScreen=-1;
-            DataSaved.Drill_Screen=-1;
-            finalScreen=tempScreen;
+            tempScreen = -1;
+            DataSaved.Drill_Screen = -1;
+            finalScreen = tempScreen;
             updateImage(tempScreen);
         });
         toWard.setOnClickListener(view -> {
-            tempScreen=0;
-            DataSaved.Drill_Screen=0;
-            finalScreen=tempScreen;
+            tempScreen = 0;
+            DataSaved.Drill_Screen = 0;
+            finalScreen = tempScreen;
             updateImage(tempScreen);
         });
         toRight.setOnClickListener(view -> {
-            tempScreen=1;
-            DataSaved.Drill_Screen=1;
-            finalScreen=tempScreen;
+            tempScreen = 1;
+            DataSaved.Drill_Screen = 1;
+            finalScreen = tempScreen;
             updateImage(tempScreen);
         });
 
@@ -176,7 +200,7 @@ public class Dialog_DrillSet {
 
     }
 
-    private void save(){
+    private void save() {
         try {
 
             DataSaved.Drill_tolleranza_XY = Double.parseDouble(Utils.writeMetri(tv1.getText().toString()));
@@ -189,18 +213,20 @@ public class Dialog_DrillSet {
             MyData.push("Drill_tolleranza_Z", String.valueOf(DataSaved.Drill_tolleranza_Z));
             MyData.push("Drill_tolleranza_Angolo", String.valueOf(DataSaved.Drill_tolleranza_Angolo));
             MyData.push("Drill_tolleranza_HDT", String.valueOf(DataSaved.Drill_tolleranza_HDT));
-            if(tempScreen==finalScreen) {
+            sendToEcu();
+            if (tempScreen == finalScreen) {
                 MyData.push("Drill_Screen", String.valueOf(DataSaved.Drill_Screen));
-                new CustomToast(activity,"Restart Working Page").show_alert();
+                new CustomToast(activity, "Restart Working Page").show_alert();
             }
         } catch (Exception e) {
-           new CustomToast(activity,"Error...").show_error();
+            new CustomToast(activity, "Error...").show_error();
         }
 
     }
 
-    private void updateImage(int screen){
-        switch (screen){
+    private void updateImage(int screen) {
+
+        switch (screen) {
             case -1:
                 toLeft.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 toWard.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
@@ -220,6 +246,31 @@ public class Dialog_DrillSet {
                 break;
 
         }
+    }
+
+    private void sendToEcu() {
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        byte[] tollXY_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_XY * 1000));
+        byte[] tollHam_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_Z * 1000));
+        byte[] tollAn_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_Angolo * 1000));
+        byte[] windowT = PLC_DataTypes_LittleEndian.U16_to_bytes(35);
+
+        handler.post(() ->
+                MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 132, tollAn_[0], tollAn_[1], 0, 0, 0, 0, 0})
+        );
+
+        handler.postDelayed(() ->
+                        MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 130, tollHam_[0], tollHam_[1], 0, 0, 0, 0, 0})
+                , 100);
+
+        handler.postDelayed(() ->
+                        MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 129, tollXY_[0], tollXY_[1], 0, 0, 0, 0, 0})
+                , 200);
+
+        handler.postDelayed(() ->
+                        MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 128, windowT[0], windowT[1], 0, 0, 0, 0, 0})
+                , 300);
     }
 
 }

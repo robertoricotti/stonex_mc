@@ -20,6 +20,7 @@ import static utils.MyTypes.KOMATSU_CAN;
 import static utils.MyTypes.NOBAS;
 import static utils.MyTypes.STX_ECU;
 import static utils.MyTypes.TSM_ACC;
+import static utils.MyTypes.UNIVERSAL_ECU;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.Service;
@@ -142,11 +143,6 @@ public class CanService extends Service {
             }
 
             if (channel == 1) {
-
-
-
-
-
 
                 if (DataSaved.isCanOpen == TSM_ACC ||  DataSaved.isCanOpen == FMI_SENS) {
                     if (id == 0x581) {
@@ -484,13 +480,16 @@ public class CanService extends Service {
                         break;
 
                     case DRILL:
-                        Sensors_Decoder_Drill.decode(id, msg);
+                        if(DataSaved.isCanOpen!=UNIVERSAL_ECU) {
+                            Sensors_Decoder_Drill.decode(id, msg);
+                        }
                         break;
                 }
 
             }
 
             if (channel == 2) {
+
                 //FMI_Decoder.decode(id,msg);
                 //CAN2
                 if (PGNExtractor.extractPGN(id)==0xF00D && DataSaved.Interface_Type == CASE_BUS) {
@@ -656,6 +655,17 @@ public class CanService extends Service {
                         AutoManToggle.Can_Toggled_Auto_SS = false;
                     }
 
+                }
+
+                //todo messaggi drill ecu
+                if(DataSaved.isWL==DRILL&&DataSaved.isCanOpen==UNIVERSAL_ECU){
+                    Sensors_Decoder_Drill.decode(id, msg);
+                    if (id == 0x81) {
+                        toolOK = true;
+                        toolDisc=false;
+                        handler_tool.removeCallbacks(timeoutRunnable_tool);
+                        handler_tool.postDelayed(timeoutRunnable_tool, 3000);
+                    }
                 }
             }
 

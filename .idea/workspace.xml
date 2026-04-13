@@ -600,7 +600,25 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.4 Test pick polyline OK+AUTO SOLAR" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.4 Test pick polyline OK+AUTO SOLAR">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gen1/release/output-metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_DrillSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_DrillSet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Diaalog_Set_SP.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Diaalog_Set_SP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Drill.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyTypes.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyTypes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_drill.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_drillset.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_drillset.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -855,70 +873,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00158" summary="4.1.0 rototilt da testare 95%">
-      <option name="closed" value="true" />
-      <created>1773441213975</created>
-      <option name="number" value="00158" />
-      <option name="presentableId" value="LOCAL-00158" />
-      <option name="project" value="LOCAL" />
-      <updated>1773441213975</updated>
-    </task>
-    <task id="LOCAL-00159" summary="4.1.0 rototilt da testare 98%">
-      <option name="closed" value="true" />
-      <created>1773511127281</created>
-      <option name="number" value="00159" />
-      <option name="presentableId" value="LOCAL-00159" />
-      <option name="project" value="LOCAL" />
-      <updated>1773511127281</updated>
-    </task>
-    <task id="LOCAL-00160" summary="4.1.0 rototilt da testare 98%">
-      <option name="closed" value="true" />
-      <created>1773570182742</created>
-      <option name="number" value="00160" />
-      <option name="presentableId" value="LOCAL-00160" />
-      <option name="project" value="LOCAL" />
-      <updated>1773570182743</updated>
-    </task>
-    <task id="LOCAL-00161" summary="4.1.0 rototilt da testare 98% BEFORE OPENGLES2.0">
-      <option name="closed" value="true" />
-      <created>1773610644140</created>
-      <option name="number" value="00161" />
-      <option name="presentableId" value="LOCAL-00161" />
-      <option name="project" value="LOCAL" />
-      <updated>1773610644140</updated>
-    </task>
-    <task id="LOCAL-00162" summary="4.1.0 migrazione opengl2.0 riuscita">
-      <option name="closed" value="true" />
-      <created>1773618288828</created>
-      <option name="number" value="00162" />
-      <option name="presentableId" value="LOCAL-00162" />
-      <option name="project" value="LOCAL" />
-      <updated>1773618288829</updated>
-    </task>
-    <task id="LOCAL-00163" summary="4.1.0 migrazione opengl2.0 riuscita">
-      <option name="closed" value="true" />
-      <created>1773664108326</created>
-      <option name="number" value="00163" />
-      <option name="presentableId" value="LOCAL-00163" />
-      <option name="project" value="LOCAL" />
-      <updated>1773664108327</updated>
-    </task>
-    <task id="LOCAL-00164" summary="4.1.0 migrazione opengl2.0 riuscita">
-      <option name="closed" value="true" />
-      <created>1773667462355</created>
-      <option name="number" value="00164" />
-      <option name="presentableId" value="LOCAL-00164" />
-      <option name="project" value="LOCAL" />
-      <updated>1773667462355</updated>
-    </task>
-    <task id="LOCAL-00165" summary="4.1.0 prova 2D TODO">
-      <option name="closed" value="true" />
-      <created>1773706807089</created>
-      <option name="number" value="00165" />
-      <option name="presentableId" value="LOCAL-00165" />
-      <option name="project" value="LOCAL" />
-      <updated>1773706807089</updated>
     </task>
     <task id="LOCAL-00166" summary="4.1.0 prova 2D TODO">
       <option name="closed" value="true" />
@@ -1248,7 +1202,71 @@
       <option name="project" value="LOCAL" />
       <updated>1775905996821</updated>
     </task>
-    <option name="localTasksCounter" value="207" />
+    <task id="LOCAL-00207" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
+      <option name="closed" value="true" />
+      <created>1775906561968</created>
+      <option name="number" value="00207" />
+      <option name="presentableId" value="LOCAL-00207" />
+      <option name="project" value="LOCAL" />
+      <updated>1775906561969</updated>
+    </task>
+    <task id="LOCAL-00208" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
+      <option name="closed" value="true" />
+      <created>1775906575090</created>
+      <option name="number" value="00208" />
+      <option name="presentableId" value="LOCAL-00208" />
+      <option name="project" value="LOCAL" />
+      <updated>1775906575090</updated>
+    </task>
+    <task id="LOCAL-00209" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
+      <option name="closed" value="true" />
+      <created>1775906576331</created>
+      <option name="number" value="00209" />
+      <option name="presentableId" value="LOCAL-00209" />
+      <option name="project" value="LOCAL" />
+      <updated>1775906576331</updated>
+    </task>
+    <task id="LOCAL-00210" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
+      <option name="closed" value="true" />
+      <created>1775906604118</created>
+      <option name="number" value="00210" />
+      <option name="presentableId" value="LOCAL-00210" />
+      <option name="project" value="LOCAL" />
+      <updated>1775906604118</updated>
+    </task>
+    <task id="LOCAL-00211" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
+      <option name="closed" value="true" />
+      <created>1775906606424</created>
+      <option name="number" value="00211" />
+      <option name="presentableId" value="LOCAL-00211" />
+      <option name="project" value="LOCAL" />
+      <updated>1775906606424</updated>
+    </task>
+    <task id="LOCAL-00212" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
+      <option name="closed" value="true" />
+      <created>1775906607360</created>
+      <option name="number" value="00212" />
+      <option name="presentableId" value="LOCAL-00212" />
+      <option name="project" value="LOCAL" />
+      <updated>1775906607360</updated>
+    </task>
+    <task id="LOCAL-00213" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
+      <option name="closed" value="true" />
+      <created>1775906615765</created>
+      <option name="number" value="00213" />
+      <option name="presentableId" value="LOCAL-00213" />
+      <option name="project" value="LOCAL" />
+      <updated>1775906615765</updated>
+    </task>
+    <task id="LOCAL-00214" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
+      <option name="closed" value="true" />
+      <created>1775906662303</created>
+      <option name="number" value="00214" />
+      <option name="presentableId" value="LOCAL-00214" />
+      <option name="project" value="LOCAL" />
+      <updated>1775906662303</updated>
+    </task>
+    <option name="localTasksCounter" value="215" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1296,7 +1314,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1775859706783" />
+            <CheckInfo lastCheckTimestamp="1776058000048" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1306,7 +1324,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1775859706785" />
+            <CheckInfo lastCheckTimestamp="1776058000051" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
@@ -1316,7 +1334,7 @@
         </entry>
         <entry key="com.example.stx_mc.other">
           <value>
-            <CheckInfo lastCheckTimestamp="1775859706786" />
+            <CheckInfo lastCheckTimestamp="1776058000049" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other.test">

@@ -25,6 +25,7 @@ import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.ROCKDRILL_MODE;
 import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.TSM_ACC;
+import static utils.MyTypes.UNIVERSAL_ECU;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.app.AlertDialog;
@@ -60,7 +61,7 @@ import utils.MyDeviceManager;
 public class Nuova_Machine_Settings extends BaseClass {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
-    CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2, ckJ, ckRock, ckJet, ckSolar;
+    CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2, ckJ, ckRock, ckJet, ckSolar,ckEcu;
     CheckBox ckBody, ckBoom, ckAtLeft, ckAtFwd, ckAtRight,ckAtBoomExca;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
@@ -141,6 +142,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         ckDO = findViewById(R.id.ck2);
         ck22 = findViewById(R.id.ck22);
         ckJ = findViewById(R.id.ckJ);
+        ckEcu = findViewById(R.id.ckEcu);
         ckUHF = findViewById(R.id.ck3);
         ckUpper = findViewById(R.id.ck4);
         ck_stxGen2 = findViewById(R.id.ckVecchia);
@@ -290,6 +292,7 @@ public class Nuova_Machine_Settings extends BaseClass {
             ck_stxGen1.setChecked(true);
             ck_stxGen2.setChecked(false);
             ckJ.setChecked(false);
+            ckEcu.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "3");
             isCanOpen = TSM_ACC;
 
@@ -299,6 +302,7 @@ public class Nuova_Machine_Settings extends BaseClass {
             ck_stxGen2.setChecked(true);
             ck_stxGen1.setChecked(false);
             ckJ.setChecked(false);
+            ckEcu.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "1");
             isCanOpen = FMI_SENS;
 
@@ -308,6 +312,7 @@ public class Nuova_Machine_Settings extends BaseClass {
             ck_stxGen1.setChecked(false);
             ck_stxGen2.setChecked(false);
             ckJ.setChecked(false);
+            ckEcu.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "5");
             isCanOpen = DEMO_BAG;
         });
@@ -316,8 +321,19 @@ public class Nuova_Machine_Settings extends BaseClass {
             ck_stxGen1.setChecked(false);
             ck_stxGen2.setChecked(false);
             ckJ.setChecked(true);
+            ckEcu.setChecked(false);
             MyData.push("M" + machineSel + "_useCanOpen", "10");
             isCanOpen = JOYSTICKS;
+
+        });
+        ckJ.setOnClickListener(view -> {
+            ckDEMO.setChecked(false);
+            ck_stxGen1.setChecked(false);
+            ck_stxGen2.setChecked(false);
+            ckJ.setChecked(false);
+            ckEcu.setChecked(true);
+            MyData.push("M" + machineSel + "_useCanOpen", "255");
+            isCanOpen = UNIVERSAL_ECU;
 
         });
 
@@ -1048,6 +1064,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         ck_stxGen2.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 1);//G2
         ckDEMO.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 5);//DEMO Roller Bag
         ckJ.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 10);
+        ckEcu.setChecked(MyData.get_Int("M" + machineSel + "_useCanOpen") == 255);
         ckUpper.setChecked(MyData.get_Int("UpperBar_Visible") == 1);
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);
         ckMach.setChecked(MyData.get_Int("drwaMachieSchema") == 1);

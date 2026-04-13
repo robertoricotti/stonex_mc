@@ -400,6 +400,17 @@
                     android:textStyle="bold|italic"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ck6" />
+                <CheckBox
+                    android:id="@+id/ckEcu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/_____cancel_text"
+                    android:text="STONEX ECU"
+                    android:textColor="@color/_____cancel_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ckJ" />
 
                 <View
                     android:id="@+id/brake"

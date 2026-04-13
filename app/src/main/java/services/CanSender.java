@@ -1317,7 +1317,7 @@ public class CanSender extends Service {
                 valoreSX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultL);
                 valoreDX0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR);
                 valoreSS0 = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS);
-                OUTPUT_HYDRO = "L:" + resultL + "\n" + "R:" + resultR+"\n"+"SS:"+valoreSS0;
+                OUTPUT_HYDRO = "L:" + resultL + "\n" + "R:" + resultR+"\n"+"SS:"+resultSS;
                 byte mD0 = 0;
                 if (DataSaved.gpsOk) {
                     mD0 = 1;
@@ -1409,7 +1409,7 @@ public class CanSender extends Service {
                 valoreSX = PLC_DataTypes_LittleEndian.U16_to_bytes(resultL2);
                 valoreDX = PLC_DataTypes_LittleEndian.U16_to_bytes(resultR2);
                 valoreSS = PLC_DataTypes_LittleEndian.U16_to_bytes(resultSS2);
-                OUTPUT_HYDRO = "L:" + resultL2 + "\n" + "R:" + resultR2+"\n"+"SS:"+valoreSS;;
+                OUTPUT_HYDRO = "L:" + resultL2 + "\n" + "R:" + resultR2+"\n"+"SS:"+resultSS2;;
                 MyDeviceManager.CanWrite(sending && DataSaved.gpsOk, 1, 0x00EFFF85, 8,
                         new byte[]{
                                 (byte) 0xF2,

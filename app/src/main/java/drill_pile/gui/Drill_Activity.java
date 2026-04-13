@@ -26,7 +26,6 @@ import android.os.Looper;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -55,12 +54,14 @@ import gui.draw_class.MyColorClass;
 import iredes.DateTimeIsoCompat;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.gnss.My_LocationCalc;
 import packexcalib.gnss.NmeaListener;
 import services.CanSender;
 import services.PointService;
 import services.ReadProjectService;
 import utils.MyData;
+import utils.MyDeviceManager;
 import utils.MyMCUtils;
 import utils.Utils;
 
@@ -123,6 +124,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         findView();
         init();
         onClick();
+        sendToEcu();
 
 
     }
@@ -407,11 +409,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             }
             return true;
         });
-        setupAutoRepeat(zoom_P,()->{
+        setupAutoRepeat(zoom_P, () -> {
             DataSaved.scale_Factor3D *= kostant;
             DataSaved.scale_Factor3D = Math.max(0.1f, Math.min(DataSaved.scale_Factor3D, 6.5f));
         });
-        setupAutoRepeat(zoom_M,()->{
+        setupAutoRepeat(zoom_M, () -> {
             DataSaved.scale_Factor3D /= kostant;
             DataSaved.scale_Factor3D = Math.max(0.1f, Math.min(DataSaved.scale_Factor3D, 6.5f));
         });
@@ -1037,7 +1039,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             quotaIndicator.setBackgroundColor(Color.DKGRAY);
             txtdepth.setBackgroundColor(Color.DKGRAY);
             txtdepth.setText("");
-            CanSender.remainingZed=0;
+            CanSender.remainingZed = 0;
             return;
         }
 
@@ -1050,7 +1052,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             quotaIndicator.setBackgroundColor(getColor(R.color._____cancel_text));
             txtdepth.setBackgroundColor(getColor(R.color._____cancel_text));
             txtdepth.setText(""); // ✅
-            CanSender.remainingZed=0;
+            CanSender.remainingZed = 0;
             return;
         }
 
@@ -1061,7 +1063,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (vertical) {
             // ✅ testo: quanto manca al fondo in Z
             double remainingZ = bit[2] - ezObj;  // >0 manca ancora
-            CanSender.remainingZed=remainingZ;
+            CanSender.remainingZed = remainingZ;
             txtdepth.setText(fmtM((remainingZ)));
 
             // Frecce: se remainingZ > tol => devi scendere (down)
@@ -1094,7 +1096,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 txtdepth.setBackgroundColor(getColor(R.color._____cancel_text));
                 quotaIndicator.setBackgroundColor(getColor(R.color._____cancel_text));
                 txtdepth.setText(""); // ✅
-                CanSender.remainingZed=0;
+                CanSender.remainingZed = 0;
                 return;
             }
 
@@ -1109,7 +1111,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             // ✅ testo: remainingAxis (metri lungo asse)
             txtdepth.setText(fmtM((remainingAxisRaw)));
-            CanSender.remainingZed=remainingAxisRaw;
+            CanSender.remainingZed = remainingAxisRaw;
 
             if (remainingAxisRaw > tol) {
                 quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);
@@ -2527,6 +2529,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         return diff; // firmato
     }
     //TODO
+
     /**
      * AGGIUNGERE STATO TO-DO ABORTED REFUSED DONE
      * REFUSED apre dialog per commento
@@ -2568,4 +2571,28 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         });
     }
 
+    private void sendToEcu() {
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        byte[] tollXY_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_XY * 1000));
+        byte[] tollHam_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_Z * 1000));
+        byte[] tollAn_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_Angolo * 1000));
+        byte[] windowT = PLC_DataTypes_LittleEndian.U16_to_bytes(35);
+
+        handler.post(() ->
+                MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 132, tollAn_[0], tollAn_[1], 0, 0, 0, 0, 0})
+        );
+
+        handler.postDelayed(() ->
+                        MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 130, tollHam_[0], tollHam_[1], 0, 0, 0, 0, 0})
+                , 100);
+
+        handler.postDelayed(() ->
+                        MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 129, tollXY_[0], tollXY_[1], 0, 0, 0, 0, 0})
+                , 200);
+
+        handler.postDelayed(() ->
+                        MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 128, windowT[0], windowT[1], 0, 0, 0, 0, 0})
+                , 300);
+    }
 }
