@@ -41,6 +41,7 @@ import dxf.Circle;
 import dxf.DisplayItem;
 import dxf.Face3D;
 import dxf.Layer;
+import dxf.Line;
 import dxf.Point3D;
 import dxf.Polyline;
 import dxf.Polyline_2D;
@@ -523,12 +524,13 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                 continue;
             }
 
+            String layerName = layer.getLayerName();
             StringBuilder content = new StringBuilder();
 
             long faceCount = DataSaved.dxfFaces != null
                     ? DataSaved.dxfFaces.stream()
                     .filter(face -> face.getLayer() != null
-                            && layer.getLayerName().equals(face.getLayer().getLayerName()))
+                            && layerName.equals(face.getLayer().getLayerName()))
                     .count()
                     : 0;
             content.append("3DFACE: ").append(faceCount).append("\n");
@@ -536,7 +538,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             long polylineCount = DataSaved.polylines != null
                     ? DataSaved.polylines.stream()
                     .filter(polyline -> polyline.getLayer() != null
-                            && layer.getLayerName().equals(polyline.getLayer().getLayerName()))
+                            && layerName.equals(polyline.getLayer().getLayerName()))
                     .count()
                     : 0;
             content.append("3D Polyline: ").append(polylineCount).append("\n");
@@ -544,20 +546,48 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             long polyline2DCount = DataSaved.polylines_2D != null
                     ? DataSaved.polylines_2D.stream()
                     .filter(polyline2D -> polyline2D.getLayer() != null
-                            && layer.getLayerName().equals(polyline2D.getLayer().getLayerName()))
+                            && layerName.equals(polyline2D.getLayer().getLayerName()))
                     .count()
                     : 0;
-            content.append("2D Objects: ").append(polyline2DCount).append("\n");
+
+            long lineCount = DataSaved.lines_2D != null
+                    ? DataSaved.lines_2D.stream()
+                    .filter(line -> line.getLayer() != null
+                            && layerName.equals(line.getLayer().getLayerName()))
+                    .count()
+                    : 0;
+
+            long circleCount = DataSaved.circles != null
+                    ? DataSaved.circles.stream()
+                    .filter(circle -> circle.getLayer() != null
+                            && layerName.equals(circle.getLayer().getLayerName()))
+                    .count()
+                    : 0;
+
+            long arcCount = DataSaved.arcs != null
+                    ? DataSaved.arcs.stream()
+                    .filter(arc -> arc.getLayer() != null
+                            && layerName.equals(arc.getLayer().getLayerName()))
+                    .count()
+                    : 0;
+
+            content.append("2D Objects: ")
+                    .append(polyline2DCount + lineCount + circleCount + arcCount)
+                    .append("\n");
+            content.append("  - LWPolyline: ").append(polyline2DCount).append("\n");
+            content.append("  - Line: ").append(lineCount).append("\n");
+            content.append("  - Circle: ").append(circleCount).append("\n");
+            content.append("  - Arc: ").append(arcCount).append("\n");
 
             long pointCount = DataSaved.points != null
                     ? DataSaved.points.stream()
                     .filter(point -> point.getLayer() != null
-                            && layer.getLayerName().equals(point.getLayer().getLayerName()))
+                            && layerName.equals(point.getLayer().getLayerName()))
                     .count()
                     : 0;
             content.append("Points: ").append(pointCount);
 
-            layerInfoMap.put(layer.getLayerName(), content.toString());
+            layerInfoMap.put(layerName, content.toString());
         }
     }
 
@@ -566,6 +596,9 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         List<Polyline> filteredPolylines = new ArrayList<>();
         List<Polyline_2D> filteredPolylines2D = new ArrayList<>();
         List<Face3D> filteredFaces = new ArrayList<>();
+        List<Line> filteredLines = new ArrayList<>();
+        List<Circle> filteredCircles = new ArrayList<>();
+        List<Arc> filteredArcs = new ArrayList<>();
 
         try {
             filteredFaces = DataSaved.dxfFaces.stream()
@@ -595,6 +628,33 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         }
 
         try {
+            filteredLines = DataSaved.lines_2D.stream()
+                    .filter(line -> line.getLayer() != null
+                            && line.getLayer().getLayerName().equals(layerName)
+                            && line.getLayer().isEnable())
+                    .collect(Collectors.toList());
+        } catch (Exception ignored) {
+        }
+
+        try {
+            filteredCircles = DataSaved.circles.stream()
+                    .filter(circle -> circle.getLayer() != null
+                            && circle.getLayer().getLayerName().equals(layerName)
+                            && circle.getLayer().isEnable())
+                    .collect(Collectors.toList());
+        } catch (Exception ignored) {
+        }
+
+        try {
+            filteredArcs = DataSaved.arcs.stream()
+                    .filter(arc -> arc.getLayer() != null
+                            && arc.getLayer().getLayerName().equals(layerName)
+                            && arc.getLayer().isEnable())
+                    .collect(Collectors.toList());
+        } catch (Exception ignored) {
+        }
+
+        try {
             filteredPoints = DataSaved.points.stream()
                     .filter(point -> point.getLayer() != null
                             && point.getLayer().getLayerName().equals(layerName)
@@ -603,10 +663,15 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         } catch (Exception ignored) {
         }
 
+        int twoDObjects = filteredPolylines2D.size()
+                + filteredLines.size()
+                + filteredCircles.size()
+                + filteredArcs.size();
+
         return new String[]{
                 String.valueOf(filteredFaces.size()),
                 String.valueOf(filteredPolylines.size()),
-                String.valueOf(filteredPolylines2D.size()),
+                String.valueOf(twoDObjects),
                 String.valueOf(filteredPoints.size())
         };
     }
@@ -616,6 +681,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         List<Polyline> filteredPolylines = new ArrayList<>();
         List<Polyline_2D> filteredPolylines2D = new ArrayList<>();
         List<Face3D> filteredFaces = new ArrayList<>();
+        List<Line> filteredLines = new ArrayList<>();
         List<Arc> filteredArcs = new ArrayList<>();
         List<Circle> filteredCircles = new ArrayList<>();
 
@@ -656,10 +722,19 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         }
 
         try {
+            filteredLines = DataSaved.lines_2D.stream()
+                    .filter(line -> line.getLayer() != null
+                            && line.getLayer().getLayerName().equals(layerName)
+                            && line.getLayer().isEnable())
+                    .collect(Collectors.toList());
+        } catch (Exception ignored) {
+        }
+
+        try {
             filteredArcs = DataSaved.arcs.stream()
-                    .filter(arcs -> arcs.getLayer() != null
-                            && arcs.getLayer().getLayerName().equals(layerName)
-                            && arcs.getLayer().isEnable())
+                    .filter(arc -> arc.getLayer() != null
+                            && arc.getLayer().getLayerName().equals(layerName)
+                            && arc.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
         }
@@ -676,7 +751,10 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         if (filteredPoints.isEmpty()
                 && filteredPolylines.isEmpty()
                 && filteredPolylines2D.isEmpty()
-                && filteredFaces.isEmpty()) {
+                && filteredFaces.isEmpty()
+                && filteredLines.isEmpty()
+                && filteredCircles.isEmpty()
+                && filteredArcs.isEmpty()) {
             new CustomToast(MyApp.visibleActivity, "No Data").show_alert();
             return;
         }
@@ -686,6 +764,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                 filteredPolylines,
                 filteredPolylines2D,
                 filteredFaces,
+                filteredLines,
                 filteredCircles,
                 filteredArcs,
                 layerName
@@ -697,6 +776,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             List<Polyline> polylines,
             List<Polyline_2D> polylines2D,
             List<Face3D> faces,
+            List<Line> lines,
             List<Circle> circles,
             List<Arc> arcs,
             String layerName) {
@@ -708,10 +788,10 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         String fileExtension = DataSaved.progettoSelected.substring(lastIndex + 1).toLowerCase();
         boolean isXML = fileExtension.equalsIgnoreCase("xml");
 
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
-        double maxY = Double.MIN_VALUE;
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
 
         for (Point3D point : points) {
             minX = Math.min(minX, point.getX());
@@ -738,6 +818,11 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                 minY = Math.min(minY, current.getY());
                 maxX = Math.max(maxX, current.getX());
                 maxY = Math.max(maxY, current.getY());
+
+                minX = Math.min(minX, next.getX());
+                minY = Math.min(minY, next.getY());
+                maxX = Math.max(maxX, next.getX());
+                maxY = Math.max(maxY, next.getY());
 
                 if (current.getBulge() != 0) {
                     double bulge = current.getBulge();
@@ -773,6 +858,13 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             minY = Math.min(minY, Math.min(face.getP1().getY(), Math.min(face.getP2().getY(), face.getP3().getY())));
             maxX = Math.max(maxX, Math.max(face.getP1().getX(), Math.max(face.getP2().getX(), face.getP3().getX())));
             maxY = Math.max(maxY, Math.max(face.getP1().getY(), Math.max(face.getP2().getY(), face.getP3().getY())));
+        }
+
+        for (Line line : lines) {
+            minX = Math.min(minX, Math.min(line.getStart().getX(), line.getEnd().getX()));
+            minY = Math.min(minY, Math.min(line.getStart().getY(), line.getEnd().getY()));
+            maxX = Math.max(maxX, Math.max(line.getStart().getX(), line.getEnd().getX()));
+            maxY = Math.max(maxY, Math.max(line.getStart().getY(), line.getEnd().getY()));
         }
 
         for (Circle circle : circles) {
@@ -819,34 +911,45 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             maxY = Math.max(maxY, midY);
         }
 
-        double marginX = (maxX - minX) * 0.05;
-        double marginY = (maxY - minY) * 0.05;
+        if (!Double.isFinite(minX) || !Double.isFinite(minY) || !Double.isFinite(maxX) || !Double.isFinite(maxY)) {
+            new CustomToast(MyApp.visibleActivity, "No Data").show_alert();
+            return;
+        }
+
+        double marginX = Math.max((maxX - minX) * 0.05, 1e-6);
+        double marginY = Math.max((maxY - minY) * 0.05, 1e-6);
 
         minX -= marginX;
         maxX += marginX;
         minY -= marginY;
         maxY += marginY;
 
-        double scaleX = width / (maxX - minX);
-        double scaleY = height / (maxY - minY);
+        double rangeX = Math.max(maxX - minX, 1e-9);
+        double rangeY = Math.max(maxY - minY, 1e-9);
+
+        double scaleX = width / rangeX;
+        double scaleY = height / rangeY;
         double scale = Math.min(scaleX, scaleY);
 
-        double offsetX = (width - (maxX - minX) * scale) / 2;
-        double offsetY = (height - (maxY - minY) * scale) / 2;
+        double offsetX = (width - rangeX * scale) / 2;
+        double offsetY = (height - rangeY * scale) / 2;
 
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         canvas.drawColor(MyColorClass.colorSfondo);
 
         if (faces != null) {
             paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(2);
+
             for (Face3D face : faces) {
                 if (isXML) {
                     paint.setColor(myCheckColor(AutoCADColor.getColor(String.valueOf(face.getColor()))));
                 } else {
                     paint.setColor(myCheckColor(face.getColor()));
                 }
+
                 Path path = new Path();
                 path.moveTo(
                         (float) ((face.getP1().getX() - minX) * scale + offsetX),
@@ -868,13 +971,16 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         if (polylines != null) {
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(2);
+
             for (Polyline polyline : polylines) {
-                paint.setColor(myCheckColor(polyline.getLayer().getColorState()));
+                paint.setColor(myCheckColor(polyline.getLineColor()));
                 Path path = new Path();
                 boolean first = true;
+
                 for (Point3D vertex : polyline.getVertices()) {
                     float x = (float) ((vertex.getX() - minX) * scale + offsetX);
                     float y = (float) ((maxY - vertex.getY()) * scale + offsetY);
+
                     if (first) {
                         path.moveTo(x, y);
                         first = false;
@@ -891,7 +997,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             paint.setStrokeWidth(2);
 
             for (Polyline_2D polyline2D : polylines2D) {
-                paint.setColor(myCheckColor(polyline2D.getLayer().getColorState()));
+                paint.setColor(myCheckColor(polyline2D.getLineColor()));
 
                 List<Point3D> vertices = polyline2D.getVertices();
                 if (vertices.size() < 2) continue;
@@ -932,8 +1038,25 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             }
         }
 
+        if (lines != null) {
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(2);
+
+            for (Line line : lines) {
+                paint.setColor(myCheckColor(line.getColor()));
+
+                float startX = (float) ((line.getStart().getX() - minX) * scale + offsetX);
+                float startY = (float) ((maxY - line.getStart().getY()) * scale + offsetY);
+                float endX = (float) ((line.getEnd().getX() - minX) * scale + offsetX);
+                float endY = (float) ((maxY - line.getEnd().getY()) * scale + offsetY);
+
+                canvas.drawLine(startX, startY, endX, endY, paint);
+            }
+        }
+
         if (points != null) {
             paint.setStyle(Paint.Style.FILL);
+
             for (Point3D point : points) {
                 paint.setColor(myCheckColor(MyColorClass.colorPoint));
                 float x = (float) ((point.getX() - minX) * scale + offsetX);
@@ -944,8 +1067,10 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         if (circles != null) {
             paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(2);
+
             for (Circle circle : circles) {
-                paint.setColor(myCheckColor(circle.getLayer().getColorState()));
+                paint.setColor(myCheckColor(circle.getColor()));
                 float cx = (float) ((circle.getCenter().getX() - minX) * scale + offsetX);
                 float cy = (float) ((maxY - circle.getCenter().getY()) * scale + offsetY);
                 float radius = (float) (circle.getRadius() * scale);
@@ -955,8 +1080,10 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         if (arcs != null) {
             paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(2);
+
             for (Arc arc : arcs) {
-                paint.setColor(myCheckColor(arc.getLayer().getColorState()));
+                paint.setColor(myCheckColor(arc.getColor()));
 
                 float cx = (float) ((arc.getCenter().getX() - minX) * scale + offsetX);
                 float cy = (float) ((maxY - arc.getCenter().getY()) * scale + offsetY);

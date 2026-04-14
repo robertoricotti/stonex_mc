@@ -1,50 +1,60 @@
 {
-  "configurations": [
-    {
-      "directories": [
-        {
-          "build": ".",
-          "jsonFile": "directory-.-RelWithDebInfo-d0094a50bb2071803777.json",
-          "minimumCMakeVersion": {
-            "string": "3.6.0"
-          },
-          "projectIndex": 0,
-          "source": ".",
-          "targetIndexes": [
-            0
-          ]
-        }
-      ],
-      "name": "RelWithDebInfo",
-      "projects": [
-        {
-          "directoryIndexes": [
-            0
-          ],
-          "name": "nativeproj",
-          "targetIndexes": [
-            0
-          ]
-        }
-      ],
-      "targets": [
-        {
-          "directoryIndex": 0,
-          "id": "nativeproj::@6890427a1f51a3e7e1df",
-          "jsonFile": "target-nativeproj-RelWithDebInfo-8184c8629608af143133.json",
-          "name": "nativeproj",
-          "projectIndex": 0
-        }
-      ]
-    }
-  ],
-  "kind": "codemodel",
-  "paths": {
-    "build": "D:/Development/MC_V4/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a",
-    "source": "D:/Development/MC_V4/app/src/main/cpp"
-  },
-  "version": {
-    "major": 2,
-    "minor": 3
-  }
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-RelWithDebInfo-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "RelWithDebInfo",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "nativeproj",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "nativeproj::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-nativeproj-RelWithDebInfo-8184c8629608af143133.json",
+					"name" : "nativeproj",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/Development/MC_V4/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a",
+		"source" : "D:/Development/MC_V4/app/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
 }

@@ -601,54 +601,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="14042026_1130">
-      <change afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/deviceManager.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/navEditor.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/excel_to_iredes_gui/Analysis-00.toc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/excel_to_iredes_gui/EXE-00.toc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/excel_to_iredes_gui/PKG-00.toc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/excel_to_iredes_gui/PYZ-00.pyz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/excel_to_iredes_gui/PYZ-00.toc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/excel_to_iredes_gui/base_library.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/excel_to_iredes_gui/excel_to_iredes_gui.pkg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/excel_to_iredes_gui/warn-excel_to_iredes_gui.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/excel_to_iredes_gui/xref-excel_to_iredes_gui.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/stx_hole_converter/Analysis-00.toc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/stx_hole_converter/EXE-00.toc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/stx_hole_converter/PKG-00.toc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/stx_hole_converter/PYZ-00.pyz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/stx_hole_converter/PYZ-00.toc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/stx_hole_converter/base_library.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/stx_hole_converter/stx_hole_converter.pkg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/stx_hole_converter/warn-stx_hole_converter.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/PythonTest/build/stx_hole_converter/xref-stx_hole_converter.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/jniLibs/arm64-v8a/libproj.so" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/jniLibs/arm64-v8a/libsqlite3.so" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/et --hard a540f3cf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/cache-v2-6c8e729f17ad3069ed32.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/cmakeFiles-v1-828e7a14a437cbed6842.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/index-2026-04-13T22-48-07-0040.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-9674717d5539c113833f.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-9674717d5539c113833f.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/directory-.-RelWithDebInfo-d0094a50bb2071803777.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/directory-.-RelWithDebInfo-d0094a50bb2071803777.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/target-nativeproj-RelWithDebInfo-8184c8629608af143133.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.cmake/api/v1/reply/target-nativeproj-RelWithDebInfo-8184c8629608af143133.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.ninja_deps" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/CMakeFiles/rules.ninja" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/additional_project_files.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/android_gradle_build.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/android_gradle_build_mini.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/build_file_index.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/compile_commands.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/compile_commands.json.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/metadata_generation_command.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/prefab_config.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/symbol_folder_index.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/.cmake/api/v1/reply/index-2026-04-02T08-36-04-0930.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/armeabi-v7a/compile_commands.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/build.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/LayerAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/LayerAdapter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -658,7 +625,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=RZGYB0CL6FK)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=510DS10412100006)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -740,7 +707,7 @@
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Merging roberto&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;roberto&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/Development/MC_V4/app/src/main/res/drawable&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;gradle.compiler&quot;,
@@ -904,14 +871,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00167" summary="4.1.0 ritornati a 2D piana GL">
-      <option name="closed" value="true" />
-      <created>1773714461935</created>
-      <option name="number" value="00167" />
-      <option name="presentableId" value="LOCAL-00167" />
-      <option name="project" value="LOCAL" />
-      <updated>1773714461935</updated>
     </task>
     <task id="LOCAL-00168" summary="4.1.0 ritornati a 2D piana GL">
       <option name="closed" value="true" />
@@ -1297,7 +1256,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776076792125</updated>
     </task>
-    <option name="localTasksCounter" value="216" />
+    <task id="LOCAL-00216" summary="14042026_1130">
+      <option name="closed" value="true" />
+      <created>1776164215744</created>
+      <option name="number" value="00216" />
+      <option name="presentableId" value="LOCAL-00216" />
+      <option name="project" value="LOCAL" />
+      <updated>1776164215744</updated>
+    </task>
+    <option name="localTasksCounter" value="217" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1313,7 +1280,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.0 migrazione opengl2.0 riuscita" />
     <MESSAGE value="4.1.0 prova 2D TODO" />
     <MESSAGE value="4.1.0 ritornati a 2D piana GL" />
     <MESSAGE value="4.1.0 prima di implementare 3deasy" />
@@ -1338,7 +1304,8 @@
     <MESSAGE value="4.1.4 Test pick polyline OK" />
     <MESSAGE value="4.1.4 Test pick polyline OK+AUTO SOLAR" />
     <MESSAGE value="4.1.4 pre release" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.4 pre release" />
+    <MESSAGE value="14042026_1130" />
+    <option name="LAST_COMMIT_MESSAGE" value="14042026_1130" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
   <component name="play_dynamic_filters_status">
