@@ -1,0 +1,17 @@
+# Ignora tutto per default
+*
+
+# Ma non ignorare queste cartelle e i loro contenuti:
+!app/
+!app/**
+!mylibrary/
+!mylibrary/**
+!gradle/
+!gradle/**
+!.idea/
+!.idea/**
+!build.gradle
+!settings.gradle
+!gradlew
+!gradlew.bat
+!local.properties
