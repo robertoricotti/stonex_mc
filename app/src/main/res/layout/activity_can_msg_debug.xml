@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="gui.debug_ecu.Can_Msg_Debug">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topla"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/lowerGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.88" />
+
+    <TextView
+        android:id="@+id/title"
+        android:text="CAN 1"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="28sp"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_background_test3d_box"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/topla"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/lowerView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title">
+
+        <ListView
+            android:id="@+id/listView_CAN"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:scrollbarSize="24dp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/lowerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/custom_background_test3d_box"
+
+        app:layout_constraintTop_toTopOf="@+id/lowerGuide">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:rotation="180"
+            app:srcCompat="@drawable/menu_btn"
+            app:tint="@color/white" />
+
+        <CheckBox
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="EXT."
+            android:textColor="@color/white"
+            android:id="@+id/extendedFrame"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:buttonTint="@color/white" />
+
+        <CheckBox
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="FIXED POS."
+            android:textColor="@color/white"
+            android:id="@+id/fixedPos"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:buttonTint="@color/white" />
+
+        <ImageView
+            android:id="@+id/clearCan"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@drawable/delete_btn"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/playPause"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/btn_play"
+            app:tint="@color/white" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

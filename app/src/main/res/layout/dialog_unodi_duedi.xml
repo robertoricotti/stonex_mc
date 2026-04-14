@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/sfondo_dialog_scura"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/hc0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/hc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vc1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3333" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vc2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6666" />
+
+    <ImageView
+        android:id="@+id/to1D"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:src="@drawable/tounodi"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/hc0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/vc1"
+        android:padding="5dp"
+        app:tint="@color/blue"
+        android:layout_margin="45dp" />
+
+    <ImageView
+        android:id="@+id/to2D"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:src="@drawable/toduedi"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/hc0"
+        app:layout_constraintLeft_toRightOf="@id/vc1"
+        app:layout_constraintRight_toLeftOf="@id/vc2"
+        android:layout_margin="45dp"
+        android:padding="5dp"
+
+        />
+
+    <ImageView
+        android:id="@+id/toProfile"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:src="@drawable/profiles_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/hc0"
+        app:layout_constraintLeft_toRightOf="@id/vc2"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="45dp"
+        android:padding="15dp"
+        app:tint="@color/_____cancel_text" />
+
+
+    <ImageView
+        android:id="@+id/cancel"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/btn_close_web"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hc"
+        app:tint="@color/white" />
+</androidx.constraintlayout.widget.ConstraintLayout>

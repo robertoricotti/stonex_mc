@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_gray">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/sopra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.09" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/sotto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.89" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mezzoV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mezzoH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/sopra"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img00"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/gnss_setup_btn"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/txtCoord"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/custom_background_test3d_box"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img01"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/wifi_vuoto"
+            app:tint="@color/white" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/toLeft"
+        android:layout_width="60dp"
+        android:layout_height="70dp"
+        android:layout_margin="10dp"
+        android:rotation="180"
+        android:src="@drawable/btn_fwd"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sopra" />
+
+    <ImageView
+        android:id="@+id/toRight"
+        android:layout_width="60dp"
+        android:layout_height="70dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/btn_fwd"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sopra" />
+
+    <LinearLayout
+        android:id="@+id/lowerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sotto">
+
+        <ImageView
+            android:id="@+id/salva"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@drawable/save_btn" />
+
+        <ImageView
+            android:id="@+id/update"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@drawable/btn_refresh"
+            app:tint="@color/_____cancel_text" />
+
+        <ImageView
+            android:id="@+id/exit"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@drawable/btn_close_web"
+            app:tint="@color/_____cancel_text" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pag_1"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="30dp"
+        android:background="@drawable/doza_blade_altezza"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintLeft_toRightOf="@id/toLeft"
+        app:layout_constraintRight_toLeftOf="@id/toRight"
+        app:layout_constraintTop_toBottomOf="@id/sopra">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/indicazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="right"
+        android:text=" BLADE FRONT VIEW "
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/mezzoV"
+        app:layout_constraintTop_toBottomOf="@id/mezzoH" />
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/bladeL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginHorizontal="10dp"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        android:digits="0123456789."
+        android:ems="10"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintRight_toLeftOf="@id/mezzoV" />
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/bladeR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="20dp"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        android:digits="0123456789."
+        android:ems="10"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintLeft_toRightOf="@id/mezzoV" />
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/altPalo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        android:digits="0123456789."
+        android:ems="10"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/mezzoH"
+        app:layout_constraintLeft_toRightOf="@id/mezzoV"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/alteLama"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        android:digits="0123456789."
+        android:ems="10"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintLeft_toRightOf="@id/mezzoV"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mezzoH" />
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/deltaX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        android:digits="0123456789."
+        android:ems="6"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/mezzoH"
+        app:layout_constraintLeft_toRightOf="@id/mezzoV"
+        app:layout_constraintTop_toBottomOf="@id/sopra" />
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/distBetween"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        android:digits="0123456789."
+        android:ems="8"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/mezzoH"
+        app:layout_constraintLeft_toRightOf="@id/toLeft"
+        app:layout_constraintRight_toLeftOf="@id/mezzoV" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/textViewDistBetween"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Right Edge >> GPS2 (m)"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/distBetween"
+        app:layout_constraintLeft_toLeftOf="@id/distBetween"
+        app:layout_constraintRight_toRightOf="@id/distBetween" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txtPole"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Pole Height(m)"
+        android:gravity="right"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/altPalo"
+        app:layout_constraintLeft_toLeftOf="@id/altPalo"
+        app:layout_constraintRight_toRightOf="@id/altPalo" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txLama"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Blade Height(m)"
+        android:gravity="right"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/alteLama"
+        app:layout_constraintLeft_toLeftOf="@id/alteLama"
+        app:layout_constraintRight_toRightOf="@id/alteLama" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txtBleft"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Right Side(m)"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/bladeL"
+        app:layout_constraintLeft_toLeftOf="@id/bladeL"
+        app:layout_constraintRight_toRightOf="@id/bladeL" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txtBright"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Left Side(m)"
+        android:gravity="right"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/bladeR"
+        app:layout_constraintLeft_toLeftOf="@id/bladeR"
+        app:layout_constraintRight_toRightOf="@id/bladeR" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txtDeltaX"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="ΔX (m)"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/deltaX"
+        app:layout_constraintLeft_toLeftOf="@id/deltaX"
+        app:layout_constraintRight_toRightOf="@id/deltaX" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pag_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="100dp"
+        android:background="@drawable/doza_blade_y_2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintLeft_toRightOf="@id/toLeft"
+        app:layout_constraintRight_toLeftOf="@id/toRight"
+        app:layout_constraintTop_toBottomOf="@id/sopra">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/deltaY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        android:digits="0123456789."
+        android:ems="10"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/pag_2"
+        app:layout_constraintLeft_toRightOf="@id/mezzoV"
+        app:layout_constraintRight_toLeftOf="@id/mezzoV"
+        app:layout_constraintTop_toBottomOf="@id/sopra" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txtDeltaHDT"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="ΔHDT (°)"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/deltaHDT"
+        app:layout_constraintLeft_toLeftOf="@id/deltaHDT"
+        app:layout_constraintRight_toRightOf="@id/deltaHDT" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txtDeltaY"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="ΔY (m)"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/deltaY"
+        app:layout_constraintLeft_toLeftOf="@id/deltaY"
+        app:layout_constraintRight_toRightOf="@id/deltaY" />
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/deltaHDT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        android:digits="0123456789."
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:ems="10"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintTop_toBottomOf="@id/pag_2"
+        app:layout_constraintRight_toLeftOf="@id/mezzoV" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pag_3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="100dp"
+        android:background="@drawable/blade_wear"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/sotto"
+        app:layout_constraintLeft_toRightOf="@id/toLeft"
+        app:layout_constraintRight_toLeftOf="@id/toRight"
+        app:layout_constraintTop_toBottomOf="@id/sopra">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txtCutEdge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Cutting Edge (m)"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/etCutEdge"
+        app:layout_constraintLeft_toLeftOf="@id/etCutEdge"
+        app:layout_constraintRight_toRightOf="@id/etCutEdge" />
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/etCutEdge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:backgroundTint="#BBFFFFFF"
+        android:digits="0123456789."
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:ems="10"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/pag_3"
+        app:layout_constraintTop_toBottomOf="@id/pag_3"
+        app:layout_constraintLeft_toLeftOf="@id/mezzoV"
+        app:layout_constraintRight_toRightOf="@id/mezzoV" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Project ID="{80C3F61B-F807-4901-AC17-A425F041B0D1}" FileName="dozer_grader.p1x">
+  <FileFormat>008D</FileFormat>
+  <GUIVersion>2025.1.2.6475</GUIVersion>
+  <ProgrammableHW PartNumber="11144803" Description="MC024-130/132-0_nl ver:70112533v170 (SYS:70112531v170)" Comment="MC024_130_nl" HwdName="70112533" HwdVersion="1.70.0">
+    <SystemFile FileName="70112531v170.sys" Parameters="W1:DISABLE">
+      <APIDocument FileName="70112531.pdf"/>
+    </SystemFile>
+    <Application Name="dozer_grader">
+      <PID Description="dozer_grader"/>
+      <MainModule ModuleName="MAINTASK" FileName="MC024_130_nl_T.scs"/>
+      <Parameters FileName="ProjectParameters.json"/>
+    </Application>
+    <Output>
+      <Hexfile FileName="dozer_grader.lhx"/>
+      <OutputTargetPartNumber></OutputTargetPartNumber>
+      <OutputTargetSerialNumber></OutputTargetSerialNumber>
+    </Output>
+    <TargetPartNumber></TargetPartNumber>
+  </ProgrammableHW>
+</Project>

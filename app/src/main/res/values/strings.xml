@@ -1,0 +1,236 @@
+<resources>
+    <string name="app_name">STX MC V4</string>
+    <string name="copyright">Copyright © \nAll rights reserved</string>
+    <string name="error_license">The license has expired or is missing.\nPlease contact your local dealer to resolve this issue</string>
+    <string name="website">www.stonex.it</string>
+    <string name="copy_adding">"Copy Adding\nProgressive Number"</string>
+    <string name="general_set">GENERAL SETTINGS</string>
+    <string name="change_machine">CHANGE MACHINE MODEL</string>
+    <string name="procedi">Do You Want To Proceed ?</string>
+    <string name="downloading">Download in Progress. . . .</string>
+    <string name="uploading">Upload in Progress. . . .</string>
+    <string name="rotate_m">ROTATE MACHINE</string>
+    <string name="rotate_w">ROTATE WORLD</string>
+    <string name="tred_scene">3D SCENE</string>
+    <string name="tit_hydro_set">AUTO DOZER/GRADER PARAMETERS</string>
+    <string name="savepara">SAVE ALL PARAMETERS TO EXTERNAL MEMORY</string>
+    <string name="savepara_pro">Do You Want to Proceed ?</string>
+    <string name="write_para">OVERWRITE ALL APPLICATION PARAMETERS</string>
+    <string name="hydro_cp">HYDRAULIC\nCONTROL POINTS</string>
+    <string name="hydro_apply">APPLY NEW HYDRAULIC VALUES</string>
+    <string name="brigbck">BRIGHTNESS-BACKGROUND</string>
+    <string name="etxoff">EXTERNAL OFFSET STEP Inc/Dec</string>
+
+    <string name="first_rod_l">FIRST ROD LENGTH</string>
+    <string name="rod_l">ROD LENGTH</string>
+    <string name="bit_l">DRILL BIT LENGTH - WIDTH</string>
+    <string name="rod_nr">NUMBER OF RODS</string>
+    <string name="remove_all_rods">REMOVE ALL RODS ?</string>
+    <string name="sdd_rod">ADD 1 ROD ?</string>
+    <string name="remove_one_rod">ADD 1 ROD ?</string>
+
+
+    <string name="color_bucket">BUCKET - BLADE COLOR</string>
+    <string name="color_boom">BOOM - FRAME COLOR</string>
+    <string name="ext_offset">EXTERNAL OFFSET STEP</string>
+    <string name="auto_z_db">LEFT ELEVATION DEADBAND</string>
+    <string name="auto_z_dbR">RIGHT ELEVATION DEADBAND</string>
+    <string name="hydro_window">HYDRAULIC ENGAGEMENT WINDOW</string>
+    <string name="auto_slope_db">SLOPE DEADBAND</string>
+    <string name="xy_db">XY DEADBAND</string>
+
+    <string name="mac_setup">MACHINE SETUP</string>
+    <string name="sens_config">CAN SENSOR CONFIG</string>
+    <string name="mch_schema">DRAW 3D MACHINE SCHEMA</string>
+    <string name="enable_but">ENABLE ANDROID NAVIGATION BUTTONS</string>
+    <string name="extra_hdt">ENABLE EXTRA HEADING SENSOR</string>
+    <string name="en_out">ENABLE DIGITAL OUTPUT 12V BOUNDARY ALARM</string>
+    <string name="en_uhf_ntrip">SWITCH UHF/NTRIP</string>
+    <string name="uppaer_bar">UPPER BAR ALWAYS VISIBLE IN WORKING PAGE</string>
+    <string name="interface_type">HYDRAULIC INTERFACE TYPE</string>
+    <string name="save">SAVE</string>
+    <string name="exit">EXIT</string>
+    <string name="machines">MACHINES</string>
+    <string name="machines_setup">MACHINE SETTINGS</string>
+    <string name="rename_file">RENAME FILE</string>
+    <string name="wait_until">Wait until Project is updated</string>
+    <string name="com_debug">CAN DEBUG</string>
+    <string name="profiles">PROFILES</string>
+    <string name="buckets">SELECT A BUCKET</string>
+    <string name="settings">USER SETTINGS</string>
+    <string name="bucket1">BUCKET1</string>
+    <string name="bucket2">BUCKET2</string>
+    <string name="bucket3">BUCKET3</string>
+    <string name="bucket4">BUCKET4</string>
+    <string name="bucket5">BUCKET5</string>
+    <string name="bucket6">BUCKET6</string>
+    <string name="bucket7">BUCKET7</string>
+    <string name="bucket8">BUCKET8</string>
+    <string name="bucket9">BUCKET9</string>
+    <string name="bucket10">BUCKET10</string>
+    <string name="bucket11">BUCKET11</string>
+    <string name="bucket12">BUCKET12</string>
+    <string name="bucket13">BUCKET13</string>
+    <string name="bucket14">BUCKET14</string>
+    <string name="bucket15">BUCKET15</string>
+    <string name="bucket16">BUCKET16</string>
+    <string name="bucket17">BUCKET17</string>
+    <string name="bucket18">BUCKET18</string>
+    <string name="bucket19">BUCKET19</string>
+    <string name="bucket20">BUCKET20</string>
+    <string name="sensor">SENSOR</string>
+    <string name="value">VALUE</string>
+    <string name="offset">OFFSET</string>
+    <string name="status">STATUS</string>
+    <string name="boom1">BOOM1</string>
+    <string name="boom2">BOOM2</string>
+    <string name="stick_laser">STICK-LASER</string>
+    <string name="bucket">BUCKET</string>
+    <string name="frame_picth_roll">FRAME PITCH-ROLL</string>
+    <string name="compass">COMPASS</string>
+    <string name="tilt">TILT</string>
+    <string name="pos">POS</string>
+    <string name="single_slope">SINGLE SLOPE</string>
+    <string name="off">OFF</string>
+    <string name="left">LEFT</string>
+    <string name="right">RIGHT</string>
+    <string name="bucket_name">BUCKET NAME:</string>
+    <string name="bucket_length">BUCKET LENGTH: </string>
+    <string name="bucket_width">BUCKET WIDTH: </string>
+    <string name="Linkage_L4">LINK L4: </string>
+    <string name="bucket_angle">BUCKET ANGLE: </string>
+    <string name="bucket_flat_angle">BUCKET FLAT ANGLE: </string>
+    <string name="reset">RESET</string>
+    <string name="stick_and_laser_calibration">STICK / LASER CALIBRATION</string>
+    <string name="bucket_linkage_calibration">BUCKET / LINKAGE CALIBRATION</string>
+    <string name="mounting_side">MOUNTING SIDE</string>
+    <string name="info">INFO</string>
+    <string name="machine_name">MACHINE NAME</string>
+    <string name="picth_and_roll_calibration">PITCH / ROLL CALIBRATION</string>
+    <string name="boom2_calibration">BOOM 2 CALIBRATION</string>
+    <string name="boom1_calibration">BOOM 1 CALIBRATION</string>
+    <string name="tilt_calibration">TILT CALIBRATION</string>
+    <string name="height_deadband">HEIGHT DB</string>
+    <string name="flat_angle_deadband">ANGLE DB</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="language">LANGUAGE</string>
+
+    <string name="lasermode">Excavator 2D LASER MODE</string>
+    <string name="close_app">ARE YOU SURE YOU WANT CLOSE THIS APP?</string>
+    <string name="ok">OK</string>
+    <string name="set">SET</string>
+    <string name="height_alarm">HEIGHT ALARM</string>
+    <string name="use_tilt">USE TILT SENSOR</string>
+    <string name="use_bucket">USE BUCKET SENSOR</string>
+    <string name="len">LENGTH (mm)</string>
+    <string name="angle">ANGLE (°)</string>
+    <string name="txt_tiltangle">TILT ANGLE: </string>
+    <string name="gps_calib">ANTENNA CALIBRATION</string>
+    <string name="gnss_setup">GNSS SETUP</string>
+    <string name="set_laser_offset">SET LASER HEIGHT?</string>
+    <string name="units">DISTANCE</string>
+    <string name="unitsA">ANGLE</string>
+    <string name="viewport">VIEWPORT</string>
+    <string name="user_units">UNITS OF MEASURE</string>
+    <string name="audio">SOUNDS</string>
+    <string name="slopeX">SLOPE X</string>
+    <string name="slopeY">SLOPE Y</string>
+    <string name="infoNr">Technical Support</string>
+    <string name="infoMessage">mc@stonex.it</string>
+    <string name="touch_e_go">MOVE THE EXCAVATOR THEN PLACE THE BUCKET OVER THE SAME REFERENCE POINT AND PUSH BUTTON</string>
+    <string name="quick_setup">QUICK SETUP</string>
+    <string name="flat_surface">FLAT SURFACE</string>
+    <string name="ab_surface">SURFACE From A>>B</string>
+    <string name="cross_section">SURFACE FROM\n POLYLINE</string>
+    <string name="area">FLAT<br />AREA</string>
+    <string name="edit_zeta">DO YOU WANT TO EDIT THE Z AND APPLY THE NEW VALUE TO THE GPS?</string>
+    <string name="lumen">BRIGHTNESS</string>
+    <string name="messages">MESSAGES</string>
+    <string name="exit_proj">EXIT?\n ALL DATA WILL BE LOST</string>
+    <string name="mostraTriangoli">Show Triangles</string>
+    <string name="mostraColore">Show Surface</string>
+    <string name="mostraPunti">Show Points</string>
+    <string name="mostraPoly">Show 3D Polylines</string>
+    <string name="mostraNome">Show Point Text</string>
+    <string name="mostraUtils">Show 2D Objects</string>
+    <string name="mostraGradiente">Show Surface Gradient</string>
+    <string name="projectWindow">SURFACE WINDOW</string>
+    <string name="polylinee">POLYLINES</string>
+    <string name="puntip">POINTS</string>
+    <string name="laserOK">LASER OK</string>
+    <string name="laserKO">LASER OUT OF RANGE</string>
+    <string name="disabled">DISABLED</string>
+    <string name="yaw_drift_compensation">YAW DRIFT COMPENSATION</string>
+    <string name="toast_select_bucket">SELECT THE BUCKET TO CALIBRATE</string>
+    <string name="toast_hold_to_set">HOLD TO SET</string>
+    <string name="toast_cantset_heading">ERROR SET ORIENTATION</string>
+    <string name="powercycle_sensor">PLEASE POWERCYCLE SENSOR</string>
+    <string name="pick_1">PLACE THE BUCKET OVER A REFERENCE POINT THEN PRESS IMAGE 1</string>
+    <string name="selectproject">"SELECT A PROJECT "</string>
+    <string name="project">"PROJECTS"</string>
+    <string name="quick">QUICK\n COUPLER</string>
+    <string name="selectafile">SELECT A FILE!</string>
+    <string name="trincea">TRENCH - DRAINAGE</string>
+    <string name="dtm">TERRAIN MODEL</string>
+    <string name="usb_file_tr">USB \nFILE TRANSFER</string>
+    <string name="cloud_file_tr">CLOUD \nFILE TRANSFER</string>
+    <string name="local_projects">LOCAL \nPROJECTS</string>
+    <string name="punto_salvato">POINT ADDED</string>
+    <string name="punto_rimosso">POINT REMOVED</string>
+    <string name="off_grid">OFF SURFACE</string>
+    <string name="file_exists">The File Already Exists</string>
+    <string name="overwrite">OVERWRITE ?</string>
+    <string name="delete_file">DELETE SELECTED FILE ?</string>
+    <string name="delete_obj">DELETE SELECTED OBLECT ?</string>
+    <string name="select_file">SELECT A FILE</string>
+    <string name="deleted">DELETED</string>
+    <string name="showAlign">Show Machine Alignment</string>
+    <string name="add_surface">NEW SURFACE</string>
+    <string name="add_surface_ask">ADD TO THE CURRENT PROJECT</string>
+    <string name="add_surface_nope">CREATE NEW</string>
+    <string name="enter_filename">ENTER A FILENAME</string>
+    <string name="fydro_no">Hydraulic Control Not Yet Implemented</string>
+    <string name="treddi_acxtive">Profiles Availables only in 1D/2D mode</string>
+    <string name="treddi_off">Available Only in 3D Mode</string>
+
+    <!-- nuove stringhe -->
+    <string name="menu_utente">USER SETTINGS</string>
+    <string name="menu_macchine">MACHINE SETTINGS</string>
+    <string name="nuovo_progetto">NEW WORKSPACE</string>
+    <string name="lista_lavori">JOB LIST</string>
+    <string name="rimuovi_usb">REMOVE USB STICK</string>
+    <string name="rimozione_sicura">SAFETY USB REMOVE BEFORE EXIT</string>
+    <string name="progetti_non_trovata">Projects folder not found</string>
+    <string name="stxmc_creata">Folder STX_MC created on USB stick</string>
+    <string name="stxmc_fallita">Failed to create folder STX_MC on USB stick</string>
+    <string name="stxmc_nontrovata">USB stick not found</string>
+    <string name="sovrascrivere">Overwrite?</string>
+
+    <string-array name="radio_proto">
+        <item>Satel</item><!-- 0 -->
+        <item>PCC-4FSK</item><!-- 1 -->
+        <item>PCC-GMSK</item><!-- 2 -->
+        <item>TrimTalk 450S</item><!-- 3 -->
+        <item>South 9600</item><!-- 4 -->
+        <item>HITARGET(9600)</item><!-- 6 -->
+        <item>HITARGET(19200)</item><!-- 7 -->
+        <item>TrimMark III</item><!-- 9 -->
+        <item>South 19200</item><!-- 10 -->
+        <item>TrimTalk(4800)</item><!-- 11 -->
+        <item>GEOTALK</item><!-- 13 -->
+        <item>GEOMARK</item><!-- 14 -->
+        <item>900M Hopping</item><!-- 15 -->
+        <item>HZSZ</item><!-- 16 -->
+        <item>GEO FHSS</item><!-- 17 -->
+        <item>Satel_ADL</item><!-- 19 -->
+        <item>PCCFST</item><!-- 20 -->
+        <item>PCCFST_ADL</item><!-- 21 -->
+    </string-array>
+    <string-array name="radio_spacing">
+        <item>12.5</item>
+        <item>25</item>
+    </string-array>
+
+
+</resources>

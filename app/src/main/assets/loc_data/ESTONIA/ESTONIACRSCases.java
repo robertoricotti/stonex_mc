@@ -1,0 +1,34 @@
+public class ESTONIACRSCases {
+    public static void handleCRS(String input, MyData MyData, DataSaved DataSaved, Activity activity, Dialog dialog) {
+        switch (input) {
+            case "ESTONIA__EST97__4934.SP":
+                MyData.push("SECONDO_S_CRS", "4934");
+                DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
+                activity.recreate();
+                ReadProjectService.startCRS();
+                dialog.dismiss();
+                break;
+            case "ESTONIA__EST97__GEOCENTRIC__4342.SP":
+                MyData.push("SECONDO_S_CRScrs", "4342");
+                DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
+                activity.recreate();
+                ReadProjectService.startCRS();
+                dialog.dismiss();
+                break;
+            case "ESTONIA__ESTONIAN_COORDINATE_SYSTEM_OF_1997__3301.SP":
+                MyData.push("SECONDO_S_CRS", "3301");
+                DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
+                activity.recreate();
+                ReadProjectService.startCRS();
+                dialog.dismiss();
+                break;
+            case "ESTONIA__ONSHORE__ESTONIAN_COORDINATE_SYSTEM_OF_1992__3300.SP":
+                MyData.push("SECONDO_S_CRS", "3300");
+                DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
+                activity.recreate();
+                ReadProjectService.startCRS();
+                dialog.dismiss();
+                break;
+        }
+    }
+}

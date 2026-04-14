@@ -1,0 +1,21 @@
+{
+  "FileFormat": "003A",
+  "Parameters": [
+    {
+      "GUID": "{1F78E2CD-EC48-c845-BAFB-A6D8674F17C1}",
+      "DataType": "U8",
+      "ParamName": "Dozer_Type",
+      "ReadAccess": "9",
+      "WriteAccess": "9",
+      "NvIndex": "0"
+    },
+    {
+      "GUID": "{2852347E-8362-2735-D4EB-ED516336A4E6}",
+      "DataType": "U8",
+      "ParamName": "CAT_Model",
+      "ReadAccess": "9",
+      "WriteAccess": "9",
+      "NvIndex": "1"
+    }
+  ]
+}

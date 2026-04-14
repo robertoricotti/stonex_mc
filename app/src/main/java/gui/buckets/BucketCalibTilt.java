@@ -1,0 +1,463 @@
+package gui.buckets;
+
+import static packexcalib.exca.ExcavatorLib.coordPivoTilt;
+import static packexcalib.exca.ExcavatorLib.correctDeltaAngle;
+import static packexcalib.exca.ExcavatorLib.correctTilt;
+import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
+import static packexcalib.exca.ExcavatorLib.yawSensor;
+import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
+import static packexcalib.exca.Sensors_Decoder.Deg_Roto;
+import static utils.Utils.isNumeric;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
+import com.example.stx_dig.R;
+
+import gui.BaseClass;
+import gui.dialogs_and_toast.CustomNumberDialog;
+import gui.dialogs_and_toast.CustomNumberDialogFtIn;
+import gui.dialogs_and_toast.CustomQwertyDialog;
+import gui.dialogs_and_toast.CustomToast;
+import packexcalib.exca.DataSaved;
+import packexcalib.exca.Exca_Quaternion;
+import packexcalib.exca.ExcavatorLib;
+import packexcalib.exca.Sensors_Decoder;
+import services.UpdateValuesService;
+import utils.DistToPoint;
+import utils.MyData;
+import utils.Utils;
+
+public class BucketCalibTilt extends BaseClass {
+    TextView bucketLengthT, bucketWidthT, L4T, tinyBukt, txtRoto;
+    EditText name, bucketLength, bucketWidth, L4;
+    Button minusTiltLevelAngle, plusTiltLevelAngle, setTiltLevelAngle, setOffsetRoto;
+    Button setFlatAngle, offsetZero, plusBuck, minusBuck;
+    ImageView save, exit;
+    TextView offsetBucketAngle, offsetFlatAngle, offsetTiltLevelAngle;
+    TextView bucketAngleTv, flatAngleTv, tiltLevelAngleTv;
+    CheckBox cbxOff, cbxLeft, cbxRight, cbTOff, cbTL, cbTR, top, topRev, disableRoto;
+    LinearLayout linearLayoutRoto;
+    int indexBucket;
+    int indexMachineSelected;
+    CustomNumberDialog numberDialog;
+    CustomNumberDialogFtIn numberDialogFtIn;
+    int indexMeasure = 0;
+    CustomQwertyDialog qwertyDialog;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_bucket_tilt_calib_7);
+
+        findView();
+        init();
+        updateUI();
+        onClick();
+        onLongClick();
+
+
+    }
+
+    private void findView() {
+        disableRoto = findViewById(R.id.disableRoto);
+        linearLayoutRoto = findViewById(R.id.linearLayoutRoto);
+        txtRoto = findViewById(R.id.txtRoto);
+        setOffsetRoto = findViewById(R.id.setOffsetRoto);
+        bucketLengthT = findViewById(R.id.bkl);
+        bucketWidthT = findViewById(R.id.bwdt);
+        L4T = findViewById(R.id.l4);
+        name = findViewById(R.id.bucket_ID);
+        bucketLength = findViewById(R.id.bucketLength);
+        bucketWidth = findViewById(R.id.bucketWidth);
+        L4 = findViewById(R.id.bucket_L4);
+        tinyBukt = findViewById(R.id.tinyBucket);
+        plusBuck = findViewById(R.id.offsetPlus);
+        minusBuck = findViewById(R.id.offsetMinus);
+        minusTiltLevelAngle = findViewById(R.id.tiltLevelAngleMinus);
+        plusTiltLevelAngle = findViewById(R.id.tiltLevelAnglePlus);
+        setTiltLevelAngle = findViewById(R.id.tiltLevelAngleSet);
+        setFlatAngle = findViewById(R.id.offsetZeroFlat);
+        offsetZero = findViewById(R.id.offsetZero);
+        save = findViewById(R.id.save);
+        exit = findViewById(R.id.exit);
+        offsetBucketAngle = findViewById(R.id.bucketAngleOffset);
+        offsetFlatAngle = findViewById(R.id.bucketAngleFlatOffset);
+        offsetTiltLevelAngle = findViewById(R.id.tiltLevelAngleOffset);
+        bucketAngleTv = findViewById(R.id.bucketAngle);
+        flatAngleTv = findViewById(R.id.bucketAngleFlat);
+        tiltLevelAngleTv = findViewById(R.id.tiltLevelAngle);
+        cbxOff = findViewById(R.id.cbxOff);
+        cbxLeft = findViewById(R.id.cbxLeft);
+        cbxRight = findViewById(R.id.cbxRight);
+        cbTOff = findViewById(R.id.cbxTiltOff);
+        cbTL = findViewById(R.id.cbxTiltLeft);
+        cbTR = findViewById(R.id.cbxTiltRight);
+        top = findViewById(R.id.cbTop);
+        topRev = findViewById(R.id.cbTopRev);
+        cbxOff.setEnabled(false);
+        cbxOff.setChecked(false);
+        cbxLeft.setEnabled(false);
+        cbxLeft.setChecked(false);
+        cbxRight.setEnabled(false);
+        cbxRight.setChecked(false);
+        top.setEnabled(false);
+        top.setChecked(false);
+        topRev.setEnabled(false);
+        topRev.setChecked(false);
+
+        cbTOff.setEnabled(false);
+        cbTOff.setChecked(false);
+        cbTL.setEnabled(false);
+        cbTL.setChecked(false);
+        cbTR.setEnabled(false);
+        cbTR.setChecked(false);
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void init() {
+
+
+        indexMeasure = MyData.get_Int("Unit_Of_Measure");
+
+
+        numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
+
+        numberDialog = new CustomNumberDialog(this, -1);
+
+
+        qwertyDialog = new CustomQwertyDialog(this, null);
+        indexBucket = getIntent().getExtras().getInt("indexBucket");
+        indexMachineSelected = MyData.get_Int("MachineSelected");
+        name.setText(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Name"));
+        bucketLength.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Length")));
+        bucketWidth.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Width")));
+        L4.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_L4")));
+        bucketLengthT.setText(getResources().getString(R.string.bucket_length) + Utils.getMetriSimbol());
+        bucketWidthT.setText(getResources().getString(R.string.bucket_width) + Utils.getMetriSimbol());
+        L4T.setText(getResources().getString(R.string.Linkage_L4) + Utils.getMetriSimbol());
+        int bucketMountPos = MyData.get_Int("M" + indexMachineSelected + "_Bucket_MountPos");
+
+        switch (bucketMountPos) {
+            case 0:
+                cbxOff.setChecked(true);
+                break;
+            case 1:
+                cbxLeft.setChecked(true);
+                break;
+            case -1:
+                cbxRight.setChecked(true);
+                break;
+            case 2:
+                top.setChecked(true);
+                break;
+            case 3:
+                topRev.setChecked(true);
+                break;
+        }
+        int mountPos = MyData.get_Int("M" + indexMachineSelected + "_Tilt_MountPos" + indexBucket);
+        switch (mountPos) {
+            case 0:
+                cbTOff.setChecked(true);
+                break;
+            case 1:
+                cbTL.setChecked(true);
+                break;
+            case -1:
+                cbTR.setChecked(true);
+        }
+
+    }
+
+    public void updateUI() {
+        if (DataSaved.isTiltRotator == 1) {
+            linearLayoutRoto.setVisibility(View.VISIBLE);
+
+        } else {
+            linearLayoutRoto.setVisibility(View.INVISIBLE);
+        }
+        disableRoto.setChecked(DataSaved.isTiltRotator == 1);
+        tinyBukt.setText(" (" + String.format("%.3f", DataSaved.piccolaBucket) + ")");
+        tiltLevelAngleTv.setText((getResources().getString(R.string.txt_tiltangle) + String.format("%.2f", correctTilt) + " °").replace(",", "."));
+        offsetTiltLevelAngle.setText((String.format("%.2f", DataSaved.offsetTilt) + " °").replace(",", "."));
+        bucketAngleTv.setText(((getResources().getString(R.string.bucket_angle) + String.format("%.2f", ExcavatorLib.correctWTilt) + " °").replace(",", ".")));
+        offsetBucketAngle.setText((String.format("%.2f", DataSaved.offsetDegWTilt) + " °").replace(",", "."));
+        flatAngleTv.setText(((getResources().getString(R.string.bucket_flat_angle) + String.format("%.2f", ExcavatorLib.correctFlat) + " °").replace(",", ".")));
+        offsetFlatAngle.setText((String.format("%.2f", DataSaved.offsetFlat) + " °").replace(",", "."));
+        txtRoto.setText((String.format("%.2f", Sensors_Decoder.Deg_Roto) + " °").replace(",", "."));
+        if (isNumeric(L4.getText().toString())) {
+            DataSaved.L4 = Double.parseDouble(Utils.writeMetri(L4.getText().toString().trim()));
+        } else {
+            DataSaved.L4 = 0;
+        }
+        if (isNumeric(bucketLength.getText().toString())) {
+            DataSaved.L_Bucket = Double.parseDouble(Utils.writeMetri(bucketLength.getText().toString().trim()));
+        } else {
+            DataSaved.L_Bucket = 0;
+        }
+        if (isNumeric(bucketWidth.getText().toString())) {
+            DataSaved.W_Bucket = Double.parseDouble(Utils.writeMetri(bucketWidth.getText().toString().trim()));
+        } else {
+            DataSaved.W_Bucket = 0;
+        }
+
+        if (DataSaved.hasQuick == 1 || DataSaved.L1 <= 0) {
+            L4.setAlpha(0.5f);
+            L4T.setAlpha(0.5f);
+        } else {
+            L4.setAlpha(1f);
+            L4T.setAlpha(1f);
+        }
+    }
+
+    private void onClick() {
+        disableRoto.setOnClickListener(view -> {
+            DataSaved.isTiltRotator += 1;
+            DataSaved.isTiltRotator = DataSaved.isTiltRotator % 2;
+            MyData.push("M" + indexMachineSelected + "isTiltRotator", String.valueOf(DataSaved.isTiltRotator));
+        });
+        bucketLength.setOnClickListener((View v) -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(bucketLength);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(bucketLength);
+            }
+        });
+
+        bucketWidth.setOnClickListener((View v) -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(bucketWidth);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(bucketWidth);
+            }
+        });
+
+        L4.setOnClickListener((View v) -> {
+            if (DataSaved.hasQuick == 0 && DataSaved.L1 > 0) {
+                if (indexMeasure == 4 || indexMeasure == 5) {
+                    if (!numberDialogFtIn.dialog.isShowing())
+                        numberDialogFtIn.show(L4);
+                } else {
+                    if (!numberDialog.dialog.isShowing())
+                        numberDialog.show(L4);
+                }
+            }
+        });
+
+        name.setOnClickListener((View v) -> {
+            if (!qwertyDialog.dialog.isShowing())
+                qwertyDialog.show(name);
+        });
+
+        plusBuck.setOnClickListener((View v) -> {
+            DataSaved.offsetDegWTilt += 0.05;
+
+        });
+        minusBuck.setOnClickListener((View v) -> {
+            DataSaved.offsetDegWTilt -= 0.05;
+        });
+
+
+        name.setOnClickListener((View v) -> {
+            if (!qwertyDialog.dialog.isShowing())
+                qwertyDialog.show(name);
+        });
+
+        minusTiltLevelAngle.setOnClickListener((View v) -> {
+            DataSaved.offsetTilt -= 0.05;
+        });
+
+        plusTiltLevelAngle.setOnClickListener((View v) -> {
+            DataSaved.offsetTilt += 0.05;
+        });
+
+        save.setOnClickListener((View v) -> {
+
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!bucketLength.getText().toString().contains("'") || !bucketWidth.getText().toString().contains("'") || !L4.getText().toString().contains("'")) {
+                    new CustomToast(this, "INPUT ERROR!!!").show_error();
+                } else {
+                    if (name.getText().toString().equals("")) {
+                        new CustomToast(this, "Missing Name").show_alert();
+                    } else {
+                        disableAll();
+                        save();
+                        startService(new Intent(this, UpdateValuesService.class));
+                        startActivity(new Intent(this, BucketChooserActivity.class));
+                        finish();
+                    }
+                }
+            } else {
+                if (!(isNumeric(bucketLength.getText().toString()) && isNumeric(bucketWidth.getText().toString()) && isNumeric(L4.getText().toString()))) {
+                    new CustomToast(this, "INPUT ERROR!!!").show_error();
+                } else {
+                    if (name.getText().toString().equals("")) {
+                        new CustomToast(this, "Missing Name").show_alert();
+                    } else {
+                        disableAll();
+                        save();
+                        startService(new Intent(this, UpdateValuesService.class));
+                        startActivity(new Intent(this, BucketChooserActivity.class));
+                        finish();
+                    }
+                }
+            }
+        });
+
+        exit.setOnClickListener((View v) -> {
+            disableAll();
+            startService(new Intent(this, UpdateValuesService.class));
+            startActivity(new Intent(this, BucketChooserActivity.class));
+            finish();
+        });
+
+    }
+
+    private void disableAll() {
+        save.setEnabled(false);
+        exit.setEnabled(false);
+    }
+
+    private void onLongClick() {
+        setOffsetRoto.setOnLongClickListener(view -> {
+            setOffsetRoto.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+            DataSaved.OffsetDegRoto = Deg_Roto;
+            MyData.push("M" + indexMachineSelected + "OffsetDegRoto", String.valueOf(Deg_Roto));
+            return true;
+        });
+        offsetZero.setOnLongClickListener((View v) -> {
+            offsetZero.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+            if (DataSaved.L1 > 0) {
+                DataSaved.offsetBucket = ExcavatorLib.bennaSimulata;
+            } else {
+                DataSaved.offsetBucket = Sensors_Decoder.Deg_bucket;
+            }
+            double a = DataSaved.L_Tilt;
+            double c = DataSaved.L_Bucket;
+            double beta = ExcavatorLib.correctBucket - correctDeltaAngle;
+
+            DataSaved.piccolaBucket = Math.sqrt((a * a) + (c * c) - 2 * a * c * Math.cos(Math.toRadians(beta)));
+
+            DataSaved.offsetDegWTilt = Sensors_Decoder.Deg_Benna_W_Tilt;
+            return true;
+        });
+
+
+        setTiltLevelAngle.setOnLongClickListener((View v) -> {
+
+            int previous = DataSaved.isTiltRotator;
+            DataSaved.isTiltRotator = 0;
+
+            setTiltLevelAngle.setBackgroundTintList(
+                    ContextCompat.getColorStateList(this, R.color.blue)
+            );
+
+            DataSaved.offsetTilt = Sensors_Decoder.Deg_tilt;
+
+            // ⏱ delay 500 ms NON bloccante
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+
+                if (DataSaved.lrTilt != 0 && previous != 0) {
+                    DataSaved.L_RotoToBucket = routine_LRoto();
+
+                    try {
+                        MyData.push(
+                                "M" + indexMachineSelected + "L_RotoToBucket" + indexBucket,
+                                String.valueOf(DataSaved.L_RotoToBucket)
+                        );
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                DataSaved.isTiltRotator = previous;
+
+            }, 500); // <-- 500 ms
+
+            return true;
+        });
+
+        setFlatAngle.setOnLongClickListener((View v) -> {
+            setFlatAngle.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+
+            DataSaved.offsetFlat = ExcavatorLib.correctBucket;
+            if (DataSaved.offsetFlat > -90) {
+                DataSaved.flat = 90 - Math.abs(DataSaved.offsetFlat);
+            } else {
+                DataSaved.flat = Math.abs(DataSaved.offsetFlat) - 90;
+            }
+
+            return true;
+        });
+    }
+
+    private void save() {
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Name", name.getText().toString().trim().toUpperCase());
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Length", Utils.writeMetri(bucketLength.getText().toString().trim()));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Width", Utils.writeMetri(bucketWidth.getText().toString().trim()));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_L4", Utils.writeMetri(L4.getText().toString().trim()));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Offset", String.valueOf(DataSaved.offsetBucket));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Flat_Offset", String.valueOf(DataSaved.offsetFlat));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Flat", String.valueOf(DataSaved.flat));
+        MyData.push("M" + indexMachineSelected + "_Tilt_Offset_Angle" + indexBucket, String.valueOf(DataSaved.offsetTilt));
+        MyData.push("M" + indexMachineSelected + "_Offset_DegWTilt" + indexBucket, String.valueOf(DataSaved.offsetDegWTilt));
+        MyData.push("M" + indexMachineSelected + "_Tilt_piccolaBucket" + indexBucket, String.valueOf(DataSaved.piccolaBucket));
+    }
+
+    private double routine_LRoto() {
+        // 2) centro perno di tilt all'altezza del centro di rotazione
+        double[] coordRotoTop = Exca_Quaternion.endPoint(
+                coordPivoTilt,
+                correctDeltaAngle + 90,
+                Deg_Boom_Roll,
+                DataSaved.Offset_Engcon_Forward, hdt_BOOM
+        );
+//Log.e("TestRoto", Arrays.toString(coordRotoTop));
+        //3 centro rotazione ROTOTILT, ultimo punto della catena cinematica vincolata al BOOM
+
+        double[] coordRotoCenter = Exca_Quaternion.endPoint(
+                coordRotoTop,
+                correctDeltaAngle,
+                correctTilt,
+                DataSaved.Offset_Engcon_Down,
+                hdt_BOOM + yawSensor
+
+        );
+//        Log.e("TestRoto", Arrays.toString(coordRotoCenter));
+//        Log.e("TestRoto", Arrays.toString(ExcavatorLib.bucketCoord));
+//        Log.e("TestRoto", DistToPoint.dist3D(coordRotoCenter,ExcavatorLib.bucketCoord)+"");
+        return DistToPoint.dist3D(coordRotoCenter, ExcavatorLib.bucketCoord);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+
+    }
+
+
+}
+
+
+

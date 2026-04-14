@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/panel"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+
+        <EditText
+            android:id="@+id/t_Name"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/transparent"
+            android:ems="4"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/_____cancel_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/t_Name" />
+
+        <EditText
+            android:id="@+id/t_Est"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@null"
+            android:digits="0123456789.-"
+            android:ems="8"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            android:inputType="numberDecimal|numberSigned"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/t_Name"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/_____cancel_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/t_Est" />
+
+        <EditText
+            android:id="@+id/t_Nord"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@null"
+            android:digits="0123456789.-"
+            android:ems="8"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            android:inputType="numberDecimal|numberSigned"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/t_Est"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/_____cancel_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/t_Nord" />
+
+        <EditText
+            android:id="@+id/t_Quota"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@null"
+            android:digits="0123456789.-"
+            android:ems="8"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            android:inputType="numberDecimal|numberSigned"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/t_Nord"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/_____cancel_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/t_Quota" />
+
+        <EditText
+            android:id="@+id/t_Des"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            android:hint="Description"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/t_Quota"
+            app:layout_constraintRight_toLeftOf="@id/img_del"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/_____cancel_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/img_del" />
+
+        <ImageView
+            android:id="@+id/img_del"
+            android:layout_width="50dp"
+            android:layout_height="0dp"
+            android:padding="5dp"
+            android:src="@drawable/btn_delete_forever"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/_____cancel_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

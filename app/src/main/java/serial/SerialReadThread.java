@@ -1,0 +1,202 @@
+package serial;
+
+
+import android.os.Build;
+import android.os.Handler;
+import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import event_bus.CMD_Event;
+import event_bus.SerialEvent;
+import gui.MyApp;
+import gui.debug_ecu.Serial_Msg_Debug;
+import gui.gps.Nuovo_Gps;
+import packexcalib.exca.DataSaved;
+import packexcalib.gnss.Difference;
+import packexcalib.gnss.NmeaListener;
+import utils.MyData;
+
+public class SerialReadThread extends Thread {
+    //
+
+    private final static String TAG = "SerialReadThread";
+    private Difference difference;
+    //
+    private String devicePath;
+    static String[] nmeaInput;
+    public static boolean serialEmpty;
+    Thread workerThread_Gnss;
+    byte[] readBuffer_Gnss;
+    final int[] readBufferPosition_Gnss = new int[1];
+    final boolean[] stopWorker_Gnss = new boolean[1];
+    private boolean mIsOpen = false;
+    private int GGA_LIMITER = -1;
+    private int counter = 0;
+
+
+    private BufferedInputStream mmInputStream_Gnss;
+
+    public SerialReadThread(InputStream is, String devicePath) {
+        this.devicePath = devicePath;
+        mmInputStream_Gnss = new BufferedInputStream(is);
+        String enabled = MyData.get_String("ntripEnabled");
+        if ("ENABLED".equalsIgnoreCase(enabled)) {
+            difference = new Difference(this);
+            GGA_LIMITER = Integer.parseInt(MyData.get_String("ntripGgaLimiter"));
+            Log.d(TAG, "INIT CONSTRUCTOR GGA RATE LIMITER: " + GGA_LIMITER + " COUNTER: " + counter);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void run() {
+        final int delimiter = 10;
+        stopWorker_Gnss[0] = false;
+        readBufferPosition_Gnss[0] = 0;
+        readBuffer_Gnss = new byte[1024];
+        workerThread_Gnss = new Thread(new Runnable() {
+            public void run() {
+                while (!Thread.currentThread().isInterrupted() && !stopWorker_Gnss[0]) {
+                    try {
+                        int bytesAvailable = mmInputStream_Gnss.available();
+                        if (bytesAvailable > 0) {
+                            byte[] packetBytes = new byte[bytesAvailable];
+                            mmInputStream_Gnss.read(packetBytes);
+                            for (int i = 0; i < bytesAvailable; i++) {
+                                byte b = packetBytes[i];
+                                if (b == delimiter) {
+                                    byte[] encodedBytes = new byte[readBufferPosition_Gnss[0]];
+
+                                    System.arraycopy(readBuffer_Gnss, 0, encodedBytes, 0, encodedBytes.length);
+
+                                    final String data = new String(encodedBytes, StandardCharsets.US_ASCII);
+                                    readBufferPosition_Gnss[0] = 0;
+
+                                    onDataReceive(data, bytesAvailable);
+
+                                } else {
+                                    try {
+                                        readBuffer_Gnss[readBufferPosition_Gnss[0]++] = b;
+                                    } catch (Exception e) {
+
+                                    }
+                                }
+                            }
+                        }
+                    } catch (IOException ex) {
+                        stopWorker_Gnss[0] = true;
+                    }
+                }
+            }
+        });
+
+
+        if (difference != null && difference.open()) {
+            mIsOpen = true;
+            Log.d(TAG, "OPEN");
+        }
+
+        workerThread_Gnss.start();
+    }
+
+    /**
+     * Trattare i dati acquisiti
+     *
+     * @param received
+     * @param size
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void onDataReceive(String received, int size) {
+
+        //String hexStr = ByteUtil.bytes2HexStr(received, 0, size);
+
+
+        handler_tl.removeCallbacks(timeoutRunnable_tl);
+        handler_tl.postDelayed(timeoutRunnable_tl, 3000);
+        serialEmpty = false;
+        NmeaListener.NmeaStandard(received);
+
+        if (DataSaved.portView >= 2) {
+            if (DataSaved.my_comPort == 0 || DataSaved.my_comPort == 3) {
+                if (devicePath.contains("/dev/ttyS0") || devicePath.contains("/dev/ttyWK0")) {
+
+                    if (received.contains("$GPHDT") || received.contains("$GNHDT")) {
+                        nmeaInput = received.split(",");
+                        try {
+                            NmeaListener.roof_Orientation = Double.parseDouble(nmeaInput[1]);
+                            if (nmeaInput[1].equals("0.0000") || nmeaInput[1].equals("")) {
+                                NmeaListener.roof_Orientation = 999.999;
+                            }
+                        } catch (Exception e) {
+                            NmeaListener.roof_Orientation = 999.999;
+
+                        }
+                    }
+
+                }
+            }
+        }
+        if (MyApp.visibleActivity instanceof Nuovo_Gps || MyApp.visibleActivity instanceof Serial_Msg_Debug) {
+            EventBus.getDefault().post(new CMD_Event(received));
+            EventBus.getDefault().post(new SerialEvent(received));
+
+        }
+
+        if (GGA_LIMITER > 0 && received.contains("GGA")) {
+            counter++;
+
+            int threshold = GGA_LIMITER * 20;
+            if (counter >= threshold) {
+                Log.d(TAG, "DATA RECEIVED GGA RATE LIMITER: " + GGA_LIMITER + " COUNTER: " + counter);
+
+                byte[] data = received.getBytes(StandardCharsets.UTF_8);
+                onGGA(data, data.length);
+
+                counter = 0;
+            }
+        }
+
+
+    }
+
+    public void close() {
+
+        try {
+            mmInputStream_Gnss.close();
+            if (difference != null) {
+                difference.close();
+            }
+        } catch (IOException e) {
+            //LogPlus.e("anormale", e);
+        } finally {
+            super.interrupt();
+        }
+    }
+
+    private final Handler handler_tl = new Handler();
+    private final Runnable timeoutRunnable_tl = new Runnable() {
+        @Override
+        public void run() {
+            serialEmpty = true;
+
+
+        }
+    };
+
+    public void onGGA(byte[] data, int length) {
+        difference.writeGGA(data, length);
+    }
+
+    public boolean isOpen() {
+        return mIsOpen;
+    }
+
+}

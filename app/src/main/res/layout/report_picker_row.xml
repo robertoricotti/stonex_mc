@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/panel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/pointCk"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guid1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/file" />
+
+        <TextView
+            android:id="@+id/path_tv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center|start"
+            android:paddingHorizontal="30dp"
+            android:text="ELEM 1"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/guid2"
+            app:layout_constraintLeft_toRightOf="@id/guid1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/size_tv"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:gravity="center"
+            app:layout_constraintLeft_toRightOf="@id/guid2"
+            tools:text="1 MB" />
+
+        <View
+            android:background="@color/_____cancel_text"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/size_tv"
+            app:layout_constraintRight_toLeftOf="@id/sendUSB" />
+
+        <ImageView
+            android:id="@+id/sendUSB"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="7dp"
+            app:layout_constraintLeft_toRightOf="@id/size_tv"
+            app:layout_constraintRight_toLeftOf="@id/sendCloud"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/btn_usb_stick" />
+
+        <View
+            android:background="@color/_____cancel_text"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/sendUSB"
+            app:layout_constraintRight_toLeftOf="@id/sendCloud" />
+
+        <ImageView
+            android:id="@+id/sendCloud"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="7dp"
+            app:layout_constraintLeft_toRightOf="@id/sendUSB"
+            app:layout_constraintRight_toLeftOf="@id/deleteRep"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/cloud_96" />
+
+        <View
+            android:background="@color/_____cancel_text"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/sendCloud"
+            app:layout_constraintRight_toLeftOf="@id/deleteRep" />
+
+        <ImageView
+            android:id="@+id/deleteRep"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="7dp"
+            app:layout_constraintLeft_toRightOf="@id/sendCloud"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/btn_delete_forever" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guid1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guid2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.65" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

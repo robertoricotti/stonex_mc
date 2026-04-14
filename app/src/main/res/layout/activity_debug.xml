@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:keepScreenOn="true"
+    android:layout_width="match_parent"
+    android:background="@color/black"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline52"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline53"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.88" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.298" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineC"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.388" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.478" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.568" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.658" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineMIO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.838" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.748" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineZ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidelineX"
+        app:layout_constraintTop_toBottomOf="@id/guideline52"
+        app:layout_constraintBottom_toTopOf="@id/guidelineA"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/yellow"
+        android:text="@string/sensor"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineX"
+        app:layout_constraintRight_toLeftOf="@id/guidelineK"
+        app:layout_constraintTop_toBottomOf="@id/guideline52"
+        app:layout_constraintBottom_toTopOf="@id/guidelineA"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/yellow"
+        android:text="@string/pos"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineK"
+        app:layout_constraintRight_toLeftOf="@id/guidelineY"
+        app:layout_constraintTop_toBottomOf="@id/guideline52"
+        app:layout_constraintBottom_toTopOf="@id/guidelineA"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/yellow"
+        android:text="@string/value"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineY"
+        app:layout_constraintRight_toLeftOf="@id/guidelineZ"
+        app:layout_constraintTop_toBottomOf="@id/guideline52"
+        app:layout_constraintBottom_toTopOf="@id/guidelineA"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/yellow"
+        android:text="@string/offset"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineZ"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline52"
+        app:layout_constraintBottom_toTopOf="@id/guidelineA"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/yellow"
+        android:text="@string/status"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="1px"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="@string/boom1"
+        android:textSize="18sp"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/guidelineB"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidelineX"
+        app:layout_constraintTop_toBottomOf="@id/guidelineA"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/ValueBoom1_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineK"
+        app:layout_constraintRight_toLeftOf="@id/guidelineY"
+        app:layout_constraintTop_toBottomOf="@id/guidelineA"
+        app:layout_constraintBottom_toTopOf="@id/guidelineB"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueBoom1_Pos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineX"
+        app:layout_constraintRight_toLeftOf="@id/guidelineK"
+        app:layout_constraintTop_toBottomOf="@id/guidelineA"
+        app:layout_constraintBottom_toTopOf="@id/guidelineB"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/OffsetBoom1_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineY"
+        app:layout_constraintRight_toLeftOf="@id/guidelineZ"
+        app:layout_constraintTop_toBottomOf="@id/guidelineA"
+        app:layout_constraintBottom_toTopOf="@id/guidelineB"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="***"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/StatusBoom1_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineZ"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineA"
+        app:layout_constraintBottom_toTopOf="@id/guidelineB"
+        android:layout_margin="4px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="****"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidelineX"
+        app:layout_constraintTop_toBottomOf="@id/guidelineB"
+        app:layout_constraintBottom_toTopOf="@id/guidelineC"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="@string/boom2"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueBoom2_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineK"
+        app:layout_constraintRight_toLeftOf="@id/guidelineY"
+        app:layout_constraintTop_toBottomOf="@id/guidelineB"
+        app:layout_constraintBottom_toTopOf="@id/guidelineC"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueBoom2_Pos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineX"
+        app:layout_constraintRight_toLeftOf="@id/guidelineK"
+        app:layout_constraintTop_toBottomOf="@id/guidelineB"
+        app:layout_constraintBottom_toTopOf="@id/guidelineC"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/OffsetBoom2_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineY"
+        app:layout_constraintRight_toLeftOf="@id/guidelineZ"
+        app:layout_constraintTop_toBottomOf="@id/guidelineB"
+        app:layout_constraintBottom_toTopOf="@id/guidelineC"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="***"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/StatusBoom2_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineZ"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineB"
+        app:layout_constraintBottom_toTopOf="@id/guidelineC"
+        android:layout_margin="4px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="****"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidelineX"
+        app:layout_constraintTop_toBottomOf="@id/guidelineC"
+        app:layout_constraintBottom_toTopOf="@id/guidelineD"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="@string/stick_laser"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueStick_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineK"
+        app:layout_constraintRight_toLeftOf="@id/guidelineY"
+        app:layout_constraintTop_toBottomOf="@id/guidelineC"
+        app:layout_constraintBottom_toTopOf="@id/guidelineD"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueStick_Pos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineX"
+        app:layout_constraintRight_toLeftOf="@id/guidelineK"
+        app:layout_constraintTop_toBottomOf="@id/guidelineC"
+        app:layout_constraintBottom_toTopOf="@id/guidelineD"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/OffsetStick_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineY"
+        app:layout_constraintRight_toLeftOf="@id/guidelineZ"
+        app:layout_constraintTop_toBottomOf="@id/guidelineC"
+        app:layout_constraintBottom_toTopOf="@id/guidelineD"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="***"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/StatusStick_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineZ"
+        app:layout_constraintRight_toLeftOf="@id/StatusStickLaser_tv"
+        app:layout_constraintTop_toBottomOf="@id/guidelineC"
+        app:layout_constraintBottom_toTopOf="@id/guidelineD"
+        android:layout_margin="4px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="****"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/StatusStickLaser_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        app:layout_constraintLeft_toRightOf="@id/StatusStick_tv"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineC"
+        app:layout_constraintBottom_toTopOf="@id/guidelineD"
+        android:layout_margin="4px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:text="****"
+        android:background="@color/black" />
+
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidelineX"
+        app:layout_constraintTop_toBottomOf="@id/guidelineD"
+        app:layout_constraintBottom_toTopOf="@id/guidelineE"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="@string/bucket"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueBucket_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineK"
+        app:layout_constraintRight_toLeftOf="@id/guidelineY"
+        app:layout_constraintTop_toBottomOf="@id/guidelineD"
+        app:layout_constraintBottom_toTopOf="@id/guidelineE"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueBucket_Pos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineX"
+        app:layout_constraintRight_toLeftOf="@id/guidelineK"
+        app:layout_constraintTop_toBottomOf="@id/guidelineD"
+        app:layout_constraintBottom_toTopOf="@id/guidelineE"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/OffsetBucket_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineY"
+        app:layout_constraintRight_toLeftOf="@id/guidelineZ"
+        app:layout_constraintTop_toBottomOf="@id/guidelineD"
+        app:layout_constraintBottom_toTopOf="@id/guidelineE"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="***"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/StatusBucket_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineZ"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineD"
+        app:layout_constraintBottom_toTopOf="@id/guidelineE"
+        android:layout_margin="4px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="****"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidelineX"
+        app:layout_constraintTop_toBottomOf="@id/guidelineE"
+        app:layout_constraintBottom_toTopOf="@id/guidelineF"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="@string/frame_picth_roll"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValuePitch_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineK"
+        app:layout_constraintRight_toLeftOf="@id/guidelineY"
+        app:layout_constraintTop_toBottomOf="@id/guidelineE"
+        app:layout_constraintBottom_toTopOf="@id/guidelineF"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="*\n*"
+
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValuePitch_Pos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineX"
+        app:layout_constraintRight_toLeftOf="@id/guidelineK"
+        app:layout_constraintTop_toBottomOf="@id/guidelineE"
+        app:layout_constraintBottom_toTopOf="@id/guidelineF"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="*\n*"
+        android:textSize="18sp"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/OffsetPitch_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineY"
+        app:layout_constraintRight_toLeftOf="@id/guidelineZ"
+        app:layout_constraintTop_toBottomOf="@id/guidelineE"
+        app:layout_constraintBottom_toTopOf="@id/guidelineF"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="***"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/StatusPitch_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineZ"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineE"
+        app:layout_constraintBottom_toTopOf="@id/guidelineF"
+        android:layout_margin="4px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="****"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidelineX"
+        app:layout_constraintTop_toBottomOf="@id/guidelineF"
+        app:layout_constraintBottom_toTopOf="@id/guidelineG"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="@string/compass"
+        android:textSize="18sp"
+        android:textAllCaps="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueCompass_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineK"
+        app:layout_constraintRight_toLeftOf="@id/guidelineY"
+        app:layout_constraintTop_toBottomOf="@id/guidelineF"
+        app:layout_constraintBottom_toTopOf="@id/guidelineG"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueCompass_Pos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineX"
+        app:layout_constraintRight_toLeftOf="@id/guidelineK"
+        app:layout_constraintTop_toBottomOf="@id/guidelineF"
+        app:layout_constraintBottom_toTopOf="@id/guidelineG"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/OffsetCompass_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineY"
+        app:layout_constraintRight_toLeftOf="@id/guidelineZ"
+        app:layout_constraintTop_toBottomOf="@id/guidelineF"
+        app:layout_constraintBottom_toTopOf="@id/guidelineG"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="***"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/StatusCompass_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineZ"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineF"
+        app:layout_constraintBottom_toTopOf="@id/guidelineG"
+        android:layout_margin="4px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="****"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidelineX"
+        app:layout_constraintTop_toBottomOf="@id/guidelineG"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMIO"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="@string/tilt"
+        android:textAllCaps="true"
+        android:textSize="18sp"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueTilt_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineK"
+        app:layout_constraintRight_toLeftOf="@id/guidelineY"
+        app:layout_constraintTop_toBottomOf="@id/guidelineG"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMIO"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/ValueTilt_Pos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineX"
+        app:layout_constraintRight_toLeftOf="@id/guidelineK"
+        app:layout_constraintTop_toBottomOf="@id/guidelineG"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMIO"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="**"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/OffsetTilt_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineY"
+        app:layout_constraintRight_toLeftOf="@id/guidelineZ"
+        app:layout_constraintTop_toBottomOf="@id/guidelineG"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMIO"
+        android:layout_margin="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="***"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/StatusTilt_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/guidelineZ"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineG"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMIO"
+        android:layout_marginTop="4px"
+        android:layout_marginHorizontal="4px"
+        android:layout_marginBottom="1px"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="****"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/voltage"
+        android:text="0.0 V"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/nav_gray_color"
+        app:layout_constraintBottom_toTopOf="@+id/guideline52"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </TextView>
+
+    <ImageView
+        android:id="@+id/status"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:scaleType="centerInside"
+        android:background="@color/nav_gray_color"
+        app:layout_constraintBottom_toTopOf="@+id/guideline52"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guidelineY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/can_err" />
+
+    <LinearLayout
+        android:id="@+id/lowerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline53">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/back_btn" />
+
+        <ImageView
+            android:id="@+id/coord"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="6"
+            android:scaleType="centerInside"
+            android:src="@drawable/btn_todebug"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp" />
+
+        <ImageView
+            android:id="@+id/pair"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/dig_btn" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:background="@color/_____cancel_text"
+        android:alpha="0.7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

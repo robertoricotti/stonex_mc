@@ -1,0 +1,234 @@
+<resources>
+    <string name="app_name">STX MC V4</string>
+    <string name="copyright">Copyright © \nVšechna práva vyhrazena</string>
+    <string name="error_license">Licence vypršela nebo chybí.\nObraťte se prosím na místního prodejce a vyřešte tento problém</string>
+    <string name="website">www.stonex.it</string>
+    <string name="copy_adding">"Kopírovat přidání\nProgresivní číslo"</string>
+    <string name="general_set">OBECNÁ NASTAVENÍ</string>
+    <string name="change_machine">ZMĚNIT MODEL STROJE</string>
+    <string name="procedi">Chcete pokračovat?</string>
+    <string name="downloading">Stahování probíhá. . . .</string>
+    <string name="uploading">Nahrávání probíhá. . . .</string>
+    <string name="rotate_m">OTOČIT STROJ</string>
+    <string name="rotate_w">OTOČIT SVĚT</string>
+    <string name="tred_scene">3D SCÉNA</string>
+    <string name="tit_hydro_set">PARAMETRY AUTO DOZER/GRADER</string>
+    <string name="savepara">ULOŽIT VŠECHNY PARAMETRY DO EXTERNÍ PAMĚTI</string>
+    <string name="savepara_pro">Chcete pokračovat?</string>
+    <string name="write_para">PŘEPSAT VŠECHNY PARAMETRY APLIKACE</string>
+    <string name="hydro_cp">HYDRAULICKÉ\nŘÍDICÍ BODY</string>
+    <string name="hydro_apply">POUŽÍT NOVÉ HYDRAULICKÉ HODNOTY</string>
+    <string name="brigbck">JAS-POZADÍ</string>
+    <string name="etxoff">KROK EXTERNÍHO OFFSETU Zvýšit/Snížit</string>
+
+    <string name="first_rod_l">DÉLKA PRVNÍ TYČE</string>
+    <string name="rod_l">DÉLKA TYČE</string>
+    <string name="bit_l">DÉLKA - ŠÍŘKA VRTACÍ KORUNKY</string>
+    <string name="rod_nr">POČET TYČÍ</string>
+    <string name="remove_all_rods">ODSTRANIT VŠECHNY TYČE?</string>
+    <string name="sdd_rod">PŘIDAT 1 TYČ?</string>
+    <string name="remove_one_rod">PŘIDAT 1 TYČ?</string>
+
+
+    <string name="color_bucket">BARVA LŽÍCE - RADLICE</string>
+    <string name="color_boom">BARVA VÝLOŽNÍKU - RÁMU</string>
+    <string name="ext_offset">KROK EXTERNÍHO OFFSETU</string>
+    <string name="auto_z_db">MRTVÉ PÁSMO LEVÉ VÝŠKY</string>
+    <string name="auto_z_dbR">MRTVÉ PÁSMO PRAVÉ VÝŠKY</string>
+    <string name="hydro_window">OKNO AKTIVACE HYDRAULIKY</string>
+    <string name="auto_slope_db">MRTVÉ PÁSMO SKLONU</string>
+    <string name="xy_db">MRTVÉ PÁSMO XY</string>
+
+    <string name="mac_setup">NASTAVENÍ STROJE</string>
+    <string name="sens_config">KONFIGURACE CAN SENZORU</string>
+    <string name="mch_schema">VYKRESLIT 3D SCHÉMA STROJE</string>
+    <string name="enable_but">POVOLIT NAVIGAČNÍ TLAČÍTKA ANDROIDU</string>
+    <string name="extra_hdt">POVOLIT DODATEČNÝ SENZOR SMĚRU</string>
+    <string name="en_out">POVOLIT DIGITÁLNÍ 12V VÝSTUP PRO HRANIČNÍ ALARM</string>
+    <string name="en_uhf_ntrip">PŘEPNOUT UHF/NTRIP</string>
+    <string name="uppaer_bar">HORNÍ LIŠTA JE NA PRACOVNÍ STRÁNCE VŽDY VIDITELNÁ</string>
+    <string name="interface_type">TYP HYDRAULICKÉHO ROZHRANÍ</string>
+    <string name="save">ULOŽIT</string>
+    <string name="exit">KONEC</string>
+    <string name="machines">STROJE</string>
+    <string name="machines_setup">NASTAVENÍ STROJE</string>
+    <string name="rename_file">PŘEJMENOVAT SOUBOR</string>
+    <string name="wait_until">Počkejte, dokud nebude projekt aktualizován</string>
+    <string name="com_debug">LADĚNÍ CAN</string>
+    <string name="profiles">PROFILY</string>
+    <string name="buckets">VYBERTE LŽÍCI</string>
+    <string name="settings">UŽIVATELSKÁ NASTAVENÍ</string>
+    <string name="bucket1">LŽÍCE1</string>
+    <string name="bucket2">LŽÍCE2</string>
+    <string name="bucket3">LŽÍCE3</string>
+    <string name="bucket4">LŽÍCE4</string>
+    <string name="bucket5">LŽÍCE5</string>
+    <string name="bucket6">LŽÍCE6</string>
+    <string name="bucket7">LŽÍCE7</string>
+    <string name="bucket8">LŽÍCE8</string>
+    <string name="bucket9">LŽÍCE9</string>
+    <string name="bucket10">LŽÍCE10</string>
+    <string name="bucket11">LŽÍCE11</string>
+    <string name="bucket12">LŽÍCE12</string>
+    <string name="bucket13">LŽÍCE13</string>
+    <string name="bucket14">LŽÍCE14</string>
+    <string name="bucket15">LŽÍCE15</string>
+    <string name="bucket16">LŽÍCE16</string>
+    <string name="bucket17">LŽÍCE17</string>
+    <string name="bucket18">LŽÍCE18</string>
+    <string name="bucket19">LŽÍCE19</string>
+    <string name="bucket20">LŽÍCE20</string>
+    <string name="sensor">SENZOR</string>
+    <string name="value">HODNOTA</string>
+    <string name="offset">OFFSET</string>
+    <string name="status">STAV</string>
+    <string name="boom1">VÝLOŽNÍK1</string>
+    <string name="boom2">VÝLOŽNÍK2</string>
+    <string name="stick_laser">RAMENO-LASER</string>
+    <string name="bucket">LŽÍCE</string>
+    <string name="frame_picth_roll">NÁKLON-PŘÍČNÝ NÁKLON RÁMU</string>
+    <string name="compass">KOMPAS</string>
+    <string name="tilt">NÁKLON</string>
+    <string name="pos">POZ</string>
+    <string name="single_slope">JEDNODUCHÝ SKLON</string>
+    <string name="off">VYP</string>
+    <string name="left">VLEVO</string>
+    <string name="right">VPRAVO</string>
+    <string name="bucket_name">NÁZEV LŽÍCE:</string>
+    <string name="bucket_length">DÉLKA LŽÍCE: </string>
+    <string name="bucket_width">ŠÍŘKA LŽÍCE: </string>
+    <string name="Linkage_L4">ČLÁNEK L4: </string>
+    <string name="bucket_angle">ÚHEL LŽÍCE: </string>
+    <string name="bucket_flat_angle">PLOCHÝ ÚHEL LŽÍCE: </string>
+    <string name="reset">RESET</string>
+    <string name="stick_and_laser_calibration">KALIBRACE RAMENE / LASERU</string>
+    <string name="bucket_linkage_calibration">KALIBRACE LŽÍCE / TÁHLA</string>
+    <string name="mounting_side">STRANA MONTÁŽE</string>
+    <string name="info">INFO</string>
+    <string name="machine_name">NÁZEV STROJE</string>
+    <string name="picth_and_roll_calibration">KALIBRACE NÁKLONU / PŘÍČNÉHO NÁKLONU</string>
+    <string name="boom2_calibration">KALIBRACE VÝLOŽNÍKU 2</string>
+    <string name="boom1_calibration">KALIBRACE VÝLOŽNÍKU 1</string>
+    <string name="tilt_calibration">KALIBRACE NÁKLONU</string>
+    <string name="height_deadband">MRTVÉ PÁSMO VÝŠKY</string>
+    <string name="flat_angle_deadband">MRTVÉ PÁSMO ÚHLU</string>
+    <string name="yes">ANO</string>
+    <string name="no">NE</string>
+    <string name="language">JAZYK</string>
+
+    <string name="lasermode">Režim 2D LASER pro bagr</string>
+    <string name="close_app">OPRAVDU CHCETE TUTO APLIKACI ZAVŘÍT?</string>
+    <string name="ok">OK</string>
+    <string name="set">NASTAVIT</string>
+    <string name="height_alarm">VÝŠKOVÝ ALARM</string>
+    <string name="use_tilt">POUŽÍT SENZOR NÁKLONU</string>
+    <string name="use_bucket">POUŽÍT SENZOR LŽÍCE</string>
+    <string name="len">DÉLKA (mm)</string>
+    <string name="angle">ÚHEL (°)</string>
+    <string name="txt_tiltangle">ÚHEL NÁKLONU: </string>
+    <string name="gps_calib">KALIBRACE ANTÉNY</string>
+    <string name="gnss_setup">NASTAVENÍ GNSS</string>
+    <string name="set_laser_offset">NASTAVIT VÝŠKU LASERU?</string>
+    <string name="units">VZDÁLENOST</string>
+    <string name="unitsA">ÚHEL</string>
+    <string name="viewport">ZOBRAZENÍ</string>
+    <string name="user_units">JEDNOTKY MĚŘENÍ</string>
+    <string name="audio">ZVUKY</string>
+    <string name="slopeX">SKLON X</string>
+    <string name="slopeY">SKLON Y</string>
+    <string name="infoNr">Technická podpora</string>
+    <string name="infoMessage">mc@stonex.it</string>
+    <string name="touch_e_go">POHNĚTE BAGREM, POTÉ UMÍSTĚTE LŽÍCI NAD STEJNÝ REFERENČNÍ BOD A STISKNĚTE TLAČÍTKO</string>
+    <string name="quick_setup">RYCHLÉ NASTAVENÍ</string>
+    <string name="flat_surface">ROVNÁ PLOCHA</string>
+    <string name="ab_surface">PLOCHA Od A>>B</string>
+    <string name="cross_section">PLOCHA Z\n POLYČÁRY</string>
+    <string name="area">ROVNÁ<br />PLOCHA</string>
+    <string name="edit_zeta">CHCETE UPRAVIT Z A POUŽÍT NOVOU HODNOTU PRO GPS?</string>
+    <string name="lumen">JAS</string>
+    <string name="messages">ZPRÁVY</string>
+    <string name="exit_proj">UKONČIT?\n VŠECHNA DATA BUDOU ZTRACENA</string>
+    <string name="mostraTriangoli">Zobrazit trojúhelníky</string>
+    <string name="mostraColore">Zobrazit povrch</string>
+    <string name="mostraPunti">Zobrazit body</string>
+    <string name="mostraPoly">Zobrazit 3D polyčáry</string>
+    <string name="mostraNome">Zobrazit text bodu</string>
+    <string name="mostraUtils">Zobrazit 2D objekty</string>
+    <string name="mostraGradiente">Zobrazit gradient povrchu</string>
+    <string name="projectWindow">OKNO POVRCHU</string>
+    <string name="polylinee">POLYČÁRY</string>
+    <string name="puntip">BODY</string>
+    <string name="laserOK">LASER OK</string>
+    <string name="laserKO">LASER MIMO ROZSAH</string>
+    <string name="disabled">ZAKÁZÁNO</string>
+    <string name="yaw_drift_compensation">KOMPENZACE DRIFTU YAW</string>
+    <string name="toast_select_bucket">VYBERTE LŽÍCI PRO KALIBRACI</string>
+    <string name="toast_hold_to_set">PODRŽTE PRO NASTAVENÍ</string>
+    <string name="toast_cantset_heading">CHYBA NASTAVENÍ ORIENTACE</string>
+    <string name="powercycle_sensor">PROSÍM VYPNĚTE A ZNOVU ZAPNĚTE SENZOR</string>
+    <string name="pick_1">UMÍSTĚTE LŽÍCI NAD REFERENČNÍ BOD A POTÉ STISKNĚTE OBRÁZEK 1</string>
+    <string name="selectproject">"VYBERTE PROJEKT "</string>
+    <string name="project">"PROJEKTY"</string>
+    <string name="quick">RYCHLÝ\n UPÍNAČ</string>
+    <string name="selectafile">VYBERTE SOUBOR!</string>
+    <string name="trincea">VÝKOP - ODVODNĚNÍ</string>
+    <string name="dtm">MODEL TERÉNU</string>
+    <string name="usb_file_tr">USB \nPŘENOS SOUBORŮ</string>
+    <string name="cloud_file_tr">CLOUD \nPŘENOS SOUBORŮ</string>
+    <string name="local_projects">MÍSTNÍ \nPROJEKTY</string>
+    <string name="punto_salvato">BOD PŘIDÁN</string>
+    <string name="punto_rimosso">BOD ODSTRANĚN</string>
+    <string name="off_grid">MIMO POVRCH</string>
+    <string name="file_exists">Soubor již existuje</string>
+    <string name="overwrite">PŘEPSAT?</string>
+    <string name="delete_file">ODSTRANIT VYBRANÝ SOUBOR?</string>
+    <string name="delete_obj">ODSTRANIT VYBRANÝ OBJEKT?</string>
+    <string name="select_file">VYBERTE SOUBOR</string>
+    <string name="deleted">ODSTRANĚNO</string>
+    <string name="showAlign">Zobrazit zarovnání stroje</string>
+    <string name="add_surface">NOVÝ POVRCH</string>
+    <string name="add_surface_ask">PŘIDAT DO AKTUÁLNÍHO PROJEKTU</string>
+    <string name="add_surface_nope">VYTVOŘIT NOVÝ</string>
+    <string name="enter_filename">ZADEJTE NÁZEV SOUBORU</string>
+    <string name="fydro_no">Hydraulické řízení ještě není implementováno</string>
+    <string name="treddi_acxtive">Profily jsou dostupné pouze v režimu 1D/2D</string>
+    <string name="treddi_off">Dostupné pouze v režimu 3D</string>
+
+    <!-- nuove stringhe -->
+    <string name="menu_utente">UŽIVATELSKÁ NASTAVENÍ</string>
+    <string name="menu_macchine">NASTAVENÍ STROJE</string>
+    <string name="nuovo_progetto">NOVÝ PRACOVNÍ PROSTOR</string>
+    <string name="lista_lavori">SEZNAM ÚLOH</string>
+    <string name="rimuovi_usb">VYJMOUT USB DISK</string>
+    <string name="rimozione_sicura">PŘED UKONČENÍM BEZPEČNĚ ODEBERTE USB</string>
+    <string name="progetti_non_trovata">Složka projektů nebyla nalezena</string>
+    <string name="stxmc_creata">Složka STX_MC byla vytvořena na USB disku</string>
+    <string name="stxmc_fallita">Nepodařilo se vytvořit složku STX_MC na USB disku</string>
+    <string name="stxmc_nontrovata">USB disk nebyl nalezen</string>
+    <string name="sovrascrivere">Přepsat?</string>
+
+    <string-array name="radio_proto">
+        <item>Satel</item><!-- 0 -->
+        <item>PCC-4FSK</item><!-- 1 -->
+        <item>PCC-GMSK</item><!-- 2 -->
+        <item>TrimTalk 450S</item><!-- 3 -->
+        <item>South 9600</item><!-- 4 -->
+        <item>HITARGET(9600)</item><!-- 6 -->
+        <item>HITARGET(19200)</item><!-- 7 -->
+        <item>TrimMark III</item><!-- 9 -->
+        <item>South 19200</item><!-- 10 -->
+        <item>TrimTalk(4800)</item><!-- 11 -->
+        <item>GEOTALK</item><!-- 13 -->
+        <item>GEOMARK</item><!-- 14 -->
+        <item>900M Hopping</item><!-- 15 -->
+        <item>HZSZ</item><!-- 16 -->
+        <item>GEO FHSS</item><!-- 17 -->
+        <item>Satel_ADL</item><!-- 19 -->
+        <item>PCCFST</item><!-- 20 -->
+        <item>PCCFST_ADL</item><!-- 21 -->
+    </string-array>
+    <string-array name="radio_spacing">
+        <item>12.5</item>
+        <item>25</item>
+    </string-array>
+</resources>

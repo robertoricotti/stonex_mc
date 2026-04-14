@@ -1,0 +1,16 @@
+# ninja log v5
+0	18	0	clean	3f910abda4e23497
+1	232	7968221648667601	build.ninja	b7b74b331dab48f2
+2	518	7960122929900016	CMakeFiles/nativeczechproj.dir/native_czech_proj.cpp.o	779c433a2d0cdde4
+519	729	7960122932041086	D:/Development/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/5z293x17/obj/armeabi-v7a/libnativeczechproj.so	97ba9c2f0c16e630
+1	207	7968221648667601	build.ninja	b7b74b331dab48f2
+0	9	0	clean	3f910abda4e23497
+0	9	0	clean	3f910abda4e23497
+0	10	0	clean	3f910abda4e23497
+0	10	0	clean	3f910abda4e23497
+0	9	0	clean	3f910abda4e23497
+0	10	0	clean	3f910abda4e23497
+1	24	0	clean	3f910abda4e23497
+0	12	0	clean	3f910abda4e23497
+0	14	0	clean	3f910abda4e23497
+0	13	0	clean	3f910abda4e23497

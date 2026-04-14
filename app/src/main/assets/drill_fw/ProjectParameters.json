@@ -1,0 +1,13 @@
+{
+  "FileFormat": "003A",
+  "Parameters": [
+    {
+      "GUID": "{10B02E83-2F1B-6a5c-8D11-4085868F0AD9}",
+      "DataType": "U16",
+      "ParamName": "Slope_Deadband",
+      "ReadAccess": "9",
+      "WriteAccess": "9",
+      "NvIndex": "0"
+    }
+  ]
+}

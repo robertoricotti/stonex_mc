@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/panel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <View
+            android:id="@+id/dividerW"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@id/prjName"
+            android:background="@color/transparent" />
+
+        <TextView
+            android:id="@+id/prjName"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="2dp"
+            android:gravity="center|bottom"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/selectAll"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/selectAll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="@id/layeren"
+            app:layout_constraintRight_toRightOf="@id/layeren"
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="5dp"
+            android:layout_marginVertical="2dp"
+            android:background="@color/black"
+            android:src="@drawable/done_all"
+            app:tint="@color/whiteGray" />
+
+        <TextView
+            android:id="@+id/path_tv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_vertical|start"
+            android:paddingHorizontal="10dp"
+            android:text="NOME_LAYER"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/guid1"
+            app:layout_constraintRight_toLeftOf="@id/guid2"
+            app:layout_constraintTop_toBottomOf="@id/dividerW" />
+
+
+        <ImageView
+            android:id="@+id/pointCk"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="5dp"
+            android:layout_margin="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guid1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerW"
+            app:srcCompat="@drawable/layer_96" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guid1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidm3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.55" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidm2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.62" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="@id/guidm3"
+            app:layout_constraintRight_toRightOf="@id/guidm3"
+            android:background="@color/_____cancel_text" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidm1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.69" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="@id/guidm2"
+            app:layout_constraintRight_toRightOf="@id/guidm2"
+            android:background="@color/_____cancel_text" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guid0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.76" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="@id/guidm1"
+            app:layout_constraintRight_toRightOf="@id/guidm1"
+            android:background="@color/_____cancel_text" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guid2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.83" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guid3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="@id/guid0"
+            app:layout_constraintRight_toRightOf="@id/guid0"
+            android:background="@color/_____cancel_text" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="@id/guid1"
+            app:layout_constraintRight_toRightOf="@id/guid1"
+            android:background="@color/_____cancel_text" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="@id/guid2"
+            app:layout_constraintRight_toRightOf="@id/guid2"
+            android:background="@color/_____cancel_text" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="@id/guid3"
+            app:layout_constraintRight_toRightOf="@id/guid3"
+            android:background="@color/_____cancel_text" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:background="@color/_____cancel_text" />
+
+        <FrameLayout
+            android:id="@+id/frameFaces"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/guidm3"
+            app:layout_constraintRight_toLeftOf="@id/guidm2">
+
+            <ImageView
+                android:id="@+id/imageViewfaces"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/treddifaces"
+                android:rotation="45" />
+
+            <TextView
+                android:id="@+id/textViewfaces"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="1dp"
+                android:text="99999"
+                android:textColor="@color/blue"
+                android:textStyle="bold"
+                android:background="@android:color/white" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/framePoly3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/guidm2"
+            app:layout_constraintRight_toLeftOf="@id/guidm1">
+
+            <ImageView
+                android:id="@+id/imageViewpoly3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/polilinea"
+                android:rotation="180" />
+
+            <TextView
+                android:id="@+id/textViewpoly3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="1dp"
+                android:text="99999"
+                android:textColor="@color/blue"
+                android:textStyle="bold"
+                android:background="@android:color/white" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/framePoly2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/guidm1"
+            app:layout_constraintRight_toLeftOf="@id/guid0">
+
+            <ImageView
+                android:id="@+id/imageViewpoly2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/lineadued" />
+
+            <TextView
+                android:id="@+id/textViewpoly2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="1dp"
+                android:text="99999"
+                android:textColor="@color/blue"
+                android:textStyle="bold"
+                android:background="@android:color/white" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/framePoint"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/guid0"
+            app:layout_constraintRight_toLeftOf="@id/guid2">
+
+            <ImageView
+                android:id="@+id/imageViewpoint"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/grigliapunti"
+                android:rotation="45" />
+
+            <TextView
+                android:id="@+id/textViewpoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="1dp"
+                android:text="99999"
+                android:textColor="@color/blue"
+                android:textStyle="bold"
+                android:background="@android:color/white" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/layerStatus"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="5dp"
+            app:layout_constraintLeft_toRightOf="@id/guid2"
+            app:layout_constraintRight_toLeftOf="@id/guid3"
+            app:layout_constraintTop_toBottomOf="@id/dividerW"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/baseline_panorama_96"
+            app:tint="@color/black" />
+
+        <ImageView
+            android:id="@+id/layeren"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="5dp"
+            app:layout_constraintLeft_toRightOf="@id/guid3"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerW"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/twilight"
+            app:tint="@color/gray" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

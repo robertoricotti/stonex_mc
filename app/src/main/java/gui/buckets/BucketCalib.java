@@ -1,0 +1,345 @@
+package gui.buckets;
+
+import static utils.Utils.isNumeric;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+
+import com.example.stx_dig.R;
+
+import gui.BaseClass;
+import gui.dialogs_and_toast.CustomNumberDialog;
+import gui.dialogs_and_toast.CustomNumberDialogFtIn;
+import gui.dialogs_and_toast.CustomQwertyDialog;
+import gui.dialogs_and_toast.CustomToast;
+import gui.dialogs_and_toast.PopupImageDialog;
+import packexcalib.exca.DataSaved;
+import packexcalib.exca.ExcavatorLib;
+import packexcalib.exca.Sensors_Decoder;
+import services.UpdateValuesService;
+import utils.MyData;
+import utils.Utils;
+
+
+public class BucketCalib extends BaseClass {
+    Button offsetZeroMinus, offsetZeroPlus, offsetZero, offsetZeroFlat;
+    ImageView esc, save, load;
+    EditText nameBucket, lengthBucket, widthBucket, L4Bucket;
+    CheckBox off, left, right, top, topRev;
+    TextView bucketAngle, bucketFlatAngle, bucketAngleOffset, bucketFlatAngleOffset, textLength, textWidth, textL4;
+
+    int indexBucket;
+    int indexMachineSelected;
+    CustomNumberDialog numberDialog;
+    CustomNumberDialogFtIn numberDialogFtIn;
+
+    int indexMeasure = 0;
+
+    CustomQwertyDialog qwertyDialog;
+
+    PopupImageDialog angolo, flat;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_bucket_calib_7);
+
+
+        findView();
+        init();
+        onClick();
+        onLongClick();
+        updateUI();
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void init() {
+
+
+        indexMeasure = MyData.get_Int("Unit_Of_Measure");
+
+
+        numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
+
+        numberDialog = new CustomNumberDialog(this, -1);
+
+
+        qwertyDialog = new CustomQwertyDialog(this, null);
+        angolo = new PopupImageDialog(this, R.layout.popup_bucket_angle_90);
+        flat = new PopupImageDialog(this, R.layout.popup_bucket_flat_angle);
+
+        indexBucket = getIntent().getExtras().getInt("indexBucket");
+        indexMachineSelected = MyData.get_Int("MachineSelected");
+
+        nameBucket.setText(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Name"));
+        lengthBucket.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Length")));
+        widthBucket.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Width")));
+        L4Bucket.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_L4")));
+
+        textLength.setText(getResources().getString(R.string.bucket_length) + Utils.getMetriSimbol());
+        textWidth.setText(getResources().getString(R.string.bucket_width) + Utils.getMetriSimbol());
+        textL4.setText(getResources().getString(R.string.Linkage_L4) + Utils.getMetriSimbol());
+
+        int bucketMountPos = MyData.get_Int("M" + indexMachineSelected + "_Bucket_MountPos");
+        switch (bucketMountPos) {
+            case 0:
+                off.setChecked(true);
+                break;
+            case 1:
+                left.setChecked(true);
+                break;
+            case -1:
+                right.setChecked(true);
+                break;
+            case 2:
+                top.setChecked(true);
+                break;
+            case 3:
+                topRev.setChecked(true);
+                break;
+        }
+    }
+
+    private void findView() {
+        nameBucket = findViewById(R.id.bucket_ID);
+        lengthBucket = findViewById(R.id.bucketLength);
+        widthBucket = findViewById(R.id.bucketWidth);
+        L4Bucket = findViewById(R.id.bucket_L4);
+        nameBucket = findViewById(R.id.bucket_ID);
+        esc = findViewById(R.id.exit);
+        save = findViewById(R.id.save);
+        offsetZeroMinus = findViewById(R.id.offsetMinus);
+        offsetZero = findViewById(R.id.offsetZero);
+        offsetZeroPlus = findViewById(R.id.offsetPlus);
+        offsetZeroFlat = findViewById(R.id.offsetZeroFlat);
+        textLength = findViewById(R.id.bkl);
+        textWidth = findViewById(R.id.bwdt);
+        textL4 = findViewById(R.id.l4);
+        off = findViewById(R.id.cbxOff);
+        left = findViewById(R.id.cbxLeft);
+        right = findViewById(R.id.cbxRight);
+        bucketAngle = findViewById(R.id.bucketAngle);
+        bucketFlatAngle = findViewById(R.id.bucketAngleFlat);
+        bucketAngleOffset = findViewById(R.id.bucketAngleOffset);
+        bucketFlatAngleOffset = findViewById(R.id.bucketAngleFlatOffset);
+        load = findViewById(R.id.load);
+        load.setVisibility(View.INVISIBLE);
+        top = findViewById(R.id.cbTop);
+        topRev = findViewById(R.id.cbTopRev);
+
+        off.setEnabled(false);
+        off.setChecked(false);
+        left.setEnabled(false);
+        left.setChecked(false);
+        right.setEnabled(false);
+        right.setChecked(false);
+        top.setEnabled(false);
+        top.setChecked(false);
+        topRev.setEnabled(false);
+        topRev.setChecked(false);
+    }
+
+    private void onClick() {
+        lengthBucket.setOnClickListener((View v) -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(lengthBucket);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(lengthBucket);
+            }
+        });
+
+        widthBucket.setOnClickListener((View v) -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(widthBucket);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(widthBucket);
+            }
+        });
+
+        L4Bucket.setOnClickListener((View v) -> {
+            if (DataSaved.hasQuick == 0 && DataSaved.L1 > 0) {
+                if (indexMeasure == 4 || indexMeasure == 5) {
+                    if (!numberDialogFtIn.dialog.isShowing())
+                        numberDialogFtIn.show(L4Bucket);
+                } else {
+                    if (!numberDialog.dialog.isShowing())
+                        numberDialog.show(L4Bucket);
+                }
+            }
+        });
+
+        nameBucket.setOnClickListener((View v) -> {
+            if (!qwertyDialog.dialog.isShowing())
+                qwertyDialog.show(nameBucket);
+        });
+
+
+        save.setOnClickListener((View v) -> {
+
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!lengthBucket.getText().toString().contains("'") || !widthBucket.getText().toString().contains("'") || !L4Bucket.getText().toString().contains("'")) {
+                    new CustomToast(this, "INPUT ERROR!!!").show_error();
+                } else {
+                    if (nameBucket.getText().toString().equals("")) {
+                        new CustomToast(this, "Missing Name").show_alert();
+                    } else {
+                        disableAll();
+                        save();
+
+                        startService(new Intent(this, UpdateValuesService.class));
+                        startActivity(new Intent(this, BucketChooserActivity.class));
+                        finish();
+                    }
+                }
+            } else {
+                if (!(isNumeric(lengthBucket.getText().toString()) && isNumeric(widthBucket.getText().toString()) && isNumeric(L4Bucket.getText().toString()))) {
+                    new CustomToast(this, "INPUT ERROR!!!").show_error();
+                } else {
+                    if (nameBucket.getText().toString().equals("")) {
+                        new CustomToast(this, "Missing Name").show_alert();
+                    } else {
+                        disableAll();
+                        save();
+
+                        startService(new Intent(this, UpdateValuesService.class));
+                        startActivity(new Intent(this, BucketChooserActivity.class));
+
+                        finish();
+                    }
+                }
+            }
+
+        });
+
+        esc.setOnClickListener((View v) -> {
+            disableAll();
+            startService(new Intent(this, UpdateValuesService.class));
+            startActivity(new Intent(this, BucketChooserActivity.class));
+
+            finish();
+
+        });
+
+        offsetZeroMinus.setOnClickListener((View v) -> {
+            DataSaved.offsetBucket -= 0.1;
+        });
+
+        offsetZeroPlus.setOnClickListener((View v) -> {
+            DataSaved.offsetBucket += 0.1;
+        });
+
+    }
+
+    private void disableAll() {
+        load.setEnabled(false);
+        save.setEnabled(false);
+        esc.setEnabled(false);
+    }
+
+    private void onLongClick() {
+        offsetZero.setOnLongClickListener((View v) -> {
+            offsetZero.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+            if (DataSaved.lrBucket != 0) {
+
+                if (DataSaved.L1 > 0) {
+                    DataSaved.offsetBucket = ExcavatorLib.bennaSimulata;
+                } else {
+                    DataSaved.offsetBucket = Sensors_Decoder.Deg_bucket;
+                }
+            } else {
+                DataSaved.offsetBucket = -90;
+            }
+            return true;
+        });
+
+        offsetZeroFlat.setOnLongClickListener((View v) -> {
+            offsetZeroFlat.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+            if (DataSaved.lrBucket != 0) {
+                DataSaved.offsetFlat = ExcavatorLib.correctBucket;
+                if (DataSaved.offsetFlat > -90) {
+                    DataSaved.flat = 90 - Math.abs(DataSaved.offsetFlat);
+                } else {
+                    DataSaved.flat = Math.abs(DataSaved.offsetFlat) - 90;
+                }
+            } else {
+                DataSaved.offsetFlat = 0;
+                DataSaved.flat = 90;
+
+            }
+
+            return true;
+        });
+    }
+
+    @SuppressLint({"DefaultLocale", "SetTextI18n"})
+    public void updateUI() {
+
+
+        bucketAngle.setText(((getResources().getString(R.string.bucket_angle) + String.format("%.2f", ExcavatorLib.correctBucket) + " °").replace(",", ".")));
+        bucketAngleOffset.setText((String.format("%.2f", DataSaved.offsetBucket) + " °").replace(",", "."));
+        bucketFlatAngle.setText(((getResources().getString(R.string.bucket_flat_angle) + String.format("%.2f", ExcavatorLib.correctFlat) + " °").replace(",", ".")));
+        bucketFlatAngleOffset.setText((String.format("%.2f", DataSaved.offsetFlat) + " °").replace(",", "."));
+        if (isNumeric(L4Bucket.getText().toString())) {
+            DataSaved.L4 = Double.parseDouble(Utils.writeMetri(L4Bucket.getText().toString().trim()));
+        } else {
+            DataSaved.L4 = 0;
+        }
+        if (isNumeric(lengthBucket.getText().toString())) {
+            DataSaved.L_Bucket = Double.parseDouble(Utils.writeMetri(lengthBucket.getText().toString().trim()));
+        } else {
+            DataSaved.L_Bucket = 0;
+        }
+        if (isNumeric(widthBucket.getText().toString())) {
+            DataSaved.W_Bucket = Double.parseDouble(Utils.writeMetri(widthBucket.getText().toString().trim()));
+        } else {
+            DataSaved.W_Bucket = 0;
+        }
+        if (DataSaved.hasQuick == 1 || DataSaved.L1 <= 0) {
+            textL4.setAlpha(0.5f);
+            L4Bucket.setAlpha(0.5f);
+        } else {
+            textL4.setAlpha(1f);
+            L4Bucket.setAlpha(1f);
+        }
+    }
+
+
+    private void save() {
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Name", nameBucket.getText().toString().trim().toUpperCase());
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Length", Utils.writeMetri(lengthBucket.getText().toString().trim()));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Width", Utils.writeMetri(widthBucket.getText().toString().trim()));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_L4", Utils.writeMetri(L4Bucket.getText().toString().trim()));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Offset", String.valueOf(DataSaved.offsetBucket));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Flat_Offset", String.valueOf(DataSaved.offsetFlat));
+        MyData.push("M" + indexMachineSelected + "_Bucket_" + indexBucket + "_Flat", String.valueOf(DataSaved.flat));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+
+    }
+}
+
+

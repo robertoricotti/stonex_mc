@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/sfondo_manuale">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/V1_G"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/V2_G"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/H1_G"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/H2_G"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <TextView
+        android:id="@+id/centerTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:gravity="center"
+        android:text="HYDRAULIC\nCONTROL POINTS"
+        android:textColor="@color/_____cancel_text"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/lamaDX"
+        app:layout_constraintLeft_toRightOf="@id/V1_G"
+        app:layout_constraintRight_toLeftOf="@id/V2_G"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/lamaCP"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:src="@drawable/cent_right"
+        app:layout_constraintBottom_toTopOf="@id/H1_G"
+        app:layout_constraintLeft_toRightOf="@id/V1_G"
+        app:layout_constraintRight_toLeftOf="@id/V2_G"
+        app:layout_constraintTop_toBottomOf="@id/H1_G" />
+
+    <ImageView
+        android:id="@+id/lamaDX"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/sfondo_dialog_scura"
+        android:src="@drawable/key_arrow_right"
+        app:layout_constraintBottom_toTopOf="@id/H1_G"
+        app:layout_constraintLeft_toLeftOf="@id/lamaCP"
+        app:layout_constraintRight_toRightOf="@id/lamaCP"
+        app:layout_constraintTop_toBottomOf="@id/centerTitle"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/gainLTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:gravity="center"
+        android:text="GAIN\nLEFT"
+        android:textColor="@color/_____cancel_text"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/centerTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/V1_G"
+        app:layout_constraintTop_toTopOf="@id/centerTitle" />
+
+    <ImageView
+        android:id="@+id/gainLPiu"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/sfondo_dialog_scura"
+        android:src="@drawable/keyboard_arrow_up_96"
+        app:layout_constraintBottom_toTopOf="@id/gainL"
+        app:layout_constraintLeft_toLeftOf="@id/gainL"
+        app:layout_constraintRight_toRightOf="@id/gainL"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/gainL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:ems="2"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/black"
+        android:textSize="38dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/H1_G"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/V1_G"
+        app:layout_constraintTop_toBottomOf="@id/H1_G" />
+
+    <ImageView
+        android:id="@+id/gainLMen"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/sfondo_dialog_scura"
+        android:src="@drawable/keyboard_arrow_down_96"
+        app:layout_constraintLeft_toLeftOf="@id/gainL"
+        app:layout_constraintRight_toRightOf="@id/gainL"
+        app:layout_constraintTop_toBottomOf="@id/gainL"
+        app:tint="@color/white" />
+
+
+    <TextView
+        android:id="@+id/gainRTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:gravity="center"
+        android:text="GAIN\nRIGHT"
+        android:textColor="@color/_____cancel_text"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/centerTitle"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintLeft_toRightOf="@id/V2_G"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/centerTitle" />
+
+    <ImageView
+        android:id="@+id/gainRPiu"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/sfondo_dialog_scura"
+        android:src="@drawable/keyboard_arrow_up_96"
+        app:layout_constraintBottom_toTopOf="@id/gainR"
+        app:layout_constraintLeft_toLeftOf="@id/gainR"
+        app:layout_constraintRight_toRightOf="@id/gainR"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/gainR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:ems="2"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/black"
+        android:textSize="38dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/H1_G"
+        app:layout_constraintLeft_toRightOf="@id/V2_G"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/H1_G" />
+
+    <ImageView
+        android:id="@+id/gainRMen"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/sfondo_dialog_scura"
+        android:src="@drawable/keyboard_arrow_down_96"
+        app:layout_constraintLeft_toLeftOf="@id/gainR"
+        app:layout_constraintRight_toRightOf="@id/gainR"
+        app:layout_constraintTop_toBottomOf="@id/gainR"
+        app:tint="@color/white" />
+
+    <ImageView
+        android:id="@+id/save"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/save_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/cancel"
+        app:layout_constraintTop_toBottomOf="@id/H2_G"
+
+        />
+
+    <ImageView
+        android:id="@+id/cancel"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/btn_close_web"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/save"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/H2_G"
+        app:tint="@color/_____cancel_text" />
+</androidx.constraintlayout.widget.ConstraintLayout>

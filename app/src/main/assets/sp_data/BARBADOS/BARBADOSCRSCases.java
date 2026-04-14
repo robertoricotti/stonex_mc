@@ -1,0 +1,20 @@
+public class BARBADOSCRSCases {
+    public static void handleCRS(String input, MyData MyData, DataSaved DataSaved, Activity activity, Dialog dialog) {
+        switch (input) {
+            case "BARBADOS__ONSHORE__BARBADOS_1938__BARBADOS_NATIONAL_GRID__21292.SP":
+                MyData.push("crs", "21292");
+                DataSaved.S_CRS = MyData.get_String("crs");
+                activity.recreate();
+                ReadProjectService.startCRS();
+                dialog.dismiss();
+                break;
+            case "BARBADOS__ONSHORE__BARBADOS_1938__BRITISH_WEST_INDIES_GRID__21291.SP":
+                MyData.push("crs", "21291");
+                DataSaved.S_CRS = MyData.get_String("crs");
+                activity.recreate();
+                ReadProjectService.startCRS();
+                dialog.dismiss();
+                break;
+        }
+    }
+}

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.09" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h90"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.89" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h60"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/v60"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline125"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline124"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <ImageView
+        android:visibility="visible"
+        android:id="@+id/wlwl"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/mastantennaschema"
+        app:layout_constraintRight_toLeftOf="@id/v60"
+        app:layout_constraintTop_toBottomOf="@id/h1"
+        app:layout_constraintBottom_toTopOf="@id/h90"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/h1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/gpsdebugg"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/gnss_setup_btn"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/titolo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/custom_background_test3d_box"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img01"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/wifi_vuoto"
+            app:tint="@color/_____cancel_text" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/updateTool"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="5dp"
+        android:src="@drawable/btn_refresh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="@id/guideline124"
+        app:layout_constraintLeft_toLeftOf="@id/guideline124"
+        app:layout_constraintTop_toTopOf="@+id/h90" />
+
+    <ImageView
+        android:id="@+id/save"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:src="@drawable/save_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline124"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/h90" />
+
+    <ImageView
+        android:id="@+id/exit"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/dark_gray"
+        android:gravity="center"
+        android:padding="5dp"
+        app:tint="@color/_____cancel_text"
+        android:src="@drawable/btn_close_web"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline124"
+        app:layout_constraintTop_toTopOf="@+id/h90" />
+
+    <TextView
+        android:id="@+id/txtDeltaX"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="ΔX (m)"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/h30"
+        app:layout_constraintEnd_toStartOf="@+id/guideline125"
+        app:layout_constraintStart_toStartOf="@+id/v60"
+        app:layout_constraintTop_toTopOf="@+id/h1" />
+
+    <TextView
+        android:id="@+id/txtDeltaYt"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="ΔY (m)"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/h3"
+        app:layout_constraintEnd_toStartOf="@+id/guideline125"
+        app:layout_constraintStart_toStartOf="@+id/v60"
+        app:layout_constraintTop_toTopOf="@+id/h30" />
+
+    <TextView
+        android:id="@+id/txtDeltaZt"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="ΔZ (m)"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/h4"
+        app:layout_constraintEnd_toStartOf="@+id/guideline125"
+        app:layout_constraintStart_toStartOf="@+id/v60"
+        app:layout_constraintTop_toTopOf="@+id/h3" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="ΔHDT (°)"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/h60"
+        app:layout_constraintEnd_toStartOf="@+id/guideline125"
+        app:layout_constraintStart_toStartOf="@+id/v60"
+        app:layout_constraintTop_toTopOf="@+id/h4" />
+
+    <ImageView
+        android:id="@+id/but_meno_x"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toLeftOf="@+id/deltaX"
+        app:layout_constraintTop_toTopOf="@id/deltaX"
+        app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintBottom_toBottomOf="@id/deltaX"
+        android:src="@drawable/bottone_meno" />
+
+    <EditText
+        android:id="@+id/deltaX"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:digits="0123456789."
+        android:focusableInTouchMode="false"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/h30"
+        app:layout_constraintRight_toLeftOf="@id/but_piu_x"
+        app:layout_constraintLeft_toRightOf="@id/but_meno_x"
+        app:layout_constraintTop_toTopOf="@+id/h1" />
+
+    <ImageView
+        android:id="@+id/but_piu_x"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/deltaX"
+        app:layout_constraintTop_toTopOf="@id/deltaX"
+        android:layout_marginRight="5dp"
+        app:layout_constraintBottom_toBottomOf="@id/deltaX"
+        android:src="@drawable/bottone_piu" />
+
+
+    <ImageView
+        android:id="@+id/but_meno_y"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toLeftOf="@+id/deltaY"
+        app:layout_constraintTop_toTopOf="@id/deltaY"
+        app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintBottom_toBottomOf="@id/deltaY"
+        android:src="@drawable/bottone_meno" />
+
+    <EditText
+        android:id="@+id/deltaY"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:digits="0123456789."
+        android:focusableInTouchMode="false"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/h3"
+        app:layout_constraintRight_toLeftOf="@id/but_piu_y"
+        app:layout_constraintLeft_toRightOf="@id/but_meno_y"
+        app:layout_constraintTop_toTopOf="@+id/h30" />
+
+    <ImageView
+        android:id="@+id/but_piu_y"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/deltaY"
+        app:layout_constraintTop_toTopOf="@id/deltaY"
+        app:layout_constraintBottom_toBottomOf="@id/deltaY"
+        android:src="@drawable/bottone_piu" />
+
+    <ImageView
+        android:id="@+id/but_meno_h"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toLeftOf="@+id/deltaHDT"
+        app:layout_constraintTop_toTopOf="@id/deltaHDT"
+        app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintBottom_toBottomOf="@id/deltaHDT"
+        android:src="@drawable/bottone_meno" />
+
+    <EditText
+        android:id="@+id/deltaHDT"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:digits="0123456789."
+        android:focusableInTouchMode="false"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/h60"
+        app:layout_constraintRight_toLeftOf="@id/but_piu_h"
+        app:layout_constraintLeft_toRightOf="@id/but_meno_h"
+        app:layout_constraintTop_toTopOf="@+id/h4" />
+
+    <ImageView
+        android:id="@+id/but_piu_h"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/deltaHDT"
+        app:layout_constraintTop_toTopOf="@id/deltaHDT"
+        app:layout_constraintBottom_toBottomOf="@id/deltaHDT"
+        android:src="@drawable/bottone_piu" />
+
+    <ImageView
+        android:id="@+id/but_meno_z"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toLeftOf="@+id/deltaZ"
+        app:layout_constraintTop_toTopOf="@id/deltaZ"
+        app:layout_constraintLeft_toRightOf="@id/guideline125"
+        app:layout_constraintBottom_toBottomOf="@id/deltaZ"
+        android:src="@drawable/bottone_meno" />
+
+    <EditText
+        android:id="@+id/deltaZ"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:digits="0123456789."
+        android:focusableInTouchMode="false"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/h4"
+        app:layout_constraintRight_toLeftOf="@+id/but_piu_z"
+        app:layout_constraintLeft_toRightOf="@id/but_meno_z"
+        app:layout_constraintTop_toTopOf="@+id/h3" />
+
+    <ImageView
+        android:id="@+id/but_piu_z"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/sfondo_bottone_trasparente"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/deltaZ"
+        app:layout_constraintTop_toTopOf="@id/deltaZ"
+        app:layout_constraintBottom_toBottomOf="@id/deltaZ"
+        android:src="@drawable/bottone_piu" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="drill_pile.gui.Drill_Rod_Activity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/lowH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/topH"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/gpsdebugg"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/gnss_setup_btn"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/titolo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/custom_background_test3d_box"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img01"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_background_test3d_box"
+            android:padding="5dp"
+            android:src="@drawable/wifi_vuoto"
+            app:tint="@color/_____cancel_text" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/save"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/save_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lowH" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fadeScrollbars="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarFadeDuration="0"
+        android:scrollbarSize="24dp"
+        app:layout_constraintBottom_toTopOf="@id/lowH"
+        app:layout_constraintTop_toBottomOf="@id/topH">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/t1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_gray"
+                android:gravity="center"
+                android:text="FIRST ROD LENGTH"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="20dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/drill_rod" />
+
+                <EditText
+                    android:id="@+id/firstR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789."
+                    android:ems="15"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:imeOptions="flagNoExtractUi|actionDone"
+                    android:inputType="numberSigned"
+                    android:maxLines="1"
+                    android:paddingHorizontal="30dp"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/h30"
+                    app:layout_constraintLeft_toRightOf="@id/but_meno_x"
+                    app:layout_constraintRight_toLeftOf="@id/but_piu_x"
+                    app:layout_constraintTop_toTopOf="@+id/h1" />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/t2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_gray"
+                android:gravity="center"
+                android:text="ROD LENGTH"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="20dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/drill_rod" />
+
+                <EditText
+                    android:id="@+id/nextR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789."
+                    android:ems="15"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:imeOptions="flagNoExtractUi|actionDone"
+                    android:inputType="numberSigned"
+                    android:maxLines="1"
+                    android:paddingHorizontal="30dp"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/h30"
+                    app:layout_constraintLeft_toRightOf="@id/but_meno_x"
+                    app:layout_constraintRight_toLeftOf="@id/but_piu_x"
+                    app:layout_constraintTop_toTopOf="@+id/h1" />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/t3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_gray"
+                android:gravity="center"
+                android:text="DRILL BIT LENGTH / WIDTH"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/drill_bit_len"
+
+                    />
+
+                <EditText
+                    android:id="@+id/bitL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:digits="0123456789."
+                    android:ems="7"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:imeOptions="flagNoExtractUi|actionDone"
+                    android:inputType="numberSigned"
+                    android:maxLines="1"
+                    android:paddingHorizontal="30dp"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/h30"
+                    app:layout_constraintLeft_toRightOf="@id/but_meno_x"
+                    app:layout_constraintRight_toLeftOf="@id/but_piu_x"
+                    app:layout_constraintTop_toTopOf="@+id/h1" />
+
+                <View
+
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/_____cancel_text" />
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/drill_bit_larg"
+
+                    />
+
+                <EditText
+                    android:id="@+id/bitW"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:digits="0123456789."
+                    android:ems="7"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:imeOptions="flagNoExtractUi|actionDone"
+                    android:inputType="numberSigned"
+                    android:maxLines="1"
+                    android:paddingHorizontal="30dp"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/h30"
+                    app:layout_constraintLeft_toRightOf="@id/but_meno_x"
+                    app:layout_constraintRight_toLeftOf="@id/but_piu_x"
+                    app:layout_constraintTop_toTopOf="@+id/h1" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/t4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_gray"
+                android:gravity="center"
+                android:text="NUMBER OF RODS"
+                android:textColor="@color/_____cancel_text"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:visibility="invisible"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:src="@drawable/btn_clear" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/bt_meno"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:src="@drawable/minus_icon"
+                    android:layout_margin="10dp"
+
+                    />
+
+                <TextView
+                    android:id="@+id/txtrod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/_____cancel_text"
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:ems="5"
+                    android:text="99"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/bt_piu"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:src="@drawable/plus_icon" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/deleteAll"
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sfondo_bottone_trasparente"
+                    android:src="@drawable/btn_delete_forever" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/_____cancel_text" />
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

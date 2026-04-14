@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/sfondo_bottone_bianco">
+
+    <TextView
+        android:id="@+id/title_"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:background="@color/transparent"
+        android:textColor="@color/_____cancel_text"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:text="NUMBER OF RODS"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/title_"
+        app:layout_constraintBottom_toTopOf="@id/save_">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageView
+
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:visibility="invisible"
+            android:background="@drawable/sfondo_bottone_trasparente"
+            android:src="@drawable/btn_clear" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/bt_meno"
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:background="@drawable/sfondo_bottone_trasparente"
+            android:src="@drawable/minus_icon"
+            android:layout_margin="10dp"
+
+            />
+
+        <TextView
+            android:id="@+id/txtrod"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/_____cancel_text"
+            android:textSize="28sp"
+            android:gravity="center"
+            android:ems="5"
+            android:text="99"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/bt_piu"
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:background="@drawable/sfondo_bottone_trasparente"
+            android:src="@drawable/plus_icon" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/deleteAll"
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:background="@drawable/sfondo_bottone_trasparente"
+            android:src="@drawable/btn_delete_forever" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/save_"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/save_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="10dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

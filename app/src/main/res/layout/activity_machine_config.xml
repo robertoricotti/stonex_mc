@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    android:keepScreenOn="true">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/guideline10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/gpsstatis"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/gps_si" />
+
+        <TextView
+            android:id="@+id/machineName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="4"
+            android:background="@color/nav_gray_color"
+            android:gravity="center"
+            android:text="MACHINE"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/storeData"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/save_btn" />
+
+        <ImageView
+            android:id="@+id/upload_file"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/upload_file_btn" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.12" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.88" />
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="20dp"
+        android:rotationY="0"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/guideline15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline10"
+        app:srcCompat="@drawable/escavatore_sfondo"
+        app:tint="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/lowerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline15">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_btn" />
+
+        <TextView
+            android:id="@+id/txtCheckCalib"
+            android:text=""
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="32sp"
+            android:gravity="center"
+            android:ems="5"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="6"
+            android:background="@color/nav_gray_color" />
+
+        <ImageView
+            android:id="@+id/can1setup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="15dp"
+
+            android:src="@drawable/btn_can1" />
+
+        <ImageView
+            android:id="@+id/can2setup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1.5dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@color/nav_gray_color"
+            android:padding="15dp"
+            android:src="@drawable/btn_can2" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/openFrameDialog"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="FRAME"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/generalDialog"
+        app:layout_constraintEnd_toStartOf="@+id/openBoom1Dialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline10" />
+
+    <Button
+        android:id="@+id/openBoom1Dialog"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="BOOM1"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/openFrameDialog"
+        app:layout_constraintEnd_toStartOf="@+id/openBoom2Dialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/openFrameDialog"
+        app:layout_constraintTop_toTopOf="@+id/openFrameDialog"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/openBoom2Dialog"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="BOOM2"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/openBoom1Dialog"
+        app:layout_constraintEnd_toStartOf="@+id/openStickDialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/openBoom1Dialog"
+        app:layout_constraintTop_toTopOf="@+id/openBoom1Dialog"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/openStickDialog"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="STICK\nLASER"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/openBoom2Dialog"
+        app:layout_constraintEnd_toStartOf="@+id/openLinkageDialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/openBoom2Dialog"
+        app:layout_constraintTop_toTopOf="@+id/openBoom2Dialog"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/openLinkageDialog"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="LINKAGE\nBUCKET"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/openStickDialog"
+        app:layout_constraintEnd_toStartOf="@+id/openTiltDialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/openStickDialog"
+        app:layout_constraintTop_toTopOf="@+id/openStickDialog"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/openCompassDialog"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="XYZ"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/generalDialog"
+        app:layout_constraintEnd_toEndOf="@+id/openBoom1Dialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/openBoom1Dialog"
+        app:layout_constraintTop_toTopOf="@+id/generalDialog" />
+
+    <Button
+        android:id="@+id/generalDialog"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="@string/info"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline15"
+        app:layout_constraintEnd_toEndOf="@+id/openFrameDialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/openFrameDialog"
+        app:layout_constraintTop_toBottomOf="@+id/openFrameDialog" />
+
+
+    <Button
+        android:id="@+id/sensorDamping"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/red"
+        android:gravity="center"
+        android:text="SENSORS\nDAMPING"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/canOpenset"
+        app:layout_constraintEnd_toEndOf="@+id/openStickDialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/openStickDialog"
+        app:layout_constraintTop_toTopOf="@+id/canOpenset" />
+
+    <Button
+        android:id="@+id/startCalib"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/green"
+        android:gravity="center"
+        android:text="GPS\nAUTOCAL"
+        android:textAlignment="center"
+        android:textColor="@color/_____cancel_text"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/canOpenset"
+        app:layout_constraintEnd_toEndOf="@+id/openLinkageDialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/openLinkageDialog"
+        app:layout_constraintTop_toTopOf="@+id/canOpenset" />
+
+
+    <Button
+        android:id="@+id/canOpenset"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/light_yellow"
+        android:gravity="center"
+        android:text="CanOpen\nSetup"
+        android:textAlignment="center"
+        android:textColor="@color/_____cancel_text"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/openCompassDialog"
+        app:layout_constraintEnd_toEndOf="@+id/openBoom2Dialog"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/openBoom2Dialog"
+        app:layout_constraintTop_toTopOf="@+id/openCompassDialog" />
+
+    <Button
+        android:id="@+id/openTiltDialog"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="@string/tilt"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/openLinkageDialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/openLinkageDialog"
+        app:layout_constraintTop_toTopOf="@+id/openLinkageDialog" />
+
+    <Button
+        android:id="@+id/openSlideBoom"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="BOOM\nSWING"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/sensorDamping"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/openLinkageDialog"
+        app:layout_constraintTop_toTopOf="@+id/sensorDamping" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

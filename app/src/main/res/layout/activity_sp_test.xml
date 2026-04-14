@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_gray">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_Exit"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <Button
+                android:id="@+id/btnLoad"
+                android:text="USE ACTUAL LOCALIZATION FILE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/_____cancel_text" />
+
+            <TextView
+                android:text="→ Input Geo (Lat/Lon/H)"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/etLat"
+                android:hint="Latitude (°)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned|numberDecimal"
+                android:imeOptions="actionDone"
+                android:selectAllOnFocus="true" />
+
+            <EditText
+                android:id="@+id/etLon"
+                android:hint="Longitude (°)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned|numberDecimal"
+                android:imeOptions="actionDone"
+                android:selectAllOnFocus="true" />
+
+            <EditText
+                android:id="@+id/etH"
+                android:hint="Elevation (m)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned|numberDecimal"
+                android:imeOptions="actionDone"
+                android:selectAllOnFocus="true" />
+
+            <EditText
+                android:id="@+id/etDH"
+                android:hint="Delta HDT (°)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="false"
+                android:inputType="numberSigned|numberDecimal" />
+
+            <Button
+                android:id="@+id/btnTransform"
+                android:text="→ Transform in Local (N, E ,Z)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/bg_stonex_blue"
+                android:textColor="@color/white" />
+
+
+            <TextView
+                android:text="→ Input Local (N/E/Z)"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <EditText
+                android:id="@+id/etNord"
+                android:hint="North (m)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:focusableInTouchMode="false" />
+
+            <EditText
+                android:id="@+id/etEst"
+                android:hint="East (m)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:focusableInTouchMode="false" />
+
+            <EditText
+                android:id="@+id/etZ"
+                android:hint="Elevation (m)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:focusableInTouchMode="false" />
+
+            <Button
+                android:id="@+id/btnInverse"
+                android:text="← Transform in Geo (Lat,Lon,H)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/_____cancel_text"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/tvOutput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#111"
+                android:padding="8dp"
+                android:background="#f0f0f0"
+                android:layout_marginTop="10dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="5dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_Exit"
+        android:text="EXIT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/bg_sfsred"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
