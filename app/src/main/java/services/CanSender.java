@@ -277,7 +277,7 @@ public class CanSender extends Service {
                         DataSaved.portView = 3;
                         HEADING = currentLeft.getLeftAxisX();
                         Deg_roll = currentRight.getRightAxisX();
-                        Deg_pitch = 0;
+                        Deg_pitch = -currentRight.getRightAxisY();
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
                         DataSaved.demoZ = DPadHelper.getInstance().getZ();
@@ -288,7 +288,7 @@ public class CanSender extends Service {
                     case GRADER:
                         HEADING = currentLeft.getLeftAxisX();
                         Deg_roll = currentRight.getRightAxisX();
-                        Deg_pitch = 0;
+                        Deg_pitch = -currentRight.getRightAxisY();
                         DataSaved.demoEAST = DPadHelper.getInstance().getX();
                         DataSaved.demoNORD = DPadHelper.getInstance().getY();
                         DataSaved.demoZ = DPadHelper.getInstance().getZ();

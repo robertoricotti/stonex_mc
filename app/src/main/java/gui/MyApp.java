@@ -143,17 +143,17 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
     NetworkConfigSettings.ConnectionType type;
-    /// /////////
     public static volatile boolean TEST_MODE = false;
     public static int MAX_NUMERO_FACCE = 5000;
     public static final int numGeoidiInterni = 2;
-    //audio
+    // audio
     public static boolean isAlto, isBasso, isCentro;
-    private MediaPlayer mediaPlayer;
-    private Handler handler;
-    private Runnable soundChecker;
+    private MediaPlayer mpAlto;
+    private MediaPlayer mpCentro;
+    private MediaPlayer mpBasso;
+    private MediaPlayer currentPlayer;
     private String currentState = "";
-    private boolean isCheckerRunning = false;
+
     //license
     public static String deviceBuild = "";
     public static int errorCode;
@@ -277,7 +277,120 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         myCrash();
 
     }
+    private void initAudioPlayers(Context context) {
+        if (mpAlto == null) {
+            mpAlto = MediaPlayer.create(context.getApplicationContext(), R.raw.audio_blu);
+            if (mpAlto != null) {
+                mpAlto.setLooping(true);
+            }
+        }
 
+        if (mpCentro == null) {
+            mpCentro = MediaPlayer.create(context.getApplicationContext(), R.raw.audio_verde);
+            if (mpCentro != null) {
+                mpCentro.setLooping(true);
+            }
+        }
+
+        if (mpBasso == null) {
+            mpBasso = MediaPlayer.create(context.getApplicationContext(), R.raw.audio_rosso);
+            if (mpBasso != null) {
+                mpBasso.setLooping(true);
+            }
+        }
+    }
+
+    private void releaseAudioPlayers() {
+        stopCurrentSound();
+
+        if (mpAlto != null) {
+            mpAlto.release();
+            mpAlto = null;
+        }
+
+        if (mpCentro != null) {
+            mpCentro.release();
+            mpCentro = null;
+        }
+
+        if (mpBasso != null) {
+            mpBasso.release();
+            mpBasso = null;
+        }
+    }
+
+    private String computeAudioState() {
+        int indexAudioSystem = MyData.get_Int("indexAudioSystem");
+
+        if (indexAudioSystem != 2) {
+            if (isAlto) return "alto";
+            if (isCentro) return "centro";
+            if (isBasso) return "basso";
+            return "";
+        } else {
+            if (isAlto) return "";
+            if (isCentro) return "centro";
+            if (isBasso) return "basso";
+            return "";
+        }
+    }
+    private void updateAudioState() {
+        String newState = computeAudioState();
+
+        if (newState.equals(currentState)) {
+            return;
+        }
+
+        currentState = newState;
+
+        switch (newState) {
+            case "alto":
+                switchToPlayer(mpAlto);
+                break;
+
+            case "centro":
+                switchToPlayer(mpCentro);
+                break;
+
+            case "basso":
+                switchToPlayer(mpBasso);
+                break;
+
+            default:
+                stopCurrentSound();
+                break;
+        }
+    }
+    private void switchToPlayer(MediaPlayer nextPlayer) {
+        if (currentPlayer == nextPlayer) {
+            if (currentPlayer != null && !currentPlayer.isPlaying()) {
+                currentPlayer.seekTo(0);
+                currentPlayer.start();
+            }
+            return;
+        }
+
+        stopCurrentSound();
+
+        currentPlayer = nextPlayer;
+
+        if (currentPlayer != null) {
+            currentPlayer.seekTo(0);
+            currentPlayer.start();
+        }
+    }
+    private void stopCurrentSound() {
+        if (currentPlayer != null) {
+            try {
+                if (currentPlayer.isPlaying()) {
+                    currentPlayer.pause();
+                }
+                currentPlayer.seekTo(0);
+            } catch (Exception ignored) {
+            }
+            currentPlayer = null;
+        }
+    }
 
     public void myCrash() {
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
@@ -315,13 +428,6 @@ git push
     public void onActivityStarted(Activity activity) {
         if (activity != null) {
 
-
-            if (activity instanceof My3DActivity) {
-                startConditionChecker(activity);
-            } else {
-                stopConditionChecker();
-                stopSound();
-            }
             sensorAlertDialog1 = new SensorAlertDialog(activity, "#1\n\nSENSOR ERROR \n\n FRAME or CAN disconnected!");
             sensorAlertDialog2 = new SensorAlertDialog(activity, "#2\n\nSENSOR ERROR \n\n BOOM 1 sensor disconnected!");
             sensorAlertDialog3 = new SensorAlertDialog(activity, "#3\n\nSENSOR ERROR \n\n BOOM 2 sensor disconnected!");
@@ -356,87 +462,15 @@ git push
         } catch (Exception e) {
             Toast.makeText(activity, "Failed to set Language", Toast.LENGTH_LONG).show();
         }
-
-    }
-
-    private void startConditionChecker(Context context) {
-        if (isCheckerRunning) return;
-
-        handler = new Handler(Looper.getMainLooper());
-        soundChecker = new Runnable() {
-            @Override
-            public void run() {
-                checkAndPlaySound(context);
-                handler.postDelayed(this, 1000); // ogni 1 secondo
-            }
-        };
-        handler.post(soundChecker);
-        isCheckerRunning = true;
-    }
-
-    private void stopConditionChecker() {
-        if (handler != null && soundChecker != null) {
-            handler.removeCallbacks(soundChecker);
-        }
-        isCheckerRunning = false;
-    }
-
-    private void checkAndPlaySound(Context context) {
-        String newState = "";
-        int indexAudioSystem = MyData.get_Int("indexAudioSystem");
-        if (indexAudioSystem != 2) {
-            if (isAlto) {
-                newState = "alto";
-            } else if (isCentro) {
-                newState = "centro";
-            } else if (isBasso) {
-                newState = "basso";
-            } else {
-                newState = "";
-            }
+        if (activity instanceof My3DActivity) {
+            initAudioPlayers(activity);
+            updateAudioState();
         } else {
-            if (isAlto) {
-                newState = "";
-            } else if (isCentro) {
-                newState = "centro";
-            } else if (isBasso) {
-                newState = "basso";
-            } else {
-                newState = "";
-            }
-        }
-
-        if (!newState.equals(currentState) || mediaPlayer == null || !mediaPlayer.isPlaying()) {
-            stopSound();
-            currentState = newState;
-
-            if ("alto".equals(newState)) {
-                playSound(context, R.raw.audio_blu);
-            } else if ("centro".equals(newState)) {
-                playSound(context, R.raw.audio_verde);
-            } else if ("basso".equals(newState)) {
-                playSound(context, R.raw.audio_rosso);
-            }
+            releaseAudioPlayers();
         }
     }
 
-    private void playSound(Context context, int resId) {
-        mediaPlayer = MediaPlayer.create(context, resId);
-        if (mediaPlayer != null) {
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
-        }
-    }
 
-    private void stopSound() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-            }
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-    }
 
 
     @Override
@@ -447,18 +481,17 @@ git push
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
         try {
-            stopSound();
+            stopCurrentSound();
         } catch (Exception e) {
         }
     }
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
-
         if (activity instanceof My3DActivity) {
-            stopConditionChecker();
-            stopSound();
+            releaseAudioPlayers();
         }
+
     }
 
     @Override
@@ -626,6 +659,10 @@ git push
                                 } else {
                                     hAlarm = false;
                                     isOffgrid = false;
+                                }
+                                // QUI
+                                if (visibleActivity instanceof My3DActivity) {
+                                    updateAudioState();
                                 }
 
                             } catch (Exception e) {

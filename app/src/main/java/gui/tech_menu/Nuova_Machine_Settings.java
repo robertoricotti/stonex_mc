@@ -326,7 +326,7 @@ public class Nuova_Machine_Settings extends BaseClass {
             isCanOpen = JOYSTICKS;
 
         });
-        ckJ.setOnClickListener(view -> {
+        ckEcu.setOnClickListener(view -> {
             ckDEMO.setChecked(false);
             ck_stxGen1.setChecked(false);
             ck_stxGen2.setChecked(false);

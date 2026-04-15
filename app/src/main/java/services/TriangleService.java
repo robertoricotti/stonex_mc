@@ -150,6 +150,9 @@ public class TriangleService extends Service {
 
         super.onDestroy();
         isUpdating = false;
+        MyApp.isAlto=false;
+        MyApp.isBasso=false;
+        MyApp.isCentro=false;
         stopTriangleLoop();
     }
 
