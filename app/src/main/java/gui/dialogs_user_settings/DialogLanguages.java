@@ -20,7 +20,8 @@ import utils.MyData;
 public class DialogLanguages {
     Activity activity;
     public Dialog dialog;
-    ImageView ita, usa, fra, spa, eng, deu, rus, chin, pur, gre, kor, rum, nel, jpn, czh;
+    ImageView ita, usa, fra, spa, eng, deu, rus, chin, pur, gre, kor, rum, nel, jpn, czh,
+    nor,swe,den,ice,fin;
 
 
     boolean flagactivity = false;
@@ -51,6 +52,12 @@ public class DialogLanguages {
         nel = dialog.findViewById(R.id.flagNL);
         kor = dialog.findViewById(R.id.flagKOR);
         rum = dialog.findViewById(R.id.flagRUM);
+        nor=dialog.findViewById(R.id.flagNOR);
+        swe=dialog.findViewById(R.id.flagSWE);
+        den=dialog.findViewById(R.id.flagDEN);
+        ice=dialog.findViewById(R.id.flagICE);
+        fin=dialog.findViewById(R.id.flagFIN);
+
 
 
     }
@@ -58,7 +65,7 @@ public class DialogLanguages {
     @SuppressLint("SetTextI18n")
     private void init() {
         dialog.create();
-        dialog.setContentView(R.layout.dialog_languages);
+        dialog.setContentView(R.layout.dialog_languages_2);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente
@@ -178,6 +185,41 @@ public class DialogLanguages {
         });
         rum.setOnClickListener(view -> {
             MyData.push("language", "ro");
+            LanguageSetter.setLocale(activity, MyData.get_String("language"));
+            restart();
+            dialog.dismiss();
+        });
+
+        nor.setOnClickListener(view -> {
+            MyData.push("language", "nb");
+            LanguageSetter.setLocale(activity, MyData.get_String("language"));
+            restart();
+            dialog.dismiss();
+        });
+
+        swe.setOnClickListener(view -> {
+            MyData.push("language", "sv");
+            LanguageSetter.setLocale(activity, MyData.get_String("language"));
+            restart();
+            dialog.dismiss();
+        });
+
+        den.setOnClickListener(view -> {
+            MyData.push("language", "da");
+            LanguageSetter.setLocale(activity, MyData.get_String("language"));
+            restart();
+            dialog.dismiss();
+        });
+
+        ice.setOnClickListener(view -> {
+            MyData.push("language", "is");
+            LanguageSetter.setLocale(activity, MyData.get_String("language"));
+            restart();
+            dialog.dismiss();
+        });
+
+        fin.setOnClickListener(view -> {
+            MyData.push("language", "fi");
             LanguageSetter.setLocale(activity, MyData.get_String("language"));
             restart();
             dialog.dismiss();

@@ -1,0 +1,236 @@
+<resources>
+    <string name="app_name">STX MC V4</string>
+    <string name="copyright">Tekijänoikeus © \nKaikki oikeudet pidätetään</string>
+    <string name="error_license">Lisenssi on vanhentunut tai puuttuu.\nOta yhteyttä paikalliseen jälleenmyyjääsi ongelman ratkaisemiseksi</string>
+    <string name="website">www.stonex.it</string>
+    <string name="copy_adding">"Kopioi lisäys\nJuokseva numero"</string>
+    <string name="general_set">YLEISET ASETUKSET</string>
+    <string name="change_machine">VAIHDA KONEMALLI</string>
+    <string name="procedi">Haluatko jatkaa?</string>
+    <string name="downloading">Lataus käynnissä. . . .</string>
+    <string name="uploading">Lähetys käynnissä. . . .</string>
+    <string name="rotate_m">KIERRÄ KONETTA</string>
+    <string name="rotate_w">KIERRÄ MAAILMAA</string>
+    <string name="tred_scene">3D-NÄKYMÄ</string>
+    <string name="tit_hydro_set">AUTOMAATTISEN DOZERIN/GRADERIN PARAMETRIT</string>
+    <string name="savepara">TALLENNA KAIKKI PARAMETRIT ULKOISEEN MUISTIIN</string>
+    <string name="savepara_pro">Haluatko jatkaa?</string>
+    <string name="write_para">KORVAA KAIKKI SOVELLUSPARAMETRIT</string>
+    <string name="hydro_cp">HYDRAULISET\nOHJAUSPISTEET</string>
+    <string name="hydro_apply">KÄYTÄ UUSIA HYDRAULISIA ARVOJA</string>
+    <string name="brigbck">KIRKKAUS-TAUSTA</string>
+    <string name="etxoff">ULKOINEN OFFSET-ASKEL Kas/Las</string>
+
+    <string name="first_rod_l">ENSIMMÄISEN TANGON PITUUS</string>
+    <string name="rod_l">TANGON PITUUS</string>
+    <string name="bit_l">PORANTERÄN PITUUS - LEVEYS</string>
+    <string name="rod_nr">TANKOJEN MÄÄRÄ</string>
+    <string name="remove_all_rods">POISTETAANKO KAIKKI TANGOT?</string>
+    <string name="sdd_rod">LISÄTÄÄNKÖ 1 TANKO?</string>
+    <string name="remove_one_rod">LISÄTÄÄNKÖ 1 TANKO?</string>
+
+
+    <string name="color_bucket">KAUHA - TERÄN VÄRI</string>
+    <string name="color_boom">PUOMI - RUNGON VÄRI</string>
+    <string name="ext_offset">ULKOINEN OFFSET-ASKEL</string>
+    <string name="auto_z_db">VASEN KORKEUDEN KUOLLUTALUE</string>
+    <string name="auto_z_dbR">OIKEA KORKEUDEN KUOLLUTALUE</string>
+    <string name="hydro_window">HYDRAULIIKAN KYTKEYTYMISIKKUNA</string>
+    <string name="auto_slope_db">KALTEVUUDEN KUOLLUTALUE</string>
+    <string name="xy_db">XY-KUOLLUTALUE</string>
+
+    <string name="mac_setup">KONEEN ASETUKSET</string>
+    <string name="sens_config">CAN-ANTURIN ASETUKSET</string>
+    <string name="mch_schema">PIIRRÄ 3D-KONEKAAVIO</string>
+    <string name="enable_but">OTA ANDROID-NAVIGOINTIPAINIKKEET KÄYTTÖÖN</string>
+    <string name="extra_hdt">OTA LISÄSUUNTA-ANTURI KÄYTTÖÖN</string>
+    <string name="en_out">OTA DIGITAALINEN 12V RAJAHÄLYTYSLÄHTÖ KÄYTTÖÖN</string>
+    <string name="en_uhf_ntrip">VAIHDA UHF/NTRIP</string>
+    <string name="uppaer_bar">YLÄPALKKI AINA NÄKYVISSÄ TYÖSIVULLA</string>
+    <string name="interface_type">HYDRAULISEN LIITÄNNÄN TYYPPI</string>
+    <string name="save">TALLENNA</string>
+    <string name="exit">POISTU</string>
+    <string name="machines">KONEET</string>
+    <string name="machines_setup">KONEEN ASETUKSET</string>
+    <string name="rename_file">NIMEÄ TIEDOSTO UUDELLEEN</string>
+    <string name="wait_until">Odota, kunnes projekti on päivitetty</string>
+    <string name="com_debug">CAN-VIRHEENJÄLJITYS</string>
+    <string name="profiles">PROFIILIT</string>
+    <string name="buckets">VALITSE KAUHA</string>
+    <string name="settings">KÄYTTÄJÄASETUKSET</string>
+    <string name="bucket1">KAUHA1</string>
+    <string name="bucket2">KAUHA2</string>
+    <string name="bucket3">KAUHA3</string>
+    <string name="bucket4">KAUHA4</string>
+    <string name="bucket5">KAUHA5</string>
+    <string name="bucket6">KAUHA6</string>
+    <string name="bucket7">KAUHA7</string>
+    <string name="bucket8">KAUHA8</string>
+    <string name="bucket9">KAUHA9</string>
+    <string name="bucket10">KAUHA10</string>
+    <string name="bucket11">KAUHA11</string>
+    <string name="bucket12">KAUHA12</string>
+    <string name="bucket13">KAUHA13</string>
+    <string name="bucket14">KAUHA14</string>
+    <string name="bucket15">KAUHA15</string>
+    <string name="bucket16">KAUHA16</string>
+    <string name="bucket17">KAUHA17</string>
+    <string name="bucket18">KAUHA18</string>
+    <string name="bucket19">KAUHA19</string>
+    <string name="bucket20">KAUHA20</string>
+    <string name="sensor">ANTURI</string>
+    <string name="value">ARVO</string>
+    <string name="offset">OFFSET</string>
+    <string name="status">TILA</string>
+    <string name="boom1">PUOMI1</string>
+    <string name="boom2">PUOMI2</string>
+    <string name="stick_laser">VARSI-LASER</string>
+    <string name="bucket">KAUHA</string>
+    <string name="frame_picth_roll">RUNKO PITCH-ROLL</string>
+    <string name="compass">KOMPASSI</string>
+    <string name="tilt">KALLISTUS</string>
+    <string name="pos">SIJAINTI</string>
+    <string name="single_slope">YKSITTÄINEN KALTEVUUS</string>
+    <string name="off">POIS</string>
+    <string name="left">VASEN</string>
+    <string name="right">OIKEA</string>
+    <string name="bucket_name">KAUHAN NIMI:</string>
+    <string name="bucket_length">KAUHAN PITUUS: </string>
+    <string name="bucket_width">KAUHAN LEVEYS: </string>
+    <string name="Linkage_L4">LINKKI L4: </string>
+    <string name="bucket_angle">KAUHAN KULMA: </string>
+    <string name="bucket_flat_angle">KAUHAN TASOKULMA: </string>
+    <string name="reset">PALAUTA</string>
+    <string name="stick_and_laser_calibration">VARREN / LASERIN KALIBROINTI</string>
+    <string name="bucket_linkage_calibration">KAUHAN / LINKISTÖN KALIBROINTI</string>
+    <string name="mounting_side">ASENNUSPUOLI</string>
+    <string name="info">TIEDOT</string>
+    <string name="machine_name">KONEEN NIMI</string>
+    <string name="picth_and_roll_calibration">PITCH / ROLL -KALIBROINTI</string>
+    <string name="boom2_calibration">PUOMI 2 -KALIBROINTI</string>
+    <string name="boom1_calibration">PUOMI 1 -KALIBROINTI</string>
+    <string name="tilt_calibration">KALLISTUKSEN KALIBROINTI</string>
+    <string name="height_deadband">KORKEUS DB</string>
+    <string name="flat_angle_deadband">KULMA DB</string>
+    <string name="yes">KYLLÄ</string>
+    <string name="no">EI</string>
+    <string name="language">KIELI</string>
+
+    <string name="lasermode">Kaivinkoneen 2D LASERTILA</string>
+    <string name="close_app">Haluatko varmasti sulkea tämän sovelluksen?</string>
+    <string name="ok">OK</string>
+    <string name="set">ASETA</string>
+    <string name="height_alarm">KORKEUSHÄLYTYS</string>
+    <string name="use_tilt">KÄYTÄ KALLISTUSANTURIA</string>
+    <string name="use_bucket">KÄYTÄ KAUHA-ANTURIA</string>
+    <string name="len">PITUUS (mm)</string>
+    <string name="angle">KULMA (°)</string>
+    <string name="txt_tiltangle">KALLISTUSKULMA: </string>
+    <string name="gps_calib">ANTENNIN KALIBROINTI</string>
+    <string name="gnss_setup">GNSS-ASETUKSET</string>
+    <string name="set_laser_offset">ASETA LASERIN KORKEUS?</string>
+    <string name="units">ETÄISYYS</string>
+    <string name="unitsA">KULMA</string>
+    <string name="viewport">NÄKYMÄ</string>
+    <string name="user_units">MITTAYKSIKÖT</string>
+    <string name="audio">ÄÄNET</string>
+    <string name="slopeX">KALTEVUUS X</string>
+    <string name="slopeY">KALTEVUUS Y</string>
+    <string name="infoNr">Tekninen tuki</string>
+    <string name="infoMessage">mc@stonex.it</string>
+    <string name="touch_e_go">LIIKUTA KAIVINKONETTA, ASETA SEN JÄLKEEN KAUHA SAMAN VIITEPISTEEN PÄÄLLE JA PAINA PAINIKETTA</string>
+    <string name="quick_setup">PIKA-ASETUS</string>
+    <string name="flat_surface">TASAINEN PINTA</string>
+    <string name="ab_surface">PINTA A>>B</string>
+    <string name="cross_section">PINTA\n POLYLINESTA</string>
+    <string name="area">TASAINEN<br />ALUE</string>
+    <string name="edit_zeta">HALUATKO MUOKATA Z-ARVOA JA KÄYTTÄÄ UUTTA ARVOA GPS:ÄÄN?</string>
+    <string name="lumen">KIRKKAUS</string>
+    <string name="messages">VIESTIT</string>
+    <string name="exit_proj">POISTUTAANKO?\n KAIKKI TIEDOT HÄVIÄVÄT</string>
+    <string name="mostraTriangoli">Näytä kolmiot</string>
+    <string name="mostraColore">Näytä pinta</string>
+    <string name="mostraPunti">Näytä pisteet</string>
+    <string name="mostraPoly">Näytä 3D-polylinjat</string>
+    <string name="mostraNome">Näytä pisteteksti</string>
+    <string name="mostraUtils">Näytä 2D-objektit</string>
+    <string name="mostraGradiente">Näytä pinnan kaltevuus</string>
+    <string name="projectWindow">PINTAIKKUNA</string>
+    <string name="polylinee">POLYLINJAT</string>
+    <string name="puntip">PISTEET</string>
+    <string name="laserOK">LASER OK</string>
+    <string name="laserKO">LASER ALUEEN ULKOPUOLELLA</string>
+    <string name="disabled">POIS KÄYTÖSTÄ</string>
+    <string name="yaw_drift_compensation">YAW-DRIFTIN KOMPENSOINTI</string>
+    <string name="toast_select_bucket">VALITSE KALIBROITAVA KAUHA</string>
+    <string name="toast_hold_to_set">PIDÄ PAINETTUNA ASETTAAKSESI</string>
+    <string name="toast_cantset_heading">VIRHE SUUNNAN ASETUKSESSA</string>
+    <string name="powercycle_sensor">KÄYNNISTÄ ANTURI UUDELLEEN</string>
+    <string name="pick_1">ASETA KAUHA VIITEPISTEEN PÄÄLLE JA PAINA SEN JÄLKEEN KUVA 1</string>
+    <string name="selectproject">"VALITSE PROJEKTI "</string>
+    <string name="project">"PROJEKTIT"</string>
+    <string name="quick">PIKA\nLIITIN</string>
+    <string name="selectafile">VALITSE TIEDOSTO!</string>
+    <string name="trincea">OJA - SALAOJITUS</string>
+    <string name="dtm">MAASTOMALLI</string>
+    <string name="usb_file_tr">USB \nTIEDOSTONSIIRTO</string>
+    <string name="cloud_file_tr">PILVI \nTIEDOSTONSIIRTO</string>
+    <string name="local_projects">PAIKALLISET \nPROJEKTIT</string>
+    <string name="punto_salvato">PISTE LISÄTTY</string>
+    <string name="punto_rimosso">PISTE POISTETTU</string>
+    <string name="off_grid">PINNAN ULKOPUOLELLA</string>
+    <string name="file_exists">Tiedosto on jo olemassa</string>
+    <string name="overwrite">KORVATAANKO?</string>
+    <string name="delete_file">POISTETAANKO VALITTU TIEDOSTO?</string>
+    <string name="delete_obj">POISTETAANKO VALITTU OBJEKTI?</string>
+    <string name="select_file">VALITSE TIEDOSTO</string>
+    <string name="deleted">POISTETTU</string>
+    <string name="showAlign">Näytä koneen suuntaus</string>
+    <string name="add_surface">UUSI PINTA</string>
+    <string name="add_surface_ask">LISÄÄ NYKYISEEN PROJEKTIIN</string>
+    <string name="add_surface_nope">LUO UUSI</string>
+    <string name="enter_filename">ANNA TIEDOSTON NIMI</string>
+    <string name="fydro_no">Hydraulista ohjausta ei ole vielä toteutettu</string>
+    <string name="treddi_acxtive">Profiilit ovat käytettävissä vain 1D/2D-tilassa</string>
+    <string name="treddi_off">Käytettävissä vain 3D-tilassa</string>
+
+    <!-- nuove stringhe -->
+    <string name="menu_utente">KÄYTTÄJÄASETUKSET</string>
+    <string name="menu_macchine">KONEEN ASETUKSET</string>
+    <string name="nuovo_progetto">UUSI TYÖTILA</string>
+    <string name="lista_lavori">TYÖLISTA</string>
+    <string name="rimuovi_usb">POISTA USB-MUISTI</string>
+    <string name="rimozione_sicura">TURVALLINEN USB:N POISTO ENNEN SULKEMISTA</string>
+    <string name="progetti_non_trovata">Projektikansiota ei löytynyt</string>
+    <string name="stxmc_creata">Kansio STX_MC luotiin USB-muistille</string>
+    <string name="stxmc_fallita">Kansion STX_MC luominen USB-muistille epäonnistui</string>
+    <string name="stxmc_nontrovata">USB-muistia ei löytynyt</string>
+    <string name="sovrascrivere">Korvataanko?</string>
+
+    <string-array name="radio_proto">
+        <item>Satel</item><!-- 0 -->
+        <item>PCC-4FSK</item><!-- 1 -->
+        <item>PCC-GMSK</item><!-- 2 -->
+        <item>TrimTalk 450S</item><!-- 3 -->
+        <item>South 9600</item><!-- 4 -->
+        <item>HITARGET(9600)</item><!-- 6 -->
+        <item>HITARGET(19200)</item><!-- 7 -->
+        <item>TrimMark III</item><!-- 9 -->
+        <item>South 19200</item><!-- 10 -->
+        <item>TrimTalk(4800)</item><!-- 11 -->
+        <item>GEOTALK</item><!-- 13 -->
+        <item>GEOMARK</item><!-- 14 -->
+        <item>900M Hopping</item><!-- 15 -->
+        <item>HZSZ</item><!-- 16 -->
+        <item>GEO FHSS</item><!-- 17 -->
+        <item>Satel_ADL</item><!-- 19 -->
+        <item>PCCFST</item><!-- 20 -->
+        <item>PCCFST_ADL</item><!-- 21 -->
+    </string-array>
+    <string-array name="radio_spacing">
+        <item>12.5</item>
+        <item>25</item>
+    </string-array>
+
+
+</resources>

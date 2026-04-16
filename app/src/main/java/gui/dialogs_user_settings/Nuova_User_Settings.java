@@ -516,49 +516,64 @@ public class Nuova_User_Settings extends BaseClass {
             tvUomValue.setText(Utils.getMetriSimbol().replace("[", "").replace("]", "") + " / " + Utils.getGradiSimbol());
             switch (intLang) {
                 case "en_GB":
-                    imgLocale.setImageResource(R.drawable.btn_eng);
+                    imgLocale.setImageResource(R.drawable.uk);
                     break;
                 case "en_US":
-                    imgLocale.setImageResource(R.drawable.btn_usa);
+                    imgLocale.setImageResource(R.drawable.usa);
                     break;
                 case "it":
-                    imgLocale.setImageResource(R.drawable.btn_ita);
+                    imgLocale.setImageResource(R.drawable.italia);
                     break;
                 case "de":
-                    imgLocale.setImageResource(R.drawable.btn_deu);
+                    imgLocale.setImageResource(R.drawable.germania);
                     break;
                 case "es":
-                    imgLocale.setImageResource(R.drawable.btn_esp);
+                    imgLocale.setImageResource(R.drawable.spagna);
                     break;
                 case "fr":
-                    imgLocale.setImageResource(R.drawable.btn_fra);
+                    imgLocale.setImageResource(R.drawable.francia);
                     break;
                 case "ru":
-                    imgLocale.setImageResource(R.drawable.btn_rus);
+                    imgLocale.setImageResource(R.drawable.russia);
                     break;
                 case "zh":
-                    imgLocale.setImageResource(R.drawable.btn_chi);
+                    imgLocale.setImageResource(R.drawable.cina);
                     break;
                 case "pt":
-                    imgLocale.setImageResource(R.drawable.btn_pur);
+                    imgLocale.setImageResource(R.drawable.portogallo);
                     break;
                 case "el":
-                    imgLocale.setImageResource(R.drawable.btn_gre);
+                    imgLocale.setImageResource(R.drawable.grecia);
                     break;
                 case "ko":
-                    imgLocale.setImageResource(R.drawable.btn_ko);
+                    imgLocale.setImageResource(R.drawable.south_korea);
                     break;
                 case "ro":
-                    imgLocale.setImageResource(R.drawable.btn_rom);
+                    imgLocale.setImageResource(R.drawable.romania);
                     break;
                 case "nl":
-                    imgLocale.setImageResource(R.drawable.btn_nl);
+                    imgLocale.setImageResource(R.drawable.olanda);
                     break;
                 case "ja":
-                    imgLocale.setImageResource(R.drawable.jpn);
+                    imgLocale.setImageResource(R.drawable.giappone);
                     break;
                 case "cs":
-                    imgLocale.setImageResource(R.drawable.czech);
+                    imgLocale.setImageResource(R.drawable.repubblica_ceca);
+                    break;
+                case "nb":
+                    imgLocale.setImageResource(R.drawable.norvegia);
+                    break;
+                case "sv":
+                    imgLocale.setImageResource(R.drawable.svezia);
+                    break;
+                case "da":
+                    imgLocale.setImageResource(R.drawable.danimarca);
+                    break;
+                case "is":
+                    imgLocale.setImageResource(R.drawable.islanda);
+                    break;
+                case "fi":
+                    imgLocale.setImageResource(R.drawable.finlandia);
                     break;
                 default:
                     imgLocale.setImageResource(R.drawable.baseline_help_96);

@@ -60,6 +60,21 @@ public class LanguageSetter {
             case "cs":
                 str = "cs";
                 break;
+            case "nb":
+                str = "nb";
+                break;
+            case "sv":
+                str = "sv";
+                break;
+            case "da":
+                str = "da";
+                break;
+            case "is":
+                str = "is";
+                break;
+            case "fi":
+                str = "fi";
+                break;
         }
 
         Locale locale = new Locale(str);

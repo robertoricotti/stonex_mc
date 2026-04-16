@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_gray">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/flagEN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/uk"
+                    android:padding="30dp"
+                    android:layout_weight="1"
+                  />
+
+                <ImageView
+                    android:id="@+id/flagUS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/usa"
+                    android:padding="30dp"
+                    android:layout_weight="1"
+                   />
+
+                <ImageView
+                    android:id="@+id/flagIT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/italia"
+                    android:padding="30dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/flagNL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/olanda"
+                    android:padding="30dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/flagDEU"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/germania"
+                    android:padding="30dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/flagESP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/spagna"
+                    android:padding="30dp"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/flagFR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/francia"
+                    android:padding="30dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/flagRUS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/russia"
+                    android:padding="30dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/flagCHN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/cina"
+                    android:padding="30dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/flagPUR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/portogallo"
+                    android:padding="30dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/flagGRE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/grecia"
+                    android:padding="30dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/flagKOR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/south_korea"
+                    android:padding="30dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/flagRUM"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/romania"
+                    android:padding="30dp"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/flagJPN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/giappone"
+                    android:padding="30dp"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/flagCZH"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/repubblica_ceca"
+                    android:padding="30dp"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" />
+                <ImageView
+                    android:id="@+id/flagNOR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/norvegia"
+                    android:padding="30dp"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/flagSWE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/svezia"
+                    android:padding="30dp"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/flagDEN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/danimarca"
+                    android:padding="30dp"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/flagICE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/islanda"
+                    android:padding="30dp"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" />
+                <ImageView
+                    android:id="@+id/flagFIN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/finlandia"
+                    android:padding="30dp"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

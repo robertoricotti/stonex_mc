@@ -1,0 +1,236 @@
+<resources>
+    <string name="app_name">STX MC V4</string>
+    <string name="copyright">Copyright © \nAlla rättigheter förbehållna</string>
+    <string name="error_license">Licensen har gått ut eller saknas.\nKontakta din lokala återförsäljare för att lösa problemet</string>
+    <string name="website">www.stonex.it</string>
+    <string name="copy_adding">"Kopiera tillägg\nLöpnummer"</string>
+    <string name="general_set">ALLMÄNNA INSTÄLLNINGAR</string>
+    <string name="change_machine">ÄNDRA MASKINMODELL</string>
+    <string name="procedi">Vill du fortsätta?</string>
+    <string name="downloading">Nedladdning pågår. . . .</string>
+    <string name="uploading">Uppladdning pågår. . . .</string>
+    <string name="rotate_m">ROTERA MASKIN</string>
+    <string name="rotate_w">ROTERA VÄRLD</string>
+    <string name="tred_scene">3D-SCEN</string>
+    <string name="tit_hydro_set">PARAMETRAR FÖR AUTO DOZER/GRADER</string>
+    <string name="savepara">SPARA ALLA PARAMETRAR TILL EXTERNT MINNE</string>
+    <string name="savepara_pro">Vill du fortsätta?</string>
+    <string name="write_para">SKRIV ÖVER ALLA PROGRAMINSTÄLLNINGAR</string>
+    <string name="hydro_cp">HYDRAULISKA\nKONTROLLPUNKTER</string>
+    <string name="hydro_apply">TILLÄMPA NYA HYDRAULISKA VÄRDEN</string>
+    <string name="brigbck">LJUSSTYRKA-BAKGRUND</string>
+    <string name="etxoff">EXTERNT OFFSETSTEG Öka/Minska</string>
+
+    <string name="first_rod_l">FÖRSTA STÅNGENS LÄNGD</string>
+    <string name="rod_l">STÅNGLÄNGD</string>
+    <string name="bit_l">BORRSPETSENS LÄNGD - BREDD</string>
+    <string name="rod_nr">ANTAL STÄNGER</string>
+    <string name="remove_all_rods">TA BORT ALLA STÄNGER?</string>
+    <string name="sdd_rod">LÄGG TILL 1 STÅNG?</string>
+    <string name="remove_one_rod">LÄGG TILL 1 STÅNG?</string>
+
+
+    <string name="color_bucket">SKOPA - BLADFÄRG</string>
+    <string name="color_boom">BOM - RAMFÄRG</string>
+    <string name="ext_offset">EXTERNT OFFSETSTEG</string>
+    <string name="auto_z_db">VÄNSTER HÖJD-DÖDBAND</string>
+    <string name="auto_z_dbR">HÖGER HÖJD-DÖDBAND</string>
+    <string name="hydro_window">HYDRAULISKT AKTIVERINGSFÖNSTER</string>
+    <string name="auto_slope_db">LUTNINGSDÖDBAND</string>
+    <string name="xy_db">XY-DÖDBAND</string>
+
+    <string name="mac_setup">MASKININSTÄLLNINGAR</string>
+    <string name="sens_config">CAN-SENSORKONFIGURATION</string>
+    <string name="mch_schema">RITA 3D-MASKINSCHEMA</string>
+    <string name="enable_but">AKTIVERA ANDROID-NAVIGERINGSKNAPPAR</string>
+    <string name="extra_hdt">AKTIVERA EXTRA RIKTNINGSSENSOR</string>
+    <string name="en_out">AKTIVERA DIGITAL UTGÅNG 12V GRÄNSLARM</string>
+    <string name="en_uhf_ntrip">VÄXLA UHF/NTRIP</string>
+    <string name="uppaer_bar">ÖVRE FÄLTET ALLTID SYNLIGT PÅ ARBETSSIDAN</string>
+    <string name="interface_type">TYP AV HYDRAULISKT GRÄNSSNITT</string>
+    <string name="save">SPARA</string>
+    <string name="exit">AVSLUTA</string>
+    <string name="machines">MASKINER</string>
+    <string name="machines_setup">MASKININSTÄLLNINGAR</string>
+    <string name="rename_file">BYT NAMN PÅ FIL</string>
+    <string name="wait_until">Vänta tills projektet har uppdaterats</string>
+    <string name="com_debug">CAN-DEBUG</string>
+    <string name="profiles">PROFILER</string>
+    <string name="buckets">VÄLJ EN SKOPA</string>
+    <string name="settings">ANVÄNDARINSTÄLLNINGAR</string>
+    <string name="bucket1">SKOPA1</string>
+    <string name="bucket2">SKOPA2</string>
+    <string name="bucket3">SKOPA3</string>
+    <string name="bucket4">SKOPA4</string>
+    <string name="bucket5">SKOPA5</string>
+    <string name="bucket6">SKOPA6</string>
+    <string name="bucket7">SKOPA7</string>
+    <string name="bucket8">SKOPA8</string>
+    <string name="bucket9">SKOPA9</string>
+    <string name="bucket10">SKOPA10</string>
+    <string name="bucket11">SKOPA11</string>
+    <string name="bucket12">SKOPA12</string>
+    <string name="bucket13">SKOPA13</string>
+    <string name="bucket14">SKOPA14</string>
+    <string name="bucket15">SKOPA15</string>
+    <string name="bucket16">SKOPA16</string>
+    <string name="bucket17">SKOPA17</string>
+    <string name="bucket18">SKOPA18</string>
+    <string name="bucket19">SKOPA19</string>
+    <string name="bucket20">SKOPA20</string>
+    <string name="sensor">SENSOR</string>
+    <string name="value">VÄRDE</string>
+    <string name="offset">OFFSET</string>
+    <string name="status">STATUS</string>
+    <string name="boom1">BOM1</string>
+    <string name="boom2">BOM2</string>
+    <string name="stick_laser">STICK-LASER</string>
+    <string name="bucket">SKOPA</string>
+    <string name="frame_picth_roll">RAM PITCH-ROLL</string>
+    <string name="compass">KOMPASS</string>
+    <string name="tilt">TILT</string>
+    <string name="pos">POS</string>
+    <string name="single_slope">ENKEL LUTNING</string>
+    <string name="off">AV</string>
+    <string name="left">VÄNSTER</string>
+    <string name="right">HÖGER</string>
+    <string name="bucket_name">SKOPNAMN:</string>
+    <string name="bucket_length">SKOPLÄNGD: </string>
+    <string name="bucket_width">SKOPBREDD: </string>
+    <string name="Linkage_L4">LÄNK L4: </string>
+    <string name="bucket_angle">SKOPVINKEL: </string>
+    <string name="bucket_flat_angle">SKOPANS PLANA VINKEL: </string>
+    <string name="reset">ÅTERSTÄLL</string>
+    <string name="stick_and_laser_calibration">KALIBRERING AV STICK / LASER</string>
+    <string name="bucket_linkage_calibration">KALIBRERING AV SKOPA / LÄNKAGE</string>
+    <string name="mounting_side">MONTERINGSSIDA</string>
+    <string name="info">INFO</string>
+    <string name="machine_name">MASKINNAMN</string>
+    <string name="picth_and_roll_calibration">KALIBRERING AV PITCH / ROLL</string>
+    <string name="boom2_calibration">KALIBRERING AV BOM 2</string>
+    <string name="boom1_calibration">KALIBRERING AV BOM 1</string>
+    <string name="tilt_calibration">TILTKALIBRERING</string>
+    <string name="height_deadband">HÖJD DB</string>
+    <string name="flat_angle_deadband">VINKEL DB</string>
+    <string name="yes">JA</string>
+    <string name="no">NEJ</string>
+    <string name="language">SPRÅK</string>
+
+    <string name="lasermode">Grävmaskin 2D LASERLÄGE</string>
+    <string name="close_app">ÄR DU SÄKER PÅ ATT DU VILL STÄNGA DEN HÄR APPEN?</string>
+    <string name="ok">OK</string>
+    <string name="set">STÄLL IN</string>
+    <string name="height_alarm">HÖJDLARM</string>
+    <string name="use_tilt">ANVÄND TILT-SENSOR</string>
+    <string name="use_bucket">ANVÄND SKOPSENSOR</string>
+    <string name="len">LÄNGD (mm)</string>
+    <string name="angle">VINKEL (°)</string>
+    <string name="txt_tiltangle">TILTVINKEL: </string>
+    <string name="gps_calib">ANTENNKALIBRERING</string>
+    <string name="gnss_setup">GNSS-INSTÄLLNINGAR</string>
+    <string name="set_laser_offset">STÄLL IN LASERHÖJD?</string>
+    <string name="units">AVSTÅND</string>
+    <string name="unitsA">VINKEL</string>
+    <string name="viewport">VYFÖNSTER</string>
+    <string name="user_units">MÄTENHETER</string>
+    <string name="audio">LJUD</string>
+    <string name="slopeX">LUTNING X</string>
+    <string name="slopeY">LUTNING Y</string>
+    <string name="infoNr">Teknisk support</string>
+    <string name="infoMessage">mc@stonex.it</string>
+    <string name="touch_e_go">FLYTTA GRÄVMASKINEN, PLACERA SEDAN SKOPAN ÖVER SAMMA REFERENSPUNKT OCH TRYCK PÅ KNAPPEN</string>
+    <string name="quick_setup">SNABBINSTÄLLNING</string>
+    <string name="flat_surface">PLAN YTA</string>
+    <string name="ab_surface">YTA från A>>B</string>
+    <string name="cross_section">YTA FRÅN\n POLYLINJE</string>
+    <string name="area">PLAN<br />YTA</string>
+    <string name="edit_zeta">VILL DU REDIGERA Z OCH TILLÄMPA DET NYA VÄRDET PÅ GPS:EN?</string>
+    <string name="lumen">LJUSSTYRKA</string>
+    <string name="messages">MEDDELANDEN</string>
+    <string name="exit_proj">AVSLUTA?\n ALL DATA KOMMER ATT FÖRLORAS</string>
+    <string name="mostraTriangoli">Visa trianglar</string>
+    <string name="mostraColore">Visa yta</string>
+    <string name="mostraPunti">Visa punkter</string>
+    <string name="mostraPoly">Visa 3D-polylinjer</string>
+    <string name="mostraNome">Visa punkttext</string>
+    <string name="mostraUtils">Visa 2D-objekt</string>
+    <string name="mostraGradiente">Visa ytgradient</string>
+    <string name="projectWindow">YTFÖNSTER</string>
+    <string name="polylinee">POLYLINJER</string>
+    <string name="puntip">PUNKTER</string>
+    <string name="laserOK">LASER OK</string>
+    <string name="laserKO">LASER UTANFÖR OMRÅDE</string>
+    <string name="disabled">INAKTIVERAD</string>
+    <string name="yaw_drift_compensation">KOMPENSATION FÖR YAW-DRIFT</string>
+    <string name="toast_select_bucket">VÄLJ SKOPAN SOM SKA KALIBRERAS</string>
+    <string name="toast_hold_to_set">HÅLL INNE FÖR ATT STÄLLA IN</string>
+    <string name="toast_cantset_heading">FEL VID INSTÄLLNING AV RIKTNING</string>
+    <string name="powercycle_sensor">STARTA OM SENSORN</string>
+    <string name="pick_1">PLACERA SKOPAN ÖVER EN REFERENSPUNKT OCH TRYCK SEDAN PÅ BILD 1</string>
+    <string name="selectproject">"VÄLJ ETT PROJEKT "</string>
+    <string name="project">"PROJEKT"</string>
+    <string name="quick">SNABB\nKOPPLING</string>
+    <string name="selectafile">VÄLJ EN FIL!</string>
+    <string name="trincea">DIKE - DRÄNERING</string>
+    <string name="dtm">TERRÄNGMODELL</string>
+    <string name="usb_file_tr">USB \nFILÖVERFÖRING</string>
+    <string name="cloud_file_tr">MOLN \nFILÖVERFÖRING</string>
+    <string name="local_projects">LOKALA \nPROJEKT</string>
+    <string name="punto_salvato">PUNKT TILLAGD</string>
+    <string name="punto_rimosso">PUNKT BORTTAGEN</string>
+    <string name="off_grid">UTANFÖR YTAN</string>
+    <string name="file_exists">Filen finns redan</string>
+    <string name="overwrite">SKRIV ÖVER?</string>
+    <string name="delete_file">TA BORT VALD FIL?</string>
+    <string name="delete_obj">TA BORT VALT OBJEKT?</string>
+    <string name="select_file">VÄLJ EN FIL</string>
+    <string name="deleted">RADERAD</string>
+    <string name="showAlign">Visa maskinjustering</string>
+    <string name="add_surface">NY YTA</string>
+    <string name="add_surface_ask">LÄGG TILL I AKTUELLT PROJEKT</string>
+    <string name="add_surface_nope">SKAPA NY</string>
+    <string name="enter_filename">ANGE FILNAMN</string>
+    <string name="fydro_no">Hydraulisk styrning är ännu inte implementerad</string>
+    <string name="treddi_acxtive">Profiler är endast tillgängliga i 1D/2D-läge</string>
+    <string name="treddi_off">Endast tillgänglig i 3D-läge</string>
+
+    <!-- nuove stringhe -->
+    <string name="menu_utente">ANVÄNDARINSTÄLLNINGAR</string>
+    <string name="menu_macchine">MASKININSTÄLLNINGAR</string>
+    <string name="nuovo_progetto">NY ARBETSYTA</string>
+    <string name="lista_lavori">JOBBLISTA</string>
+    <string name="rimuovi_usb">TA BORT USB-MINNE</string>
+    <string name="rimozione_sicura">SÄKER BORTTAGNING AV USB FÖRE AVSLUT</string>
+    <string name="progetti_non_trovata">Projektmapp hittades inte</string>
+    <string name="stxmc_creata">Mappen STX_MC skapades på USB-minnet</string>
+    <string name="stxmc_fallita">Det gick inte att skapa mappen STX_MC på USB-minnet</string>
+    <string name="stxmc_nontrovata">USB-minne hittades inte</string>
+    <string name="sovrascrivere">Skriva över?</string>
+
+    <string-array name="radio_proto">
+        <item>Satel</item><!-- 0 -->
+        <item>PCC-4FSK</item><!-- 1 -->
+        <item>PCC-GMSK</item><!-- 2 -->
+        <item>TrimTalk 450S</item><!-- 3 -->
+        <item>South 9600</item><!-- 4 -->
+        <item>HITARGET(9600)</item><!-- 6 -->
+        <item>HITARGET(19200)</item><!-- 7 -->
+        <item>TrimMark III</item><!-- 9 -->
+        <item>South 19200</item><!-- 10 -->
+        <item>TrimTalk(4800)</item><!-- 11 -->
+        <item>GEOTALK</item><!-- 13 -->
+        <item>GEOMARK</item><!-- 14 -->
+        <item>900M Hopping</item><!-- 15 -->
+        <item>HZSZ</item><!-- 16 -->
+        <item>GEO FHSS</item><!-- 17 -->
+        <item>Satel_ADL</item><!-- 19 -->
+        <item>PCCFST</item><!-- 20 -->
+        <item>PCCFST_ADL</item><!-- 21 -->
+    </string-array>
+    <string-array name="radio_spacing">
+        <item>12.5</item>
+        <item>25</item>
+    </string-array>
+
+
+</resources>
