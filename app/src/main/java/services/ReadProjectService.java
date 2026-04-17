@@ -673,7 +673,7 @@ public class ReadProjectService extends Service {
                                     case "xml":
 
                                         parserStatus = "Reading Points...";
-                                        landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
+                                        landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor,false);
                                         DataSaved.points = landXMLPOINT.getPoints();
                                         DataSaved.dxfTexts = landXMLPOINT.getTexts();
                                         DataSaved.dxfLayers_POINT = landXMLPOINT.getLayers();
@@ -894,7 +894,7 @@ public class ReadProjectService extends Service {
                                             case "xml":
 
                                                 parserStatus = "Reading Polylines...";
-                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
+                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor,true);
                                                 DataSaved.polylines = landXMLPOLY.getPolylines();
                                                 DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
                                                 copiaPoly();
@@ -934,7 +934,7 @@ public class ReadProjectService extends Service {
                                             case "xml":
 
                                                 parserStatus = "Reading Points...";
-                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
+                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor,false);
                                                 DataSaved.points = landXMLPOINT.getPoints();
                                                 DataSaved.dxfTexts = landXMLPOINT.getTexts();
                                                 DataSaved.dxfLayers_POINT = landXMLPOINT.getLayers();
@@ -1004,8 +1004,8 @@ public class ReadProjectService extends Service {
                                 if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
                                     DataSaved.filteredFaces = new ArrayList<>();
                                     DataSaved.dxfFaces = new ArrayList<>();
-                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor);
-                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor);
+                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor,false);
+                                    landXMLData = LandXMLParser.parseLandXML(nomeProgettoTRM, 1, conversionFactor,false);
                                     DataSaved.dxfFaces = landXMLData.getFaces();
                                     DataSaved.dxfLayers_DTM = landXMLData.getLayers();
                                     copiaFacce();
@@ -1051,7 +1051,7 @@ public class ReadProjectService extends Service {
                                             case "xml":
 
                                                 parserStatus = "Reading Polylines...";
-                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
+                                                landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor,true);
                                                 DataSaved.polylines = landXMLPOLY.getPolylines();
                                                 DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
                                                 copiaPoly();
@@ -1091,7 +1091,7 @@ public class ReadProjectService extends Service {
                                             case "xml":
 
                                                 parserStatus = "Reading Points...";
-                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor);
+                                                landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, 1, conversionFactor,false);
                                                 DataSaved.points = landXMLPOINT.getPoints();
                                                 DataSaved.dxfTexts = landXMLPOINT.getTexts();
                                                 DataSaved.dxfLayers_POINT = landXMLPOINT.getLayers();
@@ -1260,7 +1260,7 @@ public class ReadProjectService extends Service {
 
                                     //TODO CGPOINTS
                                     parserStatus = "Reading Points...";
-                                    landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor);
+                                    landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor,false);
                                     DataSaved.drill_points = landXMLPOINT.getDrillPoints();
                                     break;
 
@@ -1340,7 +1340,7 @@ public class ReadProjectService extends Service {
                                 case "xml":
 
                                     parserStatus = "Reading Polylines...";
-                                    landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor);
+                                    landXMLPOLY = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POLY, 1, conversionFactor,true);
                                     DataSaved.polylines = landXMLPOLY.getPolylines();
                                     DataSaved.dxfLayers_POLY = landXMLPOLY.getLayers();
                                     copiaPoly();

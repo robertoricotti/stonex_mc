@@ -154,7 +154,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         holder.layerName.setText(item.getLayerName());
 
-        int swatchColor = myParseColor(item.getColor());
+        int swatchColor = resolveUiColor(item.getFileName(), item.getColor());
         holder.layerColor.setBackgroundColor(swatchColor);
         applySwatchIconTint(holder.layerColor, swatchColor);
 
@@ -166,7 +166,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             boolean newState = !item.isEnable();
             item.setEnable(newState);
 
-            updateGlobalLayerState(item.getLayerName(), newState);
+            updateGlobalLayerState(item.getFileName(), item.getLayerName(), newState);
             updateLayerEnableState(holder.layerEnable, newState);
             applyLayerVisualState(holder, newState);
 
@@ -176,17 +176,18 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         holder.layerColor.setOnClickListener(v -> {
             String layerName = item.getLayerName();
+            String fileName = item.getFileName();
+
             if (layerName == null) {
                 Toast.makeText(v.getContext(), "Layer name is null", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (layerInfoMap.containsKey(layerName)) {
-                String info = layerInfoMap.get(layerName);
-
+            String info = layerInfoMap.get(buildLayerKey(fileName, layerName));
+            if (info != null) {
                 new AlertDialog.Builder(v.getContext())
                         .setTitle("Layer Info")
-                        .setMessage("Layer: " + layerName + "\n\n" + info)
+                        .setMessage("Layer: " + layerName + "\nFile: " + fileName + "\n\n" + info)
                         .setPositiveButton("OK", null)
                         .show();
             } else {
@@ -195,20 +196,20 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         });
 
         holder.layerStatus.setOnClickListener(view -> {
-            if (item.isEnable()) {
-                String layerName = item.getLayerName();
-                if (layerName != null) {
-                    try {
-                        mostra(layerName);
-                    } catch (Exception ignored) {
-                    }
-                }
-            } else {
+            if (!item.isEnable()) {
                 new CustomToast(MyApp.visibleActivity, "Disabled Layer").show_alert();
+                return;
+            }
+
+            try {
+                mostra(item.getFileName(), item.getLayerName());
+            } catch (Exception e) {
+                Log.e("LayerPreview", "Errore preview layer", e);
+                new CustomToast(MyApp.visibleActivity, "Preview error").show_alert();
             }
         });
 
-        String[] testi = setTesti(item.getLayerName());
+        String[] testi = setTesti(item.getFileName(), item.getLayerName());
         holder.faceNumber.setText(" " + testi[0]);
         holder.polyNumber.setText(" " + testi[1]);
         holder.lineNumber.setText(" " + testi[2]);
@@ -274,40 +275,54 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         for (DisplayItem item : displayItems) {
             if (item.getType() != DisplayItem.TYPE_LAYER) continue;
 
-            Layer layer = findLayerByName(item.getLayerName());
+            Layer layer = findLayerByName(item.getFileName(), item.getLayerName());
             if (layer != null) {
                 item.setEnable(layer.isEnable());
             }
         }
     }
 
-    private Layer findLayerByName(String layerName) {
+    private Layer findLayerByName(String fileName, String layerName) {
         if (layerName == null) return null;
 
         if (DataSaved.dxfLayers_DTM != null) {
             for (Layer layer : DataSaved.dxfLayers_DTM) {
-                if (layer != null && layerName.equals(layer.getLayerName())) return layer;
+                if (layer != null
+                        && layerName.equals(layer.getLayerName())
+                        && sameFile(fileName, layer.getProjName())) {
+                    return layer;
+                }
             }
         }
         if (DataSaved.dxfLayers_POLY != null) {
             for (Layer layer : DataSaved.dxfLayers_POLY) {
-                if (layer != null && layerName.equals(layer.getLayerName())) return layer;
+                if (layer != null
+                        && layerName.equals(layer.getLayerName())
+                        && sameFile(fileName, layer.getProjName())) {
+                    return layer;
+                }
             }
         }
         if (DataSaved.dxfLayers_POINT != null) {
             for (Layer layer : DataSaved.dxfLayers_POINT) {
-                if (layer != null && layerName.equals(layer.getLayerName())) return layer;
+                if (layer != null
+                        && layerName.equals(layer.getLayerName())
+                        && sameFile(fileName, layer.getProjName())) {
+                    return layer;
+                }
             }
         }
         return null;
     }
 
-    private void updateGlobalLayerState(String layerName, boolean newState) {
+    private void updateGlobalLayerState(String fileName, String layerName, boolean newState) {
         if (layerName == null) return;
 
         if (DataSaved.dxfLayers_DTM != null) {
             for (Layer layer : DataSaved.dxfLayers_DTM) {
-                if (layer != null && layerName.equals(layer.getLayerName())) {
+                if (layer != null
+                        && layerName.equals(layer.getLayerName())
+                        && sameFile(fileName, layer.getProjName())) {
                     layer.setEnable(newState);
                 }
             }
@@ -315,7 +330,9 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         if (DataSaved.dxfLayers_POLY != null) {
             for (Layer layer : DataSaved.dxfLayers_POLY) {
-                if (layer != null && layerName.equals(layer.getLayerName())) {
+                if (layer != null
+                        && layerName.equals(layer.getLayerName())
+                        && sameFile(fileName, layer.getProjName())) {
                     layer.setEnable(newState);
                 }
             }
@@ -323,7 +340,9 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
         if (DataSaved.dxfLayers_POINT != null) {
             for (Layer layer : DataSaved.dxfLayers_POINT) {
-                if (layer != null && layerName.equals(layer.getLayerName())) {
+                if (layer != null
+                        && layerName.equals(layer.getLayerName())
+                        && sameFile(fileName, layer.getProjName())) {
                     layer.setEnable(newState);
                 }
             }
@@ -502,13 +521,6 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         }
     }
 
-    private int myParseColor(int color) {
-        if (color == 0) {
-            return Color.rgb(255, 255, 255);
-        }
-        return color;
-    }
-
     private void popolaLayer() {
         populateLayerInfoFromList(DataSaved.dxfLayers_DTM, "dxfLayers_DTM");
         populateLayerInfoFromList(DataSaved.dxfLayers_POLY, "dxfLayers_POLY");
@@ -525,12 +537,14 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             }
 
             String layerName = layer.getLayerName();
+            String fileName = layer.getProjName();
             StringBuilder content = new StringBuilder();
 
             long faceCount = DataSaved.dxfFaces != null
                     ? DataSaved.dxfFaces.stream()
                     .filter(face -> face.getLayer() != null
-                            && layerName.equals(face.getLayer().getLayerName()))
+                            && layerName.equals(face.getLayer().getLayerName())
+                            && sameFile(fileName, face.getLayer().getProjName()))
                     .count()
                     : 0;
             content.append("3DFACE: ").append(faceCount).append("\n");
@@ -538,7 +552,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             long polylineCount = DataSaved.polylines != null
                     ? DataSaved.polylines.stream()
                     .filter(polyline -> polyline.getLayer() != null
-                            && layerName.equals(polyline.getLayer().getLayerName()))
+                            && layerName.equals(polyline.getLayer().getLayerName())
+                            && sameFile(fileName, polyline.getLayer().getProjName()))
                     .count()
                     : 0;
             content.append("3D Polyline: ").append(polylineCount).append("\n");
@@ -546,28 +561,32 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             long polyline2DCount = DataSaved.polylines_2D != null
                     ? DataSaved.polylines_2D.stream()
                     .filter(polyline2D -> polyline2D.getLayer() != null
-                            && layerName.equals(polyline2D.getLayer().getLayerName()))
+                            && layerName.equals(polyline2D.getLayer().getLayerName())
+                            && sameFile(fileName, polyline2D.getLayer().getProjName()))
                     .count()
                     : 0;
 
             long lineCount = DataSaved.lines_2D != null
                     ? DataSaved.lines_2D.stream()
                     .filter(line -> line.getLayer() != null
-                            && layerName.equals(line.getLayer().getLayerName()))
+                            && layerName.equals(line.getLayer().getLayerName())
+                            && sameFile(fileName, line.getLayer().getProjName()))
                     .count()
                     : 0;
 
             long circleCount = DataSaved.circles != null
                     ? DataSaved.circles.stream()
                     .filter(circle -> circle.getLayer() != null
-                            && layerName.equals(circle.getLayer().getLayerName()))
+                            && layerName.equals(circle.getLayer().getLayerName())
+                            && sameFile(fileName, circle.getLayer().getProjName()))
                     .count()
                     : 0;
 
             long arcCount = DataSaved.arcs != null
                     ? DataSaved.arcs.stream()
                     .filter(arc -> arc.getLayer() != null
-                            && layerName.equals(arc.getLayer().getLayerName()))
+                            && layerName.equals(arc.getLayer().getLayerName())
+                            && sameFile(fileName, arc.getLayer().getProjName()))
                     .count()
                     : 0;
 
@@ -582,16 +601,17 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             long pointCount = DataSaved.points != null
                     ? DataSaved.points.stream()
                     .filter(point -> point.getLayer() != null
-                            && layerName.equals(point.getLayer().getLayerName()))
+                            && layerName.equals(point.getLayer().getLayerName())
+                            && sameFile(fileName, point.getLayer().getProjName()))
                     .count()
                     : 0;
             content.append("Points: ").append(pointCount);
 
-            layerInfoMap.put(layerName, content.toString());
+            layerInfoMap.put(buildLayerKey(fileName, layerName), content.toString());
         }
     }
 
-    public static String[] setTesti(String layerName) {
+    public static String[] setTesti(String fileName, String layerName) {
         List<Point3D> filteredPoints = new ArrayList<>();
         List<Polyline> filteredPolylines = new ArrayList<>();
         List<Polyline_2D> filteredPolylines2D = new ArrayList<>();
@@ -603,7 +623,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredFaces = DataSaved.dxfFaces.stream()
                     .filter(face -> face.getLayer() != null
-                            && face.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(face.getLayer().getLayerName())
+                            && sameFile(fileName, face.getLayer().getProjName())
                             && face.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -612,7 +633,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredPolylines = DataSaved.polylines.stream()
                     .filter(polyline -> polyline.getLayer() != null
-                            && polyline.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(polyline.getLayer().getLayerName())
+                            && sameFile(fileName, polyline.getLayer().getProjName())
                             && polyline.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -621,7 +643,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredPolylines2D = DataSaved.polylines_2D.stream()
                     .filter(polyline2D -> polyline2D.getLayer() != null
-                            && polyline2D.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(polyline2D.getLayer().getLayerName())
+                            && sameFile(fileName, polyline2D.getLayer().getProjName())
                             && polyline2D.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -630,7 +653,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredLines = DataSaved.lines_2D.stream()
                     .filter(line -> line.getLayer() != null
-                            && line.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(line.getLayer().getLayerName())
+                            && sameFile(fileName, line.getLayer().getProjName())
                             && line.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -639,7 +663,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredCircles = DataSaved.circles.stream()
                     .filter(circle -> circle.getLayer() != null
-                            && circle.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(circle.getLayer().getLayerName())
+                            && sameFile(fileName, circle.getLayer().getProjName())
                             && circle.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -648,7 +673,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredArcs = DataSaved.arcs.stream()
                     .filter(arc -> arc.getLayer() != null
-                            && arc.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(arc.getLayer().getLayerName())
+                            && sameFile(fileName, arc.getLayer().getProjName())
                             && arc.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -657,7 +683,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredPoints = DataSaved.points.stream()
                     .filter(point -> point.getLayer() != null
-                            && point.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(point.getLayer().getLayerName())
+                            && sameFile(fileName, point.getLayer().getProjName())
                             && point.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -676,7 +703,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         };
     }
 
-    public static void mostra(String layerName) {
+    public static void mostra(String fileName, String layerName) {
         List<Point3D> filteredPoints = new ArrayList<>();
         List<Polyline> filteredPolylines = new ArrayList<>();
         List<Polyline_2D> filteredPolylines2D = new ArrayList<>();
@@ -688,7 +715,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredPoints = DataSaved.points.stream()
                     .filter(point -> point.getLayer() != null
-                            && point.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(point.getLayer().getLayerName())
+                            && sameFile(fileName, point.getLayer().getProjName())
                             && point.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -697,7 +725,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredPolylines = DataSaved.polylines.stream()
                     .filter(polyline -> polyline.getLayer() != null
-                            && polyline.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(polyline.getLayer().getLayerName())
+                            && sameFile(fileName, polyline.getLayer().getProjName())
                             && polyline.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -706,7 +735,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredPolylines2D = DataSaved.polylines_2D.stream()
                     .filter(polyline2D -> polyline2D.getLayer() != null
-                            && polyline2D.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(polyline2D.getLayer().getLayerName())
+                            && sameFile(fileName, polyline2D.getLayer().getProjName())
                             && polyline2D.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -715,7 +745,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredFaces = DataSaved.dxfFaces.stream()
                     .filter(face -> face.getLayer() != null
-                            && face.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(face.getLayer().getLayerName())
+                            && sameFile(fileName, face.getLayer().getProjName())
                             && face.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -724,7 +755,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredLines = DataSaved.lines_2D.stream()
                     .filter(line -> line.getLayer() != null
-                            && line.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(line.getLayer().getLayerName())
+                            && sameFile(fileName, line.getLayer().getProjName())
                             && line.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -733,7 +765,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredArcs = DataSaved.arcs.stream()
                     .filter(arc -> arc.getLayer() != null
-                            && arc.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(arc.getLayer().getLayerName())
+                            && sameFile(fileName, arc.getLayer().getProjName())
                             && arc.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -742,7 +775,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         try {
             filteredCircles = DataSaved.circles.stream()
                     .filter(circle -> circle.getLayer() != null
-                            && circle.getLayer().getLayerName().equals(layerName)
+                            && layerName.equals(circle.getLayer().getLayerName())
+                            && sameFile(fileName, circle.getLayer().getProjName())
                             && circle.getLayer().isEnable())
                     .collect(Collectors.toList());
         } catch (Exception ignored) {
@@ -767,7 +801,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                 filteredLines,
                 filteredCircles,
                 filteredArcs,
-                layerName
+                layerName,
+                fileName
         );
     }
 
@@ -779,136 +814,147 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             List<Line> lines,
             List<Circle> circles,
             List<Arc> arcs,
-            String layerName) {
+            String layerName,
+            String fileName) {
 
         int width = 1000;
         int height = 1000;
-
-        int lastIndex = DataSaved.progettoSelected.lastIndexOf(".");
-        String fileExtension = DataSaved.progettoSelected.substring(lastIndex + 1).toLowerCase();
-        boolean isXML = fileExtension.equalsIgnoreCase("xml");
 
         double minX = Double.POSITIVE_INFINITY;
         double minY = Double.POSITIVE_INFINITY;
         double maxX = Double.NEGATIVE_INFINITY;
         double maxY = Double.NEGATIVE_INFINITY;
 
-        for (Point3D point : points) {
-            minX = Math.min(minX, point.getX());
-            minY = Math.min(minY, point.getY());
-            maxX = Math.max(maxX, point.getX());
-            maxY = Math.max(maxY, point.getY());
-        }
-
-        for (Polyline polyline : polylines) {
-            for (Point3D vertex : polyline.getVertices()) {
-                minX = Math.min(minX, vertex.getX());
-                minY = Math.min(minY, vertex.getY());
-                maxX = Math.max(maxX, vertex.getX());
-                maxY = Math.max(maxY, vertex.getY());
+        if (points != null) {
+            for (Point3D point : points) {
+                minX = Math.min(minX, point.getX());
+                minY = Math.min(minY, point.getY());
+                maxX = Math.max(maxX, point.getX());
+                maxY = Math.max(maxY, point.getY());
             }
         }
 
-        for (Polyline_2D polyline2D : polylines2D) {
-            for (int i = 0; i < polyline2D.getVertices().size() - 1; i++) {
-                Point3D current = polyline2D.getVertices().get(i);
-                Point3D next = polyline2D.getVertices().get(i + 1);
-
-                minX = Math.min(minX, current.getX());
-                minY = Math.min(minY, current.getY());
-                maxX = Math.max(maxX, current.getX());
-                maxY = Math.max(maxY, current.getY());
-
-                minX = Math.min(minX, next.getX());
-                minY = Math.min(minY, next.getY());
-                maxX = Math.max(maxX, next.getX());
-                maxY = Math.max(maxY, next.getY());
-
-                if (current.getBulge() != 0) {
-                    double bulge = current.getBulge();
-                    double chordLength = Math.sqrt(
-                            Math.pow(next.getX() - current.getX(), 2)
-                                    + Math.pow(next.getY() - current.getY(), 2)
-                    );
-                    double theta = 4 * Math.atan(Math.abs(bulge));
-                    double radius = (chordLength / 2) / Math.abs(Math.sin(theta / 2));
-
-                    double midX = (current.getX() + next.getX()) / 2;
-                    double midY = (current.getY() + next.getY()) / 2;
-                    double sagitta = Math.sqrt(radius * radius - (chordLength / 2) * (chordLength / 2));
-                    double dx = (next.getY() - current.getY());
-                    double dy = (current.getX() - next.getX());
-                    double norm = Math.sqrt(dx * dx + dy * dy);
-                    dx /= norm;
-                    dy /= norm;
-
-                    double centerX = midX + dx * sagitta * (bulge > 0 ? -1 : 1);
-                    double centerY = midY + dy * sagitta * (bulge > 0 ? -1 : 1);
-
-                    minX = Math.min(minX, centerX - radius);
-                    minY = Math.min(minY, centerY - radius);
-                    maxX = Math.max(maxX, centerX + radius);
-                    maxY = Math.max(maxY, centerY + radius);
+        if (polylines != null) {
+            for (Polyline polyline : polylines) {
+                for (Point3D vertex : polyline.getVertices()) {
+                    minX = Math.min(minX, vertex.getX());
+                    minY = Math.min(minY, vertex.getY());
+                    maxX = Math.max(maxX, vertex.getX());
+                    maxY = Math.max(maxY, vertex.getY());
                 }
             }
         }
 
-        for (Face3D face : faces) {
-            minX = Math.min(minX, Math.min(face.getP1().getX(), Math.min(face.getP2().getX(), face.getP3().getX())));
-            minY = Math.min(minY, Math.min(face.getP1().getY(), Math.min(face.getP2().getY(), face.getP3().getY())));
-            maxX = Math.max(maxX, Math.max(face.getP1().getX(), Math.max(face.getP2().getX(), face.getP3().getX())));
-            maxY = Math.max(maxY, Math.max(face.getP1().getY(), Math.max(face.getP2().getY(), face.getP3().getY())));
+        if (polylines2D != null) {
+            for (Polyline_2D polyline2D : polylines2D) {
+                for (int i = 0; i < polyline2D.getVertices().size() - 1; i++) {
+                    Point3D current = polyline2D.getVertices().get(i);
+                    Point3D next = polyline2D.getVertices().get(i + 1);
+
+                    minX = Math.min(minX, current.getX());
+                    minY = Math.min(minY, current.getY());
+                    maxX = Math.max(maxX, current.getX());
+                    maxY = Math.max(maxY, current.getY());
+
+                    minX = Math.min(minX, next.getX());
+                    minY = Math.min(minY, next.getY());
+                    maxX = Math.max(maxX, next.getX());
+                    maxY = Math.max(maxY, next.getY());
+
+                    if (current.getBulge() != 0) {
+                        double bulge = current.getBulge();
+                        double chordLength = Math.sqrt(
+                                Math.pow(next.getX() - current.getX(), 2)
+                                        + Math.pow(next.getY() - current.getY(), 2)
+                        );
+                        double theta = 4 * Math.atan(Math.abs(bulge));
+                        double radius = (chordLength / 2) / Math.abs(Math.sin(theta / 2));
+
+                        double midX = (current.getX() + next.getX()) / 2;
+                        double midY = (current.getY() + next.getY()) / 2;
+                        double sagitta = Math.sqrt(radius * radius - (chordLength / 2) * (chordLength / 2));
+                        double dx = (next.getY() - current.getY());
+                        double dy = (current.getX() - next.getX());
+                        double norm = Math.sqrt(dx * dx + dy * dy);
+                        dx /= norm;
+                        dy /= norm;
+
+                        double centerX = midX + dx * sagitta * (bulge > 0 ? -1 : 1);
+                        double centerY = midY + dy * sagitta * (bulge > 0 ? -1 : 1);
+
+                        minX = Math.min(minX, centerX - radius);
+                        minY = Math.min(minY, centerY - radius);
+                        maxX = Math.max(maxX, centerX + radius);
+                        maxY = Math.max(maxY, centerY + radius);
+                    }
+                }
+            }
         }
 
-        for (Line line : lines) {
-            minX = Math.min(minX, Math.min(line.getStart().getX(), line.getEnd().getX()));
-            minY = Math.min(minY, Math.min(line.getStart().getY(), line.getEnd().getY()));
-            maxX = Math.max(maxX, Math.max(line.getStart().getX(), line.getEnd().getX()));
-            maxY = Math.max(maxY, Math.max(line.getStart().getY(), line.getEnd().getY()));
+        if (faces != null) {
+            for (Face3D face : faces) {
+                minX = Math.min(minX, Math.min(face.getP1().getX(), Math.min(face.getP2().getX(), face.getP3().getX())));
+                minY = Math.min(minY, Math.min(face.getP1().getY(), Math.min(face.getP2().getY(), face.getP3().getY())));
+                maxX = Math.max(maxX, Math.max(face.getP1().getX(), Math.max(face.getP2().getX(), face.getP3().getX())));
+                maxY = Math.max(maxY, Math.max(face.getP1().getY(), Math.max(face.getP2().getY(), face.getP3().getY())));
+            }
         }
 
-        for (Circle circle : circles) {
-            double centerX = circle.getCenter().getX();
-            double centerY = circle.getCenter().getY();
-            double radius = circle.getRadius();
-
-            minX = Math.min(minX, centerX - radius);
-            minY = Math.min(minY, centerY - radius);
-            maxX = Math.max(maxX, centerX + radius);
-            maxY = Math.max(maxY, centerY + radius);
+        if (lines != null) {
+            for (Line line : lines) {
+                minX = Math.min(minX, Math.min(line.getStart().getX(), line.getEnd().getX()));
+                minY = Math.min(minY, Math.min(line.getStart().getY(), line.getEnd().getY()));
+                maxX = Math.max(maxX, Math.max(line.getStart().getX(), line.getEnd().getX()));
+                maxY = Math.max(maxY, Math.max(line.getStart().getY(), line.getEnd().getY()));
+            }
         }
 
-        for (Arc arc : arcs) {
-            double centerX = arc.getCenter().getX();
-            double centerY = arc.getCenter().getY();
-            double radius = arc.getRadius();
+        if (circles != null) {
+            for (Circle circle : circles) {
+                double centerX = circle.getCenter().getX();
+                double centerY = circle.getCenter().getY();
+                double radius = circle.getRadius();
 
-            double startAngle = Math.toRadians(arc.getStartAngle());
-            double endAngle = Math.toRadians(arc.getEndAngle());
+                minX = Math.min(minX, centerX - radius);
+                minY = Math.min(minY, centerY - radius);
+                maxX = Math.max(maxX, centerX + radius);
+                maxY = Math.max(maxY, centerY + radius);
+            }
+        }
 
-            double startX = centerX + radius * Math.cos(startAngle);
-            double startY = centerY + radius * Math.sin(startAngle);
-            double endX = centerX + radius * Math.cos(endAngle);
-            double endY = centerY + radius * Math.sin(endAngle);
+        if (arcs != null) {
+            for (Arc arc : arcs) {
+                double centerX = arc.getCenter().getX();
+                double centerY = arc.getCenter().getY();
+                double radius = arc.getRadius();
 
-            minX = Math.min(minX, startX);
-            minY = Math.min(minY, startY);
-            maxX = Math.max(maxX, startX);
-            maxY = Math.max(maxY, startY);
+                double startAngle = Math.toRadians(arc.getStartAngle());
+                double endAngle = Math.toRadians(arc.getEndAngle());
 
-            minX = Math.min(minX, endX);
-            minY = Math.min(minY, endY);
-            maxX = Math.max(maxX, endX);
-            maxY = Math.max(maxY, endY);
+                double startX = centerX + radius * Math.cos(startAngle);
+                double startY = centerY + radius * Math.sin(startAngle);
+                double endX = centerX + radius * Math.cos(endAngle);
+                double endY = centerY + radius * Math.sin(endAngle);
 
-            double midAngle = (startAngle + endAngle) / 2;
-            double midX = centerX + radius * Math.cos(midAngle);
-            double midY = centerY + radius * Math.sin(midAngle);
+                minX = Math.min(minX, startX);
+                minY = Math.min(minY, startY);
+                maxX = Math.max(maxX, startX);
+                maxY = Math.max(maxY, startY);
 
-            minX = Math.min(minX, midX);
-            minY = Math.min(minY, midY);
-            maxX = Math.max(maxX, midX);
-            maxY = Math.max(maxY, midY);
+                minX = Math.min(minX, endX);
+                minY = Math.min(minY, endY);
+                maxX = Math.max(maxX, endX);
+                maxY = Math.max(maxY, endY);
+
+                double midAngle = (startAngle + endAngle) / 2;
+                double midX = centerX + radius * Math.cos(midAngle);
+                double midY = centerY + radius * Math.sin(midAngle);
+
+                minX = Math.min(minX, midX);
+                minY = Math.min(minY, midY);
+                maxX = Math.max(maxX, midX);
+                maxY = Math.max(maxY, midY);
+            }
         }
 
         if (!Double.isFinite(minX) || !Double.isFinite(minY) || !Double.isFinite(maxX) || !Double.isFinite(maxY)) {
@@ -944,11 +990,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             paint.setStrokeWidth(2);
 
             for (Face3D face : faces) {
-                if (isXML) {
-                    paint.setColor(myCheckColor(AutoCADColor.getColor(String.valueOf(face.getColor()))));
-                } else {
-                    paint.setColor(myCheckColor(face.getColor()));
-                }
+                String srcFile = face.getLayer() != null ? face.getLayer().getProjName() : fileName;
+                paint.setColor(resolveUiColor(srcFile, face.getColor()));
 
                 Path path = new Path();
                 path.moveTo(
@@ -973,7 +1016,9 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             paint.setStrokeWidth(2);
 
             for (Polyline polyline : polylines) {
-                paint.setColor(myCheckColor(polyline.getLineColor()));
+                String srcFile = polyline.getLayer() != null ? polyline.getLayer().getProjName() : fileName;
+                paint.setColor(resolveUiColor(srcFile, polyline.getLineColor()));
+
                 Path path = new Path();
                 boolean first = true;
 
@@ -997,7 +1042,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             paint.setStrokeWidth(2);
 
             for (Polyline_2D polyline2D : polylines2D) {
-                paint.setColor(myCheckColor(polyline2D.getLineColor()));
+                String srcFile = polyline2D.getLayer() != null ? polyline2D.getLayer().getProjName() : fileName;
+                paint.setColor(resolveUiColor(srcFile, polyline2D.getLineColor()));
 
                 List<Point3D> vertices = polyline2D.getVertices();
                 if (vertices.size() < 2) continue;
@@ -1043,7 +1089,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             paint.setStrokeWidth(2);
 
             for (Line line : lines) {
-                paint.setColor(myCheckColor(line.getColor()));
+                String srcFile = line.getLayer() != null ? line.getLayer().getProjName() : fileName;
+                paint.setColor(resolveUiColor(srcFile, line.getColor()));
 
                 float startX = (float) ((line.getStart().getX() - minX) * scale + offsetX);
                 float startY = (float) ((maxY - line.getStart().getY()) * scale + offsetY);
@@ -1070,7 +1117,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             paint.setStrokeWidth(2);
 
             for (Circle circle : circles) {
-                paint.setColor(myCheckColor(circle.getColor()));
+                String srcFile = circle.getLayer() != null ? circle.getLayer().getProjName() : fileName;
+                paint.setColor(resolveUiColor(srcFile, circle.getColor()));
                 float cx = (float) ((circle.getCenter().getX() - minX) * scale + offsetX);
                 float cy = (float) ((maxY - circle.getCenter().getY()) * scale + offsetY);
                 float radius = (float) (circle.getRadius() * scale);
@@ -1083,7 +1131,8 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             paint.setStrokeWidth(2);
 
             for (Arc arc : arcs) {
-                paint.setColor(myCheckColor(arc.getColor()));
+                String srcFile = arc.getLayer() != null ? arc.getLayer().getProjName() : fileName;
+                paint.setColor(resolveUiColor(srcFile, arc.getColor()));
 
                 float cx = (float) ((arc.getCenter().getX() - minX) * scale + offsetX);
                 float cy = (float) ((maxY - arc.getCenter().getY()) * scale + offsetY);
@@ -1133,6 +1182,35 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
                 .setView(layout)
                 .setPositiveButton("CLOSE", (dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+    private static boolean isXmlFile(String fileName) {
+        return fileName != null && fileName.toLowerCase().endsWith(".xml");
+    }
+
+    private static int resolveUiColor(String fileName, int rawColor) {
+        try {
+            if (rawColor == 0) {
+                return myCheckColor(Color.WHITE);
+            }
+
+            if (rawColor >= 0 && rawColor <= 255) {
+                return myCheckColor(AutoCADColor.getColor(String.valueOf(rawColor)));
+            }
+        } catch (Exception ignored) {
+        }
+
+        return myCheckColor(rawColor);
+    }
+
+    private static String buildLayerKey(String fileName, String layerName) {
+        return (fileName == null ? "" : fileName) + "::" + (layerName == null ? "" : layerName);
+    }
+
+    private static boolean sameFile(String a, String b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.equals(b);
     }
 
     private static int myCheckColor(int color) {

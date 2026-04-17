@@ -32,6 +32,10 @@ import packexcalib.exca.DataSaved;
 public class LandXMLParser {
 
     public static LandXMLData parseLandXML(String filePath, int xyz, double conversionFactor) {
+        return parseLandXML(filePath, xyz, conversionFactor, false);
+    }
+
+    public static LandXMLData parseLandXML(String filePath, int xyz, double conversionFactor, boolean parsePoly) {
         int colorIndex = 0;
         LandXMLData landXMLData = new LandXMLData();
 
@@ -49,15 +53,9 @@ public class LandXMLParser {
 
                 Element surfaceElement = (Element) surfaceNode;
 
-                // -----------------------------------------
-                // 1️⃣ NORMALIZZI IL NOME
-                // -----------------------------------------
                 String baseName = normalizeLayerName(surfaceElement.getAttribute("name"));
                 if (baseName.isEmpty()) baseName = "Layer_" + (i + 1);
 
-                // -----------------------------------------
-                // 2️⃣ GESTIONE NOMI DUPLICATI
-                // -----------------------------------------
                 String surfaceName = baseName;
                 int counter = 2;
                 while (landXMLData.layerExists(surfaceName)) {
@@ -67,15 +65,9 @@ public class LandXMLParser {
 
                 Log.i("LandXML-LAYER", "Using layer name: " + surfaceName);
 
-                // -----------------------------------------
-                // 3️⃣ CREAZIONE DEL LAYER
-                // -----------------------------------------
                 Layer layer = new Layer(filePath, surfaceName, colorIndex++, true);
                 landXMLData.addLayer(layer);
 
-                // -----------------------------------------
-                // 4️⃣ MAPPA PUNTI PER LA SUPERFICIE
-                // -----------------------------------------
                 Map<String, Point3D> pointsMap = new HashMap<>();
 
                 NodeList pointNodes = surfaceElement.getElementsByTagName("P");
@@ -103,9 +95,6 @@ public class LandXMLParser {
                     landXMLData.addText(new DxfText(id, p.getX(), p.getY(), p.getZ(), layer.getColorState(), layer));
                 }
 
-                // -----------------------------------------
-                // 5️⃣ FACCE DELLA SUPERFICIE
-                // -----------------------------------------
                 NodeList faceNodes = surfaceElement.getElementsByTagName("F");
                 for (int j = 0; j < faceNodes.getLength(); j++) {
                     Element faceElement = (Element) faceNodes.item(j);
@@ -128,14 +117,10 @@ public class LandXMLParser {
                 }
             }
 
-            // ------------------------------------------------------------
-            // Polyline / PlanFeature / CoordGeom / Line
-            // ------------------------------------------------------------
-            colorIndex = parsePlanFeaturesAsPolylines(doc, landXMLData, filePath, xyz, conversionFactor, colorIndex);
+            if (parsePoly) {
+                colorIndex = parsePlanFeaturesAsPolylines(doc, landXMLData, filePath, xyz, conversionFactor, colorIndex);
+            }
 
-            // ------------------------------------------------------------
-            // CGPoints / CgPoints
-            // ------------------------------------------------------------
             parseCGPoints(doc, landXMLData, xyz, conversionFactor);
 
         } catch (Exception e) {
@@ -157,6 +142,10 @@ public class LandXMLParser {
             return colorIndex;
         }
 
+        final int polylineColor = (colorIndex > 0) ? colorIndex : 5;
+        Layer polylineLayer = null;
+        boolean addedAnyPolyline = false;
+
         for (int i = 0; i < planFeatureNodes.getLength(); i++) {
             Node node = planFeatureNodes.item(i);
             if (node.getNodeType() != Node.ELEMENT_NODE) continue;
@@ -168,27 +157,6 @@ public class LandXMLParser {
 
             NodeList lineNodes = coordGeom.getElementsByTagName("Line");
             if (lineNodes == null || lineNodes.getLength() == 0) continue;
-
-            String baseLayerName = extractPlanFeatureLayerName(planFeature);
-            if (baseLayerName == null || baseLayerName.isEmpty()) {
-                baseLayerName = normalizeLayerName(planFeature.getAttribute("name"));
-            }
-            if (baseLayerName == null || baseLayerName.isEmpty()) {
-                baseLayerName = "Polyline_" + (i + 1);
-            }
-
-            Layer layer = findLayerByName(landXMLData, baseLayerName);
-            if (layer == null) {
-                String uniqueLayerName = baseLayerName;
-                int counter = 2;
-                while (landXMLData.layerExists(uniqueLayerName)) {
-                    uniqueLayerName = baseLayerName + " (" + counter + ")";
-                    counter++;
-                }
-
-                layer = new Layer(filePath, uniqueLayerName, colorIndex++, true);
-                landXMLData.addLayer(layer);
-            }
 
             List<Point3D> vertices = new ArrayList<>();
 
@@ -209,12 +177,7 @@ public class LandXMLParser {
                 }
 
                 Point3D pStart = new Point3D("PF_" + i + "_" + j + "_S", start[0], start[1], start[2]);
-                pStart.setLayer(layer);
-                pStart.setFilename(filePath);
-
                 Point3D pEnd = new Point3D("PF_" + i + "_" + j + "_E", end[0], end[1], end[2]);
-                pEnd.setLayer(layer);
-                pEnd.setFilename(filePath);
 
                 if (vertices.isEmpty()) {
                     vertices.add(pStart);
@@ -228,17 +191,35 @@ public class LandXMLParser {
             }
 
             if (vertices.size() >= 2) {
-                Polyline polyline = new Polyline(vertices, filePath, layer);
-                polyline.setLayer(layer);
+                if (polylineLayer == null) {
+                    String layerName = "POLYLINE";
+                    int counter = 2;
+                    while (landXMLData.layerExists(layerName)) {
+                        layerName = "POLYLINE (" + counter + ")";
+                        counter++;
+                    }
+
+                    polylineLayer = new Layer(filePath, layerName, polylineColor, true);
+                    landXMLData.addLayer(polylineLayer);
+                }
+
+                for (Point3D p : vertices) {
+                    p.setLayer(polylineLayer);
+                    p.setFilename(filePath);
+                }
+
+                Polyline polyline = new Polyline(vertices, filePath, polylineLayer);
+                polyline.setLayer(polylineLayer);
                 polyline.setFilename(filePath);
-                polyline.setLineColor(layer.getColorState());
+                polyline.setLineColor(polylineLayer.getColorState());
                 polyline.markGlDirty();
 
                 landXMLData.addPolyline(polyline);
+                addedAnyPolyline = true;
             }
         }
 
-        return colorIndex;
+        return addedAnyPolyline ? Math.max(colorIndex, polylineColor + 1) : colorIndex;
     }
 
     private static Layer findLayerByName(LandXMLData landXMLData, String name) {
@@ -254,34 +235,6 @@ public class LandXMLParser {
         }
         return null;
     }
-
-    private static String extractPlanFeatureLayerName(Element planFeature) {
-        NodeList children = planFeature.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
-            if (child.getNodeType() != Node.ELEMENT_NODE) continue;
-
-            Element childElement = (Element) child;
-            if (!matchesTag(childElement, "Feature")) continue;
-
-            String code = normalizeLayerName(childElement.getAttribute("code"));
-            if (!"trimbleCADProperties".equalsIgnoreCase(code)) continue;
-
-            NodeList properties = childElement.getElementsByTagName("Property");
-            for (int j = 0; j < properties.getLength(); j++) {
-                Node p = properties.item(j);
-                if (p.getNodeType() != Node.ELEMENT_NODE) continue;
-
-                Element prop = (Element) p;
-                String label = normalizeLayerName(prop.getAttribute("label"));
-                if ("layer".equalsIgnoreCase(label)) {
-                    return normalizeLayerName(prop.getAttribute("value"));
-                }
-            }
-        }
-        return null;
-    }
-
     private static Element firstDirectChildElement(Element parent, String tagName) {
         NodeList children = parent.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {

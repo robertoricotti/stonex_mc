@@ -467,7 +467,7 @@ public class GLDrawer {
 
                 float[] outlineCoords = buildFaceOutlineCoords2D(face, bucketCenter, scala);
                 if (outlineCoords != null) {
-                    float outlineWidth = Math.max(1.0f, 1.2f * scala);
+                    float outlineWidth = Math.max(0.2f, 0.4f * scala);
                     drawThickSegments2D(outlineCoords, outlineWidth, new float[]{
                             1f, 1f, 1f, 1f
                     });
@@ -480,7 +480,6 @@ public class GLDrawer {
     // =========================
     // POLYLINES / LINES / ARCS / CIRCLES
     // =========================
-
     public static void drawPolylines(GL11 gl, List<Polyline> polylines, float lineW, float scala) {
         if (polylines == null || polylines.isEmpty()) return;
         if (!ensureReady()) return;
@@ -493,20 +492,43 @@ public class GLDrawer {
         float[] identity = identity();
 
         for (Polyline polyline : polylines) {
-            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName()))
-                continue;
+            if (polyline == null) continue;
+            if (polyline.getLayer() == null || !isLayerEnabled(polyline.getLayer().getLayerName())) continue;
             if (!isPolylineVisible(polyline, bucketCenter, scala)) continue;
 
             FloatBuffer buffer = polyline.getOrBuildGlBuffer(bucketCenter, scala);
             int vertexCount = polyline.getCachedVertexCount();
             if (buffer == null || vertexCount < 2) continue;
 
-            int color = GL_Methods.myParseColor(polyline.getLineColor());
+            int color;
+            try {
+                String projName = polyline.getLayer().getProjName();
+                boolean isXML = projName != null && projName.toLowerCase().endsWith(".xml");
+
+                if (isXML) {
+                    color = GL_Methods.myParseColor(
+                            AutoCADColor.getColor(String.valueOf(polyline.getLayer().getColorState()))
+                    );
+                } else {
+                    color = GL_Methods.myParseColor(polyline.getLayer().getColorState());
+                }
+            } catch (Exception e) {
+                color = GL_Methods.myParseColor(polyline.getLineColor());
+            }
+
             float[] rgb = GL_Methods.parseColorToGL(color);
 
-            drawColoredVertices(buffer, vertexCount, GLES20.GL_LINE_STRIP, identity, rgb[0], rgb[1], rgb[2], 0.85f);
+            buffer.position(0);
+            drawColoredVertices(
+                    buffer,
+                    vertexCount,
+                    GLES20.GL_LINE_STRIP,
+                    identity,
+                    rgb[0], rgb[1], rgb[2], 0.85f
+            );
         }
     }
+
 
     public static void drawSelectedPoly(GL11 gl, Polyline polyline, float lineW, int color, float scala) {
         if (polyline == null) return;
