@@ -605,25 +605,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.4 pre release">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_languages_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/values-da/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/values-fi/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/values-is/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/values-no/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/values-sv/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.4 aggiunta lingue scandinave">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/MC024_130_nl_T.scs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/dozer_grader/dozer_grader.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/dozer_grader/dozer_grader.p1m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/DialogLanguages.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/DialogLanguages.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/LanguageSetter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/LanguageSetter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/MC024_130_132lgT.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/universal_piledriver/MC024_130_132lgT.scs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/ProjectParameters.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/universal_piledriver/ProjectParameters.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/Universal_PileDriver.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/universal_piledriver/Universal_PileDriver.p1m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/app/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gen2/release/STX-MC_V_4.1.4 -GEN2-RELEASE.apk" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -891,14 +876,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00170" summary="4.1.0 ritornati a 2D piana GL">
-      <option name="closed" value="true" />
-      <created>1773922235774</created>
-      <option name="number" value="00170" />
-      <option name="presentableId" value="LOCAL-00170" />
-      <option name="project" value="LOCAL" />
-      <updated>1773922235775</updated>
     </task>
     <task id="LOCAL-00171" summary="4.1.0 prima di implementare 3deasy">
       <option name="closed" value="true" />
@@ -1284,7 +1261,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776258870726</updated>
     </task>
-    <option name="localTasksCounter" value="219" />
+    <task id="LOCAL-00219" summary="4.1.4 aggiunta lingue scandinave">
+      <option name="closed" value="true" />
+      <created>1776379343616</created>
+      <option name="number" value="00219" />
+      <option name="presentableId" value="LOCAL-00219" />
+      <option name="project" value="LOCAL" />
+      <updated>1776379343616</updated>
+    </task>
+    <option name="localTasksCounter" value="220" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1300,7 +1285,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.0 prova 2D TODO" />
     <MESSAGE value="4.1.0 ritornati a 2D piana GL" />
     <MESSAGE value="4.1.0 prima di implementare 3deasy" />
     <MESSAGE value="4.1.0 pre-PROJ" />
@@ -1325,7 +1309,8 @@
     <MESSAGE value="4.1.4 Test pick polyline OK+AUTO SOLAR" />
     <MESSAGE value="14042026_1130" />
     <MESSAGE value="4.1.4 pre release" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.4 pre release" />
+    <MESSAGE value="4.1.4 aggiunta lingue scandinave" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.4 aggiunta lingue scandinave" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
   <component name="play_dynamic_filters_status">
