@@ -81,8 +81,8 @@ public class DialogLanguages {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 0.75);
-        int height = (int) (displayMetrics.heightPixels * 0.75);
+        int width = (int) (displayMetrics.widthPixels * 0.9);
+        int height = (int) (displayMetrics.heightPixels * 0.85);
         dialog.getWindow().setLayout(width, height);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
@@ -191,7 +191,7 @@ public class DialogLanguages {
         });
 
         nor.setOnClickListener(view -> {
-            MyData.push("language", "nb");
+            MyData.push("language", "no");
             LanguageSetter.setLocale(activity, MyData.get_String("language"));
             restart();
             dialog.dismiss();

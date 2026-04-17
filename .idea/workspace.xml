@@ -513,11 +513,6 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_languages.xml">
-        <config>
-          <theme>@style/Theme.Stx_dig</theme>
-        </config>
-      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_languages_2.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -605,7 +600,21 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.4 aggiunta lingue scandinave" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.4 aggiunta lingue scandinave">
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gen2/release/baselineProfiles/0/STX-MC_V_4.1.4 -GEN2-RELEASE.dm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gen2/release/baselineProfiles/1/STX-MC_V_4.1.4 -GEN2-RELEASE.dm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gen2/release/output-metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/DialogLanguages.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/DialogLanguages.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_user_settings/Nuova_User_Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/LanguageSetter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/LanguageSetter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_settaggio_utente.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_languages_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_languages_2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-no/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-no/strings.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -614,7 +623,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=a9faae769bdf7e1a)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -872,14 +881,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00171" summary="4.1.0 prima di implementare 3deasy">
-      <option name="closed" value="true" />
-      <created>1773962743358</created>
-      <option name="number" value="00171" />
-      <option name="presentableId" value="LOCAL-00171" />
-      <option name="project" value="LOCAL" />
-      <updated>1773962743359</updated>
     </task>
     <task id="LOCAL-00172" summary="4.1.0 prima di implementare 3deasy">
       <option name="closed" value="true" />
@@ -1265,7 +1266,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776379343616</updated>
     </task>
-    <option name="localTasksCounter" value="220" />
+    <task id="LOCAL-00220" summary="4.1.4 aggiunta lingue scandinave">
+      <option name="closed" value="true" />
+      <created>1776409510551</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1776409510551</updated>
+    </task>
+    <option name="localTasksCounter" value="221" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

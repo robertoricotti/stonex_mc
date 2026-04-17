@@ -178,7 +178,7 @@
                     android:layout_height="60dp"
                     android:layout_weight="1"
                     android:background="@color/bg_gray"
-                    android:padding="10dp"
+
                     android:src="@drawable/btn_ita" />
 
             </LinearLayout>

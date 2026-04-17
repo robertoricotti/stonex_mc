@@ -1,175 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">STX MC V4</string>
-    <string name="copyright">Opphavsrett © \nAlle rettigheter forbeholdt</string>
-    <string name="error_license">Lisensen er utløpt eller mangler.\nKontakt din lokale forhandler for å løse dette problemet</string>
+    <string name="copyright">Copyright © \nAlle rettigheter reservert</string>
+    <string name="error_license">Lisensen er utløpt eller mangler.\nKontakt din lokale forhandler for å løse dette</string>
     <string name="website">www.stonex.it</string>
-    <string name="copy_adding">"Kopier tillegg\nLøpenummer"</string>
+    <string name="copy_adding">"Kopier og legg til\nløpenummer"</string>
     <string name="general_set">GENERELLE INNSTILLINGER</string>
-    <string name="change_machine">ENDRE MASKINMODELL</string>
+    <string name="change_machine">BYTT MASKINMODELL</string>
     <string name="procedi">Vil du fortsette?</string>
-    <string name="downloading">Nedlasting pågår. . . .</string>
-    <string name="uploading">Opplasting pågår. . . .</string>
+    <string name="downloading">Laster ned. . . .</string>
+    <string name="uploading">Laster opp. . . .</string>
     <string name="rotate_m">ROTER MASKIN</string>
-    <string name="rotate_w">ROTER VERDEN</string>
-    <string name="tred_scene">3D-SCENE</string>
-    <string name="tit_hydro_set">PARAMETRE FOR AUTODOZER/GRADER</string>
+    <string name="rotate_w">ROTER VISNING</string>
+    <string name="tred_scene">3D-VISNING</string>
+    <string name="tit_hydro_set">PARAMETERE AUTO DOZER/GRADER</string>
     <string name="savepara">LAGRE ALLE PARAMETERE TIL EKSTERNT MINNE</string>
     <string name="savepara_pro">Vil du fortsette?</string>
-    <string name="write_para">OVERSKRIV ALLE APPLIKASJONSPARAMETERE</string>
+    <string name="write_para">OVERSKRIV ALLE APP-PARAMETERE</string>
     <string name="hydro_cp">HYDRAULISKE\nKONTROLLPUNKTER</string>
-    <string name="hydro_apply">BRUK NYE HYDRAULISKE VERDIER</string>
-    <string name="brigbck">LYSSTYRKE-BAKGRUNN</string>
-    <string name="etxoff">EKSTERNT OFFSETTRINN Øk/Red</string>
-
-    <string name="first_rod_l">LENGDE PÅ FØRSTE STANG</string>
+    <string name="hydro_apply">AKTIVER NYE HYDRAULIKKVERDIER</string>
+    <string name="brigbck">LYSSTYRKE / BAKGRUNN</string>
+    <string name="etxoff">STEGLENGDE EKSTERN OFFSET +/-</string>
+    <string name="first_rod_l">LENGDE FØRSTE STANG</string>
     <string name="rod_l">STANGLENGDE</string>
-    <string name="bit_l">BORELENGDE - BREDDE</string>
+    <string name="bit_l">BORKRONE LENGDE - BREDDE</string>
     <string name="rod_nr">ANTALL STENGER</string>
     <string name="remove_all_rods">FJERN ALLE STENGER?</string>
     <string name="sdd_rod">LEGG TIL 1 STANG?</string>
     <string name="remove_one_rod">LEGG TIL 1 STANG?</string>
-
-
-    <string name="color_bucket">SKUFFE - BLADFARGE</string>
-    <string name="color_boom">BOM - RAMMEFARGE</string>
-    <string name="ext_offset">EKSTERNT OFFSETTRINN</string>
-    <string name="auto_z_db">DØDBÅND VENSTRE HØYDE</string>
-    <string name="auto_z_dbR">DØDBÅND HØYRE HØYDE</string>
-    <string name="hydro_window">HYDRAULISK AKTIVERINGSVINDU</string>
-    <string name="auto_slope_db">DØDBÅND HELLING</string>
-    <string name="xy_db">XY-DØDBÅND</string>
-
+    <string name="color_bucket">FARGE SKUFF / SKJÆR</string>
+    <string name="color_boom">FARGE BOM / RAMME</string>
+    <string name="ext_offset">STEGLENGDE EKSTERN OFFSET</string>
+    <string name="auto_z_db">HØYDE-DØDSONE VENSTRE</string>
+    <string name="auto_z_dbR">HØYDE-DØDSONE HØYRE</string>
+    <string name="hydro_window">HYDRAULISK INNKOBLINGSVINDU</string>
+    <string name="auto_slope_db">FALL-DØDSONE</string>
+    <string name="xy_db">XY-DØDSONE</string>
     <string name="mac_setup">MASKINOPPSETT</string>
-    <string name="sens_config">KONFIGURASJON FOR CAN-SENSOR</string>
-    <string name="mch_schema">TEGN 3D-MASKINSKJEMA</string>
+    <string name="sens_config">CAN-SENSOROPPSETT</string>
+    <string name="mch_schema">TEGN 3D-MASKINSKISSE</string>
     <string name="enable_but">AKTIVER ANDROID-NAVIGASJONSKNAPPER</string>
     <string name="extra_hdt">AKTIVER EKSTRA RETNINGSSENSOR</string>
-    <string name="en_out">AKTIVER DIGITAL UTGANG 12V GRENSEALARM</string>
-    <string name="en_uhf_ntrip">BYTT UHF/NTRIP</string>
-    <string name="uppaer_bar">ØVRE LINJE ALLTID SYNLIG PÅ ARBEIDSSIDEN</string>
-    <string name="interface_type">TYPE HYDRAULISK GRENSESNITT</string>
+    <string name="en_out">AKTIVER DIGITAL 12V-UTGANG FOR GRENSEALARM</string>
+    <string name="en_uhf_ntrip">VEKSLE UHF/NTRIP</string>
+    <string name="uppaer_bar">VIS ALLTID TOPPMENY I ARBEIDSVINDU</string>
+    <string name="interface_type">TYPE HYDRAULIKK-GRENSESNITT</string>
     <string name="save">LAGRE</string>
     <string name="exit">AVSLUTT</string>
     <string name="machines">MASKINER</string>
     <string name="machines_setup">MASKININNSTILLINGER</string>
-    <string name="rename_file">GI FIL NYTT NAVN</string>
+    <string name="rename_file">ENDRE FILNAVN</string>
     <string name="wait_until">Vent til prosjektet er oppdatert</string>
-    <string name="com_debug">CAN-DEBUG</string>
+    <string name="com_debug">CAN DEBUG</string>
     <string name="profiles">PROFILER</string>
-    <string name="buckets">VELG EN SKUFFE</string>
+    <string name="buckets">VELG SKUFF</string>
     <string name="settings">BRUKERINNSTILLINGER</string>
-    <string name="bucket1">SKUFFE1</string>
-    <string name="bucket2">SKUFFE2</string>
-    <string name="bucket3">SKUFFE3</string>
-    <string name="bucket4">SKUFFE4</string>
-    <string name="bucket5">SKUFFE5</string>
-    <string name="bucket6">SKUFFE6</string>
-    <string name="bucket7">SKUFFE7</string>
-    <string name="bucket8">SKUFFE8</string>
-    <string name="bucket9">SKUFFE9</string>
-    <string name="bucket10">SKUFFE10</string>
-    <string name="bucket11">SKUFFE11</string>
-    <string name="bucket12">SKUFFE12</string>
-    <string name="bucket13">SKUFFE13</string>
-    <string name="bucket14">SKUFFE14</string>
-    <string name="bucket15">SKUFFE15</string>
-    <string name="bucket16">SKUFFE16</string>
-    <string name="bucket17">SKUFFE17</string>
-    <string name="bucket18">SKUFFE18</string>
-    <string name="bucket19">SKUFFE19</string>
-    <string name="bucket20">SKUFFE20</string>
+    <string name="bucket1">SKUFF1</string>
+    <string name="bucket2">SKUFF2</string>
+    <string name="bucket3">SKUFF3</string>
+    <string name="bucket4">SKUFF4</string>
+    <string name="bucket5">SKUFF5</string>
+    <string name="bucket6">SKUFF6</string>
+    <string name="bucket7">SKUFF7</string>
+    <string name="bucket8">SKUFF8</string>
+    <string name="bucket9">SKUFF9</string>
+    <string name="bucket10">SKUFF10</string>
+    <string name="bucket11">SKUFF11</string>
+    <string name="bucket12">SKUFF12</string>
+    <string name="bucket13">SKUFF13</string>
+    <string name="bucket14">SKUFF14</string>
+    <string name="bucket15">SKUFF15</string>
+    <string name="bucket16">SKUFF16</string>
+    <string name="bucket17">SKUFF17</string>
+    <string name="bucket18">SKUFF18</string>
+    <string name="bucket19">SKUFF19</string>
+    <string name="bucket20">SKUFF20</string>
     <string name="sensor">SENSOR</string>
     <string name="value">VERDI</string>
     <string name="offset">OFFSET</string>
     <string name="status">STATUS</string>
     <string name="boom1">BOM1</string>
     <string name="boom2">BOM2</string>
-    <string name="stick_laser">STIKK-LASER</string>
-    <string name="bucket">SKUFFE</string>
-    <string name="frame_picth_roll">RAMME PITCH-ROLL</string>
+    <string name="stick_laser">STIKKE / LASER</string>
+    <string name="bucket">SKUFF</string>
+    <string name="frame_picth_roll">RAMME PITCH / ROLL</string>
     <string name="compass">KOMPASS</string>
     <string name="tilt">TILT</string>
     <string name="pos">POS</string>
-    <string name="single_slope">ENKEL HELLING</string>
+    <string name="single_slope">ENKELFALL</string>
     <string name="off">AV</string>
     <string name="left">VENSTRE</string>
     <string name="right">HØYRE</string>
-    <string name="bucket_name">SKUFFENAVN:</string>
-    <string name="bucket_length">SKUFFELENGDE: </string>
-    <string name="bucket_width">SKUFFEBREDDE: </string>
-    <string name="Linkage_L4">LEDD L4: </string>
-    <string name="bucket_angle">SKUFFEVINKEL: </string>
-    <string name="bucket_flat_angle">PLANVINKEL FOR SKUFFE: </string>
-    <string name="reset">TILBAKESTILL</string>
-    <string name="stick_and_laser_calibration">KALIBRERING AV STIKK / LASER</string>
-    <string name="bucket_linkage_calibration">KALIBRERING AV SKUFFE / LEDD</string>
+    <string name="bucket_name">SKUFFNAVN:</string>
+    <string name="bucket_length">SKUFFLENGDE: </string>
+    <string name="bucket_width">SKUFFBREDDE: </string>
+    <string name="Linkage_L4">LENKE L4: </string>
+    <string name="bucket_angle">SKUFFVINKEL: </string>
+    <string name="bucket_flat_angle">FLATVINKEL SKUFF: </string>
+    <string name="reset">NULLSTILL</string>
+    <string name="stick_and_laser_calibration">KALIBRERING STIKKE / LASER</string>
+    <string name="bucket_linkage_calibration">KALIBRERING SKUFF / LENKE</string>
     <string name="mounting_side">MONTERINGSSIDE</string>
     <string name="info">INFO</string>
     <string name="machine_name">MASKINNAVN</string>
-    <string name="picth_and_roll_calibration">KALIBRERING AV PITCH / ROLL</string>
-    <string name="boom2_calibration">KALIBRERING AV BOM 2</string>
-    <string name="boom1_calibration">KALIBRERING AV BOM 1</string>
-    <string name="tilt_calibration">TILT-KALIBRERING</string>
-    <string name="height_deadband">HØYDE DB</string>
-    <string name="flat_angle_deadband">VINKEL DB</string>
+    <string name="picth_and_roll_calibration">KALIBRERING PITCH / ROLL</string>
+    <string name="boom2_calibration">KALIBRERING BOM 2</string>
+    <string name="boom1_calibration">KALIBRERING BOM 1</string>
+    <string name="tilt_calibration">KALIBRERING TILT</string>
+    <string name="height_deadband">HØYDE-DZ</string>
+    <string name="flat_angle_deadband">VINKEL-DZ</string>
     <string name="yes">JA</string>
     <string name="no">NEI</string>
     <string name="language">SPRÅK</string>
-
-    <string name="lasermode">Gravemaskin 2D LASERMODUS</string>
-    <string name="close_app">ER DU SIKKER PÅ AT DU VIL LUKKE DENNE APPEN?</string>
+    <string name="lasermode">GRAVEMASKIN 2D-LASERMODUS</string>
+    <string name="close_app">VIL DU VIRKELIG LUKKE APPEN?</string>
     <string name="ok">OK</string>
     <string name="set">SETT</string>
     <string name="height_alarm">HØYDEALARM</string>
     <string name="use_tilt">BRUK TILT-SENSOR</string>
-    <string name="use_bucket">BRUK SKUFFESENSOR</string>
+    <string name="use_bucket">BRUK SKUFFSENSOR</string>
     <string name="len">LENGDE (mm)</string>
     <string name="angle">VINKEL (°)</string>
-    <string name="txt_tiltangle">TILTVINKEL: </string>
-    <string name="gps_calib">KALIBRERING AV ANTENNE</string>
+    <string name="txt_tiltangle">TILT-VINKEL: </string>
+    <string name="gps_calib">ANTENNEKALIBRERING</string>
     <string name="gnss_setup">GNSS-OPPSETT</string>
-    <string name="set_laser_offset">ANGI LASERHØYDE?</string>
+    <string name="set_laser_offset">SETT LASERHØYDE?</string>
     <string name="units">AVSTAND</string>
     <string name="unitsA">VINKEL</string>
-    <string name="viewport">VISNING</string>
+    <string name="viewport">VISNINGSVINDU</string>
     <string name="user_units">MÅLEENHETER</string>
     <string name="audio">LYDER</string>
-    <string name="slopeX">HELLING X</string>
-    <string name="slopeY">HELLING Y</string>
-    <string name="infoNr">Teknisk støtte</string>
+    <string name="slopeX">FALL X</string>
+    <string name="slopeY">FALL Y</string>
+    <string name="infoNr">Teknisk support</string>
     <string name="infoMessage">mc@stonex.it</string>
-    <string name="touch_e_go">FLYTT GRAVEMASKINEN, PLASSER DERETTER SKUFFEN OVER SAMME REFERANSEPUNKT OG TRYKK PÅ KNAPPEN</string>
+    <string name="touch_e_go">FLYTT GRAVEMASKINEN, PLASSER SKUFFEN PÅ SAMME REFERANSEPUNKT OG TRYKK KNAPPEN</string>
     <string name="quick_setup">HURTIGOPPSETT</string>
-    <string name="flat_surface">FLAT OVERFLATE</string>
-    <string name="ab_surface">OVERFLATE fra A>>B</string>
-    <string name="cross_section">OVERFLATE FRA\n POLYLINJE</string>
-    <string name="area">FLAT<br />OMRÅDE</string>
-    <string name="edit_zeta">VIL DU REDIGERE Z-VERDIEN OG BRUKE DEN NYE VERDIEN FOR GPS-EN?</string>
+    <string name="flat_surface">PLAN FLATE</string>
+    <string name="ab_surface">FLATE FRA A&gt;&gt;B</string>
+    <string name="cross_section">FLATE FRA\n POLYLINJE</string>
+    <string name="area">
+PLAN
+<br/>
+FLATE
+</string>
+    <string name="edit_zeta">VIL DU ENDRE Z-VERDIEN OG OVERFØRE NY VERDI TIL GPS?</string>
     <string name="lumen">LYSSTYRKE</string>
     <string name="messages">MELDINGER</string>
-    <string name="exit_proj">AVSLUTT?\n ALLE DATA GÅR TAPT</string>
+    <string name="exit_proj">AVSLUTTE?\n ALLE DATA GÅR TAPT</string>
     <string name="mostraTriangoli">Vis trekanter</string>
-    <string name="mostraColore">Vis overflate</string>
+    <string name="mostraColore">Vis flate</string>
     <string name="mostraPunti">Vis punkter</string>
     <string name="mostraPoly">Vis 3D-polylinjer</string>
     <string name="mostraNome">Vis punkttekst</string>
     <string name="mostraUtils">Vis 2D-objekter</string>
-    <string name="mostraGradiente">Vis overflategradient</string>
-    <string name="projectWindow">OVERFLATEVINDU</string>
+    <string name="mostraGradiente">Vis flategradient</string>
+    <string name="projectWindow">MODELLVINDU</string>
     <string name="polylinee">POLYLINJER</string>
     <string name="puntip">PUNKTER</string>
     <string name="laserOK">LASER OK</string>
-    <string name="laserKO">LASER UTENFOR OMRÅDE</string>
+    <string name="laserKO">LASER UTENFOR REKKEVIDDE</string>
     <string name="disabled">DEAKTIVERT</string>
-    <string name="yaw_drift_compensation">KOMPENSASJON FOR YAW-DRIFT</string>
-    <string name="toast_select_bucket">VELG SKUFFEN SOM SKAL KALIBRERES</string>
-    <string name="toast_hold_to_set">HOLD INNE FOR Å SETTE</string>
-    <string name="toast_cantset_heading">FEIL VED SETTING AV RETNING</string>
+    <string name="yaw_drift_compensation">YAW-DRIFTKOMPENSERING</string>
+    <string name="toast_select_bucket">VELG SKUFF SOM SKAL KALIBRERES</string>
+    <string name="toast_hold_to_set">HOLD INNE FOR Å LAGRE</string>
+    <string name="toast_cantset_heading">KUNNE IKKE SETTE RETNING</string>
     <string name="powercycle_sensor">START SENSOR PÅ NYTT</string>
-    <string name="pick_1">PLASSER SKUFFEN OVER ET REFERANSEPUNKT OG TRYKK DERETTER BILDE 1</string>
-    <string name="selectproject">"VELG ET PROSJEKT "</string>
+    <string name="pick_1">PLASSER SKUFFEN PÅ ET REFERANSEPUNKT, TRYKK DERETTER BILDE 1</string>
+    <string name="selectproject">"VELG PROSJEKT "</string>
     <string name="project">"PROSJEKTER"</string>
-    <string name="quick">HURTIG\nKOBLING</string>
+    <string name="quick">HURTIG-\nFESTE</string>
     <string name="selectafile">VELG EN FIL!</string>
     <string name="trincea">GRØFT - DRENERING</string>
     <string name="dtm">TERRENGMODELL</string>
@@ -178,59 +178,73 @@
     <string name="local_projects">LOKALE \nPROSJEKTER</string>
     <string name="punto_salvato">PUNKT LAGT TIL</string>
     <string name="punto_rimosso">PUNKT FJERNET</string>
-    <string name="off_grid">UTENFOR OVERFLATE</string>
+    <string name="off_grid">UTENFOR MODELL</string>
     <string name="file_exists">Filen finnes allerede</string>
     <string name="overwrite">OVERSKRIV?</string>
     <string name="delete_file">SLETT VALGT FIL?</string>
     <string name="delete_obj">SLETT VALGT OBJEKT?</string>
     <string name="select_file">VELG EN FIL</string>
     <string name="deleted">SLETTET</string>
-    <string name="showAlign">Vis maskinjustering</string>
-    <string name="add_surface">NY OVERFLATE</string>
+    <string name="showAlign">Vis maskininnretting</string>
+    <string name="add_surface">NY FLATE</string>
     <string name="add_surface_ask">LEGG TIL I GJELDENDE PROSJEKT</string>
-    <string name="add_surface_nope">OPPRETT NY</string>
-    <string name="enter_filename">ANGI FILNAVN</string>
-    <string name="fydro_no">Hydraulisk styring er ennå ikke implementert</string>
-    <string name="treddi_acxtive">Profiler er bare tilgjengelige i 1D/2D-modus</string>
+    <string name="add_surface_nope">OPPRETT NYTT</string>
+    <string name="enter_filename">SKRIV INN FILNAVN</string>
+    <string name="fydro_no">Hydraulisk kontroll er ikke implementert ennå</string>
+    <string name="treddi_acxtive">Profiler er kun tilgjengelig i 1D/2D-modus</string>
     <string name="treddi_off">Kun tilgjengelig i 3D-modus</string>
-
-    <!-- nuove stringhe -->
+    <!--  nye strenger  -->
     <string name="menu_utente">BRUKERINNSTILLINGER</string>
     <string name="menu_macchine">MASKININNSTILLINGER</string>
-    <string name="nuovo_progetto">NYTT ARBEIDSOMRÅDE</string>
+    <string name="nuovo_progetto">NYTT PROSJEKT</string>
     <string name="lista_lavori">JOBBLISTE</string>
-    <string name="rimuovi_usb">FJERN USB-MINNE</string>
-    <string name="rimozione_sicura">SIKKER FJERNING AV USB FØR AVSLUTNING</string>
+    <string name="rimuovi_usb">FJERN USB-MINNEPINNE</string>
+    <string name="rimozione_sicura">TRYGG USB-FJERNING FØR AVSLUTT</string>
     <string name="progetti_non_trovata">Prosjektmappe ikke funnet</string>
-    <string name="stxmc_creata">Mappen STX_MC ble opprettet på USB-minnet</string>
-    <string name="stxmc_fallita">Kunne ikke opprette mappen STX_MC på USB-minnet</string>
-    <string name="stxmc_nontrovata">USB-minne ikke funnet</string>
-    <string name="sovrascrivere">Overskrive?</string>
-
+    <string name="stxmc_creata">Mappen STX_MC er opprettet på USB-minnepinnen</string>
+    <string name="stxmc_fallita">Kunne ikke opprette mappen STX_MC på USB-minnepinnen</string>
+    <string name="stxmc_nontrovata">USB-minnepinne ikke funnet</string>
+    <string name="sovrascrivere">Overskriv?</string>
     <string-array name="radio_proto">
-        <item>Satel</item><!-- 0 -->
-        <item>PCC-4FSK</item><!-- 1 -->
-        <item>PCC-GMSK</item><!-- 2 -->
-        <item>TrimTalk 450S</item><!-- 3 -->
-        <item>South 9600</item><!-- 4 -->
-        <item>HITARGET(9600)</item><!-- 6 -->
-        <item>HITARGET(19200)</item><!-- 7 -->
-        <item>TrimMark III</item><!-- 9 -->
-        <item>South 19200</item><!-- 10 -->
-        <item>TrimTalk(4800)</item><!-- 11 -->
-        <item>GEOTALK</item><!-- 13 -->
-        <item>GEOMARK</item><!-- 14 -->
-        <item>900M Hopping</item><!-- 15 -->
-        <item>HZSZ</item><!-- 16 -->
-        <item>GEO FHSS</item><!-- 17 -->
-        <item>Satel_ADL</item><!-- 19 -->
-        <item>PCCFST</item><!-- 20 -->
-        <item>PCCFST_ADL</item><!-- 21 -->
+        <item>Satel</item>
+        <!--  0  -->
+        <item>PCC-4FSK</item>
+        <!--  1  -->
+        <item>PCC-GMSK</item>
+        <!--  2  -->
+        <item>TrimTalk 450S</item>
+        <!--  3  -->
+        <item>South 9600</item>
+        <!--  4  -->
+        <item>HITARGET(9600)</item>
+        <!--  6  -->
+        <item>HITARGET(19200)</item>
+        <!--  7  -->
+        <item>TrimMark III</item>
+        <!--  9  -->
+        <item>South 19200</item>
+        <!--  10  -->
+        <item>TrimTalk(4800)</item>
+        <!--  11  -->
+        <item>GEOTALK</item>
+        <!--  13  -->
+        <item>GEOMARK</item>
+        <!--  14  -->
+        <item>900M Hopping</item>
+        <!--  15  -->
+        <item>HZSZ</item>
+        <!--  16  -->
+        <item>GEO FHSS</item>
+        <!--  17  -->
+        <item>Satel_ADL</item>
+        <!--  19  -->
+        <item>PCCFST</item>
+        <!--  20  -->
+        <item>PCCFST_ADL</item>
+        <!--  21  -->
     </string-array>
     <string-array name="radio_spacing">
         <item>12.5</item>
         <item>25</item>
     </string-array>
-
-
 </resources>

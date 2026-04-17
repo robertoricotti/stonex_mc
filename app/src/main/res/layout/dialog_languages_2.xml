@@ -2,11 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/bg_gray">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:scrollbarSize="24dp"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarFadeDuration="0"
+        android:fadeScrollbars="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -16,14 +23,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center"
-                >
+                android:gravity="center">
                 <ImageView
                     android:id="@+id/flagEN"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/uk"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1"
                   />
 
@@ -32,7 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/usa"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1"
                    />
 
@@ -41,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/italia"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1" />
 
                 <ImageView
@@ -49,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/olanda"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1" />
             </LinearLayout>
 
@@ -64,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/germania"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1" />
 
                 <ImageView
@@ -72,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/spagna"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1"/>
 
                 <ImageView
@@ -80,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/francia"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1" />
 
                 <ImageView
@@ -88,7 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/russia"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1" />
             </LinearLayout>
 
@@ -103,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/cina"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1" />
 
                 <ImageView
@@ -111,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/portogallo"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1" />
 
                 <ImageView
@@ -119,7 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/grecia"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1" />
 
                 <ImageView
@@ -127,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/south_korea"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1"/>
             </LinearLayout>
 
@@ -142,7 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/romania"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1"/>
 
                 <ImageView
@@ -150,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/giappone"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:scaleType="centerInside"
                     android:layout_weight="1" />
 
@@ -159,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/repubblica_ceca"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:scaleType="centerInside"
                     android:layout_weight="1" />
                 <ImageView
@@ -167,7 +173,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/norvegia"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:scaleType="centerInside"
                     android:layout_weight="1" />
             </LinearLayout>
@@ -183,7 +189,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/svezia"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:layout_weight="1"/>
 
                 <ImageView
@@ -191,7 +197,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/danimarca"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:scaleType="centerInside"
                     android:layout_weight="1" />
 
@@ -200,7 +206,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/islanda"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:scaleType="centerInside"
                     android:layout_weight="1" />
                 <ImageView
@@ -208,7 +214,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/finlandia"
-                    android:padding="30dp"
+                    android:padding="5dp"
                     android:scaleType="centerInside"
                     android:layout_weight="1" />
             </LinearLayout>

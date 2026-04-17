@@ -60,8 +60,8 @@ public class LanguageSetter {
             case "cs":
                 str = "cs";
                 break;
-            case "nb":
-                str = "nb";
+            case "no":
+                str = "no";
                 break;
             case "sv":
                 str = "sv";

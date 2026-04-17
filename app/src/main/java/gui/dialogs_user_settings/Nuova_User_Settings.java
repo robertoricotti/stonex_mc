@@ -560,7 +560,7 @@ public class Nuova_User_Settings extends BaseClass {
                 case "cs":
                     imgLocale.setImageResource(R.drawable.repubblica_ceca);
                     break;
-                case "nb":
+                case "no":
                     imgLocale.setImageResource(R.drawable.norvegia);
                     break;
                 case "sv":
