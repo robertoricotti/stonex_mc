@@ -54,7 +54,7 @@ public class CanService extends Service {
 
     public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck, CASE_Joystick, NOBAS_Joystick;
     public static int SteerConnected, isAuto;
-    public static int m, ECU_VALVE_TYPE;
+    public static int m, ECU_VALVE_TYPE=-1;
     public static boolean NOBAS_Connected, Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS,
             ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
     public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser, flagDefault, toolOK;

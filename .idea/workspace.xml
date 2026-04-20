@@ -563,6 +563,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_valve_type.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/file_picker_row.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -600,16 +605,15 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.4 aggiunta lingue scandinave">
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.5 pre release fix polilyne da XML">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/5z293x17/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/gen2/release/baselineProfiles/0/STX-MC_V_4.1.4 -GEN2-RELEASE.dm" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/gen2/release/baselineProfiles/1/STX-MC_V_4.1.4 -GEN2-RELEASE.dm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GLDrawer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/GLDrawer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/LayerAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/LayerAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/landxml/LandXMLParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/hydro/ECU_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/hydro/ECU_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_ecu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_ecu.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -619,7 +623,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=RZGYB0CL6FK)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=a9faae769bdf7e1a)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -650,8 +654,8 @@
         <option value="Exception" />
         <option value="resourceFile" />
         <option value="Class" />
-        <option value="layoutResourceFile" />
         <option value="valueResourceFile" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -877,14 +881,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00173" summary="4.1.0 prima di implementare 3deasy">
-      <option name="closed" value="true" />
-      <created>1774021158137</created>
-      <option name="number" value="00173" />
-      <option name="presentableId" value="LOCAL-00173" />
-      <option name="project" value="LOCAL" />
-      <updated>1774021158138</updated>
     </task>
     <task id="LOCAL-00174" summary="4.1.0 prima di implementare 3deasy">
       <option name="closed" value="true" />
@@ -1270,7 +1266,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776423487464</updated>
     </task>
-    <option name="localTasksCounter" value="222" />
+    <task id="LOCAL-00222" summary="4.1.5 pre release fix polilyne da XML">
+      <option name="closed" value="true" />
+      <created>1776460824427</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1776460824427</updated>
+    </task>
+    <option name="localTasksCounter" value="223" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1286,7 +1290,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.0 ritornati a 2D piana GL" />
     <MESSAGE value="4.1.0 prima di implementare 3deasy" />
     <MESSAGE value="4.1.0 pre-PROJ" />
     <MESSAGE value="4.1.0 PROJ funzionante anche per cz" />
@@ -1311,7 +1314,8 @@
     <MESSAGE value="14042026_1130" />
     <MESSAGE value="4.1.4 pre release" />
     <MESSAGE value="4.1.4 aggiunta lingue scandinave" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.4 aggiunta lingue scandinave" />
+    <MESSAGE value="4.1.5 pre release fix polilyne da XML" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.5 pre release fix polilyne da XML" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
   <component name="play_dynamic_filters_status">
@@ -1319,7 +1323,7 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1776374478349" />
+            <CheckInfo lastCheckTimestamp="1776687506462" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
@@ -1329,7 +1333,7 @@
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1776374478344" />
+            <CheckInfo lastCheckTimestamp="1776687506462" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">

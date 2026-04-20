@@ -246,19 +246,7 @@
             app:tint="@color/white" />
 
 
-        <TextView
 
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:layout_weight="1"
-            android:background="@color/_____cancel_text"
-            android:gravity="center|right"
-            android:text="Machine Model:  "
-            android:textColor="@color/_____cancel_text"
-            android:textSize="36sp"
-            android:textStyle="bold|italic" />
 
         <TextView
             android:id="@+id/txtTipo"
@@ -269,9 +257,9 @@
             android:layout_weight="1"
             android:background="@color/_____cancel_text"
             android:ems="10"
-            android:gravity="center|left"
-            android:text="CAT K-N"
-            android:textColor="@color/_____cancel_text"
+            android:gravity="center"
+            android:text="UNKNOWN"
+            android:textColor="@color/cyan"
             android:textSize="36sp"
             android:textStyle="bold|italic" />
 

@@ -16,17 +16,21 @@ import static packexcalib.exca.DataSaved.minSpeedRightUP;
 import static packexcalib.exca.DataSaved.minSpeedSS_A;
 import static packexcalib.exca.DataSaved.minSpeedSS_B;
 import static services.CanService.ECU_Connected;
+import static services.CanService.ECU_VALVE_TYPE;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -100,6 +104,58 @@ public class ECU_Activity extends AppCompatActivity {
     }
 
     private void onClick() {
+        tipo.setOnClickListener(v -> {
+            String[] scelte = {
+                    "DANFOSS PVG 32",
+                    "PWM Duty 250Hz",
+                    "PWM Current 150Hz",
+                    "Digital ON/OFF",
+                    " EXIT "
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(ECU_Activity.this);
+            builder.setTitle("Select Valve Type");
+
+            builder.setItems(scelte, (dialog, which) -> {
+                String scelta = scelte[which];
+
+                switch (scelta) {
+                    case "DANFOSS PVG 32":
+                        confermaCanWrite(
+                                "DANFOSS PVG 32",
+                                new byte[]{0,0,0,0,0,0,0,0}
+                        );
+                        break;
+
+                    case "PWM Duty 250Hz":
+                        confermaCanWrite(
+                                "PWM Duty 250Hz",
+                                new byte[]{1,0,0,0,0,0,0,0}
+                        );
+                        break;
+
+                    case "PWM Current 150Hz":
+                        confermaCanWrite(
+                                "PWM Current 150Hz",
+                                new byte[]{2,0,0,0,0,0,0,0}
+                        );
+                        break;
+
+                    case "Digital ON/OFF":
+                        confermaCanWrite(
+                                "Digital ON/OFF",
+                                new byte[]{3,0,0,0,0,0,0,0}
+                        );
+                        break;
+
+                    case " EXIT ":
+                        Toast.makeText(ECU_Activity.this, "CANCELLED: " + scelta, Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            });
+
+            builder.show();
+        });
         rev_left.setOnClickListener(view -> {
             if (REVERSE_LEFT > 0) {
                 REVERSE_LEFT = 0;
@@ -432,6 +488,12 @@ public class ECU_Activity extends AppCompatActivity {
     }
 
     public void updateUI() {
+        if(voceMenu==12) {
+            tipo.setVisibility(View.VISIBLE);
+            tipo.setText(tipoValvole(ECU_VALVE_TYPE));
+        }else{
+            tipo.setVisibility(View.INVISIBLE);
+        }
         pagina.setText((voceMenu + 1) + " / " + (maxMenu));
         rev_left.setChecked(DataSaved.REVERSE_LEFT == 1);
         rev_right.setChecked(DataSaved.REVERSE_RIGHT == 1);
@@ -739,5 +801,46 @@ public class ECU_Activity extends AppCompatActivity {
 
         };
         sendHandler.postDelayed(sendRunnable, 500); // primo repeat dopo 500ms
+    }
+
+    private static String tipoValvole(int type) {
+        String output="UNKNOWN";
+        switch (type) {
+            case 0:
+                output= "DANFOSS PVG 32";
+            break;
+            case 1:
+                output= "PWM Duty 250Hz";
+                break;
+            case 2:
+                output= "PWM Current 150Hz";
+                break;
+            case 3:
+                output= "Digital ON/OFF";
+                break;
+            default:
+                output="UNKNOWN";
+                break;
+
+        }
+        return output;
+    }
+    private void confermaCanWrite(String tipoValvola, byte[] data) {
+        new AlertDialog.Builder(ECU_Activity.this)
+                .setTitle("CONFIRM")
+                .setMessage("Set Valve Type:\n" + tipoValvola + " ?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    MyDeviceManager.CanWrite(true, 1, 2168, 8, data);
+                    Toast.makeText(ECU_Activity.this,
+                            "Sent : " + tipoValvola,
+                            Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    dialog.dismiss();
+                    Toast.makeText(ECU_Activity.this,
+                            "Aborted",
+                            Toast.LENGTH_SHORT).show();
+                })
+                .show();
     }
 }
