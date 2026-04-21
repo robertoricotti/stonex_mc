@@ -7,7 +7,7 @@
     <string name="remove_all_rods">¿ELIMINAR TODAS LAS VARILLAS?</string>
     <string name="sdd_rod">¿AÑADIR 1 VARILLA?</string>
     <string name="remove_one_rod">¿AÑADIR 1 VARILLA?</string>
-
+    <string name="snapon2d_es">AJUSTAR A OBJETOS 2D</string>     <!-- Spanish -->
 
     <string name="error_license">Licencia caducada o inexistente\nPóngase en contacto con su distribuidor local para resolver el problema.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>

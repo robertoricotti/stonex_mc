@@ -61,7 +61,7 @@ import utils.MyDeviceManager;
 public class Nuova_Machine_Settings extends BaseClass {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
-    CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2, ckJ, ckRock, ckJet, ckSolar, ckEcu;
+    CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2, ckJ, ckRock, ckJet, ckSolar, ckEcu,ckuse2dpoly;
     CheckBox ckBody, ckBoom, ckAtLeft, ckAtFwd, ckAtRight, ckAtBoomExca;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
@@ -139,6 +139,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         mchName = findViewById(R.id.mch_name);
         ckSchermo = findViewById(R.id.ckSchermo);
         ckMach = findViewById(R.id.ckMach);
+        ckuse2dpoly=findViewById(R.id.ckuse2dpoly);
         ckDO = findViewById(R.id.ck2);
         ck22 = findViewById(R.id.ck22);
         ckJ = findViewById(R.id.ckJ);
@@ -396,6 +397,20 @@ public class Nuova_Machine_Settings extends BaseClass {
                 ckMach.setChecked(true);
                 MyData.push("drwaMachieSchema", "1");
                 DataSaved.drwaMachieSchema = 1;
+
+            }
+        });
+        ckuse2dpoly.setOnClickListener(view -> {
+            ckuse2dpoly.setChecked(!ckuse2dpoly.isChecked());
+            if (ckuse2dpoly.isChecked()) {
+                ckuse2dpoly.setChecked(false);
+                MyData.push("merge2DEntitiesForSnap", "0");
+                DataSaved.merge2DEntitiesForSnap = 0;
+
+            } else if (!ckuse2dpoly.isChecked()) {
+                ckuse2dpoly.setChecked(true);
+                MyData.push("merge2DEntitiesForSnap", "1");
+                DataSaved.merge2DEntitiesForSnap = 1;
 
             }
         });
@@ -1068,6 +1083,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         ckUpper.setChecked(MyData.get_Int("UpperBar_Visible") == 1);
         ckSchermo.setChecked(MyData.get_Int("ckSchermo") == 1);
         ckMach.setChecked(MyData.get_Int("drwaMachieSchema") == 1);
+        ckuse2dpoly.setChecked(MyData.get_Int("merge2DEntitiesForSnap") == 1);
         techInfo.setText(MyData.get_String("techInfo"));
         ckRock.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == ROCKDRILL_MODE);
         ckJet.setChecked(MyData.get_Int("M" + machineSel + "Drilling_Mode") == JETGROUTING_MODE);

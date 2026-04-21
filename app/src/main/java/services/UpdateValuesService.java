@@ -864,6 +864,7 @@ public class UpdateValuesService extends Service {
                 String line_Offset = MyData.get_String("line_Offset");
                 String ckSchermo = MyData.get_String("ckSchermo");
                 String drwaMachieSchema = MyData.get_String("drwaMachieSchema");
+                String merge2DEntitiesForSnap = MyData.get_String("merge2DEntitiesForSnap");
                 String geoidPath = MyData.get_String("geoidPath");
                 String lock3dRotation = MyData.get_String("lock3dRotation");
                 String Off_Incr_Step = MyData.get_String("Off_Incr_Step");
@@ -1100,6 +1101,10 @@ public class UpdateValuesService extends Service {
                     }
                     if (drwaMachieSchema == null) {
                         MyData.push("drwaMachieSchema", "0");
+
+                    }
+                    if (merge2DEntitiesForSnap == null) {
+                        MyData.push("merge2DEntitiesForSnap", "0");
 
                     }
                     if (geoidPath == null) {
@@ -1823,6 +1828,11 @@ public class UpdateValuesService extends Service {
                     DataSaved.drwaMachieSchema = MyData.get_Int("drwaMachieSchema");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di drwaMachieSchema: " + e.getMessage());
+                }
+                try {
+                    DataSaved.merge2DEntitiesForSnap = MyData.get_Int("merge2DEntitiesForSnap");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di merge2DEntitiesForSnap: " + e.getMessage());
                 }
                 try {
                     DataSaved.myBrightness = Float.parseFloat(MyData.get_String("brightness"));

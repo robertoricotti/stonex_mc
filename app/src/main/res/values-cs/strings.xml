@@ -20,7 +20,7 @@
     <string name="hydro_apply">POUŽÍT NOVÉ HYDRAULICKÉ HODNOTY</string>
     <string name="brigbck">JAS-POZADÍ</string>
     <string name="etxoff">KROK EXTERNÍHO OFFSETU Zvýšit/Snížit</string>
-
+    <string name="snapon2d_cs">PŘICHYTIT K 2D OBJEKTŮM</string>  <!-- Czech -->
     <string name="first_rod_l">DÉLKA PRVNÍ TYČE</string>
     <string name="rod_l">DÉLKA TYČE</string>
     <string name="bit_l">DÉLKA - ŠÍŘKA VRTACÍ KORUNKY</string>

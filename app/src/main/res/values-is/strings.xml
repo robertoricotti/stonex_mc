@@ -193,7 +193,7 @@
     <string name="fydro_no">Vökvastýring er ekki enn innleidd</string>
     <string name="treddi_acxtive">Snið eru aðeins í boði í 1D/2D ham</string>
     <string name="treddi_off">Aðeins í boði í 3D ham</string>
-
+    <string name="snapon2d_is">SNAPPA AÐ 2D HLUTUM</string>      <!-- Icelandic -->
     <!-- nuove stringhe -->
     <string name="menu_utente">NOTANDASTILLINGAR</string>
     <string name="menu_macchine">VÉLASTILLINGAR</string>

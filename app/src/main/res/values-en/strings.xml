@@ -118,7 +118,7 @@
     <string name="viewport">VIEWPORT</string>
     <string name="user_units">UNITS OF MEASURE</string>
     <string name="audio">SOUNDS</string>
-
+    <string name="snapon2d">SNAP ON 2D OBJECTS</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="quick_setup">QUICK SETUP</string>

@@ -7,7 +7,7 @@
     <string name="remove_all_rods">REMOVER TODAS AS HASTES?</string>
     <string name="sdd_rod">ADICIONAR 1 HASTE?</string>
     <string name="remove_one_rod">ADICIONAR 1 HASTE?</string>
-
+    <string name="snapon2d_pt">AJUSTAR A OBJETOS 2D</string>     <!-- Portuguese -->
     <string name="error_license">Licença expirada ou ausente\nEntre em contato com o revendedor local para resolver o problema.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>

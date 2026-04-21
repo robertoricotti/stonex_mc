@@ -193,7 +193,7 @@
     <string name="fydro_no">Hydraulisk styring er endnu ikke implementeret</string>
     <string name="treddi_acxtive">Profiler er kun tilgængelige i 1D/2D-tilstand</string>
     <string name="treddi_off">Kun tilgængelig i 3D-tilstand</string>
-
+    <string name="snapon2d_da">SNAP TIL 2D-OBJEKTER</string>     <!-- Danish -->
     <!-- nuove stringhe -->
     <string name="menu_utente">BRUGERINDSTILLINGER</string>
     <string name="menu_macchine">MASKININDSTILLINGER</string>

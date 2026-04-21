@@ -7,7 +7,7 @@
     <string name="remove_all_rods">모든 로드를 제거하시겠습니까?</string>
     <string name="sdd_rod">로드 1개를 추가하시겠습니까?</string>
     <string name="remove_one_rod">로드 1개를 추가하시겠습니까?</string>
-
+    <string name="snapon2d_ko">2D 객체에 스냅</string>           <!-- Korean -->
     <string name="error_license">라이선스가 만료되었거나 없습니다\n문제를 해결하려면 현지 딜러에게 문의하십시오.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>

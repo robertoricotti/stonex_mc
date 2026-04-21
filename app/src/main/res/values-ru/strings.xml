@@ -7,7 +7,7 @@
     <string name="remove_all_rods">УДАЛИТЬ ВСЕ СТЕРЖНИ?</string>
     <string name="sdd_rod">ДОБАВИТЬ 1 СТЕРЖЕНЬ?</string>
     <string name="remove_one_rod">ДОБАВИТЬ 1 СТЕРЖЕНЬ?</string>
-
+    <string name="snapon2d_ru">ПРИВЯЗКА К 2D-ОБЪЕКТАМ</string>   <!-- Russian -->
     <string name="error_license">Лицензия просрочена или отсутствует\nОбратитесь к местному дилеру, чтобы решить проблему.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>

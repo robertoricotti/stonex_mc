@@ -277,7 +277,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <CheckBox
                     android:id="@+id/ckMach"
@@ -290,6 +290,17 @@
                     android:textStyle="bold|italic"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+                <CheckBox
+                    android:id="@+id/ckuse2dpoly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/_____cancel_text"
+                    android:text="@string/snapon2d"
+                    android:textColor="@color/_____cancel_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ckMach" />
 
                 <CheckBox
                     android:id="@+id/ckSchermo"
@@ -301,7 +312,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold|italic"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ckMach" />
+                    app:layout_constraintTop_toBottomOf="@id/ckuse2dpoly" />
 
                 <CheckBox
                     android:id="@+id/ck22"

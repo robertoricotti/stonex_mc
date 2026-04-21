@@ -206,6 +206,7 @@
     <string name="stxmc_fallita">Failed to create folder STX_MC on USB stick</string>
     <string name="stxmc_nontrovata">USB stick not found</string>
     <string name="sovrascrivere">Overwrite?</string>
+    <string name="snapon2d">SNAP ON 2D OBJECTS</string>
 
     <string-array name="radio_proto">
         <item>Satel</item><!-- 0 -->

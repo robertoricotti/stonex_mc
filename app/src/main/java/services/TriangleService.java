@@ -27,14 +27,18 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import dxf.Arc;
+import dxf.Circle;
 import dxf.Face3D;
 import dxf.IntersectionFinder;
 import dxf.JTSOffsetHelper;
 import dxf.Layer;
+import dxf.Line;
 import dxf.PNEZDPoint;
 import dxf.Point2D;
 import dxf.Point3D;
 import dxf.Polyline;
+import dxf.Polyline_2D;
 import dxf.Segment;
 import gui.MyApp;
 import gui.draw_class.Geometry2D;
@@ -780,8 +784,89 @@ public class TriangleService extends Service {
         return Math.hypot(x - projX, y - projY);
     }
 
-
     public static List<Polyline> getFilteredPolylines() {
+        List<Polyline> filteredPolylines = new ArrayList<>();
+
+        // POLYLINE native
+        if (polylines != null) {
+            for (Polyline polyline : polylines) {
+                if (polyline != null
+                        && polyline.getLayer() != null
+                        && polyline.getLayer().getLayerName() != null
+                        && isLayerEnabled(polyline.getLayer().getLayerName())) {
+                    filteredPolylines.add(polyline);
+                }
+            }
+        }
+
+        // Merge opzionale delle altre entità 2D
+        if (DataSaved.merge2DEntitiesForSnap==0) {
+            return filteredPolylines;
+        }
+
+        // LINE
+        if (DataSaved.lines_2D != null) {
+            for (Line line : DataSaved.lines_2D) {
+                if (line != null
+                        && line.getLayer() != null
+                        && line.getLayer().getLayerName() != null
+                        && isLayerEnabled(line.getLayer().getLayerName())) {
+                    Polyline poly = convertLineToPolyline(line);
+                    if (poly.getVertices() != null && poly.getVertices().size() >= 2) {
+                        filteredPolylines.add(poly);
+                    }
+                }
+            }
+        }
+
+        // LWPOLYLINE
+        if (DataSaved.polylines_2D != null) {
+            for (Polyline_2D lw : DataSaved.polylines_2D) {
+                if (lw != null
+                        && lw.getLayer() != null
+                        && lw.getLayer().getLayerName() != null
+                        && isLayerEnabled(lw.getLayer().getLayerName())) {
+                    Polyline poly = convertPolyline2DToPolyline(lw);
+                    if (poly.getVertices() != null && poly.getVertices().size() >= 2) {
+                        filteredPolylines.add(poly);
+                    }
+                }
+            }
+        }
+
+        // ARC
+        if (DataSaved.arcs != null) {
+            for (Arc arc : DataSaved.arcs) {
+                if (arc != null
+                        && arc.getLayer() != null
+                        && arc.getLayer().getLayerName() != null
+                        && isLayerEnabled(arc.getLayer().getLayerName())) {
+                    Polyline poly = convertArcToPolyline(arc, 36);
+                    if (poly.getVertices() != null && poly.getVertices().size() >= 2) {
+                        filteredPolylines.add(poly);
+                    }
+                }
+            }
+        }
+
+        // CIRCLE
+        if (DataSaved.circles != null) {
+            for (Circle circle : DataSaved.circles) {
+                if (circle != null
+                        && circle.getLayer() != null
+                        && circle.getLayer().getLayerName() != null
+                        && isLayerEnabled(circle.getLayer().getLayerName())) {
+                    Polyline poly = convertCircleToPolyline(circle, 72);
+                    if (poly.getVertices() != null && poly.getVertices().size() >= 2) {
+                        filteredPolylines.add(poly);
+                    }
+                }
+            }
+        }
+
+        return filteredPolylines;
+    }
+    /*public static List<Polyline> getFilteredPolylines() {
         List<Polyline> filteredPolylines = new ArrayList<>();
 
         if (polylines == null || polylines.isEmpty()) {
@@ -797,7 +882,7 @@ public class TriangleService extends Service {
         }
 
         return filteredPolylines;
-    }
+    }*/
 
     public static boolean isLayerEnabled(String layerName) {
         try {
@@ -1131,6 +1216,161 @@ public class TriangleService extends Service {
 
 
 //////////////////
+private static Polyline convertLineToPolyline(Line line) {
+    Polyline p = new Polyline();
+    p.setLayer(line.getLayer());
+    p.setLineColor(line.getColor());
 
+    if (line.getStart() != null) {
+        p.getVertices().add(line.getStart().clone());
+    }
+    if (line.getEnd() != null) {
+        p.getVertices().add(line.getEnd().clone());
+    }
 
+    p.markGlDirty();
+    return p;
+}
+    private static Polyline convertPolyline2DToPolyline(Polyline_2D src) {
+        Polyline out = new Polyline();
+        out.setLayer(src.getLayer());
+        out.setLineColor(src.getLineColor());
+
+        List<Point3D> verts = src.getVertices();
+        if (verts == null || verts.size() < 2) return out;
+
+        for (int i = 0; i < verts.size() - 1; i++) {
+            Point3D a = verts.get(i);
+            Point3D b = verts.get(i + 1);
+
+            if (i == 0) {
+                out.getVertices().add(a.clone());
+            }
+
+            if (a.getBulge() == 0) {
+                out.getVertices().add(b.clone());
+            } else {
+                List<Point3D> sampled = sampleBulgeSegment(a, b, a.getBulge(), 24);
+                for (int k = 1; k < sampled.size(); k++) {
+                    out.getVertices().add(sampled.get(k));
+                }
+            }
+        }
+
+        if (src.isClosed() && !out.getVertices().isEmpty()) {
+            Point3D first = out.getVertices().get(0);
+            Point3D last = out.getVertices().get(out.getVertices().size() - 1);
+
+            if (Math.abs(first.getX() - last.getX()) > 1e-9 ||
+                    Math.abs(first.getY() - last.getY()) > 1e-9 ||
+                    Math.abs(first.getZ() - last.getZ()) > 1e-9) {
+                out.getVertices().add(first.clone());
+            }
+        }
+
+        out.markGlDirty();
+        return out;
+    }
+
+    private static Polyline convertArcToPolyline(Arc arc, int segments) {
+        Polyline p = new Polyline();
+        p.setLayer(arc.getLayer());
+        p.setLineColor(arc.getColor());
+
+        if (arc.getCenter() == null || arc.getRadius() <= 0) return p;
+
+        double start = Math.toRadians(arc.getStartAngle());
+        double end = Math.toRadians(arc.getEndAngle());
+
+        while (end < start) {
+            end += Math.PI * 2.0;
+        }
+
+        for (int i = 0; i <= segments; i++) {
+            double t = start + (end - start) * i / segments;
+            double x = arc.getCenter().getX() + arc.getRadius() * Math.cos(t);
+            double y = arc.getCenter().getY() + arc.getRadius() * Math.sin(t);
+            double z = arc.getCenter().getZ();
+            p.getVertices().add(new Point3D(x, y, z));
+        }
+
+        p.markGlDirty();
+        return p;
+    }
+
+    private static Polyline convertCircleToPolyline(Circle circle, int segments) {
+        Polyline p = new Polyline();
+        p.setLayer(circle.getLayer());
+        p.setLineColor(circle.getColor());
+
+        if (circle.getCenter() == null || circle.getRadius() <= 0) return p;
+
+        for (int i = 0; i <= segments; i++) {
+            double t = (Math.PI * 2.0) * i / segments;
+            double x = circle.getCenter().getX() + circle.getRadius() * Math.cos(t);
+            double y = circle.getCenter().getY() + circle.getRadius() * Math.sin(t);
+            double z = circle.getCenter().getZ();
+            p.getVertices().add(new Point3D(x, y, z));
+        }
+
+        p.markGlDirty();
+        return p;
+    }
+    private static List<Point3D> sampleBulgeSegment(Point3D p1, Point3D p2, double bulge, int segments) {
+        List<Point3D> out = new ArrayList<>();
+
+        if (bulge == 0) {
+            out.add(p1.clone());
+            out.add(p2.clone());
+            return out;
+        }
+
+        double x1 = p1.getX();
+        double y1 = p1.getY();
+        double x2 = p2.getX();
+        double y2 = p2.getY();
+        double z = p1.getZ();
+
+        double chord = Math.hypot(x2 - x1, y2 - y1);
+        double theta = 4.0 * Math.atan(Math.abs(bulge));
+        double radius = (chord / 2.0) / Math.sin(theta / 2.0);
+
+        double midX = (x1 + x2) / 2.0;
+        double midY = (y1 + y2) / 2.0;
+
+        double h = Math.sqrt(Math.max(0, radius * radius - (chord * chord / 4.0)));
+
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        double len = Math.hypot(dx, dy);
+        if (len == 0) {
+            out.add(p1.clone());
+            return out;
+        }
+
+        double perpX = -dy / len;
+        double perpY = dx / len;
+
+        double centerX = midX + perpX * h * (bulge > 0 ? 1 : -1);
+        double centerY = midY + perpY * h * (bulge > 0 ? 1 : -1);
+
+        double startAngle = Math.atan2(y1 - centerY, x1 - centerX);
+        double endAngle = Math.atan2(y2 - centerY, x2 - centerX);
+
+        double sweep = endAngle - startAngle;
+        if (bulge > 0) {
+            if (sweep < 0) sweep += Math.PI * 2.0;
+        } else {
+            if (sweep > 0) sweep -= Math.PI * 2.0;
+        }
+
+        for (int i = 0; i <= segments; i++) {
+            double a = startAngle + sweep * i / segments;
+            double x = centerX + radius * Math.cos(a);
+            double y = centerY + radius * Math.sin(a);
+            out.add(new Point3D(x, y, z));
+        }
+
+        return out;
+    }
 }
