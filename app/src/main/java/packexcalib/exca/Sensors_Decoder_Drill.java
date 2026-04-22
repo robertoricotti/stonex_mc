@@ -1,5 +1,6 @@
 package packexcalib.exca;
 
+import static gui.MyApp.licenseType;
 import static packexcalib.exca.DataSaved.DRILL_STATUS;
 import static packexcalib.exca.DataSaved.HEADING;
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
@@ -13,6 +14,7 @@ import static packexcalib.exca.Sensors_Decoder.Deg_stick;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.FMI_SENS;
+import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.UNIVERSAL_ECU;
@@ -45,24 +47,27 @@ public class Sensors_Decoder_Drill {
         try {
             if (DataSaved.isCanOpen == UNIVERSAL_ECU) {
                 //TODO MESSAGGI DA ECU
-                switch (id & 0x1FF) {
-                    case 0x81:
-                        Deg_Tool_Roll = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{
-                                data[0], data[1]
-                        });
-                        Deg_Tool_Pitch = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{
-                                data[3], data[4]
-                        });
-                        DRILL_STATUS = (int) data[7];
-                        break;
+                if(licenseType==MC_3D_PRO_AUTO) {
+                    switch (id & 0x1FF) {
+                        case 0x81:
+                            Deg_Tool_Roll = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{
+                                    data[0], data[1]
+                            });
+                            Deg_Tool_Pitch = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{
+                                    data[3], data[4]
+                            });
+                            DRILL_STATUS = (int) data[7];
+                            break;
 
-                    case 0x194:
-                        long rowEnc = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[3], data[4]});
-                        double rowRope = rowEnc * 0.001;
-                        RopeLen = rowRope * DataSaved.lrRotary;
-                        break;
+                        case 0x194:
+                            long rowEnc = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{data[3], data[4]});
+                            double rowRope = rowEnc * 0.001;
+                            RopeLen = rowRope * DataSaved.lrRotary;
+                            break;
+                    }
                 }
-            } else {
+            }
+            else {
                 if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
                     if (id == 0x189) {
                         long rowEnc = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[0], data[1], data[2], data[3]});

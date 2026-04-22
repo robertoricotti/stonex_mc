@@ -154,9 +154,9 @@ public class TriangleService extends Service {
 
         super.onDestroy();
         isUpdating = false;
-        MyApp.isAlto=false;
-        MyApp.isBasso=false;
-        MyApp.isCentro=false;
+        MyApp.isAlto = false;
+        MyApp.isBasso = false;
+        MyApp.isCentro = false;
         stopTriangleLoop();
     }
 
@@ -800,7 +800,7 @@ public class TriangleService extends Service {
         }
 
         // Merge opzionale delle altre entità 2D
-        if (DataSaved.merge2DEntitiesForSnap==0) {
+        if (DataSaved.merge2DEntitiesForSnap == 0) {
             return filteredPolylines;
         }
 
@@ -1215,22 +1215,23 @@ public class TriangleService extends Service {
     }
 
 
-//////////////////
-private static Polyline convertLineToPolyline(Line line) {
-    Polyline p = new Polyline();
-    p.setLayer(line.getLayer());
-    p.setLineColor(line.getColor());
+    /// ///////////////
+    private static Polyline convertLineToPolyline(Line line) {
+        Polyline p = new Polyline();
+        p.setLayer(line.getLayer());
+        p.setLineColor(line.getColor());
 
-    if (line.getStart() != null) {
-        p.getVertices().add(line.getStart().clone());
-    }
-    if (line.getEnd() != null) {
-        p.getVertices().add(line.getEnd().clone());
+        if (line.getStart() != null) {
+            p.getVertices().add(line.getStart().clone());
+        }
+        if (line.getEnd() != null) {
+            p.getVertices().add(line.getEnd().clone());
+        }
+
+        p.markGlDirty();
+        return p;
     }
 
-    p.markGlDirty();
-    return p;
-}
     private static Polyline convertPolyline2DToPolyline(Polyline_2D src) {
         Polyline out = new Polyline();
         out.setLayer(src.getLayer());
@@ -1250,7 +1251,7 @@ private static Polyline convertLineToPolyline(Line line) {
             if (a.getBulge() == 0) {
                 out.getVertices().add(b.clone());
             } else {
-                List<Point3D> sampled = sampleBulgeSegment(a, b, a.getBulge(), 24);
+                List<Point3D> sampled = sampleBulgeSegmentRendererCompatible(a, b, a.getBulge());
                 for (int k = 1; k < sampled.size(); k++) {
                     out.getVertices().add(sampled.get(k));
                 }
@@ -1316,7 +1317,8 @@ private static Polyline convertLineToPolyline(Line line) {
         p.markGlDirty();
         return p;
     }
-    private static List<Point3D> sampleBulgeSegment(Point3D p1, Point3D p2, double bulge, int segments) {
+
+    private static List<Point3D> sampleBulgeSegmentRendererCompatible(Point3D p1, Point3D p2, double bulge) {
         List<Point3D> out = new ArrayList<>();
 
         if (bulge == 0) {
@@ -1327,50 +1329,152 @@ private static Polyline convertLineToPolyline(Line line) {
 
         double x1 = p1.getX();
         double y1 = p1.getY();
+        double z1 = p1.getZ();
+
         double x2 = p2.getX();
         double y2 = p2.getY();
-        double z = p1.getZ();
 
-        double chord = Math.hypot(x2 - x1, y2 - y1);
-        double theta = 4.0 * Math.atan(Math.abs(bulge));
-        double radius = (chord / 2.0) / Math.sin(theta / 2.0);
+        if (Math.abs(bulge) > 1.0) {
+            return sampleBulgeSegmentMajorArc(p1, p2, bulge);
+        } else {
+            return sampleBulgeSegmentStandard(p1, p2, bulge);
+        }
+    }
+    private static List<Point3D> sampleBulgeSegmentStandard(Point3D p1, Point3D p2, double bulge) {
+        List<Point3D> out = new ArrayList<>();
 
-        double midX = (x1 + x2) / 2.0;
-        double midY = (y1 + y2) / 2.0;
+        double x1 = p1.getX();
+        double y1 = p1.getY();
+        double z1 = p1.getZ();
 
-        double h = Math.sqrt(Math.max(0, radius * radius - (chord * chord / 4.0)));
+        double x2 = p2.getX();
+        double y2 = p2.getY();
 
-        double dx = x2 - x1;
-        double dy = y2 - y1;
-        double len = Math.hypot(dx, dy);
-        if (len == 0) {
+        double distance = Math.hypot(x2 - x1, y2 - y1);
+        if (distance == 0) {
             out.add(p1.clone());
             return out;
         }
 
-        double perpX = -dy / len;
-        double perpY = dx / len;
+        double theta = 4.0 * Math.atan(Math.abs(bulge));
+        double radius = (distance / 2.0) / Math.abs(Math.sin(theta / 2.0));
 
-        double centerX = midX + perpX * h * (bulge > 0 ? 1 : -1);
-        double centerY = midY + perpY * h * (bulge > 0 ? 1 : -1);
+        double midX = (x1 + x2) / 2.0;
+        double midY = (y1 + y2) / 2.0;
+
+        double height = Math.sqrt(Math.max(0.0, radius * radius - (distance / 2.0) * (distance / 2.0)));
+
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        double norm = Math.hypot(dx, dy);
+        if (norm == 0) {
+            out.add(p1.clone());
+            return out;
+        }
+
+        double perpX = -dy / norm;
+        double perpY = dx / norm;
+
+        double centerX = midX + perpX * height * (bulge > 0 ? 1 : -1);
+        double centerY = midY + perpY * height * (bulge > 0 ? 1 : -1);
 
         double startAngle = Math.atan2(y1 - centerY, x1 - centerX);
         double endAngle = Math.atan2(y2 - centerY, x2 - centerX);
 
-        double sweep = endAngle - startAngle;
+        double sweepAngle = endAngle - startAngle;
         if (bulge > 0) {
-            if (sweep < 0) sweep += Math.PI * 2.0;
+            if (sweepAngle < 0) sweepAngle += 2.0 * Math.PI;
         } else {
-            if (sweep > 0) sweep -= Math.PI * 2.0;
+            if (sweepAngle > 0) sweepAngle -= 2.0 * Math.PI;
         }
 
-        for (int i = 0; i <= segments; i++) {
-            double a = startAngle + sweep * i / segments;
-            double x = centerX + radius * Math.cos(a);
-            double y = centerY + radius * Math.sin(a);
-            out.add(new Point3D(x, y, z));
+        if (Math.abs(bulge) > 1 && Math.abs(Math.toDegrees(sweepAngle)) < 180.0) {
+            sweepAngle = (bulge > 0)
+                    ? (2.0 * Math.PI - Math.abs(sweepAngle))
+                    : -(2.0 * Math.PI - Math.abs(sweepAngle));
+        }
+
+        int numSegments = computeBulgeArcSegmentsWorld(radius, sweepAngle);
+
+        for (int i = 0; i <= numSegments; i++) {
+            double angle = startAngle + (sweepAngle * i / numSegments);
+            double x = centerX + radius * Math.cos(angle);
+            double y = centerY + radius * Math.sin(angle);
+            out.add(new Point3D(x, y, z1));
         }
 
         return out;
+    }
+    private static List<Point3D> sampleBulgeSegmentMajorArc(Point3D p1, Point3D p2, double bulge) {
+        List<Point3D> out = new ArrayList<>();
+
+        double x1 = p1.getX();
+        double y1 = p1.getY();
+        double z1 = p1.getZ();
+
+        double x2 = p2.getX();
+        double y2 = p2.getY();
+
+        double chordLength = Math.hypot(x2 - x1, y2 - y1);
+        if (chordLength == 0) {
+            out.add(p1.clone());
+            return out;
+        }
+
+        double theta = 4.0 * Math.atan(Math.abs(bulge));
+        double radius = Math.abs((chordLength / 2.0) / Math.sin(theta / 2.0));
+
+        double midX = (x1 + x2) / 2.0;
+        double midY = (y1 + y2) / 2.0;
+
+        double sagitta = Math.sqrt(Math.max(0.0, radius * radius - (chordLength / 2.0) * (chordLength / 2.0)));
+
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        double norm = Math.hypot(dx, dy);
+        if (norm == 0) {
+            out.add(p1.clone());
+            return out;
+        }
+
+        double perpX = -dy / norm;
+        double perpY = dx / norm;
+
+        double centerX = midX + perpX * sagitta * (bulge > 0 ? -1 : 1);
+        double centerY = midY + perpY * sagitta * (bulge > 0 ? -1 : 1);
+
+        double startAngle = Math.atan2(y1 - centerY, x1 - centerX);
+        double endAngle = Math.atan2(y2 - centerY, x2 - centerX);
+
+        double sweepAngle = endAngle - startAngle;
+        if (bulge > 0) {
+            if (sweepAngle < 0) sweepAngle += 2.0 * Math.PI;
+        } else {
+            if (sweepAngle > 0) sweepAngle -= 2.0 * Math.PI;
+        }
+
+        int numSegments = computeBulgeArcSegmentsWorld(radius, sweepAngle);
+
+        for (int i = 0; i <= numSegments; i++) {
+            double angle = startAngle + (sweepAngle * i / numSegments);
+            double x = centerX + radius * Math.cos(angle);
+            double y = centerY + radius * Math.sin(angle);
+            out.add(new Point3D(x, y, z1));
+        }
+
+        return out;
+    }
+    private static int computeBulgeArcSegmentsWorld(double radius, double sweepAngle) {
+        double absSweep = Math.abs(sweepAngle);
+        double targetSegmentLength = 0.20; // metri / unità mondo, regola se serve
+
+        int segmentsByLength = (int) Math.ceil((radius * absSweep) / targetSegmentLength);
+        int segmentsByAngle = (int) Math.ceil(Math.toDegrees(absSweep) / 8.0);
+
+        int segments = Math.max(segmentsByLength, segmentsByAngle);
+        segments = Math.max(12, segments);
+        segments = Math.min(180, segments);
+
+        return segments;
     }
 }

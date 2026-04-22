@@ -24,6 +24,8 @@ import static services.TriangleService.glSegmentPoint;
 import static services.TriangleService.glTerraPunto;
 import static services.TriangleService.orientamentoFreccia;
 
+import android.util.Log;
+
 import dxf.Point3D;
 import gui.my_opengl.MyGLRenderer;
 import gui.my_opengl.Point3DF;
@@ -341,14 +343,13 @@ public class My_Benna {
                             break;
                         }
                     }
-                } else {
-                    DataSaved.isAutoSnap = 0;
                 }
                 break;
 
             case 2:
             case 20:
                 if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
+
                     switch (DataSaved.bucketEdge) {
                         case -1: {
                             Point3DF pbuck = pTransform(bucketLeftCoord, DataSaved.glL_AnchorView, rs());
@@ -387,8 +388,6 @@ public class My_Benna {
                             break;
                         }
                     }
-                } else {
-                    DataSaved.isAutoSnap = 0;
                 }
                 break;
         }

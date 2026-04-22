@@ -193,7 +193,7 @@ FLATE
     <string name="fydro_no">Hydraulisk kontroll er ikke implementert ennå</string>
     <string name="treddi_acxtive">Profiler er kun tilgjengelig i 1D/2D-modus</string>
     <string name="treddi_off">Kun tilgjengelig i 3D-modus</string>
-    <string name="snapon2d_no">SNAPP TIL 2D-OBJEKTER</string>    <!-- Norwegian -->
+    <string name="snapon2d">SNAPP TIL 2D-OBJEKTER</string>    <!-- Norwegian -->
     <!--  nye strenger  -->
     <string name="menu_utente">BRUKERINNSTILLINGER</string>
     <string name="menu_macchine">MASKININNSTILLINGER</string>

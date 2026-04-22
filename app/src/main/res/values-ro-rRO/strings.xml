@@ -8,7 +8,7 @@
     <string name="remove_all_rods">ELIMINAȚI TOATE TIJELE?</string>
     <string name="sdd_rod">ADĂUGAȚI 1 TIJĂ?</string>
     <string name="remove_one_rod">ADĂUGAȚI 1 TIJĂ?</string>
-    <string name="snapon2d_ro">FIXARE PE OBIECTE 2D</string>     <!-- Romanian -->
+    <string name="snapon2d">FIXARE PE OBIECTE 2D</string>     <!-- Romanian -->
     <string name="error_license">Licență expirată sau lipsă\nContactați dealerul local pentru a rezolva problema.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>

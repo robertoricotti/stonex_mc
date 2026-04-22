@@ -193,7 +193,7 @@
     <string name="fydro_no">Hydraulista ohjausta ei ole vielä toteutettu</string>
     <string name="treddi_acxtive">Profiilit ovat käytettävissä vain 1D/2D-tilassa</string>
     <string name="treddi_off">Käytettävissä vain 3D-tilassa</string>
-    <string name="snapon2d_fi">TARTU 2D-OBJEKTEIHIN</string>     <!-- Finnish -->
+    <string name="snapon2d">TARTU 2D-OBJEKTEIHIN</string>     <!-- Finnish -->
     <!-- nuove stringhe -->
     <string name="menu_utente">KÄYTTÄJÄASETUKSET</string>
     <string name="menu_macchine">KONEEN ASETUKSET</string>

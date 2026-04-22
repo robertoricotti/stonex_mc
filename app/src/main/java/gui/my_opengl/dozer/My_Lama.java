@@ -141,8 +141,6 @@ public class My_Lama {
                             glTerraPunto = plineR;
                             break;
                     }
-                } else {
-                    DataSaved.isAutoSnap = 0;
                 }
                 break;
 
@@ -203,9 +201,6 @@ public class My_Lama {
 
 
                     }
-
-                } else {
-                    DataSaved.isAutoSnap = 0;
 
                 }
 

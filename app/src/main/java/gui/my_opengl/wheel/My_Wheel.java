@@ -173,8 +173,6 @@ public class My_Wheel {
                             glTerraPunto = plineR;
                             break;
                     }
-                } else {
-                    DataSaved.isAutoSnap = 0;
                 }
                 break;
 
@@ -223,9 +221,6 @@ public class My_Wheel {
 
 
                     }
-
-                } else {
-                    DataSaved.isAutoSnap = 0;
 
                 }
 

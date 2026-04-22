@@ -7,7 +7,7 @@
     <string name="remove_all_rods">ALLE STÄBE ENTFERNEN?</string>
     <string name="sdd_rod">1 STAB HINZUFÜGEN?</string>
     <string name="remove_one_rod">1 STAB HINZUFÜGEN?</string>
-    <string name="snapon2d_de">AN 2D-OBJEKTEN EINRASTEN</string> <!-- German -->
+    <string name="snapon2d">AN 2D-OBJEKTEN EINRASTEN</string> <!-- German -->
     <string name="error_license">Lizenz abgelaufen oder fehlt\nBitte wenden Sie sich an Ihren örtlichen Händler, um das Problem zu beheben.</string>
     <string name="copyright">Copyright © \nAll rights reserved</string>
     <string name="website">www.stonex.it</string>

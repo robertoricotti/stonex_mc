@@ -22,6 +22,7 @@ import static utils.MyTypes.MC_1D;
 import static utils.MyTypes.MC_2D;
 import static utils.MyTypes.MC_3D_EASY;
 import static utils.MyTypes.MC_3D_EASY_AUTO;
+import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.ROCKDRILL_MODE;
 import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.TSM_ACC;
@@ -702,6 +703,11 @@ public class Nuova_Machine_Settings extends BaseClass {
     }
 
     public void updateUI() {
+        if(licenseType==MC_3D_PRO_AUTO){
+            ckEcu.setVisibility(View.VISIBLE);
+        }else {
+            ckEcu.setVisibility(View.INVISIBLE);
+        }
         if (DataSaved.isWL == EXCAVATOR) {
             toRoto.setVisibility(View.VISIBLE);
         } else {

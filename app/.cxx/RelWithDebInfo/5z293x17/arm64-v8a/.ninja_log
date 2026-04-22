@@ -1,3 +1,11 @@
 # ninja log v5
 1	7052	7978844152377977	CMakeFiles/nativeproj.dir/native_proj.cpp.o	462638fc740ea07d
 7056	12151	7978844178000160	D:/Development/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/5z293x17/obj/arm64-v8a/libnativeproj.so	1244da22ea93a7db
+0	17	0	clean	3f910abda4e23497
+0	13	0	clean	3f910abda4e23497
+10	25755	7985415661795694	CMakeFiles/nativeproj.dir/native_proj.cpp.o	462638fc740ea07d
+25756	32610	7985415699557242	D:/Development/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/5z293x17/obj/arm64-v8a/libnativeproj.so	1244da22ea93a7db
+0	18	0	clean	3f910abda4e23497
+0	16	0	clean	3f910abda4e23497
+8	17425	7985772450183239	CMakeFiles/nativeproj.dir/native_proj.cpp.o	462638fc740ea07d
+17426	24876	7985772464695554	D:/Development/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/5z293x17/obj/arm64-v8a/libnativeproj.so	1244da22ea93a7db

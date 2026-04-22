@@ -3,7 +3,7 @@
     <string name="remove_all_rods">RIMUOVERE TUTTE LE ASTE?</string>
     <string name="sdd_rod">AGGIUNGERE 1 ASTA?</string>
     <string name="remove_one_rod">RIMUOVERE 1 ASTA ?</string>
-    <string name="snapon2d_it">SNAP SU OGGETTI 2D</string>       <!-- Italian -->
+    <string name="snapon2d">SNAP SU OGGETTI 2D</string>       <!-- Italian -->
     <string name="first_rod_l">LUNGHEZZA PRIMA ASTA</string>
     <string name="rod_l">LUNGHEZZA ASTA</string>
     <string name="bit_l">LUNGHEZZA PUNTA - LARGHEZZA</string>

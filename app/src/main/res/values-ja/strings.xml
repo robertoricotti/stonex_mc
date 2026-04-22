@@ -7,7 +7,7 @@
     <string name="remove_all_rods">すべてのロッドを削除しますか？</string>
     <string name="sdd_rod">ロッドを1本追加しますか？</string>
     <string name="remove_one_rod">ロッドを1本追加しますか？</string>
-    <string name="snapon2d_ja">2Dオブジェクトにスナップ</string>   <!-- Japanese -->
+    <string name="snapon2d">2Dオブジェクトにスナップ</string>   <!-- Japanese -->
     <string name="error_license">ライセンスが期限切れ、または見つかりません。\n問題を解決するには、販売代理店にお問い合わせください。</string>
     <string name="copyright">著作権 © \n全著作権所有</string>
     <string name="website">www.stonex.it</string>

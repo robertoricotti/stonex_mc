@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Project ID="{E969041E-8A64-489B-ABEA-561F3047E658}" FileName="mc050_piling.p1x">
+  <FileFormat>008D</FileFormat>
+  <GUIVersion>2025.1.2.6475</GUIVersion>
+  <ProgrammableHW PartNumber="11130954" Description="MC050-110/112-0_nl ver:70089372v240 (SYS:70089370v240)" Comment="MC050_110_nl" HwdName="70089372" HwdVersion="2.40.0">
+    <SystemFile FileName="70089370v240.SYS" Parameters="W1:DISABLE">
+      <APIDocument FileName="70089370.PDF"/>
+    </SystemFile>
+    <Application Name="mc050_piling">
+      <PID Description="mc050_piling"/>
+      <MainModule ModuleName="MAINTASK" FileName="MC050_110_nl_T_MC050_112T.scs"/>
+      <Parameters FileName="ProjectParameters.json"/>
+    </Application>
+    <Output>
+      <Hexfile FileName="mc050_piling.lhx"/>
+      <OutputTargetPartNumber></OutputTargetPartNumber>
+      <OutputTargetSerialNumber></OutputTargetSerialNumber>
+    </Output>
+    <TargetPartNumber></TargetPartNumber>
+  </ProgrammableHW>
+</Project>

@@ -193,7 +193,7 @@
     <string name="fydro_no">Hydraulisk styrning är ännu inte implementerad</string>
     <string name="treddi_acxtive">Profiler är endast tillgängliga i 1D/2D-läge</string>
     <string name="treddi_off">Endast tillgänglig i 3D-läge</string>
-    <string name="snapon2d_sv">SNÄPP TILL 2D-OBJEKT</string>     <!-- Swedish -->
+    <string name="snapon2d">SNÄPP TILL 2D-OBJEKT</string>     <!-- Swedish -->
     <!-- nuove stringhe -->
     <string name="menu_utente">ANVÄNDARINSTÄLLNINGAR</string>
     <string name="menu_macchine">MASKININSTÄLLNINGAR</string>

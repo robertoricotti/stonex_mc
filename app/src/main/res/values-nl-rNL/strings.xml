@@ -7,7 +7,7 @@
     <string name="remove_all_rods">ALLE STAVEN VERWIJDEREN?</string>
     <string name="sdd_rod">1 STAAF TOEVOEGEN?</string>
     <string name="remove_one_rod">1 STAAF TOEVOEGEN?</string>
-    <string name="snapon2d_nl">SNAPPEN OP 2D-OBJECTEN</string>   <!-- Dutch -->
+    <string name="snapon2d">SNAPPEN OP 2D-OBJECTEN</string>   <!-- Dutch -->
     <string name="error_license">Licentie verlopen of ontbreekt\nNeem contact op met uw lokale dealer om het probleem op te lossen.</string>
     <string name="copyright">Copyright © \nAlle rechten voorbehouden</string>
     <string name="website">www.stonex.it</string>

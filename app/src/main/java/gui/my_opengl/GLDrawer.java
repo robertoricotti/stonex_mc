@@ -537,11 +537,35 @@ public class GLDrawer {
         int c = GL_Methods.myParseColor(color);
         float[] rgb = GL_Methods.parseColorToGL(c);
 
+        double[] bucketCenter = DataSaved.glL_AnchorView;
+
+        // In vista 2D disegna come thick strip, non come GL_LINE_STRIP
+        if (isOrtho2D) {
+            List<Point3D> verts = polyline.getVertices();
+            if (verts == null || verts.size() < 2) return;
+
+            List<Point3D> glPoints = new ArrayList<>();
+            for (Point3D p : verts) {
+                glPoints.add(new Point3D(
+                        (p.getX() - bucketCenter[0]) * scala,
+                        (p.getY() - bucketCenter[1]) * scala,
+                        0
+                ));
+            }
+
+            drawThickLineStrip2D_GLSpace(
+                    glPoints,
+                    Math.max(3f, lineW),
+                    new float[]{rgb[0], rgb[1], rgb[2], 1f}
+            );
+            return;
+        }
+
+        // Path 3D originale
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glLineWidth(Math.max(1f, lineW * scala));
 
-        double[] bucketCenter = DataSaved.glL_AnchorView;
         FloatBuffer buffer = polyline.getOrBuildGlBuffer(bucketCenter, scala);
         int vertexCount = polyline.getCachedVertexCount();
 
