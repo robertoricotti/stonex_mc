@@ -16,15 +16,28 @@ import services.ReadProjectService;
 
 public class DXFData implements Serializable {
     private static final long serialVersionUID = 1L;
-    private List<Face3D> faces; // FACE3D
-    private List<Polyline> polylines;//POLYLINE
-    private List<Point3D> points;//POINT
-    private List<Point3D_Drill> drill_points;//DRILL POINT
-    private List<Polyline_2D> polylines_2D;//LWPOLYLINE
-    private List<DxfText> texts;//TEXT
-    private List<Arc> arcs;//ARC
-    private List<Circle> circles;//CIRCLE
-    private List<Line> lines;//LINE
+
+    private List<Face3D> faces;                // 3DFACE
+    private List<Polyline> polylines;          // POLYLINE
+    private List<Point3D> points;              // POINT
+    private List<Point3D_Drill> drill_points;  // DRILL POINT
+    private List<Polyline_2D> polylines_2D;    // LWPOLYLINE
+    private List<DxfText> texts;               // TEXT / MTEXT
+    private List<Arc> arcs;                    // ARC
+    private List<Circle> circles;              // CIRCLE
+    private List<Line> lines;                  // LINE
+
+    // Nuove entità
+    private List<Ellipse> ellipses;            // ELLIPSE
+    private List<Spline> splines;              // SPLINE
+    private List<Hatch> hatches;               // HATCH
+    private List<Dimension> dimensions;        // DIMENSION
+    private List<Solid> solids;                // SOLID
+    private List<Trace> traces;                // TRACE
+    private List<Leader> leaders;              // LEADER
+    private List<XLine> xlines;                // XLINE
+    private List<Ray> rays;                    // RAY
+
     private List<Layer> layers;
     private List<DxfBlock> blocks;
     private List<DxfInsert> inserts;
@@ -39,17 +52,26 @@ public class DXFData implements Serializable {
         arcs = new ArrayList<>();
         circles = new ArrayList<>();
         lines = new ArrayList<>();
+
+        ellipses = new ArrayList<>();
+        splines = new ArrayList<>();
+        hatches = new ArrayList<>();
+        dimensions = new ArrayList<>();
+        solids = new ArrayList<>();
+        traces = new ArrayList<>();
+        leaders = new ArrayList<>();
+        xlines = new ArrayList<>();
+        rays = new ArrayList<>();
+
         layers = new ArrayList<>();
         blocks = new ArrayList<>();
         inserts = new ArrayList<>();
     }
 
-    // Getter per Face3D
     public List<Face3D> getFaces() {
         return faces;
     }
 
-    // Aggiunge una Face3D
     public void addFace(Face3D face) {
         faces.add(face);
         try {
@@ -115,6 +137,78 @@ public class DXFData implements Serializable {
         circles.add(circle);
     }
 
+    public List<Ellipse> getEllipses() {
+        return ellipses;
+    }
+
+    public void addEllipse(Ellipse ellipse) {
+        ellipses.add(ellipse);
+    }
+
+    public List<Spline> getSplines() {
+        return splines;
+    }
+
+    public void addSpline(Spline spline) {
+        splines.add(spline);
+    }
+
+    public List<Hatch> getHatches() {
+        return hatches;
+    }
+
+    public void addHatch(Hatch hatch) {
+        hatches.add(hatch);
+    }
+
+    public List<Dimension> getDimensions() {
+        return dimensions;
+    }
+
+    public void addDimension(Dimension dimension) {
+        dimensions.add(dimension);
+    }
+
+    public List<Solid> getSolids() {
+        return solids;
+    }
+
+    public void addSolid(Solid solid) {
+        solids.add(solid);
+    }
+
+    public List<Trace> getTraces() {
+        return traces;
+    }
+
+    public void addTrace(Trace trace) {
+        traces.add(trace);
+    }
+
+    public List<Leader> getLeaders() {
+        return leaders;
+    }
+
+    public void addLeader(Leader leader) {
+        leaders.add(leader);
+    }
+
+    public List<XLine> getXLines() {
+        return xlines;
+    }
+
+    public void addXLine(XLine xline) {
+        xlines.add(xline);
+    }
+
+    public List<Ray> getRays() {
+        return rays;
+    }
+
+    public void addRay(Ray ray) {
+        rays.add(ray);
+    }
+
     public void addLayer(Layer layer) {
         layers.add(layer);
     }
@@ -170,5 +264,4 @@ public class DXFData implements Serializable {
     public void addDrill_points(Point3D_Drill point3DDrill) {
         drill_points.add(point3DDrill);
     }
-
 }

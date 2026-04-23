@@ -25,6 +25,15 @@ public class DxfBlock implements Serializable {
     private final List<Point3D_Drill> point3DDrills = new ArrayList<>();
     private final List<Circle> circles = new ArrayList<>();
     private final List<Arc> arcs = new ArrayList<>();
+    private final List<Ellipse> ellipses = new ArrayList<>();
+    private final List<Spline> splines = new ArrayList<>();
+    private final List<Hatch> hatches = new ArrayList<>();
+    private final List<Dimension> dimensions = new ArrayList<>();
+    private final List<Solid> solids = new ArrayList<>();
+    private final List<Trace> traces = new ArrayList<>();
+    private final List<Leader> leaders = new ArrayList<>();
+    private final List<XLine> xlines = new ArrayList<>();
+    private final List<Ray> rays = new ArrayList<>();
     private final List<DxfText> texts = new ArrayList<>();
     private final List<Face3D> faces = new ArrayList<>();
     private final List<DxfInsert> inserts = new ArrayList<>();
@@ -106,6 +115,42 @@ public class DxfBlock implements Serializable {
         return arcs;
     }
 
+    public List<Ellipse> getEllipses() {
+        return ellipses;
+    }
+
+    public List<Spline> getSplines() {
+        return splines;
+    }
+
+    public List<Hatch> getHatches() {
+        return hatches;
+    }
+
+    public List<Dimension> getDimensions() {
+        return dimensions;
+    }
+
+    public List<Solid> getSolids() {
+        return solids;
+    }
+
+    public List<Trace> getTraces() {
+        return traces;
+    }
+
+    public List<Leader> getLeaders() {
+        return leaders;
+    }
+
+    public List<XLine> getXLines() {
+        return xlines;
+    }
+
+    public List<Ray> getRays() {
+        return rays;
+    }
+
     public List<DxfText> getTexts() {
         return texts;
     }
@@ -146,6 +191,42 @@ public class DxfBlock implements Serializable {
         if (arc != null) arcs.add(arc);
     }
 
+    public void addEllipse(Ellipse ellipse) {
+        if (ellipse != null) ellipses.add(ellipse);
+    }
+
+    public void addSpline(Spline spline) {
+        if (spline != null) splines.add(spline);
+    }
+
+    public void addHatch(Hatch hatch) {
+        if (hatch != null) hatches.add(hatch);
+    }
+
+    public void addDimension(Dimension dimension) {
+        if (dimension != null) dimensions.add(dimension);
+    }
+
+    public void addSolid(Solid solid) {
+        if (solid != null) solids.add(solid);
+    }
+
+    public void addTrace(Trace trace) {
+        if (trace != null) traces.add(trace);
+    }
+
+    public void addLeader(Leader leader) {
+        if (leader != null) leaders.add(leader);
+    }
+
+    public void addXLine(XLine xline) {
+        if (xline != null) xlines.add(xline);
+    }
+
+    public void addRay(Ray ray) {
+        if (ray != null) rays.add(ray);
+    }
+
     public void addText(DxfText text) {
         if (text != null) texts.add(text);
     }
@@ -166,6 +247,15 @@ public class DxfBlock implements Serializable {
                 && point3DDrills.isEmpty()
                 && circles.isEmpty()
                 && arcs.isEmpty()
+                && ellipses.isEmpty()
+                && splines.isEmpty()
+                && hatches.isEmpty()
+                && dimensions.isEmpty()
+                && solids.isEmpty()
+                && traces.isEmpty()
+                && leaders.isEmpty()
+                && xlines.isEmpty()
+                && rays.isEmpty()
                 && texts.isEmpty()
                 && faces.isEmpty()
                 && inserts.isEmpty();

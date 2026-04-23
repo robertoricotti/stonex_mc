@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -23,22 +24,19 @@ import services.ReadProjectService;
 
 /**
  * Parser DXF ASCII tollerante alle versioni (R12+ / AC1009 e successive)
- * per le entità usate più spesso dal progetto.
- * <p>
- * Supporto principale:
- * - HEADER / TABLES / BLOCKS / ENTITIES
- * - LAYER table con fallback anche se incompleta
- * - LINE, POINT, TEXT, MTEXT, CIRCLE, ARC, 3DFACE
- * - POLYLINE + VERTEX + SEQEND
- * - LWPOLYLINE
- * - BLOCK / INSERT con esplosione
- * - colori: explicit ACI (62), true color (420), BYLAYER (256), BYBLOCK (0)
- * - layer 0 nei blocchi: eredita il layer dell'INSERT
- * <p>
- * Nota onesta: non esiste un parser "universale" che legga davvero TUTTE le varianti DXF
- * senza implementare l'intera specifica Autodesk. Questa classe è però pensata per essere
- * version-tolerant: ignora i group code ignoti, non dipende rigidamente dalla versione e
- * gestisce correttamente il caso classico ByLayer / ByBlock.
+ * esteso con supporto base per:
+ * - ELLIPSE
+ * - SPLINE
+ * - HATCH
+ * - DIMENSION
+ * - SOLID
+ * - TRACE
+ * - LEADER
+ * - XLINE
+ * - RAY
+ *
+ * Questa versione cerca di NON rompere la logica già funzionante e
+ * mantiene il comportamento esistente su entità già supportate.
  */
 public class DXFParser_20 {
     static final Map<String, Layer> layerRegistry = new HashMap<>();
@@ -55,6 +53,11 @@ public class DXFParser_20 {
      */
     private static final IdentityHashMap<Object, DxfStyle> entityStyles = new IdentityHashMap<>();
 
+    /**
+     * riepilogo entità non supportate / ignorate
+     */
+    static final Map<String, Integer> unsupportedEntities = new HashMap<>();
+
     static long drillPointNr = 0;
 
     public static DXFData parseDXF(String filePath, double conversionFactor) {
@@ -62,6 +65,8 @@ public class DXFParser_20 {
         layerColors.clear();
         entityStyles.clear();
         layerRegistry.clear();
+        unsupportedEntities.clear();
+
         ParserState state = new ParserState(filePath, conversionFactor, dxfData);
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -97,6 +102,22 @@ public class DXFParser_20 {
         }
 
         explodeBlocks(dxfData, filePath);
+
+        if (!unsupportedEntities.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Riepilogo entità DXF non supportate in ")
+                    .append(filePath)
+                    .append(":\n");
+
+            List<String> keys = new ArrayList<>(unsupportedEntities.keySet());
+            Collections.sort(keys);
+            for (String key : keys) {
+                sb.append(key).append(" = ").append(unsupportedEntities.get(key)).append("\n");
+            }
+
+            Log.w(TAG, sb.toString());
+        }
+
         return dxfData;
     }
 
@@ -110,6 +131,22 @@ public class DXFParser_20 {
         if (filePath.equals(DataSaved.progettoSelected_POINT)) {
             isFinishedPOINT = true;
             drillPointNr = 0;
+        }
+    }
+
+    private static boolean shouldTrackUnsupportedEntity(String value) {
+        if (value == null || value.isEmpty()) return false;
+
+        switch (value) {
+            case "EOF":
+            case "ENDSEC":
+            case "ENDTAB":
+            case "SEQEND":
+            case "VERTEX":
+            case "ACAD_TABLE":
+                return false;
+            default:
+                return true;
         }
     }
 
@@ -135,7 +172,7 @@ public class DXFParser_20 {
         // BLOCK
         DxfBlock currentBlock = null;
 
-        // Entità aperte
+        // Entità aperte già esistenti
         Face3D currentFace = null;
         Polyline currentPolyline = null;
         Polyline_2D currentLWPolyline = null;
@@ -147,6 +184,17 @@ public class DXFParser_20 {
         DxfText currentText = null;
         DxfText currentMText = null;
         DxfInsert currentInsert = null;
+
+        // Nuove entità
+        Ellipse currentEllipse = null;
+        Spline currentSpline = null;
+        Hatch currentHatch = null;
+        Dimension currentDimension = null;
+        Solid currentSolid = null;
+        Trace currentTrace = null;
+        Leader currentLeader = null;
+        XLine currentXLine = null;
+        Ray currentRay = null;
 
         boolean inVertex = false;
         boolean currentPolylineClosed = false;
@@ -162,6 +210,30 @@ public class DXFParser_20 {
         boolean arcCenterTouched = false;
         boolean arcRadiusTouched = false;
         boolean arcAnglesTouched = false;
+
+        boolean ellipseCenterTouched = false;
+        boolean ellipseAxisTouched = false;
+        boolean ellipseRatioTouched = false;
+
+        boolean xlineBaseTouched = false;
+        boolean xlineDirTouched = false;
+        boolean rayBaseTouched = false;
+        boolean rayDirTouched = false;
+
+        boolean dimensionTouched = false;
+        boolean leaderTouched = false;
+        boolean splineTouched = false;
+
+        boolean solidTouched = false;
+        boolean traceTouched = false;
+
+        // spline: ultimo punto in costruzione
+        Point3D currentSplineControlPoint = null;
+        Point3D currentSplineFitPoint = null;
+
+        // hatch parsing base
+        int currentHatchBoundaryPathType = 0;   // 0=none,1=polyline loop
+        Polyline currentHatchBoundaryPolyline = null;
 
         DxfStyle activeStyle = new DxfStyle();
 
@@ -300,6 +372,100 @@ public class DXFParser_20 {
                     lastZeroValue = "LINE";
                     return;
 
+                case "ELLIPSE":
+                    resetDxfStyle();
+                    currentEllipse = new Ellipse(
+                            new Point3D(0, 0, 0),
+                            new Point3D(0, 0, 0),
+                            1.0,
+                            0.0,
+                            Math.PI * 2.0,
+                            -1,
+                            null
+                    );
+                    ellipseCenterTouched = false;
+                    ellipseAxisTouched = false;
+                    ellipseRatioTouched = false;
+                    lastZeroValue = "ELLIPSE";
+                    return;
+
+                case "SPLINE":
+                    resetDxfStyle();
+                    currentSpline = new Spline();
+                    splineTouched = false;
+                    currentSplineControlPoint = null;
+                    currentSplineFitPoint = null;
+                    lastZeroValue = "SPLINE";
+                    return;
+
+                case "HATCH":
+                    resetDxfStyle();
+                    currentHatch = new Hatch();
+                    currentHatch.setSolidFill(false);
+                    currentHatch.setPatternName("SOLID");
+                    currentHatchBoundaryPathType = 0;
+                    currentHatchBoundaryPolyline = null;
+                    lastZeroValue = "HATCH";
+                    return;
+
+                case "DIMENSION":
+                    resetDxfStyle();
+                    currentDimension = new Dimension();
+                    dimensionTouched = false;
+                    lastZeroValue = "DIMENSION";
+                    return;
+
+                case "SOLID":
+                    resetDxfStyle();
+                    currentSolid = new Solid(
+                            new Point3D(0, 0, 0),
+                            new Point3D(0, 0, 0),
+                            new Point3D(0, 0, 0),
+                            new Point3D(0, 0, 0),
+                            -1,
+                            null
+                    );
+                    solidTouched = false;
+                    lastZeroValue = "SOLID";
+                    return;
+
+                case "TRACE":
+                    resetDxfStyle();
+                    currentTrace = new Trace(
+                            new Point3D(0, 0, 0),
+                            new Point3D(0, 0, 0),
+                            new Point3D(0, 0, 0),
+                            new Point3D(0, 0, 0),
+                            -1,
+                            null
+                    );
+                    traceTouched = false;
+                    lastZeroValue = "TRACE";
+                    return;
+
+                case "LEADER":
+                    resetDxfStyle();
+                    currentLeader = new Leader();
+                    leaderTouched = false;
+                    lastZeroValue = "LEADER";
+                    return;
+
+                case "XLINE":
+                    resetDxfStyle();
+                    currentXLine = new XLine(new Point3D(0, 0, 0), new Point3D(0, 0, 0), -1, null);
+                    xlineBaseTouched = false;
+                    xlineDirTouched = false;
+                    lastZeroValue = "XLINE";
+                    return;
+
+                case "RAY":
+                    resetDxfStyle();
+                    currentRay = new Ray(new Point3D(0, 0, 0), new Point3D(0, 0, 0), -1, null);
+                    rayBaseTouched = false;
+                    rayDirTouched = false;
+                    lastZeroValue = "RAY";
+                    return;
+
                 case "BLOCK":
                     currentBlock = new DxfBlock(null);
                     lastZeroValue = "BLOCK";
@@ -333,6 +499,11 @@ public class DXFParser_20 {
 
                 default:
                     lastZeroValue = value;
+
+                    if ("ENTITIES".equals(currentSection) && shouldTrackUnsupportedEntity(value)) {
+                        unsupportedEntities.merge(value, 1, Integer::sum);
+                    }
+                    return;
             }
         }
 
@@ -347,7 +518,7 @@ public class DXFParser_20 {
                 return;
             }
 
-            // SECTION / TABLE / nome layer / nome block / nome block insert
+            // SECTION / TABLE / nome layer / nome block / nome block insert / dimension block name
             if ("2".equals(code)) {
                 if ("SECTION".equals(lastZeroValue)) {
                     currentSection = value;
@@ -369,6 +540,15 @@ public class DXFParser_20 {
                 }
                 if (currentInsert != null && "INSERT".equals(lastZeroValue) && currentInsert.getBlockName() == null) {
                     currentInsert.setBlockName(value);
+                    return;
+                }
+                if (currentDimension != null) {
+                    currentDimension.setBlockName(value);
+                    dimensionTouched = true;
+                    return;
+                }
+                if (currentHatch != null) {
+                    currentHatch.setPatternName(value);
                     return;
                 }
             }
@@ -452,7 +632,7 @@ public class DXFParser_20 {
                 return;
             }
 
-            // POLYLINE / LWPOLYLINE chiusa
+            // flag varie
             if ("70".equals(code)) {
                 Integer flags = parseInt(value);
                 if (flags != null) {
@@ -460,6 +640,12 @@ public class DXFParser_20 {
                         currentPolylineClosed = (flags & 1) != 0;
                     } else if (currentLWPolyline != null) {
                         currentLWPolylineClosed = (flags & 1) != 0;
+                    } else if (currentSpline != null) {
+                        currentSpline.setClosed((flags & 1) != 0);
+                    } else if (currentDimension != null) {
+                        currentDimension.setDimensionTypeName(String.valueOf(flags));
+                    } else if (currentHatch != null) {
+                        currentHatch.setSolidFill(flags == 1);
                     }
                 }
             }
@@ -470,49 +656,28 @@ public class DXFParser_20 {
                 return;
             }
 
-            if (currentFace != null) {
-                parseFace(code, value);
-            }
+            if (currentFace != null) parseFace(code, value);
+            if (currentPolyline != null && inVertex) parsePolylineVertex(code, value);
+            if (currentLWPolyline != null) parseLWPolyline(code, value);
+            if (currentPoint != null) parsePoint(code, value);
+            if (currentDrillPoint != null) parseDrillPoint(code, value);
+            if (currentText != null) parseText(currentText, code, value, false);
+            if (currentMText != null) parseText(currentMText, code, value, true);
+            if (currentCircle != null) parseCircle(code, value);
+            if (currentArc != null) parseArc(code, value);
+            if (currentLine != null) parseLine(code, value);
+            if (currentInsert != null) parseInsert(code, value);
 
-            if (currentPolyline != null && inVertex) {
-                parsePolylineVertex(code, value);
-            }
-
-            if (currentLWPolyline != null) {
-                parseLWPolyline(code, value);
-            }
-
-            if (currentPoint != null) {
-                parsePoint(code, value);
-            }
-
-            if (currentDrillPoint != null) {
-                parseDrillPoint(code, value);
-            }
-
-            if (currentText != null) {
-                parseText(currentText, code, value, false);
-            }
-
-            if (currentMText != null) {
-                parseText(currentMText, code, value, true);
-            }
-
-            if (currentCircle != null) {
-                parseCircle(code, value);
-            }
-
-            if (currentArc != null) {
-                parseArc(code, value);
-            }
-
-            if (currentLine != null) {
-                parseLine(code, value);
-            }
-
-            if (currentInsert != null) {
-                parseInsert(code, value);
-            }
+            // nuove entità
+            if (currentEllipse != null) parseEllipse(code, value);
+            if (currentSpline != null) parseSpline(code, value);
+            if (currentHatch != null) parseHatch(code, value);
+            if (currentDimension != null) parseDimension(code, value);
+            if (currentSolid != null) parseSolid(currentSolid, code, value);
+            if (currentTrace != null) parseTrace(currentTrace, code, value);
+            if (currentLeader != null) parseLeader(code, value);
+            if (currentXLine != null) parseXLine(code, value);
+            if (currentRay != null) parseRay(code, value);
         }
 
         void finishOpenObjectsAtEOF() {
@@ -551,6 +716,7 @@ public class DXFParser_20 {
             currentLayerRec = null;
             currentLayerName = null;
         }
+
         private void applyColorCodeToActiveEntity(String value) {
             Integer aci = parseInt(value);
             if (aci == null) return;
@@ -621,6 +787,52 @@ public class DXFParser_20 {
             }
             if (currentInsert != null) {
                 currentInsert.setLayer(effectiveLayer);
+                return;
+            }
+
+            if (currentEllipse != null) {
+                currentEllipse.setLayer(effectiveLayer);
+                currentEllipse.setColor(color);
+                return;
+            }
+            if (currentSpline != null) {
+                currentSpline.setLayer(effectiveLayer);
+                currentSpline.setColor(color);
+                return;
+            }
+            if (currentHatch != null) {
+                currentHatch.setLayer(effectiveLayer);
+                currentHatch.setColor(color);
+                return;
+            }
+            if (currentDimension != null) {
+                currentDimension.setLayer(effectiveLayer);
+                currentDimension.setColor(color);
+                return;
+            }
+            if (currentSolid != null) {
+                currentSolid.setLayer(effectiveLayer);
+                currentSolid.setColor(color);
+                return;
+            }
+            if (currentTrace != null) {
+                currentTrace.setLayer(effectiveLayer);
+                currentTrace.setColor(color);
+                return;
+            }
+            if (currentLeader != null) {
+                currentLeader.setLayer(effectiveLayer);
+                currentLeader.setColor(color);
+                return;
+            }
+            if (currentXLine != null) {
+                currentXLine.setLayer(effectiveLayer);
+                currentXLine.setColor(color);
+                return;
+            }
+            if (currentRay != null) {
+                currentRay.setLayer(effectiveLayer);
+                currentRay.setColor(color);
             }
         }
 
@@ -651,6 +863,7 @@ public class DXFParser_20 {
 
         private void finishCurrentEntities(boolean force) {
             ensureDefaultLayerOnActiveEntities();
+
             finishFace();
             finishPoint();
             finishDrillPoint();
@@ -659,8 +872,18 @@ public class DXFParser_20 {
             finishCircle();
             finishArc();
             finishLine();
+            finishEllipse();
+            finishSpline();
+            finishHatch();
+            finishDimension();
+            finishSolid();
+            finishTrace();
+            finishLeader();
+            finishXLine();
+            finishRay();
             finishLWPolyline();
             finishInsert();
+
             if (force || currentPolyline != null) {
                 finishCurrentPolyline();
             }
@@ -751,7 +974,7 @@ public class DXFParser_20 {
 
         private void finishCircle() {
             if (currentCircle == null) return;
-            if (circleCenterTouched && circleRadiusTouched && currentCircle.radius > 0) {
+            if (circleCenterTouched && circleRadiusTouched && currentCircle.getRadius() > 0) {
                 rememberStyle(currentCircle, activeStyle);
                 addCircleToContainer(data, currentBlock, currentCircle);
             }
@@ -762,7 +985,7 @@ public class DXFParser_20 {
 
         private void finishArc() {
             if (currentArc == null) return;
-            if (arcCenterTouched && arcRadiusTouched && arcAnglesTouched && currentArc.radius > 0) {
+            if (arcCenterTouched && arcRadiusTouched && arcAnglesTouched && currentArc.getRadius() > 0) {
                 rememberStyle(currentArc, activeStyle);
                 addArcToContainer(data, currentBlock, currentArc);
             }
@@ -774,13 +997,117 @@ public class DXFParser_20 {
 
         private void finishLine() {
             if (currentLine == null) return;
-            if (lineStartTouched && lineEndTouched && !samePoint(currentLine.start, currentLine.end)) {
+            if (lineStartTouched && lineEndTouched && !samePoint(currentLine.getStart(), currentLine.getEnd())) {
                 rememberStyle(currentLine, activeStyle);
                 addLineToContainer(data, currentBlock, currentLine);
             }
             currentLine = null;
             lineStartTouched = false;
             lineEndTouched = false;
+        }
+
+        private void finishEllipse() {
+            if (currentEllipse == null) return;
+            if (ellipseCenterTouched && ellipseAxisTouched && ellipseRatioTouched) {
+                rememberStyle(currentEllipse, activeStyle);
+                addEllipseToContainer(data, currentBlock, currentEllipse);
+            }
+            currentEllipse = null;
+            ellipseCenterTouched = false;
+            ellipseAxisTouched = false;
+            ellipseRatioTouched = false;
+        }
+
+        private void finishSpline() {
+            if (currentSpline == null) return;
+            boolean ok = (currentSpline.getFitPoints() != null && currentSpline.getFitPoints().size() >= 2)
+                    || (currentSpline.getControlPoints() != null && currentSpline.getControlPoints().size() >= 2);
+            if (ok && splineTouched) {
+                rememberStyle(currentSpline, activeStyle);
+                addSplineToContainer(data, currentBlock, currentSpline);
+            }
+            currentSpline = null;
+            splineTouched = false;
+            currentSplineControlPoint = null;
+            currentSplineFitPoint = null;
+        }
+
+        private void finishHatch() {
+            if (currentHatch == null) return;
+            if (currentHatchBoundaryPolyline != null
+                    && currentHatchBoundaryPolyline.getVertices() != null
+                    && currentHatchBoundaryPolyline.getVertices().size() >= 2) {
+                currentHatch.getBoundaryPolylines().add(currentHatchBoundaryPolyline);
+            }
+
+            if ((currentHatch.getBoundaryPolylines() != null && !currentHatch.getBoundaryPolylines().isEmpty())
+                    || currentHatch.getPatternName() != null) {
+                rememberStyle(currentHatch, activeStyle);
+                addHatchToContainer(data, currentBlock, currentHatch);
+            }
+
+            currentHatch = null;
+            currentHatchBoundaryPathType = 0;
+            currentHatchBoundaryPolyline = null;
+        }
+
+        private void finishDimension() {
+            if (currentDimension == null) return;
+            if (dimensionTouched
+                    || (currentDimension.getBlockName() != null && !currentDimension.getBlockName().trim().isEmpty())) {
+                rememberStyle(currentDimension, activeStyle);
+                addDimensionToContainer(data, currentBlock, currentDimension);
+            }
+            currentDimension = null;
+            dimensionTouched = false;
+        }
+
+        private void finishSolid() {
+            if (currentSolid == null) return;
+            rememberStyle(currentSolid, activeStyle);
+            addSolidToContainer(data, currentBlock, currentSolid);
+            currentSolid = null;
+            solidTouched = false;
+        }
+
+        private void finishTrace() {
+            if (currentTrace == null) return;
+            rememberStyle(currentTrace, activeStyle);
+            addTraceToContainer(data, currentBlock, currentTrace);
+            currentTrace = null;
+            traceTouched = false;
+        }
+
+        private void finishLeader() {
+            if (currentLeader == null) return;
+            if (currentLeader.getVertices() != null && currentLeader.getVertices().size() >= 2) {
+                rememberStyle(currentLeader, activeStyle);
+                addLeaderToContainer(data, currentBlock, currentLeader);
+            }
+            currentLeader = null;
+            leaderTouched = false;
+        }
+
+        private void finishXLine() {
+            if (currentXLine == null) return;
+            if (xlineBaseTouched && xlineDirTouched) {
+                rememberStyle(currentXLine, activeStyle);
+                addXLineToContainer(data, currentBlock, currentXLine);
+            }
+            currentXLine = null;
+            xlineBaseTouched = false;
+            xlineDirTouched = false;
+        }
+
+        private void finishRay() {
+            if (currentRay == null) return;
+            if (rayBaseTouched && rayDirTouched) {
+                rememberStyle(currentRay, activeStyle);
+                addRayToContainer(data, currentBlock, currentRay);
+            }
+            currentRay = null;
+            rayBaseTouched = false;
+            rayDirTouched = false;
         }
 
         private void finishInsert() {
@@ -997,19 +1324,19 @@ public class DXFParser_20 {
             if (d == null) return;
             switch (code) {
                 case "10":
-                    currentCircle.center.x = d;
+                    currentCircle.getCenter().x = d;
                     circleCenterTouched = true;
                     return;
                 case "20":
-                    currentCircle.center.y = d;
+                    currentCircle.getCenter().y = d;
                     circleCenterTouched = true;
                     return;
                 case "30":
-                    currentCircle.center.z = d;
+                    currentCircle.getCenter().z = d;
                     circleCenterTouched = true;
                     return;
                 case "40":
-                    currentCircle.radius = d;
+                    currentCircle.setRadius(d);
                     circleRadiusTouched = true;
                     return;
                 default:
@@ -1022,7 +1349,7 @@ public class DXFParser_20 {
                 case "10": {
                     Double x = parseDouble(value, conversionFactor);
                     if (x != null) {
-                        currentArc.center.x = x;
+                        currentArc.getCenter().x = x;
                         arcCenterTouched = true;
                     }
                     return;
@@ -1030,7 +1357,7 @@ public class DXFParser_20 {
                 case "20": {
                     Double y = parseDouble(value, conversionFactor);
                     if (y != null) {
-                        currentArc.center.y = y;
+                        currentArc.getCenter().y = y;
                         arcCenterTouched = true;
                     }
                     return;
@@ -1038,7 +1365,7 @@ public class DXFParser_20 {
                 case "30": {
                     Double z = parseDouble(value, conversionFactor);
                     if (z != null) {
-                        currentArc.center.z = z;
+                        currentArc.getCenter().z = z;
                         arcCenterTouched = true;
                     }
                     return;
@@ -1046,7 +1373,7 @@ public class DXFParser_20 {
                 case "40": {
                     Double r = parseDouble(value, conversionFactor);
                     if (r != null) {
-                        currentArc.radius = r;
+                        currentArc.setRadius(r);
                         arcRadiusTouched = true;
                     }
                     return;
@@ -1077,27 +1404,27 @@ public class DXFParser_20 {
             if (d == null) return;
             switch (code) {
                 case "10":
-                    currentLine.start.x = d;
+                    currentLine.getStart().x = d;
                     lineStartTouched = true;
                     return;
                 case "20":
-                    currentLine.start.y = d;
+                    currentLine.getStart().y = d;
                     lineStartTouched = true;
                     return;
                 case "30":
-                    currentLine.start.z = d;
+                    currentLine.getStart().z = d;
                     lineStartTouched = true;
                     return;
                 case "11":
-                    currentLine.end.x = d;
+                    currentLine.getEnd().x = d;
                     lineEndTouched = true;
                     return;
                 case "21":
-                    currentLine.end.y = d;
+                    currentLine.getEnd().y = d;
                     lineEndTouched = true;
                     return;
                 case "31":
-                    currentLine.end.z = d;
+                    currentLine.getEnd().z = d;
                     lineEndTouched = true;
                     return;
                 default:
@@ -1150,6 +1477,442 @@ public class DXFParser_20 {
             }
         }
 
+        private void parseEllipse(String code, String value) {
+            Double d;
+            switch (code) {
+                case "10":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        currentEllipse.getCenter().x = d;
+                        ellipseCenterTouched = true;
+                    }
+                    return;
+                case "20":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        currentEllipse.getCenter().y = d;
+                        ellipseCenterTouched = true;
+                    }
+                    return;
+                case "30":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        currentEllipse.getCenter().z = d;
+                        ellipseCenterTouched = true;
+                    }
+                    return;
+                case "11":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        currentEllipse.getMajorAxisEnd().x = d;
+                        ellipseAxisTouched = true;
+                    }
+                    return;
+                case "21":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        currentEllipse.getMajorAxisEnd().y = d;
+                        ellipseAxisTouched = true;
+                    }
+                    return;
+                case "31":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        currentEllipse.getMajorAxisEnd().z = d;
+                        ellipseAxisTouched = true;
+                    }
+                    return;
+                case "40":
+                    d = parseDouble(value, 1.0);
+                    if (d != null) {
+                        currentEllipse.setAxisRatio(d);
+                        ellipseRatioTouched = true;
+                    }
+                    return;
+                case "41":
+                    d = parseDouble(value, 1.0);
+                    if (d != null) currentEllipse.setStartParam(d);
+                    return;
+                case "42":
+                    d = parseDouble(value, 1.0);
+                    if (d != null) currentEllipse.setEndParam(d);
+                    return;
+                default:
+                    return;
+            }
+        }
+
+        private void parseSpline(String code, String value) {
+            Double d;
+            switch (code) {
+                case "70": {
+                    Integer flags = parseInt(value);
+                    if (flags != null) currentSpline.setClosed((flags & 1) != 0);
+                    return;
+                }
+                case "71": {
+                    Integer degree = parseInt(value);
+                    if (degree != null) currentSpline.setDegree(degree);
+                    return;
+                }
+                case "10":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        currentSplineControlPoint = new Point3D(d, 0, 0);
+                        currentSpline.getControlPoints().add(currentSplineControlPoint);
+                        splineTouched = true;
+                    }
+                    return;
+                case "20":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null && currentSplineControlPoint != null) {
+                        currentSplineControlPoint.y = d;
+                    }
+                    return;
+                case "30":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null && currentSplineControlPoint != null) {
+                        currentSplineControlPoint.z = d;
+                    }
+                    return;
+                case "11":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        currentSplineFitPoint = new Point3D(d, 0, 0);
+                        currentSpline.getFitPoints().add(currentSplineFitPoint);
+                        splineTouched = true;
+                    }
+                    return;
+                case "21":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null && currentSplineFitPoint != null) {
+                        currentSplineFitPoint.y = d;
+                    }
+                    return;
+                case "31":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null && currentSplineFitPoint != null) {
+                        currentSplineFitPoint.z = d;
+                    }
+                    return;
+                case "40":
+                    d = parseDouble(value, 1.0);
+                    if (d != null) currentSpline.getKnots().add(d);
+                    return;
+                case "41":
+                    d = parseDouble(value, 1.0);
+                    if (d != null) currentSpline.getWeights().add(d);
+                    return;
+                default:
+                    return;
+            }
+        }
+
+        private void parseHatch(String code, String value) {
+            Double d;
+            switch (code) {
+                case "2":
+                    currentHatch.setPatternName(value);
+                    return;
+                case "70": {
+                    Integer solid = parseInt(value);
+                    if (solid != null) currentHatch.setSolidFill(solid == 1);
+                    return;
+                }
+                case "92": {
+                    Integer boundaryType = parseInt(value);
+                    if (boundaryType != null) {
+                        // supporto base: se arriva un boundary loop, prepariamo una polyline
+                        currentHatchBoundaryPathType = boundaryType;
+                        currentHatchBoundaryPolyline = new Polyline();
+                        currentHatchBoundaryPolyline.setLayer(currentHatch.getLayer());
+                        currentHatchBoundaryPolyline.setLineColor(currentHatch.getColor());
+                    }
+                    return;
+                }
+                case "72":
+                    // in molte hatch polyline-loop questo campo è presente ma non serve per il parse base
+                    return;
+                case "73":
+                    // isClosed / flags boundary, ignorato per parse base
+                    return;
+                case "93":
+                    // numero vertici/edges, ignorato per parse base
+                    return;
+                case "10":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        if (currentHatchBoundaryPolyline == null) {
+                            currentHatchBoundaryPolyline = new Polyline();
+                            currentHatchBoundaryPolyline.setLayer(currentHatch.getLayer());
+                            currentHatchBoundaryPolyline.setLineColor(currentHatch.getColor());
+                        }
+                        currentHatchBoundaryPolyline.getVertices().add(new Point3D(d, 0, 0));
+                    }
+                    return;
+                case "20":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null && currentHatchBoundaryPolyline != null
+                            && !currentHatchBoundaryPolyline.getVertices().isEmpty()) {
+                        Point3D last = currentHatchBoundaryPolyline.getVertices()
+                                .get(currentHatchBoundaryPolyline.getVertices().size() - 1);
+                        last.y = d;
+                    }
+                    return;
+                case "42":
+                    // bulge boundary hatch polyline
+                    d = parseDouble(value, 1.0);
+                    if (d != null && currentHatchBoundaryPolyline != null
+                            && !currentHatchBoundaryPolyline.getVertices().isEmpty()) {
+                        Point3D last = currentHatchBoundaryPolyline.getVertices()
+                                .get(currentHatchBoundaryPolyline.getVertices().size() - 1);
+                        last.setBulge(d);
+                    }
+                    return;
+                default:
+                    return;
+            }
+        }
+
+        private void parseDimension(String code, String value) {
+            Double d;
+            switch (code) {
+                case "1":
+                    currentDimension.setText(value);
+                    dimensionTouched = true;
+                    return;
+                case "2":
+                    currentDimension.setBlockName(value);
+                    dimensionTouched = true;
+                    return;
+                case "10":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        if (currentDimension.getDefinitionPoint() == null) {
+                            currentDimension.setDefinitionPoint(new Point3D(d, 0, 0));
+                        } else {
+                            currentDimension.getDefinitionPoint().x = d;
+                        }
+                        dimensionTouched = true;
+                    }
+                    return;
+                case "20":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        if (currentDimension.getDefinitionPoint() == null) {
+                            currentDimension.setDefinitionPoint(new Point3D(0, d, 0));
+                        } else {
+                            currentDimension.getDefinitionPoint().y = d;
+                        }
+                        dimensionTouched = true;
+                    }
+                    return;
+                case "30":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        if (currentDimension.getDefinitionPoint() == null) {
+                            currentDimension.setDefinitionPoint(new Point3D(0, 0, d));
+                        } else {
+                            currentDimension.getDefinitionPoint().z = d;
+                        }
+                        dimensionTouched = true;
+                    }
+                    return;
+                case "11":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        if (currentDimension.getTextMidPoint() == null) {
+                            currentDimension.setTextMidPoint(new Point3D(d, 0, 0));
+                        } else {
+                            currentDimension.getTextMidPoint().x = d;
+                        }
+                        dimensionTouched = true;
+                    }
+                    return;
+                case "21":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        if (currentDimension.getTextMidPoint() == null) {
+                            currentDimension.setTextMidPoint(new Point3D(0, d, 0));
+                        } else {
+                            currentDimension.getTextMidPoint().y = d;
+                        }
+                        dimensionTouched = true;
+                    }
+                    return;
+                case "31":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        if (currentDimension.getTextMidPoint() == null) {
+                            currentDimension.setTextMidPoint(new Point3D(0, 0, d));
+                        } else {
+                            currentDimension.getTextMidPoint().z = d;
+                        }
+                        dimensionTouched = true;
+                    }
+                    return;
+                case "70": {
+                    Integer typ = parseInt(value);
+                    if (typ != null) currentDimension.setDimensionTypeName(String.valueOf(typ));
+                    return;
+                }
+                default:
+                    return;
+            }
+        }
+
+        private void parseSolid(Solid target, String code, String value) {
+            Double d = parseDouble(value, conversionFactor);
+            if (d == null) return;
+
+            List<Point3D> v = target.getVertices();
+            switch (code) {
+                case "10": v.get(0).x = d; solidTouched = true; return;
+                case "20": v.get(0).y = d; solidTouched = true; return;
+                case "30": v.get(0).z = d; solidTouched = true; return;
+
+                case "11": v.get(1).x = d; solidTouched = true; return;
+                case "21": v.get(1).y = d; solidTouched = true; return;
+                case "31": v.get(1).z = d; solidTouched = true; return;
+
+                case "12": v.get(2).x = d; solidTouched = true; return;
+                case "22": v.get(2).y = d; solidTouched = true; return;
+                case "32": v.get(2).z = d; solidTouched = true; return;
+
+                case "13": v.get(3).x = d; solidTouched = true; return;
+                case "23": v.get(3).y = d; solidTouched = true; return;
+                case "33": v.get(3).z = d; solidTouched = true; return;
+                default: return;
+            }
+        }
+
+        private void parseTrace(Trace target, String code, String value) {
+            Double d = parseDouble(value, conversionFactor);
+            if (d == null) return;
+
+            List<Point3D> v = target.getVertices();
+            switch (code) {
+                case "10": v.get(0).x = d; traceTouched = true; return;
+                case "20": v.get(0).y = d; traceTouched = true; return;
+                case "30": v.get(0).z = d; traceTouched = true; return;
+
+                case "11": v.get(1).x = d; traceTouched = true; return;
+                case "21": v.get(1).y = d; traceTouched = true; return;
+                case "31": v.get(1).z = d; traceTouched = true; return;
+
+                case "12": v.get(2).x = d; traceTouched = true; return;
+                case "22": v.get(2).y = d; traceTouched = true; return;
+                case "32": v.get(2).z = d; traceTouched = true; return;
+
+                case "13": v.get(3).x = d; traceTouched = true; return;
+                case "23": v.get(3).y = d; traceTouched = true; return;
+                case "33": v.get(3).z = d; traceTouched = true; return;
+                default: return;
+            }
+        }
+
+        private void parseLeader(String code, String value) {
+            Double d;
+            switch (code) {
+                case "10":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null) {
+                        currentLeader.getVertices().add(new Point3D(d, 0, 0));
+                        leaderTouched = true;
+                    }
+                    return;
+                case "20":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null && !currentLeader.getVertices().isEmpty()) {
+                        currentLeader.getVertices().get(currentLeader.getVertices().size() - 1).y = d;
+                        leaderTouched = true;
+                    }
+                    return;
+                case "30":
+                    d = parseDouble(value, conversionFactor);
+                    if (d != null && !currentLeader.getVertices().isEmpty()) {
+                        currentLeader.getVertices().get(currentLeader.getVertices().size() - 1).z = d;
+                        leaderTouched = true;
+                    }
+                    return;
+                case "71": {
+                    Integer arrow = parseInt(value);
+                    if (arrow != null) currentLeader.setHasArrowHead(arrow == 1);
+                    return;
+                }
+                default:
+                    return;
+            }
+        }
+
+        private void parseXLine(String code, String value) {
+            Double d = parseDouble(value, conversionFactor);
+            if (d == null) return;
+
+            switch (code) {
+                case "10":
+                    currentXLine.getBasePoint().x = d;
+                    xlineBaseTouched = true;
+                    return;
+                case "20":
+                    currentXLine.getBasePoint().y = d;
+                    xlineBaseTouched = true;
+                    return;
+                case "30":
+                    currentXLine.getBasePoint().z = d;
+                    xlineBaseTouched = true;
+                    return;
+                case "11":
+                    currentXLine.getDirection().x = d;
+                    xlineDirTouched = true;
+                    return;
+                case "21":
+                    currentXLine.getDirection().y = d;
+                    xlineDirTouched = true;
+                    return;
+                case "31":
+                    currentXLine.getDirection().z = d;
+                    xlineDirTouched = true;
+                    return;
+                default:
+                    return;
+            }
+        }
+
+        private void parseRay(String code, String value) {
+            Double d = parseDouble(value, conversionFactor);
+            if (d == null) return;
+
+            switch (code) {
+                case "10":
+                    currentRay.getBasePoint().x = d;
+                    rayBaseTouched = true;
+                    return;
+                case "20":
+                    currentRay.getBasePoint().y = d;
+                    rayBaseTouched = true;
+                    return;
+                case "30":
+                    currentRay.getBasePoint().z = d;
+                    rayBaseTouched = true;
+                    return;
+                case "11":
+                    currentRay.getDirection().x = d;
+                    rayDirTouched = true;
+                    return;
+                case "21":
+                    currentRay.getDirection().y = d;
+                    rayDirTouched = true;
+                    return;
+                case "31":
+                    currentRay.getDirection().z = d;
+                    rayDirTouched = true;
+                    return;
+                default:
+                    return;
+            }
+        }
+
         private void appendText(DxfText target, String piece, boolean multiLine) {
             if (piece == null) return;
             String existing = target.getText();
@@ -1191,11 +1954,30 @@ public class DXFParser_20 {
             ((Line) entity).setDxfStyle(style);
         } else if (entity instanceof Arc) {
             ((Arc) entity).setDxfStyle(style);
+        } else if (entity instanceof Ellipse) {
+            ((Ellipse) entity).setDxfStyle(style);
+        } else if (entity instanceof Spline) {
+            ((Spline) entity).setDxfStyle(style);
+        } else if (entity instanceof Hatch) {
+            ((Hatch) entity).setDxfStyle(style);
+        } else if (entity instanceof Dimension) {
+            ((Dimension) entity).setDxfStyle(style);
+        } else if (entity instanceof Solid) {
+            ((Solid) entity).setDxfStyle(style);
+        } else if (entity instanceof Trace) {
+            ((Trace) entity).setDxfStyle(style);
+        } else if (entity instanceof Leader) {
+            ((Leader) entity).setDxfStyle(style);
+        } else if (entity instanceof XLine) {
+            ((XLine) entity).setDxfStyle(style);
+        } else if (entity instanceof Ray) {
+            ((Ray) entity).setDxfStyle(style);
         }
     }
 
     private static DxfStyle styleOf(Object entity) {
         if (entity == null) return null;
+
         if (entity instanceof Face3D) {
             DxfStyle style = ((Face3D) entity).getDxfStyle();
             if (style != null) return style;
@@ -1214,7 +1996,35 @@ public class DXFParser_20 {
         } else if (entity instanceof Arc) {
             DxfStyle style = ((Arc) entity).getDxfStyle();
             if (style != null) return style;
+        } else if (entity instanceof Ellipse) {
+            DxfStyle style = ((Ellipse) entity).getDxfStyle();
+            if (style != null) return style;
+        } else if (entity instanceof Spline) {
+            DxfStyle style = ((Spline) entity).getDxfStyle();
+            if (style != null) return style;
+        } else if (entity instanceof Hatch) {
+            DxfStyle style = ((Hatch) entity).getDxfStyle();
+            if (style != null) return style;
+        } else if (entity instanceof Dimension) {
+            DxfStyle style = ((Dimension) entity).getDxfStyle();
+            if (style != null) return style;
+        } else if (entity instanceof Solid) {
+            DxfStyle style = ((Solid) entity).getDxfStyle();
+            if (style != null) return style;
+        } else if (entity instanceof Trace) {
+            DxfStyle style = ((Trace) entity).getDxfStyle();
+            if (style != null) return style;
+        } else if (entity instanceof Leader) {
+            DxfStyle style = ((Leader) entity).getDxfStyle();
+            if (style != null) return style;
+        } else if (entity instanceof XLine) {
+            DxfStyle style = ((XLine) entity).getDxfStyle();
+            if (style != null) return style;
+        } else if (entity instanceof Ray) {
+            DxfStyle style = ((Ray) entity).getDxfStyle();
+            if (style != null) return style;
         }
+
         return entityStyles.get(entity);
     }
 
@@ -1292,7 +2102,6 @@ public class DXFParser_20 {
         }
     }
 
-
     // ============================
     // HELPERS CONTAINER
     // ============================
@@ -1345,6 +2154,51 @@ public class DXFParser_20 {
     private static void addInsertToContainer(DXFData data, DxfBlock block, DxfInsert insert) {
         if (block != null) block.addInsert(insert);
         else data.addInsert(insert);
+    }
+
+    private static void addEllipseToContainer(DXFData data, DxfBlock block, Ellipse e) {
+        if (block != null) block.addEllipse(e);
+        else data.addEllipse(e);
+    }
+
+    private static void addSplineToContainer(DXFData data, DxfBlock block, Spline s) {
+        if (block != null) block.addSpline(s);
+        else data.addSpline(s);
+    }
+
+    private static void addHatchToContainer(DXFData data, DxfBlock block, Hatch h) {
+        if (block != null) block.addHatch(h);
+        else data.addHatch(h);
+    }
+
+    private static void addDimensionToContainer(DXFData data, DxfBlock block, Dimension d) {
+        if (block != null) block.addDimension(d);
+        else data.addDimension(d);
+    }
+
+    private static void addSolidToContainer(DXFData data, DxfBlock block, Solid s) {
+        if (block != null) block.addSolid(s);
+        else data.addSolid(s);
+    }
+
+    private static void addTraceToContainer(DXFData data, DxfBlock block, Trace t) {
+        if (block != null) block.addTrace(t);
+        else data.addTrace(t);
+    }
+
+    private static void addLeaderToContainer(DXFData data, DxfBlock block, Leader l) {
+        if (block != null) block.addLeader(l);
+        else data.addLeader(l);
+    }
+
+    private static void addXLineToContainer(DXFData data, DxfBlock block, XLine x) {
+        if (block != null) block.addXLine(x);
+        else data.addXLine(x);
+    }
+
+    private static void addRayToContainer(DXFData data, DxfBlock block, Ray r) {
+        if (block != null) block.addRay(r);
+        else data.addRay(r);
     }
 
     // ============================
@@ -1448,6 +2302,105 @@ public class DXFParser_20 {
                 data.addArc(c);
             }
 
+            for (Ellipse el : block.getEllipses()) {
+                Ellipse c = el.clone();
+                DxfStyle style = styleOf(el);
+                Layer finalLayer = resolveExplodedLayer(filePath, style, el.getLayer(), insertLayer);
+                int finalColor = resolveExplodedColor(style, finalLayer, insertColor);
+                applyTransformsToEllipse(c, nextOuterTransforms);
+                c.setLayer(finalLayer);
+                c.setColor(finalColor);
+                data.addEllipse(c);
+            }
+
+            for (Spline sp : block.getSplines()) {
+                Spline c = sp.clone();
+                DxfStyle style = styleOf(sp);
+                Layer finalLayer = resolveExplodedLayer(filePath, style, sp.getLayer(), insertLayer);
+                int finalColor = resolveExplodedColor(style, finalLayer, insertColor);
+                applyTransformsToSpline(c, nextOuterTransforms);
+                c.setLayer(finalLayer);
+                c.setColor(finalColor);
+                data.addSpline(c);
+            }
+
+            for (Hatch hh : block.getHatches()) {
+                Hatch c = hh.clone();
+                DxfStyle style = styleOf(hh);
+                Layer finalLayer = resolveExplodedLayer(filePath, style, hh.getLayer(), insertLayer);
+                int finalColor = resolveExplodedColor(style, finalLayer, insertColor);
+                applyTransformsToHatch(c, nextOuterTransforms);
+                c.setLayer(finalLayer);
+                c.setColor(finalColor);
+                data.addHatch(c);
+            }
+
+            for (Dimension dd : block.getDimensions()) {
+                Dimension c = dd.clone();
+                DxfStyle style = styleOf(dd);
+                Layer finalLayer = resolveExplodedLayer(filePath, style, dd.getLayer(), insertLayer);
+                int finalColor = resolveExplodedColor(style, finalLayer, insertColor);
+                applyTransformsToDimension(c, nextOuterTransforms);
+                c.setLayer(finalLayer);
+                c.setColor(finalColor);
+                data.addDimension(c);
+            }
+
+            for (Solid ss : block.getSolids()) {
+                Solid c = ss.clone();
+                DxfStyle style = styleOf(ss);
+                Layer finalLayer = resolveExplodedLayer(filePath, style, ss.getLayer(), insertLayer);
+                int finalColor = resolveExplodedColor(style, finalLayer, insertColor);
+                applyTransformsToSolid(c, nextOuterTransforms);
+                c.setLayer(finalLayer);
+                c.setColor(finalColor);
+                data.addSolid(c);
+            }
+
+            for (Trace tt : block.getTraces()) {
+                Trace c = tt.clone();
+                DxfStyle style = styleOf(tt);
+                Layer finalLayer = resolveExplodedLayer(filePath, style, tt.getLayer(), insertLayer);
+                int finalColor = resolveExplodedColor(style, finalLayer, insertColor);
+                applyTransformsToTrace(c, nextOuterTransforms);
+                c.setLayer(finalLayer);
+                c.setColor(finalColor);
+                data.addTrace(c);
+            }
+
+            for (Leader ll : block.getLeaders()) {
+                Leader c = ll.clone();
+                DxfStyle style = styleOf(ll);
+                Layer finalLayer = resolveExplodedLayer(filePath, style, ll.getLayer(), insertLayer);
+                int finalColor = resolveExplodedColor(style, finalLayer, insertColor);
+                applyTransformsToLeader(c, nextOuterTransforms);
+                c.setLayer(finalLayer);
+                c.setColor(finalColor);
+                data.addLeader(c);
+            }
+
+            for (XLine xl : block.getXLines()) {
+                XLine c = xl.clone();
+                DxfStyle style = styleOf(xl);
+                Layer finalLayer = resolveExplodedLayer(filePath, style, xl.getLayer(), insertLayer);
+                int finalColor = resolveExplodedColor(style, finalLayer, insertColor);
+                applyTransformsToXLine(c, nextOuterTransforms);
+                c.setLayer(finalLayer);
+                c.setColor(finalColor);
+                data.addXLine(c);
+            }
+
+            for (Ray rr : block.getRays()) {
+                Ray c = rr.clone();
+                DxfStyle style = styleOf(rr);
+                Layer finalLayer = resolveExplodedLayer(filePath, style, rr.getLayer(), insertLayer);
+                int finalColor = resolveExplodedColor(style, finalLayer, insertColor);
+                applyTransformsToRay(c, nextOuterTransforms);
+                c.setLayer(finalLayer);
+                c.setColor(finalColor);
+                data.addRay(c);
+            }
+
             for (Point3D p : block.getPoints()) {
                 Point3D c = p.clone();
                 DxfStyle style = styleOf(p);
@@ -1545,6 +2498,60 @@ public class DXFParser_20 {
         }
     }
 
+    private static void applyTransformsToEllipse(Ellipse e, List<InsertTransform> transforms) {
+        for (InsertTransform step : transforms) {
+            transformEllipse(e, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
+        }
+    }
+
+    private static void applyTransformsToSpline(Spline s, List<InsertTransform> transforms) {
+        for (InsertTransform step : transforms) {
+            transformSpline(s, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
+        }
+    }
+
+    private static void applyTransformsToHatch(Hatch h, List<InsertTransform> transforms) {
+        for (InsertTransform step : transforms) {
+            transformHatch(h, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
+        }
+    }
+
+    private static void applyTransformsToDimension(Dimension d, List<InsertTransform> transforms) {
+        for (InsertTransform step : transforms) {
+            transformDimension(d, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
+        }
+    }
+
+    private static void applyTransformsToSolid(Solid s, List<InsertTransform> transforms) {
+        for (InsertTransform step : transforms) {
+            transformSolid(s, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
+        }
+    }
+
+    private static void applyTransformsToTrace(Trace t, List<InsertTransform> transforms) {
+        for (InsertTransform step : transforms) {
+            transformTrace(t, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
+        }
+    }
+
+    private static void applyTransformsToLeader(Leader l, List<InsertTransform> transforms) {
+        for (InsertTransform step : transforms) {
+            transformLeader(l, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
+        }
+    }
+
+    private static void applyTransformsToXLine(XLine x, List<InsertTransform> transforms) {
+        for (InsertTransform step : transforms) {
+            transformXLine(x, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
+        }
+    }
+
+    private static void applyTransformsToRay(Ray r, List<InsertTransform> transforms) {
+        for (InsertTransform step : transforms) {
+            transformRay(r, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
+        }
+    }
+
     private static void applyTransformsToText(DxfText t, List<InsertTransform> transforms) {
         for (InsertTransform step : transforms) {
             transformText(t, step.insert, step.bx, step.by, step.bz, step.cosA, step.sinA);
@@ -1594,6 +2601,19 @@ public class DXFParser_20 {
         p.z = z + ins.getZ();
     }
 
+    private static Point3D transformVector(Point3D v, DxfInsert ins, double cosA, double sinA) {
+        if (v == null) return null;
+
+        double x = v.x * ins.getScaleX();
+        double y = v.y * ins.getScaleY();
+        double z = v.z * ins.getScaleZ();
+
+        double x2 = x * cosA - y * sinA;
+        double y2 = x * sinA + y * cosA;
+
+        return new Point3D(x2, y2, z);
+    }
+
     private static void transformPolyline(Polyline pl, DxfInsert ins,
                                           double bx, double by, double bz,
                                           double cosA, double sinA) {
@@ -1613,21 +2633,102 @@ public class DXFParser_20 {
     private static void transformCircle(Circle c, DxfInsert ins,
                                         double bx, double by, double bz,
                                         double cosA, double sinA) {
-        transformPoint(c.center, ins, bx, by, bz, cosA, sinA);
+        transformPoint(c.getCenter(), ins, bx, by, bz, cosA, sinA);
         double sx = ins.getScaleX();
         double sy = ins.getScaleY();
-        c.radius = c.radius * Math.max(sx, sy);
+        c.setRadius(c.getRadius() * Math.max(sx, sy));
     }
 
     private static void transformArc(Arc a, DxfInsert ins,
                                      double bx, double by, double bz,
                                      double cosA, double sinA) {
-        transformPoint(a.center, ins, bx, by, bz, cosA, sinA);
+        transformPoint(a.getCenter(), ins, bx, by, bz, cosA, sinA);
         double sx = ins.getScaleX();
         double sy = ins.getScaleY();
-        a.radius = a.radius * Math.max(sx, sy);
-        a.startAngle += ins.getRotation();
-        a.endAngle += ins.getRotation();
+        a.setRadius(a.getRadius() * Math.max(sx, sy));
+        a.setStartAngle(a.getStartAngle() + ins.getRotation());
+        a.setEndAngle(a.getEndAngle() + ins.getRotation());
+    }
+
+    private static void transformEllipse(Ellipse e, DxfInsert ins,
+                                         double bx, double by, double bz,
+                                         double cosA, double sinA) {
+        transformPoint(e.getCenter(), ins, bx, by, bz, cosA, sinA);
+        Point3D newAxis = transformVector(e.getMajorAxisEnd(), ins, cosA, sinA);
+        if (newAxis != null) {
+            e.setMajorAxisEnd(newAxis);
+        }
+    }
+
+    private static void transformSpline(Spline s, DxfInsert ins,
+                                        double bx, double by, double bz,
+                                        double cosA, double sinA) {
+        for (Point3D p : s.getControlPoints()) {
+            transformPoint(p, ins, bx, by, bz, cosA, sinA);
+        }
+        for (Point3D p : s.getFitPoints()) {
+            transformPoint(p, ins, bx, by, bz, cosA, sinA);
+        }
+    }
+
+    private static void transformHatch(Hatch h, DxfInsert ins,
+                                       double bx, double by, double bz,
+                                       double cosA, double sinA) {
+        if (h.getBoundaryPolylines() == null) return;
+        for (Polyline p : h.getBoundaryPolylines()) {
+            transformPolyline(p, ins, bx, by, bz, cosA, sinA);
+        }
+    }
+
+    private static void transformDimension(Dimension d, DxfInsert ins,
+                                           double bx, double by, double bz,
+                                           double cosA, double sinA) {
+        if (d.getDefinitionPoint() != null) {
+            transformPoint(d.getDefinitionPoint(), ins, bx, by, bz, cosA, sinA);
+        }
+        if (d.getTextMidPoint() != null) {
+            transformPoint(d.getTextMidPoint(), ins, bx, by, bz, cosA, sinA);
+        }
+    }
+
+    private static void transformSolid(Solid s, DxfInsert ins,
+                                       double bx, double by, double bz,
+                                       double cosA, double sinA) {
+        for (Point3D p : s.getVertices()) {
+            if (p != null) transformPoint(p, ins, bx, by, bz, cosA, sinA);
+        }
+    }
+
+    private static void transformTrace(Trace t, DxfInsert ins,
+                                       double bx, double by, double bz,
+                                       double cosA, double sinA) {
+        for (Point3D p : t.getVertices()) {
+            if (p != null) transformPoint(p, ins, bx, by, bz, cosA, sinA);
+        }
+    }
+
+    private static void transformLeader(Leader l, DxfInsert ins,
+                                        double bx, double by, double bz,
+                                        double cosA, double sinA) {
+        for (Point3D p : l.getVertices()) {
+            transformPoint(p, ins, bx, by, bz, cosA, sinA);
+        }
+    }
+
+    private static void transformXLine(XLine x, DxfInsert ins,
+                                       double bx, double by, double bz,
+                                       double cosA, double sinA) {
+        transformPoint(x.getBasePoint(), ins, bx, by, bz, cosA, sinA);
+        Point3D dir = transformVector(x.getDirection(), ins, cosA, sinA);
+        if (dir != null) x.setDirection(dir);
+    }
+
+    private static void transformRay(Ray r, DxfInsert ins,
+                                     double bx, double by, double bz,
+                                     double cosA, double sinA) {
+        transformPoint(r.getBasePoint(), ins, bx, by, bz, cosA, sinA);
+        Point3D dir = transformVector(r.getDirection(), ins, cosA, sinA);
+        if (dir != null) r.setDirection(dir);
     }
 
     private static void transformText(DxfText t, DxfInsert ins,
@@ -1645,9 +2746,13 @@ public class DXFParser_20 {
                                         double bx, double by, double bz,
                                         double cosA, double sinA) {
         transformPoint(f.p1, ins, bx, by, bz, cosA, sinA);
-        transformPoint(f.p2, ins, bx, by, bz, cosA, sinA);
-        transformPoint(f.p3, ins, bx, by, bz, cosA, sinA);
-        if (f.p4 != null) transformPoint(f.p4, ins, bx, by, bz, cosA, sinA);
+        transformPoint(f.p2, ins, bx, by, bz, cosA, stepSin(sinA));
+        transformPoint(f.p3, ins, bx, by, bz, cosA, stepSin(sinA));
+        if (f.p4 != null) transformPoint(f.p4, ins, bx, by, bz, cosA, stepSin(sinA));
+    }
+
+    private static double stepSin(double sinA) {
+        return sinA;
     }
 
     private static Polyline clonePolyline(Polyline pl) {
@@ -1665,8 +2770,8 @@ public class DXFParser_20 {
     private static void transformLine(Line l, DxfInsert ins,
                                       double bx, double by, double bz,
                                       double cosA, double sinA) {
-        transformPoint(l.start, ins, bx, by, bz, cosA, sinA);
-        transformPoint(l.end, ins, bx, by, bz, cosA, sinA);
+        transformPoint(l.getStart(), ins, bx, by, bz, cosA, sinA);
+        transformPoint(l.getEnd(), ins, bx, by, bz, cosA, sinA);
     }
 
     private static Double computeTiltFromEndpoints(Point3D_Drill p) {
