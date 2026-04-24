@@ -21,10 +21,6 @@ public final class CurveSampler {
     private CurveSampler() {
     }
 
-    // =========================================================
-    // PUBLIC API - restituisce direttamente Polyline
-    // =========================================================
-
     public static Polyline sampleArc(Arc arc) {
         if (arc == null) return new Polyline();
 
@@ -133,10 +129,6 @@ public final class CurveSampler {
         return out;
     }
 
-    // =========================================================
-    // ARC
-    // =========================================================
-
     public static List<Point3D> sampleArcPoints(Point3D center,
                                                 double radius,
                                                 double startAngleDeg,
@@ -165,10 +157,6 @@ public final class CurveSampler {
         return out;
     }
 
-    // =========================================================
-    // CIRCLE
-    // =========================================================
-
     public static List<Point3D> sampleCirclePoints(Point3D center, double radius) {
         List<Point3D> out = new ArrayList<>();
         if (center == null || radius <= 0) return out;
@@ -187,13 +175,6 @@ public final class CurveSampler {
         return out;
     }
 
-    // =========================================================
-    // ELLIPSE
-    // majorAxisEnd è il vettore dal centro all'estremo asse maggiore
-    // axisRatio = minor/major
-    // startParam/endParam in radianti DXF
-    // =========================================================
-
     public static List<Point3D> sampleEllipsePoints(Point3D center,
                                                     Point3D majorAxisEnd,
                                                     double axisRatio,
@@ -209,47 +190,38 @@ public final class CurveSampler {
         double majorLen = Math.sqrt(ax * ax + ay * ay + az * az);
         if (majorLen <= EPS) return out;
 
-        double minorLen = majorLen * axisRatio;
+        double minorLen = Math.abs(majorLen * axisRatio);
+        if (minorLen <= EPS) return out;
 
-        // vettore unitario asse maggiore
         double ux = ax / majorLen;
         double uy = ay / majorLen;
 
-        // asse minore ortogonale in XY
+        // Assumiamo piano XY, coerente col tuo renderer 2D attuale.
         double vx = -uy;
         double vy = ux;
 
         double start = startParam;
         double end = endParam;
-
-        while (end < start) {
-            end += Math.PI * 2.0;
-        }
+        while (end < start) end += Math.PI * 2.0;
 
         double sweep = end - start;
+        if (sweep <= EPS) sweep = Math.PI * 2.0;
+
         double effectiveRadius = Math.max(majorLen, minorLen);
         int segments = computeSegmentsByRadiusAndSweep(effectiveRadius, sweep);
 
         for (int i = 0; i <= segments; i++) {
             double t = start + sweep * i / segments;
-
             double localX = majorLen * Math.cos(t);
             double localY = minorLen * Math.sin(t);
-
             double x = center.getX() + localX * ux + localY * vx;
             double y = center.getY() + localX * uy + localY * vy;
             double z = center.getZ();
-
             out.add(new Point3D(x, y, z));
         }
 
         return out;
     }
-
-    // =========================================================
-    // BULGE
-    // Replica la logica geometrica corretta per archi da LWPOLYLINE / POLYLINE
-    // =========================================================
 
     public static List<Point3D> sampleBulgeSegmentPoints(Point3D p1, Point3D p2, double bulge) {
         List<Point3D> out = new ArrayList<>();
@@ -395,52 +367,142 @@ public final class CurveSampler {
         return out;
     }
 
-    // =========================================================
-    // SPLINE
-    // Versione pragmatica:
-    // - se ci sono fit points, li usa come base
-    // - altrimenti usa control points
-    // - campiona linearmente tra i punti base
-    //
-    // Non è una NURBS completa, ma è un primo passo robusto e semplice.
-    // =========================================================
-
     public static List<Point3D> sampleSplinePoints(Spline spline) {
         List<Point3D> out = new ArrayList<>();
         if (spline == null) return out;
 
-        List<Point3D> base = null;
-
-        if (spline.getFitPoints() != null && spline.getFitPoints().size() >= 2) {
-            base = spline.getFitPoints();
-        } else if (spline.getControlPoints() != null && spline.getControlPoints().size() >= 2) {
-            base = spline.getControlPoints();
+        List<Point3D> fitPoints = spline.getFitPoints();
+        if (fitPoints != null && fitPoints.size() >= 2) {
+            return sampleCatmullRomSpline(fitPoints, spline.isClosed());
         }
 
-        if (base == null || base.size() < 2) return out;
+        List<Point3D> controlPoints = spline.getControlPoints();
+        if (controlPoints != null && controlPoints.size() >= 2) {
+            int degree = spline.getDegree() > 0 ? spline.getDegree() : 3;
+            return sampleBSpline(controlPoints, spline.getKnots(), degree, spline.isClosed());
+        }
 
-        // Primo step semplice: densifica i segmenti base
-        for (int i = 0; i < base.size() - 1; i++) {
-            Point3D a = base.get(i);
-            Point3D b = base.get(i + 1);
+        return out;
+    }
 
-            if (i == 0) out.add(a.clone());
+    private static List<Point3D> sampleCatmullRomSpline(List<Point3D> pts, boolean closed) {
+        List<Point3D> out = new ArrayList<>();
+        if (pts == null || pts.size() < 2) return out;
 
-            double dist = distance(a, b);
-            int segs = clamp((int) Math.ceil(dist / DEFAULT_TARGET_SEGMENT_LENGTH), 4, 64);
+        List<Point3D> working = new ArrayList<>();
+        if (closed) {
+            working.add(pts.get(pts.size() - 1));
+            working.addAll(clonePoints(pts));
+            working.add(pts.get(0));
+            working.add(pts.get(1 % pts.size()));
+        } else {
+            working.add(pts.get(0));
+            working.addAll(clonePoints(pts));
+            working.add(pts.get(pts.size() - 1));
+        }
 
+        for (int i = 0; i < working.size() - 3; i++) {
+            Point3D p0 = working.get(i);
+            Point3D p1 = working.get(i + 1);
+            Point3D p2 = working.get(i + 2);
+            Point3D p3 = working.get(i + 3);
+
+            if (i == 0) out.add(p1.clone());
+
+            double chord = distance(p1, p2);
+            int segs = clamp((int) Math.ceil(chord / DEFAULT_TARGET_SEGMENT_LENGTH), 12, 96);
             for (int k = 1; k <= segs; k++) {
                 double t = (double) k / segs;
-                out.add(interpolate(a, b, t));
+                out.add(catmullRomPoint(p0, p1, p2, p3, t));
             }
         }
 
         return out;
     }
 
-    // =========================================================
-    // HELPERS
-    // =========================================================
+    private static Point3D catmullRomPoint(Point3D p0, Point3D p1, Point3D p2, Point3D p3, double t) {
+        double t2 = t * t;
+        double t3 = t2 * t;
+        double x = 0.5 * ((2 * p1.getX()) + (-p0.getX() + p2.getX()) * t + (2*p0.getX() - 5*p1.getX() + 4*p2.getX() - p3.getX()) * t2 + (-p0.getX() + 3*p1.getX() - 3*p2.getX() + p3.getX()) * t3);
+        double y = 0.5 * ((2 * p1.getY()) + (-p0.getY() + p2.getY()) * t + (2*p0.getY() - 5*p1.getY() + 4*p2.getY() - p3.getY()) * t2 + (-p0.getY() + 3*p1.getY() - 3*p2.getY() + p3.getY()) * t3);
+        double z = 0.5 * ((2 * p1.getZ()) + (-p0.getZ() + p2.getZ()) * t + (2*p0.getZ() - 5*p1.getZ() + 4*p2.getZ() - p3.getZ()) * t2 + (-p0.getZ() + 3*p1.getZ() - 3*p2.getZ() + p3.getZ()) * t3);
+        return new Point3D(x, y, z);
+    }
+
+    private static List<Point3D> sampleBSpline(List<Point3D> controlPoints, List<Double> knots, int degree, boolean closed) {
+        List<Point3D> out = new ArrayList<>();
+        if (controlPoints == null || controlPoints.size() < 2) return out;
+        degree = Math.max(1, Math.min(degree, controlPoints.size() - 1));
+
+        List<Point3D> cps = new ArrayList<>(clonePoints(controlPoints));
+        if (closed && cps.size() > degree) {
+            for (int i = 0; i < degree; i++) cps.add(controlPoints.get(i).clone());
+        }
+
+        List<Double> U = knots;
+        int n = cps.size() - 1;
+        if (U == null || U.size() != n + degree + 2) {
+            U = buildClampedUniformKnots(n, degree);
+        }
+
+        double uStart = U.get(degree);
+        double uEnd = U.get(n + 1);
+        int samples = clamp(cps.size() * 24, 48, 600);
+
+        for (int i = 0; i <= samples; i++) {
+            double u = uStart + (uEnd - uStart) * i / samples;
+            if (i == samples) u = uEnd - 1e-10;
+            out.add(deBoorPoint(cps, U, degree, u));
+        }
+
+        if (closed && !out.isEmpty()) closePolylineIfNeeded(fromPoints(out, null, 0, false));
+        return out;
+    }
+
+    private static Point3D deBoorPoint(List<Point3D> cps, List<Double> knots, int degree, double u) {
+        int n = cps.size() - 1;
+        int k = findSpan(n, degree, u, knots);
+
+        Point3D[] d = new Point3D[degree + 1];
+        for (int j = 0; j <= degree; j++) {
+            d[j] = cps.get(k - degree + j).clone();
+        }
+
+        for (int r = 1; r <= degree; r++) {
+            for (int j = degree; j >= r; j--) {
+                int idx = k - degree + j;
+                double denom = knots.get(idx + degree - r + 1) - knots.get(idx);
+                double alpha = Math.abs(denom) < EPS ? 0.0 : (u - knots.get(idx)) / denom;
+                d[j] = lerp(d[j - 1], d[j], alpha);
+            }
+        }
+        return d[degree];
+    }
+
+    private static int findSpan(int n, int degree, double u, List<Double> knots) {
+        if (u >= knots.get(n + 1)) return n;
+        if (u <= knots.get(degree)) return degree;
+        int low = degree;
+        int high = n + 1;
+        int mid = (low + high) / 2;
+        while (u < knots.get(mid) || u >= knots.get(mid + 1)) {
+            if (u < knots.get(mid)) high = mid;
+            else low = mid;
+            mid = (low + high) / 2;
+        }
+        return mid;
+    }
+
+    private static List<Double> buildClampedUniformKnots(int n, int degree) {
+        List<Double> knots = new ArrayList<>();
+        int m = n + degree + 1;
+        for (int i = 0; i <= m; i++) {
+            if (i <= degree) knots.add(0.0);
+            else if (i >= m - degree) knots.add(1.0);
+            else knots.add((double)(i - degree) / (m - 2 * degree));
+        }
+        return knots;
+    }
 
     public static Polyline fromPoints(List<Point3D> points, Layer layer, int color, boolean closed) {
         Polyline p = new Polyline();
@@ -473,6 +535,12 @@ public final class CurveSampler {
         }
     }
 
+    private static List<Point3D> clonePoints(List<Point3D> src) {
+        List<Point3D> out = new ArrayList<>();
+        for (Point3D p : src) out.add(p.clone());
+        return out;
+    }
+
     private static boolean samePoint(Point3D a, Point3D b) {
         if (a == null || b == null) return false;
         return Math.abs(a.getX() - b.getX()) < EPS
@@ -480,7 +548,7 @@ public final class CurveSampler {
                 && Math.abs(a.getZ() - b.getZ()) < EPS;
     }
 
-    private static Point3D interpolate(Point3D a, Point3D b, double t) {
+    private static Point3D lerp(Point3D a, Point3D b, double t) {
         return new Point3D(
                 a.getX() + (b.getX() - a.getX()) * t,
                 a.getY() + (b.getY() - a.getY()) * t,

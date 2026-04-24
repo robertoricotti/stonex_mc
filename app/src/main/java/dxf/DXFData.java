@@ -16,27 +16,25 @@ import services.ReadProjectService;
 
 public class DXFData implements Serializable {
     private static final long serialVersionUID = 1L;
+    private List<Face3D> faces;
+    private List<Polyline> polylines;
+    private List<Point3D> points;
+    private List<Point3D_Drill> drill_points;
+    private List<Polyline_2D> polylines_2D;
+    private List<DxfText> texts;
+    private List<Arc> arcs;
+    private List<Circle> circles;
+    private List<Line> lines;
 
-    private List<Face3D> faces;                // 3DFACE
-    private List<Polyline> polylines;          // POLYLINE
-    private List<Point3D> points;              // POINT
-    private List<Point3D_Drill> drill_points;  // DRILL POINT
-    private List<Polyline_2D> polylines_2D;    // LWPOLYLINE
-    private List<DxfText> texts;               // TEXT / MTEXT
-    private List<Arc> arcs;                    // ARC
-    private List<Circle> circles;              // CIRCLE
-    private List<Line> lines;                  // LINE
-
-    // Nuove entità
-    private List<Ellipse> ellipses;            // ELLIPSE
-    private List<Spline> splines;              // SPLINE
-    private List<Hatch> hatches;               // HATCH
-    private List<Dimension> dimensions;        // DIMENSION
-    private List<Solid> solids;                // SOLID
-    private List<Trace> traces;                // TRACE
-    private List<Leader> leaders;              // LEADER
-    private List<XLine> xlines;                // XLINE
-    private List<Ray> rays;                    // RAY
+    private List<Ellipse> ellipses;
+    private List<Spline> splines;
+    private List<Hatch> hatches;
+    private List<Dimension> dimensions;
+    private List<Solid> solids;
+    private List<Trace> traces;
+    private List<Leader> leaders;
+    private List<XLine> xLines;
+    private List<Ray> rays;
 
     private List<Layer> layers;
     private List<DxfBlock> blocks;
@@ -60,7 +58,7 @@ public class DXFData implements Serializable {
         solids = new ArrayList<>();
         traces = new ArrayList<>();
         leaders = new ArrayList<>();
-        xlines = new ArrayList<>();
+        xLines = new ArrayList<>();
         rays = new ArrayList<>();
 
         layers = new ArrayList<>();
@@ -68,154 +66,62 @@ public class DXFData implements Serializable {
         inserts = new ArrayList<>();
     }
 
-    public List<Face3D> getFaces() {
-        return faces;
-    }
-
+    public List<Face3D> getFaces() { return faces; }
     public void addFace(Face3D face) {
         faces.add(face);
-        try {
-            ReadProjectService.numbers++;
-        } catch (Exception e) {
-            ReadProjectService.numbers++;
-        }
+        try { ReadProjectService.numbers++; } catch (Exception e) { ReadProjectService.numbers++; }
     }
 
-    public List<Line> getLines() {
-        return lines;
-    }
+    public List<Line> getLines() { return lines; }
+    public void addLine(Line line) { lines.add(line); }
 
-    public void addLine(Line line) {
-        lines.add(line);
-    }
+    public List<Polyline> getPolylines() { return polylines; }
+    public void addPolyline(Polyline polyline) { polylines.add(polyline); }
 
-    public List<Polyline> getPolylines() {
-        return polylines;
-    }
+    public List<Polyline_2D> getPolylines_2D() { return polylines_2D; }
+    public void addPolyline2D(Polyline_2D polyline_2D) { polylines_2D.add(polyline_2D); }
 
-    public void addPolyline(Polyline polyline) {
-        polylines.add(polyline);
-    }
+    public List<Point3D> getPoints() { return points; }
+    public void addPoint(Point3D point) { points.add(point); }
 
-    public List<Polyline_2D> getPolylines_2D() {
-        return polylines_2D;
-    }
+    public List<DxfText> getTexts() { return texts; }
+    public void addText(DxfText dxfText) { texts.add(dxfText); }
 
-    public void addPolyline2D(Polyline_2D polyline_2D) {
-        polylines_2D.add(polyline_2D);
-    }
+    public List<Arc> getArcs() { return arcs; }
+    public void addArc(Arc arc) { arcs.add(arc); }
 
-    public List<Point3D> getPoints() {
-        return points;
-    }
+    public List<Circle> getCircles() { return circles; }
+    public void addCircle(Circle circle) { circles.add(circle); }
 
-    public void addPoint(Point3D point) {
-        points.add(point);
-    }
+    public List<Ellipse> getEllipses() { return ellipses; }
+    public void addEllipse(Ellipse ellipse) { ellipses.add(ellipse); }
 
-    public List<DxfText> getTexts() {
-        return texts;
-    }
+    public List<Spline> getSplines() { return splines; }
+    public void addSpline(Spline spline) { splines.add(spline); }
 
-    public void addText(DxfText dxfText) {
-        texts.add(dxfText);
-    }
+    public List<Hatch> getHatches() { return hatches; }
+    public void addHatch(Hatch hatch) { hatches.add(hatch); }
 
-    public List<Arc> getArcs() {
-        return arcs;
-    }
+    public List<Dimension> getDimensions() { return dimensions; }
+    public void addDimension(Dimension dimension) { dimensions.add(dimension); }
 
-    public void addArc(Arc arc) {
-        arcs.add(arc);
-    }
+    public List<Solid> getSolids() { return solids; }
+    public void addSolid(Solid solid) { solids.add(solid); }
 
-    public List<Circle> getCircles() {
-        return circles;
-    }
+    public List<Trace> getTraces() { return traces; }
+    public void addTrace(Trace trace) { traces.add(trace); }
 
-    public void addCircle(Circle circle) {
-        circles.add(circle);
-    }
+    public List<Leader> getLeaders() { return leaders; }
+    public void addLeader(Leader leader) { leaders.add(leader); }
 
-    public List<Ellipse> getEllipses() {
-        return ellipses;
-    }
+    public List<XLine> getXLines() { return xLines; }
+    public void addXLine(XLine xLine) { xLines.add(xLine); }
 
-    public void addEllipse(Ellipse ellipse) {
-        ellipses.add(ellipse);
-    }
+    public List<Ray> getRays() { return rays; }
+    public void addRay(Ray ray) { rays.add(ray); }
 
-    public List<Spline> getSplines() {
-        return splines;
-    }
-
-    public void addSpline(Spline spline) {
-        splines.add(spline);
-    }
-
-    public List<Hatch> getHatches() {
-        return hatches;
-    }
-
-    public void addHatch(Hatch hatch) {
-        hatches.add(hatch);
-    }
-
-    public List<Dimension> getDimensions() {
-        return dimensions;
-    }
-
-    public void addDimension(Dimension dimension) {
-        dimensions.add(dimension);
-    }
-
-    public List<Solid> getSolids() {
-        return solids;
-    }
-
-    public void addSolid(Solid solid) {
-        solids.add(solid);
-    }
-
-    public List<Trace> getTraces() {
-        return traces;
-    }
-
-    public void addTrace(Trace trace) {
-        traces.add(trace);
-    }
-
-    public List<Leader> getLeaders() {
-        return leaders;
-    }
-
-    public void addLeader(Leader leader) {
-        leaders.add(leader);
-    }
-
-    public List<XLine> getXLines() {
-        return xlines;
-    }
-
-    public void addXLine(XLine xline) {
-        xlines.add(xline);
-    }
-
-    public List<Ray> getRays() {
-        return rays;
-    }
-
-    public void addRay(Ray ray) {
-        rays.add(ray);
-    }
-
-    public void addLayer(Layer layer) {
-        layers.add(layer);
-    }
-
-    public List<Layer> getLayers() {
-        return layers;
-    }
+    public void addLayer(Layer layer) { layers.add(layer); }
+    public List<Layer> getLayers() { return layers; }
 
     public static DXFData loadOrParse(File file, Supplier<DXFData> parser) {
         File cacheFile = new File(file.getAbsolutePath() + ".bin");
@@ -237,31 +143,15 @@ public class DXFData implements Serializable {
                 e.printStackTrace();
             }
         }
-
         return data;
     }
 
-    public void addBlock(DxfBlock block) {
-        blocks.add(block);
-    }
+    public void addBlock(DxfBlock block) { blocks.add(block); }
+    public List<DxfBlock> getBlocks() { return blocks; }
 
-    public List<DxfBlock> getBlocks() {
-        return blocks;
-    }
+    public void addInsert(DxfInsert insert) { inserts.add(insert); }
+    public List<DxfInsert> getInserts() { return inserts; }
 
-    public void addInsert(DxfInsert insert) {
-        inserts.add(insert);
-    }
-
-    public List<DxfInsert> getInserts() {
-        return inserts;
-    }
-
-    public List<Point3D_Drill> getDrill_points() {
-        return drill_points;
-    }
-
-    public void addDrill_points(Point3D_Drill point3DDrill) {
-        drill_points.add(point3DDrill);
-    }
+    public List<Point3D_Drill> getDrill_points() { return drill_points; }
+    public void addDrill_points(Point3D_Drill point3DDrill) { drill_points.add(point3DDrill); }
 }

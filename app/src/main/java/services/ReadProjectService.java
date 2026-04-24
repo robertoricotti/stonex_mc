@@ -48,13 +48,17 @@ import drill_pile.gui.ProjectReportXlsxWriter;
 import drill_pile.gui.ProjectStateCsvStore;
 import dxf.Arc;
 import dxf.Circle;
+import dxf.CurveSampler;
 import dxf.DXFData;
 import dxf.DXFParser_20;
+import dxf.Ellipse;
 import dxf.Face3D;
 import dxf.Layer;
+import dxf.Line;
 import dxf.Point3D;
 import dxf.Polyline;
 import dxf.Polyline_2D;
+import dxf.Spline;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.my_opengl.My3DActivity;
@@ -244,6 +248,32 @@ public class ReadProjectService extends Service {
         }
     }
 
+
+
+    private static void flattenExtraEntitiesIntoLegacyGeometry(DXFData source,
+                                                               List<Polyline> outPolylines,
+                                                               List<Line> outLines,
+                                                               List<Arc> outArcs,
+                                                               List<Circle> outCircles) {
+        if (source == null || outPolylines == null) return;
+
+        if (source.getEllipses() != null) {
+            for (Ellipse e : source.getEllipses()) {
+                try {
+                    Polyline p = CurveSampler.sampleEllipse(e);
+                    if (p != null && p.getVertices() != null && p.getVertices().size() >= 2) outPolylines.add(p);
+                } catch (Exception ignored) {}
+            }
+        }
+        if (source.getSplines() != null) {
+            for (Spline s : source.getSplines()) {
+                try {
+                    Polyline p = CurveSampler.sampleSpline(s);
+                    if (p != null && p.getVertices() != null && p.getVertices().size() >= 2) outPolylines.add(p);
+                } catch (Exception ignored) {}
+            }
+        }
+    }
     private void goToLicense() {
         Handler handler = new Handler(Looper.getMainLooper());
         Runnable runnable = new Runnable() {

@@ -198,6 +198,8 @@ public class DXFParser_20 {
 
         boolean inVertex = false;
         boolean currentPolylineClosed = false;
+        boolean currentPolylineIs2D = false;
+        boolean currentPolylineHasBulge = false;
         boolean currentLWPolylineClosed = false;
         double currentLWPolylineElevation = 0.0;
 
@@ -296,6 +298,8 @@ public class DXFParser_20 {
                     currentPolyline = new Polyline();
                     currentPolyline.setFilename(filePath);
                     currentPolylineClosed = false;
+                    currentPolylineIs2D = false;
+                    currentPolylineHasBulge = false;
                     inVertex = false;
                     lastZeroValue = "POLYLINE";
                     return;
@@ -632,6 +636,18 @@ public class DXFParser_20 {
                 return;
             }
 
+            // subtype POLYLINE (2D / 3D / mesh)
+            if ("100".equals(code) && currentPolyline != null && !inVertex) {
+                if ("AcDb2dPolyline".equals(value)) {
+                    currentPolylineIs2D = true;
+                    return;
+                }
+                if ("AcDb3dPolyline".equals(value)) {
+                    currentPolylineIs2D = false;
+                    return;
+                }
+            }
+
             // flag varie
             if ("70".equals(code)) {
                 Integer flags = parseInt(value);
@@ -906,11 +922,26 @@ public class DXFParser_20 {
             }
             currentPolyline.markGlDirty();
             if (currentPolyline.getVertices() != null && currentPolyline.getVertices().size() >= 2) {
-                rememberStyle(currentPolyline, activeStyle);
-                addPolylineToContainer(data, currentBlock, currentPolyline);
+                if (currentPolylineIs2D || currentPolylineHasBulge) {
+                    Polyline_2D poly2D = new Polyline_2D();
+                    poly2D.setLayer(currentPolyline.getLayer());
+                    poly2D.setLineColor(currentPolyline.getLineColor());
+                    for (Point3D v : currentPolyline.getVertices()) {
+                        poly2D.addVertex(v.clone());
+                    }
+                    poly2D.setClosed(currentPolylineClosed);
+                    poly2D.markGlDirty();
+                    rememberStyle(poly2D, activeStyle);
+                    addPolyline2DToContainer(data, currentBlock, poly2D);
+                } else {
+                    rememberStyle(currentPolyline, activeStyle);
+                    addPolylineToContainer(data, currentBlock, currentPolyline);
+                }
             }
             currentPolyline = null;
             currentPolylineClosed = false;
+            currentPolylineIs2D = false;
+            currentPolylineHasBulge = false;
         }
 
         private void finishLWPolyline() {
@@ -1192,6 +1223,10 @@ public class DXFParser_20 {
                     if (bulge != null && !currentPolyline.getVertices().isEmpty()) {
                         Point3D last = currentPolyline.getVertices().get(currentPolyline.getVertices().size() - 1);
                         last.setBulge(bulge);
+                        if (Math.abs(bulge) > 1e-12) {
+                            currentPolylineHasBulge = true;
+                            currentPolylineIs2D = true;
+                        }
                     }
                 }
             }
@@ -2746,13 +2781,9 @@ public class DXFParser_20 {
                                         double bx, double by, double bz,
                                         double cosA, double sinA) {
         transformPoint(f.p1, ins, bx, by, bz, cosA, sinA);
-        transformPoint(f.p2, ins, bx, by, bz, cosA, stepSin(sinA));
-        transformPoint(f.p3, ins, bx, by, bz, cosA, stepSin(sinA));
-        if (f.p4 != null) transformPoint(f.p4, ins, bx, by, bz, cosA, stepSin(sinA));
-    }
-
-    private static double stepSin(double sinA) {
-        return sinA;
+        transformPoint(f.p2, ins, bx, by, bz, cosA, sinA);
+        transformPoint(f.p3, ins, bx, by, bz, cosA, sinA);
+        if (f.p4 != null) transformPoint(f.p4, ins, bx, by, bz, cosA, sinA);
     }
 
     private static Polyline clonePolyline(Polyline pl) {
