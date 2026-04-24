@@ -161,7 +161,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static String restoreCode;
     public static int licenseType = MC_3D_PRO_AUTO;
     public static String expiry = "2001-12-31";
-    public static final long timeUI = 65;
+    public static  long timeUI = 65;
     public static String[] geoidAll = new String[]{};
     public static String GEOIDE_PATH = null;
     public static GridShiftTransformer heposTransformer;
