@@ -455,7 +455,13 @@ public final class CurveSampler {
             out.add(deBoorPoint(cps, U, degree, u));
         }
 
-        if (closed && !out.isEmpty()) closePolylineIfNeeded(fromPoints(out, null, 0, false));
+        if (closed && out.size() >= 2) {
+            Point3D first = out.get(0);
+            Point3D last = out.get(out.size() - 1);
+            if (!samePoint(first, last)) {
+                out.add(first.clone());
+            }
+        }
         return out;
     }
 
