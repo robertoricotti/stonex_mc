@@ -11,6 +11,7 @@ import static services.CanService.Dozer_Auto_Main;
 import static services.CanService.Grader_AutoRight;
 import static services.CanService.Grader_Auto_Left;
 import static services.CanService.Grader_Auto_SS;
+import static services.ReadProjectService.clearDataProgetto;
 import static services.ReadProjectService.isFinishedDTM;
 import static services.ReadProjectService.isFinishedPOINT;
 import static services.ReadProjectService.isFinishedPOLY;
@@ -87,6 +88,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
+    String tipo = null;
     private Handler zoomHandler = new Handler();
     private boolean isZooming = false;
 
@@ -149,7 +151,12 @@ public class My3DActivity extends BaseClass {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        try {
+            tipo = getIntent().getStringExtra("isCreating");
+        } catch (Exception e) {
+            tipo = null;
+        }
+        Log.d("ProjectType", tipo);
         checkBooleans();
         serviseStrarted = false;
         Grader_Auto_SS = false;
@@ -623,9 +630,14 @@ public class My3DActivity extends BaseClass {
             }
         });
         exit.setOnClickListener(view -> {
-            saveParam();
-            startActivity(new Intent(this, Activity_Home_Page.class));
-            finish();
+            if(tipo==null) {
+                saveParam();
+                startActivity(new Intent(this, Activity_Home_Page.class));
+                finish();
+            }else {
+                clearDataProgetto();
+                //TODO dialog per chiedere conferma e annullare tutto
+            }
         });
         gl_facce.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);

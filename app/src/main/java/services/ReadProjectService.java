@@ -48,17 +48,13 @@ import drill_pile.gui.ProjectReportXlsxWriter;
 import drill_pile.gui.ProjectStateCsvStore;
 import dxf.Arc;
 import dxf.Circle;
-import dxf.CurveSampler;
 import dxf.DXFData;
 import dxf.DXFParser_20;
-import dxf.Ellipse;
 import dxf.Face3D;
 import dxf.Layer;
-import dxf.Line;
 import dxf.Point3D;
 import dxf.Polyline;
 import dxf.Polyline_2D;
-import dxf.Spline;
 import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.my_opengl.My3DActivity;
@@ -80,7 +76,7 @@ import utils.MyData;
 
 public class ReadProjectService extends Service {
 
-
+    public static boolean isCreating;
     public static ProjectReportXlsxWriter reportXlsxWriter;
     public static ProjectStateCsvStore stateStore;
     static boolean mettiPoly, mettiPunti;
@@ -170,25 +166,36 @@ public class ReadProjectService extends Service {
     private class MyAsync_Excecutor implements Runnable {
         @Override
         public void run() {
-            switch (DataSaved.isWL) {
-                case EXCAVATOR:
-                case DOZER:
-                case DOZER_SIX:
-                case WHEELLOADER:
-                case GRADER:
-                    if (licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO) {
-                        Execute_MC();
-                    } else {
-                        Execute_MC_Easy();
-                    }
-                    break;
-                case DRILL:
-                    if (licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO) {
-                        Excecute_DRILL();
-                    } else {
-                        Execute_MC_Easy();
-                    }
-                    break;
+            if (!isCreating) {
+                switch (DataSaved.isWL) {
+                    case EXCAVATOR:
+                    case DOZER:
+                    case DOZER_SIX:
+                    case WHEELLOADER:
+                    case GRADER:
+                        if (licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO) {
+                            Execute_MC();
+                        } else {
+                            Execute_MC_Easy();
+                        }
+                        break;
+                    case DRILL:
+                        if (licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO) {
+                            Excecute_DRILL();
+                        } else {
+                            Execute_MC_Easy();
+                        }
+                        break;
+                }
+            } else {
+                clearDataProgetto();
+                //TODO CREAZIONE SUPERFICI
+                DataSaved.isAutoSnap = 0;
+                DataSaved.typeView = 1;
+                Intent intent = new Intent(MyApp.visibleActivity, My3DActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                MyApp.visibleActivity.finish();
             }
         }
     }
@@ -202,6 +209,7 @@ public class ReadProjectService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        isCreating = false;
         try {
             String nomeProgettoTRM = MyData.get_String("progettoSelected");
             if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {
@@ -249,31 +257,6 @@ public class ReadProjectService extends Service {
     }
 
 
-
-    private static void flattenExtraEntitiesIntoLegacyGeometry(DXFData source,
-                                                               List<Polyline> outPolylines,
-                                                               List<Line> outLines,
-                                                               List<Arc> outArcs,
-                                                               List<Circle> outCircles) {
-        if (source == null || outPolylines == null) return;
-
-        if (source.getEllipses() != null) {
-            for (Ellipse e : source.getEllipses()) {
-                try {
-                    Polyline p = CurveSampler.sampleEllipse(e);
-                    if (p != null && p.getVertices() != null && p.getVertices().size() >= 2) outPolylines.add(p);
-                } catch (Exception ignored) {}
-            }
-        }
-        if (source.getSplines() != null) {
-            for (Spline s : source.getSplines()) {
-                try {
-                    Polyline p = CurveSampler.sampleSpline(s);
-                    if (p != null && p.getVertices() != null && p.getVertices().size() >= 2) outPolylines.add(p);
-                } catch (Exception ignored) {}
-            }
-        }
-    }
     private void goToLicense() {
         Handler handler = new Handler(Looper.getMainLooper());
         Runnable runnable = new Runnable() {
@@ -1623,5 +1606,18 @@ public class ReadProjectService extends Service {
         return t.isEmpty() ? null : t;
     }
 
+    public static void clearDataProgetto() {
+        DataSaved.dxfFaces = null;
+        DataSaved.filteredFaces = null;
+        DataSaved.polylines = null;
+        DataSaved.filteredPolylines = null;
+        DataSaved.dxfTexts = null;
+        DataSaved.filteredDxfTexts = null;
+        DataSaved.points = null;
+        DataSaved.filteredPoints = null;
+        DataSaved.progettoSelected = "";
+        DataSaved.progettoSelected_POINT = "";
+        DataSaved.progettoSelected_POLY = null;
+    }
 
 }
