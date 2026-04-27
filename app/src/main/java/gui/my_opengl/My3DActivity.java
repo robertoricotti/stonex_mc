@@ -88,7 +88,7 @@ import utils.Utils;
 
 
 public class My3DActivity extends BaseClass {
-    String tipo = null;
+
     private Handler zoomHandler = new Handler();
     private boolean isZooming = false;
 
@@ -151,12 +151,7 @@ public class My3DActivity extends BaseClass {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            tipo = getIntent().getStringExtra("isCreating");
-        } catch (Exception e) {
-            tipo = null;
-        }
-        Log.d("ProjectType", tipo);
+
         checkBooleans();
         serviseStrarted = false;
         Grader_Auto_SS = false;
@@ -173,12 +168,10 @@ public class My3DActivity extends BaseClass {
 
         }
         try {
-
             pathToPNEZD = MyData.get_String("progettoSelected");
             pathToPNEZD = pathToPNEZD.substring(0, pathToPNEZD.lastIndexOf("/"));
             String pathCompleto = pathToPNEZD + "/" + pathToPNEZD.substring(pathToPNEZD.lastIndexOf("/", pathToPNEZD.length() + 1)) + ".csv";
             DataSaved.PNEZDPath = pathCompleto;
-
         } catch (Exception e) {
             new CustomToast(this, "NO CSV FOUND").show_alert();
         }
@@ -630,14 +623,17 @@ public class My3DActivity extends BaseClass {
             }
         });
         exit.setOnClickListener(view -> {
-            if(tipo==null) {
+          //  if(proj==null) {
                 saveParam();
                 startActivity(new Intent(this, Activity_Home_Page.class));
                 finish();
-            }else {
+          /*  }else {
                 clearDataProgetto();
+                saveParam();
+                startActivity(new Intent(this, Activity_Home_Page.class));
+                finish();
                 //TODO dialog per chiedere conferma e annullare tutto
-            }
+            }*/
         });
         gl_facce.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
@@ -1240,7 +1236,6 @@ public class My3DActivity extends BaseClass {
                 panel2.setVisibility(View.GONE);
                 if (glVista3d == 0) {
                     // 2D: Canvas + GL
-                    // glSurfaceView.bringToFront();
                     panel3.setVisibility(View.VISIBLE);
                     glSurfaceView.setVisibility(View.VISIBLE);
 
@@ -1263,7 +1258,6 @@ public class My3DActivity extends BaseClass {
                 layer2Canvas.invalidate();
                 if (glVista3d == 0) {
                     // 2D: Canvas + GL
-                    // glSurfaceView.bringToFront();
                     panel3.setVisibility(View.VISIBLE);
                     glSurfaceView.setVisibility(View.VISIBLE);
 

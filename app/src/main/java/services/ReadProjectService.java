@@ -76,7 +76,6 @@ import utils.MyData;
 
 public class ReadProjectService extends Service {
 
-    public static boolean isCreating;
     public static ProjectReportXlsxWriter reportXlsxWriter;
     public static ProjectStateCsvStore stateStore;
     static boolean mettiPoly, mettiPunti;
@@ -94,6 +93,7 @@ public class ReadProjectService extends Service {
     public static boolean isFinishedDTM, isFinishedPOLY, isFinishedPOINT;
     public static double conversionFactor = 1;
     public static LocalizationModel model;
+    public static String mPathDaPassare;
 
     public static void stopCRS() {
         if (nativeProjTransformer != null) {
@@ -134,6 +134,7 @@ public class ReadProjectService extends Service {
     @Override
     public void onCreate() {
 
+
         numbers = 0;
         mettiPoly = false;
         mettiPunti = false;
@@ -166,7 +167,7 @@ public class ReadProjectService extends Service {
     private class MyAsync_Excecutor implements Runnable {
         @Override
         public void run() {
-            if (!isCreating) {
+
                 switch (DataSaved.isWL) {
                     case EXCAVATOR:
                     case DOZER:
@@ -187,16 +188,7 @@ public class ReadProjectService extends Service {
                         }
                         break;
                 }
-            } else {
-                clearDataProgetto();
-                //TODO CREAZIONE SUPERFICI
-                DataSaved.isAutoSnap = 0;
-                DataSaved.typeView = 1;
-                Intent intent = new Intent(MyApp.visibleActivity, My3DActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                MyApp.visibleActivity.finish();
-            }
+
         }
     }
 
@@ -209,7 +201,7 @@ public class ReadProjectService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        isCreating = false;
+
         try {
             String nomeProgettoTRM = MyData.get_String("progettoSelected");
             if (!DataSaved.lastProjectName.equals(nomeProgettoTRM)) {

@@ -184,6 +184,18 @@ public class Dialog_Parametri_AB {
     }
 
     private void init() {
+        collectCL.setVisibility(TextView.INVISIBLE);
+        collectCC.setVisibility(TextView.INVISIBLE);
+        collectCR.setVisibility(TextView.INVISIBLE);
+        collectDL.setVisibility(TextView.INVISIBLE);
+        collectDC.setVisibility(TextView.INVISIBLE);
+        collectDR.setVisibility(TextView.INVISIBLE);
+        collectEL.setVisibility(TextView.INVISIBLE);
+        collectEC.setVisibility(TextView.INVISIBLE);
+        collectER.setVisibility(TextView.INVISIBLE);
+        collectFL.setVisibility(TextView.INVISIBLE);
+        collectFC.setVisibility(TextView.INVISIBLE);
+        collectFR.setVisibility(TextView.INVISIBLE);
         functionIndex = 0;
         estA.setText(Utils.readUnitOfMeasureLITE(String.valueOf(puntiAB[0].getX())));
         nordA.setText(Utils.readUnitOfMeasureLITE(String.valueOf(puntiAB[0].getY())));
