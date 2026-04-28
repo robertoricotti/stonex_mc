@@ -250,11 +250,9 @@ public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer {
         float scale = 1f;
 
         if(MyGLActivity_Create.gFacce) {
-            GLDrawer.drawFaces(gl11, DataSaved.dxfFaces_Create, 0.8f, scale, false);
+            GLDrawer.drawFaces(gl11, DataSaved.dxfFaces_Create, 0.8f, scale, false,MyGLActivity_Create.gFill,MyGLActivity_Create.gFacce);
         }
-        if(MyGLActivity_Create.gGrad) {
-            GLDrawer.drawFacesGradientPRO(gl11, DataSaved.dxfFaces_Create, scale, TriangleService.minZ, TriangleService.maxZ);
-        }
+
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
@@ -275,12 +273,19 @@ public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer {
     }
 
     private void drawTerrain2D() {
+        android.util.Log.e("GL_CREATE_DRAW",
+                "2D DRAW"
+                        + " points=" + (DataSaved.points_Create == null ? -1 : DataSaved.points_Create.size())
+                        + " faces=" + (DataSaved.dxfFaces_Create == null ? -1 : DataSaved.dxfFaces_Create.size())
+                        + " polylines=" + (DataSaved.polylines_Create == null ? -1 : DataSaved.polylines_Create.size())
+                        + " anchor=" + java.util.Arrays.toString(DataSaved.glL_AnchorView)
+                        + " scale2d=" + MyGLRenderer.scale_2d
+                        + " pan2d=" + MyGLRenderer.panX_2d + "," + MyGLRenderer.panY_2d
+        );
         if(MyGLActivity_Create.gFacce) {
-            GLDrawer.drawFaces2D(gl11, DataSaved.dxfFaces_Create, 0.8f, 1f, false);
+            GLDrawer.drawFaces2D(gl11, DataSaved.dxfFaces_Create, 0.8f, 1f, false,MyGLActivity_Create.gFill,MyGLActivity_Create.gFacce);
         }
-        if(MyGLActivity_Create.gGrad) {
-            GLDrawer.drawFacesGradient2D(gl11, DataSaved.dxfFaces_Create, 1f, TriangleService.minZ, TriangleService.maxZ);
-        }
+
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 

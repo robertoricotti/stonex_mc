@@ -267,7 +267,7 @@ public class GLDrawer {
         return hasVpMatrix;
     }
 
-    public static void drawFaces(GL11 gl, List<Face3D> faces, float lineW, float scala, boolean isXML) {
+    public static void drawFaces(GL11 gl, List<Face3D> faces, float lineW, float scala, boolean isXML,boolean Gfill,boolean Gface) {
         if (faces == null || faces.isEmpty()) return;
         if (!ensureReady()) return;
         if (My3DActivity.glGradient) return;
@@ -319,12 +319,12 @@ public class GLDrawer {
 
                 float[] modelMatrix = buildTranslationModel(0f, 0f, (float) (-DataSaved.offsetH * scala));
 
-                if (My3DActivity.glFill) {
+                if (Gfill) {
                     buffer.position(0);
                     drawColoredVertices(buffer, vertexCount, drawMode, modelMatrix, rgb[0], rgb[1], rgb[2], 0.30f);
                 }
 
-                if (My3DActivity.glFace) {
+                if (Gface) {
                     buffer.position(0);
                     drawColoredVertices(buffer, vertexCount, GLES20.GL_LINE_LOOP, modelMatrix, rgb[0], rgb[1], rgb[2], 1f);
                 }
@@ -1933,7 +1933,7 @@ public class GLDrawer {
         orthoWorldHalfHeight = Math.max(1e-6f, halfHeight);
     }
 
-    public static void drawFaces2D(GL11 gl, List<Face3D> faces, float lineW, float scala, boolean isXML) {
+    public static void drawFaces2D(GL11 gl, List<Face3D> faces, float lineW, float scala, boolean isXML,boolean Gfill,boolean Gface) {
         if (faces == null || faces.isEmpty()) return;
         if (!ensureReady()) return;
         if (My3DActivity.glGradient) return;
@@ -1981,7 +1981,7 @@ public class GLDrawer {
                 int vertexCount = isTriangle ? 3 : 4;
                 int drawMode = isTriangle ? GLES20.GL_TRIANGLES : GLES20.GL_TRIANGLE_FAN;
 
-                if (My3DActivity.glFill) {
+                if (Gfill) {
                     buffer.position(0);
                     drawColoredVertices(
                             buffer,
@@ -1992,7 +1992,7 @@ public class GLDrawer {
                     );
                 }
 
-                if (My3DActivity.glFace) {
+                if (Gface) {
                     float[] outlineCoords = buildFaceOutlineCoords2D(face, bucketCenter, scala);
                     if (outlineCoords != null) {
                         float outlineWidth = Math.max(1.0f, lineW * scala);

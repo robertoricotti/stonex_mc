@@ -26,6 +26,7 @@ import dxf.Point3D;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomToast;
+import gui.my_opengl.CreateSurfaceController;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 import packexcalib.exca.ExcavatorLib;
@@ -784,6 +785,11 @@ public class Dialog_Parametri_AB {
                 init();
                 break;
         }
+        CreateSurfaceController createSurfaceController = CreateSurfaceController.getActiveController();
+        if (createSurfaceController != null) {
+            createSurfaceController.syncABParamsFromLegacy();
+        }
+
     }
 
     private void reloadAB() {

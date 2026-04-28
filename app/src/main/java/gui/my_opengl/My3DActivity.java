@@ -1621,6 +1621,7 @@ public class My3DActivity extends BaseClass {
 
 
     private void setLightBar() {
+
         if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
             switch (DataSaved.bucketEdge) {
                 case -1:

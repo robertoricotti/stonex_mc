@@ -169,7 +169,6 @@
             app:tint="@color/white" />
 
         <ImageView
-            android:visibility="gone"
             android:id="@+id/gl_fill"
             android:layout_width="55dp"
             android:layout_height="50dp"
@@ -180,15 +179,7 @@
             android:src="@drawable/fill_96"
             app:tint="@color/white" />
 
-        <ImageView
-            android:id="@+id/gl_gradient"
-            android:layout_width="55dp"
-            android:layout_height="50dp"
-            android:layout_marginVertical="2dp"
-            android:background="@drawable/custom_background_test3d"
-            android:clickable="true"
-            android:padding="5dp"
-            android:src="@drawable/gradient_off" />
+
 
         <ImageView
             android:id="@+id/gl_poly"
@@ -233,16 +224,7 @@
             android:padding="2dp"
             android:src="@drawable/duedi_vista"
             app:tint="@color/white" />
-        <ImageView
-            android:id="@+id/gl_croce"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginVertical="2dp"
-            android:background="@drawable/custom_background_test3d"
-            android:clickable="true"
-            android:padding="2dp"
-            android:src="@drawable/correcting_new"
-            app:tint="@color/white" />
+
         <ImageView
 
             android:id="@+id/gpsStat"

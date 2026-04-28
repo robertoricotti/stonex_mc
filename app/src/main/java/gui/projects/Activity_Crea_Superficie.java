@@ -54,7 +54,7 @@ public class Activity_Crea_Superficie extends BaseClass {
     public static List<Face3D> facceTrench;
     public static Polyline polyTrench;
     public static int indexSel;
-    static int countPunti;
+    public static int countPunti;
     static double z = 0;
     public static List<double[]> coordinateP;
     static int pointIndex;

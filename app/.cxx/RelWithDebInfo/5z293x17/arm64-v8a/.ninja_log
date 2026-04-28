@@ -23,3 +23,7 @@
 0	10	0	clean	3f910abda4e23497
 6	8091	7990708438090125	CMakeFiles/nativeproj.dir/native_proj.cpp.o	462638fc740ea07d
 8092	42711	7990708655352749	D:/Development/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/5z293x17/obj/arm64-v8a/libnativeproj.so	1244da22ea93a7db
+1	55	0	clean	3f910abda4e23497
+0	17	0	clean	3f910abda4e23497
+8	12261	7991060461498119	CMakeFiles/nativeproj.dir/native_proj.cpp.o	462638fc740ea07d
+12262	54579	7991060715106975	D:/Development/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/5z293x17/obj/arm64-v8a/libnativeproj.so	1244da22ea93a7db
