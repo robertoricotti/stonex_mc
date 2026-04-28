@@ -20,6 +20,7 @@ import com.example.stx_dig.R;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.digging_excavator.Digging2D;
 import gui.digging_excavator.Digging_CutAndFill2D;
+import gui.my_opengl.MyGLActivity_Create;
 import gui.projects.Activity_Crea_Superficie;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Sensors_Decoder;
@@ -70,7 +71,7 @@ public class HeadingDialog {
         seekBar = dialog.findViewById(R.id.valoreDrift);
         valueDrift = dialog.findViewById(R.id.valueDrift);
         imageView = dialog.findViewById(R.id.imgClose);
-        if (activity instanceof Activity_Crea_Superficie) {
+        if (activity instanceof Activity_Crea_Superficie||activity instanceof MyGLActivity_Create) {
             title.setText(R.string.exit_proj);
             yes.setText(R.string.yes);
             exit.setText(R.string.no);
@@ -248,7 +249,7 @@ public class HeadingDialog {
             dialog.dismiss();
         });
         yes.setOnClickListener((View v) -> {
-            if (activity instanceof Activity_Crea_Superficie) {
+            if (activity instanceof Activity_Crea_Superficie||activity instanceof MyGLActivity_Create) {
                 activity.startActivity(new Intent(activity, Activity_Home_Page.class));
                 activity.finish();
 

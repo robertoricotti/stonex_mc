@@ -64,7 +64,6 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
-        android:id="@+id/actions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

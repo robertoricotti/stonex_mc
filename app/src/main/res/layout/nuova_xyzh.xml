@@ -83,7 +83,6 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/indietro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -94,7 +93,6 @@
         android:rotation="180" />
 
     <ImageView
-        android:id="@+id/avanti"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/v2"

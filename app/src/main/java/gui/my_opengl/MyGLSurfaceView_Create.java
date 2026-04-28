@@ -1,4 +1,4 @@
-package gui.my_opengl.wheel;
+package gui.my_opengl;
 
 
 import static gui.my_opengl.MyGLRenderer.angleX;
@@ -18,9 +18,6 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import gui.my_opengl.My3DActivity;
-import gui.my_opengl.MyGLRenderer;
-import gui.my_opengl.MyGLRenderer_Create;
 import packexcalib.exca.DataSaved;
 
 

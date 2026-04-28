@@ -37,14 +37,12 @@
     <string name="savepara_pro">VOULEZ-VOUS CONTINUER ?</string>
     <string name="write_para">ÉCRASER TOUS LES PARAMÈTRES DE L APPLICATION</string>
     <string name="hydro_cp">POINTS DE CONTRÔLE\nHYDRAULIQUES</string>
-    <string name="hydro_apply">APPLIQUER DE NOUVELLES VALEURS HYDRAULIQUES</string>
     <string name="delete_obj">SUPPRIMER L OBJET SÉLECTIONNÉ ?</string>
     <string name="brigbck">LUMINOSITÉ-ARRIÈRE-PLAN</string>
     <string name="etxoff">ÉTAPE DE DÉCALAGE EXTERNE Aug/Dim</string>
 
     <string name="color_bucket">COULEUR DU GODET - LAME</string>
     <string name="color_boom">COULEUR DE LA FLÈCHE - CHÂSSIS</string>
-    <string name="ext_offset">PAS DE DÉCALAGE EXTERNE</string>
     <string name="auto_z_db">ZONE MORTE D’INCLINAISON GAUCHE</string>
     <string name="auto_z_dbR">ZONE MORTE D’INCLINAISON DROITE</string>
     <string name="hydro_window">FENÊTRE D’ENGAGEMENT HYDRAULIQUE</string>
@@ -54,9 +52,6 @@
     <string name="exit">SORTIE</string>
     <string name="rename_file">RENOMMER LE FICHIER</string>
     <string name="wait_until">Attendez que le projet soit mis à jour</string>
-    <string name="machines">MACHINES</string>
-    <string name="profiles">PROFILS</string>
-    <string name="buckets">"SÉLECTIONNER GODET "</string>
     <string name="settings">PARAMÈTRE UTILISATEUR</string>
     <string name="bucket1">GODET1</string>
     <string name="bucket2">GODET2</string>
@@ -94,8 +89,6 @@
     <string name="stick_and_laser_calibration">STICK / LASER CALIBRATION</string>
     <string name="bucket_linkage_calibration">BUCKET / LINKAGE CALIBRATION</string>
     <string name="mounting_side">CÔTÉ MONTAGE</string>
-    <string name="info">INFO</string>
-    <string name="machine_name">NOM DE LA MACHINE</string>
     <string name="picth_and_roll_calibration">PITCH / ROLL CALIBRATION</string>
     <string name="boom2_calibration">BOOM 2 CALIBRATION</string>
     <string name="boom1_calibration">BOOM 1 CALIBRATION</string>
@@ -108,17 +101,13 @@
     <string name="ok">OK</string>
     <string name="set">SET</string>
     <string name="height_alarm">ALARME DE HAUTEUR</string>
-    <string name="use_tilt">UTILISER TILT</string>
-    <string name="use_bucket">UTILISER GODET</string>
     <string name="len">LONGUEUR</string>
     <string name="angle">ANGLE</string>
     <string name="txt_tiltangle">TILT ANGLE: </string>
-    <string name="gps_calib">MESURES  D ANTENNE</string>
     <string name="gnss_setup">CONFIGURATION GNSS</string>
     <string name="set_laser_offset">RÉGLER LA HAUTEUR DU LASER?</string>
     <string name="units">DISTANCE</string>
     <string name="unitsA">ANGLE</string>
-    <string name="viewport">VUE</string>
     <string name="user_units">UNITÉ DE MESURE</string>
     <string name="audio">VOLUME ET SONS</string>
 
@@ -136,31 +125,15 @@
     <string name="toast_hold_to_set">MAINTENIR POUR SÉLECTIONNER</string>
     <string name="toast_cantset_heading">" ERREUR D'ORIENTATION"</string>
     <string name="powercycle_sensor">VEUILLEZ RÉINITIALISER L\'ALIMENTATION DU CAPTEUR</string>
-    <string name="infoNr">Téléphone Assistance</string>
     <string name="infoMessage">mc@stonex.it</string>
     <string name="touch_e_go">DÉPLACER LA MACHINE ET REPOSITIONNER LE GODET SUR LE MÊME POINT DE RÉFÉRENCE, PUIS APPUYER SUR L\'IMAGE 2 POUR RETOURNER À L\'ÉCRAN DE TRAVAIL</string>
     <string name="pick_1">PLACEZ LE GODET SUR UN POINT DE RÉFÉRENCE, PUIS APPUYEZ SUR L\'IMAGE 1</string>
     <string name="selectproject">SÉLECTIONNER UN PROJET</string>
-    <string name="project">PROJETS</string>
-    <string name="flat_surface">SURFACE\n PLANE</string>
-    <string name="ab_surface">SURFACE\n A>>B</string>
-    <string name="cross_section">SURFACE\n DE POLYLINE</string>
 
     <string name="lumen">LUMINOSITE\'</string>
     <string name="exit_proj">QUITTER?\n TOUTES LES DONNÉES SERONT PERDUES</string>
-    <string name="area">PLAT\n ZONE</string>
-    <string name="messages">MESSAGES</string>
-
-    <string name="mostraTriangoli">Afficher Triangles</string>
-    <string name="mostraColore">Afficher  Couleur Surface</string>
-    <string name="mostraPunti">Afficher les Points</string>
-    <string name="mostraPoly">Afficher les 3D Polylignes</string>
-    <string name="mostraNome">Afficher le Texte</string>
 
     <string name="projectWindow">FENÊTRE DE SURFACE</string>
-    <string name="polylinee">POLYLINES</string>
-    <string name="puntip">POINTS</string>
-    <string name="mostraGradiente">Afficher Dégradé Surface</string>
     <string name="bucket11">GODET11</string>
     <string name="bucket12">GODET12</string>
     <string name="bucket13">GODET13</string>
@@ -173,15 +146,8 @@
     <string name="bucket20">GODET20</string>
     <string name="yaw_drift_compensation">COMPENSATION DE DÉRIVE</string>
     <string name="quick">COUPLEUR\nRAPIDE</string>
-    <string name="mostraUtils">"Afficher les objets 2D "</string>
-    <string name="selectafile">SÉLECTIONNEZ UN FICHIER!</string>
     <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
-    <string name="trincea">TRANCHÉE\nDRAINAGE</string>
-    <string name="dtm">MODÈLE DE TERRAIN</string>
-    <string name="usb_file_tr">TRANSFERT DE FICHIERS\nUSB</string>
-    <string name="cloud_file_tr">TRANSFERT DE FICHIERS\nCLOUD</string>
-    <string name="local_projects">DOSSIER\nPROJETS LOCAUX</string>
     <string name="punto_salvato">POINT AJOUTÉ</string>
     <string name="punto_rimosso">POINT SUPPRIME</string>
     <string name="off_grid">OFF SURFACE</string>
@@ -190,14 +156,7 @@
     <string name="delete_file">SUPPRIMER LE FICHIER SÉLECTIONNÉ ?</string>
     <string name="select_file">SELECTIONNEZ UN FICHIER</string>
     <string name="deleted">SUPPRIMÉ</string>
-    <string name="showAlign">" Afficher l'alignement de la machine"</string>
-    <string name="add_surface">NOUVELLE SURFACE</string>
-    <string name="add_surface_ask">AJOUTER AU PROJET ACTUEL</string>
-    <string name="add_surface_nope">CRÉER NOUVEAU</string>
     <string name="enter_filename">INSÉRER LE NOM DU FICHIER</string>
-    <string name="fydro_no">CONTRÔLE HYDRAULIQUE PAS ENCORE MIS EN ŒUVRE</string>
-    <string name="treddi_acxtive">Profils disponibles uniquement en mode 1D/2D</string>
-    <string name="treddi_off">Disponible uniquement en mode 3D</string>
     <!-- nouvelles chaînes -->
     <string name="menu_utente">PARAMÈTRES UTILISATEUR</string>
     <string name="menu_macchine">PARAMÈTRES MACHINE</string>

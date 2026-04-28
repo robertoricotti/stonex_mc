@@ -36,14 +36,12 @@
     <string name="savepara_pro">WILT U DOORGAAN?</string>
     <string name="write_para">ALLE APPLICATIEPARAMETERS OVERSCHRIJVEN</string>
     <string name="hydro_cp">HYDRAULISCHE\nCONTROLEPUNTEN</string>
-    <string name="hydro_apply">NIEUWE HYDRAULISCHE WAARDEN TOEPASSEN</string>
     <string name="delete_obj">GESELECTEERD OBJECT VERWIJDEREN?</string>
     <string name="brigbck">HELDERHEID-ACHTERGROND</string>
     <string name="etxoff">EXTERNE OFFSETSTAP Verh./Verm.</string>
 
     <string name="color_bucket">BAK - BLAD KLEUR</string>
     <string name="color_boom">GIEK - FRAME KLEUR</string>
-    <string name="ext_offset">EXTERNE OFFSET-STAP</string>
     <string name="auto_z_db">DODE ZONE LINKER HELLING</string>
     <string name="auto_z_dbR">DODE ZONE RECHTER HELLING</string>
     <string name="hydro_window">HYDRAULISCH INSCHAKELVENSTER</string>
@@ -54,11 +52,8 @@
     <string name="exit">AFSLUITEN</string>
     <string name="rename_file">BESTAND HERNOMEN</string>
     <string name="wait_until">Wacht tot het project is bijgewerkt</string>
-    <string name="machines">MACHINES</string>
     <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
-    <string name="profiles">PROFIELEN</string>
-    <string name="buckets">SELECTEER EEN BAK</string>
     <string name="settings">GEBRUIKERSINSTELLINGEN</string>
     <string name="bucket1">BAK1</string>
     <string name="bucket2">BAK2</string>
@@ -107,8 +102,6 @@
     <string name="stick_and_laser_calibration">STOK / LASER KALIBRATIE</string>
     <string name="bucket_linkage_calibration">BAK / VERBINDING KALIBRATIE</string>
     <string name="mounting_side">MONTAGEZIJDE</string>
-    <string name="info">INFO</string>
-    <string name="machine_name">MACHINENAAM</string>
     <string name="picth_and_roll_calibration">PITCH / ROLL KALIBRATIE</string>
     <string name="boom2_calibration">GIEK 2 KALIBRATIE</string>
     <string name="boom1_calibration">GIEK 1 KALIBRATIE</string>
@@ -121,45 +114,25 @@
     <string name="ok">OK</string>
     <string name="set">INSTELLEN</string>
     <string name="height_alarm">HOOGTE-ALARM</string>
-    <string name="use_tilt">GEBRUIK HELLINGSENSOR</string>
-    <string name="use_bucket">GEBRUIK BAKSENSOR</string>
     <string name="len">LENGTE (mm)</string>
     <string name="angle">HOEK (°)</string>
     <string name="txt_tiltangle">HELLINGSHOEK:</string>
-    <string name="gps_calib">ANTENNE KALIBRATIE</string>
     <string name="gnss_setup">GNSS-INSTELLINGEN</string>
     <string name="set_laser_offset">LASERHOOGTE INSTELLEN?</string>
     <string name="units">AFSTAND</string>
     <string name="unitsA">HOEK</string>
-    <string name="viewport">VIEWPORT</string>
     <string name="user_units">MEETEENHEDEN</string>
     <string name="audio">GELUIDEN</string>
     <string name="slopeX">HELLING X</string>
     <string name="slopeY">HELLING Y</string>
-    <string name="infoNr">Technische Ondersteuning</string>
     <string name="infoMessage">mc@stonex.it</string>
     <string name="touch_e_go">VERPLAATS DE GRAAFMACHINE EN PLAATS DE BAK OP HETZELFDE REFERENTIEPUNT EN DRUK OP DE KNOP</string>
     <string name="quick_setup">SNELLE INSTELLING</string>
-    <string name="flat_surface">VLAK OPPERVLAK</string>
-    <string name="ab_surface">OPPERVLAK VAN A>>B</string>
-    <string name="cross_section">OPPERVLAK VAN
- POLYLIJN</string>
-    <string name="area">VLAK<br />OPPERVLAKTE</string>
     <string name="edit_zeta">WILT U DE Z-WAARDE BEWERKEN EN DE NIEUWE WAARDE TOEPASSEN OP DE GPS?</string>
     <string name="lumen">HELDERHEID</string>
-    <string name="messages">BERICHTEN</string>
     <string name="exit_proj">AFSLUITEN?
     ALLE GEGEVENS GAAN VERLOREN</string>
-    <string name="mostraTriangoli">Toon Driehoeken</string>
-    <string name="mostraColore">Toon Oppervlak</string>
-    <string name="mostraPunti">Toon Punten</string>
-    <string name="mostraPoly">Toon 3D Polylijnen</string>
-    <string name="mostraNome">Toon Punttekst</string>
-    <string name="mostraUtils">Toon 2D-objecten</string>
-    <string name="mostraGradiente">Toon Oppervlakteverloop</string>
     <string name="projectWindow">OPPERVLAKVENSTER</string>
-    <string name="polylinee">POLYLIJNEN</string>
-    <string name="puntip">PUNTEN</string>
     <string name="laserOK">LASER OK</string>
     <string name="laserKO">LASER BUITEN BEREIK</string>
     <string name="disabled">UITGESCHAKELD</string>
@@ -170,17 +143,7 @@
     <string name="powercycle_sensor">HERSTART DE SENSOR</string>
     <string name="pick_1">PLAATS DE BAK BOVEN EEN REFERENTIEPUNT EN DRUK OP AFBEELDING 1</string>
     <string name="selectproject">SELECTEER EEN PROJECT</string>
-    <string name="project">PROJECTEN</string>
     <string name="quick">SNELKOPPELING</string>
-    <string name="selectafile">SELECTEER EEN BESTAND!</string>
-    <string name="trincea">SLEUF - DRAINAGE</string>
-    <string name="dtm">TERREINMODEL</string>
-    <string name="usb_file_tr">USB
-    BESTANDSOORDRACHT</string>
-    <string name="cloud_file_tr">CLOUD
-    BESTANDSOORDRACHT</string>
-    <string name="local_projects">LOKALE
-    PROJECTEN</string>
     <string name="punto_salvato">PUNT TOEGEVOEGD</string>
     <string name="punto_rimosso">PUNT VERWIJDERD</string>
     <string name="off_grid">OFF SURFACE</string>
@@ -189,10 +152,6 @@
     <string name="delete_file">GESELECTEERD BESTAND VERWIJDEREN?</string>
     <string name="select_file">SELECTEER EEN BESTAND</string>
     <string name="deleted">VERWIJDERD</string>
-    <string name="showAlign">Toon Machine-uitlijning</string>
-    <string name="add_surface">NIEUW OPPERVLAK</string>
-    <string name="add_surface_ask">TOEVOEGEN AAN HET HUIDIGE PROJECT</string>
-    <string name="add_surface_nope">NIEUW AANMAKEN</string>
     <string name="enter_filename">VOER EEN BESTANDSNAAM IN</string>
     <!-- nieuwe strings -->
     <string name="menu_utente">GEBRUIKERSINSTELLINGEN</string>
@@ -232,7 +191,4 @@
         <item>12.5</item>
         <item>25</item>
     </string-array>
-    <string name="fydro_no">HYDRAULISCHE BESTURING NOG NIET GEÏMPLEMENTEERD</string>
-    <string name="treddi_acxtive">Profielen Alleen beschikbaar in 1D/2D-modus</string>
-    <string name="treddi_off">Alleen beschikbaar in 3D-modus</string>
 </resources>

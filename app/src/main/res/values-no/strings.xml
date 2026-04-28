@@ -18,7 +18,6 @@
     <string name="savepara_pro">Vil du fortsette?</string>
     <string name="write_para">OVERSKRIV ALLE APP-PARAMETERE</string>
     <string name="hydro_cp">HYDRAULISKE\nKONTROLLPUNKTER</string>
-    <string name="hydro_apply">AKTIVER NYE HYDRAULIKKVERDIER</string>
     <string name="brigbck">LYSSTYRKE / BAKGRUNN</string>
     <string name="etxoff">STEGLENGDE EKSTERN OFFSET +/-</string>
     <string name="first_rod_l">LENGDE FØRSTE STANG</string>
@@ -30,7 +29,6 @@
     <string name="remove_one_rod">LEGG TIL 1 STANG?</string>
     <string name="color_bucket">FARGE SKUFF / SKJÆR</string>
     <string name="color_boom">FARGE BOM / RAMME</string>
-    <string name="ext_offset">STEGLENGDE EKSTERN OFFSET</string>
     <string name="auto_z_db">HØYDE-DØDSONE VENSTRE</string>
     <string name="auto_z_dbR">HØYDE-DØDSONE HØYRE</string>
     <string name="hydro_window">HYDRAULISK INNKOBLINGSVINDU</string>
@@ -47,13 +45,10 @@
     <string name="interface_type">TYPE HYDRAULIKK-GRENSESNITT</string>
     <string name="save">LAGRE</string>
     <string name="exit">AVSLUTT</string>
-    <string name="machines">MASKINER</string>
     <string name="machines_setup">MASKININNSTILLINGER</string>
     <string name="rename_file">ENDRE FILNAVN</string>
     <string name="wait_until">Vent til prosjektet er oppdatert</string>
     <string name="com_debug">CAN DEBUG</string>
-    <string name="profiles">PROFILER</string>
-    <string name="buckets">VELG SKUFF</string>
     <string name="settings">BRUKERINNSTILLINGER</string>
     <string name="bucket1">SKUFF1</string>
     <string name="bucket2">SKUFF2</string>
@@ -101,8 +96,6 @@
     <string name="stick_and_laser_calibration">KALIBRERING STIKKE / LASER</string>
     <string name="bucket_linkage_calibration">KALIBRERING SKUFF / LENKE</string>
     <string name="mounting_side">MONTERINGSSIDE</string>
-    <string name="info">INFO</string>
-    <string name="machine_name">MASKINNAVN</string>
     <string name="picth_and_roll_calibration">KALIBRERING PITCH / ROLL</string>
     <string name="boom2_calibration">KALIBRERING BOM 2</string>
     <string name="boom1_calibration">KALIBRERING BOM 1</string>
@@ -117,47 +110,24 @@
     <string name="ok">OK</string>
     <string name="set">SETT</string>
     <string name="height_alarm">HØYDEALARM</string>
-    <string name="use_tilt">BRUK TILT-SENSOR</string>
-    <string name="use_bucket">BRUK SKUFFSENSOR</string>
     <string name="len">LENGDE (mm)</string>
     <string name="angle">VINKEL (°)</string>
     <string name="txt_tiltangle">TILT-VINKEL: </string>
-    <string name="gps_calib">ANTENNEKALIBRERING</string>
     <string name="gnss_setup">GNSS-OPPSETT</string>
     <string name="set_laser_offset">SETT LASERHØYDE?</string>
     <string name="units">AVSTAND</string>
     <string name="unitsA">VINKEL</string>
-    <string name="viewport">VISNINGSVINDU</string>
     <string name="user_units">MÅLEENHETER</string>
     <string name="audio">LYDER</string>
     <string name="slopeX">FALL X</string>
     <string name="slopeY">FALL Y</string>
-    <string name="infoNr">Teknisk support</string>
     <string name="infoMessage">mc@stonex.it</string>
     <string name="touch_e_go">FLYTT GRAVEMASKINEN, PLASSER SKUFFEN PÅ SAMME REFERANSEPUNKT OG TRYKK KNAPPEN</string>
     <string name="quick_setup">HURTIGOPPSETT</string>
-    <string name="flat_surface">PLAN FLATE</string>
-    <string name="ab_surface">FLATE FRA A&gt;&gt;B</string>
-    <string name="cross_section">FLATE FRA\n POLYLINJE</string>
-    <string name="area">
-PLAN
-<br/>
-FLATE
-</string>
     <string name="edit_zeta">VIL DU ENDRE Z-VERDIEN OG OVERFØRE NY VERDI TIL GPS?</string>
     <string name="lumen">LYSSTYRKE</string>
-    <string name="messages">MELDINGER</string>
     <string name="exit_proj">AVSLUTTE?\n ALLE DATA GÅR TAPT</string>
-    <string name="mostraTriangoli">Vis trekanter</string>
-    <string name="mostraColore">Vis flate</string>
-    <string name="mostraPunti">Vis punkter</string>
-    <string name="mostraPoly">Vis 3D-polylinjer</string>
-    <string name="mostraNome">Vis punkttekst</string>
-    <string name="mostraUtils">Vis 2D-objekter</string>
-    <string name="mostraGradiente">Vis flategradient</string>
     <string name="projectWindow">MODELLVINDU</string>
-    <string name="polylinee">POLYLINJER</string>
-    <string name="puntip">PUNKTER</string>
     <string name="laserOK">LASER OK</string>
     <string name="laserKO">LASER UTENFOR REKKEVIDDE</string>
     <string name="disabled">DEAKTIVERT</string>
@@ -168,14 +138,7 @@ FLATE
     <string name="powercycle_sensor">START SENSOR PÅ NYTT</string>
     <string name="pick_1">PLASSER SKUFFEN PÅ ET REFERANSEPUNKT, TRYKK DERETTER BILDE 1</string>
     <string name="selectproject">"VELG PROSJEKT "</string>
-    <string name="project">"PROSJEKTER"</string>
     <string name="quick">HURTIG-\nFESTE</string>
-    <string name="selectafile">VELG EN FIL!</string>
-    <string name="trincea">GRØFT - DRENERING</string>
-    <string name="dtm">TERRENGMODELL</string>
-    <string name="usb_file_tr">USB \nFILOVERFØRING</string>
-    <string name="cloud_file_tr">SKY \nFILOVERFØRING</string>
-    <string name="local_projects">LOKALE \nPROSJEKTER</string>
     <string name="punto_salvato">PUNKT LAGT TIL</string>
     <string name="punto_rimosso">PUNKT FJERNET</string>
     <string name="off_grid">UTENFOR MODELL</string>
@@ -185,14 +148,7 @@ FLATE
     <string name="delete_obj">SLETT VALGT OBJEKT?</string>
     <string name="select_file">VELG EN FIL</string>
     <string name="deleted">SLETTET</string>
-    <string name="showAlign">Vis maskininnretting</string>
-    <string name="add_surface">NY FLATE</string>
-    <string name="add_surface_ask">LEGG TIL I GJELDENDE PROSJEKT</string>
-    <string name="add_surface_nope">OPPRETT NYTT</string>
     <string name="enter_filename">SKRIV INN FILNAVN</string>
-    <string name="fydro_no">Hydraulisk kontroll er ikke implementert ennå</string>
-    <string name="treddi_acxtive">Profiler er kun tilgjengelig i 1D/2D-modus</string>
-    <string name="treddi_off">Kun tilgjengelig i 3D-modus</string>
     <string name="snapon2d">SNAPP TIL 2D-OBJEKTER</string>    <!-- Norwegian -->
     <!--  nye strenger  -->
     <string name="menu_utente">BRUKERINNSTILLINGER</string>

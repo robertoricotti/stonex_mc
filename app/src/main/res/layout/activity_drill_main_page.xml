@@ -90,7 +90,6 @@
         app:layout_constraintGuide_percent="0.77" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline41"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -124,7 +123,6 @@
         app:layout_constraintGuide_percent="0.11" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline29"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -424,7 +422,6 @@
             app:srcCompat="@drawable/power_off_btn" />
 
         <ImageView
-            android:id="@+id/screenR"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"

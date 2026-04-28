@@ -375,7 +375,6 @@
 
 
             <FrameLayout
-                android:id="@+id/mydelta"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="1.5dp"

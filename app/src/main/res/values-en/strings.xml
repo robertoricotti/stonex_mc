@@ -26,11 +26,9 @@
     <string name="mac_setup">MACHINE SETUP</string>
     <string name="sens_config">CAN SENSOR CONFIG</string>
     <string name="hydro_cp">HYDRAULIC\nCONTROL POINTS</string>
-    <string name="hydro_apply">APPLY NEW HYDRAULIC VALUES</string>
     <string name="delete_obj">DELETE SELECTED OBLECT ?</string>
     <string name="color_bucket">BUCKET - BLADE COLOR</string>
     <string name="color_boom">BOOM - FRAME COLOR</string>
-    <string name="ext_offset">EXTERNAL OFFSET STEP</string>
     <string name="hydro_window">HYDRAULIC ENGAGEMENT WINDOW</string>
     <string name="auto_slope_db">SLOPE DEADBAND</string>
     <string name="xy_db">XY DEADBAND</string>
@@ -38,9 +36,6 @@
     <string name="exit">EXIT</string>
     <string name="rename_file">RENAME FILE</string>
     <string name="wait_until">Wait until Project is updated</string>
-    <string name="machines">MACHINES</string>
-    <string name="profiles">PROFILES</string>
-    <string name="buckets">SELECT A BUCKET</string>
     <string name="settings">USER SETTINGS</string>
     <string name="bucket1">BUCKET1</string>
     <string name="bucket2">BUCKET2</string>
@@ -78,8 +73,6 @@
     <string name="stick_and_laser_calibration">STICK / LASER CALIBRATION</string>
     <string name="bucket_linkage_calibration">BUCKET / LINKAGE CALIBRATION</string>
     <string name="mounting_side">MOUNTING SIDE</string>
-    <string name="info">INFO</string>
-    <string name="machine_name">MACHINE NAME</string>
     <string name="picth_and_roll_calibration">PITCH / ROLL CALIBRATION</string>
     <string name="boom2_calibration">BOOM 2 CALIBRATION</string>
     <string name="boom1_calibration">BOOM 1 CALIBRATION</string>
@@ -105,17 +98,13 @@
     <string name="ok">OK</string>
     <string name="set">SET</string>
     <string name="height_alarm">HEIGHT ALARM</string>
-    <string name="use_tilt">USE TILT SENSOR</string>
-    <string name="use_bucket">USE BUCKET SENSOR</string>
     <string name="len">LENGTH (mm)</string>
     <string name="angle">ANGLE (°)</string>
     <string name="txt_tiltangle">TILT ANGLE: </string>
-    <string name="gps_calib">ANTENNA CALIBRATION</string>
     <string name="gnss_setup">GNSS SETUP</string>
     <string name="set_laser_offset">SET LASER HEIGHT?</string>
     <string name="units">DISTANCE</string>
     <string name="unitsA">ANGLE</string>
-    <string name="viewport">VIEWPORT</string>
     <string name="user_units">UNITS OF MEASURE</string>
     <string name="audio">SOUNDS</string>
     <string name="snapon2d">SNAP ON 2D OBJECTS</string>
@@ -134,31 +123,15 @@
     <string name="toast_cantset_heading">ERROR SET ORIENTATION</string>
 
     <string name="powercycle_sensor">PLEASE RESET SENSOR POWER</string>
-    <string name="infoNr">Tech Support</string>
     <string name="infoMessage">mc@stonex.it</string>
     <string name="touch_e_go">MOVE THE EXCAVATOR AND REPLACE THE BUCKET OVER THE SAME REFERENCE POINT, THEN PRESS IMAGE 2 TO RETURN TO THE WORK SCREEN</string>
     <string name="pick_1">PLACE THE BUCKET OVER A REFERENCE POINT THEN PRESS IMAGE 1</string>
     <string name="selectproject">SELECT A PROJECT</string>
-    <string name="project">PROJECTS</string>
-    <string name="flat_surface">FLAT\n SURFACE</string>
-    <string name="ab_surface">SURFACE\nFROM A>>B</string>
-    <string name="cross_section">SURFACE FROM\n POLYLINE</string>
 
     <string name="lumen">BRIGHTNESS</string>
     <string name="exit_proj">EXIT?\n ALL DATA WILL BE LOST</string>
-    <string name="area">FLAT\n AREA</string>
-    <string name="messages">MESSAGES</string>
-
-    <string name="mostraTriangoli">Show Triangles</string>
-    <string name="mostraColore">Show Surface Color</string>
-    <string name="mostraPunti">Show Points</string>
-    <string name="mostraPoly">Show 3D Polylines</string>
-    <string name="mostraNome">Show Point Text</string>
 
     <string name="projectWindow">SURFACE WINDOW</string>
-    <string name="polylinee">POLYLINES</string>
-    <string name="puntip">POINTS</string>
-    <string name="mostraGradiente">Show Surface Gradient</string>
     <string name="bucket11">BUCKET11</string>
     <string name="bucket12">BUCKET12</string>
     <string name="bucket13">BUCKET13</string>
@@ -172,15 +145,8 @@
     <string name="yaw_drift_compensation">YAW DRIFT COMPENSATION</string>
 
     <string name="quick">QUICK\n COUPLER</string>
-    <string name="mostraUtils">Show 2D Objects</string>
-    <string name="selectafile">SELECT A FILE!</string>
     <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
-    <string name="trincea">TRENCH\nDRAINAGE</string>
-    <string name="dtm">TERRAIN MODEL</string>
-    <string name="usb_file_tr">USB\nFILE TRANSFER</string>
-    <string name="cloud_file_tr">CLOUD\nFILE TRANSFER</string>
-    <string name="local_projects">LOCAL PROJECTS\nFOLDER</string>
     <string name="punto_salvato">POINT ADDED</string>
     <string name="punto_rimosso">POINT REMOVED</string>
     <string name="off_grid">OFF SURFACE</string>
@@ -189,14 +155,7 @@
     <string name="delete_file">DELETE SELECTED FILE ?</string>
     <string name="select_file">SELECT A FILE</string>
     <string name="deleted">DELETED</string>
-    <string name="showAlign">Show Machine Alignment</string>
-    <string name="add_surface">NEW SURFACE</string>
-    <string name="add_surface_ask">ADD TO THE CURRENT PROJECT</string>
-    <string name="add_surface_nope">CREATE NEW</string>
     <string name="enter_filename">INSERT FILE NAME</string>
-    <string name="fydro_no">HYDRAULIC CONTROL NOT YET IMPLEMENTED</string>
-    <string name="treddi_acxtive">Profiles Availables only in 1D/2D mode</string>
-    <string name="treddi_off">Available Only in 3D Mode</string>
     <!-- nuove stringhe -->
     <string name="menu_utente">USER SETTINGS</string>
     <string name="menu_macchine">MACHINE SETTINGS</string>

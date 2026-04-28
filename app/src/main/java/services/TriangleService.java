@@ -171,6 +171,42 @@ public class TriangleService extends Service {
             while (isRunning) {
 
                 long startTime = System.currentTimeMillis();
+                try {
+                    switch (DataSaved.isWL) {
+                        case EXCAVATOR:
+                            DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
+                            DataSaved.GL_Bucket_Coord = PuntiBenna.GLBucketCoord();
+                            DataSaved.GL_BENNA = My_Benna.puntiBenna();
+                            DataSaved.GL_ATTACCO = My_Benna.attacco();
+                            DataSaved.GL_STICK = My_Stick.puntiStick();
+                            if (DataSaved.lrBoom2 == 0) {
+                                DataSaved.GL_BOOM1 = My_Boom1.puntiBoom();
+                            } else {
+                                DataSaved.GL_BOOM1_2 = My_Boom1_Boom2.puntiBoom();
+                            }
+                            DataSaved.GL_FRAME_BASE = My_Frame.puntiFrame();
+
+
+                            break;
+
+                        case WHEELLOADER:
+                            DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
+                            DataSaved.GL_WHEEL = My_Wheel.puntiBenna();
+                            break;
+
+                        case DOZER:
+                        case DOZER_SIX:
+                        case GRADER:
+                            DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
+                            DataSaved.GL_LAMA = My_Lama.puntiLama();
+                            //TODO machine frame
+                            break;
+                        //TODO altre macchine
+                    }
+
+                } catch (Exception e) {
+                    Log.e("TRI_GL_CREATE",Log.getStackTraceString(e));
+                }
                 switch (DataSaved.projectTAG) {
                     case "DXF":
                     case "XML":
@@ -526,43 +562,7 @@ public class TriangleService extends Service {
                 }
 
 
-                try {
 
-
-                    switch (DataSaved.isWL) {
-                        case EXCAVATOR:
-                            DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
-                            DataSaved.GL_Bucket_Coord = PuntiBenna.GLBucketCoord();
-                            DataSaved.GL_BENNA = My_Benna.puntiBenna();
-                            DataSaved.GL_ATTACCO = My_Benna.attacco();
-                            DataSaved.GL_STICK = My_Stick.puntiStick();
-                            if (DataSaved.lrBoom2 == 0) {
-                                DataSaved.GL_BOOM1 = My_Boom1.puntiBoom();
-                            } else {
-                                DataSaved.GL_BOOM1_2 = My_Boom1_Boom2.puntiBoom();
-                            }
-                            DataSaved.GL_FRAME_BASE = My_Frame.puntiFrame();
-
-
-                            break;
-
-                        case WHEELLOADER:
-                            DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
-                            DataSaved.GL_WHEEL = My_Wheel.puntiBenna();
-                            break;
-
-                        case DOZER:
-                        case DOZER_SIX:
-                        case GRADER:
-                            DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
-                            DataSaved.GL_LAMA = My_Lama.puntiLama();
-                            //TODO machine frame
-                            break;
-                        //TODO altre macchine
-                    }
-
-                } catch (Exception e) {
-                }
 
 
                 DataSaved.filteredPolylines = getFilteredPolylines();

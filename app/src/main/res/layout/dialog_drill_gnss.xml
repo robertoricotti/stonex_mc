@@ -430,7 +430,6 @@
 
 
             <Button
-                android:id="@+id/rtkpiu"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="2dp"
@@ -442,7 +441,6 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/tvrtk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="2dp"
@@ -456,7 +454,6 @@
                 android:visibility="gone" />
 
             <Button
-                android:id="@+id/rtkmeno"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="2dp"
@@ -469,7 +466,6 @@
 
 
             <Button
-                android:id="@+id/qtpiu"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="2dp"
@@ -481,7 +477,6 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/tvqt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="2dp"
@@ -495,7 +490,6 @@
                 android:visibility="gone" />
 
             <Button
-                android:id="@+id/qtmeno"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="2dp"
@@ -650,7 +644,6 @@
 
 
             <TextView
-                android:id="@+id/idExtra"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"

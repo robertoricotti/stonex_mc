@@ -35,8 +35,6 @@ import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -96,6 +94,7 @@ import gui.hydro.Hydro_Activity_Entering;
 import gui.hydro.KOMATSU_Activity;
 import gui.hydro.NOBAS_Activity;
 import gui.my_opengl.My3DActivity;
+import gui.my_opengl.MyGLActivity_Create;
 import gui.profiles.ProfileCalibAuto;
 import gui.profiles.ProfileCalibManual;
 import gui.profiles.ProfilesMenuActivity;
@@ -805,6 +804,8 @@ git push
             ((PickReport) activity).updateUI();
         } else if (activity instanceof NetworkConfigSettings) {
             ((NetworkConfigSettings) activity).updateUI();
+        }else if (activity instanceof MyGLActivity_Create) {
+            ((MyGLActivity_Create) activity).updateUI();
         }
 
     }

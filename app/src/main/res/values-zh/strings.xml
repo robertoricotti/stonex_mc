@@ -40,11 +40,9 @@
     <string name="etxoff">外部偏移步 增/减</string>
 
     <string name="hydro_cp">液压\n控制点</string>
-    <string name="hydro_apply">应用新的液压值</string>
 
     <string name="color_bucket">铲斗 - 刀片颜色</string>
     <string name="color_boom">动臂 - 机架颜色</string>
-    <string name="ext_offset">外部偏移步长</string>
     <string name="auto_z_db">左侧倾斜死区</string>
     <string name="auto_z_dbR">右侧倾斜死区</string>
     <string name="hydro_window">液压啮合窗口</string>
@@ -55,9 +53,6 @@
     <string name="exit">逃离键</string>
     <string name="rename_file">重命名文件</string>
     <string name="wait_until">请等待项目更新</string>
-    <string name="machines">机器</string>
-    <string name="profiles">剖面</string>
-    <string name="buckets">选择斗</string>
     <string name="settings">用户设置</string>
     <string name="bucket1">斗1</string>
     <string name="bucket2">斗2</string>
@@ -95,8 +90,6 @@
     <string name="stick_and_laser_calibration">臂/激光校准</string>
     <string name="bucket_linkage_calibration">斗/连杆校准</string>
     <string name="mounting_side">安装侧面</string>
-    <string name="info">信息</string>
-    <string name="machine_name">机器名称</string>
     <string name="picth_and_roll_calibration">俯仰/滚动校准</string>
     <string name="boom2_calibration">臂2校准</string>
     <string name="boom1_calibration">臂1校准</string>
@@ -109,17 +102,13 @@
     <string name="ok">确定</string>
     <string name="set">设置</string>
     <string name="height_alarm">高度警报</string>
-    <string name="use_tilt">使用倾斜传感器</string>
-    <string name="use_bucket">使用斗传感器</string>
     <string name="len">长度（毫米）</string>
     <string name="angle">角度（°）</string>
     <string name="txt_tiltangle">倾斜角度：</string>
-    <string name="gps_calib">天线校准</string>
     <string name="gnss_setup">GNSS设置</string>
     <string name="set_laser_offset">设置激光高度？</string>
     <string name="units">距离</string>
     <string name="unitsA">角度</string>
-    <string name="viewport">视口</string>
     <string name="user_units">测量单位</string>
     <string name="audio">声音</string>
     <string name="slopeX">坡度X</string>
@@ -138,31 +127,15 @@
     <string name="toast_cantset_heading">设置方向时出错</string>
 
     <string name="powercycle_sensor">请重置传感器电源</string>
-    <string name="infoNr">技术支援</string>
     <string name="infoMessage">mc@stonex.it</string>
     <string name="touch_e_go">移动机器并将斗重新定位到相同的参考点，然后按图像返回到工作屏幕。</string>
     <string name="pick_1">将斗放置在参考点上，然后按下图像1</string>
     <string name="selectproject">选择一个项目</string>
-    <string name="project">"项目 "</string>
-    <string name="flat_surface">平坦的表面</string>
-    <string name="ab_surface">表面从\n A>>B</string>
-    <string name="cross_section">折线曲面</string>
 
     <string name="lumen">亮度</string>
     <string name="exit_proj">退出?\n 所有数据都将丢失</string>
-    <string name="area">平坦的\n 区域</string>
-    <string name="messages">留言</string>
-
-    <string name="mostraTriangoli">显示三角形</string>
-    <string name="mostraColore">显示表面颜色</string>
-    <string name="mostraPunti">显示点</string>
-    <string name="mostraPoly">显示折线</string>
-    <string name="mostraNome">显示文本</string>
 
     <string name="projectWindow">表面窗口</string>
-    <string name="polylinee">折线</string>
-    <string name="puntip">积分</string>
-    <string name="mostraGradiente">显示表面渐变</string>
     <string name="bucket11">斗11</string>
     <string name="bucket12">斗12</string>
     <string name="bucket13">斗13</string>
@@ -175,15 +148,8 @@
     <string name="bucket20">斗20</string>
     <string name="yaw_drift_compensation">漂移补偿</string>
     <string name="quick">快速接头</string>
-    <string name="mostraUtils">" 显示 2D 对象"</string>
-    <string name="selectafile">选择一个文件！</string>
     <string name="machines_setup">机器设置</string>
     <string name="com_debug">通讯调试</string>
-    <string name="trincea">沟渠 - 排水</string>
-    <string name="dtm">地形模型</string>
-    <string name="usb_file_tr">USB 文件传输</string>
-    <string name="cloud_file_tr">CLOUD 文件传输</string>
-    <string name="local_projects">本地项目文件夹</string>
     <string name="punto_salvato">加分</string>
     <string name="punto_rimosso">点被移除</string>
     <string name="off_grid">离地表</string>
@@ -192,14 +158,7 @@
     <string name="delete_file">删除选定的文件？</string>
     <string name="select_file">选择文件</string>
     <string name="deleted">已删除</string>
-    <string name="showAlign">显示机器对准</string>
-    <string name="add_surface">新表面</string>
-    <string name="add_surface_ask">添加到当前项目</string>
-    <string name="add_surface_nope">创造新的</string>
     <string name="enter_filename">插入文件名</string>
-    <string name="fydro_no">液压控制尚未实施</string>
-    <string name="treddi_acxtive">配置文件仅在 1D/2D 模式下可用</string>
-    <string name="treddi_off">仅在 3D 模式下可用</string>
     <!-- 新字符串 -->
     <string name="menu_utente">用户设置</string>
     <string name="menu_macchine">机器设置</string>

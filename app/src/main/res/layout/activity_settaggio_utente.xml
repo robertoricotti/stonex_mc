@@ -103,7 +103,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvBright"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -155,7 +154,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvLocale"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -203,7 +201,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvUom"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -392,7 +389,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvAXY"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -461,7 +457,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvSound"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -513,7 +508,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvLs"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -561,7 +555,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvInvCol"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -609,7 +602,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvHAlarm"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -661,7 +653,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvRotation3d"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -713,7 +704,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvBoomColor"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -779,7 +769,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvBuckColor"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -930,7 +919,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvBladeAcc"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -998,7 +986,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvBladeAccR"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -1066,7 +1053,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvWINDOW"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -1134,7 +1120,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvAutoAng"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -1202,7 +1187,6 @@
 
 
                 <TextView
-                    android:id="@+id/tvMainfall"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:background="@color/bg_gray"
@@ -1320,7 +1304,6 @@
             app:tint="@color/white" />
 
         <ImageView
-            android:id="@+id/imgMove"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"

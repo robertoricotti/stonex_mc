@@ -1,7 +1,5 @@
 package gui.my_opengl;
 
-import static gui.my_opengl.My3DActivity.PNEZD_FUNCTION;
-import static gui.my_opengl.My3DActivity.glPoint;
 import static gui.my_opengl.MyGLRenderer.angleX;
 import static gui.my_opengl.MyGLRenderer.angleY;
 import static gui.my_opengl.MyGLRenderer.angleY_extra;
@@ -29,8 +27,8 @@ import static utils.MyTypes.WHEELLOADER;
 
 import android.graphics.Color;
 import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -43,13 +41,12 @@ import gui.my_opengl.exca.BennaRenderer;
 import gui.my_opengl.exca.BoomsDrawer;
 import gui.my_opengl.exca.GL_DrawExca;
 import gui.my_opengl.wheel.GL_DrawWheel;
-import gui.my_opengl.wheel.MyGLSurfaceView_Create;
 import packexcalib.exca.DataSaved;
 import packexcalib.gnss.NmeaListener;
 import services.TriangleService;
 import utils.MyData;
 
-public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer{
+public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer {
     private static final float MIN_2D_SCALE = 0.001f;
     private static final float DEFAULT_CAMERA_Z = -5f;
     private static final float ORTHO_NEAR = -50f;
@@ -59,11 +56,12 @@ public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer{
     private static final float PERSPECTIVE_FOV = 45f;
     private int surfaceWidth;
     private int surfaceHeight;
-   public boolean is2D, is3D;
+    public boolean is2D, is3D;
     private final GL11 gl11 = new GL11();
     private final float[] projectionMatrix = new float[16];
     private final float[] viewMatrix = new float[16];
     private final float[] vpMatrix = new float[16];
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         try {
@@ -82,13 +80,15 @@ public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer{
                 MyData.push("colorBoom", String.valueOf(Color.CYAN));
             if (MyData.get_String("colorQuick") == null)
                 MyData.push("colorQuick", String.valueOf(Color.GRAY));
-        } catch (Exception ignored) {
-        }
+        } catch (Exception e) {
+            Log.e("GL_CREATE", "Errore onSurfaceCreated", e);
 
+        }
 
 
         configureCommonGlState();
     }
+
     @Override
     public void onDrawFrame(GL10 gl) {
         is2D = My3DActivity.glVista3d == 0;
@@ -122,7 +122,8 @@ public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer{
             GLDrawer.drawSnapHelpers(gl11);
             drawMachine();
 
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Log.e("GL_CREATE", "Errore onDrawFrame", e);
         }
     }
 
@@ -248,56 +249,56 @@ public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer{
     private void drawTerrain3D() {
         float scale = 1f;
 
+        if(MyGLActivity_Create.gFacce) {
+            GLDrawer.drawFaces(gl11, DataSaved.dxfFaces_Create, 0.8f, scale, false);
+        }
+        if(MyGLActivity_Create.gGrad) {
+            GLDrawer.drawFacesGradientPRO(gl11, DataSaved.dxfFaces_Create, scale, TriangleService.minZ, TriangleService.maxZ);
+        }
+
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
 
+        if(MyGLActivity_Create.gPoly) {
+            GLDrawer.drawPolylines(gl11, DataSaved.polylines_Create, 3f, scale);
+        }
+        if(MyGLActivity_Create.gPoint) {
+            GLDrawer.drawPoints(gl11, DataSaved.points_Create, 10f, scale, false);
+        }
 
-        GLDrawer.drawFacesGradientPRO(gl11, DataSaved.dxfFaces, scale, TriangleService.minZ, TriangleService.maxZ);
+        if(MyGLActivity_Create.gText) {
+            GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts_Create, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
+        }
 
-
-            GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-
-
-                GLDrawer.drawPolylines(gl11, DataSaved.polylines, 3f, scale);
-
-
-                GLDrawer.drawPoints(gl11, DataSaved.points, 10f, scale, false);
-
-
-                GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlas);
-
-                GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
     }
 
     private void drawTerrain2D() {
+        if(MyGLActivity_Create.gFacce) {
+            GLDrawer.drawFaces2D(gl11, DataSaved.dxfFaces_Create, 0.8f, 1f, false);
+        }
+        if(MyGLActivity_Create.gGrad) {
+            GLDrawer.drawFacesGradient2D(gl11, DataSaved.dxfFaces_Create, 1f, TriangleService.minZ, TriangleService.maxZ);
+        }
+
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+
+        if(MyGLActivity_Create.gPoly) {
+            GLDrawer.drawPolylines(gl11, DataSaved.polylines_Create, 3f, 1f);
+        }
+
+        if(MyGLActivity_Create.gPoint) {
+            GLDrawer.drawPoints(gl11, DataSaved.points_Create, 10f, 1f, false);
+        }
 
 
-
-        GLDrawer.drawFacesGradient2D(gl11, DataSaved.dxfFaces, 1f, TriangleService.minZ, TriangleService.maxZ);
-
-
-            GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        if(MyGLActivity_Create.gText) {
+            GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts_Create, DataSaved.glL_AnchorView, charSpacingFactor, 1f, atlas);
+        }
 
 
-
-                GLDrawer.drawPolylines(gl11, DataSaved.polylines, 3f, 1f);
-                GLDrawer.drawLines2D(gl11, DataSaved.lines_2D, 3f, 1f);
-                GLDrawer.drawArcs2D(gl11, DataSaved.arcs, 2f, 1f);
-                GLDrawer.drawPolylines2D(gl11, DataSaved.polylines_2D, 3f, 1f);
-                GLDrawer.drawCircles2D(gl11, DataSaved.circles, 2f, 1f);
-
-
-
-                GLDrawer.drawPoints(gl11, DataSaved.points, 10f, 1f, false);
-
-
-                GLDrawer.drawTextsBilBoard(gl11, DataSaved.dxfTexts, DataSaved.glL_AnchorView, charSpacingFactor, 1f, atlas);
-
-
-
-
-
-            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
     }
 

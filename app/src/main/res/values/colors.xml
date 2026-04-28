@@ -25,19 +25,12 @@
     <color name="nav_gray_color">#D6D7DC</color>
     <color name="stonex_gray">#CC292929</color>
     <color name="blue_dark">#0D47A1</color>
-    <color name="blue_medium">#1976D2</color>
-    <color name="blue_light">#64B5F6</color>
     <color name="red_dark">#B71C1C</color>
-    <color name="red_medium">#D32F2F</color>
-    <color name="red_light">#EF5350</color>
 
-    <color name="green_dark">#0B8F1F</color>
     <color name="green_medium">#00C853</color>
-    <color name="green_light">#69F0AE</color>
 
     <color name="volvo_grey">#575D5E</color>
 
-    <color name="Bg_yellow">#dfdcc4</color>
     <color name="light_yellow">#FFFF66</color>
     <color name="bg_white">#ffffff</color>
 
@@ -53,7 +46,6 @@
     <color name="element_green">#55bc75</color>
     <color name="add_text">#FFFFFF</color>
     <color name="_____cancel_text">#424242</color>
-    <color name="highlight">#707070</color>
     <color name="application_table_line_color">#a9a9a9</color>
     <color name="btn_bottom_color">#a9a9a9</color>
     <color name="bg_stonex_blue">#0075BE</color>
@@ -61,7 +53,6 @@
     <color name="bg_sfsred">#C3FF2C0E</color>
     <color name="bg_sfsgreen">#C300FF0E</color>
     <color name="bg_sfsblue">#C30000FF</color>
-    <color name="light_blue_900">#FF01579B</color>
 
     <!-- Ground COLORS-->
     <color name="GROUNDbg_stonex_blue">#C30075BE</color>

@@ -27,11 +27,9 @@
     <string name="mac_setup">マシン設定</string>
     <string name="sens_config">CANセンサー設定</string>
     <string name="hydro_cp">油圧制御ポイント</string>
-    <string name="hydro_apply">新しい油圧値を適用</string>
     <string name="delete_obj">選択したオブジェクトを削除しますか？</string>
     <string name="color_bucket">バケット - ブレードの色</string>
     <string name="color_boom">ブーム - フレームの色</string>
-    <string name="ext_offset">外部オフセットステップ</string>
     <string name="auto_z_db">左の傾斜デッドバンド</string>
     <string name="auto_z_dbR">右の傾斜デッドバンド</string>
     <string name="hydro_window">油圧エンゲージメントウィンドウ</string>
@@ -41,9 +39,6 @@
     <string name="exit">終了</string>
     <string name="rename_file">ファイル名を変更</string>
     <string name="wait_until">プロジェクトの更新を待っています...</string>
-    <string name="machines">マシン</string>
-    <string name="profiles">プロファイル</string>
-    <string name="buckets">バケットを選択</string>
     <string name="settings">ユーザー設定</string>
     <string name="bucket1">バケット1</string>
     <string name="bucket2">バケット2</string>
@@ -81,8 +76,6 @@
     <string name="stick_and_laser_calibration">スティック / レーザー キャリブレーション</string>
     <string name="bucket_linkage_calibration">バケット / リンク キャリブレーション</string>
     <string name="mounting_side">取付側</string>
-    <string name="info">情報</string>
-    <string name="machine_name">マシン名</string>
     <string name="picth_and_roll_calibration">ピッチ / ロール キャリブレーション</string>
     <string name="boom2_calibration">ブーム2キャリブレーション</string>
     <string name="boom1_calibration">ブーム1キャリブレーション</string>
@@ -105,17 +98,13 @@
     <string name="ok">OK</string>
     <string name="set">設定</string>
     <string name="height_alarm">高さ警報</string>
-    <string name="use_tilt">チルトセンサーを使用</string>
-    <string name="use_bucket">バケットセンサーを使用</string>
     <string name="len">長さ (mm)</string>
     <string name="angle">角度 (°)</string>
     <string name="txt_tiltangle">チルト角度：</string>
-    <string name="gps_calib">アンテナキャリブレーション</string>
     <string name="gnss_setup">GNSS設定</string>
     <string name="set_laser_offset">レーザー高さを設定しますか？</string>
     <string name="units">距離単位</string>
     <string name="unitsA">角度単位</string>
-    <string name="viewport">ビューポート</string>
     <string name="user_units">測定単位</string>
     <string name="audio">サウンド</string>
 
@@ -132,31 +121,15 @@
     <string name="toast_cantset_heading">方向設定エラー</string>
 
     <string name="powercycle_sensor">センサーの電源をリセットしてください</string>
-    <string name="infoNr">技術サポート</string>
     <string name="infoMessage">mc@stonex.it</string>
     <string name="touch_e_go">掘削機を動かし、同じ基準点の上にバケットを戻してから、画像2を押して作業画面に戻ります</string>
     <string name="pick_1">バケットを基準点に置き、画像1を押してください</string>
     <string name="selectproject">プロジェクトを選択</string>
-    <string name="project">プロジェクト</string>
-    <string name="flat_surface">平面</string>
-    <string name="ab_surface">A>>Bからの面</string>
-    <string name="cross_section">ポリラインからの面</string>
 
     <string name="lumen">明るさ</string>
     <string name="exit_proj">終了しますか？\nすべてのデータが失われます</string>
-    <string name="area">平面エリア</string>
-    <string name="messages">メッセージ</string>
-
-    <string name="mostraTriangoli">三角形を表示</string>
-    <string name="mostraColore">表面の色を表示</string>
-    <string name="mostraPunti">ポイントを表示</string>
-    <string name="mostraPoly">3Dポリラインを表示</string>
-    <string name="mostraNome">ポイント名を表示</string>
 
     <string name="projectWindow">表面ウィンドウ</string>
-    <string name="polylinee">ポリライン</string>
-    <string name="puntip">ポイント</string>
-    <string name="mostraGradiente">表面勾配を表示</string>
     <string name="bucket11">バケット11</string>
     <string name="bucket12">バケット12</string>
     <string name="bucket13">バケット13</string>
@@ -170,15 +143,8 @@
     <string name="yaw_drift_compensation">ヨードリフト補正</string>
 
     <string name="quick">クイックカプラー</string>
-    <string name="mostraUtils">2Dオブジェクトを表示</string>
-    <string name="selectafile">ファイルを選択！</string>
     <string name="machines_setup">マシン設定</string>
     <string name="com_debug">CANデバッグ</string>
-    <string name="trincea">排水トレンチ</string>
-    <string name="dtm">地形モデル</string>
-    <string name="usb_file_tr">USBファイル転送</string>
-    <string name="cloud_file_tr">クラウドファイル転送</string>
-    <string name="local_projects">ローカルプロジェクトフォルダー</string>
     <string name="punto_salvato">ポイントが追加されました</string>
     <string name="punto_rimosso">ポイントが削除されました</string>
     <string name="off_grid">面外</string>
@@ -187,14 +153,7 @@
     <string name="delete_file">選択したファイルを削除しますか？</string>
     <string name="select_file">ファイルを選択</string>
     <string name="deleted">削除されました</string>
-    <string name="showAlign">マシンの整列を表示</string>
-    <string name="add_surface">新しい面</string>
-    <string name="add_surface_ask">現在のプロジェクトに追加</string>
-    <string name="add_surface_nope">新規作成</string>
     <string name="enter_filename">ファイル名を入力</string>
-    <string name="fydro_no">油圧制御はまだ実装されていません</string>
-    <string name="treddi_acxtive">1D/2Dモードでのみ利用可能なプロファイル</string>
-    <string name="treddi_off">3Dモードでのみ利用可能</string>
     <string name="brigbck">明るさ-背景</string>
     <string name="etxoff">外部オフセットステップ 増減</string>
 

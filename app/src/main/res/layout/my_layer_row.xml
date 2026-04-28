@@ -184,7 +184,6 @@
             app:layout_constraintRight_toLeftOf="@id/guidm2">
 
             <ImageView
-                android:id="@+id/imageViewfaces"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/treddifaces"
@@ -210,7 +209,6 @@
             app:layout_constraintRight_toLeftOf="@id/guidm1">
 
             <ImageView
-                android:id="@+id/imageViewpoly3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/polilinea"
@@ -237,7 +235,6 @@
             app:layout_constraintRight_toLeftOf="@id/guid0">
 
             <ImageView
-                android:id="@+id/imageViewpoly2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/lineadued" />
@@ -262,7 +259,6 @@
             app:layout_constraintRight_toLeftOf="@id/guid2">
 
             <ImageView
-                android:id="@+id/imageViewpoint"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/grigliapunti"

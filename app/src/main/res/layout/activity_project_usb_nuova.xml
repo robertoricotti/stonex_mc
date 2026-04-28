@@ -20,7 +20,6 @@
         app:layout_constraintGuide_percent="0.475" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline201"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -81,7 +80,6 @@
 
         <ImageView
             android:visibility="gone"
-            android:id="@+id/new_delete"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="5dp"
@@ -166,7 +164,6 @@
             app:tint="@color/_____cancel_text" />
 
         <ImageView
-            android:id="@+id/read"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"
@@ -179,7 +176,6 @@
             app:srcCompat="@drawable/btn_copy_from_usb" />
 
         <ImageView
-            android:id="@+id/write"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="1.5dp"

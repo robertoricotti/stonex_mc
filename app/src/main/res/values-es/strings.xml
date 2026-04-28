@@ -37,12 +37,10 @@
     <string name="savepara_pro">¿DESEA CONTINUAR?</string>
     <string name="write_para">SOBRESCRIBIR TODOS LOS PARÁMETROS DE LA APLICACIÓN</string>
     <string name="hydro_cp">PUNTOS DE CONTROL\nHIDRÁULICOS</string>
-    <string name="hydro_apply">APLICAR NUEVOS VALORES HIDRÁULICOS</string>
     <string name="delete_obj">¿ELIMINAR EL OBJETO SELECCIONADO?</string>
 
     <string name="color_bucket">COLOR DEL CUBO - HOJA</string>
     <string name="color_boom">COLOR DEL BRAZO - BASTIDOR</string>
-    <string name="ext_offset">PASO DE DESPLAZAMIENTO EXTERNO</string>
     <string name="auto_z_db">ZONA MUERTA DE ELEVACIÓN IZQUIERDA</string>
     <string name="auto_z_dbR">ZONA MUERTA DE ELEVACIÓN DERECHA</string>
     <string name="hydro_window">VENTANA DE ENGANCHE HIDRÁULICO</string>
@@ -55,9 +53,6 @@
     <string name="exit">SALIR</string>
     <string name="rename_file">RENOMBRAR ARCHIVO</string>
     <string name="wait_until">Espere hasta que el proyecto esté actualizado</string>
-    <string name="machines">MÁQUINAS</string>
-    <string name="profiles">PERFILES</string>
-    <string name="buckets">SELECCIONAR PALA</string>
     <string name="settings">CONFIGURACIÓN\nUSUARIO</string>
     <string name="bucket1">PALA1</string>
     <string name="bucket2">PALA2</string>
@@ -95,8 +90,6 @@
     <string name="stick_and_laser_calibration">STICK / LASER CALIBRACIÓN</string>
     <string name="bucket_linkage_calibration">PALA / LINKAGE CALIBRACIÓN</string>
     <string name="mounting_side">MOUNTING SIDE</string>
-    <string name="info">INFO</string>
-    <string name="machine_name">NOMBRE MÁQUINA</string>
     <string name="picth_and_roll_calibration">PITCH / ROLL CALIBRACIÓN</string>
     <string name="boom2_calibration">BOOM 2 CALIBRACIÓN</string>
     <string name="boom1_calibration">BOOM 1 CALIBRACIÓN</string>
@@ -109,18 +102,14 @@
     <string name="ok">OK</string>
     <string name="set">SET</string>
     <string name="height_alarm">ALARMA DE ALTURA</string>
-    <string name="use_tilt">USAR SENSOR TILT</string>
-    <string name="use_bucket">USAR SENSOR PALA</string>
     <string name="len">LARGO</string>
     <string name="angle">ÁNGULO </string>
     <string name="txt_tiltangle">ÁNGULO TILT: </string>
-    <string name="gps_calib">CALIBRACIÓN ANTENA</string>
     <string name="gnss_setup">CONFIGURACIÓN  GNSS</string>
 
     <string name="set_laser_offset">ESTABLECER ALTURA DEL LÁSER?</string>
     <string name="units">DISTANCIAS</string>
     <string name="unitsA">ÁNGULO</string>
-    <string name="viewport">VISTA</string>
     <string name="user_units">UNIDAD DE MERIDA</string>
     <string name="audio">VOLUMEN Y SONIDOS</string>
 
@@ -139,31 +128,15 @@
     <string name="toast_cantset_heading">" ERROR DE ORIENTACIÓN"</string>
 
     <string name="powercycle_sensor">"POR FAVOR RESTABLEZCA LA ALIMENTACIÓN DEL SENSOR "</string>
-    <string name="infoNr">Teléfono Técnico</string>
     <string name="infoMessage">mc@stonex.it</string>
     <string name="touch_e_go">MOVER LA MÁQUINA Y REPOSICIONAR LA CAZUELA EN EL MISMO PUNTO DE REFERENCIA, Y LUEGO PRESIONAR LA IMAGEN 2 PARA VOLVER A LA PANTALLA DE TRABAJO</string>
     <string name="pick_1">COLOCA LA PALA SOBRE UN PUNTO DE REFERENCIA Y LUEGO PRESIONA LA IMAGEN 1</string>
     <string name="selectproject">SELECCIONE UN PROYECTO</string>
-    <string name="project">PROYECTOS</string>
-    <string name="flat_surface">SUPERFICIE\nPLANA</string>
-    <string name="ab_surface">SUPERFICIE\n A>>B</string>
-    <string name="cross_section">SUPERFICIE\n DE POLILÍNEA</string>
 
     <string name="lumen">BRILLO</string>
     <string name="exit_proj">SALIR?\n SE PERDERÁN TODOS LOS DATOS</string>
-    <string name="area">AREA\n >PLANA</string>
-    <string name="messages">MENSAJES</string>
-
-    <string name="mostraTriangoli">Mostrar Triángulos</string>
-    <string name="mostraColore">Mostrar color de Superficie</string>
-    <string name="mostraPunti">Mostrar Puntos</string>
-    <string name="mostraPoly">Mostrar Polilíneas 3D</string>
-    <string name="mostraNome">Mostrar Texto Puntos</string>
 
     <string name="projectWindow">VENTANA DE SUPERFICIE</string>
-    <string name="polylinee">POLILINEAS</string>
-    <string name="puntip">PUNTOS</string>
-    <string name="mostraGradiente">Mostrar Gradiente Superficie</string>
     <string name="bucket11">PALA11</string>
     <string name="bucket12">PALA12</string>
     <string name="bucket13">PALA13</string>
@@ -177,15 +150,8 @@
     <string name="yaw_drift_compensation">COMPENSACIÓN DE DERIVA</string>
 
     <string name="quick">ACOPLADOR\nRÁPIDO</string>
-    <string name="mostraUtils">"Mostrar objetos 2D "</string>
-    <string name="selectafile">SELECCIONE UN ARCHIVO!</string>
     <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">CAN DEBUG</string>
-    <string name="trincea">ZANJA\nDRENAJE</string>
-    <string name="dtm">MODELO DE TERRENO</string>
-    <string name="usb_file_tr">TRANSFERENCIA  ARCHIVOS\nUSB</string>
-    <string name="cloud_file_tr">TRANSFERENCIA ARCHIVOS\nCLOUD</string>
-    <string name="local_projects">CARPETA\nDE PROYECTOS LOCALES</string>
     <string name="punto_salvato">PUNTO AÑADIDO</string>
     <string name="punto_rimosso">PUNTO ELIMINADO</string>
     <string name="off_grid">OFF SURFACE</string>
@@ -194,14 +160,7 @@
     <string name="delete_file">ELIMINAR ARCHIVO SELECCIONADO?</string>
     <string name="select_file">SELECCIONE UN ARCHIVO</string>
     <string name="deleted">ELIMINADO</string>
-    <string name="showAlign">Mostrar alineación de la máquina</string>
-    <string name="add_surface">NUEVA SUPERFICIE</string>
-    <string name="add_surface_ask">AÑADIR AL PROYECTO ACTUAL</string>
-    <string name="add_surface_nope">CREAR NUEVO</string>
     <string name="enter_filename">INSERTAR NOMBRE DE ARCHIVO</string>
-    <string name="fydro_no">CONTROL HIDRÁULICO AÚN NO IMPLEMENTADO</string>
-    <string name="treddi_acxtive">Perfiles disponibles solo en modo 1D/2D</string>
-    <string name="treddi_off">Disponible sólo en modo 3D</string>
     <!-- nuevas cadenas -->
     <string name="menu_utente">AJUSTES DE USUARIO</string>
     <string name="menu_macchine">AJUSTES DE MÁQUINA</string>

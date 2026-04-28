@@ -36,12 +36,10 @@
     <string name="savepara_pro">ВЫ ХОТИТЕ ПРОДОЛЖИТЬ?</string>
     <string name="write_para">ПЕРЕЗАПИСАТЬ ВСЕ ПАРАМЕТРЫ ПРИЛОЖЕНИЯ</string>
     <string name="hydro_cp">ГИДРАВЛИЧЕСКИЕ\nКОНТРОЛЬНЫЕ ТОЧКИ</string>
-    <string name="hydro_apply">ПРИМЕНИТЬ НОВЫЕ ГИДРАВЛИЧЕСКИЕ ЗНАЧЕНИЯ</string>
     <string name="delete_obj">УДАЛИТЬ ВЫБРАННЫЙ ОБЪЕКТ?</string>
 
     <string name="color_bucket">ЦВЕТ КОВША - ЛЕЗВИЯ</string>
     <string name="color_boom">ЦВЕТ СТРЕЛЫ - РАМЫ</string>
-    <string name="ext_offset">ШАГ ВНЕШНЕГО СМЕЩЕНИЯ</string>
     <string name="auto_z_db">МЁРТВАЯ ЗОНА ЛЕВОГО НАКЛОНА</string>
     <string name="auto_z_dbR">МЁРТВАЯ ЗОНА ПРАВОГО НАКЛОНА</string>
     <string name="hydro_window">ОКНО ВКЛЮЧЕНИЯ ГИДРАВЛИКИ</string>
@@ -55,9 +53,6 @@
     <string name="exit">ЭСК</string>
     <string name="rename_file">ПЕРЕИМЕНОВАТЬ ФАЙЛ</string>
     <string name="wait_until">Дождитесь обновления проекта</string>
-    <string name="machines">МАШИНЫ</string>
-    <string name="profiles">ПРОФИЛИ</string>
-    <string name="buckets">ВЫБЕРИТЕ КОВШ</string>
     <string name="settings">ПАРАМЕТРЫ ПОЛЬЗОВАТЕЛЯ</string>
     <string name="bucket1">КОВШ 1</string>
     <string name="bucket2">КОВШ 2</string>
@@ -95,8 +90,6 @@
     <string name="stick_and_laser_calibration">КАЛИБРОВКА СТИКА / ЛАЗЕРА</string>
     <string name="bucket_linkage_calibration">КАЛИБРОВКА КОВША / СВЯЗИ</string>
     <string name="mounting_side">СТОРОНА МОНТАЖА</string>
-    <string name="info">ИНФОРМАЦИЯ</string>
-    <string name="machine_name">ИМЯ МАШИНЫ</string>
     <string name="picth_and_roll_calibration">КАЛИБРОВКА ПИЧ / РОЛЛ</string>
     <string name="boom2_calibration">КАЛИБРОВКА РАМЫ 2</string>
     <string name="boom1_calibration">КАЛИБРОВКА РАМЫ 1</string>
@@ -109,18 +102,14 @@
     <string name="ok">OK</string>
     <string name="set">УСТАНОВИТЬ</string>
     <string name="height_alarm">СИГНАЛ ВЫСОТЫ</string>
-    <string name="use_tilt">ИСПОЛЬЗОВАТЬ ДАТЧИК НАКЛОНА</string>
-    <string name="use_bucket">ИСПОЛЬЗОВАТЬ ДАТЧИК КОВША</string>
     <string name="len">ДЛИНА</string>
     <string name="angle">УГОЛ</string>
     <string name="txt_tiltangle">УГОЛ НАКЛОНА: </string>
-    <string name="gps_calib">КАЛИБРОВКА АНТЕННЫ</string>
     <string name="gnss_setup">НАСТРОЙКА GNSS</string>
 
     <string name="set_laser_offset">УСТАНОВИТЬ ВЫСОТУ ЛАЗЕРА?</string>
     <string name="units">РАССТОЯНИЕ</string>
     <string name="unitsA">УГОЛ</string>
-    <string name="viewport">ОКНО ПРОСМОТРА</string>
     <string name="user_units">ЕДИНИЦЫ ИЗМЕРЕНИЯ</string>
     <string name="audio">ЗВУК</string>
     <string name="slopeX">УКЛОН X</string>
@@ -137,31 +126,15 @@
     <string name="toast_cantset_heading">ОШИБКА УСТАНОВКИ ОРИЕНТАЦИИ</string>
 
     <string name="powercycle_sensor">ПОЖАЛУЙСТА, СБРОСИТЕ ПИТАНИЕ ДАТЧИКА</string>
-    <string name="infoNr">"Телефон технической "</string>
     <string name="infoMessage">mc@stonex.it</string>
     <string name="touch_e_go">ПЕРЕМЕСТИТЕ МАШИНУ И ПЕРЕМЕСТИТЕ КОВШ В ТУ ЖЕ САМУЮ ОТМЕТКУ, ЗАТЕМ НАЖМИТЕ НА ИЗОБРАЖЕНИЕ, ЧТОБЫ ВЕРНУТЬСЯ НА РАБОЧИЙ ЭКРАН</string>
     <string name="pick_1">ПОСТАВЬТЕ КОВШ НА ОПОРНУЮ ТОЧКУ, ЗАТЕМ НАЖМИТЕ НА ИЗОБРАЖЕНИЕ 1</string>
     <string name="selectproject">ВЫБЕРИТЕ ПРОЕКТ</string>
-    <string name="project">ПРОЕКТЫ</string>
-    <string name="flat_surface">ПЛОСКАЯ\n ПОВЕРХНОСТЬ</string>
-    <string name="ab_surface">ПОВЕРХНОСТЬ\n A>>B</string>
-    <string name="cross_section">ПОВЕРХНОСТЬ\n ИЗ ПОЛИЛИНИИ</string>
 
     <string name="lumen">ЯРКОСТЬ</string>
     <string name="exit_proj">ВЫХОД?\n ВСЕ ДАННЫЕ БУДУТ ПОТЕРЯНЫ</string>
-    <string name="area">ПЛОСКИЙ\n ОБЛАСТЬ</string>
-    <string name="messages">СООБЩЕНИЯ</string>
-
-    <string name="mostraTriangoli">Показать треугольники</string>
-    <string name="mostraColore">Показать цвет поверхности</string>
-    <string name="mostraPunti">Показать точки</string>
-    <string name="mostraPoly">Показать полилинии</string>
-    <string name="mostraNome">Показать текст</string>
 
     <string name="projectWindow">ПОВЕРХНОСТНОЕ ОКНО</string>
-    <string name="polylinee">ПОЛИЛИНИИ</string>
-    <string name="puntip">ТОЧКИ</string>
-    <string name="mostraGradiente">Показать градиент поверхности</string>
     <string name="bucket11">КОВШ 11</string>
     <string name="bucket12">КОВШ 12</string>
     <string name="bucket13">КОВШ 13</string>
@@ -174,15 +147,8 @@
     <string name="bucket20">КОВШ 20</string>
     <string name="yaw_drift_compensation">КОМПЕНСАЦИЯ ДРЕЙФА</string>
     <string name="quick">БЫСТРАЯ\nМУФТА</string>
-    <string name="mostraUtils">" Показать 2D-объекты"</string>
-    <string name="selectafile">"ВЫБЕРИТЕ ФАЙЛ! "</string>
     <string name="machines_setup">MCH SETUP</string>
     <string name="com_debug">" ОТЛАДКА CAN"</string>
-    <string name="trincea">ТРАНШЕЯ\nДРЕНАЖ</string>
-    <string name="dtm">МОДЕЛЬ МЕСТНОСТИ</string>
-    <string name="usb_file_tr">ПЕРЕДАЧА  ФАЙЛОВ ЧЕРЕЗ\nUSB</string>
-    <string name="cloud_file_tr">ПЕРЕДАЧА ФАЙЛОВ ЧЕРЕЗ\nCLOUD</string>
-    <string name="local_projects">ПАПКА\nЛОКАЛЬНЫХ ПРОЕКТОВ</string>
     <string name="punto_salvato">ПУНКТ ДОБАВЛЕН</string>
     <string name="punto_rimosso">ТОЧКА УДАЛЕНА</string>
     <string name="off_grid">OFF SURFACE</string>
@@ -191,14 +157,7 @@
     <string name="delete_file">УДАЛИТЬ ВЫБРАННЫЙ ФАЙЛ?</string>
     <string name="select_file">ВЫБЕРИТЕ ФАЙЛ</string>
     <string name="deleted">УДАЛЕНО</string>
-    <string name="showAlign">Показать выравнивание машины</string>
-    <string name="add_surface">НОВАЯ ПОВЕРХНОСТЬ</string>
-    <string name="add_surface_ask">ДОБАВИТЬ В ТЕКУЩИЙ ПРОЕКТ</string>
-    <string name="add_surface_nope">СОЗДАТЬ НОВОЕ</string>
     <string name="enter_filename">ВСТАВИТЬ ИМЯ ФАЙЛА</string>
-    <string name="fydro_no">ГИДРАВЛИЧЕСКОЕ УПРАВЛЕНИЕ ЕЩЕ НЕ РЕАЛИЗОВАНО</string>
-    <string name="treddi_acxtive">Профили Доступно только в режиме 1D/2D</string>
-    <string name="treddi_off">Доступно только в 3D-режиме</string>
     <!-- новые строки -->
     <string name="menu_utente">НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ</string>
     <string name="menu_macchine">НАСТРОЙКИ МАШИНЫ</string>

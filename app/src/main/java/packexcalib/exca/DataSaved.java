@@ -351,11 +351,13 @@ public class DataSaved {
     public static List<Layer> dxfLayers_POLY = new ArrayList<>();
     public static List<Layer> dxfLayers_POINT = new ArrayList<>();
     public static List<Face3D> dxfFaces = new ArrayList<>();
+    public static List<Face3D> dxfFaces_Create = new ArrayList<>();
     public static List<Face3D> dxfFacesGL_2D = new ArrayList<>();
     public static List<Face3D> filteredFaces = new ArrayList<>();
     public static List<Face3D> filteredFacesGL_2D = new ArrayList<>();
     public static List<Polyline_2D> polylines_2D = new ArrayList<>();
     public static List<Polyline> polylines = new ArrayList<>();
+    public static List<Polyline> polylines_Create = new ArrayList<>();
     public static List<Polyline> polylinesGL_2D = new ArrayList<>();
     public static List<Line> lines_2D = new ArrayList<>();
     public static Polyline selectedPoly;
@@ -363,12 +365,14 @@ public class DataSaved {
     public static List<Polyline> filteredPolylines = new ArrayList<>();
     public static List<Polyline> filteredPolylinesGL_2D = new ArrayList<>();
     public static List<Point3D> points = new ArrayList<>();
+    public static List<Point3D> points_Create = new ArrayList<>();
     public static List<Point3D_Drill> drill_points = new ArrayList<>();
     //public static List<Point3D_Drill> filtered_drill_points = new ArrayList<>();
     public static List<Point3D> filteredPoints = new ArrayList<>();
     public static List<Arc> arcs = new ArrayList<>();
     public static List<Circle> circles = new ArrayList<>();
     public static List<DxfText> dxfTexts = new ArrayList<>();
+    public static List<DxfText> dxfTexts_Create = new ArrayList<>();
     public static List<DxfText> filteredDxfTexts = new ArrayList<>();
     public static int Colore_Surf;
     public static int Triangoli_Surf;
