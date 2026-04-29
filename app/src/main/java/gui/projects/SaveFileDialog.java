@@ -5,6 +5,8 @@ import static gui.projects.Dialog_Trench.leftS_d;
 import static gui.projects.Dialog_Trench.leftW_d;
 import static gui.projects.Dialog_Trench.rightS_d;
 import static gui.projects.Dialog_Trench.rightW_d;
+import static utils.MyTypes.MC_3D_PRO;
+import static utils.MyTypes.MC_3D_PRO_AUTO;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -78,7 +80,7 @@ public class SaveFileDialog {
     }
 
     private void findView() {
-        isPRO = MyApp.licenseType > 1;
+        isPRO = MyApp.licenseType ==MC_3D_PRO|| MyApp.licenseType ==MC_3D_PRO_AUTO;
         save = dialog.findViewById(R.id.save);
         exit = dialog.findViewById(R.id.exit);
         fileName = dialog.findViewById(R.id.fileName);

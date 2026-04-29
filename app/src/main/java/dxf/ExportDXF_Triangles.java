@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import utils.Utils;
+
 public class ExportDXF_Triangles {
     private List<double[]> coordinates; // Lista di coordinate [x, y, z]
     private List<Coordinate> outCoords;
@@ -54,19 +56,26 @@ public class ExportDXF_Triangles {
 
             for (Point3D point : point3DS) {
                 coordinates.add(handle, new double[]{point.getX(), point.getY(), point.getZ()});
+
                 label = point3DS[handle].getName();
 
+                if (label == null || label.trim().isEmpty()) {
+                    label = point3DS[handle].getId();
+                }
+
+                if (label == null || label.trim().isEmpty()) {
+                    label = "P" + (handle + 1);
+                }
+
                 handle++;
+
                 double x = point.getX() / METER_TO_FEET_CONVERSION;
                 double y = point.getY() / METER_TO_FEET_CONVERSION;
                 double z = point.getZ() / METER_TO_FEET_CONVERSION;
 
-                // POINT
                 writer.write("0\nPOINT\n8\nLAYER_POINTS\n");
                 writer.write(String.format(Locale.US, "10\n%f\n20\n%f\n30\n%f\n", x, y, z));
 
-                // TEXT
-                // Aggiungi TEXT per il punto
                 writer.write("0\nTEXT\n");
                 writer.write("5\n" + Integer.toHexString(handle) + "\n");
                 writer.write("100\nAcDbEntity\n");
@@ -74,9 +83,8 @@ public class ExportDXF_Triangles {
                 writer.write("100\nAcDbText\n");
                 writer.write(String.format(Locale.US, "10\n%f\n20\n%f\n30\n%f\n", x, y, z));
                 writer.write("40\n0.400000\n41\n1\n");
-                writer.write("1\n" + label + "\n");
+                writer.write("1\n" + " " + label + "  " + Utils.readUnitOfMeasureLITE(String.valueOf(point.getZ())) + "\n");
                 writer.write("50\n0\n");
-                label = "";
             }
 
             // POLYLINE di contorno
@@ -219,9 +227,9 @@ public class ExportDXF_Triangles {
     // Funzione di supporto per creare una chiave unica per un bordo
     private String edgeKey(Coordinate a, Coordinate b) {
         if (a.compareTo(b) < 0) {
-            return a.x + "," + a.y + "-" + b.x + "," + b.y;
+            return a.x + "," + a.y + "|" + b.x + "," + b.y;
         } else {
-            return b.x + "," + b.y + "-" + a.x + "," + a.y;
+            return b.x + "," + b.y + "|" + a.x + "," + a.y;
         }
     }
 
@@ -231,7 +239,7 @@ public class ExportDXF_Triangles {
         Map<Coordinate, List<Coordinate>> adjacency = new HashMap<>();
 
         for (String edge : borderEdges) {
-            String[] parts = edge.split("-");
+            String[] parts = edge.split("\\|");
             Coordinate a = parseCoordinate(parts[0]);
             Coordinate b = parseCoordinate(parts[1]);
 
@@ -271,8 +279,20 @@ public class ExportDXF_Triangles {
 
     // Parsing da stringa a Coordinate
     private Coordinate parseCoordinate(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            throw new IllegalArgumentException("Coordinate string vuota in ExportDXF_Triangles");
+        }
+
         String[] parts = text.split(",");
-        return new Coordinate(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
+
+        if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+            throw new IllegalArgumentException("Coordinate string non valida: " + text);
+        }
+
+        return new Coordinate(
+                Double.parseDouble(parts[0].trim()),
+                Double.parseDouble(parts[1].trim())
+        );
     }
 
 }

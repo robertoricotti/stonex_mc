@@ -1,7 +1,5 @@
 package gui.my_opengl;
 
-import static gui.my_opengl.MyGLActivity_Create.spigoloSelezionato;
-
 import android.graphics.Color;
 import android.util.Log;
 
@@ -12,7 +10,11 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import dxf.Face3D;
 import dxf.Layer;
@@ -24,15 +26,13 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 
 /**
- * Controller per la creazione superfici in MyGLActivity_Create.
+ * Controller for live OpenGL surface creation.
  *
- * Sorgente unica dei punti utente:
- *   DataSaved.points_Create
- *
- * Geometria preview OpenGL:
- *   DataSaved.dxfFaces_Create
- *   DataSaved.polylines_Create
- *   DataSaved.dxfTexts_Create
+ * IMPORTANT INVARIANTS:
+ * - PLAN / AREA / TRIANGLES / TRENCH: DataSaved.points_Create is the live list of picked user points.
+ * - TRIANGLES: DataSaved.points_Create is never cleared/replaced during rebuild; Delaunay is derived from it.
+ * - AB: first two points are A/B user points; after rebuild the preview publishes A-F in points_Create.
+ * - No Create workflow code ever modifies DataSaved.glL_AnchorView.
  */
 public class CreateSurfaceController {
     public static final int MODE_PLAN = 0;
@@ -45,6 +45,7 @@ public class CreateSurfaceController {
     private static final double DEFAULT_SIDE = 20.0;
     private static final double DEFAULT_AB_WIDTH = 20.0;
     private static final double EPS = 1e-9;
+    private static final double INDEX_TOLERANCE = 0.01; // 1 cm, for JTS coordinate matching on large UTM values.
 
     private static CreateSurfaceController activeController;
 
@@ -109,10 +110,7 @@ public class CreateSurfaceController {
 
     public int getPickedCount() {
         ensureCreateLists();
-        if (mode == MODE_AB) {
-            return getABBaseCount();
-        }
-        return DataSaved.points_Create.size();
+        return mode == MODE_AB ? getABBaseCount() : DataSaved.points_Create.size();
     }
 
     public List<Point3D> getPickedPoints() {
@@ -122,6 +120,13 @@ public class CreateSurfaceController {
 
     public Point3D[] pickedArray() {
         ensureCreateLists();
+        if (mode == MODE_AB) {
+            Point3D[] ab = getABPoints();
+            ArrayList<Point3D> out = new ArrayList<>();
+            if (ab[0] != null) out.add(ab[0]);
+            if (ab[1] != null) out.add(ab[1]);
+            return out.toArray(new Point3D[0]);
+        }
         return DataSaved.points_Create.toArray(new Point3D[0]);
     }
 
@@ -137,10 +142,10 @@ public class CreateSurfaceController {
     }
 
     public void setABParams(double leftWidth, double leftSlopeDeg, double rightWidth, double rightSlopeDeg) {
-        this.abLeftWidth = Math.max(0.0, leftWidth);
-        this.abLeftSlopeDeg = leftSlopeDeg;
-        this.abRightWidth = Math.max(0.0, rightWidth);
-        this.abRightSlopeDeg = rightSlopeDeg;
+        abLeftWidth = Math.max(0.0, leftWidth);
+        abLeftSlopeDeg = leftSlopeDeg;
+        abRightWidth = Math.max(0.0, rightWidth);
+        abRightSlopeDeg = rightSlopeDeg;
         rebuildPreview();
     }
 
@@ -161,13 +166,8 @@ public class CreateSurfaceController {
                 && Activity_Crea_Superficie.puntiAB[1] != null) {
             ensureCreateLists();
             DataSaved.points_Create.clear();
-            String[] names = {"A", "B", "C", "D", "E", "F"};
-            for (int i = 0; i < Activity_Crea_Superficie.puntiAB.length && i < 6; i++) {
-                Point3D src = Activity_Crea_Superficie.puntiAB[i];
-                if (src != null) {
-                    DataSaved.points_Create.add(cloneWithName(src, names[i]));
-                }
-            }
+            DataSaved.points_Create.add(cloneWithName(Activity_Crea_Superficie.puntiAB[0], "A"));
+            DataSaved.points_Create.add(cloneWithName(Activity_Crea_Superficie.puntiAB[1], "B"));
         }
         rebuildPreview();
     }
@@ -189,16 +189,22 @@ public class CreateSurfaceController {
     }
 
     public boolean addCurrentMachinePoint() {
+        return addMachinePoint(currentEdgeCoord());
+    }
+
+    public boolean addMachinePoint(double[] selectedCoord) {
         ensureCreateLists();
         if (!canAddPoint()) return false;
 
-
-        if (spigoloSelezionato == null || spigoloSelezionato.length < 3) {
-            Log.w(TAG, "currentEdgeCoord null");
+        if (selectedCoord == null || selectedCoord.length < 3) {
+            Log.w(TAG, "selected coordinate not ready");
             return false;
         }
 
-        Point3D p = makePoint("P" + (DataSaved.points_Create.size() + 1), spigoloSelezionato[0], spigoloSelezionato[1], spigoloSelezionato[2]);
+        Point3D p = makePoint(
+                "P" + (DataSaved.points_Create.size() + 1),
+                selectedCoord[0], selectedCoord[1], selectedCoord[2]
+        );
 
         switch (mode) {
             case MODE_PLAN:
@@ -221,7 +227,10 @@ public class CreateSurfaceController {
             case MODE_AREA:
                 if (!DataSaved.points_Create.isEmpty()) {
                     Point3D first = DataSaved.points_Create.get(0);
-                    p = makePoint("P" + (DataSaved.points_Create.size() + 1), spigoloSelezionato[0], spigoloSelezionato[1], first.getZ());
+                    p = makePoint(
+                            "P" + (DataSaved.points_Create.size() + 1),
+                            selectedCoord[0], selectedCoord[1], first.getZ()
+                    );
                 }
                 DataSaved.points_Create.add(cloneWithName(p, "P" + (DataSaved.points_Create.size() + 1)));
                 break;
@@ -274,6 +283,7 @@ public class CreateSurfaceController {
             }
         }
         renumberPickedPoints();
+
         if (mode == MODE_AREA && !DataSaved.points_Create.isEmpty()) {
             double z = DataSaved.points_Create.get(0).getZ();
             for (int i = 1; i < DataSaved.points_Create.size(); i++) {
@@ -281,6 +291,7 @@ public class CreateSurfaceController {
                 DataSaved.points_Create.set(i, makeNamedPoint(nameForIndex(i), p.getX(), p.getY(), z));
             }
         }
+
         rebuildPreview();
     }
 
@@ -296,7 +307,7 @@ public class CreateSurfaceController {
             case MODE_TRENCH:
                 return DataSaved.points_Create.size() >= 2;
             case MODE_TRIANGLES:
-                return DataSaved.points_Create.size() >= 3;
+                return DataSaved.points_Create.size() >= 3 && !performDelaunay(DataSaved.points_Create, null).isEmpty();
             default:
                 return false;
         }
@@ -334,18 +345,7 @@ public class CreateSurfaceController {
                 default:
                     break;
             }
-
             syncLegacyStatics();
-
-            Log.e(TAG,
-                    "PREVIEW rebuilt"
-                            + " mode=" + mode
-                            + " points=" + DataSaved.points_Create.size()
-                            + " faces=" + DataSaved.dxfFaces_Create.size()
-                            + " poly=" + DataSaved.polylines_Create.size()
-                            + " anchor=" + java.util.Arrays.toString(DataSaved.glL_AnchorView)
-            );
-
         } catch (Exception e) {
             Log.e(TAG, "rebuildPreview failed", e);
         }
@@ -354,14 +354,6 @@ public class CreateSurfaceController {
     public Point3D[] getABPoints() {
         ensureCreateLists();
         Point3D[] out = new Point3D[6];
-        String[] names = {"A", "B", "C", "D", "E", "F"};
-
-        if (DataSaved.points_Create.size() >= 6) {
-            for (int i = 0; i < 6; i++) {
-                out[i] = cloneWithName(DataSaved.points_Create.get(i), names[i]);
-            }
-            return out;
-        }
 
         if (DataSaved.points_Create.size() > 0) out[0] = cloneWithName(DataSaved.points_Create.get(0), "A");
         if (DataSaved.points_Create.size() > 1) out[1] = cloneWithName(DataSaved.points_Create.get(1), "B");
@@ -398,7 +390,8 @@ public class CreateSurfaceController {
     }
 
     public Point3D[] getTrenchOrTrianglePoints() {
-        return pickedArray();
+        ensureCreateLists();
+        return DataSaved.points_Create.toArray(new Point3D[0]);
     }
 
     private void rebuildPlan() {
@@ -436,7 +429,6 @@ public class CreateSurfaceController {
         if (p[0] == null || p[1] == null) return;
         if (p[2] == null || p[3] == null || p[4] == null || p[5] == null) return;
 
-        // In AB la preview deve mostrare tutti i punti A-F, non solo i due punti presi.
         DataSaved.points_Create.clear();
         String[] names = {"A", "B", "C", "D", "E", "F"};
         for (int i = 0; i < 6; i++) {
@@ -465,7 +457,9 @@ public class CreateSurfaceController {
 
         if (DataSaved.points_Create.size() >= 2) {
             List<Point3D> border = new ArrayList<>(DataSaved.points_Create);
-            if (DataSaved.points_Create.size() >= 3) border.add(cloneWithName(DataSaved.points_Create.get(0), DataSaved.points_Create.get(0).getName()));
+            if (DataSaved.points_Create.size() >= 3) {
+                border.add(cloneWithName(DataSaved.points_Create.get(0), DataSaved.points_Create.get(0).getName()));
+            }
             addPolyline(border, Color.MAGENTA);
         }
 
@@ -487,12 +481,27 @@ public class CreateSurfaceController {
 
     private void rebuildTriangles() {
         if (DataSaved.points_Create.isEmpty()) return;
+
         renumberPickedPoints();
-        if (DataSaved.points_Create.size() >= 3) {
-            addFacesFromTriangles(DataSaved.points_Create, performDelaunay(DataSaved.points_Create, null));
-            List<Point3D> border = outerBorderFromDelaunay(DataSaved.points_Create);
-            if (border.size() >= 2) addPolyline(border, Color.MAGENTA);
+
+        if (DataSaved.points_Create.size() < 3) {
+            Log.e("TRIANGLES_DEBUG", "points=" + DataSaved.points_Create.size() + " triangles=0 faces=0 poly=0");
+            return;
         }
+
+        List<int[]> triangles = performDelaunay(DataSaved.points_Create, null);
+        addFacesFromTriangles(DataSaved.points_Create, triangles);
+
+        List<Point3D> border = outerBorderFromTriangles(DataSaved.points_Create, triangles);
+        if (border.size() >= 2) {
+            addPolyline(border, Color.MAGENTA);
+        }
+
+        Log.e("TRIANGLES_DEBUG",
+                "points=" + DataSaved.points_Create.size()
+                        + " triangles=" + triangles.size()
+                        + " faces=" + DataSaved.dxfFaces_Create.size()
+                        + " poly=" + DataSaved.polylines_Create.size());
     }
 
     private void buildTrenchEntities(List<Point3D> center, double leftW, double rightW,
@@ -546,8 +555,11 @@ public class CreateSurfaceController {
     }
 
     private void addFacesFromTriangles(List<Point3D> points, List<int[]> triangles) {
+        if (points == null || triangles == null) return;
         for (int[] t : triangles) {
             if (t == null || t.length < 3) continue;
+            if (t[0] < 0 || t[1] < 0 || t[2] < 0) continue;
+            if (t[0] >= points.size() || t[1] >= points.size() || t[2] >= points.size()) continue;
             Point3D p1 = points.get(t[0]);
             Point3D p2 = points.get(t[1]);
             Point3D p3 = points.get(t[2]);
@@ -558,19 +570,25 @@ public class CreateSurfaceController {
     private List<int[]> performDelaunay(List<Point3D> points, Polygon clipPolygon) {
         List<int[]> out = new ArrayList<>();
         if (points == null || points.size() < 3) return out;
+
         GeometryFactory gf = new GeometryFactory();
         Coordinate[] coords = new Coordinate[points.size()];
         for (int i = 0; i < points.size(); i++) {
             coords[i] = new Coordinate(points.get(i).getX(), points.get(i).getY(), points.get(i).getZ());
         }
+
         try {
             DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
             builder.setSites(gf.createMultiPointFromCoords(coords));
             Geometry triangles = builder.getTriangles(gf);
+
             for (int i = 0; i < triangles.getNumGeometries(); i++) {
                 Polygon tri = (Polygon) triangles.getGeometryN(i);
                 if (clipPolygon != null && !clipPolygon.covers(tri.getCentroid())) continue;
+
                 Coordinate[] tc = tri.getCoordinates();
+                if (tc == null || tc.length < 3) continue;
+
                 int[] idx = new int[3];
                 boolean ok = true;
                 for (int j = 0; j < 3; j++) {
@@ -580,7 +598,9 @@ public class CreateSurfaceController {
                         break;
                     }
                 }
-                if (ok) out.add(idx);
+                if (ok && idx[0] != idx[1] && idx[1] != idx[2] && idx[2] != idx[0]) {
+                    out.add(idx);
+                }
             }
         } catch (Exception e) {
             Log.e(TAG, "Delaunay failed", e);
@@ -588,59 +608,91 @@ public class CreateSurfaceController {
         return out;
     }
 
-    private List<Point3D> outerBorderFromDelaunay(List<Point3D> points) {
-        List<Point3D> border = new ArrayList<>();
-        List<int[]> triangles = performDelaunay(points, null);
-        java.util.Map<String, Integer> count = new java.util.HashMap<>();
-        java.util.Map<String, int[]> edgeIdx = new java.util.HashMap<>();
-        for (int[] t : triangles) {
-            addEdge(t[0], t[1], count, edgeIdx);
-            addEdge(t[1], t[2], count, edgeIdx);
-            addEdge(t[2], t[0], count, edgeIdx);
-        }
-        java.util.Set<String> borderKeys = new java.util.HashSet<>();
-        for (java.util.Map.Entry<String, Integer> e : count.entrySet()) {
-            if (e.getValue() == 1) borderKeys.add(e.getKey());
-        }
-        if (borderKeys.isEmpty()) return border;
+    private List<Point3D> outerBorderFromTriangles(List<Point3D> points, List<int[]> triangles) {
+        List<Point3D> ordered = new ArrayList<>();
+        if (points == null || points.size() < 3 || triangles == null || triangles.isEmpty()) return ordered;
 
-        java.util.Map<Integer, List<Integer>> adj = new java.util.HashMap<>();
-        for (String key : borderKeys) {
-            int[] e = edgeIdx.get(key);
-            adj.computeIfAbsent(e[0], k -> new ArrayList<>()).add(e[1]);
-            adj.computeIfAbsent(e[1], k -> new ArrayList<>()).add(e[0]);
+        Map<String, int[]> edgeMap = new HashMap<>();
+        Map<String, Integer> edgeCount = new HashMap<>();
+
+        for (int[] t : triangles) {
+            if (t == null || t.length < 3) continue;
+            registerEdge(t[0], t[1], edgeMap, edgeCount);
+            registerEdge(t[1], t[2], edgeMap, edgeCount);
+            registerEdge(t[2], t[0], edgeMap, edgeCount);
         }
-        int start = adj.keySet().iterator().next();
-        int prev = -1;
-        int cur = start;
-        java.util.Set<String> used = new java.util.HashSet<>();
+
+        Map<Integer, List<Integer>> adjacency = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : edgeCount.entrySet()) {
+            if (entry.getValue() != 1) continue;
+            int[] e = edgeMap.get(entry.getKey());
+            if (e == null || e.length < 2) continue;
+            adjacency.computeIfAbsent(e[0], k -> new ArrayList<>()).add(e[1]);
+            adjacency.computeIfAbsent(e[1], k -> new ArrayList<>()).add(e[0]);
+        }
+
+        if (adjacency.isEmpty()) return ordered;
+
+        int start = chooseLowestLeftMostVertex(points, adjacency.keySet());
+        int current = start;
+        int previous = -1;
+        Set<String> usedEdges = new HashSet<>();
+
         while (true) {
-            border.add(points.get(cur));
-            List<Integer> ns = adj.get(cur);
+            ordered.add(points.get(current));
+
+            List<Integer> neighbours = adjacency.get(current);
+            if (neighbours == null || neighbours.isEmpty()) break;
+
             int next = -1;
-            for (int n : ns) {
-                String k = edgeKey(cur, n);
-                if (n != prev && !used.contains(k)) {
+            for (int n : neighbours) {
+                String key = edgeKey(current, n);
+                if (!usedEdges.contains(key) && n != previous) {
                     next = n;
-                    used.add(k);
                     break;
                 }
             }
-            if (next < 0) break;
-            prev = cur;
-            cur = next;
-            if (cur == start) {
-                border.add(points.get(start));
+            if (next == -1) {
+                for (int n : neighbours) {
+                    String key = edgeKey(current, n);
+                    if (!usedEdges.contains(key)) {
+                        next = n;
+                        break;
+                    }
+                }
+            }
+            if (next == -1) break;
+
+            usedEdges.add(edgeKey(current, next));
+            previous = current;
+            current = next;
+
+            if (current == start) {
+                ordered.add(points.get(start));
                 break;
             }
+            if (ordered.size() > points.size() + 10) break;
         }
-        return border;
+
+        return ordered;
     }
 
-    private void addEdge(int a, int b, java.util.Map<String, Integer> count, java.util.Map<String, int[]> edgeIdx) {
+    private int chooseLowestLeftMostVertex(List<Point3D> points, Set<Integer> candidates) {
+        int best = candidates.iterator().next();
+        for (int idx : candidates) {
+            Point3D p = points.get(idx);
+            Point3D b = points.get(best);
+            if (p.getY() < b.getY() || (Math.abs(p.getY() - b.getY()) < EPS && p.getX() < b.getX())) {
+                best = idx;
+            }
+        }
+        return best;
+    }
+
+    private void registerEdge(int a, int b, Map<String, int[]> edgeMap, Map<String, Integer> edgeCount) {
         String key = edgeKey(a, b);
-        count.put(key, count.getOrDefault(key, 0) + 1);
-        edgeIdx.put(key, new int[]{a, b});
+        edgeMap.put(key, new int[]{a, b});
+        edgeCount.put(key, edgeCount.getOrDefault(key, 0) + 1);
     }
 
     private String edgeKey(int a, int b) {
@@ -648,11 +700,25 @@ public class CreateSurfaceController {
     }
 
     private int indexOf2D(List<Point3D> points, Coordinate c) {
+        final double tol = 0.05; // 5 cm
+
+        int bestIndex = -1;
+        double bestDist = Double.MAX_VALUE;
+
         for (int i = 0; i < points.size(); i++) {
             Point3D p = points.get(i);
-            if (Math.abs(p.getX() - c.x) < 1e-6 && Math.abs(p.getY() - c.y) < 1e-6) return i;
+
+            double dx = p.getX() - c.x;
+            double dy = p.getY() - c.y;
+            double d = Math.hypot(dx, dy);
+
+            if (d < bestDist) {
+                bestDist = d;
+                bestIndex = i;
+            }
         }
-        return -1;
+
+        return bestDist <= tol ? bestIndex : -1;
     }
 
     private Polygon polygonFromPoints(List<Point3D> points) {
@@ -692,33 +758,17 @@ public class CreateSurfaceController {
     }
 
     private void ensureCreateLists() {
-        if (DataSaved.points_Create == null) {
-            DataSaved.points_Create = new ArrayList<>();
-        }
-        if (DataSaved.polylines_Create == null) {
-            DataSaved.polylines_Create = new ArrayList<>();
-        }
-        if (DataSaved.dxfFaces_Create == null) {
-            DataSaved.dxfFaces_Create = new ArrayList<>();
-        }
-        if (DataSaved.dxfTexts_Create == null) {
-            DataSaved.dxfTexts_Create = new ArrayList();
-        }
+        if (DataSaved.points_Create == null) DataSaved.points_Create = new ArrayList<>();
+        if (DataSaved.polylines_Create == null) DataSaved.polylines_Create = new ArrayList<>();
+        if (DataSaved.dxfFaces_Create == null) DataSaved.dxfFaces_Create = new ArrayList<>();
+        if (DataSaved.dxfTexts_Create == null) DataSaved.dxfTexts_Create = new ArrayList();
         ensureCreateLayersRegistered();
     }
 
-
     private void ensureCreateLayersRegistered() {
-        if (DataSaved.dxfLayers_DTM == null) {
-            DataSaved.dxfLayers_DTM = new ArrayList<>();
-        }
-        if (DataSaved.dxfLayers_POLY == null) {
-            DataSaved.dxfLayers_POLY = new ArrayList<>();
-        }
-        if (DataSaved.dxfLayers_POINT == null) {
-            DataSaved.dxfLayers_POINT = new ArrayList<>();
-        }
-
+        if (DataSaved.dxfLayers_DTM == null) DataSaved.dxfLayers_DTM = new ArrayList<>();
+        if (DataSaved.dxfLayers_POLY == null) DataSaved.dxfLayers_POLY = new ArrayList<>();
+        if (DataSaved.dxfLayers_POINT == null) DataSaved.dxfLayers_POINT = new ArrayList<>();
         upsertLayer(DataSaved.dxfLayers_DTM, faceLayer);
         upsertLayer(DataSaved.dxfLayers_POLY, polyLayer);
         upsertLayer(DataSaved.dxfLayers_POINT, pointLayer);
@@ -741,15 +791,11 @@ public class CreateSurfaceController {
         if (DataSaved.dxfTexts_Create != null) DataSaved.dxfTexts_Create.clear();
     }
 
-
-
     private void renumberPickedPoints() {
+        if (mode == MODE_AB) return;
         for (int i = 0; i < DataSaved.points_Create.size(); i++) {
             Point3D p = DataSaved.points_Create.get(i);
-            if (mode == MODE_AB) {
-                String name = i == 0 ? "A" : (i == 1 ? "B" : nameForIndex(i));
-                DataSaved.points_Create.set(i, makeNamedPoint(name, p.getX(), p.getY(), p.getZ()));
-            } else if (mode == MODE_PLAN) {
+            if (mode == MODE_PLAN) {
                 DataSaved.points_Create.set(i, makeNamedPoint("P", p.getX(), p.getY(), p.getZ()));
             } else {
                 DataSaved.points_Create.set(i, makeNamedPoint(nameForIndex(i), p.getX(), p.getY(), p.getZ()));
@@ -789,31 +835,35 @@ public class CreateSurfaceController {
         return "P" + (i + 1);
     }
 
-
+    private double[] currentEdgeCoord() {
+        try {
+            switch (DataSaved.bucketEdge) {
+                case -1:
+                    return ExcavatorLib.bucketLeftCoord;
+                case 1:
+                    return ExcavatorLib.bucketRightCoord;
+                case 0:
+                default:
+                    return ExcavatorLib.bucketCoord;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     private int modeFromProject(String projectType) {
         if (projectType == null) return MODE_PLAN;
         switch (projectType) {
-            case "PLAN":
-                return MODE_PLAN;
-            case "AB":
-                return MODE_AB;
-            case "AREA":
-                return MODE_AREA;
-            case "TRENCH":
-                return MODE_TRENCH;
-            case "TRIANGLES":
-                return MODE_TRIANGLES;
-            default:
-                return MODE_PLAN;
+            case "PLAN": return MODE_PLAN;
+            case "AB": return MODE_AB;
+            case "AREA": return MODE_AREA;
+            case "TRENCH": return MODE_TRENCH;
+            case "TRIANGLES": return MODE_TRIANGLES;
+            default: return MODE_PLAN;
         }
     }
 
     private void initLayers() {
-        // Nomi e colori coerenti con gli exporter DXF:
-        // LAYER_3D_FACES -> 2 (giallo)
-        // LAYER_POLYLINES -> 6 (magenta)
-        // LAYER_POINTS -> 4 (ciano)
         faceLayer = new Layer("CREATE", "LAYER_3D_FACES", Color.YELLOW, true);
         polyLayer = new Layer("CREATE", "LAYER_POLYLINES", Color.MAGENTA, true);
         pointLayer = new Layer("CREATE", "LAYER_POINTS", Color.CYAN, true);
@@ -830,7 +880,7 @@ public class CreateSurfaceController {
         ensureCreateLists();
         Activity_Crea_Superficie.countPunti = mode == MODE_AB ? getABBaseCount() : DataSaved.points_Create.size();
         Activity_Crea_Superficie.indexSel = 0;
-        Activity_Crea_Superficie.point3DS = pickedArray();
+        Activity_Crea_Superficie.point3DS = getTrenchOrTrianglePoints();
 
         if (mode == MODE_AREA) {
             Activity_Crea_Superficie.coordinateP = new ArrayList<>();

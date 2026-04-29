@@ -197,7 +197,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
             txtcrs2.setOnClickListener(view -> {
                 Dialog_Set_Secondo_SP dialog = new Dialog_Set_Secondo_SP(MyApp.visibleActivity);
                 dialog.show(() -> {
-                    int pos = getBindingAdapterPosition();
+                    int pos = getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
                         notifyItemChanged(pos);
                     } else {

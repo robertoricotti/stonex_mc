@@ -125,10 +125,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
         float dx = x - previousX;
         float dy = y - previousY;
 
-        if (!My3DActivity.isPan) {
-            handleRotation(dx, dy);
-        } else {
+        if (renderer.is2D) {
             handlePan(dx, dy);
+        } else {
+            if (!My3DActivity.isPan) {
+                handleRotation(dx, dy);
+            } else {
+                handlePan(dx, dy);
+            }
         }
 
         previousX = x;
