@@ -30,6 +30,10 @@ import services.TriangleService;
 import utils.MyData;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
+    private static final float[] currentVpMatrix = new float[16];
+    private static volatile boolean hasCurrentVpMatrix = false;
+    private static volatile int currentSurfaceWidth = 1;
+    private static volatile int currentSurfaceHeight = 1;
     public static float orthoBaseSize = 5f;
     private static final float MIN_2D_SCALE = 0.001f;
     private static final float DEFAULT_CAMERA_Z = -5f;
@@ -102,6 +106,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+
         surfaceWidth = Math.max(1, width);
         surfaceHeight = Math.max(1, height);
         coloreEsterno = GL_Methods.darkenColor(GL_Methods.parseColorToGL(MyColorClass.colorBucket), 1, 1);
@@ -112,6 +117,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         coloreBoomScuro = GL_Methods.darkenColor(coloreBoom, 0.75f, 1f);
         GLES20.glViewport(0, 0, surfaceWidth, surfaceHeight);
         GLDrawer.setViewportSize(surfaceWidth, surfaceHeight);
+        currentSurfaceWidth = surfaceWidth;
+        currentSurfaceHeight = surfaceHeight;
     }
 
     @Override
@@ -132,6 +139,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             setupProjection();
             setupViewMatrix(angleTest);
             Matrix.multiplyMM(vpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+            System.arraycopy(vpMatrix, 0, currentVpMatrix, 0, 16);
+            hasCurrentVpMatrix = true;
             GL11.setCurrentViewProjectionMatrix(vpMatrix);
             GLDrawer.setViewMatrix(viewMatrix);
             GLDrawer.setViewProjectionMatrix(vpMatrix);
@@ -379,6 +388,37 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public static float currentRenderScale() {
         return 1f;
+    }
+    public static boolean projectWorldToScreen2D(
+            double worldX,
+            double worldY,
+            double anchorX,
+            double anchorY,
+            float[] outScreenXY
+    ) {
+        if (!hasCurrentVpMatrix || outScreenXY == null || outScreenXY.length < 2) {
+            return false;
+        }
+
+        float localX = (float) (worldX - anchorX);
+        float localY = (float) (worldY - anchorY);
+
+        float[] in = new float[]{localX, localY, 0f, 1f};
+        float[] out = new float[4];
+
+        Matrix.multiplyMV(out, 0, currentVpMatrix, 0, in, 0);
+
+        if (Math.abs(out[3]) < 1e-6f) {
+            return false;
+        }
+
+        float ndcX = out[0] / out[3];
+        float ndcY = out[1] / out[3];
+
+        outScreenXY[0] = (ndcX * 0.5f + 0.5f) * currentSurfaceWidth;
+        outScreenXY[1] = (0.5f - ndcY * 0.5f) * currentSurfaceHeight;
+
+        return true;
     }
 }
 

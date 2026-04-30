@@ -73,7 +73,7 @@ public class TriangleService extends Service {
     static boolean startSort;
     static boolean isUpdating;
     static int rilettura;
-    public static double minZ, maxZ,minZCreate,maxZCreate;
+    public static double minZ, maxZ, minZCreate, maxZCreate;
     boolean projRead = false;
     private boolean isRunning = false;
     private ExecutorService executor;
@@ -236,7 +236,7 @@ public class TriangleService extends Service {
                             DGM_Letf = bucketLeftCoord[2] - QuotaMedia;
                             DGM_Right = bucketRightCoord[2] - QuotaMedia;
                         }
-                        if(MyApp.visibleActivity instanceof MyGLActivity_Create){
+                        if (MyApp.visibleActivity instanceof MyGLActivity_Create) {
 
 
                             for (Face3D face : DataSaved.dxfFaces_Create) { // Assumendo che DataSaved.dxfFaces sia una lista di Face3D
@@ -310,140 +310,106 @@ public class TriangleService extends Service {
                                     DataSaved.isAutoSnap = 0;
                                 }
                                 break;
-
                             case 2:
 
-                                Point3D referencePoint = new Point3D(bucketCoord[0], bucketCoord[1], 0);
+                                if (DataSaved.filteredPolylines == null || DataSaved.filteredPolylines.isEmpty()) {
+                                    resetLineSnapValues();
+                                    DataSaved.isAutoSnap = 0;
+                                    break;
+                                }
 
-                                if (DataSaved.filteredPolylines != null && !DataSaved.filteredPolylines.isEmpty()) {
+                                Point3D referencePoint;
+                                double refE;
+                                double refN;
 
-                                    // Genera segmenti offset a partire dalle polilinee filtrate
-                                    List<Segment> allOffsetSegments = buildOffsetForSnap(DataSaved.filteredPolylines, DataSaved.line_Offset);
-                                    switch (DataSaved.bucketEdge) {
-                                        case -1:
-                                            referencePoint = new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], 0);
-                                            break;
-                                        case 0:
-                                            referencePoint = new Point3D(bucketCoord[0], bucketCoord[1], 0);
-                                            break;
-                                        case 1:
-                                            referencePoint = new Point3D(bucketRightCoord[0], bucketRightCoord[1], 0);
-                                            break;
-                                        default:
-                                            referencePoint = new Point3D(bucketCoord[0], bucketCoord[1], 0);
-                                            break;
-                                    }
-                                    Segment closestSegment = null;
-                                    Polyline activeOriginalPoly = null;
-                                    Polyline activeOffsetPoly = null;
-                                    if (DataSaved.lockUnlock == 0) {
-                                        // normale: cerca tra tutti i segmenti offsettati/originali
-                                        closestSegment = findClosestSegment(referencePoint, allOffsetSegments);
+                                switch (DataSaved.bucketEdge) {
+                                    case -1:
+                                        refE = bucketLeftCoord[0];
+                                        refN = bucketLeftCoord[1];
+                                        referencePoint = new Point3D(refE, refN, 0);
+                                        break;
 
-                                        if (closestSegment != null) {
-                                            activeOriginalPoly = closestSegment.getPolyline(); // ora è SEMPRE l'originale
-                                            activeOffsetPoly = (DataSaved.line_Offset != 0)
+                                    case 1:
+                                        refE = bucketRightCoord[0];
+                                        refN = bucketRightCoord[1];
+                                        referencePoint = new Point3D(refE, refN, 0);
+                                        break;
+
+                                    case 0:
+                                    default:
+                                        refE = bucketCoord[0];
+                                        refN = bucketCoord[1];
+                                        referencePoint = new Point3D(refE, refN, 0);
+                                        break;
+                                }
+
+                                Segment closestSegment = null;
+                                Polyline activeOriginalPoly = null;
+                                Polyline activeOffsetPoly = null;
+
+                                if (DataSaved.lockUnlock == 0) {
+
+                                    List<Segment> allOffsetSegments =
+                                            buildOffsetForSnap(DataSaved.filteredPolylines, DataSaved.line_Offset);
+
+                                    closestSegment = findClosestSegment(referencePoint, allOffsetSegments);
+
+                                    if (closestSegment != null) {
+                                        activeOriginalPoly = closestSegment.getPolyline();
+
+                                        if (activeOriginalPoly != null) {
+                                            activeOffsetPoly = DataSaved.line_Offset != 0
                                                     ? JTSOffsetHelper.generateOffsetPolyline(activeOriginalPoly, DataSaved.line_Offset)
                                                     : activeOriginalPoly;
 
                                             DataSaved.selectedPoly = activeOriginalPoly;
                                             DataSaved.selectedPoly_OFFSET = activeOffsetPoly;
                                         }
-                                    } else {
-                                        // lock: lavora SEMPRE partendo dall'originale bloccata
-                                        activeOriginalPoly = DataSaved.selectedPoly;
+                                    }
 
-                                        if (activeOriginalPoly != null) {
-                                            activeOffsetPoly = (DataSaved.line_Offset != 0)
-                                                    ? JTSOffsetHelper.generateOffsetPolyline(activeOriginalPoly, DataSaved.line_Offset)
-                                                    : activeOriginalPoly;
+                                } else {
 
-                                            DataSaved.selectedPoly_OFFSET = activeOffsetPoly;
+                                    activeOriginalPoly = DataSaved.selectedPoly;
+
+                                    if (activeOriginalPoly != null) {
+                                        activeOffsetPoly = DataSaved.line_Offset != 0
+                                                ? JTSOffsetHelper.generateOffsetPolyline(activeOriginalPoly, DataSaved.line_Offset)
+                                                : activeOriginalPoly;
+
+                                        DataSaved.selectedPoly_OFFSET = activeOffsetPoly;
+
+                                        if (activeOffsetPoly != null
+                                                && activeOffsetPoly.getVertices() != null
+                                                && activeOffsetPoly.getVertices().size() >= 2) {
 
                                             List<Segment> lockedSegments = new ArrayList<>();
                                             List<Point3D> verts = activeOffsetPoly.getVertices();
 
                                             for (int i = 0; i < verts.size() - 1; i++) {
-                                                // il Segment può continuare a puntare all'originale
-                                                lockedSegments.add(new Segment(verts.get(i), verts.get(i + 1), activeOriginalPoly));
+                                                lockedSegments.add(new Segment(
+                                                        verts.get(i),
+                                                        verts.get(i + 1),
+                                                        activeOriginalPoly
+                                                ));
                                             }
+
                                             closestSegment = findClosestSegment(referencePoint, lockedSegments);
                                         }
                                     }
-
-                                    DataSaved.nearestSegment = closestSegment;
-                                    double refE = 0, refN = 0;
-                                    // salva i risultati
-
-
-                                    // calcola le distanze 3D
-                                    if (DataSaved.bucketEdge == -1 && closestSegment != null) {
-                                        dist3D_SX = Math.abs(new DistToLine(bucketLeftCoord[0], bucketLeftCoord[1],
-                                                closestSegment.getStart().getX(), closestSegment.getStart().getY(),
-                                                closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
-                                        refE = bucketLeftCoord[0];
-                                        refN = bucketLeftCoord[1];
-
-                                    } else if (DataSaved.bucketEdge == 0 && closestSegment != null) {
-                                        dist3D_CT = Math.abs(new DistToLine(bucketCoord[0], bucketCoord[1],
-                                                closestSegment.getStart().getX(), closestSegment.getStart().getY(),
-                                                closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
-                                        refE = bucketCoord[0];
-                                        refN = bucketCoord[1];
-                                    } else if (DataSaved.bucketEdge == 1 && closestSegment != null) {
-                                        dist3D_DX = Math.abs(new DistToLine(bucketRightCoord[0], bucketRightCoord[1],
-                                                closestSegment.getStart().getX(), closestSegment.getStart().getY(),
-                                                closestSegment.getEnd().getX(), closestSegment.getEnd().getY()).getLinedistance());
-                                        refE = bucketRightCoord[0];
-                                        refN = bucketRightCoord[1];
-                                    }
-
-                                    Point3D p = closestSegment.getClosestPoint(refE, refN);
-                                    double dE = p.getX() - refE;
-                                    double dN = p.getY() - refN;
-                                    double yawRad = Math.toRadians(ExcavatorLib.hdt_BOOM + yawSensor);
-                                    double latX = Math.cos(yawRad);
-                                    double latY = -Math.sin(yawRad);
-                                    double lateral = dE * latX + dN * latY;
-                                    if (lateral > 0) {
-                                        segnoLinea = -1;
-                                    } else {
-                                        segnoLinea = 1;
-                                    }
-
-                                    Segment seg = DataSaved.nearestSegment;
-                                    Point2D cut1 =
-                                            Geometry2D.projectPointOnSegment(
-                                                    referencePoint.getX(),
-                                                    referencePoint.getY(),
-                                                    seg.getStart(),
-                                                    seg.getEnd()
-                                            );
-                                    DataSaved.cutWorldX_1 = cut1.getX();
-                                    DataSaved.cutWorldY_1 = cut1.getY();
-
-
-                                    Point2D cut2 =
-                                            Geometry2D.projectPointOnSegment(
-                                                    bucketCoord[0],
-                                                    bucketCoord[1],
-                                                    seg.getStart(),
-                                                    seg.getEnd()
-                                            );
-                                    DataSaved.cutWorldX_2 = cut2.getX();
-                                    DataSaved.cutWorldY_2 = cut2.getY();
-                                } else {
-                                    DataSaved.isAutoSnap = 0;
                                 }
+
+                                if (closestSegment == null) {
+                                    resetLineSnapValues();
+                                    break;
+                                }
+
+                                updateLineSnapResult(refE, refN, closestSegment);
 
                                 break;
                             case 20:
+
                                 if (DataSaved.lockUnlock == 0 || DataSaved.selectedPoly == null) {
-                                    DataSaved.nearestSegment = null;
-                                    dist3D_SX = 0;
-                                    dist3D_CT = 0;
-                                    dist3D_DX = 0;
-                                    orientamentoFreccia = 0;
+                                    resetLineSnapValues();
                                     break;
                                 }
 
@@ -453,32 +419,35 @@ public class TriangleService extends Service {
 
                                 switch (DataSaved.bucketEdge) {
                                     case -1:
-                                        referencePoint20 = new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], 0);
                                         refE20 = bucketLeftCoord[0];
                                         refN20 = bucketLeftCoord[1];
+                                        referencePoint20 = new Point3D(refE20, refN20, 0);
                                         break;
+
                                     case 1:
-                                        referencePoint20 = new Point3D(bucketRightCoord[0], bucketRightCoord[1], 0);
                                         refE20 = bucketRightCoord[0];
                                         refN20 = bucketRightCoord[1];
+                                        referencePoint20 = new Point3D(refE20, refN20, 0);
                                         break;
+
                                     case 0:
                                     default:
-                                        referencePoint20 = new Point3D(bucketCoord[0], bucketCoord[1], 0);
                                         refE20 = bucketCoord[0];
                                         refN20 = bucketCoord[1];
+                                        referencePoint20 = new Point3D(refE20, refN20, 0);
                                         break;
                                 }
 
                                 Polyline activeOriginalPoly20 = DataSaved.selectedPoly;
-                                Polyline activeOffsetPoly20 = (DataSaved.line_Offset != 0)
+
+                                Polyline activeOffsetPoly20 = DataSaved.line_Offset != 0
                                         ? JTSOffsetHelper.generateOffsetPolyline(activeOriginalPoly20, DataSaved.line_Offset)
                                         : activeOriginalPoly20;
 
-                                if (activeOffsetPoly20 == null || activeOffsetPoly20.getVertices() == null
+                                if (activeOffsetPoly20 == null
+                                        || activeOffsetPoly20.getVertices() == null
                                         || activeOffsetPoly20.getVertices().size() < 2) {
-                                    DataSaved.nearestSegment = null;
-                                    orientamentoFreccia = 0;
+                                    resetLineSnapValues();
                                     break;
                                 }
 
@@ -486,75 +455,23 @@ public class TriangleService extends Service {
 
                                 List<Segment> lockedSegments20 = new ArrayList<>();
                                 List<Point3D> verts20 = activeOffsetPoly20.getVertices();
+
                                 for (int i = 0; i < verts20.size() - 1; i++) {
-                                    lockedSegments20.add(new Segment(verts20.get(i), verts20.get(i + 1), activeOriginalPoly20));
+                                    lockedSegments20.add(new Segment(
+                                            verts20.get(i),
+                                            verts20.get(i + 1),
+                                            activeOriginalPoly20
+                                    ));
                                 }
 
                                 Segment closestSegment20 = findClosestSegment(referencePoint20, lockedSegments20);
-                                DataSaved.nearestSegment = closestSegment20;
 
                                 if (closestSegment20 == null) {
-                                    orientamentoFreccia = 0;
+                                    resetLineSnapValues();
                                     break;
                                 }
 
-                                dist3D_SX = 0;
-                                dist3D_CT = 0;
-                                dist3D_DX = 0;
-
-                                double lineDist20 = Math.abs(new DistToLine(
-                                        refE20, refN20,
-                                        closestSegment20.getStart().getX(), closestSegment20.getStart().getY(),
-                                        closestSegment20.getEnd().getX(), closestSegment20.getEnd().getY()
-                                ).getLinedistance());
-
-                                switch (DataSaved.bucketEdge) {
-                                    case -1:
-                                        dist3D_SX = lineDist20;
-                                        break;
-                                    case 0:
-                                        dist3D_CT = lineDist20;
-                                        break;
-                                    case 1:
-                                        dist3D_DX = lineDist20;
-                                        break;
-                                }
-
-                                Point3D p20 = closestSegment20.getClosestPoint(refE20, refN20);
-                                double dE20 = p20.getX() - refE20;
-                                double dN20 = p20.getY() - refN20;
-
-                                double yawRad20 = Math.toRadians(ExcavatorLib.hdt_BOOM + yawSensor);
-                                double latX20 = Math.cos(yawRad20);
-                                double latY20 = -Math.sin(yawRad20);
-                                double lateral20 = dE20 * latX20 + dN20 * latY20;
-
-                                segnoLinea = (lateral20 > 0) ? -1 : 1;
-
-                                // se la freccia usa questo campo, aggiornalo qui e non lasciarlo stale
-                                orientamentoFreccia = Math.toDegrees(Math.atan2(
-                                        closestSegment20.getEnd().getY() - closestSegment20.getStart().getY(),
-                                        closestSegment20.getEnd().getX() - closestSegment20.getStart().getX()
-                                ));
-
-                                Point2D cut1_20 = Geometry2D.projectPointOnSegment(
-                                        referencePoint20.getX(),
-                                        referencePoint20.getY(),
-                                        closestSegment20.getStart(),
-                                        closestSegment20.getEnd()
-                                );
-                                DataSaved.cutWorldX_1 = cut1_20.getX();
-                                DataSaved.cutWorldY_1 = cut1_20.getY();
-
-                                // importante: qui NON bucketCoord fisso, ma lo stesso ref selezionato
-                                Point2D cut2_20 = Geometry2D.projectPointOnSegment(
-                                        refE20,
-                                        refN20,
-                                        closestSegment20.getStart(),
-                                        closestSegment20.getEnd()
-                                );
-                                DataSaved.cutWorldX_2 = cut2_20.getX();
-                                DataSaved.cutWorldY_2 = cut2_20.getY();
+                                updateLineSnapResult(refE20, refN20, closestSegment20);
 
                                 break;
 
@@ -1235,6 +1152,158 @@ public class TriangleService extends Service {
         p.markGlDirty();
         return p;
     }
+
+    public static double normalize360(double a) {
+        a = a % 360.0;
+        return a < 0 ? a + 360.0 : a;
+    }
+
+
+
+
+    private static double angleFromBucketToCut(double refE, double refN, Point3D p) {
+        if (p == null) return normalize360(orientamentoFreccia);
+
+        double dE = p.getX() - refE;
+        double dN = p.getY() - refN;
+
+        if (Math.hypot(dE, dN) < 1e-6) {
+            return normalize360(orientamentoFreccia);
+        }
+
+        return normalize360(Math.toDegrees(Math.atan2(dN, dE)));
+    }
+
+    private static void resetLineSnapValues() {
+        DataSaved.nearestSegment = null;
+
+        dist3D_SX = 0;
+        dist3D_CT = 0;
+        dist3D_DX = 0;
+
+        orientamentoFreccia = 0;
+
+        DataSaved.snapRefWorldX = 0;
+        DataSaved.snapRefWorldY = 0;
+
+        DataSaved.cutWorldX_1 = 0;
+        DataSaved.cutWorldY_1 = 0;
+        DataSaved.cutWorldX_2 = 0;
+        DataSaved.cutWorldY_2 = 0;
+    }
+
+    private static void assignLineDistanceToBucketEdge(double distance) {
+        dist3D_SX = 0;
+        dist3D_CT = 0;
+        dist3D_DX = 0;
+
+        switch (DataSaved.bucketEdge) {
+            case -1:
+                dist3D_SX = distance;
+                break;
+
+            case 1:
+                dist3D_DX = distance;
+                break;
+
+            case 0:
+            default:
+                dist3D_CT = distance;
+                break;
+        }
+    }
+
+    private static void updateLineSnapResult(double refE, double refN, Segment closestSegment) {
+
+        if (closestSegment == null) {
+            resetLineSnapValues();
+            return;
+        }
+
+        Point3D p = closestSegment.getClosestPoint(refE, refN);
+
+        if (p == null) {
+            resetLineSnapValues();
+            return;
+        }
+
+        DataSaved.nearestSegment = closestSegment;
+
+        /*
+         * Estremo A della linea verde:
+         * bucketEdge realmente usato per lo snap.
+         */
+        DataSaved.snapRefWorldX = refE;
+        DataSaved.snapRefWorldY = refN;
+
+        /*
+         * Estremo B della linea verde:
+         * punto più vicino reale sul segmento selezionato.
+         */
+        DataSaved.cutWorldX_1 = p.getX();
+        DataSaved.cutWorldY_1 = p.getY();
+
+        /*
+         * Per ora teniamo anche cutWorld_2 uguale.
+         * Così qualunque codice vecchio che legge cutWorldX_2/Y_2
+         * non usa più bucketCoord fisso o una proiezione diversa.
+         */
+        DataSaved.cutWorldX_2 = p.getX();
+        DataSaved.cutWorldY_2 = p.getY();
+
+        double dE = p.getX() - refE;
+        double dN = p.getY() - refN;
+
+        /*
+         * Distanza vera dal bucketEdge al segmento finito.
+         * NON usare DistToLine qui.
+         */
+        double lineDist = Math.hypot(dE, dN);
+
+        dist3D_SX = 0;
+        dist3D_CT = 0;
+        dist3D_DX = 0;
+
+        switch (DataSaved.bucketEdge) {
+            case -1:
+                dist3D_SX = lineDist;
+                break;
+
+            case 1:
+                dist3D_DX = lineDist;
+                break;
+
+            case 0:
+            default:
+                dist3D_CT = lineDist;
+                break;
+        }
+
+        /*
+         * Segno destra/sinistra rispetto alla macchina.
+         * Questo non serve per orientare la freccia overlay,
+         * ma può servire per UI, colori, correzioni, ecc.
+         */
+        double yawRad = Math.toRadians(ExcavatorLib.hdt_BOOM + yawSensor);
+
+        double latX = Math.cos(yawRad);
+        double latY = -Math.sin(yawRad);
+
+        double lateral = dE * latX + dN * latY;
+
+        segnoLinea = lateral > 0 ? -1 : 1;
+
+        /*
+         * Angolo world bucketEdge -> snap.
+         * Lo lasciamo aggiornato per compatibilità/log/debug.
+         * Per orientare la freccia in 2D usa però il metodo world→screen,
+         * così sarà esattamente parallela alla linea verde disegnata.
+         */
+        if (lineDist > 1e-9) {
+            orientamentoFreccia = normalize360(Math.toDegrees(Math.atan2(dN, dE)));
+        }
+    }
+
 
 
 }

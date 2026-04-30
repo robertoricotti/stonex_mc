@@ -331,7 +331,8 @@ public class DataSaved {
     public static List<Point3D_IR> rawPoints = new ArrayList<>();
     public static List<Point3D_IR> filteredRawPoints = new ArrayList<>();
 
-
+    public static double snapRefWorldX;
+    public static double snapRefWorldY;
     //MC
     public static int Exca_Antenna_Mounting;
     public static int useLowResolution;

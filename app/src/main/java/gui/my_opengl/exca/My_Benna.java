@@ -22,7 +22,7 @@ import static services.TriangleService.glPuntoTerra;
 import static services.TriangleService.glSegmentEnd;
 import static services.TriangleService.glSegmentPoint;
 import static services.TriangleService.glTerraPunto;
-import static services.TriangleService.orientamentoFreccia;
+//import static services.TriangleService.orientamentoFreccia;
 
 import android.util.Log;
 
@@ -287,7 +287,7 @@ public class My_Benna {
 
         switch (DataSaved.isAutoSnap) {
             case 0:
-                orientamentoFreccia = 0;
+                //orientamentoFreccia = 0;
                 glLinePoint = new Point3DF(0f, 0f, 0f);
                 glSegmentPoint = new Point3DF(0f, 0f, 0f);
                 glSegmentEnd = new Point3DF(0f, 0f, 0f);
@@ -297,7 +297,7 @@ public class My_Benna {
                 break;
 
             case 1:
-                orientamentoFreccia = 0;
+                //orientamentoFreccia = 0;
                 if (DataSaved.points != null && !DataSaved.points.isEmpty()) {
                     switch (DataSaved.bucketEdge) {
                         case -1: {
@@ -360,7 +360,7 @@ public class My_Benna {
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
-                            orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketLeftCoord[0], bucketLeftCoord[1], p.getX(), p.getY());
+                            //orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketLeftCoord[0], bucketLeftCoord[1], p.getX(), p.getY());
                             break;
                         }
                         case 0: {
@@ -372,7 +372,7 @@ public class My_Benna {
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
-                            orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketCoord[0], bucketCoord[1], p.getX(), p.getY());
+                            //orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketCoord[0], bucketCoord[1], p.getX(), p.getY());
                             break;
                         }
                         case 1: {
@@ -384,7 +384,7 @@ public class My_Benna {
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
-                            orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketRightCoord[0], bucketRightCoord[1], p.getX(), p.getY());
+                            //orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketRightCoord[0], bucketRightCoord[1], p.getX(), p.getY());
                             break;
                         }
                     }

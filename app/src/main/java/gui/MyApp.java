@@ -528,14 +528,11 @@ git push
                         @SuppressLint({"SetTextI18n", "DefaultLocale"})
                         @Override
                         public void run() {
-
-
                             try {
                                 if (DataSaved.isWL == DRILL) {
                                     DataSaved.lrBucket = DataSaved.lrTool;
                                 }
                                 if (DataSaved.my_comPort == 4) {
-
 
                                     new SerialEvent(NmeaGenerator.generateLLQ());
                                     new SerialEvent(NmeaGenerator.generateGPHDT());

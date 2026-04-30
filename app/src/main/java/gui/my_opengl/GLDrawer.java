@@ -1481,20 +1481,21 @@ public class GLDrawer {
                 }
 
                 if (polyToDraw != null) {
-                    // versione piena
                     GLDrawer.drawSelectedPoly(gl11, polyToDraw, 5f, Color.GREEN, s);
-
-
                 }
+
+                if (isOrtho2D) {
+                    drawLineDist2DFromWorld(5f, Color.GREEN, s);
+                    break;
+                }
+
                 switch (DataSaved.isWL) {
                     case EXCAVATOR:
                         drawLineDist_EXCA(gl11, 5f, Color.GREEN, s);
                         break;
-
                     case WHEELLOADER:
                         drawLineDist_WHEEL(gl11, 5f, Color.GREEN, s);
                         break;
-
                     case DOZER:
                     case DOZER_SIX:
                     case GRADER:
@@ -2006,7 +2007,45 @@ public class GLDrawer {
             Log.e(TAG, "drawFaces2D", e);
         }
     }
+    private static void drawLineDist2DFromWorld(float lineW, int color, float scala) {
+        try {
+            if (DataSaved.nearestSegment == null) return;
 
+            double[] ref;
+            switch (DataSaved.bucketEdge) {
+                case -1:
+                    ref = packexcalib.exca.ExcavatorLib.bucketLeftCoord;
+                    break;
+                case 1:
+                    ref = packexcalib.exca.ExcavatorLib.bucketRightCoord;
+                    break;
+                case 0:
+                default:
+                    ref = packexcalib.exca.ExcavatorLib.bucketCoord;
+                    break;
+            }
+
+            float x1 = (float) ((ref[0] - DataSaved.glL_AnchorView[0]) * scala);
+            float y1 = (float) ((ref[1] - DataSaved.glL_AnchorView[1]) * scala);
+
+            float x2 = (float) ((DataSaved.cutWorldX_1 - DataSaved.glL_AnchorView[0]) * scala);
+            float y2 = (float) ((DataSaved.cutWorldY_1 - DataSaved.glL_AnchorView[1]) * scala);
+
+            float[] coords = new float[]{
+                    x1, y1, 0f,
+                    x2, y2, 0f
+            };
+
+            GLDrawer.drawThickSegments2D(
+                    coords,
+                    Math.max(3f, lineW),
+                    GL_Methods.parseColorToGL(color)
+            );
+
+        } catch (Exception e) {
+            Log.e(TAG, "drawLineDist2DFromWorld", e);
+        }
+    }
 }
 
 

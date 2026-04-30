@@ -15,6 +15,7 @@ import static services.ReadProjectService.clearDataProgetto;
 import static services.ReadProjectService.isFinishedDTM;
 import static services.ReadProjectService.isFinishedPOINT;
 import static services.ReadProjectService.isFinishedPOLY;
+
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
@@ -1410,9 +1411,42 @@ public class My3DActivity extends BaseClass {
 
             } else if (DataSaved.isAutoSnap == 2 || DataSaved.isAutoSnap == 4 || DataSaved.isAutoSnap == 20) {
                 offsetS = "\n" + "(" + Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)) + ")";
-                rot = TriangleService.orientamentoFreccia + rotFix;
-                rot = rot % 360;
-                freccia.setRotation((float) rot);
+                float[] a = new float[2];
+                float[] b = new float[2];
+
+                boolean okA = MyGLRenderer.projectWorldToScreen2D(
+                        DataSaved.snapRefWorldX,
+                        DataSaved.snapRefWorldY,
+                        DataSaved.glL_AnchorView[0],
+                        DataSaved.glL_AnchorView[1],
+                        a
+                );
+
+                boolean okB = MyGLRenderer.projectWorldToScreen2D(
+                        DataSaved.cutWorldX_1,
+                        DataSaved.cutWorldY_1,
+                        DataSaved.glL_AnchorView[0],
+                        DataSaved.glL_AnchorView[1],
+                        b
+                );
+
+                if (okA && okB) {
+                    float dx = b[0] - a[0];
+                    float dy = b[1] - a[1];
+
+                    if (Math.hypot(dx, dy) > 2.0) {
+                        double screenAngle = Math.toDegrees(Math.atan2(dy, dx));
+
+                        // Se la tua icona freccia a rotation=0 punta verso destra:
+                        rot = screenAngle+90;
+
+                        // Se invece la tua icona freccia a rotation=0 punta verso l'alto, usa:
+                        // rot = screenAngle + 90.0;
+
+                        rot = normalize360(rot);
+                        freccia.setRotation((float) rot);
+                    }
+                }
 
             }
             switch (DataSaved.bucketEdge) {
@@ -1901,4 +1935,8 @@ public class My3DActivity extends BaseClass {
             zoomHandler.postDelayed(this, ZOOM_INTERVAL);
         }
     };
+    private double normalize360(double a) {
+        a = a % 360.0;
+        return a < 0 ? a + 360.0 : a;
+    }
 }

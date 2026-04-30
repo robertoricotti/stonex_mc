@@ -15,7 +15,7 @@ import static services.TriangleService.glPuntoTerra;
 import static services.TriangleService.glSegmentEnd;
 import static services.TriangleService.glSegmentPoint;
 import static services.TriangleService.glTerraPunto;
-import static services.TriangleService.orientamentoFreccia;
+//import static services.TriangleService.orientamentoFreccia;
 
 import dxf.Point3D;
 import gui.my_opengl.MyGLRenderer;
@@ -123,7 +123,7 @@ public class My_Wheel {
         switch (DataSaved.isAutoSnap) {
             case 0:
 
-                orientamentoFreccia = 0;
+               // orientamentoFreccia = 0;
                 glLinePoint = new Point3DF(0f, 0f, 0f);
                 glSegmentPoint = new Point3DF(0f, 0f, 0f);
                 glSegmentEnd = new Point3DF(0f, 0f, 0f);
@@ -134,7 +134,7 @@ public class My_Wheel {
                 break;
 
             case 1:
-                orientamentoFreccia = 0;
+              //  orientamentoFreccia = 0;
                 if (DataSaved.points != null && !DataSaved.points.isEmpty()) {
                     switch (DataSaved.bucketEdge) {
                         case -1:
@@ -189,7 +189,7 @@ public class My_Wheel {
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
-                            orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketLeftCoord[0], bucketLeftCoord[1], p.getX(), p.getY());
+                           // orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketLeftCoord[0], bucketLeftCoord[1], p.getX(), p.getY());
 
                             break;
 
@@ -202,7 +202,7 @@ public class My_Wheel {
                             glLinePoint = pbuckC;
                             glSegmentPoint = new Point3DF(pbuckC.getX(), pbuckC.getY(), plineC.getZ());
                             glSegmentEnd = plineC;
-                            orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketCoord[0], bucketCoord[1], pC.getX(), pC.getY());
+                          //  orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketCoord[0], bucketCoord[1], pC.getX(), pC.getY());
 
                             break;
 
@@ -215,7 +215,7 @@ public class My_Wheel {
                             glLinePoint = pbuckR;
                             glSegmentPoint = new Point3DF(pbuckR.getX(), pbuckR.getY(), plineR.getZ());
                             glSegmentEnd = plineR;
-                            orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketRightCoord[0], bucketRightCoord[1], pR.getX(), pR.getY());
+                          //  orientamentoFreccia = My_LocationCalc.calcBearingXY(bucketRightCoord[0], bucketRightCoord[1], pR.getX(), pR.getY());
 
                             break;
 
