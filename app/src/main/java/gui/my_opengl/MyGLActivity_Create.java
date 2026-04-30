@@ -61,9 +61,9 @@ public class MyGLActivity_Create extends BaseClass {
 
     ImageView digMenu, bucketEdgeL, bucketEdgeC, bucketEdgeR, add_point, remove_point, edit_point, salva;
     ImageView gl_facce, gl_fill, gl_poly, gl_point, gl_text, navigatorHDT, gpsStat, statoImg;
-    ImageView gl_2d3d;
+    ImageView gl_2d3d,gl_croce,gl_gradient;
 
-    public static boolean gFacce, gFill, gPoly, gPoint, gText;
+    public static boolean gFacce, gFill, gPoly, gPoint, gText,gGradient;
 
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     TextView mostraCoor;
@@ -79,9 +79,9 @@ public class MyGLActivity_Create extends BaseClass {
         CreateSurfaceController.resetCreateData();
         readIntent();
         initCreateToggles();
-
+        //initCreateGlDefaults();
         setContentView(R.layout.activity_my_glactivity);
-        DataSaved.showAlign = 0;
+        DataSaved.projectTAG="DXF";
         try {
             startService(new Intent(this, TriangleService.class));
         } catch (Exception e) {
@@ -126,13 +126,14 @@ public class MyGLActivity_Create extends BaseClass {
         gPoly = true;
         gPoint = true;
         gText = true;
+        gGradient=false;
     }
 
     private void findView() {
         glSurfaceViewCreate = findViewById(R.id.glSurfaceViewCreate);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         headingDialog = new HeadingDialog(this);
-
+        gl_gradient=findViewById(R.id.gl_gradient);
         mostraCoor = findViewById(R.id.mostraCoor);
         statoImg = findViewById(R.id.statoImg);
         gpsStat = findViewById(R.id.gpsStat);
@@ -151,6 +152,7 @@ public class MyGLActivity_Create extends BaseClass {
         gl_point = findViewById(R.id.gl_point);
         gl_text = findViewById(R.id.gl_text);
         gl_2d3d = findViewById(R.id.gl_2d3d);
+        gl_croce=findViewById(R.id.gl_croce);
 
     }
 
@@ -185,6 +187,19 @@ public class MyGLActivity_Create extends BaseClass {
     }
 
     private void onClick() {
+        gl_gradient.setOnClickListener(v -> {
+            gGradient=!gGradient;
+            if(gGradient){
+                gFill=false;
+            }
+        });
+        gl_croce.setOnClickListener(v -> {
+            if (DataSaved.showAlign == 0) {
+                DataSaved.showAlign = 1;
+            } else if (DataSaved.showAlign == 1) {
+                DataSaved.showAlign = 0;
+            }
+        });
         bucketEdgeL.setOnClickListener(v -> {
             DataSaved.bucketEdge = -1;
             spigoloSelezionato = ExcavatorLib.bucketLeftCoord;
@@ -232,6 +247,9 @@ public class MyGLActivity_Create extends BaseClass {
         });
         gl_fill.setOnClickListener(v -> {
             gFill = !gFill;
+            if(gFill){
+                gGradient=false;
+            }
             requestGlRender();
             updateUI();
         });
@@ -425,10 +443,19 @@ public class MyGLActivity_Create extends BaseClass {
         tintToggle(gl_point, gPoint);
         tintToggle(gl_text, gText);
 
-
+        if(DataSaved.showAlign==1){
+            gl_croce.setImageTintList(getColorStateList(R.color.green));
+        }else {
+            gl_croce.setImageTintList(getColorStateList(R.color.white));
+        }
         if (gpsStat != null)
             gpsStat.setImageTintList(getColorStateList(DataSaved.gpsOk ? R.color.green : R.color.red));
 
+        if (gGradient) {
+            gl_gradient.setImageResource(R.drawable.gradient);
+        } else {
+            gl_gradient.setImageResource(R.drawable.gradient_off);
+        }
         if (glVista3d == 1) {
             gl_2d3d.setImageResource(R.drawable.tredi_vista);
             isPan = false;
@@ -528,96 +555,50 @@ public class MyGLActivity_Create extends BaseClass {
 
     }
 
-    private void testCreatePlanDirect() {
-        if (DataSaved.points_Create == null) {
-            DataSaved.points_Create = new java.util.ArrayList<>();
-        }
-        if (DataSaved.polylines_Create == null) {
-            DataSaved.polylines_Create = new java.util.ArrayList<>();
-        }
-        if (DataSaved.dxfFaces_Create == null) {
-            DataSaved.dxfFaces_Create = new java.util.ArrayList<>();
-        }
-        if (DataSaved.dxfTexts_Create == null) {
-            DataSaved.dxfTexts_Create = new java.util.ArrayList<>();
+
+
+    private void initCreateGlDefaults() {
+        try {
+            My3DActivity.glVista3d = Integer.parseInt(MyData.get_String("vista3D"));
+        } catch (Exception e) {
+            My3DActivity.glVista3d = 0; // se vuoi aprire Create in 2D
+            MyData.push("vista3D", String.valueOf(My3DActivity.glVista3d));
         }
 
-        DataSaved.points_Create.clear();
-        DataSaved.polylines_Create.clear();
-        DataSaved.dxfFaces_Create.clear();
-        DataSaved.dxfTexts_Create.clear();
-
-        double[] c;
-        switch (DataSaved.bucketEdge) {
-            case -1:
-                c = packexcalib.exca.ExcavatorLib.bucketLeftCoord;
-                break;
-            case 1:
-                c = packexcalib.exca.ExcavatorLib.bucketRightCoord;
-                break;
-            case 0:
-            default:
-                c = packexcalib.exca.ExcavatorLib.bucketCoord;
-                break;
+        try {
+            DataSaved.typeView = Integer.parseInt(MyData.get_String("typeView"));
+        } catch (Exception e) {
+            DataSaved.typeView = 1;
+            MyData.push("typeView", "1");
         }
 
-        if (c == null || c.length < 3) {
-            android.util.Log.e("CREATE_TEST", "Punto macchina nullo");
-            return;
+        if (DataSaved.typeView != 0 && DataSaved.typeView != 1) {
+            DataSaved.typeView = 1;
         }
 
-        double side = 20.0;
-        double h = side / 2.0;
-        double z = c[2];
+        try {
+            MyGLRenderer.scale = MyData.get_Float("glScale");
+            MyGLRenderer.angleX = MyData.get_Float("glAngleX");
+            MyGLRenderer.angleY = MyData.get_Float("glAngleY");
+            MyGLRenderer.angleY_extra = MyData.get_Float("glAngleY_Extra");
+            MyGLRenderer.scale_2d = MyData.get_Float("glScale_2d");
+        } catch (Exception e) {
+            MyGLRenderer.scale = 0.5f;
+            MyGLRenderer.scale_2d = 0.5f;
+            MyGLRenderer.angleX = -90f;
+            MyGLRenderer.angleY = 0f;
+            MyGLRenderer.angleY_extra = 0f;
+        }
 
-        dxf.Layer faceLayer = new dxf.Layer("CREATE", "CREATE_FACES", android.graphics.Color.YELLOW, true);
-        dxf.Layer polyLayer = new dxf.Layer("CREATE", "CREATE_POLYLINES", android.graphics.Color.MAGENTA, true);
+        MyGLRenderer.panX = 0f;
+        MyGLRenderer.panY = -0.3f;
 
-        dxf.Point3D center = new dxf.Point3D("P", c[0], c[1], z, "P");
+        if (MyGLRenderer.scale < 0.09f) {
+            MyGLRenderer.scale = 0.09f;
+        }
 
-        dxf.Point3D p1 = new dxf.Point3D("P1", c[0] - h, c[1] - h, z, "P1");
-        dxf.Point3D p2 = new dxf.Point3D("P2", c[0] + h, c[1] - h, z, "P2");
-        dxf.Point3D p3 = new dxf.Point3D("P3", c[0] + h, c[1] + h, z, "P3");
-        dxf.Point3D p4 = new dxf.Point3D("P4", c[0] - h, c[1] + h, z, "P4");
-
-        DataSaved.points_Create.add(center);
-        DataSaved.points_Create.add(p1);
-        DataSaved.points_Create.add(p2);
-        DataSaved.points_Create.add(p3);
-        DataSaved.points_Create.add(p4);
-
-        DataSaved.dxfFaces_Create.add(new dxf.Face3D(p1, p2, center, center, android.graphics.Color.YELLOW, faceLayer));
-        DataSaved.dxfFaces_Create.add(new dxf.Face3D(p2, p3, center, center, android.graphics.Color.YELLOW, faceLayer));
-        DataSaved.dxfFaces_Create.add(new dxf.Face3D(p3, p4, center, center, android.graphics.Color.YELLOW, faceLayer));
-        DataSaved.dxfFaces_Create.add(new dxf.Face3D(p4, p1, center, center, android.graphics.Color.YELLOW, faceLayer));
-
-        DataSaved.polylines_Create.add(makeCreatePolyline(polyLayer, p1, p2));
-        DataSaved.polylines_Create.add(makeCreatePolyline(polyLayer, p2, p3));
-        DataSaved.polylines_Create.add(makeCreatePolyline(polyLayer, p3, p4));
-        DataSaved.polylines_Create.add(makeCreatePolyline(polyLayer, p4, p1));
-
-        DataSaved.typeView = 1;
-
-        android.util.Log.e("CREATE_TEST",
-                "CREATO PLAN DIRETTO"
-                        + " points=" + DataSaved.points_Create.size()
-                        + " faces=" + DataSaved.dxfFaces_Create.size()
-                        + " polylines=" + DataSaved.polylines_Create.size()
-                        + " typeView=" + DataSaved.typeView
-                        + " glVista3d=" + My3DActivity.glVista3d
-                        + " gFacce=" + gFacce
-                        + " gPoly=" + gPoly
-                        + " gPoint=" + gPoint);
-    }
-
-    private dxf.Polyline makeCreatePolyline(dxf.Layer layer, dxf.Point3D a, dxf.Point3D b) {
-        java.util.ArrayList<dxf.Point3D> vertices = new java.util.ArrayList<>();
-        vertices.add(a);
-        vertices.add(b);
-
-        dxf.Polyline polyline = new dxf.Polyline(vertices, layer);
-        polyline.setLineColor(android.graphics.Color.MAGENTA);
-        return polyline;
+        // fondamentale: se parto in 2D, il touch deve essere pan, non rotate
+        My3DActivity.isPan = My3DActivity.glVista3d == 0;
     }
 }
 

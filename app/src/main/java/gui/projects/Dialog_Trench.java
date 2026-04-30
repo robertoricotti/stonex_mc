@@ -3,6 +3,7 @@ package gui.projects;
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,13 +19,29 @@ import com.example.stx_dig.R;
 import dxf.Point3D;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
+import gui.my_opengl.CreateSurfaceController;
 import utils.FullscreenActivity;
 import utils.MyData;
 import utils.Utils;
 
 public class Dialog_Trench {
+    private static final String TAG = "Dialog_Trench";
+
     ImageView spiana, mantieni;
-    public static boolean flat;
+
+    /**
+     * true  = spiana centerline with constant longitudinal grade from startZ_d to endZ_d.
+     * false = keep current picked point Z values.
+     */
+    public static boolean flat = false;
+
+    public static double leftW_d = 1.0;
+    public static double leftS_d = 0.0;
+    public static double rightW_d = 1.0;
+    public static double rightS_d = 0.0;
+    public static double startZ_d = Double.NaN;
+    public static double endZ_d = Double.NaN;
+
     public Dialog dialog;
     Activity activity;
     Button ok, cancel, reload;
@@ -33,39 +50,39 @@ public class Dialog_Trench {
     CustomNumberDialog customNumberDialog;
     CustomNumberDialogFtIn customNumberDialogFtIn;
     Point3D[] point3DS;
-    public static double leftW_d, leftS_d, rightW_d, rightS_d;
     TextView tx1, tx2, tx3, txStart, txEnd;
-    static Point3D[] tempPoints;
+    public static Point3D[] tempPoints = new Point3D[0];
     ConstraintLayout vistaTrench;
     SezioneTrenchView sezioneView;
 
     public Dialog_Trench(Activity activity, Point3D[] point3DS) {
         this.activity = activity;
-        this.point3DS = point3DS;
+        this.point3DS = point3DS == null ? new Point3D[0] : point3DS;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         uom = MyData.get_Int("Unit_Of_Measure");
         customNumberDialog = new CustomNumberDialog(activity, -256);
         customNumberDialogFtIn = new CustomNumberDialogFtIn(activity, -256);
-        if (tempPoints == null) {
-            tempPoints = new Point3D[0];
-        }
+        initialiseStartEndIfNeeded();
     }
 
     public void show() {
         dialog.create();
         dialog.setContentView(R.layout.dialog_trench);
         dialog.setCancelable(false);
+
         Window window = dialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.CENTER;
+        if (window != null) {
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            wlp.gravity = Gravity.CENTER;
+        }
+
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
+
         findView();
         init();
         onClick();
-        update();
-
-
+        updatePreview(false);
     }
 
     private void findView() {
@@ -87,125 +104,127 @@ public class Dialog_Trench {
         txEnd = dialog.findViewById(R.id.txEnd);
         etStart = dialog.findViewById(R.id.et_start);
         etEnd = dialog.findViewById(R.id.et_end);
-
     }
 
     private void init() {
-        leftW.setText(Utils.readUnitOfMeasureLITE(String.valueOf(leftW_d).replace(",", ".")));
-        leftS.setText(Utils.readAngoloLITE(String.valueOf(leftS_d).replace(",", ".")));
-        rightW.setText(Utils.readUnitOfMeasureLITE(String.valueOf(rightW_d).replace(",", ".")));
-        rightS.setText(Utils.readAngoloLITE(String.valueOf(rightS_d).replace(",", ".")));
         tx1.setText("CL ELEVATION MODE");
         tx2.setText("LEFT  WIDTH " + Utils.getMetriSimbolCoords() + "    LEFT  SLOPE " + Utils.getGradiSimbol());
         tx3.setText("RIGHT WIDTH " + Utils.getMetriSimbolCoords() + "    RIGHT SLOPE " + Utils.getGradiSimbol());
         txStart.setText("Start Z " + Utils.getMetriSimbol());
         txEnd.setText("End Z " + Utils.getMetriSimbol());
-        try {
-            etStart.setText(Utils.readUnitOfMeasureLITE(String.valueOf(point3DS[0].getZ())));
-            etEnd.setText(Utils.readUnitOfMeasureLITE(String.valueOf(point3DS[point3DS.length - 1].getZ())));
-        } catch (Exception ignored) {
 
-        }
-
-
+        leftW.setText(Utils.readUnitOfMeasureLITE(String.valueOf(leftW_d).replace(",", ".")));
+        leftS.setText(Utils.readAngoloLITE(String.valueOf(leftS_d).replace(",", ".")));
+        rightW.setText(Utils.readUnitOfMeasureLITE(String.valueOf(rightW_d).replace(",", ".")));
+        rightS.setText(Utils.readAngoloLITE(String.valueOf(rightS_d).replace(",", ".")));
+        etStart.setText(Utils.readUnitOfMeasureLITE(String.valueOf(startZ_d).replace(",", ".")));
+        etEnd.setText(Utils.readUnitOfMeasureLITE(String.valueOf(endZ_d).replace(",", ".")));
     }
 
     private void onClick() {
-        reload.setOnClickListener(view -> {
-            update();
-        });
+        reload.setOnClickListener(view -> updatePreview(true));
+
         ok.setOnClickListener(view -> {
-            update();
+            updatePreview(true);
+            commitToLegacyPointsIfNeeded();
             dialog.dismiss();
         });
-        cancel.setOnClickListener(view -> {
-            dialog.dismiss();
-        });
+
+        cancel.setOnClickListener(view -> dialog.dismiss());
+
         spiana.setOnClickListener(view -> {
             flat = true;
-            update();
+            updatePreview(true);
         });
+
         mantieni.setOnClickListener(view -> {
             flat = false;
-            update();
+            updatePreview(true);
         });
-        etStart.setOnClickListener(view -> {
-            if (uom == 0 || uom == 1 || uom == 2 || uom == 3 || uom == 6 || uom == 7) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(etStart);
-                }
-            } else {
-                if (!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(etStart);
-                }
-            }
-        });
-        etEnd.setOnClickListener(view -> {
-            if (uom == 0 || uom == 1 || uom == 2 || uom == 3 || uom == 6 || uom == 7) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(etEnd);
-                }
-            } else {
-                if (!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(etEnd);
-                }
-            }
-        });
-        leftW.setOnClickListener(view -> {
-            if (uom == 0 || uom == 1 || uom == 2 || uom == 3 || uom == 6 || uom == 7) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(leftW);
-                }
-            } else {
-                if (!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(leftW);
-                }
-            }
 
-        });
-        leftS.setOnClickListener(view -> {
-            if (uom == 0 || uom == 1 || uom == 2 || uom == 3 || uom == 6 || uom == 7) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(leftS);
-                }
-            } else {
-                if (!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(leftS);
-                }
-            }
-        });
-        rightW.setOnClickListener(view -> {
-            if (uom == 0 || uom == 1 || uom == 2 || uom == 3 || uom == 6 || uom == 7) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(rightW);
-                }
-            } else {
-                if (!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(rightW);
-                }
-            }
-        });
-        rightS.setOnClickListener(view -> {
-            if (uom == 0 || uom == 1 || uom == 2 || uom == 3 || uom == 6 || uom == 7) {
-                if (!customNumberDialog.dialog.isShowing()) {
-                    customNumberDialog.show(rightS);
-                }
-            } else {
-                if (!customNumberDialogFtIn.dialog.isShowing()) {
-                    customNumberDialogFtIn.show(rightS);
-                }
-            }
+        setNumericClick(etStart);
+        setNumericClick(etEnd);
+        setNumericClick(leftW);
+        setNumericClick(leftS);
+        setNumericClick(rightW);
+        setNumericClick(rightS);
+    }
 
+    private void setNumericClick(EditText editText) {
+        editText.setOnClickListener(view -> {
+            if (uom == 0 || uom == 1 || uom == 2 || uom == 3 || uom == 6 || uom == 7) {
+                if (!customNumberDialog.dialog.isShowing()) {
+                    customNumberDialog.show(editText);
+                }
+            } else {
+                if (!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(editText);
+                }
+            }
         });
     }
 
-    private void update() {
-        try {
-            point3DS[0].setZ(Double.parseDouble(Utils.writeMetri(etStart.getText().toString())));
-            point3DS[point3DS.length - 1].setZ(Double.parseDouble(Utils.writeMetri(etEnd.getText().toString())));
-        } catch (Exception ignored) {
+    /**
+     * Reads UI values, refreshes the local section preview, and optionally pushes changes to the
+     * active OpenGL create controller.
+     */
+    private void updatePreview(boolean pushToController) {
+        readValuesFromFields();
+        updateModeButtons();
 
+        tempPoints = flat ? calcolaNuoveZ(point3DS) : clonePoints(point3DS);
+
+        if (sezioneView != null) {
+            sezioneView.setPoints(tempPoints);
         }
+
+        if (pushToController) {
+            CreateSurfaceController controller = CreateSurfaceController.getActiveController();
+            if (controller != null && controller.getMode() == CreateSurfaceController.MODE_TRENCH) {
+                controller.syncTrenchParamsFromLegacy();
+            }
+        }
+    }
+
+    private void readValuesFromFields() {
+        try {
+            leftW_d = Math.max(0.0, Double.parseDouble(Utils.writeMetri(leftW.getText().toString())));
+        } catch (Exception e) {
+            Log.w(TAG, "Invalid left width", e);
+        }
+
+        try {
+            leftS_d = Double.parseDouble(Utils.writeGradi(leftS.getText().toString()));
+        } catch (Exception e) {
+            Log.w(TAG, "Invalid left slope", e);
+        }
+
+        try {
+            rightW_d = Math.max(0.0, Double.parseDouble(Utils.writeMetri(rightW.getText().toString())));
+        } catch (Exception e) {
+            Log.w(TAG, "Invalid right width", e);
+        }
+
+        try {
+            rightS_d = Double.parseDouble(Utils.writeGradi(rightS.getText().toString()));
+        } catch (Exception e) {
+            Log.w(TAG, "Invalid right slope", e);
+        }
+
+        try {
+            startZ_d = Double.parseDouble(Utils.writeMetri(etStart.getText().toString()));
+        } catch (Exception e) {
+            Log.w(TAG, "Invalid start Z", e);
+        }
+
+        try {
+            endZ_d = Double.parseDouble(Utils.writeMetri(etEnd.getText().toString()));
+        } catch (Exception e) {
+            Log.w(TAG, "Invalid end Z", e);
+        }
+    }
+
+    private void updateModeButtons() {
         if (flat) {
             spiana.setAlpha(1.0f);
             spiana.setBackgroundColor(Color.YELLOW);
@@ -217,70 +236,86 @@ public class Dialog_Trench {
             mantieni.setAlpha(1.0f);
             mantieni.setBackgroundColor(Color.YELLOW);
         }
-
-        leftW_d = Double.parseDouble(Utils.writeMetri(leftW.getText().toString()));
-        leftS_d = Double.parseDouble(Utils.writeGradi(leftS.getText().toString()));
-        rightW_d = Double.parseDouble(Utils.writeMetri(rightW.getText().toString()));
-        rightS_d = Double.parseDouble(Utils.writeGradi(rightS.getText().toString()));
-        if (flat) {
-            tempPoints = calcolaNuoveZ(point3DS);
-        }
-
-        Point3D[] puntiDaMostrare = flat ? tempPoints : point3DS;
-        sezioneView.setPoints(puntiDaMostrare);
-
-        try {
-            etStart.setText(Utils.readUnitOfMeasureLITE(String.valueOf(point3DS[0].getZ())));
-            etEnd.setText(Utils.readUnitOfMeasureLITE(String.valueOf(point3DS[point3DS.length - 1].getZ())));
-        } catch (Exception ignored) {
-
-        }
-
-
     }
 
-    public Point3D[] calcolaNuoveZ(Point3D[] pointS) {
-        if (pointS == null || pointS.length < 2) return pointS;
+    private void initialiseStartEndIfNeeded() {
+        if (point3DS == null || point3DS.length == 0) return;
 
-        Point3D[] result = new Point3D[pointS.length];
+        if (Double.isNaN(startZ_d)) {
+            startZ_d = point3DS[0].getZ();
+        }
+        if (Double.isNaN(endZ_d)) {
+            endZ_d = point3DS[point3DS.length - 1].getZ();
+        }
+    }
 
-        Point3D p0 = pointS[0];
-        Point3D pN = pointS[pointS.length - 1];
-
-        double x0 = p0.getX();
-        double y0 = p0.getY();
-        double z0 = p0.getZ();
-
-        double x1 = pN.getX();
-        double y1 = pN.getY();
-        double z1 = pN.getZ();
-
-        // Direzione del segmento base
-        double dx = x1 - x0;
-        double dy = y1 - y0;
-        double segmentLengthSq = dx * dx + dy * dy;
-
-        for (int i = 0; i < pointS.length; i++) {
-            double x = pointS[i].getX();
-            double y = pointS[i].getY();
-
-            // Calcola t = proiezione del punto sulla retta base (parametrica)
-            double t;
-            if (segmentLengthSq == 0) {
-                t = 0; // Evita divisione per zero, segmento nullo
-            } else {
-                t = ((x - x0) * dx + (y - y0) * dy) / segmentLengthSq;
+    /**
+     * Applies the flat centerline to legacy point3DS only when OK is pressed. In OpenGL Create,
+     * the controller rebuilds directly from DataSaved.points_Create and these static params.
+     */
+    private void commitToLegacyPointsIfNeeded() {
+        if (flat && tempPoints != null && tempPoints.length == point3DS.length) {
+            for (int i = 0; i < point3DS.length; i++) {
+                if (point3DS[i] != null && tempPoints[i] != null) {
+                    point3DS[i].setZ(tempPoints[i].getZ());
+                }
             }
-
-            // Interpola Z usando t
-            double z = z0 + t * (z1 - z0);
-
-            // Crea nuovo punto
-            result[i] = new Point3D(pointS[i].getId(), x, y, z, pointS[i].getName());
+        } else if (point3DS != null && point3DS.length >= 2) {
+            try {
+                point3DS[0].setZ(startZ_d);
+                point3DS[point3DS.length - 1].setZ(endZ_d);
+            } catch (Exception ignored) {
+            }
         }
 
+        Activity_Crea_Superficie.point3DS = point3DS;
+    }
+
+    /**
+     * Professional longitudinal flattening by cumulative station, not projection on P0-PN chord.
+     */
+    public Point3D[] calcolaNuoveZ(Point3D[] points) {
+        if (points == null || points.length < 2) return clonePoints(points);
+
+        double[] station = computeStations(points);
+        double total = station[station.length - 1];
+
+        Point3D[] result = new Point3D[points.length];
+        for (int i = 0; i < points.length; i++) {
+            Point3D p = points[i];
+            if (p == null) continue;
+
+            double t = total <= 1e-9 ? 0.0 : station[i] / total;
+            double z = startZ_d + t * (endZ_d - startZ_d);
+            result[i] = new Point3D(p.getId(), p.getX(), p.getY(), z, p.getName());
+        }
         return result;
     }
 
+    private double[] computeStations(Point3D[] points) {
+        double[] station = new double[points.length];
+        station[0] = 0.0;
+        for (int i = 1; i < points.length; i++) {
+            Point3D a = points[i - 1];
+            Point3D b = points[i];
+            if (a == null || b == null) {
+                station[i] = station[i - 1];
+            } else {
+                station[i] = station[i - 1] + Math.hypot(b.getX() - a.getX(), b.getY() - a.getY());
+            }
+        }
+        return station;
+    }
 
+    private Point3D[] clonePoints(Point3D[] points) {
+        if (points == null) return new Point3D[0];
+        Point3D[] out = new Point3D[points.length];
+        for (int i = 0; i < points.length; i++) {
+            Point3D p = points[i];
+            if (p != null) {
+                out[i] = new Point3D(p.getId(), p.getX(), p.getY(), p.getZ(), p.getName());
+            }
+        }
+        return out;
+    }
 }

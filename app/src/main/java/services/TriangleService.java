@@ -45,6 +45,7 @@ import gui.MyApp;
 import gui.draw_class.Geometry2D;
 import gui.my_opengl.GLDrawer;
 import gui.my_opengl.My3DActivity;
+import gui.my_opengl.MyGLActivity_Create;
 import gui.my_opengl.Point3DF;
 import gui.my_opengl.Vector3D;
 import gui.my_opengl.dozer.My_Lama;
@@ -72,7 +73,7 @@ public class TriangleService extends Service {
     static boolean startSort;
     static boolean isUpdating;
     static int rilettura;
-    public static double minZ, maxZ;
+    public static double minZ, maxZ,minZCreate,maxZCreate;
     boolean projRead = false;
     private boolean isRunning = false;
     private ExecutorService executor;
@@ -92,6 +93,8 @@ public class TriangleService extends Service {
 
     @Override
     public void onCreate() {
+        minZCreate = Double.MAX_VALUE;
+        maxZCreate = Double.MIN_VALUE;
         try {
             indexAudio = MyData.get_Int("indexAudioSystem");
         } catch (Exception e) {
@@ -205,7 +208,7 @@ public class TriangleService extends Service {
                     }
 
                 } catch (Exception e) {
-                    Log.e("TRI_GL_CREATE",Log.getStackTraceString(e));
+                    Log.e("TRI_GL_CREATE", Log.getStackTraceString(e));
                 }
                 switch (DataSaved.projectTAG) {
                     case "DXF":
@@ -213,6 +216,8 @@ public class TriangleService extends Service {
                     case "AB":
                     case "PLAN":
                     case "AREA":
+                    case "TRIANGLES":
+                    case "TRENCH":
 
 
                         double[][] positions = {bucketLeftCoord, bucketCoord, bucketRightCoord};
@@ -230,6 +235,21 @@ public class TriangleService extends Service {
 
                             DGM_Letf = bucketLeftCoord[2] - QuotaMedia;
                             DGM_Right = bucketRightCoord[2] - QuotaMedia;
+                        }
+                        if(MyApp.visibleActivity instanceof MyGLActivity_Create){
+
+
+                            for (Face3D face : DataSaved.dxfFaces_Create) { // Assumendo che DataSaved.dxfFaces sia una lista di Face3D
+                                Point3D[] vertices = new Point3D[]{face.getP1(), face.getP2(), face.getP3(), face.getP4()};
+                                for (Point3D vertex : vertices) {
+                                    if (vertex != null) { // Verifica che il vertice non sia nullo
+                                        if (vertex.getZ() < minZCreate) minZCreate = vertex.getZ();
+                                        if (vertex.getZ() > maxZCreate) maxZCreate = vertex.getZ();
+                                    }
+                                }
+                            }
+
+                            projRead = true;
                         }
 
                         switch (DataSaved.bucketEdge) {
@@ -556,13 +576,12 @@ public class TriangleService extends Service {
                             }
 
                             projRead = true;
+
+
                         }
                         break;
 
                 }
-
-
-
 
 
                 DataSaved.filteredPolylines = getFilteredPolylines();

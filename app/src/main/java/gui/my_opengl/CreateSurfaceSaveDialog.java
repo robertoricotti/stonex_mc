@@ -159,10 +159,16 @@ public class CreateSurfaceSaveDialog {
                     new ExportDXF_Area(controller.getAreaCoordinates(), filename, path, conversionFactor).generateDXF();
                     break;
                 case CreateSurfaceController.MODE_TRENCH:
-                    new ExportDXF_Trench(controller.getTrenchOrTrianglePoints(),
-                            Dialog_Trench.leftW_d, Dialog_Trench.rightW_d,
-                            Dialog_Trench.leftS_d, Dialog_Trench.rightS_d,
-                            filename, path, conversionFactor).generateDXF();
+                    new ExportDXF_Trench(
+                            controller.getTrenchExportPoints(),
+                            Dialog_Trench.leftW_d,
+                            Dialog_Trench.rightW_d,
+                            Dialog_Trench.leftS_d,
+                            Dialog_Trench.rightS_d,
+                            filename,
+                            path,
+                            conversionFactor
+                    ).generateDXF();
                     break;
                 case CreateSurfaceController.MODE_TRIANGLES:
                     new ExportDXF_Triangles(controller.getTrenchOrTrianglePoints(), filename, path, conversionFactor).generateDXF();

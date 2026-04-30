@@ -30,6 +30,18 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
     private boolean isFold = false;
     private boolean isCloudFolder = false;
 
+    public interface OnItemActionListener {
+        void onItemClick(int position, FileItem fileItem);
+
+        void onItemLongClick(int position, FileItem fileItem);
+    }
+
+    private OnItemActionListener onItemActionListener;
+
+    public void setOnItemActionListener(OnItemActionListener listener) {
+        this.onItemActionListener = listener;
+    }
+
 
     private int filterType = 0; // 0 = tutti, 1 = solo cartelle, 2 = solo file
     private ArrayList<FileItem> originalFiles; // per conservare l'elenco completo
@@ -166,34 +178,27 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
             sizeTextView = itemView.findViewById(R.id.size_tv);
             txtcrs2 = itemView.findViewById(R.id.txtcrs2);
 
-            icon.setOnClickListener((View v) -> {
-                if (selectedItem == getAdapterPosition()) {
-                    selectedItem = -1;
-                    notifyDataSetChanged();
+            View.OnClickListener itemClickListener = v -> {
+                int position = getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION || onItemActionListener == null) return;
+                onItemActionListener.onItemClick(position, files.get(position));
+            };
 
-                } else {
-                    selectedItem = getAdapterPosition();
-                    notifyDataSetChanged();
-                }
-            });
-            nameTextView.setOnClickListener((View v) -> {
-                if (selectedItem == getAdapterPosition()) {
-                    selectedItem = -1;
-                    notifyDataSetChanged();
+            View.OnLongClickListener itemLongClickListener = v -> {
+                int position = getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION || onItemActionListener == null) return true;
+                onItemActionListener.onItemLongClick(position, files.get(position));
+                return true;
+            };
 
-                } else {
-                    selectedItem = getAdapterPosition();
-                    notifyDataSetChanged();
-                }
-                /*
-                   selectedItem = getAdapterPosition();
-                    notifyDataSetChanged();
-                    if (MyApp.visibleActivity instanceof PickProject) {
-                        Log.d("Selezzzione", String.valueOf(MyApp.visibleActivity));
-                        new Dialog_PRJ_Folder(MyApp.visibleActivity).show(Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects/" + getSelectedFilePath());
-                    }
-                 */
-            });
+            panel.setOnClickListener(itemClickListener);
+            icon.setOnClickListener(itemClickListener);
+            nameTextView.setOnClickListener(itemClickListener);
+
+            panel.setOnLongClickListener(itemLongClickListener);
+            icon.setOnLongClickListener(itemLongClickListener);
+            nameTextView.setOnLongClickListener(itemLongClickListener);
+
             txtcrs2.setOnClickListener(view -> {
                 Dialog_Set_Secondo_SP dialog = new Dialog_Set_Secondo_SP(MyApp.visibleActivity);
                 dialog.show(() -> {

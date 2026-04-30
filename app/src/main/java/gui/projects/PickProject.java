@@ -29,6 +29,7 @@ import utils.MyData;
 
 
 public class PickProject extends BaseClass {
+    private String currentPath;
     CustomQwertyDialog customQwertyDialog;
     Dialog_PRJ_Folder dialogPrjFolder;
     String path = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
@@ -66,6 +67,7 @@ public class PickProject extends BaseClass {
 
         arrayFiles = new ArrayList<>();
         path = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
+        currentPath = path;
         File directory = new File(path);
         File[] files = directory.listFiles();
         assert files != null;
@@ -75,6 +77,21 @@ public class PickProject extends BaseClass {
             arrayFiles.add(new ProjectFileAdapter.FileItem(file.getName(), isFolder, size, file.getAbsolutePath()));
         }
         projectAdapter = new ProjectFileAdapter(arrayFiles);
+        projectAdapter.setOnItemActionListener(new ProjectFileAdapter.OnItemActionListener() {
+            @Override
+            public void onItemClick(int position, ProjectFileAdapter.FileItem fileItem) {
+                if (fileItem.isFolder()) {
+                    openFolderAtPositionWithFeedback(position);
+                } else {
+                    selectItemAtPosition(position);
+                }
+            }
+
+            @Override
+            public void onItemLongClick(int position, ProjectFileAdapter.FileItem fileItem) {
+                selectItemAtPosition(position);
+            }
+        });
         recyclerView.setAdapter(projectAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemViewCacheSize(projectAdapter.getItemCount());
@@ -85,15 +102,25 @@ public class PickProject extends BaseClass {
 
     public void updateUI() {
         try {
-            String s = MyData.get_String("progettoSelected");
-            s = s.replace("/storage/emulated/0/StonexMC_V4", "");
-            s = s.substring(0, s.lastIndexOf("/"));
+            String s = currentPath;
+
+            if (s == null || s.trim().isEmpty()) {
+                s = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects";
+            }
+
+            s = s.replace(Environment.getExternalStorageDirectory().toString() + folderPath, "");
+
+            if (s.trim().isEmpty()) {
+                s = "/Projects";
+            }
+
             titolone.setText(s);
+
         } catch (Exception e) {
             titolone.setText(getResources().getString(R.string.selectproject));
         }
-        try {
 
+        try {
             if (projectAdapter.getSelectedItem() > -1) {
                 deletaFile.setVisibility(View.VISIBLE);
                 rename.setVisibility(View.VISIBLE);
@@ -175,51 +202,7 @@ public class PickProject extends BaseClass {
                 if (projectAdapter.getSelectedItem() == -1) {
                     new CustomToast(this, getResources().getString(R.string.select_file)).show();
                 } else {
-                    if (arrayFiles.get(projectAdapter.getSelectedItem()).isFolder()) {
-
-                        //gestisci  qui i file dentro la cartella
-
-                        // Handle the case where the selected item is a folder
-                        String m_folderPath = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects/" + arrayFiles.get(projectAdapter.getSelectedItem()).getName();
-                        File directory = new File(m_folderPath);
-                        File[] files = directory.listFiles();
-
-                        if (files != null) {
-                            ArrayList<String> dxfPstxFiles = new ArrayList<>();
-
-
-                            for (File file : files) {
-                                if (file.isFile()) {
-                                    String fileName = file.getName();
-                                    if (fileName.toLowerCase().endsWith(".dxf") || fileName.toLowerCase().endsWith(".pstx") || fileName.toLowerCase().endsWith(".xml") || fileName.toLowerCase().endsWith(".sp") || fileName.toLowerCase().endsWith(".csv")) {
-                                        dxfPstxFiles.add(fileName);
-                                    }
-                                }
-                            }
-
-
-                            if (!dialogPrjFolder.dialog.isShowing()) {
-                                dialogPrjFolder.show(m_folderPath);
-                            }
-
-
-                        } else {
-                            new CustomToast(this, "Folder is empty or cannot be accessed.").show_alert();
-                        }
-
-
-                    } else {
-                        disableAll();
-
-                        DataSaved.lockUnlock = 0; // Disable the point lock function before initializing a new project
-                        fileName = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects/" + arrayFiles.get(projectAdapter.getSelectedItem()).getName();
-
-                        MyData.push("progettoSelected", fileName);
-
-                        startService(new Intent(this, UpdateValuesService.class));
-                        startActivity(new Intent(this, Activity_Home_Page.class));
-                        finish();
-                    }
+                    openItemAtPosition(projectAdapter.getSelectedItem());
                 }
             } catch (Exception e) {
                 new CustomToast(this, "...").show();
@@ -286,6 +269,67 @@ public class PickProject extends BaseClass {
 
 
     }
+
+    private void selectItemAtPosition(int position) {
+        if (position == RecyclerView.NO_POSITION || position < 0 || position >= arrayFiles.size()) return;
+        projectAdapter.setItem(position);
+        updateUI();
+    }
+
+    private void openFolderAtPositionWithFeedback(int position) {
+        if (position == RecyclerView.NO_POSITION || position < 0 || position >= arrayFiles.size()) return;
+
+        projectAdapter.setItem(position);
+        updateUI();
+
+        recyclerView.postDelayed(() -> {
+            openFolderAtPosition(position);
+            projectAdapter.setSelectedItem(-1);
+            projectAdapter.notifyDataSetChanged();
+            updateUI();
+        }, 120);
+    }
+
+    private void openItemAtPosition(int position) {
+        if (position == RecyclerView.NO_POSITION || position < 0 || position >= arrayFiles.size()) return;
+
+        ProjectFileAdapter.FileItem selectedFileItem = arrayFiles.get(position);
+
+        if (selectedFileItem.isFolder()) {
+            openFolderAtPosition(position);
+        } else {
+            disableAll();
+
+            DataSaved.lockUnlock = 0; // Disable the point lock function before initializing a new project
+            fileName = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects/" + selectedFileItem.getName();
+
+            MyData.push("progettoSelected", fileName);
+
+            startService(new Intent(this, UpdateValuesService.class));
+            startActivity(new Intent(this, Activity_Home_Page.class));
+            finish();
+        }
+    }
+
+    private void openFolderAtPosition(int position) {
+        if (position == RecyclerView.NO_POSITION || position < 0 || position >= arrayFiles.size()) return;
+
+        ProjectFileAdapter.FileItem selectedFileItem = arrayFiles.get(position);
+        if (!selectedFileItem.isFolder()) return;
+
+        String m_folderPath = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects/" + selectedFileItem.getName();
+        File directory = new File(m_folderPath);
+        File[] files = directory.listFiles();
+
+        if (files != null) {
+            if (!dialogPrjFolder.dialog.isShowing()) {
+                dialogPrjFolder.show(m_folderPath);
+            }
+        } else {
+            new CustomToast(this, "Folder is empty or cannot be accessed.").show_alert();
+        }
+    }
+
 
     @Override
     protected void onDestroy() {

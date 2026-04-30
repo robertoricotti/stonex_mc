@@ -512,6 +512,7 @@
             </LinearLayout>
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/txt_6"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
@@ -523,6 +524,7 @@
                 android:textColor="@color/white" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -620,6 +622,7 @@
             </LinearLayout>
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/txt_7"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
@@ -631,6 +634,7 @@
                 android:textColor="@color/white" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -728,6 +732,7 @@
             </LinearLayout>
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/txt_8"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
@@ -739,6 +744,8 @@
                 android:textColor="@color/white" />
 
             <LinearLayout
+
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -836,6 +843,7 @@
             </LinearLayout>
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/txt_9"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
@@ -847,6 +855,7 @@
                 android:textColor="@color/white" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -960,6 +969,7 @@
         app:layout_constraintRight_toLeftOf="@id/reload" />
 
     <Button
+        android:visibility="invisible"
         android:id="@+id/reload"
         android:layout_width="120dp"
         android:layout_height="60dp"

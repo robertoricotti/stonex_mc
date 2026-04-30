@@ -252,7 +252,9 @@ public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer {
         if(MyGLActivity_Create.gFacce) {
             GLDrawer.drawFaces(gl11, DataSaved.dxfFaces_Create, 0.8f, scale, false,MyGLActivity_Create.gFill,MyGLActivity_Create.gFacce);
         }
-
+        if (MyGLActivity_Create.gGradient) {
+            GLDrawer.drawFacesGradientPRO(gl11, DataSaved.dxfFaces_Create, scale, TriangleService.minZCreate, TriangleService.maxZCreate);
+        }
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
@@ -285,7 +287,9 @@ public class MyGLRenderer_Create implements MyGLSurfaceView_Create.Renderer {
         if(MyGLActivity_Create.gFacce) {
             GLDrawer.drawFaces2D(gl11, DataSaved.dxfFaces_Create, 0.8f, 1f, false,MyGLActivity_Create.gFill,MyGLActivity_Create.gFacce);
         }
-
+        if (MyGLActivity_Create.gGradient) {
+            GLDrawer.drawFacesGradient2D(gl11, DataSaved.dxfFaces_Create, 1f, TriangleService.minZCreate, TriangleService.maxZCreate);
+        }
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 

@@ -16,14 +16,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import dxf.DxfText;
 import dxf.Face3D;
 import dxf.Layer;
 import dxf.Point3D;
 import dxf.Polyline;
+import gui.draw_class.MyColorClass;
 import gui.projects.Activity_Crea_Superficie;
 import gui.projects.Dialog_Trench;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
+import packexcalib.gnss.NmeaListener;
 
 /**
  * Controller for live OpenGL surface creation.
@@ -401,10 +404,45 @@ public class CreateSurfaceController {
         replaceFirstPoint(center);
 
         double h = planSide / 2.0;
-        Point3D p1 = makeNamedPoint("P1", center.getX() - h, center.getY() - h, center.getZ());
-        Point3D p2 = makeNamedPoint("P2", center.getX() + h, center.getY() - h, center.getZ());
-        Point3D p3 = makeNamedPoint("P3", center.getX() + h, center.getY() + h, center.getZ());
-        Point3D p4 = makeNamedPoint("P4", center.getX() - h, center.getY() + h, center.getZ());
+        double z = center.getZ();
+
+        double headingRad = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+
+        // Asse forward: 0° = Nord, 90° = Est
+        double fx = Math.sin(headingRad);
+        double fy = Math.cos(headingRad);
+
+        // Asse right: perpendicolare al forward
+        double rx = Math.cos(headingRad);
+        double ry = -Math.sin(headingRad);
+
+        Point3D p1 = makeNamedPoint(
+                "P1",
+                center.getX() - fx * h - rx * h,
+                center.getY() - fy * h - ry * h,
+                z
+        );
+
+        Point3D p2 = makeNamedPoint(
+                "P2",
+                center.getX() + fx * h - rx * h,
+                center.getY() + fy * h - ry * h,
+                z
+        );
+
+        Point3D p3 = makeNamedPoint(
+                "P3",
+                center.getX() + fx * h + rx * h,
+                center.getY() + fy * h + ry * h,
+                z
+        );
+
+        Point3D p4 = makeNamedPoint(
+                "P4",
+                center.getX() - fx * h + rx * h,
+                center.getY() - fy * h + ry * h,
+                z
+        );
 
         DataSaved.dxfFaces_Create.add(new Face3D(p1, p2, center, center, Color.YELLOW, faceLayer));
         DataSaved.dxfFaces_Create.add(new Face3D(p2, p3, center, center, Color.YELLOW, faceLayer));
@@ -416,14 +454,21 @@ public class CreateSurfaceController {
         addPolylineClosedSegment(p3, p4);
         addPolylineClosedSegment(p4, p1);
 
-        DataSaved.puntiProgetto = new Coordinate[]{new Coordinate(center.getX(), center.getY(), center.getZ())};
+        DataSaved.puntiProgetto = new Coordinate[]{
+                new Coordinate(center.getX(), center.getY(), center.getZ())
+        };
+
         Activity_Crea_Superficie.coordinateP = new ArrayList<>();
         Activity_Crea_Superficie.coordinateP.add(new double[]{p1.getX(), p1.getY(), p1.getZ()});
         Activity_Crea_Superficie.coordinateP.add(new double[]{p2.getX(), p2.getY(), p2.getZ()});
         Activity_Crea_Superficie.coordinateP.add(new double[]{p3.getX(), p3.getY(), p3.getZ()});
         Activity_Crea_Superficie.coordinateP.add(new double[]{p4.getX(), p4.getY(), p4.getZ()});
+        addPointText("P", center);
+        addPointText("P1", p1);
+        addPointText("P2", p2);
+        addPointText("P3", p3);
+        addPointText("P4", p4);
     }
-
     private void rebuildAB() {
         Point3D[] p = getABPoints();
         if (p[0] == null || p[1] == null) return;
@@ -442,8 +487,14 @@ public class CreateSurfaceController {
         DataSaved.dxfFaces_Create.add(new Face3D(p[0], p[2], p[3], p[3], Color.YELLOW, faceLayer));
         DataSaved.dxfFaces_Create.add(new Face3D(p[0], p[5], p[4], p[4], Color.YELLOW, faceLayer));
         DataSaved.dxfFaces_Create.add(new Face3D(p[0], p[4], p[1], p[1], Color.YELLOW, faceLayer));
-
+        addPointText("A", p[0]);
+        addPointText("B", p[1]);
+        addPointText("C", p[2]);
+        addPointText("D", p[3]);
+        addPointText("E", p[4]);
+        addPointText("F", p[5]);
         Activity_Crea_Superficie.puntiAB = getABPoints();
+
     }
 
     private void rebuildArea() {
@@ -467,41 +518,329 @@ public class CreateSurfaceController {
             Polygon polygon = polygonFromPoints(DataSaved.points_Create);
             addFacesFromTriangles(DataSaved.points_Create, performDelaunay(DataSaved.points_Create, polygon));
         }
-    }
-
-    private void rebuildTrench() {
-        if (DataSaved.points_Create.isEmpty()) return;
-        renumberPickedPoints();
-        if (DataSaved.points_Create.size() >= 2) {
-            buildTrenchEntities(new ArrayList<>(DataSaved.points_Create),
-                    Dialog_Trench.leftW_d, Dialog_Trench.rightW_d,
-                    Dialog_Trench.leftS_d, Dialog_Trench.rightS_d);
+        for (int i = 0; i < DataSaved.points_Create.size(); i++) {
+            Point3D p = DataSaved.points_Create.get(i);
+            addPointText("P" + (i + 1), p);
         }
     }
 
+    private void rebuildTrench() {
+        ensureCreateLists();
+
+        if (DataSaved.points_Create == null || DataSaved.points_Create.size() < 2) {
+            return;
+        }
+
+        renumberPickedPoints();
+
+        buildTrenchCorridor(
+                DataSaved.points_Create,
+                Dialog_Trench.leftW_d,
+                Dialog_Trench.rightW_d,
+                Dialog_Trench.leftS_d,
+                Dialog_Trench.rightS_d,
+                Dialog_Trench.flat,
+                Dialog_Trench.startZ_d,
+                Dialog_Trench.endZ_d
+        );
+    }
+    public Point3D[] getTrenchExportPoints() {
+        ensureCreateLists();
+
+        if (mode != MODE_TRENCH) {
+            return getTrenchOrTrianglePoints();
+        }
+
+        if (DataSaved.points_Create == null || DataSaved.points_Create.isEmpty()) {
+            return new Point3D[0];
+        }
+
+        List<Point3D> center = buildTrenchCenterlineForExport();
+        return center.toArray(new Point3D[0]);
+    }
+    private List<Point3D> buildTrenchCenterlineForExport() {
+        List<Point3D> out = new ArrayList<>();
+
+        if (DataSaved.points_Create == null || DataSaved.points_Create.isEmpty()) {
+            return out;
+        }
+
+        double[] station = computeStations(DataSaved.points_Create);
+        double total = station.length == 0 ? 0.0 : station[station.length - 1];
+
+        double startZ = Dialog_Trench.startZ_d;
+        double endZ = Dialog_Trench.endZ_d;
+
+        for (int i = 0; i < DataSaved.points_Create.size(); i++) {
+            Point3D p = DataSaved.points_Create.get(i);
+
+            double z = p.getZ();
+
+            if (Dialog_Trench.flat && total > 1e-9) {
+                double t = station[i] / total;
+                z = startZ + t * (endZ - startZ);
+            } else if (Dialog_Trench.flat) {
+                z = startZ;
+            }
+
+            out.add(makeNamedPoint(
+                    "P" + (i + 1),
+                    p.getX(),
+                    p.getY(),
+                    z
+            ));
+        }
+
+        return out;
+    }
+    private double[] computeStations(List<Point3D> points) {
+        if (points == null || points.isEmpty()) {
+            return new double[0];
+        }
+
+        double[] station = new double[points.size()];
+        station[0] = 0.0;
+
+        for (int i = 1; i < points.size(); i++) {
+            Point3D prev = points.get(i - 1);
+            Point3D curr = points.get(i);
+
+            double dx = curr.getX() - prev.getX();
+            double dy = curr.getY() - prev.getY();
+
+            // Progressiva planimetrica lungo la dorsale.
+            // Uso XY, non XYZ, perché la quota viene calcolata separatamente.
+            double segmentLength = Math.hypot(dx, dy);
+
+            station[i] = station[i - 1] + segmentLength;
+        }
+
+        return station;
+    }
+    private void buildTrenchCorridor(List<Point3D> pickedCenter,
+                                     double leftWidth,
+                                     double rightWidth,
+                                     double leftSlopeDeg,
+                                     double rightSlopeDeg,
+                                     boolean flat,
+                                     double startZ,
+                                     double endZ) {
+        if (pickedCenter == null || pickedCenter.size() < 2) return;
+
+        final int n = pickedCenter.size();
+        final double leftW = Math.max(0.0, leftWidth);
+        final double rightW = Math.max(0.0, rightWidth);
+        final double leftSlopeRad = Math.toRadians(leftSlopeDeg);
+        final double rightSlopeRad = Math.toRadians(rightSlopeDeg);
+
+        double[] station = computeTrenchStations(pickedCenter);
+        double totalLength = station[n - 1];
+
+        double safeStartZ = Double.isNaN(startZ) ? pickedCenter.get(0).getZ() : startZ;
+        double safeEndZ = Double.isNaN(endZ) ? pickedCenter.get(n - 1).getZ() : endZ;
+
+        ArrayList<Point3D> center = new ArrayList<>();
+        ArrayList<Point3D> left = new ArrayList<>();
+        ArrayList<Point3D> right = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            Point3D src = pickedCenter.get(i);
+            if (src == null) continue;
+
+            double zCenter;
+            if (flat) {
+                double t = totalLength <= EPS ? 0.0 : station[i] / totalLength;
+                zCenter = safeStartZ + t * (safeEndZ - safeStartZ);
+            } else {
+                zCenter = src.getZ();
+            }
+
+            Point3D c = makeNamedPoint("P" + (i + 1), src.getX(), src.getY(), zCenter);
+            center.add(c);
+
+            TrenchOffsetFrame frame = computeTrenchOffsetFrame(pickedCenter, i);
+
+            double leftOffset = computeTrenchMiterOffset(leftW, frame.miterDenom);
+            double rightOffset = computeTrenchMiterOffset(rightW, frame.miterDenom);
+
+            double zLeft = zCenter + Math.tan(leftSlopeRad) * leftW;
+            double zRight = zCenter + Math.tan(rightSlopeRad) * rightW;
+
+            left.add(makeNamedPoint(
+                    "L" + (i + 1),
+                    c.getX() + frame.nx * leftOffset,
+                    c.getY() + frame.ny * leftOffset,
+                    zLeft
+            ));
+
+            right.add(makeNamedPoint(
+                    "R" + (i + 1),
+                    c.getX() - frame.nx * rightOffset,
+                    c.getY() - frame.ny * rightOffset,
+                    zRight
+            ));
+        }
+
+        if (center.size() < 2 || left.size() != center.size() || right.size() != center.size()) return;
+
+        // Preview polylines: centerline + left edge + right edge.
+        addPolyline(center, Color.MAGENTA);
+        addPolyline(left, Color.YELLOW);
+        addPolyline(right, Color.YELLOW);
+
+        // Structured mesh, segment by segment. No Delaunay: a trench is a corridor, not a point cloud.
+        for (int i = 0; i < center.size() - 1; i++) {
+            Point3D c1 = center.get(i);
+            Point3D c2 = center.get(i + 1);
+            Point3D l1 = left.get(i);
+            Point3D l2 = left.get(i + 1);
+            Point3D r1 = right.get(i);
+            Point3D r2 = right.get(i + 1);
+
+            // Left strip: C1-C2-L2-L1
+            DataSaved.dxfFaces_Create.add(new Face3D(c1, c2, l2, l2, Color.YELLOW, faceLayer));
+            DataSaved.dxfFaces_Create.add(new Face3D(c1, l2, l1, l1, Color.YELLOW, faceLayer));
+
+            // Right strip: C1-R1-R2-C2
+            DataSaved.dxfFaces_Create.add(new Face3D(c1, r1, r2, r2, Color.YELLOW, faceLayer));
+            DataSaved.dxfFaces_Create.add(new Face3D(c1, r2, c2, c2, Color.YELLOW, faceLayer));
+        }
+
+        Activity_Crea_Superficie.point3DS = center.toArray(new Point3D[0]);
+        Activity_Crea_Superficie.facceTrench = new ArrayList<>(DataSaved.dxfFaces_Create);
+        Activity_Crea_Superficie.polyTrench = new Polyline(new ArrayList<>(center), polyLayer);
+
+        Log.e("TRENCH_DEBUG",
+                "points=" + center.size()
+                        + " faces=" + DataSaved.dxfFaces_Create.size()
+                        + " polylines=" + DataSaved.polylines_Create.size()
+                        + " flat=" + flat
+                        + " startZ=" + safeStartZ
+                        + " endZ=" + safeEndZ
+                        + " leftW=" + leftW
+                        + " rightW=" + rightW
+                        + " leftS=" + leftSlopeDeg
+                        + " rightS=" + rightSlopeDeg);
+    }
+
+    private double[] computeTrenchStations(List<Point3D> points) {
+        double[] station = new double[points.size()];
+        station[0] = 0.0;
+        for (int i = 1; i < points.size(); i++) {
+            Point3D a = points.get(i - 1);
+            Point3D b = points.get(i);
+            station[i] = station[i - 1] + Math.hypot(b.getX() - a.getX(), b.getY() - a.getY());
+        }
+        return station;
+    }
+
+    private TrenchOffsetFrame computeTrenchOffsetFrame(List<Point3D> points, int i) {
+        int n = points.size();
+
+        double[] tPrev;
+        double[] tNext;
+
+        if (i == 0) {
+            tPrev = unitTrenchDirection(points.get(0), points.get(1));
+            tNext = tPrev;
+        } else if (i == n - 1) {
+            tPrev = unitTrenchDirection(points.get(n - 2), points.get(n - 1));
+            tNext = tPrev;
+        } else {
+            tPrev = unitTrenchDirection(points.get(i - 1), points.get(i));
+            tNext = unitTrenchDirection(points.get(i), points.get(i + 1));
+        }
+
+        double[] nPrev = leftTrenchNormal(tPrev);
+        double[] nNext = leftTrenchNormal(tNext);
+
+        double mx = nPrev[0] + nNext[0];
+        double my = nPrev[1] + nNext[1];
+        double mLen = Math.hypot(mx, my);
+
+        if (mLen < 1e-6) {
+            mx = nPrev[0];
+            my = nPrev[1];
+            mLen = 1.0;
+        }
+
+        mx /= mLen;
+        my /= mLen;
+
+        double denom = mx * nPrev[0] + my * nPrev[1];
+        if (Math.abs(denom) < 0.25) {
+            denom = denom < 0 ? -0.25 : 0.25;
+        }
+
+        return new TrenchOffsetFrame(mx, my, denom);
+    }
+
+    private double computeTrenchMiterOffset(double width, double denom) {
+        if (width <= 0.0) return 0.0;
+        double scale = width / denom;
+        double maxAbs = width * 3.0;
+        if (scale > maxAbs) scale = maxAbs;
+        if (scale < -maxAbs) scale = -maxAbs;
+        return scale;
+    }
+
+    private double[] unitTrenchDirection(Point3D a, Point3D b) {
+        double dx = b.getX() - a.getX();
+        double dy = b.getY() - a.getY();
+        double len = Math.hypot(dx, dy);
+        if (len < EPS) return new double[]{0.0, 1.0};
+        return new double[]{dx / len, dy / len};
+    }
+
+    private double[] leftTrenchNormal(double[] tangent) {
+        return new double[]{-tangent[1], tangent[0]};
+    }
+
+    private static class TrenchOffsetFrame {
+        final double nx;
+        final double ny;
+        final double miterDenom;
+
+        TrenchOffsetFrame(double nx, double ny, double miterDenom) {
+            this.nx = nx;
+            this.ny = ny;
+            this.miterDenom = miterDenom;
+        }
+    }
+
+
     private void rebuildTriangles() {
-        if (DataSaved.points_Create.isEmpty()) return;
+        ensureCreateLists();
+
+        if (DataSaved.points_Create == null || DataSaved.points_Create.isEmpty()) {
+            return;
+        }
 
         renumberPickedPoints();
 
         if (DataSaved.points_Create.size() < 3) {
-            Log.e("TRIANGLES_DEBUG", "points=" + DataSaved.points_Create.size() + " triangles=0 faces=0 poly=0");
             return;
         }
 
         List<int[]> triangles = performDelaunay(DataSaved.points_Create, null);
-        addFacesFromTriangles(DataSaved.points_Create, triangles);
-
-        List<Point3D> border = outerBorderFromTriangles(DataSaved.points_Create, triangles);
-        if (border.size() >= 2) {
-            addPolyline(border, Color.MAGENTA);
-        }
 
         Log.e("TRIANGLES_DEBUG",
                 "points=" + DataSaved.points_Create.size()
-                        + " triangles=" + triangles.size()
-                        + " faces=" + DataSaved.dxfFaces_Create.size()
-                        + " poly=" + DataSaved.polylines_Create.size());
+                        + " triangles=" + triangles.size());
+
+        addFacesFromTriangles(DataSaved.points_Create, triangles);
+
+        List<Point3D> border = convexHullBorder(DataSaved.points_Create);
+
+        if (border.size() >= 3) {
+            border.add(cloneWithName(border.get(0), border.get(0).getName()));
+            addPolyline(border, Color.MAGENTA);
+        }
+
+        for (int i = 0; i < DataSaved.points_Create.size(); i++) {
+            Point3D p = DataSaved.points_Create.get(i);
+            addPointText("P" + (i + 1), p);
+        }
     }
 
     private void buildTrenchEntities(List<Point3D> center, double leftW, double rightW,
@@ -608,96 +947,10 @@ public class CreateSurfaceController {
         return out;
     }
 
-    private List<Point3D> outerBorderFromTriangles(List<Point3D> points, List<int[]> triangles) {
-        List<Point3D> ordered = new ArrayList<>();
-        if (points == null || points.size() < 3 || triangles == null || triangles.isEmpty()) return ordered;
 
-        Map<String, int[]> edgeMap = new HashMap<>();
-        Map<String, Integer> edgeCount = new HashMap<>();
 
-        for (int[] t : triangles) {
-            if (t == null || t.length < 3) continue;
-            registerEdge(t[0], t[1], edgeMap, edgeCount);
-            registerEdge(t[1], t[2], edgeMap, edgeCount);
-            registerEdge(t[2], t[0], edgeMap, edgeCount);
-        }
 
-        Map<Integer, List<Integer>> adjacency = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : edgeCount.entrySet()) {
-            if (entry.getValue() != 1) continue;
-            int[] e = edgeMap.get(entry.getKey());
-            if (e == null || e.length < 2) continue;
-            adjacency.computeIfAbsent(e[0], k -> new ArrayList<>()).add(e[1]);
-            adjacency.computeIfAbsent(e[1], k -> new ArrayList<>()).add(e[0]);
-        }
 
-        if (adjacency.isEmpty()) return ordered;
-
-        int start = chooseLowestLeftMostVertex(points, adjacency.keySet());
-        int current = start;
-        int previous = -1;
-        Set<String> usedEdges = new HashSet<>();
-
-        while (true) {
-            ordered.add(points.get(current));
-
-            List<Integer> neighbours = adjacency.get(current);
-            if (neighbours == null || neighbours.isEmpty()) break;
-
-            int next = -1;
-            for (int n : neighbours) {
-                String key = edgeKey(current, n);
-                if (!usedEdges.contains(key) && n != previous) {
-                    next = n;
-                    break;
-                }
-            }
-            if (next == -1) {
-                for (int n : neighbours) {
-                    String key = edgeKey(current, n);
-                    if (!usedEdges.contains(key)) {
-                        next = n;
-                        break;
-                    }
-                }
-            }
-            if (next == -1) break;
-
-            usedEdges.add(edgeKey(current, next));
-            previous = current;
-            current = next;
-
-            if (current == start) {
-                ordered.add(points.get(start));
-                break;
-            }
-            if (ordered.size() > points.size() + 10) break;
-        }
-
-        return ordered;
-    }
-
-    private int chooseLowestLeftMostVertex(List<Point3D> points, Set<Integer> candidates) {
-        int best = candidates.iterator().next();
-        for (int idx : candidates) {
-            Point3D p = points.get(idx);
-            Point3D b = points.get(best);
-            if (p.getY() < b.getY() || (Math.abs(p.getY() - b.getY()) < EPS && p.getX() < b.getX())) {
-                best = idx;
-            }
-        }
-        return best;
-    }
-
-    private void registerEdge(int a, int b, Map<String, int[]> edgeMap, Map<String, Integer> edgeCount) {
-        String key = edgeKey(a, b);
-        edgeMap.put(key, new int[]{a, b});
-        edgeCount.put(key, edgeCount.getOrDefault(key, 0) + 1);
-    }
-
-    private String edgeKey(int a, int b) {
-        return Math.min(a, b) + "_" + Math.max(a, b);
-    }
 
     private int indexOf2D(List<Point3D> points, Coordinate c) {
         final double tol = 0.05; // 5 cm
@@ -890,8 +1143,18 @@ public class CreateSurfaceController {
         }
 
         if (mode == MODE_TRENCH) {
-            Activity_Crea_Superficie.polyTrench = DataSaved.polylines_Create.isEmpty() ? new Polyline() : DataSaved.polylines_Create.get(0);
-            Activity_Crea_Superficie.facceTrench = new ArrayList<>(DataSaved.dxfFaces_Create);
+            List<Point3D> exportCenter = buildTrenchCenterlineForExport();
+
+            Activity_Crea_Superficie.point3DS =
+                    exportCenter.toArray(new Point3D[0]);
+
+            Activity_Crea_Superficie.polyTrench =
+                    DataSaved.polylines_Create.isEmpty()
+                            ? new Polyline()
+                            : DataSaved.polylines_Create.get(0);
+
+            Activity_Crea_Superficie.facceTrench =
+                    new ArrayList<>(DataSaved.dxfFaces_Create);
         }
 
         Point3D[] ab = getABPoints();
@@ -917,5 +1180,76 @@ public class CreateSurfaceController {
         } else if (mode == MODE_PLAN) {
             DataSaved.puntiProgetto = null;
         }
+    }
+    private void addPointText(String label, Point3D p) {
+        if (label == null || label.trim().isEmpty() || p == null) return;
+
+        if (DataSaved.dxfTexts_Create == null) {
+            DataSaved.dxfTexts_Create = new ArrayList<>();
+        }
+
+        DataSaved.dxfTexts_Create.add(
+                new DxfText(
+                        label,
+                        p.getX(),
+                        p.getY(),
+                        p.getZ(),
+                        MyColorClass.colorConstraint,
+                        pointLayer
+                )
+        );
+    }
+    private List<Point3D> convexHullBorder(List<Point3D> points) {
+        List<Point3D> pts = new ArrayList<>();
+
+        if (points == null || points.size() < 3) {
+            return pts;
+        }
+
+        for (Point3D p : points) {
+            if (p != null) {
+                pts.add(cloneWithName(p, p.getName()));
+            }
+        }
+
+        pts.sort((a, b) -> {
+            int cmpX = Double.compare(a.getX(), b.getX());
+            if (cmpX != 0) return cmpX;
+            return Double.compare(a.getY(), b.getY());
+        });
+
+        List<Point3D> lower = new ArrayList<>();
+        for (Point3D p : pts) {
+            while (lower.size() >= 2
+                    && cross(lower.get(lower.size() - 2), lower.get(lower.size() - 1), p) <= 0) {
+                lower.remove(lower.size() - 1);
+            }
+            lower.add(p);
+        }
+
+        List<Point3D> upper = new ArrayList<>();
+        for (int i = pts.size() - 1; i >= 0; i--) {
+            Point3D p = pts.get(i);
+
+            while (upper.size() >= 2
+                    && cross(upper.get(upper.size() - 2), upper.get(upper.size() - 1), p) <= 0) {
+                upper.remove(upper.size() - 1);
+            }
+            upper.add(p);
+        }
+
+        lower.remove(lower.size() - 1);
+        upper.remove(upper.size() - 1);
+
+        List<Point3D> hull = new ArrayList<>();
+        hull.addAll(lower);
+        hull.addAll(upper);
+
+        return hull;
+    }
+
+    private double cross(Point3D o, Point3D a, Point3D b) {
+        return (a.getX() - o.getX()) * (b.getY() - o.getY())
+                - (a.getY() - o.getY()) * (b.getX() - o.getX());
     }
 }
