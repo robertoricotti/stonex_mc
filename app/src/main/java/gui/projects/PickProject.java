@@ -314,10 +314,15 @@ public class PickProject extends BaseClass {
     private void openFolderAtPosition(int position) {
         if (position == RecyclerView.NO_POSITION || position < 0 || position >= arrayFiles.size()) return;
 
-        ProjectFileAdapter.FileItem selectedFileItem = arrayFiles.get(position);
-        if (!selectedFileItem.isFolder()) return;
+        ProjectFileAdapter.FileItem item = arrayFiles.get(position);
 
-        String m_folderPath = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects/" + selectedFileItem.getName();
+        if (!item.isFolder()) return;
+
+        String m_folderPath = item.getPath();
+
+        currentPath = m_folderPath;
+        updateUI();
+
         File directory = new File(m_folderPath);
         File[] files = directory.listFiles();
 

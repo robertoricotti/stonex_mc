@@ -186,7 +186,8 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
             View.OnLongClickListener itemLongClickListener = v -> {
                 int position = getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION || onItemActionListener == null) return true;
+                if (position == RecyclerView.NO_POSITION || onItemActionListener == null)
+                    return true;
                 onItemActionListener.onItemLongClick(position, files.get(position));
                 return true;
             };
