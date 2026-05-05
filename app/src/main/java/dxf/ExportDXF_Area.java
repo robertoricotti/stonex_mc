@@ -16,6 +16,7 @@ import java.util.Locale;
 import utils.Utils;
 
 public class ExportDXF_Area {
+    private Point3D[] point3DS;
     private List<double[]> coordinates; // Lista di coordinate [x, y, z]
     private String filename;
     private String path;
@@ -29,10 +30,29 @@ public class ExportDXF_Area {
         this.path = path;
         this.conversionFactor = conversionFactor;
     }
-
+    public ExportDXF_Area(Point3D[] point3DS, String filename, String path, double conversionFactor) {
+        this.point3DS = point3DS;
+        this.filename = filename;
+        this.path = path;
+        this.conversionFactor = conversionFactor;
+    }
     public void generateDXF() throws IOException {
         METER_TO_FEET_CONVERSION = conversionFactor;
+        if (coordinates == null) {
+            coordinates = new ArrayList<>();
 
+            if (point3DS != null) {
+                for (Point3D p : point3DS) {
+                    if (p != null) {
+                        coordinates.add(new double[]{p.getX(), p.getY(), p.getZ()});
+                    }
+                }
+            }
+        }
+
+        if (coordinates == null || coordinates.isEmpty()) {
+            return;
+        }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + "/" + filename))) {
 
             DXFWriteMethods.testa(writer, 3);
@@ -49,7 +69,19 @@ public class ExportDXF_Area {
             for (int i = 0; i < coordinates.size(); i++) {
                 handle++;
                 double[] coord = coordinates.get(i);
-                String pointName = "P" + (i + 1);
+                String pointName = null;
+
+                if (point3DS != null && i < point3DS.length && point3DS[i] != null) {
+                    pointName = point3DS[i].getName();
+
+                    if (pointName == null || pointName.trim().isEmpty()) {
+                        pointName = point3DS[i].getId();
+                    }
+                }
+
+                if (pointName == null || pointName.trim().isEmpty()) {
+                    pointName = "P" + (i + 1);
+                }
 
                 // POINT
                 writer.write("0\nPOINT\n8\nLAYER_POINTS\n");

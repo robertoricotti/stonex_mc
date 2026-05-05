@@ -380,7 +380,15 @@ public class MyGLActivity_Create extends BaseClass {
     private void showEditPointsDialog() {
         Point3D[] editArray = createController.pickedArray();
         Dialog_Edita_Punti3D dialogEditaPunti3D = new Dialog_Edita_Punti3D(this, editArray);
+
+        dialogEditaPunti3D.setOnPointsChangedListener(points -> {
+            createController.replacePickedPoints(points);
+            requestGlRender();
+            updateUI();
+        });
+
         dialogEditaPunti3D.show();
+
         Dialog_Edita_Punti3D.dialog.setOnDismissListener(d -> {
             createController.replacePickedPoints(editArray);
             requestGlRender();

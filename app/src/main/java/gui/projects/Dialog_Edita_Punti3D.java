@@ -85,6 +85,21 @@ public class Dialog_Edita_Punti3D {
             adapter.notifyDataSetChanged();
         }
     }
+    public interface OnPointsChangedListener {
+        void onPointsChanged(Point3D[] points);
+    }
+
+    private OnPointsChangedListener onPointsChangedListener;
+
+    public void setOnPointsChangedListener(OnPointsChangedListener listener) {
+        this.onPointsChangedListener = listener;
+    }
+
+    public void notifyPointsChanged() {
+        if (onPointsChangedListener != null) {
+            onPointsChangedListener.onPointsChanged(point3DS);
+        }
+    }
 
 }
 

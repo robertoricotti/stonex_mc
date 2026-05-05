@@ -158,8 +158,7 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
     }
 
     public void setItem(int i) {
-        selectedItem = i;
-        notifyDataSetChanged();
+        selectItem(i);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -180,15 +179,25 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
             View.OnClickListener itemClickListener = v -> {
                 int position = getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION || onItemActionListener == null) return;
-                onItemActionListener.onItemClick(position, files.get(position));
+                if (position == RecyclerView.NO_POSITION) return;
+
+                selectItem(position);
+
+                if (onItemActionListener != null) {
+                    onItemActionListener.onItemClick(position, files.get(position));
+                }
             };
 
             View.OnLongClickListener itemLongClickListener = v -> {
                 int position = getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION || onItemActionListener == null)
-                    return true;
-                onItemActionListener.onItemLongClick(position, files.get(position));
+                if (position == RecyclerView.NO_POSITION) return true;
+
+                selectItem(position);
+
+                if (onItemActionListener != null) {
+                    onItemActionListener.onItemLongClick(position, files.get(position));
+                }
+
                 return true;
             };
 
@@ -215,14 +224,14 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
     }
 
     public String getSelectedFilePath() {
-        if (selectedItem != RecyclerView.NO_POSITION) {
+        if (selectedItem >= 0 && selectedItem < files.size()) {
             return files.get(selectedItem).getName();
         }
         return null;
     }
 
     public String getSelectedFilePathAbs() {
-        if (selectedItem != RecyclerView.NO_POSITION) {
+        if (selectedItem >= 0 && selectedItem < files.size()) {
             return files.get(selectedItem).getPath();
         }
         return null;
@@ -230,9 +239,17 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
 
 
     public void setSelectedItem(int i) {
+        int oldSelected = selectedItem;
         selectedItem = i;
-    }
 
+        if (oldSelected != RecyclerView.NO_POSITION) {
+            notifyItemChanged(oldSelected);
+        }
+
+        if (selectedItem != RecyclerView.NO_POSITION) {
+            notifyItemChanged(selectedItem);
+        }
+    }
     public boolean isFold() {
 
         return isFold;
@@ -347,5 +364,18 @@ public class ProjectFileAdapter extends RecyclerView.Adapter<ProjectFileAdapter.
         notifyDataSetChanged();
     }
 
+    public void selectItem(int position) {
+        if (position == RecyclerView.NO_POSITION || position < 0 || position >= files.size()) {
+            return;
+        }
 
+        int oldSelected = selectedItem;
+        selectedItem = position;
+
+        if (oldSelected != RecyclerView.NO_POSITION && oldSelected != selectedItem) {
+            notifyItemChanged(oldSelected);
+        }
+
+        notifyItemChanged(selectedItem);
+    }
 }

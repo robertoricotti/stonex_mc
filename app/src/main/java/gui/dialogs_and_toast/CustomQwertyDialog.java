@@ -357,7 +357,7 @@ public class CustomQwertyDialog {
                 punti3DAdapter.punti3DList.get(position).setName(value.getText().toString());
                 index = -1;
                 flag = -1;
-                punti3DAdapter.notifyDataSetChanged();
+                punti3DAdapter.notifyPointChanged();
                 dialog.dismiss();
 
 

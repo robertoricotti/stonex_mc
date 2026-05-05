@@ -38,6 +38,8 @@ import gui.my_opengl.compat.GL11;
 import packexcalib.exca.DataSaved;
 
 public class GLDrawer {
+
+    private static final float BILLBOARD_TEXT_SCALE_3D_FACTOR = 0.70f;
     //CULLING HELPERS
     private static final float BILLBOARD_TEXT_SCALE = 0.50f;
     private static final float CULL_MARGIN_XY = 0.15f;
@@ -693,7 +695,7 @@ public class GLDrawer {
             return pixelsToWorldX(targetPx);
         }
 
-        return atlas.getCellSize() * scala * 0.01f * BILLBOARD_TEXT_SCALE;
+        return atlas.getCellSize() * scala * 0.01f * BILLBOARD_TEXT_SCALE * BILLBOARD_TEXT_SCALE_3D_FACTOR;
     }
 
     private static float getBillboardCharHeight(FontAtlas atlas, float scala) {
@@ -704,7 +706,7 @@ public class GLDrawer {
             return pixelsToWorldY(targetPx);
         }
 
-        return atlas.getCellSize() * scala * 0.01f * BILLBOARD_TEXT_SCALE;
+        return atlas.getCellSize() * scala * 0.01f * BILLBOARD_TEXT_SCALE * BILLBOARD_TEXT_SCALE_3D_FACTOR;
     }
 
     private static void drawBillboardString(String str, float baseX, float baseY, float baseZ,

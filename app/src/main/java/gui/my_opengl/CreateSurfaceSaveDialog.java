@@ -156,7 +156,7 @@ public class CreateSurfaceSaveDialog {
                     new ExportDXF_AB(controller.getABPoints(), filename, path, conversionFactor).generateDXF();
                     break;
                 case CreateSurfaceController.MODE_AREA:
-                    new ExportDXF_Area(controller.getAreaCoordinates(), filename, path, conversionFactor).generateDXF();
+                    new ExportDXF_Area(controller.getAreaPoints(), filename, path, conversionFactor).generateDXF();
                     break;
                 case CreateSurfaceController.MODE_TRENCH:
                     new ExportDXF_Trench(

@@ -80,6 +80,17 @@ public class PickProject extends BaseClass {
         projectAdapter.setOnItemActionListener(new ProjectFileAdapter.OnItemActionListener() {
             @Override
             public void onItemClick(int position, ProjectFileAdapter.FileItem fileItem) {
+                selectItemAtPosition(position);
+            }
+
+            @Override
+            public void onItemLongClick(int position, ProjectFileAdapter.FileItem fileItem) {
+                selectItemAtPosition(position);
+            }
+        });
+      /*  projectAdapter.setOnItemActionListener(new ProjectFileAdapter.OnItemActionListener() {
+            @Override
+            public void onItemClick(int position, ProjectFileAdapter.FileItem fileItem) {
                 if (fileItem.isFolder()) {
                     openFolderAtPositionWithFeedback(position);
                 } else {
@@ -91,7 +102,7 @@ public class PickProject extends BaseClass {
             public void onItemLongClick(int position, ProjectFileAdapter.FileItem fileItem) {
                 selectItemAtPosition(position);
             }
-        });
+        });*/
         recyclerView.setAdapter(projectAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemViewCacheSize(projectAdapter.getItemCount());

@@ -38,6 +38,7 @@ import packexcalib.gnss.NmeaListener;
  * - No Create workflow code ever modifies DataSaved.glL_AnchorView.
  */
 public class CreateSurfaceController {
+    private static final double DEFAULT_AB_LENGTH_WHEN_SAME_POINT = 10.0;
     public static final int MODE_PLAN = 0;
     public static final int MODE_AB = 1;
     public static final int MODE_AREA = 2;
@@ -280,23 +281,42 @@ public class CreateSurfaceController {
     public void replacePickedPoints(Point3D[] points) {
         ensureCreateLists();
         DataSaved.points_Create.clear();
+
         if (points != null) {
-            for (Point3D p : points) {
-                if (p != null) DataSaved.points_Create.add(cloneWithName(p, p.getName()));
+            for (int i = 0; i < points.length; i++) {
+                Point3D p = points[i];
+
+                if (p != null) {
+                    DataSaved.points_Create.add(cloneWithName(p, labelForPoint(p, i)));
+                }
             }
         }
-        renumberPickedPoints();
+
+        if (mode != MODE_TRIANGLES && mode != MODE_AREA) {
+            renumberPickedPoints();
+        }
 
         if (mode == MODE_AREA && !DataSaved.points_Create.isEmpty()) {
             double z = DataSaved.points_Create.get(0).getZ();
-            for (int i = 1; i < DataSaved.points_Create.size(); i++) {
+
+            for (int i = 0; i < DataSaved.points_Create.size(); i++) {
                 Point3D p = DataSaved.points_Create.get(i);
-                DataSaved.points_Create.set(i, makeNamedPoint(nameForIndex(i), p.getX(), p.getY(), z));
+
+                DataSaved.points_Create.set(
+                        i,
+                        makeNamedPoint(
+                                labelForPoint(p, i),
+                                p.getX(),
+                                p.getY(),
+                                z
+                        )
+                );
             }
         }
 
         rebuildPreview();
     }
+
 
     public boolean isReadyToSave() {
         ensureCreateLists();
@@ -358,16 +378,43 @@ public class CreateSurfaceController {
         ensureCreateLists();
         Point3D[] out = new Point3D[6];
 
-        if (DataSaved.points_Create.size() > 0) out[0] = cloneWithName(DataSaved.points_Create.get(0), "A");
-        if (DataSaved.points_Create.size() > 1) out[1] = cloneWithName(DataSaved.points_Create.get(1), "B");
-        if (out[0] == null || out[1] == null) return out;
+        if (DataSaved.points_Create.size() > 0) {
+            out[0] = cloneWithName(DataSaved.points_Create.get(0), "A");
+        }
+
+        if (DataSaved.points_Create.size() > 1) {
+            out[1] = cloneWithName(DataSaved.points_Create.get(1), "B");
+        }
+
+        if (out[0] == null || out[1] == null) {
+            return out;
+        }
 
         Point3D a = out[0];
         Point3D b = out[1];
+
         double dx = b.getX() - a.getX();
         double dy = b.getY() - a.getY();
         double len = Math.hypot(dx, dy);
-        if (len < EPS) return out;
+
+        // Se A e B coincidono, creo B a 10 m da A secondo heading macchina
+        if (len < EPS) {
+            b = buildDefaultBFromHeading(a);
+            out[1] = b;
+
+            // Aggiorno anche la lista live, così preview, dialog ed export usano lo stesso B corretto
+            if (b != null && DataSaved.points_Create.size() > 1) {
+                DataSaved.points_Create.set(1, cloneWithName(b, "B"));
+            }
+
+            dx = b.getX() - a.getX();
+            dy = b.getY() - a.getY();
+            len = Math.hypot(dx, dy);
+        }
+
+        if (len < EPS) {
+            return out;
+        }
 
         double nx = -dy / len;
         double ny = dx / len;
@@ -375,13 +422,53 @@ public class CreateSurfaceController {
         double leftDz = Math.tan(Math.toRadians(abLeftSlopeDeg)) * abLeftWidth;
         double rightDz = Math.tan(Math.toRadians(abRightSlopeDeg)) * abRightWidth;
 
-        out[2] = makeNamedPoint("C", b.getX() + nx * abLeftWidth, b.getY() + ny * abLeftWidth, b.getZ() + leftDz);
-        out[3] = makeNamedPoint("D", a.getX() + nx * abLeftWidth, a.getY() + ny * abLeftWidth, a.getZ() + leftDz);
-        out[4] = makeNamedPoint("E", b.getX() - nx * abRightWidth, b.getY() - ny * abRightWidth, b.getZ() + rightDz);
-        out[5] = makeNamedPoint("F", a.getX() - nx * abRightWidth, a.getY() - ny * abRightWidth, a.getZ() + rightDz);
+        out[2] = makeNamedPoint(
+                "C",
+                b.getX() + nx * abLeftWidth,
+                b.getY() + ny * abLeftWidth,
+                b.getZ() + leftDz
+        );
+
+        out[3] = makeNamedPoint(
+                "D",
+                a.getX() + nx * abLeftWidth,
+                a.getY() + ny * abLeftWidth,
+                a.getZ() + leftDz
+        );
+
+        out[4] = makeNamedPoint(
+                "E",
+                b.getX() - nx * abRightWidth,
+                b.getY() - ny * abRightWidth,
+                b.getZ() + rightDz
+        );
+
+        out[5] = makeNamedPoint(
+                "F",
+                a.getX() - nx * abRightWidth,
+                a.getY() - ny * abRightWidth,
+                a.getZ() + rightDz
+        );
+
         return out;
     }
+    private Point3D buildDefaultBFromHeading(Point3D a) {
+        if (a == null) return null;
 
+        double headingRad = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+
+        // Stessa logica usata in rebuildPlan():
+        // 0° = Nord, 90° = Est
+        double fx = Math.sin(headingRad);
+        double fy = Math.cos(headingRad);
+
+        return makeNamedPoint(
+                "B",
+                a.getX() + fx * DEFAULT_AB_LENGTH_WHEN_SAME_POINT,
+                a.getY() + fy * DEFAULT_AB_LENGTH_WHEN_SAME_POINT,
+                a.getZ()
+        );
+    }
     public List<double[]> getAreaCoordinates() {
         ensureCreateLists();
         List<double[]> out = new ArrayList<>();
@@ -501,26 +588,45 @@ public class CreateSurfaceController {
         if (DataSaved.points_Create.isEmpty()) return;
 
         double z = DataSaved.points_Create.get(0).getZ();
+
         for (int i = 0; i < DataSaved.points_Create.size(); i++) {
             Point3D p = DataSaved.points_Create.get(i);
-            DataSaved.points_Create.set(i, makeNamedPoint(nameForIndex(i), p.getX(), p.getY(), z));
+
+            DataSaved.points_Create.set(
+                    i,
+                    makeNamedPoint(
+                            labelForPoint(p, i),
+                            p.getX(),
+                            p.getY(),
+                            z
+                    )
+            );
         }
 
         if (DataSaved.points_Create.size() >= 2) {
             List<Point3D> border = new ArrayList<>(DataSaved.points_Create);
+
             if (DataSaved.points_Create.size() >= 3) {
-                border.add(cloneWithName(DataSaved.points_Create.get(0), DataSaved.points_Create.get(0).getName()));
+                border.add(cloneWithName(
+                        DataSaved.points_Create.get(0),
+                        labelForPoint(DataSaved.points_Create.get(0), 0)
+                ));
             }
+
             addPolyline(border, Color.MAGENTA);
         }
 
         if (DataSaved.points_Create.size() >= 3) {
             Polygon polygon = polygonFromPoints(DataSaved.points_Create);
-            addFacesFromTriangles(DataSaved.points_Create, performDelaunay(DataSaved.points_Create, polygon));
+            addFacesFromTriangles(
+                    DataSaved.points_Create,
+                    performDelaunay(DataSaved.points_Create, polygon)
+            );
         }
+
         for (int i = 0; i < DataSaved.points_Create.size(); i++) {
             Point3D p = DataSaved.points_Create.get(i);
-            addPointText("P" + (i + 1), p);
+            addPointText(labelForPoint(p, i), p);
         }
     }
 
@@ -816,7 +922,8 @@ public class CreateSurfaceController {
             return;
         }
 
-        renumberPickedPoints();
+        // In TRIANGLES NON chiamare renumberPickedPoints().
+        // Le descrizioni/nome editate devono rimanere quelle dell'utente.
 
         if (DataSaved.points_Create.size() < 3) {
             return;
@@ -839,10 +946,20 @@ public class CreateSurfaceController {
 
         for (int i = 0; i < DataSaved.points_Create.size(); i++) {
             Point3D p = DataSaved.points_Create.get(i);
-            addPointText("P" + (i + 1), p);
+
+            String label = p.getName();
+
+            if (label == null || label.trim().isEmpty()) {
+                label = p.getId();
+            }
+
+            if (label == null || label.trim().isEmpty()) {
+                label = "P" + (i + 1);
+            }
+
+            addPointText(label, p);
         }
     }
-
     private void buildTrenchEntities(List<Point3D> center, double leftW, double rightW,
                                      double leftSlopeDeg, double rightSlopeDeg) {
         if (center.size() < 2) return;
@@ -1087,6 +1204,23 @@ public class CreateSurfaceController {
     private String nameForIndex(int i) {
         return "P" + (i + 1);
     }
+    private String labelForPoint(Point3D p, int i) {
+        String label = null;
+
+        if (p != null) {
+            label = p.getName();
+
+            if (label == null || label.trim().isEmpty()) {
+                label = p.getId();
+            }
+        }
+
+        if (label == null || label.trim().isEmpty()) {
+            label = nameForIndex(i);
+        }
+
+        return label;
+    }
 
     private double[] currentEdgeCoord() {
         try {
@@ -1251,5 +1385,9 @@ public class CreateSurfaceController {
     private double cross(Point3D o, Point3D a, Point3D b) {
         return (a.getX() - o.getX()) * (b.getY() - o.getY())
                 - (a.getY() - o.getY()) * (b.getX() - o.getX());
+    }
+    public Point3D[] getAreaPoints() {
+        ensureCreateLists();
+        return DataSaved.points_Create.toArray(new Point3D[0]);
     }
 }

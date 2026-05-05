@@ -115,7 +115,8 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
                     selectedEast = -1;
                     selectedNord = -1;
                     selectedQuota = -1;
-                    notifyDataSetChanged();
+                    //notifyDataSetChanged();
+                    notifyPointChanged();
                 } else {
                     chiediRemove(getAdapterPosition());
                 }
@@ -131,7 +132,8 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
                 selectedEast = -1;
                 selectedNord = -1;
                 selectedQuota = -1;
-                notifyDataSetChanged();
+                //notifyDataSetChanged();
+                notifyPointChanged();
                 if (!customQwertyDialog.dialog.isShowing()) {
                     customQwertyDialog.show(t_Name, selectedItem, 0);
                 }
@@ -146,7 +148,7 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
                 selectedDes = -1;
                 selectedNord = -1;
                 selectedQuota = -1;
-                notifyDataSetChanged();
+                //notifyDataSetChanged();
                 if (MyData.get_Int("Unit_Of_Measure") == 0 |
                         MyData.get_Int("Unit_Of_Measure") == 1 |
                         MyData.get_Int("Unit_Of_Measure") == 2 |
@@ -172,7 +174,8 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
                 selectedEast = -1;
                 selectedDes = -1;
                 selectedQuota = -1;
-                notifyDataSetChanged();
+                //notifyDataSetChanged();
+                notifyPointChanged();
                 if (MyData.get_Int("Unit_Of_Measure") == 0 |
                         MyData.get_Int("Unit_Of_Measure") == 1 |
                         MyData.get_Int("Unit_Of_Measure") == 2 |
@@ -197,7 +200,8 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
                 selectedEast = -1;
                 selectedNord = -1;
                 selectedDes = -1;
-                notifyDataSetChanged();
+                //notifyDataSetChanged();
+                notifyPointChanged();
                 if (MyData.get_Int("Unit_Of_Measure") == 0 |
                         MyData.get_Int("Unit_Of_Measure") == 1 |
                         MyData.get_Int("Unit_Of_Measure") == 2 |
@@ -223,7 +227,8 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
                 selectedEast = -1;
                 selectedNord = -1;
                 selectedQuota = -1;
-                notifyDataSetChanged();
+                //notifyDataSetChanged();
+                notifyPointChanged();
                 if (!customQwertyDialog.dialog.isShowing()) {
                     customQwertyDialog.showP(998, Punti3DAdapter.this, selectedItem, punti3DList.get(selectedItem).getName());
                 }
@@ -244,15 +249,16 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
 
         builder.setPositiveButton("YES", (dialog, which) -> {
             try {
-                if (Activity_Crea_Superficie.point3DS != null && Activity_Crea_Superficie.point3DS.length > 0) {
-                    List<Point3D> pointList = new ArrayList<>(Arrays.asList(Activity_Crea_Superficie.point3DS));
+                if (position >= 0 && position < punti3DList.size()) {
+                    punti3DList.remove(position);
+                    selectedItem = -1;
+                    selectedID = -1;
+                    selectedDes = -1;
+                    selectedEast = -1;
+                    selectedNord = -1;
+                    selectedQuota = -1;
 
-                    if (position >= 0 && position < pointList.size()) {
-                        pointList.remove(position); // Rimuove il punto selezionato
-                        Activity_Crea_Superficie.point3DS = pointList.toArray(new Point3D[0]); // Aggiorna l'array
-                        Dialog_Edita_Punti3D.chiudi();
-
-                    }
+                    notifyPointChanged();
                 }
             } catch (Exception ignored) {
             }
@@ -265,5 +271,22 @@ public class Punti3DAdapter extends RecyclerView.Adapter<Punti3DAdapter.ViewHold
         builder.show();
     }
 
+    public interface OnPointChangedListener {
+        void onPointChanged();
+    }
+
+    private OnPointChangedListener onPointChangedListener;
+
+    public void setOnPointChangedListener(OnPointChangedListener listener) {
+        this.onPointChangedListener = listener;
+    }
+
+    public void notifyPointChanged() {
+        notifyDataSetChanged();
+
+        if (onPointChangedListener != null) {
+            onPointChangedListener.onPointChanged();
+        }
+    }
 
 }
