@@ -1585,7 +1585,7 @@ public class CanSender extends Service {
             stake = 1;
         }
         MyDeviceManager.CanWrite(true, 1, 0x83, 8, new byte[]{
-                stake, 0, 0, 0, 0, 4, 0, 0
+                stake, 0, 0, 0, 0, 4, (byte) requestZeroedTilt, (byte) requestZeroedEnc
         });
         int deltaZeta = (int) (remainingZed * 1000);
         byte[] zetazeta = PLC_DataTypes_LittleEndian.S16_to_bytes((short) deltaZeta);
@@ -1600,8 +1600,11 @@ public class CanSender extends Service {
         MyDeviceManager.CanWrite(true, 1, 0x7D, 8, new byte[]{
                 delyaXX[0], delyaXX[1], 0, delyaYY[0], delyaYY[1], 0, 0, 0
         });
+        requestZeroedTilt=0;
+        requestZeroedEnc=0;
     }
-
+    public static int requestZeroedTilt;
+    public static int requestZeroedEnc;
 
 }
 

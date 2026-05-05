@@ -7,11 +7,13 @@ import static packexcalib.gnss.CRS_Strings._150580;
 import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.CanSender.GNSS_MSG;
+import static services.CanSender.requestZeroedEnc;
 import static services.CanService.nmeaSTX_Disc;
 import static utils.MyTypes.AT_BOOM;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.SMC;
 import static utils.MyTypes.SOLARFARM_MODE;
+import static utils.MyTypes.UNIVERSAL_ECU;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -189,8 +191,21 @@ public class Dialog_Drill_GNSS {
 
     private void onClick() {
         setZeroRotary.setOnLongClickListener(view -> {
-            MyDeviceManager.CanWrite(true, 0, 0x610, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
-            MyDeviceManager.CanWrite(true, 0, 0x610, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
+            if(DataSaved.Drilling_Mode == SOLARFARM_MODE){
+                switch (DataSaved.isCanOpen){
+                    case UNIVERSAL_ECU :
+                        requestZeroedEnc=1;
+                        break;
+
+                    default:
+                        MyDeviceManager.CanWrite(true, 0, 0x609, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
+                        break;
+                }
+
+            }else {
+                MyDeviceManager.CanWrite(true, 0, 0x610, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
+                MyDeviceManager.CanWrite(true, 0, 0x610, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
+            }
             return true;
         });
 

@@ -29,19 +29,6 @@ public class Sensors_Decoder_Drill {
     public static double RopeLen;
     static double yaw;
     static boolean boom1P, boom1M, stickP, stickM, bucketA, bucketC, rotL, rotR, latP, latM, lonP, lonM, qP, qM;
-    static double norm, ax_norm, ay_norm, az_norm;
-    static double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ, _x486, _y486, _z486;
-    static double[] eulerAngles;
-    static short acc_x;
-    static short acc_y;
-    static short acc_z;
-    static short Gx;
-    static short Gy;
-    static short Gz;
-    static long K = 0x02000000;
-
-
-    static double[] mPosition = new double[3];
 
     public static void decode(int id, byte[] data) {
         try {

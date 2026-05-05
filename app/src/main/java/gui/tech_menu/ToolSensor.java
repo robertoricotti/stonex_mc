@@ -1,5 +1,7 @@
 package gui.tech_menu;
 
+import static utils.MyTypes.UNIVERSAL_ECU;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Sensors_Decoder;
 import utils.MyData;
+import utils.MyDeviceManager;
 
 public class ToolSensor extends BaseClass {
     CheckBox off, left, right, fwd, bwd;
@@ -104,13 +107,25 @@ public class ToolSensor extends BaseClass {
         });
 
         setPitch.setOnLongClickListener(view -> {
-            setPitch.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
-            DataSaved.offset_Tool_Pitch = Sensors_Decoder.Deg_Tool_Pitch;
+            if(DataSaved.isCanOpen==UNIVERSAL_ECU){
+                DataSaved.offset_Tool_Pitch=0;
+                MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2A, 0x16, 0x20, 0, 0, 0, 0, 0});
+                MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2B, 0x16, 0x21, 0, 0, 0, 0, 0});
+            }else {
+                setPitch.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+                DataSaved.offset_Tool_Pitch = Sensors_Decoder.Deg_Tool_Pitch;
+            }
             return true;
         });
         setRoll.setOnLongClickListener(view -> {
-            setRoll.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
-            DataSaved.offset_Tool_Roll = Sensors_Decoder.Deg_Tool_Roll;
+            if(DataSaved.isCanOpen==UNIVERSAL_ECU){
+                DataSaved.offset_Tool_Roll=0;
+                MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2A, 0x16, 0x20, 0, 0, 0, 0, 0});
+                MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2B, 0x16, 0x21, 0, 0, 0, 0, 0});
+            }else {
+                setRoll.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+                DataSaved.offset_Tool_Roll = Sensors_Decoder.Deg_Tool_Roll;
+            }
             return true;
         });
 

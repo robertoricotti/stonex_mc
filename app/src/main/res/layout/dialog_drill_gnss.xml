@@ -349,11 +349,11 @@
             <ImageView
                 android:id="@+id/imbr"
                 android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_height="37dp"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:gravity="center"
                 android:background="@drawable/sfondo_bottone_trasparente"
+                android:gravity="center"
                 android:src="@drawable/wire_rope" />
 
             <TextView
