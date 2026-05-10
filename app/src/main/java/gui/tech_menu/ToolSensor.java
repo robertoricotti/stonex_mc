@@ -136,7 +136,6 @@ public class ToolSensor extends BaseClass {
         angleRoll.setText(String.format("%.02f", ExcavatorLib.correctToolRoll).replace(",", "."));
         offPitch.setText(String.format("%.02f", DataSaved.offset_Tool_Pitch).replace(",", "."));
         offRoll.setText(String.format("%.02f", DataSaved.offset_Tool_Roll).replace(",", "."));
-
     }
 
     private void checkChecked(int t) {

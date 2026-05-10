@@ -10,28 +10,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4" />
+        app:layout_constraintGuide_percent="0.425" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/hc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.85" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vc1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3333" />
+        app:layout_constraintGuide_percent="0.25" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vc2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.6666" />
+        app:layout_constraintGuide_percent="0.50" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vc3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
 
     <ImageView
         android:id="@+id/usb"
@@ -67,9 +73,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/hc0"
         app:layout_constraintLeft_toRightOf="@id/vc2"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toRightOf="@id/vc3"
         android:layout_margin="15dp"
         android:padding="5dp" />
+    <ImageView
+        android:id="@+id/ditch"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/sfondo_bottone_bianco"
+        android:src="@drawable/bottone_ditch"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/hc0"
+        app:layout_constraintLeft_toRightOf="@id/vc3"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="15dp"
+        android:padding="5dp"
+        app:tint="@color/_____cancel_text"/>
 
     <ImageView
         android:id="@+id/flatarea"
@@ -106,7 +125,7 @@
         app:layout_constraintTop_toBottomOf="@id/hc0"
         app:layout_constraintBottom_toTopOf="@id/hc"
         app:layout_constraintLeft_toRightOf="@id/vc2"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toRightOf="@id/vc3"
         android:layout_margin="15dp"
         android:padding="0dp" />
 

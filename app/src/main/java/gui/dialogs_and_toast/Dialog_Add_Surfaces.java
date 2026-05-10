@@ -23,7 +23,7 @@ import utils.FullscreenActivity;
 public class Dialog_Add_Surfaces {
     Activity activity;
     public Dialog dialog;
-    ImageView close, usb, flat, ab, area, trincea, triangoli;
+    ImageView close, usb, flat, ab, area, trincea, triangoli,ditch;
     String mPath;
     String chiamata = "HOME";
     Dialog_PRJ_Folder dialogPrjFolder;
@@ -75,6 +75,7 @@ public class Dialog_Add_Surfaces {
         area = dialog.findViewById(R.id.flatarea);
         trincea = dialog.findViewById(R.id.trench);
         triangoli = dialog.findViewById(R.id.terrein);
+        ditch=dialog.findViewById(R.id.ditch);
          dialogPrjFolder = new Dialog_PRJ_Folder(activity);
     }
 
@@ -93,6 +94,23 @@ public class Dialog_Add_Surfaces {
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
             }
+        });
+        ditch.setOnClickListener(view -> {
+            if (dialogPrjFolder.dialog.isShowing()) {
+                dialogPrjFolder.dialog.dismiss();
+            }
+            if (dialog != null && dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            Intent intent = new Intent(activity, MyGLActivity_Create.class);
+            intent.putExtra("proj", "DITCH");
+            intent.putExtra("type", "OVER"); // Passa il valore OVER
+            intent.putExtra("whoPRJ", chiamata);
+            intent.putExtra("mPath", mPath);//scegliere path se Projects o dentro folder
+
+
+            activity.startActivity(intent);
+            activity.finish();
         });
 
         flat.setOnClickListener(view -> {

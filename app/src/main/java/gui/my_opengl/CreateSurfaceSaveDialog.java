@@ -24,6 +24,7 @@ import dxf.ExportDXF_1P;
 import dxf.ExportDXF_AB;
 import dxf.ExportDXF_Area;
 import dxf.ExportDXF_Trench;
+import dxf.ExportDXF_Ditch;
 import dxf.ExportDXF_Triangles;
 import dxf.Point3D;
 import gui.boot_and_choose.Activity_Home_Page;
@@ -172,6 +173,16 @@ public class CreateSurfaceSaveDialog {
                     break;
                 case CreateSurfaceController.MODE_TRIANGLES:
                     new ExportDXF_Triangles(controller.getTrenchOrTrianglePoints(), filename, path, conversionFactor).generateDXF();
+                    break;
+                case CreateSurfaceController.MODE_DITCH:
+                    new ExportDXF_Ditch(
+                            controller.getDitchCenterPoints(),
+                            controller.getDitchLeftPoints(),
+                            controller.getDitchRightPoints(),
+                            filename,
+                            path,
+                            conversionFactor
+                    ).generateDXF();
                     break;
             }
 

@@ -44,10 +44,14 @@ public class CreateSurfaceController {
     public static final int MODE_AREA = 2;
     public static final int MODE_TRENCH = 3;
     public static final int MODE_TRIANGLES = 4;
+    public static final int MODE_DITCH = 5;
 
     private static final String TAG = "CreateSurface";
     private static final double DEFAULT_SIDE = 20.0;
     private static final double DEFAULT_AB_WIDTH = 20.0;
+    private static final double DEFAULT_DITCH_WIDTH = 20.0;
+    private static final double[] DEFAULT_DITCH_LENGTHS = {3.0, 2.0, 3.0, 2.0, 3.0};
+    private static final double[] DEFAULT_DITCH_SLOPES_PERCENT = {0.0, -70.0, 0.0, 70.0, 0.0};
     private static final double EPS = 1e-9;
     private static final double INDEX_TOLERANCE = 0.01; // 1 cm, for JTS coordinate matching on large UTM values.
 
@@ -69,6 +73,18 @@ public class CreateSurfaceController {
     private double abRightWidth = DEFAULT_AB_WIDTH;
     private double abLeftSlopeDeg = 0.0;
     private double abRightSlopeDeg = 0.0;
+
+    // DITCH: one measured point + derived parametric centerline P1..P6.
+    private Point3D ditchMeasuredPoint;
+    private int ditchMeasuredPointIndex = 0; // P1 by default, 0-based.
+    private boolean ditchPointRoleLocked = false;
+    private final double[] ditchSegmentLengths = DEFAULT_DITCH_LENGTHS.clone();
+    private final double[] ditchSegmentSlopesPercent = DEFAULT_DITCH_SLOPES_PERCENT.clone();
+    private double ditchLeftWidth = DEFAULT_DITCH_WIDTH;
+    private double ditchRightWidth = DEFAULT_DITCH_WIDTH;
+    private Point3D[] ditchCenterPoints = new Point3D[0];
+    private Point3D[] ditchLeftPoints = new Point3D[0];
+    private Point3D[] ditchRightPoints = new Point3D[0];
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void resetCreateData() {
@@ -114,7 +130,9 @@ public class CreateSurfaceController {
 
     public int getPickedCount() {
         ensureCreateLists();
-        return mode == MODE_AB ? getABBaseCount() : DataSaved.points_Create.size();
+        if (mode == MODE_AB) return getABBaseCount();
+        if (mode == MODE_DITCH) return ditchMeasuredPoint == null ? 0 : 1;
+        return DataSaved.points_Create.size();
     }
 
     public List<Point3D> getPickedPoints() {
@@ -131,6 +149,10 @@ public class CreateSurfaceController {
             if (ab[1] != null) out.add(ab[1]);
             return out.toArray(new Point3D[0]);
         }
+        if (mode == MODE_DITCH) {
+            if (ditchMeasuredPoint == null) return new Point3D[0];
+            return new Point3D[]{cloneWithName(ditchMeasuredPoint, "P" + (ditchMeasuredPointIndex + 1))};
+        }
         return DataSaved.points_Create.toArray(new Point3D[0]);
     }
 
@@ -143,6 +165,70 @@ public class CreateSurfaceController {
             this.planSide = planSide;
             rebuildPreview();
         }
+    }
+
+    public int getDitchMeasuredPointIndex() {
+        return ditchMeasuredPointIndex;
+    }
+
+    public boolean isDitchPointRoleLocked() {
+        return ditchPointRoleLocked;
+    }
+
+    public boolean setDitchMeasuredPointIndexOnce(int index) {
+        if (mode != MODE_DITCH || ditchPointRoleLocked) return false;
+        ditchMeasuredPointIndex = clampDitchPointIndex(index);
+        ditchPointRoleLocked = true;
+        rebuildPreview();
+        return true;
+    }
+
+    public void lockDefaultDitchMeasuredPointIndex() {
+        if (mode != MODE_DITCH || ditchPointRoleLocked) return;
+        ditchMeasuredPointIndex = clampDitchPointIndex(ditchMeasuredPointIndex);
+        ditchPointRoleLocked = true;
+        rebuildPreview();
+    }
+
+    public double[] getDitchSegmentLengths() {
+        return ditchSegmentLengths.clone();
+    }
+
+    public double[] getDitchSegmentSlopesPercent() {
+        return ditchSegmentSlopesPercent.clone();
+    }
+
+    public double getDitchLeftWidth() {
+        return ditchLeftWidth;
+    }
+
+    public double getDitchRightWidth() {
+        return ditchRightWidth;
+    }
+
+    public void setDitchParams(double[] lengths, double[] slopesPercent, double leftWidth, double rightWidth) {
+        if (lengths == null || slopesPercent == null || lengths.length != 5 || slopesPercent.length != 5) {
+            return;
+        }
+        for (int i = 0; i < 5; i++) {
+            ditchSegmentLengths[i] = Math.max(0.0, lengths[i]);
+            ditchSegmentSlopesPercent[i] = slopesPercent[i];
+        }
+        ditchLeftWidth = Math.max(0.0, leftWidth);
+        ditchRightWidth = Math.max(0.0, rightWidth);
+        rebuildPreview();
+    }
+
+    public Point3D[] getDitchCenterPoints() {
+        return clonePointArray(ditchCenterPoints);
+    }
+
+    public Point3D[] getDitchLeftPoints() {
+        return clonePointArray(ditchLeftPoints);
+    }
+
+    public Point3D[] getDitchRightPoints() {
+        return clonePointArray(ditchRightPoints);
     }
 
     public void setABParams(double leftWidth, double leftSlopeDeg, double rightWidth, double rightSlopeDeg) {
@@ -187,6 +273,8 @@ public class CreateSurfaceController {
                 return DataSaved.points_Create.size() < 1;
             case MODE_AB:
                 return getABBaseCount() < 2;
+            case MODE_DITCH:
+                return ditchMeasuredPoint == null;
             default:
                 return true;
         }
@@ -228,6 +316,12 @@ public class CreateSurfaceController {
                 }
                 break;
 
+            case MODE_DITCH:
+                ditchMeasuredPoint = cloneWithName(p, "P" + (ditchMeasuredPointIndex + 1));
+                ditchPointRoleLocked = false;
+                DataSaved.points_Create.clear();
+                break;
+
             case MODE_AREA:
                 if (!DataSaved.points_Create.isEmpty()) {
                     Point3D first = DataSaved.points_Create.get(0);
@@ -252,9 +346,16 @@ public class CreateSurfaceController {
 
     public boolean removeLastPoint() {
         ensureCreateLists();
-        if (DataSaved.points_Create.isEmpty()) return false;
-
-        if (mode == MODE_AB) {
+        if (mode == MODE_DITCH) {
+            if (ditchMeasuredPoint == null) return false;
+            ditchMeasuredPoint = null;
+            ditchMeasuredPointIndex = 0;
+            ditchPointRoleLocked = false;
+            ditchCenterPoints = new Point3D[0];
+            ditchLeftPoints = new Point3D[0];
+            ditchRightPoints = new Point3D[0];
+            DataSaved.points_Create.clear();
+        } else if (mode == MODE_AB) {
             int baseCount = getABBaseCount();
             if (baseCount >= 2) {
                 Point3D a = cloneWithName(DataSaved.points_Create.get(0), "A");
@@ -274,6 +375,14 @@ public class CreateSurfaceController {
 
     public void clear() {
         ensureCreateLists();
+        if (mode == MODE_DITCH) {
+            ditchMeasuredPoint = null;
+            ditchMeasuredPointIndex = 0;
+            ditchPointRoleLocked = false;
+            ditchCenterPoints = new Point3D[0];
+            ditchLeftPoints = new Point3D[0];
+            ditchRightPoints = new Point3D[0];
+        }
         DataSaved.points_Create.clear();
         rebuildPreview();
     }
@@ -292,7 +401,7 @@ public class CreateSurfaceController {
             }
         }
 
-        if (mode != MODE_TRIANGLES && mode != MODE_AREA) {
+        if (mode != MODE_TRIANGLES && mode != MODE_AREA && mode != MODE_DITCH) {
             renumberPickedPoints();
         }
 
@@ -331,6 +440,10 @@ public class CreateSurfaceController {
                 return DataSaved.points_Create.size() >= 2;
             case MODE_TRIANGLES:
                 return DataSaved.points_Create.size() >= 3 && !performDelaunay(DataSaved.points_Create, null).isEmpty();
+            case MODE_DITCH:
+                return ditchMeasuredPoint != null
+                        && ditchPointRoleLocked
+                        && ditchCenterPoints.length == 6;
             default:
                 return false;
         }
@@ -364,6 +477,9 @@ public class CreateSurfaceController {
                     break;
                 case MODE_TRIANGLES:
                     rebuildTriangles();
+                    break;
+                case MODE_DITCH:
+                    rebuildDitch();
                     break;
                 default:
                     break;
@@ -915,6 +1031,103 @@ public class CreateSurfaceController {
     }
 
 
+    private void rebuildDitch() {
+        if (ditchMeasuredPoint == null) {
+            ditchCenterPoints = new Point3D[0];
+            ditchLeftPoints = new Point3D[0];
+            ditchRightPoints = new Point3D[0];
+            return;
+        }
+
+        double headingRad = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+        double fx = Math.sin(headingRad);
+        double fy = Math.cos(headingRad);
+        double rx = Math.cos(headingRad);
+        double ry = -Math.sin(headingRad);
+
+        double[] station = new double[6];
+        double[] profileZ = new double[6];
+        station[0] = 0.0;
+        profileZ[0] = 0.0;
+        for (int i = 1; i < 6; i++) {
+            station[i] = station[i - 1] + ditchSegmentLengths[i - 1];
+            profileZ[i] = profileZ[i - 1]
+                    + ditchSegmentLengths[i - 1] * ditchSegmentSlopesPercent[i - 1] / 100.0;
+        }
+
+        int measuredIndex = clampDitchPointIndex(ditchMeasuredPointIndex);
+        double measuredStation = station[measuredIndex];
+        double measuredProfileZ = profileZ[measuredIndex];
+
+        Point3D[] center = new Point3D[6];
+        Point3D[] left = new Point3D[6];
+        Point3D[] right = new Point3D[6];
+
+        for (int i = 0; i < 6; i++) {
+            double offset = station[i] - measuredStation;
+            double x = ditchMeasuredPoint.getX() + fx * offset;
+            double y = ditchMeasuredPoint.getY() + fy * offset;
+            double z = ditchMeasuredPoint.getZ() + profileZ[i] - measuredProfileZ;
+
+            center[i] = makeNamedPoint("P" + (i + 1), x, y, z);
+            left[i] = makeNamedPoint(
+                    "L" + (i + 1),
+                    x - rx * ditchLeftWidth,
+                    y - ry * ditchLeftWidth,
+                    z
+            );
+            right[i] = makeNamedPoint(
+                    "R" + (i + 1),
+                    x + rx * ditchRightWidth,
+                    y + ry * ditchRightWidth,
+                    z
+            );
+        }
+
+        ditchCenterPoints = center;
+        ditchLeftPoints = left;
+        ditchRightPoints = right;
+
+        DataSaved.points_Create.clear();
+        for (Point3D p : center) DataSaved.points_Create.add(cloneWithName(p, p.getName()));
+        for (Point3D p : left) DataSaved.points_Create.add(cloneWithName(p, p.getName()));
+        for (Point3D p : right) DataSaved.points_Create.add(cloneWithName(p, p.getName()));
+
+        addPolylineList(center);
+        addPolylineList(left);
+        addPolylineList(right);
+
+        ArrayList<Point3D> outer = new ArrayList<>();
+        for (Point3D p : left) outer.add(p);
+        for (int i = right.length - 1; i >= 0; i--) outer.add(right[i]);
+        outer.add(left[0]);
+        addPolyline(outer, Color.YELLOW);
+
+        for (int i = 0; i < 6; i++) {
+            addPolylineList(left[i], center[i], right[i]);
+            addPointText(center[i].getName(), center[i]);
+            addPointText(left[i].getName(), left[i]);
+            addPointText(right[i].getName(), right[i]);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            Point3D c1 = center[i];
+            Point3D c2 = center[i + 1];
+            if (Math.hypot(c2.getX() - c1.getX(), c2.getY() - c1.getY()) <= EPS) {
+                continue;
+            }
+            Point3D l1 = left[i];
+            Point3D l2 = left[i + 1];
+            Point3D r1 = right[i];
+            Point3D r2 = right[i + 1];
+
+            DataSaved.dxfFaces_Create.add(new Face3D(c1, c2, l2, l2, Color.YELLOW, faceLayer));
+            DataSaved.dxfFaces_Create.add(new Face3D(c1, l2, l1, l1, Color.YELLOW, faceLayer));
+            DataSaved.dxfFaces_Create.add(new Face3D(c1, r1, r2, r2, Color.YELLOW, faceLayer));
+            DataSaved.dxfFaces_Create.add(new Face3D(c1, r2, c2, c2, Color.YELLOW, faceLayer));
+        }
+    }
+
     private void rebuildTriangles() {
         ensureCreateLists();
 
@@ -1162,7 +1375,7 @@ public class CreateSurfaceController {
     }
 
     private void renumberPickedPoints() {
-        if (mode == MODE_AB) return;
+        if (mode == MODE_AB || mode == MODE_DITCH) return;
         for (int i = 0; i < DataSaved.points_Create.size(); i++) {
             Point3D p = DataSaved.points_Create.get(i);
             if (mode == MODE_PLAN) {
@@ -1199,6 +1412,20 @@ public class CreateSurfaceController {
         if (DataSaved.points_Create.isEmpty()) return 0;
         if (DataSaved.points_Create.size() == 1) return 1;
         return 2;
+    }
+
+    private int clampDitchPointIndex(int index) {
+        return Math.max(0, Math.min(5, index));
+    }
+
+    private Point3D[] clonePointArray(Point3D[] points) {
+        if (points == null) return new Point3D[0];
+        Point3D[] copy = new Point3D[points.length];
+        for (int i = 0; i < points.length; i++) {
+            Point3D p = points[i];
+            copy[i] = p == null ? null : cloneWithName(p, p.getName());
+        }
+        return copy;
     }
 
     private String nameForIndex(int i) {
@@ -1246,6 +1473,7 @@ public class CreateSurfaceController {
             case "AREA": return MODE_AREA;
             case "TRENCH": return MODE_TRENCH;
             case "TRIANGLES": return MODE_TRIANGLES;
+            case "DITCH": return MODE_DITCH;
             default: return MODE_PLAN;
         }
     }
@@ -1265,7 +1493,9 @@ public class CreateSurfaceController {
 
     public void syncLegacyStatics() {
         ensureCreateLists();
-        Activity_Crea_Superficie.countPunti = mode == MODE_AB ? getABBaseCount() : DataSaved.points_Create.size();
+        Activity_Crea_Superficie.countPunti = mode == MODE_AB
+                ? getABBaseCount()
+                : (mode == MODE_DITCH ? getPickedCount() : DataSaved.points_Create.size());
         Activity_Crea_Superficie.indexSel = 0;
         Activity_Crea_Superficie.point3DS = getTrenchOrTrianglePoints();
 
@@ -1274,6 +1504,10 @@ public class CreateSurfaceController {
             for (Point3D p : DataSaved.points_Create) {
                 Activity_Crea_Superficie.coordinateP.add(new double[]{p.getX(), p.getY(), p.getZ()});
             }
+        }
+
+        if (mode == MODE_DITCH) {
+            Activity_Crea_Superficie.point3DS = clonePointArray(ditchCenterPoints);
         }
 
         if (mode == MODE_TRENCH) {
@@ -1291,7 +1525,7 @@ public class CreateSurfaceController {
                     new ArrayList<>(DataSaved.dxfFaces_Create);
         }
 
-        Point3D[] ab = getABPoints();
+        Point3D[] ab = mode == MODE_AB ? getABPoints() : new Point3D[6];
         Activity_Crea_Superficie.puntiAB = ab;
         Activity_Crea_Superficie.leftDIST = abLeftWidth;
         Activity_Crea_Superficie.leftSLOPE = abLeftSlopeDeg;

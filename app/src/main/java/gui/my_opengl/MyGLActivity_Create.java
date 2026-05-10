@@ -2,6 +2,8 @@ package gui.my_opengl;
 
 import static gui.my_opengl.My3DActivity.glVista3d;
 import static gui.my_opengl.My3DActivity.isPan;
+import static utils.MyTypes.DOZER;
+import static utils.MyTypes.EXCAVATOR;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -12,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -154,6 +158,16 @@ public class MyGLActivity_Create extends BaseClass {
         gl_2d3d = findViewById(R.id.gl_2d3d);
         gl_croce=findViewById(R.id.gl_croce);
 
+        if (DataSaved.isWL == EXCAVATOR) {
+            bucketEdgeL.setImageResource(R.drawable.benna_misura_sinistra);
+            bucketEdgeC.setImageResource(R.drawable.benna_misura_cnt);
+            bucketEdgeR.setImageResource(R.drawable.benna_misura_destra);
+        } else {
+            bucketEdgeL.setImageResource(R.drawable.lama_misura_sinistra);
+            bucketEdgeC.setImageResource(R.drawable.lama_misura_cnt);
+            bucketEdgeR.setImageResource(R.drawable.lama_misura_destra);
+        }
+
     }
 
 
@@ -280,6 +294,8 @@ public class MyGLActivity_Create extends BaseClass {
                 new CustomToast(this, "PLAN: 1pt Max").show_alert();
             } else if (createController.getMode() == CreateSurfaceController.MODE_AB) {
                 new CustomToast(this, "AB: 2pts Max").show_alert();
+            } else if (createController.getMode() == CreateSurfaceController.MODE_DITCH) {
+                new CustomToast(this, "DITCH: 1pt Max").show_alert();
             } else {
                 new CustomToast(this, "Point Not Added").show_alert();
             }
@@ -289,6 +305,10 @@ public class MyGLActivity_Create extends BaseClass {
             new CustomToast(this, getResources().getString(R.string.punto_salvato)).show_added();
             requestGlRender();
             updateUI();
+            if (createController.getMode() == CreateSurfaceController.MODE_DITCH
+                    && !createController.isDitchPointRoleLocked()) {
+                showDitchPointPositionDialog();
+            }
         } else {
             new CustomToast(this, "Invalid Coordinates").show_error();
         }
@@ -338,12 +358,125 @@ public class MyGLActivity_Create extends BaseClass {
                     updateUI();
                 });
                 break;
+            case CreateSurfaceController.MODE_DITCH:
+                if (createController.getPickedCount() < 1) {
+                    new CustomToast(this, "DITCH: 1pt is needed").show_alert();
+                    return;
+                }
+                showDitchEditDialog();
+                break;
             case CreateSurfaceController.MODE_AREA:
             case CreateSurfaceController.MODE_TRIANGLES:
             default:
                 showEditPointsDialog();
                 break;
         }
+    }
+
+    private void showDitchPointPositionDialog() {
+        final String[] labels = {"P1", "P2", "P3", "P4", "P5", "P6"};
+        final int[] selected = {createController.getDitchMeasuredPointIndex()};
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Measured point position")
+                .setSingleChoiceItems(labels, selected[0], (d, which) -> selected[0] = which)
+                .setPositiveButton(android.R.string.ok, (d, which) -> {
+                    createController.setDitchMeasuredPointIndexOnce(selected[0]);
+                    requestGlRender();
+                    updateUI();
+                })
+                .setNegativeButton(android.R.string.cancel, (d, which) -> {
+                    createController.lockDefaultDitchMeasuredPointIndex();
+                    requestGlRender();
+                    updateUI();
+                })
+                .create();
+        dialog.setOnCancelListener(d -> {
+            createController.lockDefaultDitchMeasuredPointIndex();
+            requestGlRender();
+            updateUI();
+        });
+        dialog.setOnDismissListener(d -> FullscreenActivity.setFullScreen(this));
+        dialog.show();
+    }
+
+    private void showDitchEditDialog() {
+        double[] lengths = createController.getDitchSegmentLengths();
+        double[] slopes = createController.getDitchSegmentSlopesPercent();
+
+        LinearLayout content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        content.setPadding(pad, pad, pad, pad);
+
+        EditText[] lengthInputs = new EditText[5];
+        EditText[] slopeInputs = new EditText[5];
+        for (int i = 0; i < 5; i++) {
+            TextView title = new TextView(this);
+            title.setText("P" + (i + 1) + " > P" + (i + 2));
+            content.addView(title);
+
+            lengthInputs[i] = newDitchNumberInput("Length", Utils.readUnitOfMeasureLITE(String.valueOf(lengths[i])), false);
+            content.addView(lengthInputs[i]);
+
+            slopeInputs[i] = newDitchNumberInput("Slope %", String.valueOf(slopes[i]), true);
+            content.addView(slopeInputs[i]);
+        }
+
+        EditText leftWidthInput = newDitchNumberInput(
+                "Left distance",
+                Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchLeftWidth())),
+                false
+        );
+        EditText rightWidthInput = newDitchNumberInput(
+                "Right distance",
+                Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchRightWidth())),
+                false
+        );
+        content.addView(leftWidthInput);
+        content.addView(rightWidthInput);
+
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(content);
+
+        new AlertDialog.Builder(this)
+                .setTitle("DITCH surface")
+                .setView(scroll)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    FullscreenActivity.setFullScreen(this);
+                    try {
+                        double[] newLengths = new double[5];
+                        double[] newSlopes = new double[5];
+                        for (int i = 0; i < 5; i++) {
+                            newLengths[i] = Math.max(0.0,
+                                    Double.parseDouble(Utils.writeMetri(lengthInputs[i].getText().toString())));
+                            newSlopes[i] = Double.parseDouble(slopeInputs[i].getText().toString());
+                        }
+                        double leftWidth = Math.max(0.0,
+                                Double.parseDouble(Utils.writeMetri(leftWidthInput.getText().toString())));
+                        double rightWidth = Math.max(0.0,
+                                Double.parseDouble(Utils.writeMetri(rightWidthInput.getText().toString())));
+                        createController.setDitchParams(newLengths, newSlopes, leftWidth, rightWidth);
+                        requestGlRender();
+                        updateUI();
+                    } catch (Exception e) {
+                        new CustomToast(this, "Invalid Value").show_error();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private EditText newDitchNumberInput(String hint, String value, boolean signed) {
+        EditText input = new EditText(this);
+        input.setSingleLine(true);
+        input.setHint(hint);
+        input.setText(value);
+        input.setSelectAllOnFocus(true);
+        int type = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL;
+        if (signed) type |= InputType.TYPE_NUMBER_FLAG_SIGNED;
+        input.setInputType(type);
+        return input;
     }
 
     private void showPlanSizeDialog() {
