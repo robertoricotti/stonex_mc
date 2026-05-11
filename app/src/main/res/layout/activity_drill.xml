@@ -32,7 +32,7 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_percent="0.38" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/side"
@@ -351,21 +351,7 @@
         app:layout_constraintLeft_toRightOf="@id/cent_v"
         app:layout_constraintTop_toBottomOf="@id/alta">
 
-        <TextView
 
-            android:id="@+id/hydroStat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:alpha="0.5"
-            android:background="@drawable/sfondo_bottone_grigio"
-            android:gravity="center"
-            android:paddingHorizontal="5dp"
-            android:text="AUTO"
-            android:textSize="34sp"
-            android:textStyle="bold"
-            tools:layout_editor_absoluteX="70dp"
-            tools:layout_editor_absoluteY="7dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -687,5 +673,23 @@
         app:layout_constraintTop_toBottomOf="@id/compass"
         app:layout_constraintLeft_toLeftOf="@id/compass"
         app:layout_constraintRight_toRightOf="@id/compass" />
+    <TextView
+        android:id="@+id/hydroStat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:background="@drawable/sfondo_bottone_grigio"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="AUTO"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        tools:layout_editor_absoluteX="70dp"
+        tools:layout_editor_absoluteY="7dp"
+        app:layout_constraintTop_toBottomOf="@id/alta"
+        app:layout_constraintLeft_toRightOf="@id/compass"
+        app:layout_constraintBottom_toBottomOf="@id/compass"
+       />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

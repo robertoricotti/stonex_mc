@@ -747,20 +747,24 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 switch (DRILL_STATUS) {
                     case 0:
                         einauto.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
+                        einauto.setTextColor(getResources().getColor(R.color._____cancel_text));
                         break;
                     case 1:
                     case 2:
                     case 3:
                         einauto.setBackground(getResources().getDrawable(R.drawable.sfondo_auto_enabled));
+                        einauto.setTextColor(getResources().getColor(R.color.light_yellow));
                         break;
 
                     default:
                         einauto.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_grigio));
+                        einauto.setTextColor(getResources().getColor(R.color._____cancel_text));
                         break;
 
                 }
 
             } else {
+                einauto.setVisibility(View.INVISIBLE);
                 lineReference.setVisibility(View.INVISIBLE);
             }
 
@@ -812,6 +816,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     private void setCommonElelemnts() {
         textInfo.setText(setTesto());
+
         float rotBus = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
         rotBus = rotBus % 360;
         compass.setRotation(rotBus + (90 * DataSaved.Drill_Screen));

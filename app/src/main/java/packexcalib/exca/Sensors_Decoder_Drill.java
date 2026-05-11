@@ -33,17 +33,48 @@ public class Sensors_Decoder_Drill {
     public static void decode(int id, byte[] data) {
         try {
             if (DataSaved.isCanOpen == UNIVERSAL_ECU) {
-                //TODO MESSAGGI DA ECU
-                if(licenseType==MC_3D_PRO_AUTO) {
+                if (licenseType == MC_3D_PRO_AUTO) {
+
                     switch (id & 0x1FF) {
+
                         case 0x81:
-                            Deg_Tool_Roll = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{
+                            double pitch, roll;
+                            pitch = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{
                                     data[0], data[1]
-                            });
-                            Deg_Tool_Pitch = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{
+                            }) * 0.01d;
+                            roll = PLC_DataTypes_LittleEndian.byte_to_S16(new byte[]{
                                     data[3], data[4]
-                            });
+                            }) * 0.01d;
                             DRILL_STATUS = (int) data[7];
+                            switch (DataSaved.lrTool) {
+                                case 0:
+                                    Deg_Tool_Roll = 0;
+                                    Deg_Tool_Pitch = 0;
+
+                                    break;
+
+                                case 1:
+                                    Deg_Tool_Pitch=-pitch;
+                                    Deg_Tool_Roll=-roll;
+                                    break;
+
+                                case 2:
+                                    Deg_Tool_Pitch=pitch;
+                                    Deg_Tool_Roll=roll;
+                                    break;
+
+                                case 3:
+                                    Deg_Tool_Pitch=-roll;
+                                    Deg_Tool_Roll=pitch;
+                                    break;
+
+                                case 4:
+                                    Deg_Tool_Pitch=roll;
+                                    Deg_Tool_Roll=-pitch;
+                                    break;
+
+                            }
+
                             break;
 
                         case 0x194:
@@ -53,8 +84,8 @@ public class Sensors_Decoder_Drill {
                             break;
                     }
                 }
-            }
-            else {
+                DrillLib.Drill();
+            } else {
                 if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
                     if (id == 0x189) {
                         long rowEnc = PLC_DataTypes_LittleEndian.byte_to_S32(new byte[]{data[0], data[1], data[2], data[3]});

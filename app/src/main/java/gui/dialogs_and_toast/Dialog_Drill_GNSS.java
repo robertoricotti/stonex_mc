@@ -199,6 +199,7 @@ public class Dialog_Drill_GNSS {
 
                     default:
                         MyDeviceManager.CanWrite(true, 0, 0x609, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
+                        MyDeviceManager.CanWrite(true, 0, 0x609, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
                         break;
                 }
 
