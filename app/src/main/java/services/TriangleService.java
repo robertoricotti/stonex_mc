@@ -65,6 +65,7 @@ import utils.DistToPoint;
 import utils.MyData;
 
 public class TriangleService extends Service {
+    //public static boolean isTriangleStarted;
     public static double DGM_Letf, DGM_Right;
     public static short Mainfall_Value = 0;
     public static int segnoLinea = 1;
@@ -143,7 +144,6 @@ public class TriangleService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         if (!isRunning) {
             isRunning = true;
             executor.execute(triangleRunnable);

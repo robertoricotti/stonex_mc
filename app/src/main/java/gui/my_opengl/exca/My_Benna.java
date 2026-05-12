@@ -309,6 +309,7 @@ public class My_Benna {
                                     (float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            pline=applySurfaceOffset(pline);
                             glLinePunto = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glPuntoTerra = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glTerraPunto = pline;
@@ -323,6 +324,7 @@ public class My_Benna {
                                     (float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            pline=applySurfaceOffset(pline);
                             glLinePunto = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glPuntoTerra = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glTerraPunto = pline;
@@ -337,6 +339,7 @@ public class My_Benna {
                                     (float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            pline=applySurfaceOffset(pline);
                             glLinePunto = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glPuntoTerra = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glTerraPunto = pline;
@@ -357,6 +360,7 @@ public class My_Benna {
                                     new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], bucketLeftCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
                             Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, rs());
+                            pline=applySurfaceOffset(pline);
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
@@ -369,6 +373,7 @@ public class My_Benna {
                                     new Point3D(bucketCoord[0], bucketCoord[1], bucketCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
                             Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, rs());
+                            pline=applySurfaceOffset(pline);
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
@@ -381,6 +386,7 @@ public class My_Benna {
                                     new Point3D(bucketRightCoord[0], bucketRightCoord[1], bucketRightCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
                             Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, rs());
+                            pline=applySurfaceOffset(pline);
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
@@ -835,5 +841,16 @@ public class My_Benna {
         double[] term3 = s3(axisUnit, dot(axisUnit, v) * (1.0 - cos));
 
         return add(add(term1, term2), term3);
+    }
+    private static float offsetHGl() {
+        return (float) (DataSaved.offsetH * rs());
+    }
+
+    private static Point3DF applySurfaceOffset(Point3DF p) {
+        return new Point3DF(
+                p.getX(),
+                p.getY(),
+                p.getZ() - offsetHGl()
+        );
     }
 }

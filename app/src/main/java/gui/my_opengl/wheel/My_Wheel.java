@@ -144,6 +144,7 @@ public class My_Wheel {
                             Point3DF pline = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            pline = applySurfaceOffset(pline);
                             glLinePunto = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glPuntoTerra = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glTerraPunto = pline;
@@ -156,6 +157,7 @@ public class My_Wheel {
                             Point3DF plineC = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            plineC = applySurfaceOffset(plineC);
                             glLinePunto = new Point3DF(pbuckC.getX(), pbuckC.getY(), pbuckC.getZ());
                             glPuntoTerra = new Point3DF(pbuckC.getX(), pbuckC.getY(), plineC.getZ());
                             glTerraPunto = plineC;
@@ -168,6 +170,7 @@ public class My_Wheel {
                             Point3DF plineR = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            plineR = applySurfaceOffset(plineR);
                             glLinePunto = new Point3DF(pbuckR.getX(), pbuckR.getY(), pbuckR.getZ());
                             glPuntoTerra = new Point3DF(pbuckR.getX(), pbuckR.getY(), plineR.getZ());
                             glTerraPunto = plineR;
@@ -186,6 +189,7 @@ public class My_Wheel {
                             Point3D p = getProjectedPointOnSegment3D(new Point3D(bucketLeftCoord[0], bucketLeftCoord[1], bucketLeftCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
                             Point3DF pline = pTransform(new double[]{p.getX(), p.getY(), p.getZ()}, DataSaved.glL_AnchorView, rs());
+                            pline = applySurfaceOffset(pline);
                             glLinePoint = pbuck;
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
@@ -199,6 +203,7 @@ public class My_Wheel {
                             Point3D pC = getProjectedPointOnSegment3D(new Point3D(bucketCoord[0], bucketCoord[1], bucketCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
                             Point3DF plineC = pTransform(new double[]{pC.getX(), pC.getY(), pC.getZ()}, DataSaved.glL_AnchorView, rs());
+                            plineC = applySurfaceOffset(plineC);
                             glLinePoint = pbuckC;
                             glSegmentPoint = new Point3DF(pbuckC.getX(), pbuckC.getY(), plineC.getZ());
                             glSegmentEnd = plineC;
@@ -212,6 +217,7 @@ public class My_Wheel {
                             Point3D pR = getProjectedPointOnSegment3D(new Point3D(bucketRightCoord[0], bucketRightCoord[1], bucketRightCoord[2]),
                                     DataSaved.nearestSegment.getStart(), DataSaved.nearestSegment.getEnd());
                             Point3DF plineR = pTransform(new double[]{pR.getX(), pR.getY(), pR.getZ()}, DataSaved.glL_AnchorView, rs());
+                            plineR = applySurfaceOffset(plineR);
                             glLinePoint = pbuckR;
                             glSegmentPoint = new Point3DF(pbuckR.getX(), pbuckR.getY(), plineR.getZ());
                             glSegmentEnd = plineR;
@@ -397,5 +403,15 @@ public class My_Wheel {
             2, 1, 10,
             10, 11, 2
     };
+    private static float offsetHGl() {
+        return (float) (DataSaved.offsetH * rs());
+    }
 
+    private static Point3DF applySurfaceOffset(Point3DF p) {
+        return new Point3DF(
+                p.getX(),
+                p.getY(),
+                p.getZ() - offsetHGl()
+        );
+    }
 }

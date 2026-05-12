@@ -112,6 +112,7 @@ public class My_Lama {
                             Point3DF pline = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            pline=applySurfaceOffset(pline);
                             glLinePunto = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glPuntoTerra = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glTerraPunto = pline;
@@ -124,6 +125,7 @@ public class My_Lama {
                             Point3DF plineC = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            plineC=applySurfaceOffset(plineC);
                             glLinePunto = new Point3DF(pbuckC.getX(), pbuckC.getY(), pbuckC.getZ());
                             glPuntoTerra = new Point3DF(pbuckC.getX(), pbuckC.getY(), plineC.getZ());
                             glTerraPunto = plineC;
@@ -136,6 +138,7 @@ public class My_Lama {
                             Point3DF plineR = new Point3DF((float) (DataSaved.nearestPoint.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (DataSaved.nearestPoint.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (DataSaved.nearestPoint.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            plineR=applySurfaceOffset(plineR);
                             glLinePunto = new Point3DF(pbuckR.getX(), pbuckR.getY(), pbuckR.getZ());
                             glPuntoTerra = new Point3DF(pbuckR.getX(), pbuckR.getY(), plineR.getZ());
                             glTerraPunto = plineR;
@@ -158,6 +161,7 @@ public class My_Lama {
                             Point3DF pline = new Point3DF((float) (p.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (p.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (p.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            pline=applySurfaceOffset(pline);
                             glLinePoint = new Point3DF(pbuck.getX(), pbuck.getY(), pbuck.getZ());
                             glSegmentPoint = new Point3DF(pbuck.getX(), pbuck.getY(), pline.getZ());
                             glSegmentEnd = pline;
@@ -175,6 +179,7 @@ public class My_Lama {
                             Point3DF plineC = new Point3DF((float) (pC.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (pC.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (pC.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            plineC=applySurfaceOffset(plineC);
                             glLinePoint = new Point3DF(pbuckC.getX(), pbuckC.getY(), pbuckC.getZ());
                             glSegmentPoint = new Point3DF(pbuckC.getX(), pbuckC.getY(), plineC.getZ());
                             glSegmentEnd = plineC;
@@ -192,6 +197,7 @@ public class My_Lama {
                             Point3DF plineR = new Point3DF((float) (pR.getX() - DataSaved.glL_AnchorView[0]) * rs(),
                                     (float) (pR.getY() - DataSaved.glL_AnchorView[1]) * rs(),
                                     (float) (pR.getZ() - DataSaved.glL_AnchorView[2]) * rs());
+                            plineR=applySurfaceOffset(plineR);
                             glLinePoint = new Point3DF(pbuckR.getX(), pbuckR.getY(), pbuckR.getZ());
                             glSegmentPoint = new Point3DF(pbuckR.getX(), pbuckR.getY(), plineR.getZ());
                             glSegmentEnd = plineR;
@@ -356,5 +362,15 @@ public class My_Lama {
 
         };
     }
+    private static float offsetHGl() {
+        return (float) (DataSaved.offsetH * rs());
+    }
 
+    private static Point3DF applySurfaceOffset(Point3DF p) {
+        return new Point3DF(
+                p.getX(),
+                p.getY(),
+                p.getZ() - offsetHGl()
+        );
+    }
 }

@@ -1624,4 +1624,35 @@ public class CreateSurfaceController {
         ensureCreateLists();
         return DataSaved.points_Create.toArray(new Point3D[0]);
     }
+
+    public double getPlanZ() {
+        ensureCreateLists();
+        if (mode != MODE_PLAN || DataSaved.points_Create.isEmpty()) {
+            return Double.NaN;
+        }
+        return DataSaved.points_Create.get(0).getZ();
+    }
+
+    public boolean setPlanZ(double z) {
+        ensureCreateLists();
+        if (mode != MODE_PLAN || DataSaved.points_Create.isEmpty()) {
+            return false;
+        }
+        if (Double.isNaN(z) || Double.isInfinite(z)) {
+            return false;
+        }
+
+        Point3D p = DataSaved.points_Create.get(0);
+        DataSaved.points_Create.set(
+                0,
+                makeNamedPoint(
+                        labelForPoint(p, 0),
+                        p.getX(),
+                        p.getY(),
+                        z
+                )
+        );
+        rebuildPreview();
+        return true;
+    }
 }

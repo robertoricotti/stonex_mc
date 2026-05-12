@@ -2,28 +2,32 @@ package gui.my_opengl;
 
 import static gui.my_opengl.My3DActivity.glVista3d;
 import static gui.my_opengl.My3DActivity.isPan;
-import static utils.MyTypes.DOZER;
 import static utils.MyTypes.EXCAVATOR;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stx_dig.R;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import dxf.Point3D;
 import gui.BaseClass;
@@ -76,6 +80,7 @@ public class MyGLActivity_Create extends BaseClass {
     Dialog_Trench dialogTrench;
 
     boolean addPRJ = true;
+    double tempOffsetH=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +88,15 @@ public class MyGLActivity_Create extends BaseClass {
         CreateSurfaceController.resetCreateData();
         readIntent();
         initCreateToggles();
-        //initCreateGlDefaults();
+        initCreateGlDefaults();
+        DataSaved.selectedPoly=null;
+        tempOffsetH=DataSaved.offsetH;
+        DataSaved.offsetH=0;
         setContentView(R.layout.activity_my_glactivity);
         DataSaved.projectTAG="DXF";
         try {
             startService(new Intent(this, TriangleService.class));
+
         } catch (Exception e) {
             Log.e(TAG, "Unable to start TriangleService", e);
         }
@@ -302,7 +311,6 @@ public class MyGLActivity_Create extends BaseClass {
             return;
         }
         if (createController.addCurrentMachinePoint()) {
-            new CustomToast(this, getResources().getString(R.string.punto_salvato)).show_added();
             requestGlRender();
             updateUI();
             if (createController.getMode() == CreateSurfaceController.MODE_DITCH
@@ -377,9 +385,61 @@ public class MyGLActivity_Create extends BaseClass {
         final String[] labels = {"P1", "P2", "P3", "P4", "P5", "P6"};
         final int[] selected = {createController.getDitchMeasuredPointIndex()};
 
+        FrameLayout root = new FrameLayout(this);
+
+        ImageView background = new ImageView(this);
+        background.setImageResource(R.drawable.ppp16); // nome reale della tua immagine
+        background.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        background.setAdjustViewBounds(false);
+        background.setAlpha(1.0f);
+
+        root.addView(background, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+        ));
+
+        RadioGroup radioGroup = new RadioGroup(this);
+        radioGroup.setOrientation(RadioGroup.VERTICAL);
+        radioGroup.setBackgroundColor(Color.TRANSPARENT);
+
+        int pad = (int) (12 * getResources().getDisplayMetrics().density);
+        radioGroup.setPadding(pad, pad, pad, pad);
+
+        for (int i = 0; i < labels.length; i++) {
+            RadioButton radioButton = new RadioButton(this);
+            radioButton.setText(labels[i]);
+            radioButton.setTextSize(18);
+            radioButton.setTextColor(Color.BLACK);
+            radioButton.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+            radioButton.setBackgroundColor(Color.TRANSPARENT);
+            radioButton.setId(1000 + i);
+            radioButton.setPadding(0, 0, 0, 0);
+
+            LinearLayout.LayoutParams rbLp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            rbLp.setMargins(0, 0, 0, pad / 3);
+
+            radioGroup.addView(radioButton, rbLp);
+        }
+
+        radioGroup.check(1000 + selected[0]);
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            selected[0] = checkedId - 1000;
+        });
+
+        FrameLayout.LayoutParams radioLp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+        );
+        radioLp.gravity = Gravity.TOP | Gravity.LEFT;
+        radioLp.setMargins(pad, pad, 0, 0);
+
+        root.addView(radioGroup, radioLp);
+
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Measured point position")
-                .setSingleChoiceItems(labels, selected[0], (d, which) -> selected[0] = which)
+                .setView(root)
                 .setPositiveButton(android.R.string.ok, (d, which) -> {
                     createController.setDitchMeasuredPointIndexOnce(selected[0]);
                     requestGlRender();
@@ -391,13 +451,31 @@ public class MyGLActivity_Create extends BaseClass {
                     updateUI();
                 })
                 .create();
+
         dialog.setOnCancelListener(d -> {
             createController.lockDefaultDitchMeasuredPointIndex();
             requestGlRender();
             updateUI();
         });
+
         dialog.setOnDismissListener(d -> FullscreenActivity.setFullScreen(this));
+
+        dialog.setOnShowListener(d -> {
+            FullscreenActivity.setFullScreen(dialog);
+
+            Window window = dialog.getWindow();
+            if (window != null) {
+                window.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.95);
+                lp.height = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
+                window.setAttributes(lp);
+            }
+        });
+
         dialog.show();
+        FullscreenActivity.setFullScreen(dialog);
     }
 
     private void showDitchEditDialog() {
@@ -406,40 +484,53 @@ public class MyGLActivity_Create extends BaseClass {
 
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
+        content.setBackgroundColor(Color.WHITE);
+
         int pad = (int) (16 * getResources().getDisplayMetrics().density);
         content.setPadding(pad, pad, pad, pad);
 
         EditText[] lengthInputs = new EditText[5];
         EditText[] slopeInputs = new EditText[5];
+
         for (int i = 0; i < 5; i++) {
-            TextView title = new TextView(this);
-            title.setText("P" + (i + 1) + " > P" + (i + 2));
-            content.addView(title);
+            content.addView(newDitchLabel("P" + (i + 1) + " > P" + (i + 2), 18, i == 0 ? 0 : 12));
 
-            lengthInputs[i] = newDitchNumberInput("Length", Utils.readUnitOfMeasureLITE(String.valueOf(lengths[i])), false);
-            content.addView(lengthInputs[i]);
+            lengthInputs[i] = addDitchLabeledInput(
+                    content,
+                    "Length "+Utils.getMetriSimbol(),
+                    Utils.readUnitOfMeasureLITE(String.valueOf(lengths[i])),
+                    false
+            );
 
-            slopeInputs[i] = newDitchNumberInput("Slope %", String.valueOf(slopes[i]), true);
-            content.addView(slopeInputs[i]);
+            slopeInputs[i] = addDitchLabeledInput(
+                    content,
+                    "Slope %",
+                    String.valueOf(slopes[i]),
+                    true
+            );
         }
 
-        EditText leftWidthInput = newDitchNumberInput(
-                "Left distance",
+        //content.addView(newDitchLabel("Side distances", 18, 12));
+
+        EditText leftWidthInput = addDitchLabeledInput(
+                content,
+                "Left distance "+Utils.getMetriSimbol(),
                 Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchLeftWidth())),
                 false
         );
-        EditText rightWidthInput = newDitchNumberInput(
-                "Right distance",
+
+        EditText rightWidthInput = addDitchLabeledInput(
+                content,
+                "Right distance "+Utils.getMetriSimbol(),
                 Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchRightWidth())),
                 false
         );
-        content.addView(leftWidthInput);
-        content.addView(rightWidthInput);
 
         ScrollView scroll = new ScrollView(this);
+        scroll.setBackgroundColor(Color.WHITE);
         scroll.addView(content);
 
-        new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle("DITCH surface")
                 .setView(scroll)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
@@ -447,15 +538,25 @@ public class MyGLActivity_Create extends BaseClass {
                     try {
                         double[] newLengths = new double[5];
                         double[] newSlopes = new double[5];
+
                         for (int i = 0; i < 5; i++) {
-                            newLengths[i] = Math.max(0.0,
-                                    Double.parseDouble(Utils.writeMetri(lengthInputs[i].getText().toString())));
+                            newLengths[i] = Math.max(
+                                    0.0,
+                                    Double.parseDouble(Utils.writeMetri(lengthInputs[i].getText().toString()))
+                            );
                             newSlopes[i] = Double.parseDouble(slopeInputs[i].getText().toString());
                         }
-                        double leftWidth = Math.max(0.0,
-                                Double.parseDouble(Utils.writeMetri(leftWidthInput.getText().toString())));
-                        double rightWidth = Math.max(0.0,
-                                Double.parseDouble(Utils.writeMetri(rightWidthInput.getText().toString())));
+
+                        double leftWidth = Math.max(
+                                0.0,
+                                Double.parseDouble(Utils.writeMetri(leftWidthInput.getText().toString()))
+                        );
+
+                        double rightWidth = Math.max(
+                                0.0,
+                                Double.parseDouble(Utils.writeMetri(rightWidthInput.getText().toString()))
+                        );
+
                         createController.setDitchParams(newLengths, newSlopes, leftWidth, rightWidth);
                         requestGlRender();
                         updateUI();
@@ -463,8 +564,73 @@ public class MyGLActivity_Create extends BaseClass {
                         new CustomToast(this, "Invalid Value").show_error();
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                    FullscreenActivity.setFullScreen(this);
+                })
+                .create();
+
+        alertDialog.setOnShowListener(dialog -> {
+            FullscreenActivity.setFullScreen(alertDialog);
+            lengthInputs[0].requestFocus();
+        });
+
+        alertDialog.show();
+        FullscreenActivity.setFullScreen(alertDialog);
+    }
+    private TextView newDitchLabel(String text, int textSizeSp, int topMarginDp) {
+        int padH = (int) (10 * getResources().getDisplayMetrics().density);
+        int padV = (int) (6 * getResources().getDisplayMetrics().density);
+        int topMargin = (int) (topMarginDp * getResources().getDisplayMetrics().density);
+
+        TextView textView = new TextView(this);
+        textView.setText(text);
+        textView.setTextColor(Color.WHITE);
+        textView.setTextSize(textSizeSp);
+        textView.setBackgroundColor(Color.DKGRAY);
+        textView.setPadding(padH, padV, padH, padV);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        lp.setMargins(0, topMargin, 0, 0);
+        textView.setLayoutParams(lp);
+
+        return textView;
+    }
+
+    private EditText addDitchLabeledInput(LinearLayout parent, String label, String value, boolean signed) {
+        int pad = (int) (8 * getResources().getDisplayMetrics().density);
+        int marginBottom = (int) (6 * getResources().getDisplayMetrics().density);
+
+        parent.addView(newDitchLabel(label, 14, 0));
+
+        EditText editText = new EditText(this);
+        editText.setSingleLine(true);
+        editText.setText(value);
+        editText.setSelectAllOnFocus(true);
+        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        editText.setTextColor(Color.BLACK);
+        editText.setHintTextColor(Color.GRAY);
+        editText.setBackgroundColor(Color.WHITE);
+        editText.setPadding(pad, 0, pad, 0);
+
+        int inputType = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL;
+        if (signed) {
+            inputType |= InputType.TYPE_NUMBER_FLAG_SIGNED;
+        }
+        editText.setInputType(inputType);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        lp.setMargins(0, 0, 0, marginBottom);
+        editText.setLayoutParams(lp);
+
+        parent.addView(editText);
+        return editText;
     }
 
     private EditText newDitchNumberInput(String hint, String value, boolean signed) {
@@ -480,34 +646,82 @@ public class MyGLActivity_Create extends BaseClass {
     }
 
     private void showPlanSizeDialog() {
-        final EditText editText = new EditText(this);
-        editText.setSingleLine(true);
-        editText.setText(Utils.readUnitOfMeasureLITE(String.valueOf(createController.getPlanSide())));
-        editText.setSelectAllOnFocus(true);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        layout.setPadding(pad, pad / 2, pad, 0);
 
-        editText.setInputType(
+        TextView sideLabel = new TextView(this);
+        sideLabel.setText("PLAN Side "+Utils.getMetriSimbol());
+
+        final EditText sideEditText = new EditText(this);
+        sideEditText.setSingleLine(true);
+        sideEditText.setText(Utils.readUnitOfMeasureLITE(String.valueOf(createController.getPlanSide())));
+        sideEditText.setSelectAllOnFocus(true);
+        sideEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        sideEditText.setInputType(
                 InputType.TYPE_CLASS_NUMBER
                         | InputType.TYPE_NUMBER_FLAG_DECIMAL
-
         );
 
-        new AlertDialog.Builder(this)
-                .setTitle("PLAN side")
-                .setView(editText)
+        TextView zLabel = new TextView(this);
+        zLabel.setText("PLAN Elevation "+Utils.getMetriSimbol());
+
+        final EditText zEditText = new EditText(this);
+        zEditText.setSingleLine(true);
+
+        double planZ = createController.getPlanZ();
+        if (!Double.isNaN(planZ) && !Double.isInfinite(planZ)) {
+            zEditText.setText(Utils.readUnitOfMeasureLITE(String.valueOf(planZ)));
+        }
+
+        zEditText.setSelectAllOnFocus(true);
+        zEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        zEditText.setInputType(
+                InputType.TYPE_CLASS_NUMBER
+                        | InputType.TYPE_NUMBER_FLAG_DECIMAL
+                        | InputType.TYPE_NUMBER_FLAG_SIGNED
+        );
+
+        layout.addView(sideLabel);
+        layout.addView(sideEditText);
+        layout.addView(zLabel);
+        layout.addView(zEditText);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("PLAN")
+                .setView(layout)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     FullscreenActivity.setFullScreen(this);
                     try {
-                        double side = Double.parseDouble(Utils.writeMetri(editText.getText().toString()));
+                        double side = Double.parseDouble(Utils.writeMetri(sideEditText.getText().toString()));
+                        double z = Double.parseDouble(Utils.writeMetri(zEditText.getText().toString()));
+
                         createController.setPlanSide(side);
+
+                        if (!createController.setPlanZ(z)) {
+                            new CustomToast(this, "Invalid Elevation").show_error();
+                            return;
+                        }
+
                         requestGlRender();
                         updateUI();
                     } catch (Exception e) {
                         new CustomToast(this, "Invalid Value").show_error();
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                    FullscreenActivity.setFullScreen(this);
+                })
+                .create();
 
+        alertDialog.setOnShowListener(dialog -> {
+            FullscreenActivity.setFullScreen(alertDialog);
+            sideEditText.requestFocus();
+        });
+
+        alertDialog.show();
+        FullscreenActivity.setFullScreen(alertDialog);
     }
 
     private void showEditPointsDialog() {
@@ -540,6 +754,9 @@ public class MyGLActivity_Create extends BaseClass {
     }
 
     public void updateUI() {
+        if(navigatorHDT!=null){
+            navigatorHDT.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
+        }
         if (mostraCoor != null) {
             mostraCoor.setTextColor(MyColorClass.colorConstraint);
             try {
@@ -636,6 +853,9 @@ public class MyGLActivity_Create extends BaseClass {
                 break;
             case "TRIANGLES":
                 statoImg.setImageResource(R.drawable.terrain_model);
+                break;
+            case "DITCH":
+                statoImg.setImageResource(R.drawable.ditches);
                 break;
             default:
                 statoImg.setImageResource(R.drawable.baseline_help_96);

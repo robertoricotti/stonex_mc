@@ -13,6 +13,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.92" />
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rtSide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -265,7 +266,7 @@
         android:rotation="180"
         android:src="@drawable/stakeout_ref_north"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toRightOf="@id/rtSide"
         app:tint="@color/white" />
     <ImageView
         android:id="@+id/statoImg"

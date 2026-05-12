@@ -120,6 +120,10 @@ public class GLDrawer {
             if (z > maxZ) maxZ = z;
         }
 
+        float dz = (float) (DataSaved.offsetH * scale);
+        minZ -= dz;
+        maxZ -= dz;
+
         return isAabbVisible(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
@@ -186,6 +190,9 @@ public class GLDrawer {
         float x = (float) ((p.getX() - bucketCenter[0]) * scale);
         float y = (float) ((p.getY() - bucketCenter[1]) * scale);
         float z = (float) ((p.getZ() - bucketCenter[2]) * scale);
+
+        float dz = (float) (DataSaved.offsetH * scale);
+        z -= dz;
 
         float r = Math.max(0.05f, radiusPx * 0.75f);
 
@@ -491,7 +498,7 @@ public class GLDrawer {
         GLES20.glLineWidth(Math.max(1f, lineW * scala));
 
         double[] bucketCenter = DataSaved.glL_AnchorView;
-        float[] identity = identity();
+        float[] modelMatrix = buildTranslationModel(0f, 0f, (float) (-DataSaved.offsetH * scala));
 
         for (Polyline polyline : polylines) {
             if (polyline == null) continue;
@@ -525,7 +532,7 @@ public class GLDrawer {
                     buffer,
                     vertexCount,
                     GLES20.GL_LINE_STRIP,
-                    identity,
+                    modelMatrix,
                     rgb[0], rgb[1], rgb[2], 0.85f
             );
         }
@@ -540,6 +547,7 @@ public class GLDrawer {
         float[] rgb = GL_Methods.parseColorToGL(c);
 
         double[] bucketCenter = DataSaved.glL_AnchorView;
+        float[] modelMatrix = buildTranslationModel(0f, 0f, (float) (-DataSaved.offsetH * scala));
 
         // In vista 2D disegna come thick strip, non come GL_LINE_STRIP
         if (isOrtho2D) {
@@ -578,7 +586,7 @@ public class GLDrawer {
                 buffer,
                 vertexCount,
                 GLES20.GL_LINE_STRIP,
-                identity(),
+                modelMatrix,
                 rgb[0], rgb[1], rgb[2], 1f
         );
     }
@@ -588,6 +596,7 @@ public class GLDrawer {
         if (!ensureReady()) return;
 
         double[] bucketCenter = DataSaved.glL_AnchorView;
+        float[] modelMatrix = buildTranslationModel(0f, 0f, (float) (-DataSaved.offsetH * scala));
         GLES20.glUniform1f(colorProgram.uPointSize, radius * scala * 2f);
 
         for (Point3D p : points) {
@@ -604,7 +613,7 @@ public class GLDrawer {
             float[] rgb = GL_Methods.parseColorToGL(color);
 
             FloatBuffer buf = createFloatBuffer(new float[]{x, y, z});
-            drawColoredVertices(buf, 1, GLES20.GL_POINTS, identity(), rgb[0], rgb[1], rgb[2], 1f);
+            drawColoredVertices(buf, 1, GLES20.GL_POINTS, modelMatrix, rgb[0], rgb[1], rgb[2], 1f);
         }
     }
 
@@ -682,6 +691,10 @@ public class GLDrawer {
             float baseX = (float) ((text.getX() - anchor[0]) * scala);
             float baseY = (float) ((text.getY() - anchor[1]) * scala);
             float baseZ = (float) ((text.getZ() - anchor[2]) * scala);
+
+            if (!isOrtho2D) {
+                baseZ -= (float) (DataSaved.offsetH * scala);
+            }
 
             drawBillboardString(str, baseX, baseY, baseZ, charW, charH, charSpacingFactor, atlas, right, up);
         }

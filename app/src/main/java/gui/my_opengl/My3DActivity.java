@@ -165,6 +165,7 @@ public class My3DActivity extends BaseClass {
             if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
                 serviseStrarted = true;
                 startService(new Intent(this, TriangleService.class));
+
             }
 
         }

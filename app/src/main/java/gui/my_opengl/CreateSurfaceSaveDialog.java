@@ -32,6 +32,7 @@ import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.projects.Dialog_Trench;
 import packexcalib.exca.DataSaved;
+import services.TriangleService;
 import utils.FullscreenActivity;
 import utils.MyData;
 
@@ -195,9 +196,11 @@ public class CreateSurfaceSaveDialog {
             DataSaved.progettoSelected_POINT = fullPath;
             new CustomToast(activity, "File Saved").show();
             dialog.dismiss();
-
+            MyData.push("Operator_Offset", "0");
+            DataSaved.offsetH=0;
             activity.startActivity(new Intent(activity, Activity_Home_Page.class));
             activity.finish();
+
         } catch (Exception e) {
             Log.e(TAG, "Save failed", e);
             new CustomToast(activity, e.toString()).show_error();
