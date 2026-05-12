@@ -17,10 +17,10 @@ public class DrawDXF_Drill_Point {
     // =========================================================
 
     // --- NORMAL ---
-    private static final float UI_HEAD_RADIUS_PX = 10.0f;          // cerchio testa
-    private static final float UI_END_RADIUS_RATIO = 0.78f;        // raggio fondo = head * ratio
+    private static final float UI_HEAD_RADIUS_PX = 9.0f;          // cerchio testa
+    private static final float UI_END_RADIUS_RATIO = 0.76f;        // raggio fondo = head * ratio
 
-    private static final float UI_TEXT_SIZE_PX = 21.0f;            // testo normale
+    private static final float UI_TEXT_SIZE_PX = 20.0f;            // testo normale
     private static final float UI_TEXT_OFFSET_X_PX = 5.0f;         // offset testo X
     private static final float UI_TEXT_OFFSET_Y_PX = 5.0f;         // offset testo Y
 
@@ -270,7 +270,7 @@ public class DrawDXF_Drill_Point {
                                     float bucketX, float bucketY,
                                     double bucketEst, double bucketNord,
                                     float scala, double rotationAngle,
-                                    boolean txt, double size, float uiDeg) {
+                                    boolean txt,  float uiDeg) {
 
         if (point == null) return;
         if (point.getHeadX() == null || point.getHeadY() == null) return;

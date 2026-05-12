@@ -17,6 +17,7 @@ import gui.BaseClass;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.Sensors_Decoder;
+import services.CanSender;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -108,9 +109,10 @@ public class ToolSensor extends BaseClass {
 
         setPitch.setOnLongClickListener(view -> {
             if(DataSaved.isCanOpen==UNIVERSAL_ECU){
+                CanSender.requestZeroedTilt=1;
                 DataSaved.offset_Tool_Pitch=0;
-                MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2A, 0x16, 0x20, 0, 0, 0, 0, 0});
-                MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2B, 0x16, 0x21, 0, 0, 0, 0, 0});
+               // MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2A, 0x16, 0x20, 0, 0, 0, 0, 0});
+                //MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2B, 0x16, 0x21, 0, 0, 0, 0, 0});
             }else {
                 setPitch.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
                 DataSaved.offset_Tool_Pitch = Sensors_Decoder.Deg_Tool_Pitch;
@@ -119,9 +121,10 @@ public class ToolSensor extends BaseClass {
         });
         setRoll.setOnLongClickListener(view -> {
             if(DataSaved.isCanOpen==UNIVERSAL_ECU){
+                CanSender.requestZeroedTilt=1;
                 DataSaved.offset_Tool_Roll=0;
-                MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2A, 0x16, 0x20, 0, 0, 0, 0, 0});
-                MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2B, 0x16, 0x21, 0, 0, 0, 0, 0});
+               // MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2B, 0x16, 0x20, 0, 0, 0, 0, 0});
+               // MyDeviceManager.CanWrite(true, 0, 0x620, 8, new byte[]{0x2B, 0x16, 0x21, 0, 0, 0, 0, 0});
             }else {
                 setRoll.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
                 DataSaved.offset_Tool_Roll = Sensors_Decoder.Deg_Tool_Roll;

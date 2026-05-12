@@ -24,6 +24,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -67,6 +68,9 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
+    private int lastDrillStatus = -1;
+    private long drillStatus2SinceMs = 0L;
+    private boolean drillStatus2ClickDone = false;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isRepeating = false;
     public static String NOME_OPERATORE;
@@ -736,13 +740,44 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 }
 
                 // stop automatico quando raggiungi fondo (se hai endZ valido)
-           /* if (isDrilling && sel != null && sel.getEndZ() != null) {
-                double zeta = sel.getEndZ() + DataSaved.Drill_tolleranza_Z;
-                if (toolEndCoord[2] < zeta) {
-                    End_Foro_Ok();
-                    isDrilling = false;
+                Log.w("DrillStatus", DRILL_STATUS + "");
+
+// Quando DRILL_STATUS passa da qualsiasi valore a 2,
+// parte il conteggio. Se resta 2 per almeno 1 secondo,
+// viene fatto playpause.callOnClick() una sola volta.
+                long now = android.os.SystemClock.elapsedRealtime();
+
+                if (DRILL_STATUS != lastDrillStatus) {
+                    lastDrillStatus = DRILL_STATUS;
+
+                    if (DRILL_STATUS == 2) {
+                        drillStatus2SinceMs = now;
+                        drillStatus2ClickDone = false;
+                    } else {
+                        drillStatus2SinceMs = 0L;
+                        drillStatus2ClickDone = false;
+                    }
                 }
-            }*/
+                if (DataSaved.autoSavePoint == 1) {
+                    if (DRILL_STATUS == 2
+                            && !drillStatus2ClickDone
+                            && drillStatus2SinceMs > 0L
+                            && now - drillStatus2SinceMs >= 1000L) {
+
+                        drillStatus2ClickDone = true;
+
+                        if (playpause != null && playpause.isEnabled()) {
+                            playpause.callOnClick();
+                        }
+                    }
+                }
+                if (isDrilling && sel != null && sel.getEndZ() != null) {
+                    double zeta = sel.getEndZ() + DataSaved.Drill_tolleranza_Z;
+                    if (toolEndCoord[2] < zeta) {
+                        End_Foro_Ok();
+                        isDrilling = false;
+                    }
+                }
 
                 switch (DRILL_STATUS) {
                     case 0:
@@ -1012,6 +1047,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             txtdepth.setBackgroundColor(Color.DKGRAY);
             quotaIndicator.setBackgroundColor(Color.DKGRAY);
             txtdepth.setText(""); // ✅
+            CanSender.remainingZed = 0;
             return;
         }
 
@@ -1022,6 +1058,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         // ✅ testo: distanza in quota dalla drillbit alla testa (con segno o assoluto)
         // Qui ti metto "err" con segno: + = sopra, - = sotto
         txtdepth.setText(fmtM((err)));
+        CanSender.remainingZed = err;
 
         if (err > tol) {
             quotaIndicator.setImageResource(R.drawable.baseline_arrow_circle_down);

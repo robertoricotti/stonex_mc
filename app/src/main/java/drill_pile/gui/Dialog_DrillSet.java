@@ -1,6 +1,8 @@
 package drill_pile.gui;
 
+import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static packexcalib.exca.DataSaved.Unit_Of_Measure;
+import static utils.MyTypes.SOLARFARM_MODE;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -35,9 +37,9 @@ public class Dialog_DrillSet {
     public Dialog dialog;
     ImageView close, toLeft, toWard, toRight;
     int tempScreen, finalScreen;
-    TextView angleTit, distTit;
+    TextView angleTit, distTit,titleHyd,psav;
     EditText tv1, tv2, tv3, tv4, tv5;
-    CheckBox ckRevX, ckRevY;
+    CheckBox ckRevX, ckRevY,ckSavingMode;
     CustomNumberDialog customNumberDialog;
     CustomNumberDialogFtIn customNumberDialogFtIn;
     int mchint;
@@ -68,9 +70,9 @@ public class Dialog_DrillSet {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 1);
-        int height = (int) (displayMetrics.heightPixels * 1);
-        dialog.getWindow().setLayout(width, height);
+        int width = (int) (displayMetrics.widthPixels);
+        int height = (int) (displayMetrics.heightPixels);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         dialog.show();
         findView();
         onClick();
@@ -86,6 +88,7 @@ public class Dialog_DrillSet {
         angleTit = dialog.findViewById(R.id.angleTit);
         distTit = dialog.findViewById(R.id.distTit);
         distTit.setText("DISTANCES  " + Utils.getMetriSimbol());
+        psav=dialog.findViewById(R.id.psav);
         tv1 = dialog.findViewById(R.id.tv1);
         tv2 = dialog.findViewById(R.id.tv2);
         tv3 = dialog.findViewById(R.id.tv3);
@@ -93,6 +96,26 @@ public class Dialog_DrillSet {
         tv5 = dialog.findViewById(R.id.tv5);
         ckRevX = dialog.findViewById(R.id.ckRevX);
         ckRevY = dialog.findViewById(R.id.ckRevY);
+        titleHyd=dialog.findViewById(R.id.titleHyd);
+        ckSavingMode=dialog.findViewById(R.id.ckSavingMode);
+        ckSavingMode.setChecked(DataSaved.autoSavePoint==1);
+        if(DataSaved.Drilling_Mode==SOLARFARM_MODE){
+            ckSavingMode.setVisibility(View.VISIBLE);
+            psav.setVisibility(View.VISIBLE);
+
+        }else{
+            ckSavingMode.setVisibility(View.GONE);
+            psav.setVisibility(View.GONE);
+        }
+        if(isTech){
+            titleHyd.setVisibility(View.VISIBLE);
+            ckRevX.setVisibility(View.VISIBLE);
+            ckRevY.setVisibility(View.VISIBLE);
+        }else{
+            titleHyd.setVisibility(View.GONE);
+            ckRevX.setVisibility(View.GONE);
+            ckRevY.setVisibility(View.GONE);
+        }
         tv1.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_XY)));
         tv2.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_Axis)));
         tv3.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_Z)));
@@ -111,6 +134,12 @@ public class Dialog_DrillSet {
     }
 
     private void onClick() {
+        ckSavingMode.setOnClickListener(v -> {
+            DataSaved.autoSavePoint+=1;
+            DataSaved.autoSavePoint=DataSaved.autoSavePoint%2;
+            ckSavingMode.setChecked(DataSaved.autoSavePoint==1);
+            MyData.push("autoSavePoint",String.valueOf( DataSaved.autoSavePoint));
+        });
         ckRevX.setOnClickListener(view -> {
             if (DataSaved.REVERSE_DRILL_X == 1) {
                 DataSaved.REVERSE_DRILL_X = -1;
@@ -225,6 +254,7 @@ public class Dialog_DrillSet {
     }
 
     private void updateImage(int screen) {
+        ckSavingMode.setChecked(DataSaved.autoSavePoint==1);
 
         switch (screen) {
             case -1:

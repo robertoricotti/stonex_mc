@@ -359,7 +359,7 @@ public class Drill_TopView extends View {
 
     private void drawSelectedPoint(Point3D_Drill point3DDrill) {
 
-        double size = 0.3;
+
         DrawDXF_Drill_Point.drawSelected(canvas,
                 paint,
                 point3DDrill,
@@ -368,7 +368,7 @@ public class Drill_TopView extends View {
                 toolEast,
                 toolNord,
                 scala,
-                rotationAngle, DataSaved.ShowText == 1, size, uiRotDeg
+                rotationAngle, DataSaved.ShowText == 1,  uiRotDeg
         );
     }
 

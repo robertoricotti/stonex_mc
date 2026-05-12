@@ -828,7 +828,7 @@ public class UpdateValuesService extends Service {
                 String volumeAudioSystem = MyData.get_String("volumeAudioSystem");
                 String colorY = MyData.get_String("coloreY");
                 String colorX = MyData.get_String("coloreX");
-
+                String autoSavePoint = MyData.get_String("autoSavePoint");
                 String scaleFactor = MyData.get_String("scaleFactor");
                 String scaleFactor3d = MyData.get_String("scaleFactor3D");
                 String scaleFactorvista1D = MyData.get_String("scaleFactor_vista1D");
@@ -1010,6 +1010,9 @@ public class UpdateValuesService extends Service {
                         MyData.push("scaleFactor_vista2D", "1");
                     }
 
+                    if(autoSavePoint==null){
+                        MyData.push("autoSavePoint", "0");
+                    }
 
                     ////
                     if (start2DX == null) {
@@ -1243,7 +1246,11 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Mainfall_Distance: " + e.getMessage());
                 }
-
+                try {
+                    DataSaved.autoSavePoint = MyData.get_Int("autoSavePoint");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di autoSavePoint: " + e.getMessage());
+                }
                 try {
                     DataSaved.start2DX = MyData.get_Double("start2DX");
                 } catch (Exception e) {

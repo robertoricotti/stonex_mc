@@ -166,6 +166,7 @@ public class Dialog_Drill_GNSS {
         }
 
         if (isTech) {
+            setZeroRotary.setVisibility(View.VISIBLE);
             if (DataSaved.useQuickSwitch == 1 && DataSaved.gpsType == SMC) {
                 rtkMode.setVisibility(View.VISIBLE);
             } else {
@@ -174,7 +175,7 @@ public class Dialog_Drill_GNSS {
 
 
         } else {
-
+            setZeroRotary.setVisibility(View.INVISIBLE);
             rtkMode.setVisibility(View.GONE);
         }
 
@@ -352,6 +353,7 @@ public class Dialog_Drill_GNSS {
             public void run() {
                 // Update coord TextView with new coordinates
                 try {
+
                     datetim.setText(NmeaListener.date_time_Y_M_D);
                     if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS")) {
                         textViewPW.setText("");
