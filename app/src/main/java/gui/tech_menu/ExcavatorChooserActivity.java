@@ -14,7 +14,7 @@ import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
+
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.stx_dig.R;
 
@@ -44,6 +46,7 @@ import gui.gps.Nuovo_Gps;
 import gui.hydro.Hydro_Activity_Entering;
 import packexcalib.exca.DataSaved;
 import services.UpdateValuesService;
+import utils.FullscreenActivity;
 import utils.MyData;
 
 public class ExcavatorChooserActivity extends BaseClass {
@@ -314,24 +317,34 @@ public class ExcavatorChooserActivity extends BaseClass {
     private void onClick() {
         savetofile.setOnClickListener(view -> {
             if (isTech) {
-                // Crea un nuovo AlertDialog.Builder
                 AlertDialog.Builder builder = new AlertDialog.Builder(ExcavatorChooserActivity.this);
                 builder.setTitle(getResources().getString(R.string.savepara));
                 builder.setMessage(getResources().getString(R.string.savepara_pro));
 
-                // Aggiungi il pulsante "Sì"
                 builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-
                     MyData.exportAllToJson();
                     new CustomToast(ExcavatorChooserActivity.this, "SAVED").show_long();
+                    FullscreenActivity.setFullScreen(ExcavatorChooserActivity.this);
                 });
 
-                // Aggiungi il pulsante "No"
                 builder.setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
-
+                    FullscreenActivity.setFullScreen(ExcavatorChooserActivity.this);
                 });
+
                 builder.setCancelable(true);
-                builder.show();
+
+                AlertDialog alertDialog = builder.create();
+
+                alertDialog.setOnShowListener(dialog -> {
+                    FullscreenActivity.setFullScreen(alertDialog);
+                });
+
+                alertDialog.setOnDismissListener(dialog -> {
+                    FullscreenActivity.setFullScreen(ExcavatorChooserActivity.this);
+                });
+
+                alertDialog.show();
+                FullscreenActivity.setFullScreen(alertDialog);
 
 
             } else {
@@ -341,24 +354,33 @@ public class ExcavatorChooserActivity extends BaseClass {
         });
         readfromfile.setOnClickListener(view -> {
             if (isTech) {
-                // Crea un nuovo AlertDialog.Builder
                 AlertDialog.Builder builder = new AlertDialog.Builder(ExcavatorChooserActivity.this);
                 builder.setTitle(getResources().getString(R.string.write_para));
                 builder.setMessage(getResources().getString(R.string.savepara_pro));
 
-                // Aggiungi il pulsante "Sì"
                 builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-
                     MyData.restoreFromJson();
-
+                    FullscreenActivity.setFullScreen(ExcavatorChooserActivity.this);
                 });
 
-                // Aggiungi il pulsante "No"
                 builder.setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
-
+                    FullscreenActivity.setFullScreen(ExcavatorChooserActivity.this);
                 });
+
                 builder.setCancelable(true);
-                builder.show();
+
+                AlertDialog alertDialog = builder.create();
+
+                alertDialog.setOnShowListener(dialog -> {
+                    FullscreenActivity.setFullScreen(alertDialog);
+                });
+
+                alertDialog.setOnDismissListener(dialog -> {
+                    FullscreenActivity.setFullScreen(ExcavatorChooserActivity.this);
+                });
+
+                alertDialog.show();
+                FullscreenActivity.setFullScreen(alertDialog);
 
 
             } else {

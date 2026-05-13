@@ -2,7 +2,7 @@ package gui.projects;
 
 import static gui.MyApp.folderPath;
 
-import android.app.AlertDialog;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
 import packexcalib.exca.DataSaved;
 import services.UpdateValuesService;
+import utils.FullscreenActivity;
 import utils.MyData;
 
 
@@ -162,36 +164,45 @@ public class PickProject extends BaseClass {
 
                 } else {
 
-                    // Crea un nuovo AlertDialog.Builder
                     AlertDialog.Builder builder = new AlertDialog.Builder(PickProject.this);
                     builder.setTitle(" " + getResources().getString(R.string.rename_file) + "?");
                     builder.setIcon(getResources().getDrawable(R.drawable.rename_96));
 
-
-                    // Aggiungi il pulsante "Sì"
                     builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-
+                        FullscreenActivity.setFullScreen(PickProject.this);
 
                         if (projectAdapter != null) {
                             if (projectAdapter.getSelectedItem() > -1) {
                                 if (!customQwertyDialog.dialog.isShowing()) {
-                                    customQwertyDialog.show(999, projectAdapter, path, projectAdapter.getSelectedFilePath());
+                                    customQwertyDialog.show(
+                                            999,
+                                            projectAdapter,
+                                            path,
+                                            projectAdapter.getSelectedFilePath()
+                                    );
                                 }
                             }
                         }
-
-
                     });
 
-                    // Aggiungi il pulsante "No"
                     builder.setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
-
-
+                        FullscreenActivity.setFullScreen(PickProject.this);
                     });
 
-                    // Mostra il dialog
-                    builder.show();
+                    builder.setCancelable(true);
 
+                    AlertDialog alertDialog = builder.create();
+
+                    alertDialog.setOnShowListener(dialog -> {
+                        FullscreenActivity.setFullScreen(alertDialog);
+                    });
+
+                    alertDialog.setOnDismissListener(dialog -> {
+                        FullscreenActivity.setFullScreen(PickProject.this);
+                    });
+
+                    alertDialog.show();
+                    FullscreenActivity.setFullScreen(alertDialog);
                 }
             } catch (Exception e) {
                 new CustomToast(PickProject.this, getResources().getString(R.string.selectproject)).show();
@@ -228,48 +239,59 @@ public class PickProject extends BaseClass {
 
                 } else {
 
-                    // Crea un nuovo AlertDialog.Builder
                     AlertDialog.Builder builder = new AlertDialog.Builder(PickProject.this);
                     builder.setTitle(" " + getResources().getString(R.string.delete_file));
                     builder.setIcon(getResources().getDrawable(R.drawable.delete));
 
-
-                    // Aggiungi il pulsante "Sì"
                     builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-
+                        FullscreenActivity.setFullScreen(PickProject.this);
 
                         ProjectFileAdapter.FileItem selectedFileItem = arrayFiles.get(selectedItem);
-                        fileName = Environment.getExternalStorageDirectory().toString() + folderPath + "/Projects/" + selectedFileItem.getName();
+                        fileName = Environment.getExternalStorageDirectory().toString()
+                                + folderPath
+                                + "/Projects/"
+                                + selectedFileItem.getName();
 
                         File file = new File(fileName);
 
                         if (selectedFileItem.isFolder()) {
-                            // Delete the folder and its contents
                             deleteRecursive(file);
                         } else {
-                            // Delete the single file
                             file.delete();
                         }
 
                         MyData.push("progettoSelected", "");
                         startService(new Intent(PickProject.this, UpdateValuesService.class));
+
                         arrayFiles.remove(selectedItem);
                         projectAdapter.notifyItemRemoved(selectedItem);
                         projectAdapter.notifyItemRangeChanged(selectedItem, arrayFiles.size());
                         projectAdapter.setSelectedItem(-1);
-                        new CustomToast(PickProject.this, fileName + " " + getResources().getString(R.string.deleted)).show();
 
-
+                        new CustomToast(
+                                PickProject.this,
+                                fileName + " " + getResources().getString(R.string.deleted)
+                        ).show();
                     });
 
-                    // Aggiungi il pulsante "No"
                     builder.setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
-
-
+                        FullscreenActivity.setFullScreen(PickProject.this);
                     });
 
-                    // Mostra il dialog
-                    builder.show();
+                    builder.setCancelable(true);
+
+                    AlertDialog alertDialog = builder.create();
+
+                    alertDialog.setOnShowListener(dialog -> {
+                        FullscreenActivity.setFullScreen(alertDialog);
+                    });
+
+                    alertDialog.setOnDismissListener(dialog -> {
+                        FullscreenActivity.setFullScreen(PickProject.this);
+                    });
+
+                    alertDialog.show();
+                    FullscreenActivity.setFullScreen(alertDialog);
 
                 }
             } catch (Exception e) {

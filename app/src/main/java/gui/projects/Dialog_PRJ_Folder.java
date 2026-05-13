@@ -403,20 +403,20 @@ public class Dialog_PRJ_Folder extends BaseClass {
             dialog.dismiss();
         });
         deleteFile.setOnClickListener(view -> {
-            // Crea un nuovo AlertDialog.Builder
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle(" " + activity.getResources().getString(R.string.delete_file));
             builder.setIcon(activity.getResources().getDrawable(R.drawable.delete));
 
-            // Aggiungi il pulsante "Sì"
             builder.setPositiveButton(activity.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    FullscreenActivity.setFullScreen(activity);
+
                     try {
                         int selectedItem = projectAdapter.getSelectedItem();
                         if (selectedItem == -1) {
                             new CustomToast(activity, activity.getResources().getString(R.string.select_file)).show();
-
+                            return;
                         }
 
                         ProjectAdapter.FileItem selectedFileItem = arrayFiles.get(selectedItem);
@@ -425,49 +425,64 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         File file = new File(fileName);
 
                         if (selectedFileItem.isFolder()) {
-                            // Delete the folder and its contents
                             deleteRecursive(file);
                         } else {
-                            // Delete the single file
                             file.delete();
                         }
+
                         new CustomToast(activity, activity.getResources().getString(R.string.deleted)).show();
+
                         arrayFiles.remove(selectedItem);
                         projectAdapter.notifyItemRemoved(selectedItem);
                         projectAdapter.notifyItemRangeChanged(selectedItem, arrayFiles.size());
                         projectAdapter.setItem(-1);
+
                     } catch (Exception e) {
                         new CustomToast(activity, activity.getResources().getString(R.string.selectproject)).show();
                         projectAdapter.setItem(-1);
                     }
                 }
             });
+
             builder.setNegativeButton(activity.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    FullscreenActivity.setFullScreen(activity);
                     projectAdapter.setItem(-1);
-
                 }
             });
-            builder.show();
 
+            builder.setCancelable(true);
+
+            AlertDialog alertDialog = builder.create();
+
+            alertDialog.setOnShowListener(dialog -> {
+                FullscreenActivity.setFullScreen(alertDialog);
+            });
+
+            alertDialog.setOnDismissListener(dialog -> {
+                FullscreenActivity.setFullScreen(activity);
+            });
+
+            alertDialog.show();
+            FullscreenActivity.setFullScreen(alertDialog);
         });
 
         deleteSP.setOnClickListener(view -> {
-            // Crea un nuovo AlertDialog.Builder
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle(" " + activity.getResources().getString(R.string.delete_file));
             builder.setIcon(activity.getResources().getDrawable(R.drawable.delete));
 
-            // Aggiungi il pulsante "Sì"
             builder.setPositiveButton(activity.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    FullscreenActivity.setFullScreen(activity);
+
                     try {
                         int selectedItem = spAdapter.getSelectedItem();
                         if (selectedItem == -1) {
                             new CustomToast(activity, activity.getResources().getString(R.string.select_file)).show();
-
+                            return;
                         }
 
                         ProjectFileAdapter.FileItem selectedFileItem = arraySP.get(selectedItem);
@@ -476,32 +491,47 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         File file = new File(fileName);
 
                         if (selectedFileItem.isFolder()) {
-                            // Delete the folder and its contents
                             deleteRecursive(file);
                         } else {
-                            // Delete the single file
                             file.delete();
                         }
+
                         new CustomToast(activity, activity.getResources().getString(R.string.deleted)).show();
+
                         arraySP.remove(selectedItem);
                         spAdapter.notifyItemRemoved(selectedItem);
-                        spAdapter.notifyItemRangeChanged(selectedItem, arrayFiles.size());
+                        spAdapter.notifyItemRangeChanged(selectedItem, arraySP.size());
                         spAdapter.setItem(-1);
+
                     } catch (Exception e) {
                         new CustomToast(activity, activity.getResources().getString(R.string.selectproject)).show();
                         spAdapter.setItem(-1);
                     }
                 }
             });
+
             builder.setNegativeButton(activity.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    FullscreenActivity.setFullScreen(activity);
                     spAdapter.setItem(-1);
-
                 }
             });
-            builder.show();
 
+            builder.setCancelable(true);
+
+            AlertDialog alertDialog = builder.create();
+
+            alertDialog.setOnShowListener(dialog -> {
+                FullscreenActivity.setFullScreen(alertDialog);
+            });
+
+            alertDialog.setOnDismissListener(dialog -> {
+                FullscreenActivity.setFullScreen(activity);
+            });
+
+            alertDialog.show();
+            FullscreenActivity.setFullScreen(alertDialog);
         });
 
 

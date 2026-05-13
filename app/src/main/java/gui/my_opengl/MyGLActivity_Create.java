@@ -32,6 +32,8 @@ import com.example.stx_dig.R;
 import dxf.Point3D;
 import gui.BaseClass;
 import gui.boot_and_choose.Activity_Home_Page;
+import gui.dialogs_and_toast.CustomNumberDialog;
+import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.HeadingDialog;
@@ -53,7 +55,9 @@ import utils.Utils;
  * only add/remove/edit/save are connected to CreateSurfaceController.
  */
 public class MyGLActivity_Create extends BaseClass {
-
+    int indexMeasure = MyData.get_Int("Unit_Of_Measure");
+CustomNumberDialog customNumberDialog;
+CustomNumberDialogFtIn customNumberDialogFtIn;
     private static final String TAG = "GL_CREATE_ACTIVITY";
 
     public static double[] spigoloSelezionato = new double[3];
@@ -146,6 +150,8 @@ public class MyGLActivity_Create extends BaseClass {
         glSurfaceViewCreate = findViewById(R.id.glSurfaceViewCreate);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         headingDialog = new HeadingDialog(this);
+        customNumberDialog = new CustomNumberDialog(this,Integer.MIN_VALUE);
+        customNumberDialogFtIn=new CustomNumberDialogFtIn(this,Integer.MIN_VALUE);
         gl_gradient=findViewById(R.id.gl_gradient);
         mostraCoor = findViewById(R.id.mostraCoor);
         statoImg = findViewById(R.id.statoImg);
@@ -621,6 +627,18 @@ public class MyGLActivity_Create extends BaseClass {
             inputType |= InputType.TYPE_NUMBER_FLAG_SIGNED;
         }
         editText.setInputType(inputType);
+        editText.setFocusableInTouchMode(false);
+        editText.setOnClickListener(v -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(editText);
+                }
+            } else {
+                if (!customNumberDialog.dialog.isShowing()) {
+                    customNumberDialog.show(editText);
+                }
+            }
+        });
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -633,17 +651,7 @@ public class MyGLActivity_Create extends BaseClass {
         return editText;
     }
 
-    private EditText newDitchNumberInput(String hint, String value, boolean signed) {
-        EditText input = new EditText(this);
-        input.setSingleLine(true);
-        input.setHint(hint);
-        input.setText(value);
-        input.setSelectAllOnFocus(true);
-        int type = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL;
-        if (signed) type |= InputType.TYPE_NUMBER_FLAG_SIGNED;
-        input.setInputType(type);
-        return input;
-    }
+
 
     private void showPlanSizeDialog() {
         LinearLayout layout = new LinearLayout(this);
@@ -658,12 +666,24 @@ public class MyGLActivity_Create extends BaseClass {
         sideEditText.setSingleLine(true);
         sideEditText.setText(Utils.readUnitOfMeasureLITE(String.valueOf(createController.getPlanSide())));
         sideEditText.setSelectAllOnFocus(true);
+        sideEditText.setFocusableInTouchMode(false);
         sideEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         sideEditText.setInputType(
                 InputType.TYPE_CLASS_NUMBER
                         | InputType.TYPE_NUMBER_FLAG_DECIMAL
         );
+        sideEditText.setOnClickListener(v -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(sideEditText);
+                }
+            } else {
+                if (!customNumberDialog.dialog.isShowing()) {
+                    customNumberDialog.show(sideEditText);
+                }
+            }
 
+        });
         TextView zLabel = new TextView(this);
         zLabel.setText("PLAN Elevation "+Utils.getMetriSimbol());
 
@@ -677,11 +697,23 @@ public class MyGLActivity_Create extends BaseClass {
 
         zEditText.setSelectAllOnFocus(true);
         zEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        zEditText.setFocusableInTouchMode(false);
         zEditText.setInputType(
                 InputType.TYPE_CLASS_NUMBER
                         | InputType.TYPE_NUMBER_FLAG_DECIMAL
                         | InputType.TYPE_NUMBER_FLAG_SIGNED
         );
+        zEditText.setOnClickListener(v -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!customNumberDialogFtIn.dialog.isShowing()) {
+                    customNumberDialogFtIn.show(zEditText);
+                }
+            } else {
+                if (!customNumberDialog.dialog.isShowing()) {
+                    customNumberDialog.show(zEditText);
+                }
+            }
+        });
 
         layout.addView(sideLabel);
         layout.addView(sideEditText);
