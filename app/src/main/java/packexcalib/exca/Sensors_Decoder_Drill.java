@@ -94,10 +94,9 @@ public class Sensors_Decoder_Drill {
                     }
                 } else {
                     if (id == 0x18F || id == 0x190) {
-                        //TODO Encoder connesso 8192 count per revolution FULL SCALE= 0x20000000(536870912)
+                        // Encoder connected 8192 count per revolution FULL SCALE= 0x20000000(536870912)
                         long revolution = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]});
                         RopeLen = ropeLenSignedFromAbsolute(revolution, DataSaved.Rotary_Diam, DataSaved.lrRotary);
-
 
                     }
                 }

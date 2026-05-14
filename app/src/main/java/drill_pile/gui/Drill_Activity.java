@@ -2,6 +2,7 @@ package drill_pile.gui;
 
 import static drill_pile.gui.ProjectStateCsvStore.canonicalHoleId;
 import static gui.MyApp.errorCode;
+import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static packexcalib.exca.DataSaved.DRILL_STATUS;
 import static packexcalib.exca.DataSaved.Selected_Point3D_Drill;
 import static packexcalib.exca.ExcavatorLib.coordTool;
@@ -38,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Guideline;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.stx_dig.R;
 
@@ -45,6 +47,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 import DPAD.DPadHelper;
@@ -62,6 +65,7 @@ import packexcalib.gnss.NmeaListener;
 import services.CanSender;
 import services.PointService;
 import services.ReadProjectService;
+import utils.FullscreenActivity;
 import utils.MyData;
 import utils.MyDeviceManager;
 import utils.MyMCUtils;
@@ -98,12 +102,13 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     float rotationCont;
     Dialog_Raggio_Drill dialogRaggioDrill;
     Dialog_Drill_GNSS dialogDrillGnss;
+    Dialog_Pile_Hydro dialogPileHydro;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
-    ImageView digMenu, drilltool, Status, folders, playpause, lineReference, tiposnap, imgHdt,
-            zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto;
+    ImageView digMenu, drilltool, Status, folders, playpause, lineReference, tiposnap, imgHdt, uomesure,
+            zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto, hydromenu;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView marcia, idpalo, txthdt, txttilt, txtdepth, uomesure, textInfo, tiltInfo, txttiltActual, txthdtActual, diration, einauto;
+    TextView marcia, idpalo, txthdt, txttilt, txtdepth, textInfo, tiltInfo, txttiltActual, txthdtActual, diration, einauto;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
@@ -174,6 +179,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         lineReference = findViewById(R.id.lineReference);
         tiposnap = findViewById(R.id.tiposnap);
         uomesure = findViewById(R.id.uomesure);
+        hydromenu = findViewById(R.id.hydromenu);
         zoom_P = findViewById(R.id.zoom_P);
         zoom_M = findViewById(R.id.zoom_M);
         zoom_C = findViewById(R.id.zoom_C);
@@ -200,7 +206,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void init() {
-
+        dialogPileHydro = new Dialog_Pile_Hydro(this);
         dialogRaggioDrill = new Dialog_Raggio_Drill(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogAutoSnap = new Dialog_AutoSnap(this);
@@ -292,9 +298,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
                 tiposnap.setImageTintList(getColorStateList(R.color.light_yellow));
                 uomesure.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
-                uomesure.setTextColor(getColor(R.color.light_yellow));
+                uomesure.setImageTintList(getColorStateList(R.color.light_yellow));
                 puntatore.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
                 puntatore.setImageTintList(getColorStateList(R.color.light_yellow));
+                hydromenu.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
+                hydromenu.setImageTintList(getColorStateList(R.color.light_yellow));
                 zoom_P.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
                 zoom_P.setImageTintList(getColorStateList(R.color.light_yellow));
                 zoom_M.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_chiaro));
@@ -323,9 +331,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 tiposnap.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
                 tiposnap.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 uomesure.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
-                uomesure.setTextColor(getColor(R.color.colorStonexBlue));
+                uomesure.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 puntatore.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
                 puntatore.setImageTintList(getColorStateList(R.color.colorStonexBlue));
+                hydromenu.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
+                hydromenu.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 zoom_P.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
                 zoom_P.setImageTintList(getColorStateList(R.color.colorStonexBlue));
                 zoom_M.setBackground(getResources().getDrawable(R.drawable.sfondo_trasp_scuro));
@@ -350,17 +360,41 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
 
         }
-        uomesure.setText(Utils.getMetriSimbol().replace("[", "").replace("]", ""));
+        //uomesure.setText(Utils.getMetriSimbol().replace("[", "").replace("]", ""));
         diration.setTextColor(MyColorClass.colorConstraint);
 
 
     }
 
     private void onClick() {
+        hydromenu.setOnClickListener(v -> {
+            if (isTech) {
+                if (!dialogPileHydro.dialog.isShowing()) {
+                    dialogPileHydro.show();
+                }
+            }
+        });
         uomesure.setOnClickListener(view -> {
           /*  if (!dialogRaggioDrill.dialog.isShowing()) {
                 dialogRaggioDrill.show();
             }*/
+            {
+                FragmentManager fm = this.getSupportFragmentManager();
+                String pointSiz = "";
+                if (DataSaved.drill_points == null) {
+                    pointSiz = "No Points";
+                } else {
+                    int[] stati = getPointStatus(DataSaved.drill_points);
+                    pointSiz = "TOTAL:" + DataSaved.drill_points.size() + "   DONE:" + stati[2] + "   REFUSED:" + stati[1];
+                }
+
+                if (fm.findFragmentByTag("drill_grid") != null) return;
+
+                DrillPointsFullscreenDialog
+                        .newInstance("Drill Pattern " + pointSiz, ReadProjectService.conversionFactor)
+                        .show(fm, "drill_grid");
+
+            }
         });
         mostratesto.setOnClickListener(view -> {
             DataSaved.ShowText += 1;
@@ -380,15 +414,18 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     Drill_Text_Mode.opt_6
             };
 
-            new AlertDialog.Builder(this)
+            AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Drill Text Mode")
-                    .setItems(items, (dialog, which) -> {
+                    .setItems(items, (dialogInterface, which) -> {
 
                         DataSaved.Drill_Text_Mode = which;
                         MyData.push("Drill_Text_Mode", String.valueOf(which));
 
                     })
                     .show();
+
+            // fullscreen
+            FullscreenActivity.setFullScreen(dialog);
 
             return true;
         });
@@ -455,44 +492,55 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             previousState = DataSaved.isAutoSnap;
 
-
             if (DataSaved.isDefiningAB) {
 
                 // --- Già in modalità definizione → chiedi se abortire ---
-                new android.app.AlertDialog.Builder(Drill_Activity.this)
+                AlertDialog dialog = new AlertDialog.Builder(Drill_Activity.this)
                         .setTitle("Cancel Alignment")
                         .setMessage("Alignment definition is in progress.\nDo you want to abort?")
                         .setNegativeButton("No", null)
-                        .setPositiveButton("Yes", (dialog, which) -> {
+                        .setPositiveButton("Yes", (dialogInterface, which) -> {
+
                             previousState = 0;
                             DataSaved.isDefiningAB = false;
                             DataSaved.alignAId = null;
                             DataSaved.alignBId = null;
 
-                            new CustomToast(Drill_Activity.this,
-                                    "Alignment selection canceled")
-                                    .show_long();
+                            new CustomToast(
+                                    Drill_Activity.this,
+                                    "Alignment selection canceled"
+                            ).show_long();
+
                         })
                         .show();
+
+                // fullscreen
+                FullscreenActivity.setFullScreen(dialog);
 
             } else {
 
                 // --- Non attivo → chiedi se iniziare ---
-                new android.app.AlertDialog.Builder(Drill_Activity.this)
+                AlertDialog dialog = new AlertDialog.Builder(Drill_Activity.this)
                         .setTitle("Define Alignment AB")
                         .setMessage("Do you want to start defining alignment AB?")
                         .setNegativeButton("No", null)
-                        .setPositiveButton("Yes", (dialog, which) -> {
+                        .setPositiveButton("Yes", (dialogInterface, which) -> {
+
                             DataSaved.isAutoSnap = 2;
                             DataSaved.isDefiningAB = true;
                             DataSaved.alignAId = null;
                             DataSaved.alignBId = null;
 
-                            new CustomToast(Drill_Activity.this,
-                                    "Pick point A")
-                                    .show_alert();
+                            new CustomToast(
+                                    Drill_Activity.this,
+                                    "Pick point A"
+                            ).show_alert();
+
                         })
                         .show();
+
+                // fullscreen
+                FullscreenActivity.setFullScreen(dialog);
             }
         });
         digMenu.setOnClickListener(view -> {
@@ -534,6 +582,15 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     public void updateUI() {
         if (NOME_OPERATORE != null) {
+            if (isTech) {
+                if (hydromenu != null) {
+                    hydromenu.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (hydromenu != null) {
+                    hydromenu.setVisibility(View.INVISIBLE);
+                }
+            }
             if (DataSaved.ShowText == 1) {
                 mostratesto.setAlpha(1.0f);
             } else {
@@ -2654,5 +2711,34 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         handler.postDelayed(() ->
                         MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 128, windowT[0], windowT[1], 0, 0, 0, 0, 0})
                 , 300);
+    }
+
+
+    /// //////
+
+
+    private int[] getPointStatus(List<Point3D_Drill> points) {
+        int todo = 0;
+        int aborted = 0;
+        int done = 0;
+
+        for (Point3D_Drill p : points) {
+            switch (p.getStatus()) {
+                case 0:
+                    todo++;
+                    break;
+                case -1:
+                    aborted++;
+                    break;
+                case 1:
+                    done++;
+                    break;
+                default:
+                    // eventuale gestione stato sconosciuto
+                    break;
+            }
+        }
+
+        return new int[]{todo, aborted, done};
     }
 }

@@ -38,8 +38,7 @@
             "DataType": "U16",
             "ParamName": "TEST_DELAY_Sec",
             "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "15"
+            "WriteAccess": "9"
         },
         {
             "GUID": "{06B5279D-C905-33d3-7789-5A56D5FFC71D}",
@@ -54,16 +53,14 @@
             "DataType": "U8",
             "ParamName": "Config_OUT_5",
             "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "13"
+            "WriteAccess": "9"
         },
         {
             "GUID": "{5EE0DB5C-2C26-4a0e-98C4-833E2275FF97}",
             "DataType": "U8",
             "ParamName": "Config_OUT_6",
             "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "14"
+            "WriteAccess": "9"
         },
         {
             "GUID": "{06B526B3-451F-d232-91E8-780CC1CFE3EA}",
@@ -109,8 +106,7 @@
             "DataType": "U8",
             "ParamName": "Config_OUT_4",
             "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "12"
+            "WriteAccess": "9"
         },
         {
             "GUID": "{06B528E2-CE6F-0288-E23E-BFBCC760661E}",
@@ -125,8 +121,7 @@
             "DataType": "U8",
             "ParamName": "Config_OUT_3",
             "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "11"
+            "WriteAccess": "9"
         },
         {
             "GUID": "{051BB657-DBED-bc85-5F3B-65ADC721D766}",
@@ -173,8 +168,7 @@
             "DataType": "U8",
             "ParamName": "Config_OUT_1",
             "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "16"
+            "WriteAccess": "9"
         },
         {
             "GUID": "{5EE0EAE6-6E6E-45c0-E076-871E7DB31B05}",
@@ -205,8 +199,7 @@
             "DataType": "U8",
             "ParamName": "Config_OUT_2",
             "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "10"
+            "WriteAccess": "9"
         },
         {
             "GUID": "{5EE0EAA5-6D59-1c69-CB1F-730A4C6C9405}",

@@ -82,7 +82,7 @@ public class Dialog_AutoSnap {
         select.setOnClickListener(view -> {
             DataSaved.isAutoSnap = 0;
             checkStatus(DataSaved.isAutoSnap);
-            FragmentManager fm = activity.getSupportFragmentManager();
+           /* FragmentManager fm = activity.getSupportFragmentManager();
             String pointSiz = "";
             if (DataSaved.drill_points == null) {
                 pointSiz = "No Points";
@@ -96,7 +96,7 @@ public class Dialog_AutoSnap {
             DrillPointsFullscreenDialog
                     .newInstance("Drill Pattern " + pointSiz, ReadProjectService.conversionFactor)
                     .show(fm, "drill_grid");
-            dialog.dismiss();
+            dialog.dismiss();*/
         });
         autosnap.setOnClickListener(view -> {
             DataSaved.isAutoSnap = 1;

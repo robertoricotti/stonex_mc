@@ -29,7 +29,7 @@ import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.UNIVERSAL_ECU;
 import static utils.MyTypes.WHEELLOADER;
 
-import android.app.AlertDialog;
+
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -43,6 +43,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.stx_dig.R;
@@ -56,6 +57,7 @@ import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_Wheel_Steer;
 import packexcalib.exca.DataSaved;
+import utils.FullscreenActivity;
 import utils.MyData;
 import utils.MyDeviceManager;
 
@@ -601,8 +603,11 @@ public class Nuova_Machine_Settings extends BaseClass {
             builder.setNegativeButton("NO", (dialog, which) -> {
                 //do nothing
             });
-            // Mostra il dialog
-            builder.show();
+            // CREA E MOSTRA IL DIALOG
+            AlertDialog dialog = builder.show();
+
+            // APPLICA IL FULLSCREEN
+            FullscreenActivity.setFullScreen(dialog);
 
         });
         wheel.setOnClickListener(view -> {
@@ -621,8 +626,11 @@ public class Nuova_Machine_Settings extends BaseClass {
             builder.setNegativeButton("NO", (dialog, which) -> {
                 //do nothing
             });
-            // Mostra il dialog
-            builder.show();
+            // CREA E MOSTRA IL DIALOG
+            AlertDialog dialog = builder.show();
+
+            // APPLICA IL FULLSCREEN
+            FullscreenActivity.setFullScreen(dialog);
 
         });
         dozer.setOnClickListener(view -> {
@@ -641,8 +649,11 @@ public class Nuova_Machine_Settings extends BaseClass {
             builder.setNegativeButton("NO", (dialog, which) -> {
                 //do nothing
             });
-            // Mostra il dialog
-            builder.show();
+            // CREA E MOSTRA IL DIALOG
+            AlertDialog dialog = builder.show();
+
+            // APPLICA IL FULLSCREEN
+            FullscreenActivity.setFullScreen(dialog);
 
         });
         grader.setOnClickListener(view -> {
@@ -661,8 +672,11 @@ public class Nuova_Machine_Settings extends BaseClass {
             builder.setNegativeButton("NO", (dialog, which) -> {
                 //do nothing
             });
-            // Mostra il dialog
-            builder.show();
+            // CREA E MOSTRA IL DIALOG
+            AlertDialog dialog = builder.show();
+
+            // APPLICA IL FULLSCREEN
+            FullscreenActivity.setFullScreen(dialog);
 
         });
         drill.setOnClickListener(view -> {
@@ -681,8 +695,11 @@ public class Nuova_Machine_Settings extends BaseClass {
             builder.setNegativeButton("NO", (dialog, which) -> {
                 //do nothing
             });
-            // Mostra il dialog
-            builder.show();
+            // CREA E MOSTRA IL DIALOG
+            AlertDialog dialog = builder.show();
+
+            // APPLICA IL FULLSCREEN
+            FullscreenActivity.setFullScreen(dialog);
 
         });
         toCanopen.setOnClickListener(view -> {
@@ -1041,6 +1058,7 @@ public class Nuova_Machine_Settings extends BaseClass {
                 exca.setAlpha(0.2f);
                 wheel.setAlpha(0.2f);
                 dozer.setAlpha(0.2f);
+                grader.setAlpha(1.0f);
                 drill.setAlpha(0.2f);
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));

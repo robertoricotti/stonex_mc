@@ -155,10 +155,10 @@ public class Drill_TopView extends View {
             rotationAngleBoom = (rotationAngle + Math.toRadians(extraHeading));
             rotationAngle = rotationAngleBoom;
 
-            originPointTool = new PointF(getWidth() * 0.5f, getHeight() * 0.7f);
+            originPointTool = new PointF(getWidth() * 0.5f, getHeight() * 0.65f);
 
             float pivotX = getWidth() * 0.5f;
-            float pivotY = getHeight() * 0.75f;
+            float pivotY = getHeight() * 0.65f;
             float s = (float) DataSaved.scale_Factor3D;
 
 
@@ -225,7 +225,7 @@ public class Drill_TopView extends View {
             paint.setStrokeWidth(machineTargetPx(1.2f, 1.0f) * mts);
 
             if (showCroce) {
-                float stroke = machineTargetPx(Math.max(0.8f, scala * 0.001f)) * targetScale;
+                float stroke = machineTargetPx(Math.max(1f, scala * 0.001f)) * targetScale;
                 float arm = machineTargetPx(100f) * targetScale;
 
                 paint.setColor(coloreCroce);
@@ -390,7 +390,7 @@ public class Drill_TopView extends View {
 
         // ✖ croce (solo se richiesta)
         if (drawCross) {
-            paint.setStrokeWidth(Math.max(2f, scala * 0.05f));
+            paint.setStrokeWidth(Math.max(3f, scala * 0.06f));
             canvas.drawLine(c.x - cross, c.y, c.x + cross, c.y, paint);
             canvas.drawLine(c.x, c.y - cross, c.x, c.y + cross, paint);
         }
