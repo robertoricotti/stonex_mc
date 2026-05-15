@@ -1,5 +1,25 @@
 package services;
 
+import static drill_pile.gui.Dialog_Pile_Hydro.EV1_LOWER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV1_UPPER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV2_LOWER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV2_UPPER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV3_LOWER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV3_UPPER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV4_LOWER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV4_UPPER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV5_LOWER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV5_UPPER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV6_LOWER;
+import static drill_pile.gui.Dialog_Pile_Hydro.EV6_UPPER;
+import static drill_pile.gui.Dialog_Pile_Hydro.HAMMER_ENGAGEMENT_DELAY_seconds;
+import static drill_pile.gui.Dialog_Pile_Hydro.REVERSE_FOOT_ENCODER;
+import static drill_pile.gui.Dialog_Pile_Hydro.REVERSE_HAMMER;
+import static drill_pile.gui.Dialog_Pile_Hydro.REVERSE_PLUMB_AX_1;
+import static drill_pile.gui.Dialog_Pile_Hydro.REVERSE_PLUMB_AX_2;
+import static drill_pile.gui.Dialog_Pile_Hydro.REVERSE_RISE_LOW;
+import static drill_pile.gui.Dialog_Pile_Hydro.RISE_DIST_mm;
+import static drill_pile.gui.Dialog_Pile_Hydro.SWAP_PLUMB_AX;
 import static packexcalib.exca.Sensors_Decoder.PGN_TiltRotator_EngCon;
 import static packexcalib.exca.Sensors_Decoder.PGN_Tiltrotator;
 import static packexcalib.exca.Sensors_Decoder.PGN_TiltrotatorEPS;
@@ -31,6 +51,7 @@ import androidx.annotation.Nullable;
 
 import org.greenrobot.eventbus.EventBus;
 
+import drill_pile.gui.Dialog_Pile_Hydro;
 import event_bus.CanEvents;
 import gui.MyApp;
 import gui.debug_ecu.Can_Msg_Debug;
@@ -54,7 +75,7 @@ public class CanService extends Service {
 
     public static String CAT_Joystick, KOMATSU_Joystick, JD_Joystick, JD_GP_Joystyck, CASE_Joystick, NOBAS_Joystick;
     public static int SteerConnected, isAuto;
-    public static int m, ECU_VALVE_TYPE=-1;
+    public static int m, ECU_VALVE_TYPE = -1;
     public static boolean NOBAS_Connected, Dozer_Auto_Main, Grader_Auto_Left, Grader_AutoRight, Grader_Auto_SS,
             ECU_Connected, JD_Connected, CAT_Connected, KOM_Connected, CASE_Connected;
     public static boolean frameOK, boom1OK, boom2OK, stickOK, bucketOK, tiltOK, flagLaser, flagDefault, toolOK;
@@ -613,12 +634,13 @@ public class CanService extends Service {
                         AutoManToggle.Can_Toggled_Auto_SS = false;
                     }
                 }
-                if (id == 2166) {
+                if (id == 2166 || id == 0x81) {
                     ECU_Connected = true;
                     ECU_VALVE_TYPE = msg[0];
                     handler_ECU_Connected.removeCallbacks(timeoutRunnable_ECU_Connected);
                     handler_ECU_Connected.postDelayed(timeoutRunnable_ECU_Connected, 1000);
                 }
+
                 //todo NOBAS Verificare mappatura
                 if (PGNExtractor.extractPGN(id) == 0xF00D && DataSaved.Interface_Type == NOBAS) {
                     NOBAS_Connected = true;
@@ -662,6 +684,73 @@ public class CanService extends Service {
                         toolDisc = false;
                         handler_tool.removeCallbacks(timeoutRunnable_tool);
                         handler_tool.postDelayed(timeoutRunnable_tool, 3000);
+                    }
+                    if (id == 0x3AC) {
+                        int index=msg[0];
+                        int valore = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
+                        switch (index) {
+                            case 0:
+                                EV1_UPPER = valore;
+                                break;
+                            case 1:
+                                EV1_LOWER = valore;
+                                break;
+                            case 2:
+                                EV2_UPPER=valore;
+                                break;
+                            case 3:
+                                EV2_LOWER=valore;
+                                break;
+                            case 4:
+                                EV3_UPPER=valore;
+                                break;
+                            case 5:
+                                EV3_LOWER=valore;
+                                break;
+                            case 6:
+                                EV4_UPPER=valore;
+                                break;
+                            case 7:
+                                EV4_LOWER=valore;
+                                break;
+                            case 8:
+                                EV5_UPPER=valore;
+                                break;
+                            case 9:
+                                EV5_LOWER=valore;
+                                break;
+                            case 10:
+                                EV6_UPPER=valore;
+                                break;
+                            case 11:
+                                EV6_LOWER=valore;
+                                break;
+                            case 12:
+                                SWAP_PLUMB_AX= valore == 1;
+                                break;
+                            case 13:
+                                REVERSE_FOOT_ENCODER=valore==1;
+                                break;
+                            case 14:
+                                REVERSE_PLUMB_AX_1=valore==1;
+                                break;
+                            case 15:
+                                REVERSE_PLUMB_AX_2=valore==1;
+                                break;
+                            case 16:
+                                    REVERSE_HAMMER=valore==1;
+                                break;
+                            case 17:
+                                HAMMER_ENGAGEMENT_DELAY_seconds=valore;
+                                break;
+                            case 18:
+                                RISE_DIST_mm=valore;
+                                break;
+                            case 19:
+                                Dialog_Pile_Hydro.hasReaded=true;
+                                REVERSE_RISE_LOW=valore==1;
+                                break;
+                        }
                     }
                 }
             }

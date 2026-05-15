@@ -2,23 +2,79 @@
     "FileFormat": "003A",
     "Parameters": [
         {
-            "GUID": "{5EE0DEA9-3A3A-637e-AC34-89479609D198}",
-            "DataType": "U16",
-            "ParamName": "OUT_6_MIN_Speed_50_0",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "26"
-        },
-        {
-            "GUID": "{06AC5C08-ED36-ba0c-A8C2-CB6D537BEF90}",
+            "GUID": "{095E0753-9E5D-a691-CF47-F2BB3E97A821}",
             "DataType": "BOOL",
-            "ParamName": "Revers_Rise_Low",
+            "ParamName": "Revers_Hammer",
             "ReadAccess": "9",
             "WriteAccess": "9",
-            "NvIndex": "8"
+            "NvIndex": "15"
         },
         {
-            "GUID": "{5EE0EACC-6DFF-8204-71BA-1816D0CAE538}",
+            "GUID": "{0734D536-9DC0-5dc4-327A-93B48C13573F}",
+            "DataType": "U16",
+            "ParamName": "Hammer_Deadband",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "16"
+        },
+        {
+            "GUID": "{095E14C8-57C4-b5aa-3660-1DF4402D7628}",
+            "DataType": "U16",
+            "ParamName": "OUT_1_MIN_Speed_50_0",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "17"
+        },
+        {
+            "GUID": "{0734D48D-9AEF-a57a-6130-C57FA828FA0C}",
+            "DataType": "U16",
+            "ParamName": "WindowToll_cm",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "12"
+        },
+        {
+            "GUID": "{095E00B9-8234-73b0-A666-E6A95570031D}",
+            "DataType": "U16",
+            "ParamName": "OUT_3_MIN_Speed_50_100",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "13"
+        },
+        {
+            "GUID": "{095E0085-8156-6c37-C8ED-0999FB9E9884}",
+            "DataType": "U16",
+            "ParamName": "OUT_4_MIN_Speed_50_100",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "14"
+        },
+        {
+            "GUID": "{095DFF67-7C92-831c-04D2-4A3F8D9B49B6}",
+            "DataType": "U16",
+            "ParamName": "OUT_4_MIN_Speed_50_0",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "21"
+        },
+        {
+            "GUID": "{095DFF33-7BB4-7ba3-2759-6D2F33C9DE1C}",
+            "DataType": "U16",
+            "ParamName": "OUT_5_MIN_Speed_50_0",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "22"
+        },
+        {
+            "GUID": "{093137E1-085B-3967-CD1D-DC14CD7F15D1}",
+            "DataType": "BOOL",
+            "ParamName": "Swap_Axis",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "23"
+        },
+        {
+            "GUID": "{095E00ED-8312-7b29-84DF-C3B9AF426FB7}",
             "DataType": "U16",
             "ParamName": "OUT_2_MIN_Speed_50_100",
             "ReadAccess": "9",
@@ -26,242 +82,137 @@
             "NvIndex": "18"
         },
         {
-            "GUID": "{06AC5BA0-EB7A-ab1a-ECD0-114C9FD8185C}",
-            "DataType": "U16",
-            "ParamName": "Rise_Distance_mm",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "9"
-        },
-        {
-            "GUID": "{5EE0D5E0-14C1-0047-33FD-3686A751A961}",
-            "DataType": "U16",
-            "ParamName": "TEST_DELAY_Sec",
-            "ReadAccess": "9",
-            "WriteAccess": "9"
-        },
-        {
-            "GUID": "{06B5279D-C905-33d3-7789-5A56D5FFC71D}",
-            "DataType": "U16",
-            "ParamName": "Slope_Deadband",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "4"
-        },
-        {
-            "GUID": "{5EE0DB69-2C5D-6bec-CFA2-BA42F8EA19FD}",
-            "DataType": "U8",
-            "ParamName": "Config_OUT_5",
-            "ReadAccess": "9",
-            "WriteAccess": "9"
-        },
-        {
-            "GUID": "{5EE0DB5C-2C26-4a0e-98C4-833E2275FF97}",
-            "DataType": "U8",
-            "ParamName": "Config_OUT_6",
-            "ReadAccess": "9",
-            "WriteAccess": "9"
-        },
-        {
-            "GUID": "{06B526B3-451F-d232-91E8-780CC1CFE3EA}",
-            "DataType": "U8",
-            "ParamName": "Hammer__Config",
-            "ReadAccess": "9",
-            "WriteAccess": "9"
-        },
-        {
-            "GUID": "{5EE0EA8B-6CEA-58ac-5C62-0402A0835F38}",
-            "DataType": "U16",
-            "ParamName": "OUT_4_MIN_Speed_50_0",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "25"
-        },
-        {
-            "GUID": "{5EE0EAD9-6E37-23e2-A998-501AA63E009F}",
-            "DataType": "U16",
-            "ParamName": "OUT_1_MIN_Speed_50_0",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "23"
-        },
-        {
-            "GUID": "{5EE0EABF-6DC8-6025-3ADB-E112F955CAD2}",
-            "DataType": "U16",
-            "ParamName": "OUT_2_MIN_Speed_50_0",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "27"
-        },
-        {
-            "GUID": "{5EE0E425-519F-2d45-11FB-D500112E26CE}",
-            "DataType": "U16",
-            "ParamName": "OUT_5_MIN_Speed_50_0",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "24"
-        },
-        {
-            "GUID": "{5EE0DB76-2C95-0dca-0780-F146CF5E3463}",
-            "DataType": "U8",
-            "ParamName": "Config_OUT_4",
-            "ReadAccess": "9",
-            "WriteAccess": "9"
-        },
-        {
-            "GUID": "{06B528E2-CE6F-0288-E23E-BFBCC760661E}",
-            "DataType": "U16",
-            "ParamName": "WindowToll_cm",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "7"
-        },
-        {
-            "GUID": "{5EE0DB83-2CCC-2fa9-3E5E-284AA5D34FCA}",
-            "DataType": "U8",
-            "ParamName": "Config_OUT_3",
-            "ReadAccess": "9",
-            "WriteAccess": "9"
-        },
-        {
-            "GUID": "{051BB657-DBED-bc85-5F3B-65ADC721D766}",
+            "GUID": "{09313745-05C2-22fc-34B2-45E3BF09D204}",
             "DataType": "BOOL",
-            "ParamName": "Reverse_Ax_1_Sign",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "0"
-        },
-        {
-            "GUID": "{5EE0E432-51D6-4f23-49D9-0D04E7A24135}",
-            "DataType": "U16",
-            "ParamName": "OUT_5_MIN_Speed_50_100",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "21"
-        },
-        {
-            "GUID": "{5EE0DEB6-3A72-055c-E412-C04B6D7EECFF}",
-            "DataType": "U16",
-            "ParamName": "OUT_6_MIN_Speed_50_100",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "22"
-        },
-        {
-            "GUID": "{051BB630-DB46-d6eb-B9A0-BFA144C48732}",
-            "DataType": "BOOL",
-            "ParamName": "Swap_Axis",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "2"
-        },
-        {
-            "GUID": "{06B5298B-D140-3ad2-B287-8DF1AB4AC352}",
-            "DataType": "U16",
-            "ParamName": "Hammer_Deadband",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "5"
-        },
-        {
-            "GUID": "{5EE0DB9D-2D3B-7365-AD1B-975352BC8597}",
-            "DataType": "U8",
-            "ParamName": "Config_OUT_1",
-            "ReadAccess": "9",
-            "WriteAccess": "9"
-        },
-        {
-            "GUID": "{5EE0EAE6-6E6E-45c0-E076-871E7DB31B05}",
-            "DataType": "U16",
-            "ParamName": "OUT_1_MIN_Speed_50_100",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "17"
-        },
-        {
-            "GUID": "{06B52998-D178-dcb0-EA66-C4F581BEDEB8}",
-            "DataType": "U16",
-            "ParamName": "Slide_Deadband",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "6"
-        },
-        {
-            "GUID": "{5EE0EA98-6D21-7a8b-9441-3B0676F87A9F}",
-            "DataType": "U16",
-            "ParamName": "OUT_4_MIN_Speed_50_100",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "20"
-        },
-        {
-            "GUID": "{5EE0DB90-2D04-5187-763D-604E7C476A30}",
-            "DataType": "U8",
-            "ParamName": "Config_OUT_2",
-            "ReadAccess": "9",
-            "WriteAccess": "9"
-        },
-        {
-            "GUID": "{5EE0EAA5-6D59-1c69-CB1F-730A4C6C9405}",
-            "DataType": "U16",
-            "ParamName": "OUT_3_MIN_Speed_50_0",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "28"
-        },
-        {
-            "GUID": "{5EE0EAB2-6D90-3e47-03FD-AA0E23E1AF6B}",
-            "DataType": "U16",
-            "ParamName": "OUT_3_MIN_Speed_50_100",
+            "ParamName": "Reverse_Ax_2_Sign",
             "ReadAccess": "9",
             "WriteAccess": "9",
             "NvIndex": "19"
         },
         {
-            "GUID": "{051BB67E-DC93-a220-05D6-0AB94A7F2899}",
+            "GUID": "{095E001D-7F9B-5d44-0DFA-4F7847FAC150}",
+            "DataType": "U16",
+            "ParamName": "OUT_6_MIN_Speed_50_100",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "20"
+        },
+        {
+            "GUID": "{095E0051-8078-64be-EB73-2C88A1CC2DEA}",
+            "DataType": "U16",
+            "ParamName": "OUT_5_MIN_Speed_50_100",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "3"
+        },
+        {
+            "GUID": "{24EDD5F8-70A4-6822-16D8-574E0A3321DB}",
             "DataType": "BOOL",
-            "ParamName": "Reverse_Ax_2_Sign",
+            "ParamName": "Revers_Rise_Low",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "4"
+        },
+        {
+            "GUID": "{095DFEFF-7AD7-742a-49E0-901ED9F77283}",
+            "DataType": "U16",
+            "ParamName": "OUT_6_MIN_Speed_50_0",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "5"
+        },
+        {
+            "GUID": "{095DFFCF-7E4E-920f-C0C5-0460413F20EA}",
+            "DataType": "U16",
+            "ParamName": "OUT_2_MIN_Speed_50_0",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "0"
+        },
+        {
+            "GUID": "{093137AD-077D-31ee-EFA4-FF0473ADA937}",
+            "DataType": "BOOL",
+            "ParamName": "Reverse_Encoder_Piede",
             "ReadAccess": "9",
             "WriteAccess": "9",
             "NvIndex": "1"
         },
         {
-            "GUID": "{021A2D03-3873-36f5-E5AB-4C9288CD4BE9}",
-            "DataType": "BOOL",
-            "ParamName": "Revers_Hammer",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "29"
-        },
-        {
-            "GUID": "{11BD135F-FBC0-e9c6-327C-86AF9D1A8B85}",
-            "DataType": "BOOL",
-            "ParamName": "Reverse_Encoder_Piede",
-            "ReadAccess": "9",
-            "WriteAccess": "9",
-            "NvIndex": "30"
-        },
-        {
-            "GUID": "{120E84D4-28C2-265a-3410-4BE72C5477FF}",
+            "GUID": "{095DFF9B-7D70-8a96-E24B-274FE76DB450}",
             "DataType": "U16",
-            "ParamName": "HAMMER_ENGAGEMENT_DELAY",
+            "ParamName": "OUT_3_MIN_Speed_50_0",
             "ReadAccess": "9",
-            "WriteAccess": "9"
+            "WriteAccess": "9",
+            "NvIndex": "2"
         },
         {
-            "GUID": "{1212E024-C043-7bb7-B56D-65DE519B5716}",
+            "GUID": "{095E071F-9D7F-9f17-F1CD-15ABE4C53C87}",
             "DataType": "U16",
             "ParamName": "Hammer_Engagement_Delay_Seconds",
             "ReadAccess": "9",
             "WriteAccess": "9",
-            "NvIndex": "31"
+            "NvIndex": "9"
         },
         {
-            "GUID": "{06A3694D-9747-96ad-B963-8D19105937F7}",
+            "GUID": "{0734D543-9DF7-7fa2-6958-CAB8628772A6}",
             "DataType": "U16",
-            "ParamName": "Divider",
+            "ParamName": "Slide_Deadband",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "10"
+        },
+        {
+            "GUID": "{24EDD590-6EE9-5930-5BE6-9D2E568F4AA8}",
+            "DataType": "U16",
+            "ParamName": "Rise_Distance_mm",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "11"
+        },
+        {
+            "GUID": "{09313779-069F-2a75-112B-22F319DB3E9D}",
+            "DataType": "BOOL",
+            "ParamName": "Reverse_Ax_1_Sign",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "6"
+        },
+        {
+            "GUID": "{095DFECB-79F9-6cb1-6B67-B30E7F2507E9}",
+            "DataType": "U16",
+            "ParamName": "OUT_1_MIN_Speed_50_100",
+            "ReadAccess": "_",
+            "WriteAccess": "_"
+        },
+        {
+            "GUID": "{0734D348-9585-56c5-F77B-6019B6C85A0B}",
+            "DataType": "U16",
+            "ParamName": "Slope_Deadband",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "8"
+        },
+        {
+            "GUID": "{096133B2-F936-d334-A8EA-7037546BDE9C}",
+            "DataType": "U16",
+            "ParamName": "DIOCANE",
             "ReadAccess": "9",
             "WriteAccess": "9"
+        },
+        {
+            "GUID": "{09958E75-7100-2ce1-7297-DF657B420CD3}",
+            "DataType": "U16",
+            "ParamName": "TEST_ECI",
+            "ReadAccess": "9",
+            "WriteAccess": "9"
+        },
+        {
+            "GUID": "{09A18819-4385-4395-F74A-11FB454FB670}",
+            "DataType": "U16",
+            "ParamName": "EV_1_MinSpeed_50_100",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "7"
         }
     ]
 }

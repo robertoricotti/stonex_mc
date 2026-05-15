@@ -1,22 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/sfondo_dialog_chiara">
+    android:background="@color/light_gray">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.22" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="left"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/bassa"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/divider"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+
+        <CheckBox
+            android:buttonTint="@color/black"
+            android:layout_marginVertical="5dp"
+            android:id="@+id/ck1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reverse_Plumb_AX_1"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+
+        <CheckBox
+            android:buttonTint="@color/black"
+            android:layout_marginVertical="5dp"
+            android:id="@+id/ck2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reverse_Plumb_AX_2"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+
+        <CheckBox
+            android:buttonTint="@color/black"
+            android:layout_marginVertical="5dp"
+            android:id="@+id/ck3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Swap_Plumb_AX"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+
+        <CheckBox
+            android:buttonTint="@color/black"
+            android:layout_marginVertical="5dp"
+            android:id="@+id/ck4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reverse_Hammer"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
+
+        <CheckBox
+            android:buttonTint="@color/black"
+            android:layout_marginVertical="5dp"
+            android:id="@+id/ck5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reverse_Rise_Lower"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/_____cancel_text" />
+        <TextView
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_stonex_blue"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="19dp"
+            android:text="RISE DISTANCE (mm)"
+            />
+        <EditText
+            android:id="@+id/riseD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="22dp"
+            android:focusableInTouchMode="false"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+        <TextView
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/red_dark"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="19dp"
+            android:text="HAMMER DELAY (Sec.)"
+            />
+        <EditText
+            android:id="@+id/engD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="22dp"
+            android:focusableInTouchMode="false"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/setAllDef"
+            android:background="@drawable/sfondo_auto_prepared"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SET ALL DEFAULTS"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:textSize="22sp"
+            />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintBottom_toTopOf="@id/bassa"
+        app:layout_constraintLeft_toLeftOf="@id/divider"
+        app:layout_constraintRight_toRightOf="@id/divider"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/container_valvole"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp"
         android:paddingTop="14dp"
+        android:paddingEnd="8dp"
         android:paddingBottom="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/chiudi">
+        app:layout_constraintBottom_toTopOf="@id/chiudi"
+        app:layout_constraintLeft_toRightOf="@id/divider"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- VALVOLA 1 -->
         <LinearLayout
@@ -24,27 +190,27 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/titolo_valvola_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:text="OUT 1"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:maxLines="1" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <FrameLayout
                 android:id="@+id/chart_valvola_1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="6dp">
+                android:layout_marginBottom="6dp"
+                android:layout_weight="1">
 
                 <!-- Guida verticale completa -->
                 <View
@@ -77,31 +243,31 @@
                                 android:id="@+id/btn_valvola_1_a_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="75%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_1_a_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="-"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -140,31 +306,31 @@
                                 android:id="@+id/btn_valvola_1_b_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="25%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_1_b_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:text="-"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
+                                android:text="-"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
                     </FrameLayout>
@@ -181,14 +347,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50%"
-                    android:textSize="19sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"
                     android:background="@drawable/sfondo_dialog_chiara"
                     android:paddingStart="3dp"
                     android:paddingEnd="3dp"
-                    android:layout_gravity="center" />
+                    android:text="50%"
+                    android:textColor="@android:color/black"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
@@ -199,9 +365,9 @@
                 android:text="A 50%
 B 50%"
                 android:textAlignment="center"
-                android:textStyle="bold"
+                android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:textColor="@android:color/black" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -218,27 +384,27 @@ B 50%"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/titolo_valvola_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:text="OUT 2"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:maxLines="1" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <FrameLayout
                 android:id="@+id/chart_valvola_2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="6dp">
+                android:layout_marginBottom="6dp"
+                android:layout_weight="1">
 
                 <!-- Guida verticale completa -->
                 <View
@@ -271,31 +437,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_2_a_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="75%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_2_a_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="-"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -334,31 +500,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_2_b_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="25%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_2_b_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:text="-"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
+                                android:text="-"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
                     </FrameLayout>
@@ -375,14 +541,14 @@ B 50%"
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50%"
-                    android:textSize="19sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"
                     android:background="@drawable/sfondo_dialog_chiara"
                     android:paddingStart="3dp"
                     android:paddingEnd="3dp"
-                    android:layout_gravity="center" />
+                    android:text="50%"
+                    android:textColor="@android:color/black"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
@@ -393,9 +559,9 @@ B 50%"
                 android:text="A 50%
 B 50%"
                 android:textAlignment="center"
-                android:textStyle="bold"
+                android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:textColor="@android:color/black" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -412,27 +578,27 @@ B 50%"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/titolo_valvola_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:text="OUT 3"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:maxLines="1" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <FrameLayout
                 android:id="@+id/chart_valvola_3"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="6dp">
+                android:layout_marginBottom="6dp"
+                android:layout_weight="1">
 
                 <!-- Guida verticale completa -->
                 <View
@@ -465,31 +631,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_3_a_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="75%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_3_a_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="-"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -528,31 +694,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_3_b_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="25%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_3_b_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:text="-"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
+                                android:text="-"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
                     </FrameLayout>
@@ -569,14 +735,14 @@ B 50%"
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50%"
-                    android:textSize="19sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"
                     android:background="@drawable/sfondo_dialog_chiara"
                     android:paddingStart="3dp"
                     android:paddingEnd="3dp"
-                    android:layout_gravity="center" />
+                    android:text="50%"
+                    android:textColor="@android:color/black"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
@@ -587,9 +753,9 @@ B 50%"
                 android:text="A 50%
 B 50%"
                 android:textAlignment="center"
-                android:textStyle="bold"
+                android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:textColor="@android:color/black" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -606,27 +772,27 @@ B 50%"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/titolo_valvola_4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:text="OUT 4"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:maxLines="1" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <FrameLayout
                 android:id="@+id/chart_valvola_4"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="6dp">
+                android:layout_marginBottom="6dp"
+                android:layout_weight="1">
 
                 <!-- Guida verticale completa -->
                 <View
@@ -659,31 +825,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_4_a_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="75%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_4_a_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="-"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -722,31 +888,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_4_b_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="25%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_4_b_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:text="-"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
+                                android:text="-"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
                     </FrameLayout>
@@ -763,14 +929,14 @@ B 50%"
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50%"
-                    android:textSize="19sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"
                     android:background="@drawable/sfondo_dialog_chiara"
                     android:paddingStart="3dp"
                     android:paddingEnd="3dp"
-                    android:layout_gravity="center" />
+                    android:text="50%"
+                    android:textColor="@android:color/black"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
@@ -781,9 +947,9 @@ B 50%"
                 android:text="A 50%
 B 50%"
                 android:textAlignment="center"
-                android:textStyle="bold"
+                android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:textColor="@android:color/black" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -800,27 +966,27 @@ B 50%"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/titolo_valvola_5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:text="OUT 5"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:maxLines="1" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <FrameLayout
                 android:id="@+id/chart_valvola_5"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="6dp">
+                android:layout_marginBottom="6dp"
+                android:layout_weight="1">
 
                 <!-- Guida verticale completa -->
                 <View
@@ -853,31 +1019,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_5_a_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="75%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_5_a_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="-"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -916,31 +1082,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_5_b_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="25%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_5_b_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:text="-"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
+                                android:text="-"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
                     </FrameLayout>
@@ -957,14 +1123,14 @@ B 50%"
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50%"
-                    android:textSize="19sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"
                     android:background="@drawable/sfondo_dialog_chiara"
                     android:paddingStart="3dp"
                     android:paddingEnd="3dp"
-                    android:layout_gravity="center" />
+                    android:text="50%"
+                    android:textColor="@android:color/black"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
@@ -975,9 +1141,9 @@ B 50%"
                 android:text="A 50%
 B 50%"
                 android:textAlignment="center"
-                android:textStyle="bold"
+                android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:textColor="@android:color/black" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -994,27 +1160,27 @@ B 50%"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/titolo_valvola_6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:text="OUT 6"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:maxLines="1" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <FrameLayout
                 android:id="@+id/chart_valvola_6"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="6dp">
+                android:layout_marginBottom="6dp"
+                android:layout_weight="1">
 
                 <!-- Guida verticale completa -->
                 <View
@@ -1047,31 +1213,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_6_a_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="75%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_6_a_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="-"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -1110,31 +1276,31 @@ B 50%"
                                 android:id="@+id/btn_valvola_6_b_plus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
                                 android:text="+"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="54dp"
+                                android:layout_width="50dp"
                                 android:layout_height="32dp"
                                 android:gravity="center"
                                 android:text="25%"
-                                android:textSize="16sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/btn_valvola_6_b_minus"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:text="-"
+                                android:background="@drawable/sfondo_bottone_trasparente"
                                 android:gravity="center"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
+                                android:text="-"
                                 android:textColor="@color/black"
-                                android:background="@android:color/transparent" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
                     </FrameLayout>
@@ -1151,14 +1317,14 @@ B 50%"
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50%"
-                    android:textSize="19sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"
                     android:background="@drawable/sfondo_dialog_chiara"
                     android:paddingStart="3dp"
                     android:paddingEnd="3dp"
-                    android:layout_gravity="center" />
+                    android:text="50%"
+                    android:textColor="@android:color/black"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
@@ -1169,52 +1335,80 @@ B 50%"
                 android:text="A 50%
 B 50%"
                 android:textAlignment="center"
-                android:textStyle="bold"
+                android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:textColor="@android:color/black" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
     </LinearLayout>
-<View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@color/_____cancel_text"
-    app:layout_constraintTop_toBottomOf="@id/container_valvole"/>
+
+    <View
+        android:id="@+id/bassa"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintTop_toBottomOf="@id/container_valvole" />
+
     <ImageView
         android:id="@+id/chiudi"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/btn_close_web"
         android:layout_marginVertical="5dp"
-        app:tint="@color/_____cancel_text"
-        app:layout_constraintTop_toBottomOf="@id/container_valvole"
+        android:src="@drawable/btn_close_web"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_valvole"
+        app:tint="@color/_____cancel_text" />
 
     <ImageView
         android:id="@+id/readEcu"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/bottone_leggi_ecu"
-        android:layout_marginVertical="5dp"
-        app:tint="@color/colorStonexBlue"
-        android:rotation="180"
         android:layout_marginHorizontal="45dp"
-        app:layout_constraintTop_toBottomOf="@id/container_valvole"
+        android:layout_marginVertical="5dp"
+        android:rotation="180"
+        android:src="@drawable/bottone_leggi_ecu"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/writeEcu" />
+        app:layout_constraintRight_toLeftOf="@id/writeEcu"
+        app:layout_constraintTop_toBottomOf="@id/container_valvole"
+        app:tint="@color/colorStonexBlue" />
+
     <ImageView
         android:id="@+id/writeEcu"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/bottone_leggi_ecu"
-        android:layout_marginVertical="5dp"
-        app:tint="@color/red_dark"
         android:layout_marginHorizontal="45dp"
-        app:layout_constraintTop_toBottomOf="@id/container_valvole"
+        android:layout_marginVertical="5dp"
+        android:src="@drawable/bottone_leggi_ecu"
         app:layout_constraintBottom_toBottomOf="parent"
-
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_valvole"
+        app:tint="@color/red_dark" />
+    <ImageView
+        android:id="@+id/ecuCo"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="45dp"
+        android:layout_marginVertical="5dp"
+        android:src="@drawable/outline_link_96"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_valvole"
+        app:tint="@color/green_medium" />
+    <ProgressBar
+        android:id="@+id/writeProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="280dp"
+        android:layout_height="28dp"
+        android:max="20"
+        android:progress="0"
+        android:progressDrawable="@drawable/progress_write_ecu"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/chiudi"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="12dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
