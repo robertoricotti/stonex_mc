@@ -586,28 +586,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.8 Integrzione relebox Step 1+sezione 1 punto 99%">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/progress_write_ecu.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_DrillSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_DrillSet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_Pile_Hydro.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_Pile_Hydro.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_pile_hydro.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_pile_hydro.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/Dioba.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/MC024_130_132lgT.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/universal_piledriver/MC024_130_132lgT.scs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/PILE_DRIV_PIEDE.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/Piantapalo_Ritardo_Martello.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/PorcaMer.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/ProjectParameters.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/universal_piledriver/ProjectParameters.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/Pçroporzionalità.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/UNIVERSAL_PILEDRIVER_Piede_OK.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/UNIVERSAL_PILEDRIVER_Release_16042026.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/UniversalPiledriver_FINAL_Release.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/Universal_PileDriver.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/universal_piledriver/Universal_PileDriver.p1m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/Universal_PileDriver.p1x" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/universal_piledriver/Universal_PileDriver.p1x" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/Universaql_PileDriver_RELEASE_19112025.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/panza_test1.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/risalita_OF_Forse.lhx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/70123519.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/70123519v170.SYS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/MC024_130_132lgT.scs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/ProjectParameters.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/Universal_PileDriver.p1m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/universal_piledriver/Universal_PileDriver.p1x" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -617,7 +606,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=512DS96403000001]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[LocalEmulator::path=C:\Users\rricotti\.android\avd\Apoolo2_10.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -871,14 +860,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00197" summary="4.1.0 Pre Release test 3deasy OK">
-      <option name="closed" value="true" />
-      <created>1775141599452</created>
-      <option name="number" value="00197" />
-      <option name="presentableId" value="LOCAL-00197" />
-      <option name="project" value="LOCAL" />
-      <updated>1775141599452</updated>
     </task>
     <task id="LOCAL-00198" summary="4.1.0 Release Deploy Gen1 e Gen2">
       <option name="closed" value="true" />
@@ -1264,7 +1245,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778770625820</updated>
     </task>
-    <option name="localTasksCounter" value="246" />
+    <task id="LOCAL-00246" summary="4.1.8 Integrzione relebox Step 1+sezione 1 punto 99%">
+      <option name="closed" value="true" />
+      <created>1778864602469</created>
+      <option name="number" value="00246" />
+      <option name="presentableId" value="LOCAL-00246" />
+      <option name="project" value="LOCAL" />
+      <updated>1778864602469</updated>
+    </task>
+    <option name="localTasksCounter" value="247" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1313,22 +1302,22 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1778847394441" />
+            <CheckInfo lastCheckTimestamp="1779140695284" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1778847394442" />
+            <CheckInfo lastCheckTimestamp="1779140695283" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1778847394441" />
+            <CheckInfo lastCheckTimestamp="1779140695282" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1778847394443" />
+            <CheckInfo lastCheckTimestamp="1779140695283" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other">

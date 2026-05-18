@@ -31,6 +31,7 @@ import gui.projects.PickProject;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import utils.FullscreenActivity;
+import utils.MyData;
 import utils.MyDeviceManager;
 
 /**
@@ -50,6 +51,7 @@ import utils.MyDeviceManager;
  * - Porta B: 5000..2500
  */
 public class Dialog_Pile_Hydro {
+    int mchint;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isRepeating = false;
     byte[] bytes;
@@ -100,7 +102,7 @@ public class Dialog_Pile_Hydro {
     private final Activity activity;
     public Dialog dialog;
 
-    private CheckBox ck1,ck2,ck3,ck4,ck5;
+    private CheckBox ck1,ck2,ck3,ck4,ck5,ck6,ck7;
     private ImageView close,readEcu,writeEcu,ecuCo;
 
     private final View[] upperAreas = new View[6];
@@ -158,6 +160,7 @@ public class Dialog_Pile_Hydro {
     }
 
     private void findView() {
+        mchint = MyData.get_Int("MachineSelected");
         customNumberDialog=new CustomNumberDialog(activity,Integer.MAX_VALUE);
         writeProgress = dialog.findViewById(R.id.writeProgress);
         close = dialog.findViewById(R.id.chiudi);
@@ -169,6 +172,8 @@ public class Dialog_Pile_Hydro {
         ck3=dialog.findViewById(R.id.ck3);
         ck4=dialog.findViewById(R.id.ck4);
         ck5=dialog.findViewById(R.id.ck5);
+        ck6=dialog.findViewById(R.id.ck6);
+        ck7=dialog.findViewById(R.id.ck7);
         engD=dialog.findViewById(R.id.engD);
         riseD=dialog.findViewById(R.id.riseD);
         setAllDef=dialog.findViewById(R.id.setAllDef);
@@ -269,6 +274,24 @@ public class Dialog_Pile_Hydro {
         });
         ck5.setOnClickListener(v -> {
             REVERSE_RISE_LOW=!REVERSE_RISE_LOW;
+        });
+        ck6.setOnClickListener(v -> {
+            if (DataSaved.REVERSE_DRILL_X == 1) {
+                DataSaved.REVERSE_DRILL_X = -1;
+            } else if (DataSaved.REVERSE_DRILL_X == -1) {
+                DataSaved.REVERSE_DRILL_X = 1;
+            }
+            ck6.setChecked(DataSaved.REVERSE_DRILL_X == -1);
+            MyData.push("M" + mchint + "REVERSE_DRILL_X", String.valueOf(DataSaved.REVERSE_DRILL_X));
+        });
+        ck7.setOnClickListener(v -> {
+            if (DataSaved.REVERSE_DRILL_Y == 1) {
+                DataSaved.REVERSE_DRILL_Y = -1;
+            } else if (DataSaved.REVERSE_DRILL_Y == -1) {
+                DataSaved.REVERSE_DRILL_Y = 1;
+            }
+            ck7.setChecked(DataSaved.REVERSE_DRILL_Y == -1);
+            MyData.push("M" + mchint + "REVERSE_DRILL_Y", String.valueOf(DataSaved.REVERSE_DRILL_Y));
         });
         readEcu.setOnClickListener(v -> {
             hasReaded=false;
@@ -602,6 +625,8 @@ public class Dialog_Pile_Hydro {
                 ck3.setChecked(SWAP_PLUMB_AX);
                 ck4.setChecked(REVERSE_HAMMER);
                 ck5.setChecked(REVERSE_RISE_LOW);
+                ck6.setChecked(DataSaved.REVERSE_DRILL_X == -1);
+                ck7.setChecked(DataSaved.REVERSE_DRILL_Y == -1);
                 if(!hasReaded){
                     writeEcu.setVisibility(View.INVISIBLE);
                 }else {

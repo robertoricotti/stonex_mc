@@ -39,7 +39,7 @@ public class Dialog_DrillSet {
     int tempScreen, finalScreen;
     TextView angleTit, distTit,titleHyd,psav;
     EditText tv1, tv2, tv3, tv4, tv5;
-    CheckBox ckRevX, ckRevY,ckSavingMode;
+    CheckBox ckSavingMode;
     CustomNumberDialog customNumberDialog;
     CustomNumberDialogFtIn customNumberDialogFtIn;
     int mchint;
@@ -94,8 +94,6 @@ public class Dialog_DrillSet {
         tv3 = dialog.findViewById(R.id.tv3);
         tv4 = dialog.findViewById(R.id.tv4);
         tv5 = dialog.findViewById(R.id.tv5);
-        ckRevX = dialog.findViewById(R.id.ckRevX);
-        ckRevY = dialog.findViewById(R.id.ckRevY);
         titleHyd=dialog.findViewById(R.id.titleHyd);
         ckSavingMode=dialog.findViewById(R.id.ckSavingMode);
         ckSavingMode.setChecked(DataSaved.autoSavePoint==1);
@@ -107,15 +105,7 @@ public class Dialog_DrillSet {
             ckSavingMode.setVisibility(View.GONE);
             psav.setVisibility(View.GONE);
         }
-        if(isTech){
-            titleHyd.setVisibility(View.VISIBLE);
-            ckRevX.setVisibility(View.VISIBLE);
-            ckRevY.setVisibility(View.VISIBLE);
-        }else{
-            titleHyd.setVisibility(View.GONE);
-            ckRevX.setVisibility(View.GONE);
-            ckRevY.setVisibility(View.GONE);
-        }
+
         tv1.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_XY)));
         tv2.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_Axis)));
         tv3.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Drill_tolleranza_Z)));
@@ -127,8 +117,7 @@ public class Dialog_DrillSet {
 
         tempScreen = DataSaved.Drill_Screen;
         updateImage(tempScreen);
-        ckRevX.setChecked(DataSaved.REVERSE_DRILL_X == -1);
-        ckRevY.setChecked(DataSaved.REVERSE_DRILL_Y == -1);
+
 
 
     }
@@ -140,24 +129,7 @@ public class Dialog_DrillSet {
             ckSavingMode.setChecked(DataSaved.autoSavePoint==1);
             MyData.push("autoSavePoint",String.valueOf( DataSaved.autoSavePoint));
         });
-        ckRevX.setOnClickListener(view -> {
-            if (DataSaved.REVERSE_DRILL_X == 1) {
-                DataSaved.REVERSE_DRILL_X = -1;
-            } else if (DataSaved.REVERSE_DRILL_X == -1) {
-                DataSaved.REVERSE_DRILL_X = 1;
-            }
-            ckRevX.setChecked(DataSaved.REVERSE_DRILL_X == -1);
-            MyData.push("M" + mchint + "REVERSE_DRILL_X", String.valueOf(DataSaved.REVERSE_DRILL_X));
-        });
-        ckRevY.setOnClickListener(view -> {
-            if (DataSaved.REVERSE_DRILL_Y == 1) {
-                DataSaved.REVERSE_DRILL_Y = -1;
-            } else if (DataSaved.REVERSE_DRILL_Y == -1) {
-                DataSaved.REVERSE_DRILL_Y = 1;
-            }
-            ckRevY.setChecked(DataSaved.REVERSE_DRILL_Y == -1);
-            MyData.push("M" + mchint + "REVERSE_DRILL_Y", String.valueOf(DataSaved.REVERSE_DRILL_Y));
-        });
+
         toLeft.setOnClickListener(view -> {
             tempScreen = -1;
             DataSaved.Drill_Screen = -1;
