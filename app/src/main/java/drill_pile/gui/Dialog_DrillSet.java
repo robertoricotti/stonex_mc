@@ -37,7 +37,7 @@ public class Dialog_DrillSet {
     public Dialog dialog;
     ImageView close, toLeft, toWard, toRight;
     int tempScreen, finalScreen;
-    TextView angleTit, distTit,titleHyd,psav;
+    TextView angleTit, distTit,psav;
     EditText tv1, tv2, tv3, tv4, tv5;
     CheckBox ckSavingMode;
     CustomNumberDialog customNumberDialog;
@@ -94,7 +94,7 @@ public class Dialog_DrillSet {
         tv3 = dialog.findViewById(R.id.tv3);
         tv4 = dialog.findViewById(R.id.tv4);
         tv5 = dialog.findViewById(R.id.tv5);
-        titleHyd=dialog.findViewById(R.id.titleHyd);
+
         ckSavingMode=dialog.findViewById(R.id.ckSavingMode);
         ckSavingMode.setChecked(DataSaved.autoSavePoint==1);
         if(DataSaved.Drilling_Mode==SOLARFARM_MODE){

@@ -2131,21 +2131,86 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         refreshAfterStateChange();
     }
 
+    private boolean hasUsableToolEndCoord() {
+        return toolEndCoord != null
+                && toolEndCoord.length >= 3
+                && isFinite(toolEndCoord[0])
+                && isFinite(toolEndCoord[1])
+                && isFinite(toolEndCoord[2]);
+    }
+
+    private boolean hasUsableCoordTool() {
+        return coordTool != null
+                && coordTool.length >= 2
+                && isFinite(coordTool[0])
+                && isFinite(coordTool[1]);
+    }
+
+    private boolean canRunDrillRoutine(String action) {
+        if (Selected_Point3D_Drill == null) {
+            new CustomToast(this, "No Point Selected!").show_error();
+            return false;
+        }
+        if (!hasUsableToolEndCoord()) {
+            new CustomToast(this, "Invalid tool coordinates").show_error();
+            return false;
+        }
+        return true;
+    }
+
+    private static double safeDouble(Double value, double fallback) {
+        return (value != null && isFinite(value)) ? value : fallback;
+    }
+
+    private static double safeAbsDelta(Double target, double actual) {
+        if (target == null || !isFinite(target) || !isFinite(actual)) return 0.0;
+        return Math.abs(target - actual);
+    }
+
+    private double safeCurrentMastBearingDeg() {
+        if (!hasUsableCoordTool() || !hasUsableToolEndCoord()) return 0.0;
+        return My_LocationCalc.calcBearingXY(
+                coordTool[0], coordTool[1],
+                toolEndCoord[0], toolEndCoord[1]
+        );
+    }
+
+    private void fillStartDeltas(Point3D_Drill p) {
+        Start_dE = safeAbsDelta(p.getHeadX(), toolEndCoord[0]);
+        Start_dN = safeAbsDelta(p.getHeadY(), toolEndCoord[1]);
+        Start_dZ = safeAbsDelta(p.getHeadZ(), toolEndCoord[2]);
+    }
+
+    private void fillEndDeltas(Point3D_Drill p) {
+        End_dE = safeAbsDelta(p.getEndX(), toolEndCoord[0]);
+        End_dN = safeAbsDelta(p.getEndY(), toolEndCoord[1]);
+        End_dZ = safeAbsDelta(p.getEndZ(), toolEndCoord[2]);
+    }
+
+    private void resetEndDeltas() {
+        End_dE = 0;
+        End_dN = 0;
+        End_dZ = 0;
+    }
+
     private void Drill_Routine(int mode, boolean play, boolean stop, boolean abort) {
 
         switch (mode) {
             case ROCKDRILL_MODE:
 
                 if (play && !isDrilling) {
-                    Start_dE = Math.abs(Selected_Point3D_Drill.getHeadX() - toolEndCoord[0]);
-                    Start_dN = Math.abs(Selected_Point3D_Drill.getHeadY() - toolEndCoord[1]);
-                    Start_dZ = Math.abs(Selected_Point3D_Drill.getHeadZ() - toolEndCoord[2]);
-                    delta_Tilt = Math.abs(Selected_Point3D_Drill.getTilt() - MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll));
-                    delta_Bearing = Math.abs(Selected_Point3D_Drill.getHeadingDeg() - My_LocationCalc.calcBearingXY(
-                            coordTool[0], coordTool[1],
-                            toolEndCoord[0], toolEndCoord[1]
+                    if (!canRunDrillRoutine("start")) return;
 
-                    ));
+                    Point3D_Drill p = Selected_Point3D_Drill;
+                    fillStartDeltas(p);
+
+                    double actualTilt = MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll);
+                    double targetTilt = safeDouble(p.getTilt(), actualTilt);
+                    delta_Tilt = Math.abs(targetTilt - actualTilt);
+
+                    double mastBearing = safeCurrentMastBearingDeg();
+                    double targetBearing = safeDouble(p.getHeadingDeg(), mastBearing);
+                    delta_Bearing = Math.abs(targetBearing - mastBearing);
 
                     Start_Foro();
                     abort = false;
@@ -2154,9 +2219,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     isDrilling = true;
                 }
                 if (stop && isDrilling) {
-                    End_dE = Math.abs(Selected_Point3D_Drill.getEndX() - toolEndCoord[0]);
-                    End_dN = Math.abs(Selected_Point3D_Drill.getEndY() - toolEndCoord[1]);
-                    End_dZ = Math.abs(Selected_Point3D_Drill.getEndZ() - toolEndCoord[2]);
+                    if (!canRunDrillRoutine("stop")) return;
+
+                    Point3D_Drill p = Selected_Point3D_Drill;
+                    fillEndDeltas(p);
+
                     End_Foro_Ok();
                     abort = false;
                     play = false;
@@ -2164,9 +2231,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     isDrilling = false;
                 }
                 if (abort && isDrilling) {
-                    End_dE = 0;
-                    End_dN = 0;
-                    End_dZ = 0;
+                    resetEndDeltas();
                     End_Foro_Aborted();
                     abort = false;
                     play = false;
@@ -2177,11 +2242,16 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             case JETGROUTING_MODE:
                 if (play && !isDrilling) {
-                    Start_dE = Math.abs(Selected_Point3D_Drill.getHeadX() - toolEndCoord[0]);
-                    Start_dN = Math.abs(Selected_Point3D_Drill.getHeadY() - toolEndCoord[1]);
-                    Start_dZ = Math.abs(Selected_Point3D_Drill.getHeadZ() - toolEndCoord[2]);
-                    delta_Tilt = Math.abs(Selected_Point3D_Drill.getTilt() - MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll));
+                    if (!canRunDrillRoutine("start")) return;
+
+                    Point3D_Drill p = Selected_Point3D_Drill;
+                    fillStartDeltas(p);
+
+                    double actualTilt = MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll);
+                    double targetTilt = safeDouble(p.getTilt(), actualTilt);
+                    delta_Tilt = Math.abs(targetTilt - actualTilt);
                     delta_Bearing = 0;
+
                     Start_Foro();
                     abort = false;
                     play = false;
@@ -2189,9 +2259,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     isDrilling = true;
                 }
                 if (stop && isDrilling) {
-                    End_dE = 0;
-                    End_dN = 0;
-                    End_dZ = 0;
+                    resetEndDeltas();
                     End_Foro_Ok();
                     abort = false;
                     play = false;
@@ -2199,9 +2267,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     isDrilling = false;
                 }
                 if (abort && isDrilling) {
-                    End_dE = 0;
-                    End_dN = 0;
-                    End_dZ = 0;
+                    resetEndDeltas();
                     End_Foro_Aborted();
                     abort = false;
                     play = false;
@@ -2212,14 +2278,20 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             case SOLARFARM_MODE:
                 if (play && !isDrilling) {
-                    Start_dE = Math.abs(Selected_Point3D_Drill.getHeadX() - toolEndCoord[0]);
-                    Start_dN = Math.abs(Selected_Point3D_Drill.getHeadY() - toolEndCoord[1]);
-                    Start_dZ = Math.abs(Selected_Point3D_Drill.getHeadZ() - toolEndCoord[2]);
-                    delta_Tilt = Math.abs(Selected_Point3D_Drill.getTilt() - MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll));
+                    if (!canRunDrillRoutine("start")) return;
+
+                    Point3D_Drill p = Selected_Point3D_Drill;
+                    fillStartDeltas(p);
+
+                    double actualTilt = MyMCUtils.calculateTotalTilt(correctToolPitch, correctToolRoll);
+                    double targetTilt = safeDouble(p.getTilt(), actualTilt);
+                    delta_Tilt = Math.abs(targetTilt - actualTilt);
+
                     double ori = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
                     double ab = normalizeAngle(DataSaved.ALLINEAMENTO_AB);
                     // delta firmato rispetto alla linea AB/BA
                     delta_Bearing = signedLineDeltaDeg(ori, ab);
+
                     Start_Foro();
                     abort = false;
                     play = false;
@@ -2227,9 +2299,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     isDrilling = true;
                 }
                 if (stop && isDrilling) {
-                    End_dE = Math.abs(Selected_Point3D_Drill.getEndX() - toolEndCoord[0]);
-                    End_dN = Math.abs(Selected_Point3D_Drill.getEndY() - toolEndCoord[1]);
-                    End_dZ = Math.abs(Selected_Point3D_Drill.getEndZ() - toolEndCoord[2]);
+                    if (!canRunDrillRoutine("stop")) return;
+
+                    Point3D_Drill p = Selected_Point3D_Drill;
+                    fillEndDeltas(p);
+
                     End_Foro_Ok();
                     abort = false;
                     play = false;
@@ -2237,9 +2311,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     isDrilling = false;
                 }
                 if (abort && isDrilling) {
-                    End_dE = 0;
-                    End_dN = 0;
-                    End_dZ = 0;
+                    resetEndDeltas();
                     End_Foro_Aborted();
                     abort = false;
                     play = false;
@@ -2535,12 +2607,21 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         return (downM * 1000.0) / (ms / 1000.0);
     }
 
+    private static boolean hasValidXYZ(Double x, Double y, Double z) {
+        return x != null && y != null && z != null
+                && isFinite(x) && isFinite(y) && isFinite(z);
+    }
+
+    private static boolean hasValidENZ(double[] v) {
+        return v != null && v.length >= 3
+                && isFinite(v[0]) && isFinite(v[1]) && isFinite(v[2]);
+    }
+
     private static boolean samePoint(Double x1, Double y1, Double z1,
                                      Double x2, Double y2, Double z2,
                                      double tol) {
 
-        if (x1 == null || y1 == null || z1 == null ||
-                x2 == null || y2 == null || z2 == null) {
+        if (!hasValidXYZ(x1, y1, z1) || !hasValidXYZ(x2, y2, z2)) {
             return false;
         }
 
@@ -2596,17 +2677,22 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     ) {
         if (p == null) return null;
         if (startIso == null || endIso == null) return null;
-        if (startForoENZ == null || fineForoENZ == null) return null;
-        if (startForoENZ.length < 3 || fineForoENZ.length < 3) return null;
+        if (!hasValidENZ(startForoENZ) || !hasValidENZ(fineForoENZ)) return null;
 
-        boolean verticalPoint = samePoint(
+        boolean hasHead = hasValidXYZ(p.getHeadX(), p.getHeadY(), p.getHeadZ());
+        boolean hasEnd = hasValidXYZ(p.getEndX(), p.getEndY(), p.getEndZ());
+
+        boolean verticalPoint = hasHead && hasEnd && samePoint(
                 p.getHeadX(), p.getHeadY(), p.getHeadZ(),
                 p.getEndX(), p.getEndY(), p.getEndZ(),
                 1e-6
         );
 
         double mmps;
-        if (verticalPoint) {
+
+        if (!hasHead || !hasEnd || verticalPoint) {
+            // Se il progetto non ha end XYZ, non posso calcolare la penetrazione lungo asse.
+            // Uso fallback verticale basato sul movimento Z reale del tool, evitando l'unboxing di Double null.
             mmps = penetrationRateMmPerSecVerticalDownOnly(
                     startIso, endIso,
                     startForoENZ[2], fineForoENZ[2]

@@ -1,5 +1,6 @@
 package drill_pile.gui;
 
+import static packexcalib.exca.DataSaved.DRILL_STATUS;
 import static services.CanService.ECU_Connected;
 
 import android.app.Activity;
@@ -118,7 +119,7 @@ public class Dialog_Pile_Hydro {
     private final TextView[] lowerPlusButtons = new TextView[6];
     private final TextView[] lowerMinusButtons = new TextView[6];
     private EditText engD,riseD;
-    private TextView setAllDef;
+    private TextView setAllDef,isAutoTXT;
     CustomNumberDialog customNumberDialog;
     public static boolean hasReaded=false;
 
@@ -177,6 +178,7 @@ public class Dialog_Pile_Hydro {
         engD=dialog.findViewById(R.id.engD);
         riseD=dialog.findViewById(R.id.riseD);
         setAllDef=dialog.findViewById(R.id.setAllDef);
+        isAutoTXT=dialog.findViewById(R.id.isAutoTXT);
 
         for (int i = 1; i <= 6; i++) {
             int index = i - 1;
@@ -620,6 +622,24 @@ public class Dialog_Pile_Hydro {
         public void run() {
             if (dialog != null && dialog.isShowing() && autoRefreshEnabled) {
                 refresh();
+                switch (DRILL_STATUS) {
+                    case 0:
+                        isAutoTXT.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                        isAutoTXT.setTextColor(activity.getResources().getColor(R.color._____cancel_text));
+                        break;
+                    case 1:
+                    case 2:
+                    case 3:
+                        isAutoTXT.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                        isAutoTXT.setTextColor(activity.getResources().getColor(R.color.light_yellow));
+                        break;
+
+                    default:
+                        isAutoTXT.setBackground(activity.getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                        isAutoTXT.setTextColor(activity.getResources().getColor(R.color._____cancel_text));
+                        break;
+
+                }
                 ck1.setChecked(REVERSE_PLUMB_AX_1);
                 ck2.setChecked(REVERSE_PLUMB_AX_2);
                 ck3.setChecked(SWAP_PLUMB_AX);

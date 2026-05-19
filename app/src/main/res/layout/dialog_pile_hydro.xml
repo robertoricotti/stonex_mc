@@ -93,22 +93,30 @@
             android:text="Reverse_Rise_Lower"
             android:textColor="@color/black"
             android:textSize="18dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
         <CheckBox
             android:buttonTint="@color/black"
             android:layout_marginVertical="5dp"
             android:id="@+id/ck6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reverse_Slide_X"
+            android:text="Reverse_Slide_T"
             android:textColor="@color/black"
             android:textSize="18dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text" />
         <CheckBox
             android:buttonTint="@color/black"
             android:layout_marginVertical="5dp"
             android:id="@+id/ck7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reverse_Slide_Y"
+            android:text="Reverse_Slide_L   "
             android:textColor="@color/black"
             android:textSize="18dp" />
 
@@ -177,6 +185,22 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             />
+        <TextView
+            android:id="@+id/isAutoTXT"
+            android:background="@drawable/sfondo_bottone_trasparente"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AUTO"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:textSize="22sp"
+            />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
     </LinearLayout>
 
     <View
@@ -216,10 +240,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="OUT 1"
+                android:text="OUT 1 - SLOPE X"
                 android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:background="@color/bg_sfsred"
                 android:textStyle="bold" />
 
             <FrameLayout
@@ -410,10 +435,11 @@ B 50%"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="OUT 2"
+                android:text="OUT 2 - SLOPE Y"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:background="@color/light_yellow"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <FrameLayout
@@ -604,10 +630,11 @@ B 50%"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="OUT 3"
+                android:text="OUT 3 - SLIDE T"
                 android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:background="@color/magenta"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <FrameLayout
@@ -798,10 +825,11 @@ B 50%"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="OUT 4"
+                android:text="OUT 4 - SLIDE L"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:background="@drawable/custom_background_transp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <FrameLayout
@@ -992,10 +1020,11 @@ B 50%"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="OUT 5"
+                android:text="OUT 5 - RISE/LOW"
                 android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:background="@color/green_medium"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <FrameLayout
@@ -1186,10 +1215,11 @@ B 50%"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="OUT 6"
+                android:text="OUT 6 - HAMMER"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:background="@color/orange"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <FrameLayout
