@@ -1158,7 +1158,7 @@ public class Drill_TopView extends View {
 
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(MyColorClass.colorStick);
-        paint.setAlpha(128);
+        paint.setAlpha(255);
         canvas.drawRoundRect(bodyLeft, bodyTop, bodyRight, bodyBottom, bodyCorner, bodyCorner, paint);
 
         paint.setStyle(Paint.Style.STROKE);

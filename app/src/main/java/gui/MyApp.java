@@ -113,6 +113,7 @@ import gui.tech_menu.FrameCalib;
 import gui.tech_menu.GPS_Autocalib;
 import gui.tech_menu.LinkageCalib;
 import gui.tech_menu.MastLinkCalib;
+import gui.tech_menu.Mast_Antenna;
 import gui.tech_menu.NetworkConfigSettings;
 import gui.tech_menu.Nuova_Blade_Calib;
 import gui.tech_menu.Nuova_Machine_Settings;
@@ -803,6 +804,8 @@ git push
             ((NetworkConfigSettings) activity).updateUI();
         }else if (activity instanceof MyGLActivity_Create) {
             ((MyGLActivity_Create) activity).updateUI();
+        }else if (activity instanceof Mast_Antenna) {
+            ((Mast_Antenna) activity).updateUI();
         }
 
     }

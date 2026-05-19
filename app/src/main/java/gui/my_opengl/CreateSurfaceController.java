@@ -50,6 +50,8 @@ public class CreateSurfaceController {
     private static final double DEFAULT_SIDE = 20.0;
     private static final double DEFAULT_AB_WIDTH = 20.0;
     private static final double DEFAULT_DITCH_WIDTH = 20.0;
+    private static final double DEFAULT_DITCH_SURFACE_SIDE_SLOPE_PERCENT = 0.0;
+    private static final double DEFAULT_DITCH_HEADING_STEP_DEG = 1.0;
     private static final double[] DEFAULT_DITCH_LENGTHS = {3.0, 2.0, 3.0, 2.0, 3.0};
     private static final double[] DEFAULT_DITCH_SLOPES_PERCENT = {0.0, -70.0, 0.0, 70.0, 0.0};
     private static final double EPS = 1e-9;
@@ -82,6 +84,8 @@ public class CreateSurfaceController {
     private final double[] ditchSegmentSlopesPercent = DEFAULT_DITCH_SLOPES_PERCENT.clone();
     private double ditchLeftWidth = DEFAULT_DITCH_WIDTH;
     private double ditchRightWidth = DEFAULT_DITCH_WIDTH;
+    private double ditchSurfaceSideSlopePercent = DEFAULT_DITCH_SURFACE_SIDE_SLOPE_PERCENT;
+    private Double ditchHeadingDeg = null;
     private Point3D[] ditchCenterPoints = new Point3D[0];
     private Point3D[] ditchLeftPoints = new Point3D[0];
     private Point3D[] ditchRightPoints = new Point3D[0];
@@ -206,7 +210,41 @@ public class CreateSurfaceController {
         return ditchRightWidth;
     }
 
+    public double getDitchSurfaceSideSlopePercent() {
+        return ditchSurfaceSideSlopePercent;
+    }
+
+    public double getDitchHeadingDeg() {
+        if (ditchHeadingDeg == null) {
+            ditchHeadingDeg = normalizeDegrees(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+        }
+        return ditchHeadingDeg;
+    }
+
+    public double getDitchHeadingStepDeg() {
+        return DEFAULT_DITCH_HEADING_STEP_DEG;
+    }
+
+    public void setDitchSurfaceSideSlopePercent(double surfaceSideSlopePercent) {
+        ditchSurfaceSideSlopePercent = sanitizeFinite(surfaceSideSlopePercent, 0.0);
+        rebuildPreview();
+    }
+
+    public void setDitchHeadingDeg(double headingDeg) {
+        ditchHeadingDeg = normalizeDegrees(sanitizeFinite(headingDeg, getDitchHeadingDeg()));
+        rebuildPreview();
+    }
+
+    public void incrementDitchHeading(double deltaDeg) {
+        setDitchHeadingDeg(getDitchHeadingDeg() + deltaDeg);
+    }
+
     public void setDitchParams(double[] lengths, double[] slopesPercent, double leftWidth, double rightWidth) {
+        setDitchParams(lengths, slopesPercent, leftWidth, rightWidth, ditchSurfaceSideSlopePercent, getDitchHeadingDeg());
+    }
+
+    public void setDitchParams(double[] lengths, double[] slopesPercent, double leftWidth, double rightWidth,
+                               double surfaceSideSlopePercent, double headingDeg) {
         if (lengths == null || slopesPercent == null || lengths.length != 5 || slopesPercent.length != 5) {
             return;
         }
@@ -216,6 +254,8 @@ public class CreateSurfaceController {
         }
         ditchLeftWidth = Math.max(0.0, leftWidth);
         ditchRightWidth = Math.max(0.0, rightWidth);
+        ditchSurfaceSideSlopePercent = sanitizeFinite(surfaceSideSlopePercent, 0.0);
+        ditchHeadingDeg = normalizeDegrees(sanitizeFinite(headingDeg, getDitchHeadingDeg()));
         rebuildPreview();
     }
 
@@ -318,6 +358,9 @@ public class CreateSurfaceController {
 
             case MODE_DITCH:
                 ditchMeasuredPoint = cloneWithName(p, "P" + (ditchMeasuredPointIndex + 1));
+                if (ditchHeadingDeg == null) {
+                    ditchHeadingDeg = normalizeDegrees(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+                }
                 ditchPointRoleLocked = false;
                 DataSaved.points_Create.clear();
                 break;
@@ -354,6 +397,8 @@ public class CreateSurfaceController {
             ditchCenterPoints = new Point3D[0];
             ditchLeftPoints = new Point3D[0];
             ditchRightPoints = new Point3D[0];
+            ditchSurfaceSideSlopePercent = DEFAULT_DITCH_SURFACE_SIDE_SLOPE_PERCENT;
+            ditchHeadingDeg = null;
             DataSaved.points_Create.clear();
         } else if (mode == MODE_AB) {
             int baseCount = getABBaseCount();
@@ -382,6 +427,8 @@ public class CreateSurfaceController {
             ditchCenterPoints = new Point3D[0];
             ditchLeftPoints = new Point3D[0];
             ditchRightPoints = new Point3D[0];
+            ditchSurfaceSideSlopePercent = DEFAULT_DITCH_SURFACE_SIDE_SLOPE_PERCENT;
+            ditchHeadingDeg = null;
         }
         DataSaved.points_Create.clear();
         rebuildPreview();
@@ -1039,7 +1086,7 @@ public class CreateSurfaceController {
             return;
         }
 
-        double headingRad = Math.toRadians(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+        double headingRad = Math.toRadians(getDitchHeadingDeg());
         double fx = Math.sin(headingRad);
         double fy = Math.cos(headingRad);
         double rx = Math.cos(headingRad);
@@ -1069,18 +1116,21 @@ public class CreateSurfaceController {
             double y = ditchMeasuredPoint.getY() + fy * offset;
             double z = ditchMeasuredPoint.getZ() + profileZ[i] - measuredProfileZ;
 
+            double leftZ = z + ditchLeftWidth * ditchSurfaceSideSlopePercent / 100.0;
+            double rightZ = z - ditchRightWidth * ditchSurfaceSideSlopePercent / 100.0;
+
             center[i] = makeNamedPoint("P" + (i + 1), x, y, z);
             left[i] = makeNamedPoint(
                     "L" + (i + 1),
                     x - rx * ditchLeftWidth,
                     y - ry * ditchLeftWidth,
-                    z
+                    leftZ
             );
             right[i] = makeNamedPoint(
                     "R" + (i + 1),
                     x + rx * ditchRightWidth,
                     y + ry * ditchRightWidth,
-                    z
+                    rightZ
             );
         }
 
@@ -1412,6 +1462,18 @@ public class CreateSurfaceController {
         if (DataSaved.points_Create.isEmpty()) return 0;
         if (DataSaved.points_Create.size() == 1) return 1;
         return 2;
+    }
+
+    private double sanitizeFinite(double value, double fallback) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) return fallback;
+        return value;
+    }
+
+    private double normalizeDegrees(double degrees) {
+        if (Double.isNaN(degrees) || Double.isInfinite(degrees)) return 0.0;
+        double out = degrees % 360.0;
+        if (out < 0.0) out += 360.0;
+        return out;
     }
 
     private int clampDitchPointIndex(int index) {

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -28,6 +29,8 @@ import android.widget.TextView;
 
 
 import com.example.stx_dig.R;
+
+import java.util.Locale;
 
 import dxf.Point3D;
 import gui.BaseClass;
@@ -56,8 +59,8 @@ import utils.Utils;
  */
 public class MyGLActivity_Create extends BaseClass {
     int indexMeasure = MyData.get_Int("Unit_Of_Measure");
-CustomNumberDialog customNumberDialog;
-CustomNumberDialogFtIn customNumberDialogFtIn;
+    CustomNumberDialog customNumberDialog;
+    CustomNumberDialogFtIn customNumberDialogFtIn;
     private static final String TAG = "GL_CREATE_ACTIVITY";
 
     public static double[] spigoloSelezionato = new double[3];
@@ -503,7 +506,7 @@ CustomNumberDialogFtIn customNumberDialogFtIn;
 
             lengthInputs[i] = addDitchLabeledInput(
                     content,
-                    "Length "+Utils.getMetriSimbol(),
+                    "Length " + Utils.getMetriSimbol(),
                     Utils.readUnitOfMeasureLITE(String.valueOf(lengths[i])),
                     false
             );
@@ -516,21 +519,82 @@ CustomNumberDialogFtIn customNumberDialogFtIn;
             );
         }
 
-        //content.addView(newDitchLabel("Side distances", 18, 12));
-
         EditText leftWidthInput = addDitchLabeledInput(
                 content,
-                "Left distance "+Utils.getMetriSimbol(),
+                "Left distance " + Utils.getMetriSimbol(),
                 Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchLeftWidth())),
                 false
         );
 
         EditText rightWidthInput = addDitchLabeledInput(
                 content,
-                "Right distance "+Utils.getMetriSimbol(),
+                "Right distance " + Utils.getMetriSimbol(),
                 Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchRightWidth())),
                 false
         );
+
+        EditText surfaceSideSlopeInput = addDitchLabeledInput(
+                content,
+                "Surface side slope % (+ left up / right down)",
+                String.valueOf(createController.getDitchSurfaceSideSlopePercent()),
+                true
+        );
+
+        content.addView(newDitchLabel("Heading DITCH", 18, 12));
+
+        EditText headingInput = addDitchLabeledInput(
+                content,
+                "Heading °",
+                String.format(Locale.US, "%.2f", createController.getDitchHeadingDeg()),
+                true
+        );
+
+        LinearLayout headingButtons = new LinearLayout(this);
+        headingButtons.setOrientation(LinearLayout.HORIZONTAL);
+        headingButtons.setGravity(Gravity.CENTER);
+        headingButtons.setPadding(0, 0, 0, pad / 2);
+
+        Button headingMinus = new Button(this);
+        headingMinus.setText("-");
+        headingMinus.setTextSize(24);
+        Button headingPlus = new Button(this);
+        headingPlus.setText("+");
+        headingPlus.setTextSize(24);
+
+        LinearLayout.LayoutParams btnLp = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f
+        );
+        btnLp.setMargins(pad / 4, 0, pad / 4, 0);
+        headingButtons.addView(headingMinus, btnLp);
+        headingButtons.addView(headingPlus, btnLp);
+        content.addView(headingButtons);
+
+        View.OnClickListener headingClickListener = v -> {
+            try {
+                double currentHeading = Double.parseDouble(headingInput.getText().toString());
+                double step = createController.getDitchHeadingStepDeg();
+                if (v == headingMinus) {
+                    currentHeading -= step;
+                } else {
+                    currentHeading += step;
+                }
+                headingInput.setText(String.format(Locale.US, "%.2f", normalizeHeadingForDisplay(currentHeading)));
+                applyDitchDialogValues(
+                        lengthInputs,
+                        slopeInputs,
+                        leftWidthInput,
+                        rightWidthInput,
+                        surfaceSideSlopeInput,
+                        headingInput
+                );
+            } catch (Exception e) {
+                new CustomToast(this, "Invalid Value").show_error();
+            }
+        };
+        headingMinus.setOnClickListener(headingClickListener);
+        headingPlus.setOnClickListener(headingClickListener);
 
         ScrollView scroll = new ScrollView(this);
         scroll.setBackgroundColor(Color.WHITE);
@@ -542,30 +606,14 @@ CustomNumberDialogFtIn customNumberDialogFtIn;
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     FullscreenActivity.setFullScreen(this);
                     try {
-                        double[] newLengths = new double[5];
-                        double[] newSlopes = new double[5];
-
-                        for (int i = 0; i < 5; i++) {
-                            newLengths[i] = Math.max(
-                                    0.0,
-                                    Double.parseDouble(Utils.writeMetri(lengthInputs[i].getText().toString()))
-                            );
-                            newSlopes[i] = Double.parseDouble(slopeInputs[i].getText().toString());
-                        }
-
-                        double leftWidth = Math.max(
-                                0.0,
-                                Double.parseDouble(Utils.writeMetri(leftWidthInput.getText().toString()))
+                        applyDitchDialogValues(
+                                lengthInputs,
+                                slopeInputs,
+                                leftWidthInput,
+                                rightWidthInput,
+                                surfaceSideSlopeInput,
+                                headingInput
                         );
-
-                        double rightWidth = Math.max(
-                                0.0,
-                                Double.parseDouble(Utils.writeMetri(rightWidthInput.getText().toString()))
-                        );
-
-                        createController.setDitchParams(newLengths, newSlopes, leftWidth, rightWidth);
-                        requestGlRender();
-                        updateUI();
                     } catch (Exception e) {
                         new CustomToast(this, "Invalid Value").show_error();
                     }
@@ -582,6 +630,54 @@ CustomNumberDialogFtIn customNumberDialogFtIn;
 
         alertDialog.show();
         FullscreenActivity.setFullScreen(alertDialog);
+    }
+
+    private void applyDitchDialogValues(EditText[] lengthInputs,
+                                        EditText[] slopeInputs,
+                                        EditText leftWidthInput,
+                                        EditText rightWidthInput,
+                                        EditText surfaceSideSlopeInput,
+                                        EditText headingInput) {
+        double[] newLengths = new double[5];
+        double[] newSlopes = new double[5];
+
+        for (int i = 0; i < 5; i++) {
+            newLengths[i] = Math.max(
+                    0.0,
+                    Double.parseDouble(Utils.writeMetri(lengthInputs[i].getText().toString()))
+            );
+            newSlopes[i] = Double.parseDouble(slopeInputs[i].getText().toString());
+        }
+
+        double leftWidth = Math.max(
+                0.0,
+                Double.parseDouble(Utils.writeMetri(leftWidthInput.getText().toString()))
+        );
+
+        double rightWidth = Math.max(
+                0.0,
+                Double.parseDouble(Utils.writeMetri(rightWidthInput.getText().toString()))
+        );
+
+        double surfaceSideSlopePercent = Double.parseDouble(surfaceSideSlopeInput.getText().toString());
+        double headingDeg = Double.parseDouble(headingInput.getText().toString());
+
+        createController.setDitchParams(
+                newLengths,
+                newSlopes,
+                leftWidth,
+                rightWidth,
+                surfaceSideSlopePercent,
+                headingDeg
+        );
+        requestGlRender();
+        updateUI();
+    }
+
+    private double normalizeHeadingForDisplay(double headingDeg) {
+        double out = headingDeg % 360.0;
+        if (out < 0.0) out += 360.0;
+        return out;
     }
     private TextView newDitchLabel(String text, int textSizeSp, int topMarginDp) {
         int padH = (int) (10 * getResources().getDisplayMetrics().density);
