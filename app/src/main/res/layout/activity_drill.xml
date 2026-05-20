@@ -217,11 +217,11 @@
 
         <TextView
             android:id="@+id/txthdt"
+
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="left"
-            android:textStyle="bold"
-            android:textSize="26sp"
+            android:textSize="22sp"
             android:textColor="@color/white"
             android:ems="3"
             android:text="0.0°"
@@ -258,6 +258,7 @@
             android:scaleType="centerInside"
             app:srcCompat="@drawable/pole_angle"
             android:padding="5dp"
+
             app:tint="@color/white" />
 
         <TextView
@@ -265,8 +266,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="left"
-            android:textStyle="bold"
-            android:textSize="26sp"
+            android:textSize="22sp"
             android:textColor="@color/white"
             android:ems="3"
             android:text="0.0°"
@@ -304,6 +304,7 @@
             app:srcCompat="@drawable/baseline_arrow_circle_down"
             android:padding="5dp"
             android:rotation="0"
+
             app:tint="@color/white" />
 
         <TextView

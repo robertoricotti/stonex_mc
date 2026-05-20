@@ -42,7 +42,6 @@ import dxf.Polyline;
 import dxf.Polyline_2D;
 import dxf.Segment;
 import gui.MyApp;
-import gui.draw_class.Geometry2D;
 import gui.my_opengl.GLDrawer;
 import gui.my_opengl.My3DActivity;
 import gui.my_opengl.MyGLActivity_Create;
@@ -59,13 +58,12 @@ import gui.my_opengl.wheel.My_Wheel;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.Exca_Quaternion;
 import packexcalib.exca.ExcavatorLib;
-import packexcalib.surfcreator.DistToLine;
 import packexcalib.surfcreator.TriangleHelper;
 import utils.DistToPoint;
 import utils.MyData;
 
 public class TriangleService extends Service {
-    //public static boolean isTriangleStarted;
+    public static boolean istriRunning;
     public static double DGM_Letf, DGM_Right;
     public static short Mainfall_Value = 0;
     public static int segnoLinea = 1;
@@ -94,6 +92,8 @@ public class TriangleService extends Service {
 
     @Override
     public void onCreate() {
+        Log.w("TriSPELL","Created");
+        istriRunning =true;
         minZCreate = Double.MAX_VALUE;
         maxZCreate = Double.MIN_VALUE;
         try {
@@ -155,7 +155,8 @@ public class TriangleService extends Service {
 
     @Override
     public void onDestroy() {
-
+        Log.w("TriSPELL","Destroyed");
+        istriRunning =false;
         super.onDestroy();
         isUpdating = false;
         MyApp.isAlto = false;

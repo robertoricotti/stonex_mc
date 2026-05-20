@@ -146,7 +146,7 @@ public class My3DActivity extends BaseClass {
     public static int glVista3d;
     DialogOffset_3D dialogOffset;
     Dialog_Point_Poly dialogPointPoly;
-    boolean serviseStrarted;
+
     String pathToPNEZD;
 
     @Override
@@ -154,21 +154,25 @@ public class My3DActivity extends BaseClass {
         super.onCreate(savedInstanceState);
 
         checkBooleans();
-        serviseStrarted = false;
+
         Grader_Auto_SS = false;
         setContentView(R.layout.activity_my3_dactivity);
         progress = findViewById(R.id.progress);
         loading = findViewById(R.id.loading);
         progress.setClickable(true);
         loading.setClickable(true);
-        if (!serviseStrarted) {
+
             if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
-                serviseStrarted = true;
-                startService(new Intent(this, TriangleService.class));
+                try {
+                    if(!TriangleService.istriRunning)
+                        startService(new Intent(this, TriangleService.class));
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Unable to start TriangleService", e);
+                }
+
 
             }
-
-        }
         try {
             pathToPNEZD = MyData.get_String("progettoSelected");
             pathToPNEZD = pathToPNEZD.substring(0, pathToPNEZD.lastIndexOf("/"));
@@ -692,9 +696,7 @@ public class My3DActivity extends BaseClass {
             glGradient = !glGradient;
             if (glGradient) {
                 glFill = false;
-                glPoint = false;
-                glText = false;
-                glPoly = false;
+
             }
             if (!glGradient) {
                 glFace = true;
@@ -794,7 +796,14 @@ public class My3DActivity extends BaseClass {
     protected void onDestroy() {
         super.onDestroy();
         Grader_Auto_SS = false;
-        stopService(new Intent(this, TriangleService.class));
+        try {
+            if(TriangleService.istriRunning)
+                stopService(new Intent(this, TriangleService.class));
+
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to stop  TriangleService", e);
+        }
+
         MyDeviceManager.OUT1(MyApp.visibleActivity, 0);
         MyDeviceManager.OUT2(MyApp.visibleActivity, 0);
 

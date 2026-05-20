@@ -51,7 +51,7 @@ public class CreateSurfaceController {
     private static final double DEFAULT_AB_WIDTH = 20.0;
     private static final double DEFAULT_DITCH_WIDTH = 20.0;
     private static final double DEFAULT_DITCH_SURFACE_SIDE_SLOPE_PERCENT = 0.0;
-    private static final double DEFAULT_DITCH_HEADING_STEP_DEG = 1.0;
+    private static final double DEFAULT_DITCH_HEADING_STEP_DEG = 0.1;
     private static final double[] DEFAULT_DITCH_LENGTHS = {3.0, 2.0, 3.0, 2.0, 3.0};
     private static final double[] DEFAULT_DITCH_SLOPES_PERCENT = {0.0, -70.0, 0.0, 70.0, 0.0};
     private static final double EPS = 1e-9;

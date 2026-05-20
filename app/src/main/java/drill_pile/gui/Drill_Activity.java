@@ -108,7 +108,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto, hydromenu;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView marcia, idpalo, txthdt, txttilt, txtdepth, textInfo, tiltInfo, txttiltActual, txthdtActual, diration, einauto;
+    TextView marcia, idpalo, txtHDTSet, txttilt, txtdepth, textInfo, tiltInfo, txttiltActual, txthdtActual, diration, einauto;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
@@ -172,7 +172,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         bubble = findViewById(R.id.bubble);
         indicator = findViewById(R.id.verticalIndicator);
         idpalo = findViewById(R.id.idpalo);
-        txthdt = findViewById(R.id.txthdt);
+        txtHDTSet = findViewById(R.id.txthdt);
         txttilt = findViewById(R.id.txttilt);
         txtdepth = findViewById(R.id.txtdepth);
         sideLayout = findViewById(R.id.sideLayout);
@@ -713,7 +713,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 targetHdt = Double.NaN;
             }
             txttilt.setText(String.format("%.1f", targetTilt).replace(",", ".") + "°");
-            txthdt.setText(String.format("%.1f", targetHdt).replace(",", ".") + "°");
+            txtHDTSet.setText(String.format("%.1f", targetHdt).replace(",", ".") + "°");
 
 
             // =========================
@@ -740,15 +740,15 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // colori: verde sfondo se okOri, rosso se no
             if (PointService.okOri) {
                 txthdtActual.setTextColor(Color.WHITE);
-                txthdt.setTextColor(Color.WHITE);
-                txthdt.setBackgroundColor(getColor(R.color.verde_sfondo_scuro));
+                txtHDTSet.setTextColor(Color.WHITE);
+                txtHDTSet.setBackgroundColor(getColor(R.color.verde_sfondo_scuro));
                 txthdtActual.setBackgroundColor(getColor(R.color.verde_sfondo_scuro));
                 imgHdt.setImageResource(R.drawable.straight_96);
                 imgHdt.setBackgroundColor(getColor(R.color.verde_sfondo_scuro));
             } else {
                 txthdtActual.setTextColor(Color.WHITE);
-                txthdt.setTextColor(Color.WHITE);
-                txthdt.setBackgroundColor(getColor(R.color._____cancel_text));
+                txtHDTSet.setTextColor(Color.WHITE);
+                txtHDTSet.setBackgroundColor(getColor(R.color._____cancel_text));
                 txthdtActual.setBackgroundColor(getColor(R.color._____cancel_text));
                 double diff = signedAngleDiff(mHdT, targetHdt);
 
@@ -783,6 +783,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // 9) SOLARFARM: linea reference visible/defining e fine foro
             // =========================
             if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+                txtHDTSet.setVisibility(View.GONE);
 
                 if (DataSaved.isDefiningAB) {
                     if (DataSaved.alignAId == null && DataSaved.alignBId == null) {
@@ -856,6 +857,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 }
 
             } else {
+                txtHDTSet.setVisibility(View.VISIBLE);
                 einauto.setVisibility(View.INVISIBLE);
                 lineReference.setVisibility(View.INVISIBLE);
             }

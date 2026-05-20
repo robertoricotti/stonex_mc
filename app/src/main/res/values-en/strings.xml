@@ -26,7 +26,7 @@
     <string name="mac_setup">MACHINE SETUP</string>
     <string name="sens_config">CAN SENSOR CONFIG</string>
     <string name="hydro_cp">HYDRAULIC\nCONTROL POINTS</string>
-    <string name="delete_obj">DELETE SELECTED OBLECT ?</string>
+    <string name="delete_obj">DELETE SELECTED OBJECT ?</string>
     <string name="color_bucket">BUCKET - BLADE COLOR</string>
     <string name="color_boom">BOOM - FRAME COLOR</string>
     <string name="hydro_window">HYDRAULIC ENGAGEMENT WINDOW</string>

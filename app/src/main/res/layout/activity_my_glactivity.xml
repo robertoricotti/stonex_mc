@@ -265,8 +265,8 @@
         android:background="@color/transparent"
         android:rotation="180"
         android:src="@drawable/stakeout_ref_north"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="@id/rtSide"
+        app:layout_constraintTop_toBottomOf="@id/mostraCoor"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:tint="@color/white" />
     <ImageView
         android:id="@+id/statoImg"

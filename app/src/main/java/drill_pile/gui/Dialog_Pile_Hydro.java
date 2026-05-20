@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -37,16 +38,16 @@ import utils.MyDeviceManager;
 
 /**
  * Dialog taratura idraulica valvole Danfoss.
- *
+ * <p>
  * Scala valori:
  * - 0..10000 = 0..100%
  * - 6500 = 65%
  * - 3500 = 35%
- *
+ * <p>
  * Per ogni valvola:
  * - EVx_UPPER = Porta A, barra superiore dal 50% verso 75%
  * - EVx_LOWER = Porta B, barra inferiore dal 50% verso 25%
- *
+ * <p>
  * Range grafico:
  * - Porta A: 5000..7500
  * - Porta B: 5000..2500
@@ -68,26 +69,26 @@ public class Dialog_Pile_Hydro {
     public static boolean REVERSE_HAMMER;
     public static boolean REVERSE_RISE_LOW;
     public static boolean REVERSE_FOOT_ENCODER;
-    public static int RISE_DIST_mm=0;
-    public static int HAMMER_ENGAGEMENT_DELAY_seconds=0;
+    public static int RISE_DIST_mm = 0;
+    public static int HAMMER_ENGAGEMENT_DELAY_seconds = 0;
 
-    public static int EV1_UPPER=5000;
-    public static int EV1_LOWER=5000;
+    public static int EV1_UPPER = 5000;
+    public static int EV1_LOWER = 5000;
 
-    public static int EV2_UPPER=5000;
-    public static int EV2_LOWER=5000;
+    public static int EV2_UPPER = 5000;
+    public static int EV2_LOWER = 5000;
 
-    public static int EV3_UPPER=5000;
-    public static int EV3_LOWER=5000;
+    public static int EV3_UPPER = 5000;
+    public static int EV3_LOWER = 5000;
 
-    public static int EV4_UPPER=5000;
-    public static int EV4_LOWER=5000;
+    public static int EV4_UPPER = 5000;
+    public static int EV4_LOWER = 5000;
 
-    public static int EV5_UPPER=5000;
-    public static int EV5_LOWER=5000;
+    public static int EV5_UPPER = 5000;
+    public static int EV5_LOWER = 5000;
 
-    public static int EV6_UPPER=5000;
-    public static int EV6_LOWER=5000;
+    public static int EV6_UPPER = 5000;
+    public static int EV6_LOWER = 5000;
 
     private static final int CENTER_VALUE = 5000;
 
@@ -103,8 +104,8 @@ public class Dialog_Pile_Hydro {
     private final Activity activity;
     public Dialog dialog;
 
-    private CheckBox ck1,ck2,ck3,ck4,ck5,ck6,ck7;
-    private ImageView close,readEcu,writeEcu,ecuCo;
+    private CheckBox ck1, ck2, ck3, ck4, ck5, ck6, ck7;
+    private ImageView close, readEcu, writeEcu, ecuCo;
 
     private final View[] upperAreas = new View[6];
     private final View[] lowerAreas = new View[6];
@@ -118,10 +119,10 @@ public class Dialog_Pile_Hydro {
     private final TextView[] upperMinusButtons = new TextView[6];
     private final TextView[] lowerPlusButtons = new TextView[6];
     private final TextView[] lowerMinusButtons = new TextView[6];
-    private EditText engD,riseD;
-    private TextView setAllDef,isAutoTXT;
+    private EditText engD, riseD;
+    private TextView setAllDef, isAutoTXT;
     CustomNumberDialog customNumberDialog;
-    public static boolean hasReaded=false;
+    public static boolean hasReaded = false;
 
     public Dialog_Pile_Hydro(Activity activity) {
         this.activity = activity;
@@ -130,8 +131,8 @@ public class Dialog_Pile_Hydro {
     }
 
     public void show() {
-        MyDeviceManager.CanWrite(true,1,0x3AA,8,new byte[]{
-                1,1,1,1,1,1,1, (byte) 0xFA
+        MyDeviceManager.CanWrite(true, 1, 0x3AA, 8, new byte[]{
+                1, 1, 1, 1, 1, 1, 1, (byte) 0xFA
         });
         dialog.create();
         dialog.setContentView(R.layout.dialog_pile_hydro);
@@ -162,23 +163,23 @@ public class Dialog_Pile_Hydro {
 
     private void findView() {
         mchint = MyData.get_Int("MachineSelected");
-        customNumberDialog=new CustomNumberDialog(activity,Integer.MAX_VALUE);
+        customNumberDialog = new CustomNumberDialog(activity, Integer.MAX_VALUE);
         writeProgress = dialog.findViewById(R.id.writeProgress);
         close = dialog.findViewById(R.id.chiudi);
-        ecuCo=dialog.findViewById(R.id.ecuCo);
-        readEcu=dialog.findViewById(R.id.readEcu);
-        writeEcu=dialog.findViewById(R.id.writeEcu);
-        ck1=dialog.findViewById(R.id.ck1);
-        ck2=dialog.findViewById(R.id.ck2);
-        ck3=dialog.findViewById(R.id.ck3);
-        ck4=dialog.findViewById(R.id.ck4);
-        ck5=dialog.findViewById(R.id.ck5);
-        ck6=dialog.findViewById(R.id.ck6);
-        ck7=dialog.findViewById(R.id.ck7);
-        engD=dialog.findViewById(R.id.engD);
-        riseD=dialog.findViewById(R.id.riseD);
-        setAllDef=dialog.findViewById(R.id.setAllDef);
-        isAutoTXT=dialog.findViewById(R.id.isAutoTXT);
+        ecuCo = dialog.findViewById(R.id.ecuCo);
+        readEcu = dialog.findViewById(R.id.readEcu);
+        writeEcu = dialog.findViewById(R.id.writeEcu);
+        ck1 = dialog.findViewById(R.id.ck1);
+        ck2 = dialog.findViewById(R.id.ck2);
+        ck3 = dialog.findViewById(R.id.ck3);
+        ck4 = dialog.findViewById(R.id.ck4);
+        ck5 = dialog.findViewById(R.id.ck5);
+        ck6 = dialog.findViewById(R.id.ck6);
+        ck7 = dialog.findViewById(R.id.ck7);
+        engD = dialog.findViewById(R.id.engD);
+        riseD = dialog.findViewById(R.id.riseD);
+        setAllDef = dialog.findViewById(R.id.setAllDef);
+        isAutoTXT = dialog.findViewById(R.id.isAutoTXT);
 
         for (int i = 1; i <= 6; i++) {
             int index = i - 1;
@@ -201,14 +202,14 @@ public class Dialog_Pile_Hydro {
 
     private void onClick() {
         setAllDef.setOnLongClickListener(v -> {
-           AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("CONFIRM");
 
             // Aggiungi il pulsante "Sì"
             builder.setPositiveButton(activity.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                    MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                             (byte) 0xFF,
                             (byte) 0xFF,
                             (byte) 0xFF,
@@ -238,44 +239,53 @@ public class Dialog_Pile_Hydro {
             return true;
         });
         customNumberDialog.dialog.setOnDismissListener(dialog -> {
+            if (!hasReaded) return;
+
 
             try {
-                HAMMER_ENGAGEMENT_DELAY_seconds=Integer.parseInt(engD.getText().toString());
+                HAMMER_ENGAGEMENT_DELAY_seconds = Integer.parseInt(engD.getText().toString());
             } catch (NumberFormatException ignorede) {
 
             }
 
             try {
-                RISE_DIST_mm=Integer.parseInt(riseD.getText().toString());
+                RISE_DIST_mm = Integer.parseInt(riseD.getText().toString());
             } catch (NumberFormatException ignored) {
             }
 
 
         });
         engD.setOnClickListener(v -> {
-            if(!customNumberDialog.dialog.isShowing()){
+            if (!hasReaded) return;
+            if (!customNumberDialog.dialog.isShowing()) {
                 customNumberDialog.show(engD);
             }
         });
         riseD.setOnClickListener(v -> {
-            if(!customNumberDialog.dialog.isShowing()){
+            if (!hasReaded) return;
+            if (!customNumberDialog.dialog.isShowing()) {
                 customNumberDialog.show(riseD);
             }
         });
         ck1.setOnClickListener(v -> {
-            REVERSE_PLUMB_AX_1=!REVERSE_PLUMB_AX_1;
+            if (!hasReaded) return;
+            REVERSE_PLUMB_AX_1 = !REVERSE_PLUMB_AX_1;
         });
         ck2.setOnClickListener(v -> {
-            REVERSE_PLUMB_AX_2=!REVERSE_PLUMB_AX_2;
+            if (!hasReaded) return;
+            REVERSE_PLUMB_AX_2 = !REVERSE_PLUMB_AX_2;
         });
         ck3.setOnClickListener(v -> {
-            SWAP_PLUMB_AX=!SWAP_PLUMB_AX;
+            if (!hasReaded) return;
+            SWAP_PLUMB_AX = !SWAP_PLUMB_AX;
         });
         ck4.setOnClickListener(v -> {
-            REVERSE_HAMMER=!REVERSE_HAMMER;
+            if (!hasReaded) return;
+            REVERSE_HAMMER = !REVERSE_HAMMER;
         });
         ck5.setOnClickListener(v -> {
-            REVERSE_RISE_LOW=!REVERSE_RISE_LOW;
+            if (!hasReaded) return;
+            REVERSE_RISE_LOW = !REVERSE_RISE_LOW;
         });
         ck6.setOnClickListener(v -> {
             if (DataSaved.REVERSE_DRILL_X == 1) {
@@ -296,9 +306,9 @@ public class Dialog_Pile_Hydro {
             MyData.push("M" + mchint + "REVERSE_DRILL_Y", String.valueOf(DataSaved.REVERSE_DRILL_Y));
         });
         readEcu.setOnClickListener(v -> {
-            hasReaded=false;
-            MyDeviceManager.CanWrite(true,1,0x3AA,8,new byte[]{
-                    1,1,1,1,1,1,1, (byte) 0xFA
+            hasReaded = false;
+            MyDeviceManager.CanWrite(true, 1, 0x3AA, 8, new byte[]{
+                    1, 1, 1, 1, 1, 1, 1, (byte) 0xFA
             });
 
         });
@@ -326,56 +336,40 @@ public class Dialog_Pile_Hydro {
             final int valve = i;
             final int index = i - 1;
 
-            if (upperPlusButtons[index] != null) {
+            if (upperPlusButtons[index] != null ) {
                 setupAutoRepeat(upperPlusButtons[index], () -> {
                     setUpperValue(valve, getUpperValue(valve) + STEP_VALUE);
                     refreshValve(valve);
                 });
-              /*  upperPlusButtons[index].setOnClickListener(v -> {
-                    setUpperValue(valve, getUpperValue(valve) + STEP_VALUE);
-                    refreshValve(valve);
-                });*/
+
             }
 
             if (upperMinusButtons[index] != null) {
-                setupAutoRepeat( upperMinusButtons[index], () -> {
+                setupAutoRepeat(upperMinusButtons[index], () -> {
                     setUpperValue(valve, getUpperValue(valve) - STEP_VALUE);
                     refreshValve(valve);
                 });
-              /*  upperMinusButtons[index].setOnClickListener(v -> {
-                    setUpperValue(valve, getUpperValue(valve) - STEP_VALUE);
-                    refreshValve(valve);
-                });*/
+
             }
 
-            if (lowerPlusButtons[index] != null) {
+            if (lowerPlusButtons[index] != null ) {
                 setupAutoRepeat(lowerPlusButtons[index], () -> {
                     // + aumenta il valore numerico, ad esempio 3500 -> 3600.
                     // La barra inferiore si accorcia perché il valore si avvicina al 50%.
                     setLowerValue(valve, getLowerValue(valve) - STEP_VALUE);
                     refreshValve(valve);
                 });
-              /*  lowerPlusButtons[index].setOnClickListener(v -> {
-                    // + aumenta il valore numerico, ad esempio 3500 -> 3600.
-                    // La barra inferiore si accorcia perché il valore si avvicina al 50%.
-                    setLowerValue(valve, getLowerValue(valve) - STEP_VALUE);
-                    refreshValve(valve);
-                });*/
+
             }
 
-            if (lowerMinusButtons[index] != null) {
-                setupAutoRepeat( lowerMinusButtons[index], () -> {
+            if (lowerMinusButtons[index] != null  ) {
+                setupAutoRepeat(lowerMinusButtons[index], () -> {
                     // - diminuisce il valore numerico, ad esempio 3500 -> 3400.
                     // La barra inferiore si allunga perché il valore si avvicina al 25%.
                     setLowerValue(valve, getLowerValue(valve) + STEP_VALUE);
                     refreshValve(valve);
                 });
-               /* lowerMinusButtons[index].setOnClickListener(v -> {
-                    // - diminuisce il valore numerico, ad esempio 3500 -> 3400.
-                    // La barra inferiore si allunga perché il valore si avvicina al 25%.
-                    setLowerValue(valve, getLowerValue(valve) + STEP_VALUE);
-                    refreshValve(valve);
-                });*/
+
             }
         }
     }
@@ -647,17 +641,17 @@ public class Dialog_Pile_Hydro {
                 ck5.setChecked(REVERSE_RISE_LOW);
                 ck6.setChecked(DataSaved.REVERSE_DRILL_X == -1);
                 ck7.setChecked(DataSaved.REVERSE_DRILL_Y == -1);
-                if(!hasReaded){
+                if (!hasReaded) {
                     writeEcu.setVisibility(View.INVISIBLE);
-                }else {
+                } else {
                     writeEcu.setVisibility(View.VISIBLE);
                 }
-                if(ECU_Connected){
+                if (ECU_Connected) {
                     ecuCo.setImageTintList(activity.getColorStateList(R.color.green));
-                }else {
+                } else {
                     ecuCo.setImageTintList(activity.getColorStateList(R.color.red));
                 }
-                if(!customNumberDialog.dialog.isShowing()){
+                if (!customNumberDialog.dialog.isShowing()) {
                     engD.setText(String.valueOf(HAMMER_ENGAGEMENT_DELAY_seconds));
                     riseD.setText(String.valueOf(RISE_DIST_mm));
                 }
@@ -665,6 +659,7 @@ public class Dialog_Pile_Hydro {
             }
         }
     };
+
     private void startAutoRefresh() {
         autoRefreshEnabled = true;
         uiHandler.removeCallbacks(autoRefreshRunnable);
@@ -675,6 +670,7 @@ public class Dialog_Pile_Hydro {
         autoRefreshEnabled = false;
         uiHandler.removeCallbacks(autoRefreshRunnable);
     }
+
     private final Runnable writeRunnable = new Runnable() {
         @Override
         public void run() {
@@ -688,6 +684,7 @@ public class Dialog_Pile_Hydro {
             writeParameterStep(writeCounter);
 
             if (writeCounter >= 40) {
+
                 isWriting = false;
                 hasReaded = false;
 
@@ -706,11 +703,13 @@ public class Dialog_Pile_Hydro {
             writeHandler.postDelayed(this, 100);
         }
     };
+
     private void writeParameterStep(int step) {
+        Log.d("DioCADD", writeCounter + "  " + step);
         switch (step) {
             case 0:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV1_UPPER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV1_UPPER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -718,14 +717,14 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
 
             case 1:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV1_LOWER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV1_LOWER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -733,14 +732,14 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
 
             case 2:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV2_UPPER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV2_UPPER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -748,13 +747,13 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
             case 3:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV2_LOWER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV2_LOWER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -762,13 +761,13 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
             case 4:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV3_UPPER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV3_UPPER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -776,13 +775,13 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
             case 5:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV3_LOWER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV3_LOWER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -790,13 +789,13 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
             case 6:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV4_UPPER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV4_UPPER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -804,14 +803,14 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
 
             case 7:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV4_LOWER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV4_LOWER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -819,14 +818,14 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
 
             case 8:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV5_UPPER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV5_UPPER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -834,13 +833,13 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
             case 9:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV5_LOWER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV5_LOWER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -848,14 +847,14 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
 
             case 10:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV6_UPPER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV6_UPPER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -863,14 +862,14 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
 
             case 11:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(EV6_LOWER);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV6_LOWER);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -878,17 +877,17 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
             case 12:
-                int val=0;
-                if(SWAP_PLUMB_AX){
-                    val=1;
+                int val = 0;
+                if (SWAP_PLUMB_AX) {
+                    val = 1;
                 }
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(val);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(val);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -896,17 +895,17 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
             case 13:
-                int val13=0;
-                if(REVERSE_FOOT_ENCODER){
-                    val13=1;
+                int val13 = 0;
+                if (REVERSE_FOOT_ENCODER) {
+                    val13 = 1;
                 }
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(val13);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(val13);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -914,17 +913,17 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
             case 14:
-                int val14=0;
-                if(REVERSE_PLUMB_AX_1){
-                    val14=1;
+                int val14 = 0;
+                if (REVERSE_PLUMB_AX_1) {
+                    val14 = 1;
                 }
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(val14);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(val14);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -932,17 +931,17 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
             case 15:
-                int val15=0;
-                if(REVERSE_PLUMB_AX_2){
-                    val15=1;
+                int val15 = 0;
+                if (REVERSE_PLUMB_AX_2) {
+                    val15 = 1;
                 }
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(val15);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(val15);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -950,18 +949,18 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
 
             case 16:
-                int val16=0;
-                if(REVERSE_HAMMER){
-                    val16=1;
+                int val16 = 0;
+                if (REVERSE_HAMMER) {
+                    val16 = 1;
                 }
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(val16);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(val16);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -969,14 +968,14 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
 
             case 17:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(HAMMER_ENGAGEMENT_DELAY_seconds);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(HAMMER_ENGAGEMENT_DELAY_seconds);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -984,15 +983,15 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
 
                 break;
 
             case 18:
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(RISE_DIST_mm);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(RISE_DIST_mm);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -1000,18 +999,18 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
 
             case 19:
-                int val19=0;
-                if(REVERSE_RISE_LOW){
-                    val19=1;
+                int val19 = 0;
+                if (REVERSE_RISE_LOW) {
+                    val19 = 1;
                 }
-                bytes= PLC_DataTypes_LittleEndian.U16_to_bytes(val19);
-                MyDeviceManager.CanWrite(true,1,0x3AB,8,new byte[]{
+                bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(val19);
+                MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,
                         bytes[0],
                         bytes[1],
@@ -1019,7 +1018,7 @@ public class Dialog_Pile_Hydro {
                         0,
                         0,
                         0,
-                        (byte)0xFA
+                        (byte) 0xFA
 
                 });
                 break;
@@ -1030,9 +1029,10 @@ public class Dialog_Pile_Hydro {
 
         }
     }
+
     private void startWriteLoop() {
         isWriting = true;
-        writeCounter = 0;
+        writeCounter = -1;
 
         if (writeProgress != null) {
             writeProgress.setMax(40);
@@ -1053,24 +1053,30 @@ public class Dialog_Pile_Hydro {
             writeProgress.setProgress(0);
         }
     }
+
     private void setupAutoRepeat(TextView button, Runnable action) {
-        button.setOnClickListener(v -> action.run());
+        button.setOnClickListener(v -> {
+            if(!hasReaded)return;
+            action.run();
+        });
+
 
         button.setOnLongClickListener(v -> {
-            isRepeating = true;
+            if(hasReaded) {
+                isRepeating = true;
 
 
-            // Primo ritardo di 500ms prima di iniziare la ripetizione
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (isRepeating) {
-                        action.run();
-                        handler.postDelayed(this, 50); // ripeti ogni 50ms
+                // Primo ritardo di 500ms prima di iniziare la ripetizione
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isRepeating) {
+                            action.run();
+                            handler.postDelayed(this, 50); // ripeti ogni 50ms
+                        }
                     }
-                }
-            }, 500);
-
+                }, 500);
+            }
             return true; // segnala che il long click è gestito
         });
 

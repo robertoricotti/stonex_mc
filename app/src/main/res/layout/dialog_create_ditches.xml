@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/toppla"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottla"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/_____cancel_text"
+        app:layout_constraintTop_toTopOf="@id/bottla"
+        app:layout_constraintBottom_toBottomOf="@id/bottla"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/toppla"
+        android:background="@color/colorStonexBlue"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="DITCH Surface"
+        />
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottla"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/btn_close_web"
+        app:tint="@color/_____cancel_text"
+        />
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    app:layout_constraintTop_toBottomOf="@id/toppla"
+    app:layout_constraintBottom_toTopOf="@id/bottla">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/txtSurfaceOrient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:background="@color/light_gray"
+            android:text="SURFACE HEADING [°]"
+            android:padding="5dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <Button
+                android:id="@+id/btn_piu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:layout_marginHorizontal="10dp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:layout_margin="2dp"/>
+            <EditText
+                android:id="@+id/etHDT"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:hint="Heading deg°"
+                android:focusableInTouchMode="false"
+                />
+            <Button
+                android:id="@+id/btn_meno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:layout_marginHorizontal="10dp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:background="@drawable/sfondo_bottone_trasparente"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:layout_margin="2dp"/>
+        </LinearLayout>
+
+
+        <!--  Left Right Dist and slope  !-->
+        <TextView
+            android:id="@+id/LW_DS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="LEFT WIDTH: "
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etLW"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Length"
+            android:focusableInTouchMode="false"
+            />
+        <TextView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="LEFT Slope %"
+            android:padding="5dp"
+            />
+        <EditText
+            android:visibility="gone"
+            android:id="@+id/etLS"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Slope %"
+            android:focusableInTouchMode="false"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text"/>
+
+        <TextView
+            android:id="@+id/RW_DS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="RIGHT WIDTH: "
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etRW"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Length"
+            android:focusableInTouchMode="false"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="SURFACE Slope %"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etRS"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Slope %"
+            android:focusableInTouchMode="false"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text"/>
+
+
+
+
+
+
+        <!--  P2P3  !-->
+        <TextView
+            android:id="@+id/p1p2L"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="P1>P2\nLength"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp1p2L"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Length"
+            android:focusableInTouchMode="false"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="Slope %"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp1p2S"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Slope %"
+            android:focusableInTouchMode="false"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text"/>
+
+
+
+        <!--  P2P3  !-->
+        <TextView
+            android:id="@+id/p2p3L"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="P2>P3\nLength"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp2p3L"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Length"
+            android:focusableInTouchMode="false"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="Slope %"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp2p3S"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Slope %"
+            android:focusableInTouchMode="false"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text"/>
+
+        <!--  P3P4  !-->
+        <TextView
+            android:id="@+id/p3p4L"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="P3>P4\nLength"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp3p4L"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Length"
+            android:focusableInTouchMode="false"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="Slope %"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp3p4S"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Slope %"
+            android:focusableInTouchMode="false"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text"/>
+
+        <!--  P4P5  !-->
+        <TextView
+            android:id="@+id/p4p5L"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="P4>P5\nLength"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp4p5L"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Length"
+            android:focusableInTouchMode="false"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="Slope %"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp4p5S"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Slope %"
+            android:focusableInTouchMode="false"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text"/>
+
+
+        <!--  P5P6  !-->
+        <TextView
+            android:id="@+id/p5p6L"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="P5>P6\nLength"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp5p6L"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Length"
+            android:focusableInTouchMode="false"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:background="@color/light_gray"
+            android:text="Slope %"
+            android:padding="5dp"
+            />
+        <EditText
+            android:id="@+id/etp5p6S"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:hint="Slope %"
+            android:focusableInTouchMode="false"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/_____cancel_text"/>
+
+
+
+    </LinearLayout>
+</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

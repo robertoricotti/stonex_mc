@@ -1,5 +1,6 @@
 package gui.my_opengl;
 
+import static gui.MyApp.folderPath;
 import static gui.my_opengl.My3DActivity.glVista3d;
 import static gui.my_opengl.My3DActivity.isPan;
 import static utils.MyTypes.EXCAVATOR;
@@ -10,6 +11,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -30,6 +32,7 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
+import java.io.File;
 import java.util.Locale;
 
 import dxf.Point3D;
@@ -38,16 +41,20 @@ import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
 import gui.dialogs_and_toast.CustomToast;
+import gui.dialogs_and_toast.Dialog_Create_Ditches;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.HeadingDialog;
 import gui.draw_class.MyColorClass;
 import gui.projects.Dialog_Edita_Punti3D;
 import gui.projects.Dialog_Parametri_AB;
 import gui.projects.Dialog_Trench;
+import gui.projects.PickProject;
+import gui.projects.ProjectFileAdapter;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.gnss.NmeaListener;
 import services.TriangleService;
+import services.UpdateValuesService;
 import utils.FullscreenActivity;
 import utils.MyData;
 import utils.Utils;
@@ -101,12 +108,7 @@ public class MyGLActivity_Create extends BaseClass {
         DataSaved.offsetH=0;
         setContentView(R.layout.activity_my_glactivity);
         DataSaved.projectTAG="DXF";
-        try {
-            startService(new Intent(this, TriangleService.class));
 
-        } catch (Exception e) {
-            Log.e(TAG, "Unable to start TriangleService", e);
-        }
 
         findView();
         initCameraFromMemory();
@@ -333,11 +335,39 @@ public class MyGLActivity_Create extends BaseClass {
 
     private void removeCreatePoint() {
         if (createController == null) return;
-        if (createController.removeLastPoint()) {
-            new CustomToast(this, "POINT REMOVED").show();
-        }
-        requestGlRender();
-        updateUI();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MyGLActivity_Create.this);
+            builder.setTitle(" " + getResources().getString(R.string.procedi));
+            builder.setIcon(getResources().getDrawable(R.drawable.delete));
+
+            builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
+                if (createController.removeLastPoint()) {
+                    new CustomToast(this, "POINT REMOVED").show();
+                }
+                requestGlRender();
+                updateUI();
+            });
+
+            builder.setNegativeButton(getResources().getString(R.string.no), (dialog, which) -> {
+                FullscreenActivity.setFullScreen(MyGLActivity_Create.this);
+            });
+
+            builder.setCancelable(true);
+
+            AlertDialog alertDialog = builder.create();
+
+            alertDialog.setOnShowListener(dialog -> {
+                FullscreenActivity.setFullScreen(alertDialog);
+            });
+
+            alertDialog.setOnDismissListener(dialog -> {
+                FullscreenActivity.setFullScreen(MyGLActivity_Create.this);
+            });
+
+            alertDialog.show();
+            FullscreenActivity.setFullScreen(alertDialog);
+
+
     }
 
     private void editCreateData() {
@@ -488,148 +518,108 @@ public class MyGLActivity_Create extends BaseClass {
     }
 
     private void showDitchEditDialog() {
+        Dialog_Create_Ditches ditchDialog = new Dialog_Create_Ditches(this);
+        ditchDialog.show();
+
         double[] lengths = createController.getDitchSegmentLengths();
         double[] slopes = createController.getDitchSegmentSlopesPercent();
 
-        LinearLayout content = new LinearLayout(this);
-        content.setOrientation(LinearLayout.VERTICAL);
-        content.setBackgroundColor(Color.WHITE);
+        EditText[] lengthInputs = new EditText[]{
+                ditchDialog.etp1p2L,
+                ditchDialog.etp2p3L,
+                ditchDialog.etp3p4L,
+                ditchDialog.etp4p5L,
+                ditchDialog.etp5p6L
+        };
 
-        int pad = (int) (16 * getResources().getDisplayMetrics().density);
-        content.setPadding(pad, pad, pad, pad);
-
-        EditText[] lengthInputs = new EditText[5];
-        EditText[] slopeInputs = new EditText[5];
+        EditText[] slopeInputs = new EditText[]{
+                ditchDialog.etp1p2S,
+                ditchDialog.etp2p3S,
+                ditchDialog.etp3p4S,
+                ditchDialog.etp4p5S,
+                ditchDialog.etp5p6S
+        };
 
         for (int i = 0; i < 5; i++) {
-            content.addView(newDitchLabel("P" + (i + 1) + " > P" + (i + 2), 18, i == 0 ? 0 : 12));
-
-            lengthInputs[i] = addDitchLabeledInput(
-                    content,
-                    "Length " + Utils.getMetriSimbol(),
-                    Utils.readUnitOfMeasureLITE(String.valueOf(lengths[i])),
-                    false
-            );
-
-            slopeInputs[i] = addDitchLabeledInput(
-                    content,
-                    "Slope %",
-                    String.valueOf(slopes[i]),
-                    true
-            );
+            lengthInputs[i].setText(Utils.readUnitOfMeasureLITE(String.valueOf(lengths[i])));
+            slopeInputs[i].setText(String.valueOf(slopes[i]));
         }
 
-        EditText leftWidthInput = addDitchLabeledInput(
-                content,
-                "Left distance " + Utils.getMetriSimbol(),
-                Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchLeftWidth())),
-                false
+        ditchDialog.etLW.setText(
+                Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchLeftWidth()))
         );
 
-        EditText rightWidthInput = addDitchLabeledInput(
-                content,
-                "Right distance " + Utils.getMetriSimbol(),
-                Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchRightWidth())),
-                false
+        ditchDialog.etRW.setText(
+                Utils.readUnitOfMeasureLITE(String.valueOf(createController.getDitchRightWidth()))
         );
 
-        EditText surfaceSideSlopeInput = addDitchLabeledInput(
-                content,
-                "Surface side slope % (+ left up / right down)",
-                String.valueOf(createController.getDitchSurfaceSideSlopePercent()),
-                true
+        ditchDialog.etRS.setText(
+                String.valueOf(createController.getDitchSurfaceSideSlopePercent())
         );
 
-        content.addView(newDitchLabel("Heading DITCH", 18, 12));
+        ditchDialog.etLS.setText("0.0");
 
-        EditText headingInput = addDitchLabeledInput(
-                content,
-                "Heading °",
-                String.format(Locale.US, "%.2f", createController.getDitchHeadingDeg()),
-                true
+        ditchDialog.etHDT.setText(
+                String.format(Locale.US, "%.2f", createController.getDitchHeadingDeg())
         );
 
-        LinearLayout headingButtons = new LinearLayout(this);
-        headingButtons.setOrientation(LinearLayout.HORIZONTAL);
-        headingButtons.setGravity(Gravity.CENTER);
-        headingButtons.setPadding(0, 0, 0, pad / 2);
-
-        Button headingMinus = new Button(this);
-        headingMinus.setText("-");
-        headingMinus.setTextSize(24);
-        Button headingPlus = new Button(this);
-        headingPlus.setText("+");
-        headingPlus.setTextSize(24);
-
-        LinearLayout.LayoutParams btnLp = new LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1.0f
-        );
-        btnLp.setMargins(pad / 4, 0, pad / 4, 0);
-        headingButtons.addView(headingMinus, btnLp);
-        headingButtons.addView(headingPlus, btnLp);
-        content.addView(headingButtons);
+        EditText surfaceSideSlopeInput = ditchDialog.etRS;
+        EditText headingInput = ditchDialog.etHDT;
 
         View.OnClickListener headingClickListener = v -> {
             try {
                 double currentHeading = Double.parseDouble(headingInput.getText().toString());
                 double step = createController.getDitchHeadingStepDeg();
-                if (v == headingMinus) {
+
+                if (v == ditchDialog.btn_meno) {
                     currentHeading -= step;
                 } else {
                     currentHeading += step;
                 }
-                headingInput.setText(String.format(Locale.US, "%.2f", normalizeHeadingForDisplay(currentHeading)));
+
+                headingInput.setText(
+                        String.format(Locale.US, "%.2f", normalizeHeadingForDisplay(currentHeading))
+                );
+
                 applyDitchDialogValues(
                         lengthInputs,
                         slopeInputs,
-                        leftWidthInput,
-                        rightWidthInput,
+                        ditchDialog.etLW,
+                        ditchDialog.etRW,
                         surfaceSideSlopeInput,
                         headingInput
                 );
+
             } catch (Exception e) {
                 new CustomToast(this, "Invalid Value").show_error();
             }
         };
-        headingMinus.setOnClickListener(headingClickListener);
-        headingPlus.setOnClickListener(headingClickListener);
 
-        ScrollView scroll = new ScrollView(this);
-        scroll.setBackgroundColor(Color.WHITE);
-        scroll.addView(content);
+        ditchDialog.btn_meno.setOnClickListener(headingClickListener);
+        ditchDialog.btn_piu.setOnClickListener(headingClickListener);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("DITCH surface")
-                .setView(scroll)
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    FullscreenActivity.setFullScreen(this);
-                    try {
-                        applyDitchDialogValues(
-                                lengthInputs,
-                                slopeInputs,
-                                leftWidthInput,
-                                rightWidthInput,
-                                surfaceSideSlopeInput,
-                                headingInput
-                        );
-                    } catch (Exception e) {
-                        new CustomToast(this, "Invalid Value").show_error();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-                    FullscreenActivity.setFullScreen(this);
-                })
-                .create();
+        ditchDialog.close.setOnClickListener(v -> {
+            FullscreenActivity.setFullScreen(this);
 
-        alertDialog.setOnShowListener(dialog -> {
-            FullscreenActivity.setFullScreen(alertDialog);
-            lengthInputs[0].requestFocus();
+            try {
+                applyDitchDialogValues(
+                        lengthInputs,
+                        slopeInputs,
+                        ditchDialog.etLW,
+                        ditchDialog.etRW,
+                        surfaceSideSlopeInput,
+                        headingInput
+                );
+
+                ditchDialog.dialog.dismiss();
+
+            } catch (Exception e) {
+                new CustomToast(this, "Invalid Value").show_error();
+            }
         });
 
-        alertDialog.show();
-        FullscreenActivity.setFullScreen(alertDialog);
+        ditchDialog.etp1p2L.requestFocus();
+        FullscreenActivity.setFullScreen(ditchDialog.dialog);
     }
 
     private void applyDitchDialogValues(EditText[] lengthInputs,
@@ -660,8 +650,11 @@ public class MyGLActivity_Create extends BaseClass {
         );
 
         double surfaceSideSlopePercent = Double.parseDouble(surfaceSideSlopeInput.getText().toString());
-        double headingDeg = Double.parseDouble(headingInput.getText().toString());
-
+        double headingDeg = 0;
+        if (headingInput != null) {
+             headingDeg = Double.parseDouble(headingInput.getText().toString());
+            createController.setDitchHeadingDeg(headingDeg);
+        }
         createController.setDitchParams(
                 newLengths,
                 newSlopes,
@@ -882,6 +875,13 @@ public class MyGLActivity_Create extends BaseClass {
     }
 
     public void updateUI() {
+        try {
+            if(!TriangleService.istriRunning)
+                startService(new Intent(this, TriangleService.class));
+
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to start TriangleService", e);
+        }
         if(navigatorHDT!=null){
             navigatorHDT.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
         }
@@ -1003,7 +1003,13 @@ public class MyGLActivity_Create extends BaseClass {
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(this, TriangleService.class));
+        try {
+            if(TriangleService.istriRunning)
+                stopService(new Intent(this, TriangleService.class));
+
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to stop  TriangleService", e);
+        }
         super.onDestroy();
     }
 
