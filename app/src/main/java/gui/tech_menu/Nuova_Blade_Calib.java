@@ -351,4 +351,5 @@ public class Nuova_Blade_Calib extends BaseClass {
         deltaHDT.setText(String.format("%.3f", DataSaved.deltaGPS2).replace(",", "."));
         etCutEdge.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.usuraLamaCX)));
     }
+    //TODO menu per misurare antenne da lama e calcolare delta heading
 }

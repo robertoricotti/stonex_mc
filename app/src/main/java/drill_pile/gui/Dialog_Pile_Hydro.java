@@ -707,7 +707,7 @@ public class Dialog_Pile_Hydro {
     private void writeParameterStep(int step) {
         Log.d("DioCADD", writeCounter + "  " + step);
         switch (step) {
-            case 0:
+            case 21:
                 bytes = PLC_DataTypes_LittleEndian.U16_to_bytes(EV1_UPPER);
                 MyDeviceManager.CanWrite(true, 1, 0x3AB, 8, new byte[]{
                         (byte) step,

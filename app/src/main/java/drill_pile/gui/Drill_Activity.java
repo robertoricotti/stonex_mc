@@ -103,6 +103,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     Dialog_Raggio_Drill dialogRaggioDrill;
     Dialog_Drill_GNSS dialogDrillGnss;
     Dialog_Pile_Hydro dialogPileHydro;
+    Dialog_Drill_Z_Adjust dialogDrillZAdjust;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
     ImageView digMenu, drilltool, Status, folders, playpause, lineReference, tiposnap, imgHdt, uomesure,
             zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto, hydromenu;
@@ -213,6 +214,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         dialogInfoPoint = new Dialog_InfoPoint(this);
         dialogDrillSet = new Dialog_DrillSet(this);
         dialogAddRod = new Dialog_Add_Rod(this);
+        dialogDrillZAdjust=new Dialog_Drill_Z_Adjust(this);
         try {
             if (MyData.get_String("showCroce") != null) {
                 showCroce = Boolean.parseBoolean(MyData.get_String("showCroce"));
@@ -564,18 +566,18 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             if (DataSaved.Drilling_Mode == JETGROUTING_MODE && !isDrilling) {
                 clearTable();
                 setupTabella();
-
             }
-            if (PointService.okStart) {
-                if (!isDrilling) {
-                    play = true;
-                    stop = false;
-                    abort = false;
-                    Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+
+            startDrillIfPossible();
+        });
+        quotaIndicator.setOnLongClickListener(v -> {
+            if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+                //TODO open dialog Z adjust
+                if(!dialogDrillZAdjust.dialog.isShowing()){
+                    dialogDrillZAdjust.show();
                 }
             }
-
-
+            return true;
         });
 
     }
@@ -816,16 +818,15 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                         drillStatus2ClickDone = false;
                     }
                 }
+
                 if (DataSaved.autoSavePoint == 1) {
                     if (DRILL_STATUS == 2
                             && !drillStatus2ClickDone
                             && drillStatus2SinceMs > 0L
                             && now - drillStatus2SinceMs >= 1000L) {
 
-                        drillStatus2ClickDone = true;
-
-                        if (playpause != null && playpause.isEnabled()) {
-                            playpause.callOnClick();
+                        if (startDrillIfPossible()) {
+                            drillStatus2ClickDone = true;
                         }
                     }
                 }
@@ -2829,4 +2830,24 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         return new int[]{todo, aborted, done};
     }
+
+    private boolean startDrillIfPossible() {
+        if (PointService.okStart && !isDrilling) {
+            play = true;
+            stop = false;
+            abort = false;
+            Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+            return true;
+        }
+
+        return false;
+    }
+
+
+    //TODO 2- autasving mode funziona solo se play premuto prima ?
+    //TODO 3- aggiungere adsjustement Z in SOLAR FARM MODE
+    //TODO 4- visualizzazione errori da ECU
+    //TODO 5- opzionale pulsante riapri ultimo palo
+    //TODO 6- rockdrill e jet mostrare numero aste aggiunte
+    //TODO 7- pause button per stoppare Log , mostrare dialog ROAD  CHANNGE
 }

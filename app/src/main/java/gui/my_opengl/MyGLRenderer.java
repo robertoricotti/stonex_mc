@@ -420,6 +420,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         return true;
     }
+    //TODO controllare se North Oriented scena è commentato
 }
 
 

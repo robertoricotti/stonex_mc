@@ -192,6 +192,14 @@
             "ReadAccess": "9",
             "WriteAccess": "9",
             "NvIndex": "8"
+        },
+        {
+            "GUID": "{27F686D8-8BB6-ca5b-2811-63045CE41FB4}",
+            "DataType": "S16",
+            "ParamName": "Encoder_offset",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "24"
         }
     ]
 }

@@ -6,6 +6,7 @@ import static packexcalib.exca.ExcavatorLib.coordTool;
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
+import static services.CanSender.postRemains;
 import static utils.MyTypes.JETGROUTING_MODE;
 import static utils.MyTypes.SOLARFARM_MODE;
 
@@ -143,8 +144,24 @@ public class PointService extends Service {
     private final Runnable pointRunnable = () -> {
         while (isRunning) {
             final long startTime = System.currentTimeMillis();
+            try {
+                if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+                    int[] stati = getPointStatus(DataSaved.drill_points);
+                    if(stati[0]==0) {
+                        postRemains = 255;
+                    }else {
+                        postRemains=0;
+                    }
+
+                }else {
+                    postRemains=0;
+                }
+            }catch (Exception ignored){
+                postRemains=0;
+            }
 
             try {
+
 
                 // Aggiorna posizione “filtrata” (FIX: clone)
                 updateCurrentPosition(ExcavatorLib.toolEndCoord, DataSaved.Raggio_Drill);
@@ -1075,6 +1092,30 @@ public class PointService extends Service {
 
         lastRowsAB = ab;
         lastRowsPointCount = pointCount;
+    }
+    public static int[] getPointStatus(List<Point3D_Drill> points) {
+        int todo = 0;
+        int aborted = 0;
+        int done = 0;
+
+        for (Point3D_Drill p : points) {
+            switch (p.getStatus()) {
+                case 0:
+                    todo++;
+                    break;
+                case -1:
+                    aborted++;
+                    break;
+                case 1:
+                    done++;
+                    break;
+                default:
+                    // eventuale gestione stato sconosciuto
+                    break;
+            }
+        }
+
+        return new int[]{todo, aborted, done};
     }
 }
 

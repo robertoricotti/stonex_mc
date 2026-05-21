@@ -3,8 +3,8 @@
   <FileFormat>008D</FileFormat>
   <GUIVersion>2025.3.3.6907</GUIVersion>
   <ProgrammableHW PartNumber="11144803" Description="MC024-130/132-0_nl ver:70112533v210 (SYS:70112531v210)" Comment="MC024_130_nl" HwdName="70112533" HwdVersion="2.10.0">
-    <SystemFile FileName="70112531v210.SYS" Parameters="W1:DISABLE">
-      <APIDocument FileName="70112531.PDF"/>
+    <SystemFile FileName="70112531v210.sys" Parameters="W1:DISABLE">
+      <APIDocument FileName="70112531.pdf"/>
     </SystemFile>
     <Application Name="Universal_PileDriver_V2">
       <PID Description="Universal_PileDriver_V2"/>

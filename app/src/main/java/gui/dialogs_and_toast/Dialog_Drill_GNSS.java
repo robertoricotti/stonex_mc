@@ -658,4 +658,6 @@ public class Dialog_Drill_GNSS {
         String sHll = Utils.showCoords(String.valueOf(coordinates[2]));
         return new String[]{sLat, sLon, sHll};
     }
+
+    //TODO rimuovere azzeramento encoder se loggato come utente
 }

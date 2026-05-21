@@ -192,8 +192,8 @@ public class Sensors_Decoder_Drill {
                             case 0x385:
                                 //bucket TSM
                                 double[] dat = TiltEncript.encriptTSM_Tool(data, DataSaved.lrTool);
-                                Deg_Tool_Pitch = dat[0];
-                                Deg_Tool_Roll = dat[1];
+                                Deg_Tool_Pitch = -dat[0];
+                                Deg_Tool_Roll = -dat[1];
                                 break;
 
                             case 0x1A0:

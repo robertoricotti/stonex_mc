@@ -117,6 +117,7 @@ import utils.MyMCUtils;
 
 
 public class CanSender extends Service {
+    public static int postRemains;
     public static byte GNSS_MSG = 0x01;
     int heartbitTerzeParti = 0;
     int heartbitTerzeParti_1 = 0;
@@ -1591,7 +1592,7 @@ public class CanSender extends Service {
         byte[] zetazeta = PLC_DataTypes_LittleEndian.S16_to_bytes((short) deltaZeta);
 
         MyDeviceManager.CanWrite(true, 1, 0x192, 8, new byte[]{
-                zetazeta[0], zetazeta[1], 0, 0, 0, 0, 0, 0
+                zetazeta[0], zetazeta[1], 0, 0, 0, 0, 0, (byte) postRemains
         });
         int deltax = (int) (Solar_Delta_X * 1000 * REVERSE_DRILL_X);
         int deltay = (int) (Solar_Delta_Y * 1000 * REVERSE_DRILL_Y);
