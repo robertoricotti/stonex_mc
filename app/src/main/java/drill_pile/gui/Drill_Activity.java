@@ -2852,5 +2852,5 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     //TODO 2- autasving mode funziona solo se play premuto prima ?
     //TODO 4- visualizzazione errori da ECU
     //TODO 5- opzionale pulsante riapri ultimo palo
-    //TODO 7- pause button per stoppare Log , mostrare dialog ROAD  CHANNGE
+    //TODO 7- pause button per stoppare Log , mostrare dialog ROD  CHANNGE
 }
