@@ -325,17 +325,21 @@ public class ReadProjectService extends Service {
                     MyApp.visibleActivity.recreate();
                 }
             } catch (Exception e) {
+               // Log.e("ExecuteDrill","328 "+Log.getStackTraceString(e));
                 Intent intent;
                 intent = new Intent(MyApp.visibleActivity, PickProject.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
+                MyApp.visibleActivity.finish();
             }
 
         } else {
+            //Log.e("ExecuteDrill","337 ");
             Intent intent;
             intent = new Intent(MyApp.visibleActivity, PickProject.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            MyApp.visibleActivity.finish();
         }
     }
 
@@ -1250,7 +1254,6 @@ public class ReadProjectService extends Service {
                         isFinishedPOINT = false;
                         DataSaved.drill_points = new ArrayList<>();
 
-
                         if (mettiPunti) {
                             DataSaved.Selected_Point3D_Drill = null;
 
@@ -1262,8 +1265,6 @@ public class ReadProjectService extends Service {
                                     DataSaved.drill_points = dxfDataPoint.getDrill_points();
                                     break;
                                 case "xml":
-
-                                    //TODO CGPOINTS
                                     parserStatus = "Reading Points...";
                                     landXMLPOINT = LandXMLParser.parseLandXML(DataSaved.progettoSelected_POINT, DataSaved.xyz_yxz, conversionFactor, false);
                                     DataSaved.drill_points = landXMLPOINT.getDrillPoints();
@@ -1312,7 +1313,8 @@ public class ReadProjectService extends Service {
                         }
                         DataSaved.lastProjectNamePOINT = nomeProgettoPOINT;
 
-                    } else {
+                    }
+                    else {
                         isFinishedPOINT = true;
                         if (mettiPunti && DataSaved.progettoSelected_POINT != null && !DataSaved.progettoSelected_POINT.isEmpty()) {
                             generaReport(extractProjectName(DataSaved.progettoSelected_POINT), "Stonex");
@@ -1361,18 +1363,16 @@ public class ReadProjectService extends Service {
 
 
                 } catch (Exception e) {
-                    e.printStackTrace();
-
+                    //Log.e("ExecuteDrill","1364 "+Log.getStackTraceString(e));
                     DataSaved.isAutoSnap = 0;
                     ERRORE_PROGETTO = true;
-
                     Intent intent = new Intent(MyApp.visibleActivity, PickProject.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     MyApp.visibleActivity.finish();
                 }
             } else {
-
+                //Log.e("ExecuteDrill","1373 ");
                 DataSaved.isAutoSnap = 0;
 
                 Intent intent = new Intent(MyApp.visibleActivity, PickProject.class);

@@ -345,6 +345,12 @@ public class LandXMLParser {
                 if (coords6 != null) end = new Double[]{coords6[3], coords6[4], coords6[5]};
             }
 
+            // Se le coordinate finali non sono presenti, usa le stesse coordinate della testa.
+            // Cosi endX/endY/endZ non restano null quando nel LandXML esiste solo Start/Head.
+            if (end == null && head != null) {
+                end = new Double[]{head[0], head[1], head[2]};
+            }
+
             if (head != null) {
                 p.setHeadX(head[0]);
                 p.setHeadY(head[1]);

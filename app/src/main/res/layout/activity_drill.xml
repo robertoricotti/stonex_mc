@@ -702,5 +702,20 @@
         app:layout_constraintLeft_toRightOf="@id/compass"
         app:layout_constraintBottom_toBottomOf="@id/compass"
        />
+    <TextView
+        android:id="@+id/rodNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="ROD nr: 99"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/alta"
+        app:layout_constraintLeft_toRightOf="@id/compass"
+        app:layout_constraintBottom_toBottomOf="@id/compass"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

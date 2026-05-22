@@ -109,7 +109,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto, hydromenu;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView marcia, idpalo, txtHDTSet, txttilt, txtdepth, textInfo, tiltInfo, txttiltActual, txthdtActual, diration, einauto;
+    TextView marcia, idpalo, txtHDTSet, txttilt, txtdepth, textInfo, tiltInfo, txttiltActual, txthdtActual, diration, einauto,rodNum;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
@@ -157,6 +157,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void findView() {
+        rodNum=findViewById(R.id.rodNum);
         einauto = findViewById(R.id.hydroStat);
         marcia = findViewById(R.id.marcia);
         diration = findViewById(R.id.diration);
@@ -215,6 +216,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         dialogDrillSet = new Dialog_DrillSet(this);
         dialogAddRod = new Dialog_Add_Rod(this);
         dialogDrillZAdjust=new Dialog_Drill_Z_Adjust(this);
+        rodNum.setTextColor(MyColorClass.colorConstraint);
         try {
             if (MyData.get_String("showCroce") != null) {
                 showCroce = Boolean.parseBoolean(MyData.get_String("showCroce"));
@@ -785,6 +787,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // 9) SOLARFARM: linea reference visible/defining e fine foro
             // =========================
             if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+                rodNum.setVisibility(View.GONE);
                 txtHDTSet.setVisibility(View.GONE);
 
                 if (DataSaved.isDefiningAB) {
@@ -858,9 +861,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 }
 
             } else {
+                rodNum.setVisibility(View.VISIBLE);
                 txtHDTSet.setVisibility(View.VISIBLE);
                 einauto.setVisibility(View.INVISIBLE);
                 lineReference.setVisibility(View.INVISIBLE);
+                rodNum.setText("ROD: "+DataSaved.numeroAste);
             }
 
 
@@ -2845,7 +2850,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
 
     //TODO 2- autasving mode funziona solo se play premuto prima ?
-    //TODO 3- aggiungere adsjustement Z in SOLAR FARM MODE
     //TODO 4- visualizzazione errori da ECU
     //TODO 5- opzionale pulsante riapri ultimo palo
     //TODO 6- rockdrill e jet mostrare numero aste aggiunte

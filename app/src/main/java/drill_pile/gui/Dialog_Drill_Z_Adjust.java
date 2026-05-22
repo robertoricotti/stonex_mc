@@ -14,7 +14,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.stx_dig.R;;
+import com.example.stx_dig.R;
 import gui.dialogs_and_toast.CustomToast;
 import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;

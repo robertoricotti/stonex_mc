@@ -79,11 +79,14 @@ public class DrillCSVParser {
 
         if (useHeader) {
             String row = getByKeys(t, headerMap, "row");
-            String hole = getByKeys(t, headerMap, "hole", "id", "name");
+            String hole = getByKeys(t, headerMap, "hole", "id", "name", "p", "point", "pnt", "point id");
+            String desc = getByKeys(t, headerMap, "description", "desc", "d");
 
-            Double startE = getDoubleByKeys(t, headerMap, "start point easting", "start easting", "e head", "easting head");
-            Double startN = getDoubleByKeys(t, headerMap, "start point northing", "start northing", "n head", "northing head");
-            Double startZ = getDoubleByKeys(t, headerMap, "start point elev", "start elev", "start elevation", "z head", "elev head");
+            // Formato completo: Start/End point easting/northing/elev
+            // Formato point-only con header: P,N,E,Z,D,Color
+            Double startE = getDoubleByKeys(t, headerMap, "start point easting", "start easting", "e head", "easting head", "e", "east", "easting");
+            Double startN = getDoubleByKeys(t, headerMap, "start point northing", "start northing", "n head", "northing head", "n", "north", "northing");
+            Double startZ = getDoubleByKeys(t, headerMap, "start point elev", "start elev", "start elevation", "z head", "elev head", "z", "elev", "elevation");
 
             Double endE = getDoubleByKeys(t, headerMap, "end point easting", "end easting", "e end", "easting end");
             Double endN = getDoubleByKeys(t, headerMap, "end point northing", "end northing", "n end", "northing end");
@@ -95,6 +98,7 @@ public class DrillCSVParser {
 
             p.setRowId(row);
             p.setId((row != null && hole != null) ? (row + "-" + hole) : (hole != null ? hole : row));
+            p.setDescription(desc);
 
             // Coordinate testa/fine
             Double[] head = applyXyzSwap(startE, startN, startZ, xyz, conv);
@@ -109,10 +113,14 @@ public class DrillCSVParser {
                 p.setEndX(end[0]);
                 p.setEndY(end[1]);
                 p.setEndZ(end[2]);
+            } else if (head != null) {
+                // Target-point / point-only CSV: se non esistono coordinate End,
+                // le copiamo uguali alle Start per evitare endX/endY/endZ null.
+                p.setEndX(head[0]);
+                p.setEndY(head[1]);
+                p.setEndZ(head[2]);
             }
 
-            // Se manca End nel file con header, ma abbiamo almeno Head, possiamo lasciare End null
-            // (i derivati verranno null). Se invece vuoi target-point: copia End=Head qui.
 
             // Depth/Length dal file (convertiti) se presenti -> override
             if (depth != null) p.setDepth(depth * conv);
