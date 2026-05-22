@@ -20,9 +20,10 @@ import utils.MyData;
 public class Dialog_Add_Rod {
     Activity activity;
     public Dialog dialog;
-    ImageView bt_meno, bt_piu, deleteAll, save_;
+    ImageView bt_meno, bt_piu, deleteAll, save_,cancella;
     TextView title_, txtrod;
     int indexMachine;
+    int tempNumeroAste;
 
     public Dialog_Add_Rod(Activity activity) {
         this.activity = activity;
@@ -61,6 +62,7 @@ public class Dialog_Add_Rod {
     }
 
     private void findView() {
+        tempNumeroAste=DataSaved.numeroAste;
         indexMachine = MyData.get_Int("MachineSelected");
         bt_meno = dialog.findViewById(R.id.bt_meno);
         bt_piu = dialog.findViewById(R.id.bt_piu);
@@ -68,6 +70,7 @@ public class Dialog_Add_Rod {
         title_ = dialog.findViewById(R.id.title_);
         txtrod = dialog.findViewById(R.id.txtrod);
         save_ = dialog.findViewById(R.id.save_);
+        cancella=dialog.findViewById(R.id.cancella);
 
     }
 
@@ -76,23 +79,27 @@ public class Dialog_Add_Rod {
     }
 
     private void onClick() {
+        cancella.setOnClickListener(v -> {
+            tempNumeroAste=0;
+            dialog.dismiss();
+        });
         save_.setOnClickListener(view -> {
             salva();
             dialog.dismiss();
         });
         bt_piu.setOnClickListener(view -> {
-            DataSaved.numeroAste += 1;
+            tempNumeroAste += 1;
             updateTxt();
         });
         bt_meno.setOnClickListener(view -> {
-            if (DataSaved.numeroAste > 0) {
-                DataSaved.numeroAste -= 1;
+            if (tempNumeroAste > 0) {
+                tempNumeroAste -= 1;
                 updateTxt();
             }
 
         });
         deleteAll.setOnClickListener(view -> {
-            DataSaved.numeroAste = 0;
+            tempNumeroAste = 0;
             updateTxt();
         });
 
@@ -100,13 +107,14 @@ public class Dialog_Add_Rod {
 
     private void updateTxt() {
 
-        txtrod.setText(String.valueOf(DataSaved.numeroAste));
+        txtrod.setText(String.valueOf(tempNumeroAste));
     }
 
     private void salva() {
-
+        DataSaved.numeroAste=tempNumeroAste;
         MyData.push("M" + indexMachine + "numeroAste", String.valueOf(DataSaved.numeroAste));
 
+
     }
-    //TODO cancel button
+
 }
