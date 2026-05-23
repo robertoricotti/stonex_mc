@@ -72,6 +72,10 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
+    private Point3D_Drill lastSavedHole = null;
+    private String lastSavedHoleId = null;
+    int dialCounter;
+    Dialog_Error_Codes_Drill dialogErrorCodesDrill;
     private int lastDrillStatus = -1;
     private long drillStatus2SinceMs = 0L;
     private boolean drillStatus2ClickDone = false;
@@ -208,6 +212,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void init() {
+        dialogErrorCodesDrill=new Dialog_Error_Codes_Drill(this);
         dialogPileHydro = new Dialog_Pile_Hydro(this);
         dialogRaggioDrill = new Dialog_Raggio_Drill(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
@@ -787,6 +792,17 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // 9) SOLARFARM: linea reference visible/defining e fine foro
             // =========================
             if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+                if(DRILL_STATUS>3&&!dialogErrorCodesDrill.dialog.isShowing()) {
+                    dialCounter++;
+                    if (dialCounter % 100 == 0) {
+                        if (!dialogErrorCodesDrill.dialog.isShowing()) {
+                            dialogErrorCodesDrill.show();
+                            dialCounter = 0;
+                        }
+                    }
+                }else {
+                    dialCounter=0;
+                }
                 rodNum.setVisibility(View.GONE);
                 txtHDTSet.setVisibility(View.GONE);
 
@@ -861,6 +877,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 }
 
             } else {
+                dialCounter=0;
                 rodNum.setVisibility(View.VISIBLE);
                 txtHDTSet.setVisibility(View.VISIBLE);
                 einauto.setVisibility(View.INVISIBLE);
@@ -1591,6 +1608,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         // Stato runtime (in memoria)
         p.setStatus(1); // DONE
+        rememberLastSavedHole(p);
         FineForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
 
         // 1) Persistenza STATE (CSV)
@@ -1800,6 +1818,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         // Stato runtime (in memoria)
         p.setStatus(-1); // ABORTED
+        rememberLastSavedHole(p);
         FineForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
 
         // 1) Persistenza STATE (CSV)
@@ -2022,7 +2041,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     private void reopenHoleToTodo(Point3D_Drill p) {
         if (p == null || p.getId() == null || p.getId().trim().isEmpty()) return;
 
-        final String holeId = p.getId().trim();
+        final String holeId = canonicalHoleId(p);
         final String nowIso = NmeaListener.date_time_Y_M_D;
 
         // 1) Runtime
@@ -2848,7 +2867,70 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         return false;
     }
 
+    private void reopenLastSavedHole() {
+        Point3D_Drill p = lastSavedHole;
 
+        if (p == null) {
+            String savedId = MyData.get_String("DRILL_LAST_SAVED_HOLE_ID");
+            p = findDrillPointByCanonicalId(savedId);
+        }
+
+        if (p == null) {
+            new CustomToast(this, "No last saved hole").show_alert();
+            return;
+        }
+
+        int st = p.getStatus() == null ? 0 : p.getStatus();
+
+        if (st == 0) {
+            new CustomToast(this, "Last hole is already TO DO").show_alert();
+            return;
+        }
+
+        final Point3D_Drill holeToReopen = p;
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Re-open last hole")
+                .setMessage("Last saved hole will be set back to TODO and a RE-OPENED entry will be appended to the project report.\n\nContinue?")
+                .setPositiveButton("RE-OPEN", (d, which) -> {
+                    reopenHoleToTodo(holeToReopen);
+
+                    lastSavedHole = null;
+                    lastSavedHoleId = null;
+                    MyData.push("DRILL_LAST_SAVED_HOLE_ID", "");
+                })
+                .setNegativeButton("CANCEL", null)
+                .show();
+
+        FullscreenActivity.setFullScreen(dialog);
+    }
+
+    private void rememberLastSavedHole(Point3D_Drill p) {
+        if (p == null) return;
+
+        lastSavedHole = p;
+        lastSavedHoleId = canonicalHoleId(p);
+
+        // opzionale ma utile se vuoi mantenerlo anche dopo refresh/activity recreate
+        MyData.push("DRILL_LAST_SAVED_HOLE_ID", lastSavedHoleId);
+    }
+    private Point3D_Drill findDrillPointByCanonicalId(String holeId) {
+        if (holeId == null || holeId.trim().isEmpty()) return null;
+        if (DataSaved.drill_points == null) return null;
+
+        String target = holeId.trim();
+
+        for (Point3D_Drill p : DataSaved.drill_points) {
+            if (p == null) continue;
+
+            String id = canonicalHoleId(p);
+            if (target.equals(id)) {
+                return p;
+            }
+        }
+
+        return null;
+    }
     //TODO 2- autasving mode funziona solo se play premuto prima ?
     //TODO 4- visualizzazione errori da ECU
     //TODO 5- opzionale pulsante riapri ultimo palo

@@ -619,10 +619,10 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
             // Long-press: allow RE-OPEN only for DONE/ABORTED
             rowRoot.setOnLongClickListener(v -> {
                 int stt = statusValue(p);
-                if (stt == 0) return false; // TODO -> nothing to do
+                if (stt == 0) return false;
                 if (actionListener == null) return false;
 
-                new android.app.AlertDialog.Builder(v.getContext())
+                android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(v.getContext())
                         .setTitle("Re-open hole")
                         .setMessage("This hole will be set back to TODO and a RE-OPENED entry will be appended to the project report.\n\nContinue?")
                         .setPositiveButton("RE-OPEN", (d, which) -> {
@@ -631,6 +631,8 @@ public class DrillPointsFullscreenDialog extends DialogFragment {
                         })
                         .setNegativeButton("CANCEL", null)
                         .show();
+
+                FullscreenActivity.setFullScreen(dialog);
 
                 return true;
             });

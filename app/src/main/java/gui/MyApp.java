@@ -2,6 +2,7 @@ package gui;
 
 
 import static gui.tech_menu.NetworkConfigSettings.getConnectionType;
+import static packexcalib.exca.DataSaved.DRILL_STATUS;
 import static services.CanService.boom1Disc;
 import static services.CanService.boom1OK;
 import static services.CanService.boom2Disc;
@@ -21,6 +22,8 @@ import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
+import static utils.MyTypes.SOLARFARM_MODE;
+import static utils.MyTypes.UNIVERSAL_ECU;
 import static utils.MyTypes.WHEELLOADER;
 
 import android.annotation.SuppressLint;
@@ -62,6 +65,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import cloud.S3ManagerSingleton;
+import drill_pile.gui.Dialog_Error_Codes_Drill;
 import drill_pile.gui.Drill_Activity;
 import drill_pile.gui.Drill_MainPage;
 import drill_pile.gui.Drill_Rod_Activity;
@@ -161,7 +165,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     public static String restoreCode;
     public static int licenseType = MC_3D_PRO_AUTO;
     public static String expiry = "2001-12-31";
-    public static  long timeUI = 65;
+    public static long timeUI = 65;
     public static String[] geoidAll = new String[]{};
     public static String GEOIDE_PATH = null;
     public static GridShiftTransformer heposTransformer;
@@ -277,6 +281,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         myCrash();
 
     }
+
     private void initAudioPlayers(Context context) {
         if (mpAlto == null) {
             mpAlto = MediaPlayer.create(context.getApplicationContext(), R.raw.audio_blu);
@@ -334,6 +339,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             return "";
         }
     }
+
     private void updateAudioState() {
         String newState = computeAudioState();
 
@@ -361,6 +367,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
                 break;
         }
     }
+
     private void switchToPlayer(MediaPlayer nextPlayer) {
         if (currentPlayer == nextPlayer) {
             if (currentPlayer != null && !currentPlayer.isPlaying()) {
@@ -379,6 +386,7 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
             currentPlayer.start();
         }
     }
+
     private void stopCurrentSound() {
         if (currentPlayer != null) {
             try {
@@ -427,7 +435,6 @@ git push
     @Override
     public void onActivityStarted(Activity activity) {
         if (activity != null) {
-
             sensorAlertDialog1 = new SensorAlertDialog(activity, "#1\n\nSENSOR ERROR \n\n FRAME or CAN disconnected!");
             sensorAlertDialog2 = new SensorAlertDialog(activity, "#2\n\nSENSOR ERROR \n\n BOOM 1 sensor disconnected!");
             sensorAlertDialog3 = new SensorAlertDialog(activity, "#3\n\nSENSOR ERROR \n\n BOOM 2 sensor disconnected!");
@@ -469,8 +476,6 @@ git push
             releaseAudioPlayers();
         }
     }
-
-
 
 
     @Override
@@ -802,9 +807,9 @@ git push
             ((PickReport) activity).updateUI();
         } else if (activity instanceof NetworkConfigSettings) {
             ((NetworkConfigSettings) activity).updateUI();
-        }else if (activity instanceof MyGLActivity_Create) {
+        } else if (activity instanceof MyGLActivity_Create) {
             ((MyGLActivity_Create) activity).updateUI();
-        }else if (activity instanceof Mast_Antenna) {
+        } else if (activity instanceof Mast_Antenna) {
             ((Mast_Antenna) activity).updateUI();
         }
 
@@ -902,6 +907,7 @@ git push
             }
 
         }
+
     }
 
     private void errori() {
