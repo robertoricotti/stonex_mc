@@ -200,6 +200,22 @@
             "ReadAccess": "9",
             "WriteAccess": "9",
             "NvIndex": "24"
+        },
+        {
+            "GUID": "{3CA7DE54-F79A-9279-0C2E-DF43B8B61F7C}",
+            "DataType": "S16",
+            "ParamName": "RollOffset_TSM",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "25"
+        },
+        {
+            "GUID": "{3CA7DE7B-F840-f813-B2C9-854F3C1470AF}",
+            "DataType": "S16",
+            "ParamName": "PitchOffset_TSM",
+            "ReadAccess": "9",
+            "WriteAccess": "9",
+            "NvIndex": "26"
         }
     ]
 }

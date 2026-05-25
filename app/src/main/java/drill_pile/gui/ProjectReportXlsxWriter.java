@@ -105,6 +105,7 @@ public class ProjectReportXlsxWriter {
     // --------------------- DTO (3 varianti) ---------------------
 
     public static class RockRow {
+        public String durationOverride;
         public String operator;
 
         public String holeId;
@@ -133,6 +134,7 @@ public class ProjectReportXlsxWriter {
     }
 
     public static class JetRow {
+        public String durationOverride;
         public String operator;
 
         public String holeId;
@@ -156,6 +158,7 @@ public class ProjectReportXlsxWriter {
     }
 
     public static class SolarRow {
+        public String durationOverride;
         public String operator;
 
         public String pileId;
@@ -311,7 +314,7 @@ public class ProjectReportXlsxWriter {
 
         setText(row, c++, nv(r.startTimeIso), dataStyle);
         setText(row, c++, nv(r.endTimeIso), dataStyle);
-        setText(row, c++, durationHHmmssSSS(r.startTimeIso, r.endTimeIso), dataStyle);
+        setText(row, c++, durationOrDefault(r.durationOverride, r.startTimeIso, r.endTimeIso), dataStyle);
 
         setNum(row, c++, r.startdN, numStyle);
         setNum(row, c++, r.startdE, numStyle);
@@ -360,7 +363,7 @@ public class ProjectReportXlsxWriter {
 
         setText(row, c++, nv(r.startTimeIso), dataStyle);
         setText(row, c++, nv(r.endTimeIso), dataStyle);
-        setText(row, c++, durationHHmmssSSS(r.startTimeIso, r.endTimeIso), dataStyle);
+        setText(row, c++, durationOrDefault(r.durationOverride, r.startTimeIso, r.endTimeIso), dataStyle);
 
         setNum(row, c++, r.startdN, numStyle);
         setNum(row, c++, r.startdE, numStyle);
@@ -397,7 +400,7 @@ public class ProjectReportXlsxWriter {
 
         setText(row, c++, nv(r.startTimeIso), dataStyle);
         setText(row, c++, nv(r.endTimeIso), dataStyle);
-        setText(row, c++, durationHHmmssSSS(r.startTimeIso, r.endTimeIso), dataStyle);
+        setText(row, c++, durationOrDefault(r.durationOverride, r.startTimeIso, r.endTimeIso), dataStyle);
 
         setNum(row, c++, r.startdN, numStyle);
         setNum(row, c++, r.startdE, numStyle);
@@ -705,4 +708,11 @@ public class ProjectReportXlsxWriter {
         }
     }
     //TODO fare menu per commenti personalizzati, partendo da 5 default
+
+    private static String durationOrDefault(String override, String startIso, String endIso) {
+        if (override != null && !override.trim().isEmpty()) {
+            return override.trim();
+        }
+        return durationHHmmssSSS(startIso, endIso);
+    }
 }

@@ -1,5 +1,8 @@
 package drill_pile.gui;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static drill_pile.gui.ProjectStateCsvStore.canonicalHoleId;
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
@@ -72,6 +75,8 @@ import utils.MyMCUtils;
 import utils.Utils;
 
 public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDialog.OnHoleActionListener {
+    String penRate ="";
+    private long lastPenRateLogMs = 0L;
     private Point3D_Drill lastSavedHole = null;
     private String lastSavedHoleId = null;
     int dialCounter;
@@ -88,6 +93,13 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     static double mHdT = 0;
     private boolean running = false;
     private long startTime = 0L;
+    // ROCKDRILL pause/resume
+    private boolean isDrillPaused = false;
+    private long activeDrillMillis = 0L;
+    private long activeDrillStartMs = 0L;
+
+    // Scrittura file fuori dal main thread
+    private final ExecutorService drillFileWriterExecutor = Executors.newSingleThreadExecutor();
     TableLayout tableDepthInfo;
     private boolean play = false;
     private boolean stop = false;
@@ -113,7 +125,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto, hydromenu;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
-    TextView marcia, idpalo, txtHDTSet, txttilt, txtdepth, textInfo, tiltInfo, txttiltActual, txthdtActual, diration, einauto,rodNum;
+    TextView marcia, idpalo, txtHDTSet, txttilt, txtdepth, textInfo, tiltInfo, txttiltActual, txthdtActual, diration, einauto, rodNum;
     LinearLayout sideLayout;
     int colorUp, colorDown, colorGreen;
     Dialog_AutoSnap dialogAutoSnap;
@@ -161,7 +173,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void findView() {
-        rodNum=findViewById(R.id.rodNum);
+        rodNum = findViewById(R.id.rodNum);
         einauto = findViewById(R.id.hydroStat);
         marcia = findViewById(R.id.marcia);
         diration = findViewById(R.id.diration);
@@ -212,7 +224,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void init() {
-        dialogErrorCodesDrill=new Dialog_Error_Codes_Drill(this);
+        dialogErrorCodesDrill = new Dialog_Error_Codes_Drill(this);
         dialogPileHydro = new Dialog_Pile_Hydro(this);
         dialogRaggioDrill = new Dialog_Raggio_Drill(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
@@ -220,8 +232,11 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         dialogInfoPoint = new Dialog_InfoPoint(this);
         dialogDrillSet = new Dialog_DrillSet(this);
         dialogAddRod = new Dialog_Add_Rod(this);
-        dialogDrillZAdjust=new Dialog_Drill_Z_Adjust(this);
+        dialogDrillZAdjust = new Dialog_Drill_Z_Adjust(this);
         rodNum.setTextColor(MyColorClass.colorConstraint);
+        if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+            infoPoint.setImageResource((R.drawable.outline_contract_delete_96));
+        }
         try {
             if (MyData.get_String("showCroce") != null) {
                 showCroce = Boolean.parseBoolean(MyData.get_String("showCroce"));
@@ -483,11 +498,19 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             }
         });
         infoPoint.setOnClickListener(view -> {
-            if (Selected_Point3D_Drill == null) {
-                new CustomToast(this, "No Point Selected!").show();
+
+            if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+                //TODO rimuovi ultimo palo
+                reopenLastSavedHole();
+
+
             } else {
-                if (!dialogInfoPoint.dialog.isShowing()) {
-                    dialogInfoPoint.show();
+                if (Selected_Point3D_Drill == null) {
+                    new CustomToast(this, "No Point Selected!").show();
+                } else {
+                    if (!dialogInfoPoint.dialog.isShowing()) {
+                        dialogInfoPoint.show();
+                    }
                 }
             }
 
@@ -570,6 +593,27 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         });
         playpause.setOnClickListener(view -> {
+
+            // PAUSE / RESUME solo ROCKDRILL durante foro in corso
+            if (DataSaved.Drilling_Mode == ROCKDRILL_MODE && isDrilling) {
+                if (isDrillPaused) {
+                    resumeDrillClock();
+                    playpause.setImageResource(R.drawable.btn_pause);
+                    // eventuale cambio icona: qui puoi mettere icona pause
+                    // playpause.setImageResource(R.drawable.xxx_pause);
+                } else {
+                    pauseDrillClock();
+                    if (!dialogErrorCodesDrill.dialog.isShowing()) {
+                        dialogErrorCodesDrill.show(256);
+                    }
+                    playpause.setImageResource(R.drawable.btn_play);
+                    // qui tu aprirai Dialog_Error_Codes_Drill o altra dialog
+                    // eventuale cambio icona: qui puoi mettere icona play
+                    // playpause.setImageResource(R.drawable.xxx_play);
+                }
+                return;
+            }
+
             if (DataSaved.Drilling_Mode == JETGROUTING_MODE && !isDrilling) {
                 clearTable();
                 setupTabella();
@@ -580,7 +624,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         quotaIndicator.setOnLongClickListener(v -> {
             if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
                 //TODO open dialog Z adjust
-                if(!dialogDrillZAdjust.dialog.isShowing()){
+                if (!dialogDrillZAdjust.dialog.isShowing()) {
                     dialogDrillZAdjust.show();
                 }
             }
@@ -664,11 +708,31 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // =========================
             if (isDrilling) {
                 side.setGuidelinePercent(0.93f);
-                ((Drill_Bubble) bubbleCanvas).setCrossOnly(false); // durante drill: mostra sempre frecce/guida
+                ((Drill_Bubble) bubbleCanvas).setCrossOnly(false);
                 setIndicator();
-                setFrecciaDrill(); // se lo usi; altrimenti puoi rimuoverlo
-                startTimer();
-                diration.setText(getElapsedTime());
+                setFrecciaDrill();
+
+                if (!isDrillPaused) {
+                    startTimer();
+                }
+                String sTim = getElapsedTime();
+
+                long nowLog = android.os.SystemClock.elapsedRealtime();
+
+                if (nowLog - lastPenRateLogMs >= 1000L) {
+                    lastPenRateLogMs = nowLog;
+                   int index = MyData.get_Int("Unit_Of_Measure");
+
+                    Double currentPenMmS = getCurrentPenRateMmS();
+                    Double currentPenFtS = getCurrentPenRateFtS();
+                    if(index>1){
+                        penRate = String.format("%.3f",currentPenFtS)+" ft/S";
+                    }else {
+                        penRate = String.format("%.2f",currentPenMmS)+" mm/S";
+                    }
+                }
+
+                diration.setText(sTim+"\n"+penRate);
             } else {
                 if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
                     side.setGuidelinePercent(0.93f);
@@ -680,6 +744,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 ((Drill_Bubble) bubbleCanvas).setCrossOnly(PointService.okStart);
                 stopTimer();
                 diration.setText("");
+                penRate="";
                 // aggiorna anche la freccia quota “pre-drill”
                 settaFreccia();
 
@@ -792,16 +857,16 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // 9) SOLARFARM: linea reference visible/defining e fine foro
             // =========================
             if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
-                if(DRILL_STATUS>3&&!dialogErrorCodesDrill.dialog.isShowing()) {
+                if (DRILL_STATUS > 3 && !dialogErrorCodesDrill.dialog.isShowing()) {
                     dialCounter++;
                     if (dialCounter % 100 == 0) {
                         if (!dialogErrorCodesDrill.dialog.isShowing()) {
-                            dialogErrorCodesDrill.show();
+                            dialogErrorCodesDrill.show(DRILL_STATUS);
                             dialCounter = 0;
                         }
                     }
-                }else {
-                    dialCounter=0;
+                } else {
+                    dialCounter = 0;
                 }
                 rodNum.setVisibility(View.GONE);
                 txtHDTSet.setVisibility(View.GONE);
@@ -877,12 +942,12 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 }
 
             } else {
-                dialCounter=0;
+                dialCounter = 0;
                 rodNum.setVisibility(View.VISIBLE);
                 txtHDTSet.setVisibility(View.VISIBLE);
                 einauto.setVisibility(View.INVISIBLE);
                 lineReference.setVisibility(View.INVISIBLE);
-                rodNum.setText("ROD: "+DataSaved.numeroAste);
+                rodNum.setText("ROD: " + DataSaved.numeroAste);
             }
 
 
@@ -890,7 +955,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             // 11) Enable/Disable pulsanti in base a drill state + okStart
             // =========================
             if (isDrilling) {
-                playpause.setAlpha(0.3f);
+
+                playpause.setAlpha(DataSaved.Drilling_Mode == ROCKDRILL_MODE ? 1.0f : 0.3f);
                 normal_stop.setAlpha(1.0f);
                 abortisci.setAlpha(1.0f);
 
@@ -904,6 +970,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 drillSet.setVisibility(View.INVISIBLE);
 
             } else {
+
                 normal_stop.setAlpha(0.3f);
                 abortisci.setAlpha(0.3f);
 
@@ -1568,33 +1635,46 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
      *
      * QUI I METODI PER REPORT
      */
+    /**
+     *
+     * QUI I METODI PER REPORT
+     */
     private void Start_Foro() {
         if (Selected_Point3D_Drill == null) return;
 
-        // HoleId uniforme: SOLO ID (se hai già buildHoleId ok, ma deve tornare point.getId())
-        currentHoleId = canonicalHoleId(Selected_Point3D_Drill);
+        final iredes.Point3D_Drill p = Selected_Point3D_Drill;
+
+        // HoleId uniforme
+        currentHoleId = canonicalHoleId(p);
         startIso = DateTimeIsoCompat.normalize(NmeaListener.date_time_Y_M_D);
 
+        final String holeIdSnapshot = currentHoleId;
+        final String startIsoSnapshot = startIso;
+
+        resetDrillClock();
+
         // Stato runtime (in memoria)
-        Selected_Point3D_Drill.setStatus(0); // TODO
+        p.setStatus(0);
 
-        // Persistenza STATE (CSV)
-        try {
-            ReadProjectService.stateStore.upsertAndSave(
-                    currentHoleId,
-                    ProjectStateCsvStore.HoleState.TODO,
-                    startIso,
-                    null,
-                    null,
-                    null
-            );
-        } catch (IOException e) {
-
-            throw new RuntimeException(e);
-        }
         StartForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
         FineForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
+
         isDrilling = true;
+
+        // Persistenza STATE (CSV) fuori dal main thread
+        runFileWriteAsync(() -> {
+            if (ReadProjectService.stateStore != null) {
+                ReadProjectService.stateStore.upsertAndSave(
+                        holeIdSnapshot,
+                        ProjectStateCsvStore.HoleState.TODO,
+                        startIsoSnapshot,
+                        null,
+                        null,
+                        null
+                );
+            }
+        });
+
         refreshAfterStateChange();
     }
 
@@ -1603,206 +1683,249 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (Selected_Point3D_Drill == null) return;
 
         final iredes.Point3D_Drill p = Selected_Point3D_Drill; // snapshot
+        final int drillingMode = DataSaved.Drilling_Mode;
+
         final String holeId = canonicalHoleId(p);
+        final String startIsoSnapshot = startIso;
         final String endIso = DateTimeIsoCompat.normalize(NmeaListener.date_time_Y_M_D);
 
         // Stato runtime (in memoria)
         p.setStatus(1); // DONE
         rememberLastSavedHole(p);
+
         FineForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
 
-        // 1) Persistenza STATE (CSV)
-        try {
-            ReadProjectService.stateStore.upsertAndSave(
-                    holeId,
-                    ProjectStateCsvStore.HoleState.DONE,
-                    startIso,
-                    endIso,
-                    "",
-                    "HOLES/" + holeId + ".csv"
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        final long effectiveDrillMillis = closeEffectiveDrillMillis();
+        final String effectiveDuration = formatDurationHHmmssSSS(effectiveDrillMillis);
 
-        // 2) Report XLSX (una riga per foro/palo)
-        try {
-            // Assicura derived aggiornati
-            p.recomputeDerived();
+        // Assicura derived aggiornati
+        p.recomputeDerived();
 
-            final Double penMmS = computePenRateMmS(startIso, endIso, StartForo, FineForo, p);
-            final Double penFtS = (penMmS == null) ? null : mmPerSecToFtPerSecAlways(penMmS);
-            // Conversioni unità utente (solo metri->ft ecc.) per coordinate/delta/quote/length
-            final Double headN = toUserUnitsMeters(p.getHeadY());
-            final Double headE = toUserUnitsMeters(p.getHeadX());
-            final Double headZ = toUserUnitsMeters(p.getHeadZ());
+        final Double penMmS = computePenRateMmS(effectiveDrillMillis, StartForo, FineForo, p);
+        final Double penFtS = (penMmS == null) ? null : mmPerSecToFtPerSecAlways(penMmS);
 
-            final Double endN = toUserUnitsMeters(p.getEndY());
-            final Double endE = toUserUnitsMeters(p.getEndX());
-            final Double endZ = toUserUnitsMeters(p.getEndZ());
+        // Conversioni unità utente
+        final Double headN = toUserUnitsMeters(p.getHeadY());
+        final Double headE = toUserUnitsMeters(p.getHeadX());
+        final Double headZ = toUserUnitsMeters(p.getHeadZ());
 
-            final Double depth = toUserUnitsMeters(p.getDepth());
-            final Double length = toUserUnitsMeters(p.getLength());
+        final Double endN = toUserUnitsMeters(p.getEndY());
+        final Double endE = toUserUnitsMeters(p.getEndX());
+        final Double endZ = toUserUnitsMeters(p.getEndZ());
 
-            final Double sdN = toUserUnitsMeters(Start_dN);
-            final Double sdE = toUserUnitsMeters(Start_dE);
-            final Double sdZ = toUserUnitsMeters(Start_dZ);
+        final Double depth = toUserUnitsMeters(p.getDepth());
+        final Double length = toUserUnitsMeters(p.getLength());
 
-            final Double edN = toUserUnitsMeters(End_dN);
-            final Double edE = toUserUnitsMeters(End_dE);
-            final Double edZ = toUserUnitsMeters(End_dZ);
+        final Double sdN = toUserUnitsMeters(Start_dN);
+        final Double sdE = toUserUnitsMeters(Start_dE);
+        final Double sdZ = toUserUnitsMeters(Start_dZ);
 
-            // Angoli invariati
-            final Double bearing = p.getHeadingDeg();
-            final Double tilt = p.getTilt();
-            final Double embedmentM = (StartForo != null && FineForo != null)
-                    ? (StartForo[2] - FineForo[2])
-                    : 0;
+        final Double edN = toUserUnitsMeters(End_dN);
+        final Double edE = toUserUnitsMeters(End_dE);
+        final Double edZ = toUserUnitsMeters(End_dZ);
 
-            final Double embedmentUser = toUserUnitsMeters(Math.abs(embedmentM));
-            final Double dTilt = delta_Tilt;
-            final Double dBearing = delta_Bearing;
+        final Double bearing = p.getHeadingDeg();
+        final Double tilt = p.getTilt();
 
-            switch (DataSaved.Drilling_Mode) {
+        final Double embedmentM = (StartForo != null && FineForo != null)
+                ? (StartForo[2] - FineForo[2])
+                : 0;
 
-                case SOLARFARM_MODE: {
-                    ProjectReportXlsxWriter.SolarRow row = new ProjectReportXlsxWriter.SolarRow();
+        final Double embedmentUser = toUserUnitsMeters(Math.abs(embedmentM));
+        final Double dTilt = delta_Tilt;
+        final Double dBearing = delta_Bearing;
 
-                    row.operator = NOME_OPERATORE;
-                    row.pileId = holeId;
-                    row.pileDescr = p.getDescription();
+        switch (drillingMode) {
 
-                    row.pileN = headN;
-                    row.pileE = headE;
-                    row.pileZ = headZ;
+            case SOLARFARM_MODE: {
+                final ProjectReportXlsxWriter.SolarRow row = new ProjectReportXlsxWriter.SolarRow();
 
-                    row.pileAzimuth = bearing;   // in solar header è Azimuth
-                    row.pileTilt = tilt;
+                row.operator = NOME_OPERATORE;
+                row.pileId = holeId;
+                row.pileDescr = p.getDescription();
 
-                    row.startTimeIso = startIso;
-                    row.endTimeIso = endIso;
+                row.pileN = headN;
+                row.pileE = headE;
+                row.pileZ = headZ;
 
-                    row.startdN = sdN;
-                    row.startdE = sdE;
-                    row.startdZ = sdZ;
+                row.pileAzimuth = bearing;
+                row.pileTilt = tilt;
 
-                    row.enddN = edN;
-                    row.enddE = edE;
-                    row.enddZ = edZ;
-                    row.embedment = embedmentUser;
-                    row.dTilt = dTilt;
-                    row.dAzimuth = dBearing;     // in solar header è d-Azimuth
+                row.startTimeIso = startIsoSnapshot;
+                row.endTimeIso = endIso;
+                row.durationOverride = effectiveDuration;
 
-                    row.avgPenRateMmS = penMmS;
-                    row.avgPenRateFtS = penFtS;
+                row.startdN = sdN;
+                row.startdE = sdE;
+                row.startdZ = sdZ;
 
-                    row.state = "DONE";
-                    row.comment = "";//TODO aggiungere commenti
+                row.enddN = edN;
+                row.enddE = edE;
+                row.enddZ = edZ;
 
-                    ReadProjectService.reportXlsxWriter.appendSolarRow(row);
-                    break;
-                }
+                row.embedment = embedmentUser;
+                row.dTilt = dTilt;
+                row.dAzimuth = dBearing;
 
-                case JETGROUTING_MODE: {
-                    ProjectReportXlsxWriter.JetRow row = new ProjectReportXlsxWriter.JetRow();
+                row.avgPenRateMmS = penMmS;
+                row.avgPenRateFtS = penFtS;
 
-                    row.operator = NOME_OPERATORE;
-                    row.holeId = holeId;
-                    row.holeDescr = p.getDescription();
+                row.state = "DONE";
+                row.comment = "";
 
-                    row.holeN = headN;
-                    row.holeE = headE;
-                    row.holeZ = headZ;
+                runFileWriteAsync(() -> {
+                    if (ReadProjectService.stateStore != null) {
+                        ReadProjectService.stateStore.upsertAndSave(
+                                holeId,
+                                ProjectStateCsvStore.HoleState.DONE,
+                                startIsoSnapshot,
+                                endIso,
+                                "",
+                                "HOLES/" + holeId + ".csv"
+                        );
+                    }
 
-                    row.holeEndN = endN;
-                    row.holeEndE = endE;
-                    row.holeEndZ = endZ;
+                    if (ReadProjectService.reportXlsxWriter != null) {
+                        ReadProjectService.reportXlsxWriter.appendSolarRow(row);
+                    }
+                });
 
-                    row.holeBearing = bearing;
-                    row.holeTilt = tilt;
-                    row.holeDepth = depth;
-                    row.holeLength = length;
-
-                    row.startTimeIso = startIso;
-                    row.endTimeIso = endIso;
-
-                    row.startdN = sdN;
-                    row.startdE = sdE;
-                    row.startdZ = sdZ;
-
-                    row.enddN = edN;
-                    row.enddE = edE;
-                    row.enddZ = edZ;
-
-                    row.dTilt = dTilt;
-                    row.dBearing = dBearing;
-
-                    row.state = "DONE";
-                    row.comment = "";
-
-                    ReadProjectService.reportXlsxWriter.appendJetRow(row);
-                    break;
-                }
-
-                default: { // ROCKDRILL
-                    ProjectReportXlsxWriter.RockRow row = new ProjectReportXlsxWriter.RockRow();
-
-                    row.operator = NOME_OPERATORE;
-                    row.holeId = holeId;
-                    row.holeDescr = p.getDescription();
-
-                    row.holeN = headN;
-                    row.holeE = headE;
-                    row.holeZ = headZ;
-
-                    row.holeEndN = endN;
-                    row.holeEndE = endE;
-                    row.holeEndZ = endZ;
-
-                    row.holeBearing = bearing;
-                    row.holeTilt = tilt;
-                    row.holeDepth = depth;
-                    row.holeLength = length;
-
-                    row.startTimeIso = startIso;
-                    row.endTimeIso = endIso;
-
-                    row.startdN = sdN;
-                    row.startdE = sdE;
-                    row.startdZ = sdZ;
-
-                    row.enddN = edN;
-                    row.enddE = edE;
-                    row.enddZ = edZ;
-
-                    row.dTilt = dTilt;
-                    row.dBearing = dBearing;
-
-                    row.rods = DataSaved.numeroAste;
-
-                    row.avgPenRateMmS = penMmS;
-                    row.avgPenRateFtS = penFtS;
-
-                    row.state = "DONE";
-                    row.comment = "";
-
-                    ReadProjectService.reportXlsxWriter.appendRockRow(row);
-                    break;
-                }
+                break;
             }
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            case JETGROUTING_MODE: {
+                final ProjectReportXlsxWriter.JetRow row = new ProjectReportXlsxWriter.JetRow();
+
+                row.operator = NOME_OPERATORE;
+                row.holeId = holeId;
+                row.holeDescr = p.getDescription();
+
+                row.holeN = headN;
+                row.holeE = headE;
+                row.holeZ = headZ;
+
+                row.holeEndN = endN;
+                row.holeEndE = endE;
+                row.holeEndZ = endZ;
+
+                row.holeBearing = bearing;
+                row.holeTilt = tilt;
+                row.holeDepth = depth;
+                row.holeLength = length;
+
+                row.startTimeIso = startIsoSnapshot;
+                row.endTimeIso = endIso;
+                row.durationOverride = effectiveDuration;
+
+                row.startdN = sdN;
+                row.startdE = sdE;
+                row.startdZ = sdZ;
+
+                row.enddN = edN;
+                row.enddE = edE;
+                row.enddZ = edZ;
+
+                row.dTilt = dTilt;
+                row.dBearing = dBearing;
+
+                row.state = "DONE";
+                row.comment = "";
+
+                runFileWriteAsync(() -> {
+                    if (ReadProjectService.stateStore != null) {
+                        ReadProjectService.stateStore.upsertAndSave(
+                                holeId,
+                                ProjectStateCsvStore.HoleState.DONE,
+                                startIsoSnapshot,
+                                endIso,
+                                "",
+                                "HOLES/" + holeId + ".csv"
+                        );
+                    }
+
+                    if (ReadProjectService.reportXlsxWriter != null) {
+                        ReadProjectService.reportXlsxWriter.appendJetRow(row);
+                    }
+                });
+
+                break;
+            }
+
+            default: { // ROCKDRILL
+                final ProjectReportXlsxWriter.RockRow row = new ProjectReportXlsxWriter.RockRow();
+
+                row.operator = NOME_OPERATORE;
+                row.holeId = holeId;
+                row.holeDescr = p.getDescription();
+
+                row.holeN = headN;
+                row.holeE = headE;
+                row.holeZ = headZ;
+
+                row.holeEndN = endN;
+                row.holeEndE = endE;
+                row.holeEndZ = endZ;
+
+                row.holeBearing = bearing;
+                row.holeTilt = tilt;
+                row.holeDepth = depth;
+                row.holeLength = length;
+
+                row.startTimeIso = startIsoSnapshot;
+                row.endTimeIso = endIso;
+                row.durationOverride = effectiveDuration;
+
+                row.startdN = sdN;
+                row.startdE = sdE;
+                row.startdZ = sdZ;
+
+                row.enddN = edN;
+                row.enddE = edE;
+                row.enddZ = edZ;
+
+                row.dTilt = dTilt;
+                row.dBearing = dBearing;
+
+                row.rods = DataSaved.numeroAste;
+
+                row.avgPenRateMmS = penMmS;
+                row.avgPenRateFtS = penFtS;
+
+                row.state = "DONE";
+                row.comment = "";
+
+                runFileWriteAsync(() -> {
+                    if (ReadProjectService.stateStore != null) {
+                        ReadProjectService.stateStore.upsertAndSave(
+                                holeId,
+                                ProjectStateCsvStore.HoleState.DONE,
+                                startIsoSnapshot,
+                                endIso,
+                                "",
+                                "HOLES/" + holeId + ".csv"
+                        );
+                    }
+
+                    if (ReadProjectService.reportXlsxWriter != null) {
+                        ReadProjectService.reportXlsxWriter.appendRockRow(row);
+                    }
+                });
+
+                break;
+            }
         }
 
-        // chiusura UI
+        // chiusura UI immediata, senza aspettare scrittura file
         isDrilling = false;
+        isDrillPaused = false;
+
         DataSaved.numeroAste = 0;
         int mchint = MyData.get_Int("MachineSelected");
         MyData.push("M" + mchint + "numeroAste", "0");
 
         refreshAfterStateChange();
-        if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+
+        if (drillingMode == JETGROUTING_MODE) {
             clearTable();
             addEmptyRows(4, 4);
         }
@@ -1813,202 +1936,247 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         if (Selected_Point3D_Drill == null) return;
 
         final iredes.Point3D_Drill p = Selected_Point3D_Drill; // snapshot
+        final int drillingMode = DataSaved.Drilling_Mode;
+
         final String holeId = canonicalHoleId(p);
-        final String endIso = NmeaListener.date_time_Y_M_D;
+        final String startIsoSnapshot = startIso;
+        final String endIso = DateTimeIsoCompat.normalize(NmeaListener.date_time_Y_M_D);
 
         // Stato runtime (in memoria)
         p.setStatus(-1); // ABORTED
         rememberLastSavedHole(p);
+
         FineForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
 
-        // 1) Persistenza STATE (CSV)
-        try {
-            ReadProjectService.stateStore.upsertAndSave(
-                    holeId,
-                    ProjectStateCsvStore.HoleState.ABORTED,
-                    startIso,
-                    endIso,
-                    "Operator aborted",
-                    "HOLES/" + holeId + ".csv"
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        final long effectiveDrillMillis = closeEffectiveDrillMillis();
+        final String effectiveDuration = formatDurationHHmmssSSS(effectiveDrillMillis);
 
-        // 2) Report XLSX
-        try {
-            p.recomputeDerived();
-            final Double penMmS = computePenRateMmS(startIso, endIso, StartForo, FineForo, p);
-            final Double penFtS = (penMmS == null) ? null : mmPerSecToFtPerSecAlways(penMmS);
+        p.recomputeDerived();
 
-            final Double headN = toUserUnitsMeters(p.getHeadY());
-            final Double headE = toUserUnitsMeters(p.getHeadX());
-            final Double headZ = toUserUnitsMeters(p.getHeadZ());
+        final Double penMmS = computePenRateMmS(effectiveDrillMillis, StartForo, FineForo, p);
+        final Double penFtS = (penMmS == null) ? null : mmPerSecToFtPerSecAlways(penMmS);
 
-            final Double endN = toUserUnitsMeters(p.getEndY());
-            final Double endE = toUserUnitsMeters(p.getEndX());
-            final Double endZ = toUserUnitsMeters(p.getEndZ());
+        final Double headN = toUserUnitsMeters(p.getHeadY());
+        final Double headE = toUserUnitsMeters(p.getHeadX());
+        final Double headZ = toUserUnitsMeters(p.getHeadZ());
 
-            final Double depth = toUserUnitsMeters(p.getDepth());
-            final Double length = toUserUnitsMeters(p.getLength());
+        final Double endN = toUserUnitsMeters(p.getEndY());
+        final Double endE = toUserUnitsMeters(p.getEndX());
+        final Double endZ = toUserUnitsMeters(p.getEndZ());
 
-            final Double sdN = toUserUnitsMeters(Start_dN);
-            final Double sdE = toUserUnitsMeters(Start_dE);
-            final Double sdZ = toUserUnitsMeters(Start_dZ);
+        final Double depth = toUserUnitsMeters(p.getDepth());
+        final Double length = toUserUnitsMeters(p.getLength());
 
-            final Double edN = toUserUnitsMeters(End_dN);
-            final Double edE = toUserUnitsMeters(End_dE);
-            final Double edZ = toUserUnitsMeters(End_dZ);
+        final Double sdN = toUserUnitsMeters(Start_dN);
+        final Double sdE = toUserUnitsMeters(Start_dE);
+        final Double sdZ = toUserUnitsMeters(Start_dZ);
 
-            final Double bearing = p.getHeadingDeg();
-            final Double tilt = p.getTilt();
-            final Double embedmentM = (p.getHeadZ() != null && FineForo != null && FineForo.length >= 3)
-                    ? (p.getHeadZ() - FineForo[2])
-                    : null;
+        final Double edN = toUserUnitsMeters(End_dN);
+        final Double edE = toUserUnitsMeters(End_dE);
+        final Double edZ = toUserUnitsMeters(End_dZ);
 
-            final Double embedmentUser = toUserUnitsMeters(embedmentM);
-            final Double dTilt = delta_Tilt;
-            final Double dBearing = delta_Bearing;
+        final Double bearing = p.getHeadingDeg();
+        final Double tilt = p.getTilt();
 
-            switch (DataSaved.Drilling_Mode) {
+        final Double embedmentM = (p.getHeadZ() != null && FineForo != null && FineForo.length >= 3)
+                ? (p.getHeadZ() - FineForo[2])
+                : null;
 
-                case SOLARFARM_MODE: {
-                    ProjectReportXlsxWriter.SolarRow row = new ProjectReportXlsxWriter.SolarRow();
+        final Double embedmentUser = toUserUnitsMeters(embedmentM);
+        final Double dTilt = delta_Tilt;
+        final Double dBearing = delta_Bearing;
 
-                    row.operator = NOME_OPERATORE;
-                    row.pileId = holeId;
-                    row.pileDescr = p.getDescription();
+        switch (drillingMode) {
 
-                    row.pileN = headN;
-                    row.pileE = headE;
-                    row.pileZ = headZ;
+            case SOLARFARM_MODE: {
+                final ProjectReportXlsxWriter.SolarRow row = new ProjectReportXlsxWriter.SolarRow();
 
-                    row.pileAzimuth = bearing;
-                    row.pileTilt = tilt;
+                row.operator = NOME_OPERATORE;
+                row.pileId = holeId;
+                row.pileDescr = p.getDescription();
 
-                    row.startTimeIso = startIso;
-                    row.endTimeIso = endIso;
+                row.pileN = headN;
+                row.pileE = headE;
+                row.pileZ = headZ;
 
-                    row.startdN = sdN;
-                    row.startdE = sdE;
-                    row.startdZ = sdZ;
+                row.pileAzimuth = bearing;
+                row.pileTilt = tilt;
 
-                    row.enddN = edN;
-                    row.enddE = edE;
-                    row.enddZ = edZ;
-                    row.embedment = embedmentUser;
-                    row.dTilt = dTilt;
-                    row.dAzimuth = dBearing;
+                row.startTimeIso = startIsoSnapshot;
+                row.endTimeIso = endIso;
+                row.durationOverride = effectiveDuration;
 
-                    row.avgPenRateMmS = penMmS;
-                    row.avgPenRateFtS = penFtS;
+                row.startdN = sdN;
+                row.startdE = sdE;
+                row.startdZ = sdZ;
 
-                    row.state = "ABORTED";
-                    row.comment = "Operator aborted";
+                row.enddN = edN;
+                row.enddE = edE;
+                row.enddZ = edZ;
 
-                    ReadProjectService.reportXlsxWriter.appendSolarRow(row);
-                    break;
-                }
+                row.embedment = embedmentUser;
+                row.dTilt = dTilt;
+                row.dAzimuth = dBearing;
 
-                case JETGROUTING_MODE: {
-                    ProjectReportXlsxWriter.JetRow row = new ProjectReportXlsxWriter.JetRow();
+                row.avgPenRateMmS = penMmS;
+                row.avgPenRateFtS = penFtS;
 
-                    row.operator = NOME_OPERATORE;
-                    row.holeId = holeId;
-                    row.holeDescr = p.getDescription();
+                row.state = "ABORTED";
+                row.comment = "Operator aborted";
 
-                    row.holeN = headN;
-                    row.holeE = headE;
-                    row.holeZ = headZ;
+                runFileWriteAsync(() -> {
+                    if (ReadProjectService.stateStore != null) {
+                        ReadProjectService.stateStore.upsertAndSave(
+                                holeId,
+                                ProjectStateCsvStore.HoleState.ABORTED,
+                                startIsoSnapshot,
+                                endIso,
+                                "Operator aborted",
+                                "HOLES/" + holeId + ".csv"
+                        );
+                    }
 
-                    row.holeEndN = endN;
-                    row.holeEndE = endE;
-                    row.holeEndZ = endZ;
+                    if (ReadProjectService.reportXlsxWriter != null) {
+                        ReadProjectService.reportXlsxWriter.appendSolarRow(row);
+                    }
+                });
 
-                    row.holeBearing = bearing;
-                    row.holeTilt = tilt;
-                    row.holeDepth = depth;
-                    row.holeLength = length;
-
-                    row.startTimeIso = startIso;
-                    row.endTimeIso = endIso;
-
-                    row.startdN = sdN;
-                    row.startdE = sdE;
-                    row.startdZ = sdZ;
-
-                    row.enddN = edN;
-                    row.enddE = edE;
-                    row.enddZ = edZ;
-
-                    row.dTilt = dTilt;
-                    row.dBearing = dBearing;
-
-                    row.state = "ABORTED";
-                    row.comment = "Operator aborted";
-
-                    ReadProjectService.reportXlsxWriter.appendJetRow(row);
-                    break;
-                }
-
-                default: { // ROCKDRILL
-                    ProjectReportXlsxWriter.RockRow row = new ProjectReportXlsxWriter.RockRow();
-
-                    row.operator = NOME_OPERATORE;
-                    row.holeId = holeId;
-                    row.holeDescr = p.getDescription();
-
-                    row.holeN = headN;
-                    row.holeE = headE;
-                    row.holeZ = headZ;
-
-                    row.holeEndN = endN;
-                    row.holeEndE = endE;
-                    row.holeEndZ = endZ;
-
-                    row.holeBearing = bearing;
-                    row.holeTilt = tilt;
-                    row.holeDepth = depth;
-                    row.holeLength = length;
-
-                    row.startTimeIso = startIso;
-                    row.endTimeIso = endIso;
-
-                    row.startdN = sdN;
-                    row.startdE = sdE;
-                    row.startdZ = sdZ;
-
-                    row.enddN = edN;
-                    row.enddE = edE;
-                    row.enddZ = edZ;
-
-                    row.dTilt = dTilt;
-                    row.dBearing = dBearing;
-
-                    row.rods = DataSaved.numeroAste;
-
-                    row.avgPenRateMmS = penMmS;
-                    row.avgPenRateFtS = penFtS;
-
-                    row.state = "ABORTED";
-                    row.comment = "Operator aborted";
-
-                    ReadProjectService.reportXlsxWriter.appendRockRow(row);
-                    break;
-                }
+                break;
             }
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            case JETGROUTING_MODE: {
+                final ProjectReportXlsxWriter.JetRow row = new ProjectReportXlsxWriter.JetRow();
+
+                row.operator = NOME_OPERATORE;
+                row.holeId = holeId;
+                row.holeDescr = p.getDescription();
+
+                row.holeN = headN;
+                row.holeE = headE;
+                row.holeZ = headZ;
+
+                row.holeEndN = endN;
+                row.holeEndE = endE;
+                row.holeEndZ = endZ;
+
+                row.holeBearing = bearing;
+                row.holeTilt = tilt;
+                row.holeDepth = depth;
+                row.holeLength = length;
+
+                row.startTimeIso = startIsoSnapshot;
+                row.endTimeIso = endIso;
+                row.durationOverride = effectiveDuration;
+
+                row.startdN = sdN;
+                row.startdE = sdE;
+                row.startdZ = sdZ;
+
+                row.enddN = edN;
+                row.enddE = edE;
+                row.enddZ = edZ;
+
+                row.dTilt = dTilt;
+                row.dBearing = dBearing;
+
+                row.state = "ABORTED";
+                row.comment = "Operator aborted";
+
+                runFileWriteAsync(() -> {
+                    if (ReadProjectService.stateStore != null) {
+                        ReadProjectService.stateStore.upsertAndSave(
+                                holeId,
+                                ProjectStateCsvStore.HoleState.ABORTED,
+                                startIsoSnapshot,
+                                endIso,
+                                "Operator aborted",
+                                "HOLES/" + holeId + ".csv"
+                        );
+                    }
+
+                    if (ReadProjectService.reportXlsxWriter != null) {
+                        ReadProjectService.reportXlsxWriter.appendJetRow(row);
+                    }
+                });
+
+                break;
+            }
+
+            default: { // ROCKDRILL
+                final ProjectReportXlsxWriter.RockRow row = new ProjectReportXlsxWriter.RockRow();
+
+                row.operator = NOME_OPERATORE;
+                row.holeId = holeId;
+                row.holeDescr = p.getDescription();
+
+                row.holeN = headN;
+                row.holeE = headE;
+                row.holeZ = headZ;
+
+                row.holeEndN = endN;
+                row.holeEndE = endE;
+                row.holeEndZ = endZ;
+
+                row.holeBearing = bearing;
+                row.holeTilt = tilt;
+                row.holeDepth = depth;
+                row.holeLength = length;
+
+                row.startTimeIso = startIsoSnapshot;
+                row.endTimeIso = endIso;
+                row.durationOverride = effectiveDuration;
+
+                row.startdN = sdN;
+                row.startdE = sdE;
+                row.startdZ = sdZ;
+
+                row.enddN = edN;
+                row.enddE = edE;
+                row.enddZ = edZ;
+
+                row.dTilt = dTilt;
+                row.dBearing = dBearing;
+
+                row.rods = DataSaved.numeroAste;
+
+                row.avgPenRateMmS = penMmS;
+                row.avgPenRateFtS = penFtS;
+
+                row.state = "ABORTED";
+                row.comment = "Operator aborted";
+
+                runFileWriteAsync(() -> {
+                    if (ReadProjectService.stateStore != null) {
+                        ReadProjectService.stateStore.upsertAndSave(
+                                holeId,
+                                ProjectStateCsvStore.HoleState.ABORTED,
+                                startIsoSnapshot,
+                                endIso,
+                                "Operator aborted",
+                                "HOLES/" + holeId + ".csv"
+                        );
+                    }
+
+                    if (ReadProjectService.reportXlsxWriter != null) {
+                        ReadProjectService.reportXlsxWriter.appendRockRow(row);
+                    }
+                });
+
+                break;
+            }
         }
 
+        // chiusura UI immediata, senza aspettare scrittura file
         isDrilling = false;
+        isDrillPaused = false;
+
         DataSaved.numeroAste = 0;
         int mchint = MyData.get_Int("MachineSelected");
         MyData.push("M" + mchint + "numeroAste", "0");
 
         refreshAfterStateChange();
-        if (DataSaved.Drilling_Mode == JETGROUTING_MODE) {
+
+        if (drillingMode == JETGROUTING_MODE) {
             clearTable();
             addEmptyRows(4, 4);
         }
@@ -2465,8 +2633,8 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     public void startTimer() {
-        if (!running) {
-            startTime = android.os.SystemClock.elapsedRealtime();
+        if (!running && !isDrillPaused) {
+            activeDrillStartMs = android.os.SystemClock.elapsedRealtime();
             running = true;
         }
     }
@@ -2476,18 +2644,83 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     public String getElapsedTime() {
-        if (!running) return "0:00:00";
-
-        long elapsedMillis = android.os.SystemClock.elapsedRealtime() - startTime;
-
-        long seconds = elapsedMillis / 1000;
-        long hours = seconds / 3600;
-        long minutes = (seconds % 3600) / 60;
-        long secs = seconds % 60;
-
-        return String.format(Locale.getDefault(),
-                "%d:%02d:%02d", hours, minutes, secs);
+        return formatDurationHHmmss(getEffectiveDrillMillisLive());
     }
+
+    //PLAYPAUSE ROCK
+    private void resetDrillClock() {
+        activeDrillMillis = 0L;
+        activeDrillStartMs = android.os.SystemClock.elapsedRealtime();
+        isDrillPaused = false;
+        running = true;
+    }
+
+    private void pauseDrillClock() {
+        if (!isDrilling || isDrillPaused) return;
+
+        long now = android.os.SystemClock.elapsedRealtime();
+        if (running && activeDrillStartMs > 0L) {
+            activeDrillMillis += Math.max(0L, now - activeDrillStartMs);
+        }
+
+        running = false;
+        isDrillPaused = true;
+    }
+
+    private void resumeDrillClock() {
+        if (!isDrilling || !isDrillPaused) return;
+
+        activeDrillStartMs = android.os.SystemClock.elapsedRealtime();
+        running = true;
+        isDrillPaused = false;
+    }
+
+    private long getEffectiveDrillMillisLive() {
+        long total = activeDrillMillis;
+
+        if (running && !isDrillPaused && activeDrillStartMs > 0L) {
+            long now = android.os.SystemClock.elapsedRealtime();
+            total += Math.max(0L, now - activeDrillStartMs);
+        }
+
+        return Math.max(0L, total);
+    }
+
+    private long closeEffectiveDrillMillis() {
+        long total = getEffectiveDrillMillisLive();
+
+        activeDrillMillis = total;
+        activeDrillStartMs = 0L;
+        running = false;
+        isDrillPaused = false;
+
+        return total;
+    }
+
+    private static String formatDurationHHmmss(long millis) {
+        if (millis < 0L) millis = 0L;
+
+        long seconds = millis / 1000L;
+        long hours = seconds / 3600L;
+        long minutes = (seconds % 3600L) / 60L;
+        long secs = seconds % 60L;
+
+        return String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, secs);
+    }
+
+    private static String formatDurationHHmmssSSS(long millis) {
+        if (millis < 0L) millis = 0L;
+
+        long hours = millis / 3_600_000L;
+        millis %= 3_600_000L;
+        long minutes = millis / 60_000L;
+        millis %= 60_000L;
+        long seconds = millis / 1_000L;
+        long ms = millis % 1_000L;
+
+        return String.format(Locale.US, "%02d:%02d:%02d.%03d", hours, minutes, seconds, ms);
+    }
+
 
     private static boolean isZValid(Double z) {
         return z != null && Math.abs(z) > 1e-9;
@@ -2551,87 +2784,6 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             return row + "-" + id;
         }
         return id;
-    }
-
-
-    public static double penetrationRateMmPerSecAlongAxisForwardOnly(
-            String startIso,
-            String endIso,
-            double[] startENZ,   // posizione tool a START foro [E,N,Z]
-            double[] endENZ,     // posizione tool a END foro   [E,N,Z]
-            double[] holeHeadENZ, // testa palo/foro [E,N,Z]
-            double[] holeEndENZ   // fine palo/foro  [E,N,Z]
-    ) {
-        if (startIso == null || endIso == null) return Double.NaN;
-        if (startENZ == null || endENZ == null || holeHeadENZ == null || holeEndENZ == null)
-            return Double.NaN;
-        if (startENZ.length < 3 || endENZ.length < 3 || holeHeadENZ.length < 3 || holeEndENZ.length < 3)
-            return Double.NaN;
-
-        // 1) tempo (accetta " " o "T")
-        String s0 = startIso.trim().replace(' ', 'T');
-        String s1 = endIso.trim().replace(' ', 'T');
-
-        final LocalDateTime a, b;
-        try {
-            a = LocalDateTime.parse(s0, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            b = LocalDateTime.parse(s1, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        } catch (Exception e) {
-            return Double.NaN;
-        }
-
-        long ms = Duration.between(a, b).toMillis();
-        if (ms <= 0) return Double.NaN;
-
-        // 2) asse foro (head -> end) come versore u
-        double ax = holeEndENZ[0] - holeHeadENZ[0];
-        double ay = holeEndENZ[1] - holeHeadENZ[1];
-        double az = holeEndENZ[2] - holeHeadENZ[2];
-
-        double L = Math.sqrt(ax * ax + ay * ay + az * az);
-        if (L < 1e-9) return Double.NaN; // asse degenerato
-
-        double ux = ax / L, uy = ay / L, uz = az / L;
-
-        // 3) progress lungo asse: proj( end-start , u )
-        double dx = endENZ[0] - startENZ[0];
-        double dy = endENZ[1] - startENZ[1];
-        double dz = endENZ[2] - startENZ[2];
-
-        double progressM = dx * ux + dy * uy + dz * uz; // metri lungo asse (positivo = avanti)
-        if (Double.isNaN(progressM) || Double.isInfinite(progressM)) return Double.NaN;
-
-        // ✅ ignora qualsiasi ritorno/riavvicinamento: solo avanti
-        if (progressM <= 0) return 0.0;
-
-        double progressMm = progressM * 1000.0;
-        return progressMm / (ms / 1000.0);
-    }
-
-    public static double penetrationRateMmPerSecVerticalDownOnly(
-            String startIso, String endIso,
-            double startZ, double endZ
-    ) {
-        if (startIso == null || endIso == null) return Double.NaN;
-
-        String s0 = startIso.trim().replace(' ', 'T');
-        String s1 = endIso.trim().replace(' ', 'T');
-
-        final LocalDateTime a, b;
-        try {
-            a = LocalDateTime.parse(s0, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            b = LocalDateTime.parse(s1, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        } catch (Exception e) {
-            return Double.NaN;
-        }
-
-        long ms = Duration.between(a, b).toMillis();
-        if (ms <= 0) return Double.NaN;
-
-        double downM = (startZ - endZ); // positivo se scendi
-        if (downM <= 0) return 0.0;
-
-        return (downM * 1000.0) / (ms / 1000.0);
     }
 
     private static boolean hasValidXYZ(Double x, Double y, Double z) {
@@ -2698,12 +2850,13 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
      * Calcola penetration rate mm/s con la regola: se foro "punto" -> verticale down only, altrimenti lungo asse
      */
     private static Double computePenRateMmS(
-            String startIso, String endIso,
-            double[] startForoENZ, double[] fineForoENZ,
+            long effectiveDurationMs,
+            double[] startForoENZ,
+            double[] fineForoENZ,
             iredes.Point3D_Drill p
     ) {
         if (p == null) return null;
-        if (startIso == null || endIso == null) return null;
+        if (effectiveDurationMs <= 0L) return null;
         if (!hasValidENZ(startForoENZ) || !hasValidENZ(fineForoENZ)) return null;
 
         boolean hasHead = hasValidXYZ(p.getHeadX(), p.getHeadY(), p.getHeadZ());
@@ -2715,28 +2868,50 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 1e-6
         );
 
-        double mmps;
+        double progressMm;
 
         if (!hasHead || !hasEnd || verticalPoint) {
-            // Se il progetto non ha end XYZ, non posso calcolare la penetrazione lungo asse.
-            // Uso fallback verticale basato sul movimento Z reale del tool, evitando l'unboxing di Double null.
-            mmps = penetrationRateMmPerSecVerticalDownOnly(
-                    startIso, endIso,
-                    startForoENZ[2], fineForoENZ[2]
-            );
+            double downM = startForoENZ[2] - fineForoENZ[2]; // positivo se scendi
+            if (downM <= 0) {
+                progressMm = 0.0;
+            } else {
+                progressMm = downM * 1000.0;
+            }
         } else {
-            // array richiesti in [E,N,Z]
             double[] headENZ = new double[]{p.getHeadX(), p.getHeadY(), p.getHeadZ()};
             double[] endENZ = new double[]{p.getEndX(), p.getEndY(), p.getEndZ()};
 
-            mmps = penetrationRateMmPerSecAlongAxisForwardOnly(
-                    startIso, endIso,
-                    startForoENZ, fineForoENZ,
-                    headENZ, endENZ
-            );
+            double ax = endENZ[0] - headENZ[0];
+            double ay = endENZ[1] - headENZ[1];
+            double az = endENZ[2] - headENZ[2];
+
+            double L = Math.sqrt(ax * ax + ay * ay + az * az);
+            if (L < 1e-9) return null;
+
+            double ux = ax / L;
+            double uy = ay / L;
+            double uz = az / L;
+
+            double dx = fineForoENZ[0] - startForoENZ[0];
+            double dy = fineForoENZ[1] - startForoENZ[1];
+            double dz = fineForoENZ[2] - startForoENZ[2];
+
+            double progressM = dx * ux + dy * uy + dz * uz;
+            if (Double.isNaN(progressM) || Double.isInfinite(progressM)) return null;
+
+            if (progressM <= 0) {
+                progressMm = 0.0;
+            } else {
+                progressMm = progressM * 1000.0;
+            }
         }
 
+        double seconds = effectiveDurationMs / 1000.0;
+        if (seconds <= 0.0) return null;
+
+        double mmps = progressMm / seconds;
         if (Double.isNaN(mmps) || Double.isInfinite(mmps)) return null;
+
         return mmps;
     }
 
@@ -2914,6 +3089,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         // opzionale ma utile se vuoi mantenerlo anche dopo refresh/activity recreate
         MyData.push("DRILL_LAST_SAVED_HOLE_ID", lastSavedHoleId);
     }
+
     private Point3D_Drill findDrillPointByCanonicalId(String holeId) {
         if (holeId == null || holeId.trim().isEmpty()) return null;
         if (DataSaved.drill_points == null) return null;
@@ -2931,8 +3107,52 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
         return null;
     }
-    //TODO 2- autasving mode funziona solo se play premuto prima ?
-    //TODO 4- visualizzazione errori da ECU
-    //TODO 5- opzionale pulsante riapri ultimo palo
-    //TODO 7- pause button per stoppare Log , mostrare dialog ROD  CHANNGE
+
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        drillFileWriterExecutor.shutdown();
+    }
+
+    private interface IoTask {
+        void run() throws Exception;
+    }
+
+    private void runFileWriteAsync(IoTask task) {
+        drillFileWriterExecutor.execute(() -> {
+            try {
+                task.run();
+            } catch (Exception e) {
+                Log.e("DrillFileWrite", Log.getStackTraceString(e));
+                handler.post(() ->
+                        new CustomToast(this, "Error writing drill report").show_error()
+                );
+            }
+        });
+    }
+
+    private Double getCurrentPenRateMmS() {
+        if (!isDrilling) return null;
+        if (isDrillPaused) return null;
+        if (Selected_Point3D_Drill == null) return null;
+        if (StartForo == null) return null;
+        if (toolEndCoord == null || toolEndCoord.length < 3) return null;
+
+        long liveMs = getEffectiveDrillMillisLive();
+
+        return computePenRateMmS(
+                liveMs,
+                StartForo,
+                toolEndCoord.clone(),
+                Selected_Point3D_Drill
+        );
+    }
+
+    private Double getCurrentPenRateFtS() {
+        Double mmS = getCurrentPenRateMmS();
+        return (mmS == null) ? null : mmPerSecToFtPerSecAlways(mmS);
+    }
 }

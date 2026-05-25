@@ -9,6 +9,8 @@
     <Application Name="Universal_PileDriver_V2">
       <PID Description="Universal_PileDriver_V2"/>
       <MainModule ModuleName="MAINTASK" FileName="MC024_130_nl_T.scs"/>
+      <PLCopenXML FileName="PLCFile1.xml"/>
+      <DebugSettings FileName="DebugSettings.xml"/>
       <Parameters FileName="ProjectParameters.json"/>
     </Application>
     <Output>

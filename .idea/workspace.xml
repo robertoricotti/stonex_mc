@@ -67,6 +67,16 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_pause.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_play.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_refresh.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -601,15 +611,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.8 test MichePesci">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_Error_Codes_Drill.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_error_codes_drill.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/outline_contract_delete_96.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/MC024_130_nl_T.scs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/ProjectParameters.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/ProjectParameters.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/Universal_PileDriver_V2.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/Universal_PileDriver_V2.p1m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillPointsFullscreenDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/DrillPointsFullscreenDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/Universal_PileDriver_V2.p1x" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/Universal_PileDriver_V2.p1x" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_Error_Codes_Drill.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_Error_Codes_Drill.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportXlsxWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/ProjectReportXlsxWriter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -873,14 +885,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00207" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
-      <option name="closed" value="true" />
-      <created>1775906561968</created>
-      <option name="number" value="00207" />
-      <option name="presentableId" value="LOCAL-00207" />
-      <option name="project" value="LOCAL" />
-      <updated>1775906561969</updated>
     </task>
     <task id="LOCAL-00208" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
       <option name="closed" value="true" />
@@ -1266,7 +1270,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779487131015</updated>
     </task>
-    <option name="localTasksCounter" value="256" />
+    <task id="LOCAL-00256" summary="4.1.8 test MichePesci">
+      <option name="closed" value="true" />
+      <created>1779546250703</created>
+      <option name="number" value="00256" />
+      <option name="presentableId" value="LOCAL-00256" />
+      <option name="project" value="LOCAL" />
+      <updated>1779546250704</updated>
+    </task>
+    <option name="localTasksCounter" value="257" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1315,22 +1327,22 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1779486065638" />
+            <CheckInfo lastCheckTimestamp="1779702590855" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1779486065638" />
+            <CheckInfo lastCheckTimestamp="1779702590856" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1779486065639" />
+            <CheckInfo lastCheckTimestamp="1779702590857" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1779486065637" />
+            <CheckInfo lastCheckTimestamp="1779702590856" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other">

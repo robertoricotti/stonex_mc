@@ -26,6 +26,7 @@ public class Dialog_Error_Codes_Drill {
     DisplayMetrics displayMetrics;
     int larg = 1000, alt = 600;
     String string="";
+    int mDrillStatus;
 
     public Dialog_Error_Codes_Drill(Activity activity) {
         this.activity = activity;
@@ -33,7 +34,7 @@ public class Dialog_Error_Codes_Drill {
         displayMetrics = new DisplayMetrics();
     }
 
-    public void show() {
+    public void show(int mDrillStatus) {
 
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         larg = (int) (displayMetrics.widthPixels * 0.65);
@@ -57,6 +58,7 @@ public class Dialog_Error_Codes_Drill {
 
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
+        this.mDrillStatus=mDrillStatus;
         findView();
         init();
         onClick();
@@ -66,13 +68,7 @@ public class Dialog_Error_Codes_Drill {
     private void findView() {
         close = dialog.findViewById(R.id.close);
         messaggio = dialog.findViewById(R.id.messaggio);
-        string = switch (DRILL_STATUS) {
-            case 0 -> "NO ERRORS ONLY TESTING MESSAGES";
-            case 1 -> "PLUMBING IN PROGRESS";
-            case 2 -> "DRILLING IN PROGRESS";
-            case 3 -> "SLIDING IN PROGRESS";
-            default -> "";
-        };
+        string =errorMessage(mDrillStatus);
 
     }
 
@@ -87,6 +83,45 @@ public class Dialog_Error_Codes_Drill {
             dialog.dismiss();
         });
 
+    }
+
+    private static String errorMessage(int status) {
+        String s = switch (status) {
+            case 0 -> "NO ERRORS";
+
+            case 10 -> "GPS not Fix or Machine not in Range";
+            case 11 -> "Main Encoder ERROR Check Cabling";
+            case 12 -> "Emergency Pressed or Remote Disabled";
+            case 13 -> "Line Distance Not in Range for AutoSteer";
+
+            case 14 -> "Safety Sensor 1";
+            case 15 -> "Safety Sensor 2";
+            case 16 -> "Safety Sensor 3";
+            case 17 -> "Safety Sensor 4";
+            case 18 -> "Safety Sensor 5";
+            case 19 -> "Safety Sensor 6";
+
+            case 20 -> "Machine or GPS Not in Range for AutoSteer";
+            case 21 -> "Machine Orientation Not in Range for AutoSteer";
+            case 22 -> "Mast Slope Not in Range for AutoSteer";
+            case 23 -> "Next Pole Too Near AutoSteer not Permitted";
+            case 24 -> "Nearest Pole Behind You. AutoSteer not Permitted";
+
+            case 25 -> "Mast Tilt Sensor ERROR Check Cabling";
+            case 26 -> "Machine Frame Sensor ERROR Check Cabling";
+            case 27 -> "First IO Fault";
+            case 28 -> "Second IO Fault";
+            case 29 -> "Linear Encoder T Slide ERROR Check Cabling";
+            case 30 -> "Linear Encoder L Slide ERROR Check Cabling";
+            case 31 -> "Mast Position Encoder ERROR Check Cabling";
+            case 32 -> "Oil Heating Active. Please Wait...";
+            case 33 -> "Machine Frame Not in Range";
+            case 256 -> "Log Suspended...Rods Changing";
+
+            default -> " _ ";
+        };
+
+        return s;
     }
 
 }
