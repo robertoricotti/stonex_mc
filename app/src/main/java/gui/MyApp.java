@@ -143,6 +143,7 @@ import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
     public static final String gnssFirmware = "STX-SMC-App2.12.260320-BootV114-KernelV108.bin";
+    public static final String ecuDrillFirmware="Universal_PileDriver_V2_26052026.lhx";
     public static boolean UPDATE_CHECKED = false;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;

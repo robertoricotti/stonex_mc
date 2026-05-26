@@ -114,6 +114,7 @@ import packexcalib.exca.Sensors_Decoder_Drill;
 import packexcalib.gnss.NmeaListener;
 import utils.MyDeviceManager;
 import utils.MyMCUtils;
+import utils.Plus1DiagClient;
 
 
 public class CanSender extends Service {
@@ -1606,6 +1607,13 @@ public class CanSender extends Service {
     }
     public static int requestZeroedTilt;
     public static int requestZeroedEnc;
+
+
+
+
+
+
+
 
 }
 

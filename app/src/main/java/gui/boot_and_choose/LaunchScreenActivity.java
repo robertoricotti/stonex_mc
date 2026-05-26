@@ -2,6 +2,7 @@ package gui.boot_and_choose;
 
 import static gui.MyApp.activationCode;
 import static gui.MyApp.deviceBuild;
+import static gui.MyApp.ecuDrillFirmware;
 import static gui.MyApp.folderPath;
 import static gui.MyApp.gnssFirmware;
 import static gui.MyApp.licenseType;
@@ -296,6 +297,10 @@ public class LaunchScreenActivity extends BaseClass {
         if (!directory.exists()) {
             directory.mkdir();
         }
+        directory = new File(path + "/ECU FirmWare");
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
 
 
         try {
@@ -325,6 +330,21 @@ public class LaunchScreenActivity extends BaseClass {
                         gnssFirmware,     // nome file in assets
                         fpath,
                         gnssFirmware     // nome file output
+                );
+            }
+        } catch (Exception ignored) {
+
+        }
+        try {
+            String fpath = Environment.getExternalStorageDirectory().toString()
+                    + folderPath + "/ECU FirmWare";
+            File ffile = new File(fpath + "/" + ecuDrillFirmware);
+            if (!ffile.exists()) {
+                String result = MyApp.copyGeoidFromAssetsIfFolderExists(
+                        this,
+                        ecuDrillFirmware,     // nome file in assets
+                        fpath,
+                        ecuDrillFirmware     // nome file output
                 );
             }
         } catch (Exception ignored) {
