@@ -31,7 +31,7 @@ public class Mast_Antenna extends AppCompatActivity {
     MastAntennaCanvasView mastAntennaCanvas;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isRepeating = false;
-    EditText dx, dY, dZ, dHdt;
+    EditText dx, dY, dZ, dHdt,g1g2;
     ImageView gpsDebug;
     int indexMachineSelected;
     int indexMeasure;
@@ -56,6 +56,7 @@ public class Mast_Antenna extends AppCompatActivity {
         zp = findViewById(R.id.but_piu_z);
         hm = findViewById(R.id.but_meno_h);
         hp = findViewById(R.id.but_piu_h);
+        g1g2=findViewById(R.id.g1g2);
 
         titolo = findViewById(R.id.titolo);
         update = findViewById(R.id.updateTool);
@@ -93,6 +94,8 @@ public class Mast_Antenna extends AppCompatActivity {
             MyData.push("M" + indexMachineSelected + "Tool_Delta_Y", Utils.writeMetri(dY.getText().toString().replace(",", ".")));
             MyData.push("M" + indexMachineSelected + "Tool_Delta_Z", Utils.writeMetri(dZ.getText().toString().replace(",", ".")));
             MyData.push("M" + indexMachineSelected + "_OffsetGPS2", dHdt.getText().toString().replace(",", "."));
+            MyData.push("M" + indexMachineSelected + "_distG1_G2", Utils.writeMetri(g1g2.getText().toString().replace(",", ".")));
+
 
         });
         save.setOnClickListener(view -> {
@@ -102,6 +105,8 @@ public class Mast_Antenna extends AppCompatActivity {
             MyData.push("M" + indexMachineSelected + "Tool_Delta_Y", Utils.writeMetri(dY.getText().toString().replace(",", ".")));
             MyData.push("M" + indexMachineSelected + "Tool_Delta_Z", Utils.writeMetri(dZ.getText().toString().replace(",", ".")));
             MyData.push("M" + indexMachineSelected + "_OffsetGPS2", dHdt.getText().toString().replace(",", "."));
+            MyData.push("M" + indexMachineSelected + "_distG1_G2", Utils.writeMetri(g1g2.getText().toString().replace(",", ".")));
+
             startService(new Intent(this, UpdateValuesService.class));
             startActivity(new Intent(this, Nuova_Machine_Settings.class));
             finish();
@@ -147,7 +152,17 @@ public class Mast_Antenna extends AppCompatActivity {
             DataSaved.deltaGPS2 -= 0.01;
             updateTxt();
         });
+        g1g2.setOnClickListener(view -> {
 
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(g1g2);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(g1g2);
+            }
+
+        });
 
         dx.setOnClickListener(view -> {
             if (indexMeasure == 4 || indexMeasure == 5) {
@@ -210,18 +225,13 @@ public class Mast_Antenna extends AppCompatActivity {
 
     }
 
-  /*  private void updateOnClose() {
-        DataSaved.Tool_Delta_X = Double.parseDouble(Utils.writeMetri((dx.getText().toString())));
-        DataSaved.Tool_Delta_Y = Double.parseDouble(Utils.writeMetri((dY.getText().toString())));
-        DataSaved.Tool_Delta_Z = Double.parseDouble(Utils.writeMetri((dZ.getText().toString())));
-        DataSaved.deltaGPS2 = Double.parseDouble(((dHdt.getText().toString())));
 
-    }*/
   private void updateOnClose() {
       DataSaved.Tool_Delta_X = Double.parseDouble(Utils.writeMetri((dx.getText().toString())));
       DataSaved.Tool_Delta_Y = Double.parseDouble(Utils.writeMetri((dY.getText().toString())));
       DataSaved.Tool_Delta_Z = Double.parseDouble(Utils.writeMetri((dZ.getText().toString())));
       DataSaved.deltaGPS2 = Double.parseDouble(((dHdt.getText().toString())));
+      DataSaved.distG1_G2 = Double.parseDouble(Utils.writeMetri((g1g2.getText().toString())));
 
       if (mastAntennaCanvas != null) {
           mastAntennaCanvas.invalidate();
@@ -258,7 +268,9 @@ public class Mast_Antenna extends AppCompatActivity {
         } else {
             gpsDebug.setImageTintList(ColorStateList.valueOf(Color.RED));
         }
-
+        if (mastAntennaCanvas != null) {
+            mastAntennaCanvas.invalidate();
+        }
 
     }
 
@@ -269,17 +281,12 @@ public class Mast_Antenna extends AppCompatActivity {
 
     }
 
-   /* private void updateTxt() {
-        dx.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_X)));
-        dY.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Y)));
-        dZ.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Z)));
-        dHdt.setText(String.format("%.3f", DataSaved.deltaGPS2).replace(",", "."));
-    }*/
    private void updateTxt() {
        dx.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_X)));
        dY.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Y)));
        dZ.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Z)));
        dHdt.setText(String.format("%.3f", DataSaved.deltaGPS2).replace(",", "."));
+       g1g2.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.distG1_G2)));
 
        if (mastAntennaCanvas != null) {
            mastAntennaCanvas.invalidate();

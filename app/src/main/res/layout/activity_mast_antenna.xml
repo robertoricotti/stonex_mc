@@ -32,6 +32,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.7" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/h85"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/h4"
@@ -224,6 +230,21 @@
         app:layout_constraintStart_toStartOf="@+id/v60"
         app:layout_constraintTop_toTopOf="@+id/h4" />
 
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="G1 --- G2"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/h85"
+        app:layout_constraintEnd_toStartOf="@+id/guideline125"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/v60"
+        app:layout_constraintTop_toTopOf="@+id/h60"
+        app:layout_constraintVertical_bias="0.0" />
+
     <ImageView
         android:id="@+id/but_meno_x"
         android:layout_width="40dp"
@@ -338,6 +359,24 @@
         app:layout_constraintRight_toLeftOf="@id/but_piu_h"
         app:layout_constraintLeft_toRightOf="@id/but_meno_h"
         app:layout_constraintTop_toTopOf="@+id/h4" />
+    <EditText
+        android:id="@+id/g1g2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:digits="0123456789."
+        android:focusableInTouchMode="false"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:inputType="numberSigned"
+        android:maxLines="1"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/h85"
+        app:layout_constraintRight_toLeftOf="@id/but_piu_h"
+        app:layout_constraintLeft_toRightOf="@id/but_meno_h"
+        app:layout_constraintTop_toTopOf="@+id/h60" />
 
     <ImageView
         android:id="@+id/but_piu_h"

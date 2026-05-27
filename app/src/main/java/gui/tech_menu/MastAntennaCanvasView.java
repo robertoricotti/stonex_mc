@@ -1,4 +1,5 @@
 package gui.tech_menu;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -16,6 +17,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import java.util.Objects;
+
 import packexcalib.exca.DataSaved;
 
 public class MastAntennaCanvasView extends View {
@@ -26,32 +29,32 @@ public class MastAntennaCanvasView extends View {
 
     private boolean isScaling = false;
     private ScaleGestureDetector scaleGestureDetector;
-    private static final float MIN_ZOOM = 0.60f;
+    private static final float MIN_ZOOM = 0.80f;
     private static final float MAX_ZOOM = 2.50f;
     private static final float ZOOM_STEP = 0.10f;
 
-    private float userZoom = 1.0f;
-    private static final float MACHINE_DRAW_SCALE = 1.85f;
-    private static final float ANTENNA_1_TO_ANTENNA_2_DISTANCE_M = 0.6f;
-    private static final float ANTENNA_2_BASE_ANGLE_DEG = 0.0f;
+    private float userZoom = 2.0f;
+    private static final float MACHINE_DRAW_SCALE = 1.25f;
+   //private static final float ANTENNA_1_TO_ANTENNA_2_DISTANCE_M = 0.6f;
+    private static  float ANTENNA_2_BASE_ANGLE_DEG = 0.0f;
 
     /*
      * Nuova scala "metrica" della macchina:
      * - larghezza totale macchina (cingolo esterno -> cingolo esterno) ~ 2 m
      * - lunghezza macchina ~ 3 m
      */
-    private static final float MACHINE_TOTAL_WIDTH_M = 2.0f;
-    private static final float MACHINE_LENGTH_M = 3.0f;
+    private static final float MACHINE_TOTAL_WIDTH_M = 1.30f;
+    private static final float MACHINE_LENGTH_M = 1.50f;
     private static final float TRACK_WIDTH_M = 0.35f;
-    private static final float BODY_LENGTH_M = 2.20f;
+    private static final float BODY_LENGTH_M = 1.40f;
 
     /*
      * Anche le dimensioni grafiche di martello e antenne
      * vengono agganciate alla stessa scala.
      */
     private static final float HAMMER_SIZE_M = 0.65f;
-    private static final float ANTENNA_1_RADIUS_M = 0.28f;
-    private static final float ANTENNA_2_RADIUS_M = 0.24f;
+    private static final float ANTENNA_1_RADIUS_M = 0.22f;
+    private static final float ANTENNA_2_RADIUS_M = 0.22f;
 
     private final Paint machinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint machineStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -163,29 +166,34 @@ public class MastAntennaCanvasView extends View {
         if (w <= 0 || h <= 0) return;
 
         final float machineCenterX = w * 0.5f;
-        final float machineCenterY = h * 0.65f;
+         float machineCenterY = h * 0.65f;
 
 
 
         float hammerX;
         float hammerY;
 
-        String mastPosition = DataSaved.Drill_Mast_Position;
 
         /*
          * La macchina rimane sempre fissa e orientata verso l’alto.
          * Cambia solo la posizione del martello attorno alla macchina.
          */
-        if (mastPosition == MAST_LEFT) {
-            hammerX = w * 0.45f;
+        if (Objects.equals(DataSaved.Drill_Mast_Position, MAST_LEFT)) {
+            ANTENNA_2_BASE_ANGLE_DEG=-90.0f;
+            hammerX = w * 0.40f;
             hammerY = h * 0.50f;
-        } else if (mastPosition == MAST_RIGHT) {
-            hammerX = w * 0.55f;
+            machineCenterY = h * 0.5f;
+        } else if (Objects.equals(DataSaved.Drill_Mast_Position, MAST_RIGHT)) {
+            ANTENNA_2_BASE_ANGLE_DEG=-90.0f;
+            hammerX = w * 0.6f;
             hammerY = h * 0.50f;
+            machineCenterY = h * 0.5f;
         } else {
             // MAST_FORWARD
+            ANTENNA_2_BASE_ANGLE_DEG=0.0f;
             hammerX = w * 0.50f;
             hammerY = h * 0.45f;
+            machineCenterY = h * 0.65f;
         }
 
         final float deltaX = (float) DataSaved.Tool_Delta_X;
@@ -207,13 +215,13 @@ public class MastAntennaCanvasView extends View {
         float antenna1X;
         float antenna1Y;
 
-        if (mastPosition == MAST_LEFT || mastPosition == MAST_RIGHT) {
+        if (Objects.equals(DataSaved.Drill_Mast_Position, MAST_LEFT) || Objects.equals(DataSaved.Drill_Mast_Position, MAST_RIGHT)) {
             /*
              * MAST LEFT / RIGHT
              * X++ => destra
              * Y++ => basso
              */
-            antenna1X = hammerX + deltaX * scale;
+            antenna1X = hammerX - deltaX * scale;
             antenna1Y = hammerY + deltaY * scale;
         } else {
             /*
@@ -222,7 +230,7 @@ public class MastAntennaCanvasView extends View {
              * Y++ => sinistra
              */
             antenna1X = hammerX - deltaY * scale;
-            antenna1Y = hammerY + deltaX * scale;
+            antenna1Y = hammerY - deltaX * scale;
         }
 
         /*
@@ -238,7 +246,7 @@ public class MastAntennaCanvasView extends View {
         float antenna2Y = antenna1Y + (float) Math.sin(antenna2AngleRad) * antenna2RadiusPx;
 
         drawHammer(canvas, hammerX, hammerY, scale);
-        drawAntennas(canvas, antenna1X, antenna1Y, antenna2X, antenna2Y, hammerX, hammerY, mastPosition, scale);
+        drawAntennas(canvas, antenna1X, antenna1Y, antenna2X, antenna2Y, hammerX, hammerY, DataSaved.Drill_Mast_Position, scale);
         canvas.restore();
     }
 
@@ -332,14 +340,14 @@ public class MastAntennaCanvasView extends View {
          * Freccia frontale verso l’alto display
          */
         float arrowSize = 0.35f * machineScale;
-        float arrowStartY = body.top - dp(6);
+        float arrowStartY = cy - dp(6);
         float arrowEndY = arrowStartY - arrowSize;
 
         canvas.drawLine(cx, arrowStartY, cx, arrowEndY, machineStrokePaint);
         canvas.drawLine(cx, arrowEndY, cx - arrowSize * 0.35f, arrowEndY + arrowSize * 0.35f, machineStrokePaint);
         canvas.drawLine(cx, arrowEndY, cx + arrowSize * 0.35f, arrowEndY + arrowSize * 0.35f, machineStrokePaint);
 
-        //canvas.drawText("MACCHINA", cx, cy + machineLengthPx / 2f + dp(28), textPaint);
+        //canvas.drawText("MCH", cx, cy + machineLengthPx / 2f + dp(28), textPaint);
     }
 
     private void drawAntennas(
@@ -392,12 +400,12 @@ public class MastAntennaCanvasView extends View {
         // antenna 1
         canvas.drawCircle(antenna1X, antenna1Y, antenna1Radius, antenna1Paint);
         canvas.drawCircle(antenna1X, antenna1Y, antenna1Radius, hammerStrokePaint);
-        //canvas.drawText("ANT 1", antenna1X, antenna1Y - antenna1Radius - dp(8), textPaint);
+        //canvas.drawText("1", antenna1X, antenna1Y , textPaint);
 
         // antenna 2
         canvas.drawCircle(antenna2X, antenna2Y, antenna2Radius, antenna2Paint);
         canvas.drawCircle(antenna2X, antenna2Y, antenna2Radius, hammerStrokePaint);
-        //canvas.drawText("ANT 2", antenna2X, antenna2Y - antenna2Radius - dp(8), textPaint);
+        //canvas.drawText("2", antenna2X, antenna2Y , textPaint);
     }
 
     private float dp(float value) {
@@ -457,6 +465,6 @@ public class MastAntennaCanvasView extends View {
          * In pratica:
          * distanza = 2 m + abs(deltaY)
          */
-        return ANTENNA_1_TO_ANTENNA_2_DISTANCE_M + Math.abs(deltaY);
+        return (float) DataSaved.distG1_G2;
     }
 }
