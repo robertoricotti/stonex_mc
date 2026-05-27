@@ -610,28 +610,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.8 test preliminari DitchOK+TurchiOK">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/utils/CanFrame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/utils/Plus1DiagClient.java" afterDir="false" />
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.8 RELEASE">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/MastAntennaCanvasView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/24_130_SemiAuto.p1m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/70123519.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/70123519v170.SYS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/MC024_130_132lgT.scs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/MC024_130_SemiAuto.p1m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/ProjectParameters.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/Universal_PileDriver.p1m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/Universal_PileDriver.p1x" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gen2/release/output-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/gen2/release/output-metadata.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/MC024_130_nl_T.scs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/Universal_PileDriver_V2.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/Universal_PileDriver_V2.p1m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/Universal_PileDriver_V2_241.lhx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LaunchScreenActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LaunchScreenActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Mast_Antenna.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Mast_Antenna.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_mast_antenna.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_mast_antenna.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -743,7 +731,7 @@
   },
   "keyToStringList": {
     "ExportApk.BuildVariants": [
-      "gen2Release"
+      "gen1Release"
     ]
   }
 }]]></component>
@@ -895,14 +883,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00209" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
-      <option name="closed" value="true" />
-      <created>1775906576331</created>
-      <option name="number" value="00209" />
-      <option name="presentableId" value="LOCAL-00209" />
-      <option name="project" value="LOCAL" />
-      <updated>1775906576331</updated>
     </task>
     <task id="LOCAL-00210" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
       <option name="closed" value="true" />
@@ -1288,7 +1268,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779716339178</updated>
     </task>
-    <option name="localTasksCounter" value="258" />
+    <task id="LOCAL-00258" summary="4.1.8 RELEASE">
+      <option name="closed" value="true" />
+      <created>1779811720177</created>
+      <option name="number" value="00258" />
+      <option name="presentableId" value="LOCAL-00258" />
+      <option name="project" value="LOCAL" />
+      <updated>1779811720177</updated>
+    </task>
+    <option name="localTasksCounter" value="259" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1304,7 +1292,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.4 Test pick polyline OK" />
     <MESSAGE value="4.1.4 Test pick polyline OK+AUTO SOLAR" />
     <MESSAGE value="14042026_1130" />
     <MESSAGE value="4.1.4 pre release" />
@@ -1329,7 +1316,8 @@
     <MESSAGE value="4.1.8 Integrzione relebox Step 1+sezione 1 punto 99% da testare da turchi" />
     <MESSAGE value="4.1.8 test MichePesci" />
     <MESSAGE value="4.1.8 test preliminari DitchOK+TurchiOK" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.8 test preliminari DitchOK+TurchiOK" />
+    <MESSAGE value="4.1.8 RELEASE" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.8 RELEASE" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
   <component name="play_dynamic_filters_status">
@@ -1337,22 +1325,22 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1779702590855" />
+            <CheckInfo lastCheckTimestamp="1779880806479" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1779702590856" />
+            <CheckInfo lastCheckTimestamp="1779880806478" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1779702590857" />
+            <CheckInfo lastCheckTimestamp="1779880806477" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1779702590856" />
+            <CheckInfo lastCheckTimestamp="1779880806479" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other">

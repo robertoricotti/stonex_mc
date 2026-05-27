@@ -28,6 +28,7 @@ import utils.MyData;
 import utils.Utils;
 
 public class Mast_Antenna extends AppCompatActivity {
+    MastAntennaCanvasView mastAntennaCanvas;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isRepeating = false;
     EditText dx, dY, dZ, dHdt;
@@ -46,6 +47,7 @@ public class Mast_Antenna extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mast_antenna);
+        mastAntennaCanvas = findViewById(R.id.mastAntennaCanvas);
         xm = findViewById(R.id.but_meno_x);
         xp = findViewById(R.id.but_piu_x);
         ym = findViewById(R.id.but_meno_y);
@@ -208,13 +210,23 @@ public class Mast_Antenna extends AppCompatActivity {
 
     }
 
-    private void updateOnClose() {
+  /*  private void updateOnClose() {
         DataSaved.Tool_Delta_X = Double.parseDouble(Utils.writeMetri((dx.getText().toString())));
         DataSaved.Tool_Delta_Y = Double.parseDouble(Utils.writeMetri((dY.getText().toString())));
         DataSaved.Tool_Delta_Z = Double.parseDouble(Utils.writeMetri((dZ.getText().toString())));
         DataSaved.deltaGPS2 = Double.parseDouble(((dHdt.getText().toString())));
 
-    }
+    }*/
+  private void updateOnClose() {
+      DataSaved.Tool_Delta_X = Double.parseDouble(Utils.writeMetri((dx.getText().toString())));
+      DataSaved.Tool_Delta_Y = Double.parseDouble(Utils.writeMetri((dY.getText().toString())));
+      DataSaved.Tool_Delta_Z = Double.parseDouble(Utils.writeMetri((dZ.getText().toString())));
+      DataSaved.deltaGPS2 = Double.parseDouble(((dHdt.getText().toString())));
+
+      if (mastAntennaCanvas != null) {
+          mastAntennaCanvas.invalidate();
+      }
+  }
 
     public void updateUI() {
         switch (indexMeasure) {
@@ -257,12 +269,22 @@ public class Mast_Antenna extends AppCompatActivity {
 
     }
 
-    private void updateTxt() {
+   /* private void updateTxt() {
         dx.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_X)));
         dY.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Y)));
         dZ.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Z)));
         dHdt.setText(String.format("%.3f", DataSaved.deltaGPS2).replace(",", "."));
-    }
+    }*/
+   private void updateTxt() {
+       dx.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_X)));
+       dY.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Y)));
+       dZ.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Tool_Delta_Z)));
+       dHdt.setText(String.format("%.3f", DataSaved.deltaGPS2).replace(",", "."));
+
+       if (mastAntennaCanvas != null) {
+           mastAntennaCanvas.invalidate();
+       }
+   }
 
     private void setupAutoRepeat(ImageView button, Runnable action) {
         button.setOnClickListener(v -> action.run());
