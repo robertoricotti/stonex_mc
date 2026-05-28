@@ -3031,7 +3031,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private boolean startDrillIfPossible() {
-        if (PointService.okStart && !isDrilling) {
+        if ( !isDrilling) {
             play = true;
             stop = false;
             abort = false;

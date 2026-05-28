@@ -139,6 +139,7 @@
     </LinearLayout>
 
     <ImageView
+        android:visibility="invisible"
         android:id="@+id/updateTool"
         android:layout_width="60dp"
         android:layout_height="60dp"

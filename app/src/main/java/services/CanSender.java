@@ -1591,9 +1591,13 @@ public class CanSender extends Service {
         });
         int deltaZeta = (int) (remainingZed * 1000);
         byte[] zetazeta = PLC_DataTypes_LittleEndian.S16_to_bytes((short) deltaZeta);
+        byte usaEncoder=0;
+        if(DataSaved.lrRotary!=0){
+            usaEncoder= (byte) 0xFA;
+        }
 
         MyDeviceManager.CanWrite(true, 1, 0x192, 8, new byte[]{
-                zetazeta[0], zetazeta[1], 0, 0, 0, 0, 0, (byte) postRemains
+                zetazeta[0], zetazeta[1], 0, 0, 0, 0, usaEncoder, (byte) postRemains
         });
         int deltax = (int) (Solar_Delta_X * 1000 * REVERSE_DRILL_X);
         int deltay = (int) (Solar_Delta_Y * 1000 * REVERSE_DRILL_Y);

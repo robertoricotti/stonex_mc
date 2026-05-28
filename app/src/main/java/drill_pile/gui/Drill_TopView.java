@@ -192,17 +192,7 @@ public class Drill_TopView extends View {
             if (DataSaved.isAutoSnap == 2) {
                 ensurePickCache();
             }
-
-            drawDrillPoints();
-            if (DataSaved.Selected_Point3D_Drill != null) {
-                drawSelectedPoint(DataSaved.Selected_Point3D_Drill);
-            }
-
             PointF toolScreen = new PointF(toolX, toolY);
-
-// scala UI dedicata a macchina/target
-            float mts = targetScale;
-
 // 0) MCH Frame
             if (drawMachineSchema) {
                 boolean mastSX = DataSaved.Drill_Mast_Position.equals(MAST_LEFT);
@@ -211,6 +201,17 @@ public class Drill_TopView extends View {
 
                 drawMachineSchemaNearTool(canvas, paint, toolScreen, mastSX, mastFW, mastDX);
             }
+            drawDrillPoints();
+            if (DataSaved.Selected_Point3D_Drill != null) {
+                drawSelectedPoint(DataSaved.Selected_Point3D_Drill);
+            }
+
+
+
+// scala UI dedicata a macchina/target
+            float mts = targetScale;
+
+
 
 // 1) target giallo: drillbit
             drawTarget(

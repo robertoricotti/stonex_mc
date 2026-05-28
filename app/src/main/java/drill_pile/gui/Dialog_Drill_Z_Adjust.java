@@ -1,5 +1,7 @@
 package drill_pile.gui;
 
+import static packexcalib.exca.ExcavatorLib.toolEndCoord;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -22,12 +24,14 @@ import utils.MyData;
 import utils.Utils;
 
 public class Dialog_Drill_Z_Adjust {
+    private static final long UI_UPDATE_INTERVAL_MS = 80;
+    private boolean uiUpdateRunning = false;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isRepeating = false;
     Activity activity;
     public Dialog dialog;
     ImageView close,btnPiu,btnMeno,btReset;
-    TextView valore;
+    TextView valore,tito;
     DisplayMetrics displayMetrics;
     int larg = 1000, alt = 600;
     int units,machineSelected;
@@ -50,6 +54,7 @@ public class Dialog_Drill_Z_Adjust {
         dialog.setContentView(R.layout.dialog_drill_z_adjust);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setOnDismissListener(d -> stopUiUpdates());
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente
@@ -68,6 +73,7 @@ public class Dialog_Drill_Z_Adjust {
         findView();
         init();
         onClick();
+        startUiUpdates();
 
     }
 
@@ -80,11 +86,19 @@ public class Dialog_Drill_Z_Adjust {
         btnPiu=dialog.findViewById(R.id.btPiu);
         btnMeno=dialog.findViewById(R.id.btMeno);
         btReset=dialog.findViewById(R.id.btReset);
+        tito=dialog.findViewById(R.id.tito);
     }
     private void init(){
         updateValore();
+    }
 
+    private void updateUI() {
+        if (tito == null) return;
 
+        String stringa = "Tool Z: " +
+                Utils.showCoords(String.valueOf(toolEndCoord[2])).replace(",", ".");
+
+        tito.setText(stringa + " " + Utils.getMetriSimbol());
     }
     private void onClick(){
         btReset.setOnClickListener(v -> {
@@ -96,6 +110,7 @@ public class Dialog_Drill_Z_Adjust {
             return true;
         });
         close.setOnClickListener(v -> {
+            stopUiUpdates();
             MyData.push("M" + machineSelected + "drill_Bit_Len", Utils.writeMetri(String.valueOf(DataSaved.drill_Bit_Len).replace(",", ".")));
             dialog.dismiss();
         });
@@ -159,5 +174,30 @@ public class Dialog_Drill_Z_Adjust {
             }
             return false;
         });
+    }
+
+    private final Runnable uiUpdateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!uiUpdateRunning || dialog == null || !dialog.isShowing()) {
+                return;
+            }
+
+            updateUI();
+
+            handler.postDelayed(this, UI_UPDATE_INTERVAL_MS);
+        }
+    };
+
+    private void startUiUpdates() {
+        if (uiUpdateRunning) return;
+
+        uiUpdateRunning = true;
+        handler.post(uiUpdateRunnable);
+    }
+
+    private void stopUiUpdates() {
+        uiUpdateRunning = false;
+        handler.removeCallbacks(uiUpdateRunnable);
     }
 }
