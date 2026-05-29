@@ -1602,10 +1602,7 @@ public class CanSender extends Service {
         });
         int deltax = (int) (Solar_Delta_X * 1000 * REVERSE_DRILL_X);
         int deltay = (int) (Solar_Delta_Y * 1000 * REVERSE_DRILL_Y);
-        if(AB_REVERSED){
-            deltax=deltax*-1;
-            deltay=deltay*-1;
-        }
+
         byte[] delyaXX = PLC_DataTypes_LittleEndian.S16_to_bytes((short) deltax);
         byte[] delyaYY = PLC_DataTypes_LittleEndian.S16_to_bytes((short) deltay);
         MyDeviceManager.CanWrite(true, 1, 0x7D, 8, new byte[]{

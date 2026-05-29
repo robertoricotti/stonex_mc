@@ -212,16 +212,30 @@ public class PointService extends Service {
                 if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
                     try {
                         if (Selected_Point3D_Drill != null && toolEndCoord != null) {
-                            MovementDelta.Delta result = MovementDelta.calculateDelta(
-                                    toolEndCoord[0], toolEndCoord[1],   // target
-                                    Selected_Point3D_Drill.getEndX(), Selected_Point3D_Drill.getEndY()    // destinazione
-                            );
-                            if (!AB_REVERSED) {
+
+                            final Double txObj = Selected_Point3D_Drill.getHeadX();
+                            final Double tyObj = Selected_Point3D_Drill.getHeadY();
+
+                            if (txObj == null || tyObj == null) {
+                                Solar_Delta_X = 0;
+                                Solar_Delta_Y = 0;
+                            } else {
+                                double machineBearing = normalizeAngle(NmeaListener.mch_Orientation + DataSaved.deltaGPS2);
+
+                                MovementDelta.Delta result = MovementDelta.calculateSolarDelta(
+                                        toolEndCoord[0],
+                                        toolEndCoord[1],
+                                        txObj,
+                                        tyObj,
+                                        DataSaved.ALLINEAMENTO_AB,
+                                        machineBearing
+                                );
+
+                                // Convenzione:
+                                // Solar_Delta_X = errore laterale rispetto alla linea AB, sx/dx
+                                // Solar_Delta_Y = errore longitudinale rispetto al punto, avanti/dietro
                                 Solar_Delta_X = result.deltaX;
                                 Solar_Delta_Y = result.deltaY;
-                            } else {
-                                Solar_Delta_X = -result.deltaX;
-                                Solar_Delta_Y = -result.deltaY;
                             }
                         }
                     } catch (Exception e) {
@@ -867,12 +881,12 @@ public class PointService extends Service {
         }
     }
 
-    public class MovementDelta {
+    public static class MovementDelta {
 
         public static class Delta {
-            public final double deltaX; // linea verde
-            public final double deltaY; // linea viola
-            public final double distance; // linea blu (opzionale)
+            public final double deltaX; // laterale: sinistra/destra rispetto alla linea AB
+            public final double deltaY; // longitudinale: avanti/dietro rispetto al punto sulla linea
+            public final double distance; // distanza euclidea XY dal target
 
             public Delta(double deltaX, double deltaY, double distance) {
                 this.deltaX = deltaX;
@@ -881,20 +895,70 @@ public class PointService extends Service {
             }
         }
 
-        public static Delta calculateDelta(
-                double xTarget, double yTarget,
-                double xDest, double yDest) {
+        /**
+         * Calcola delta SOLAR_FARM in un riferimento locale stabile.
+         *
+         * Input coordinate:
+         * - X = Est
+         * - Y = Nord
+         *
+         * Output:
+         * - deltaX = errore laterale rispetto alla linea AB (sinistra/destra)
+         * - deltaY = errore longitudinale rispetto al punto target (avanti/dietro)
+         *
+         * Nota importante:
+         * AB viene reso coerente con il verso attuale macchina. Se la macchina guarda più verso BA
+         * che verso AB, il versore della linea viene invertito automaticamente. Così i segni restano
+         * coerenti anche girando la macchina di 180°.
+         */
+        public static Delta calculateSolarDelta(
+                double machineX,
+                double machineY,
+                double targetX,
+                double targetY,
+                double abBearingDeg,
+                double machineBearingDeg
+        ) {
 
-            // Delta con segno secondo le tue regole
-            double deltaX = xTarget - xDest; // negativo se a sinistra
-            double deltaY = yTarget - yDest; // negativo se oltre (sopra)
+            double brad = Math.toRadians(normalizeAngle(abBearingDeg));
 
-            // Lunghezza linea blu (distanza euclidea)
-            double distance = Math.sqrt(
-                    Math.pow(deltaX, 2) + Math.pow(deltaY, 2)
-            );
+            // Versore linea AB, coordinate X=Est, Y=Nord
+            double ux = Math.sin(brad);
+            double uy = Math.cos(brad);
 
-            return new Delta(deltaY, deltaX, distance);
+            double mrad = Math.toRadians(normalizeAngle(machineBearingDeg));
+
+            // Versore direzione macchina, coordinate X=Est, Y=Nord
+            double mx = Math.sin(mrad);
+            double my = Math.cos(mrad);
+
+            // Se la macchina guarda più verso BA che verso AB, inverto il riferimento locale.
+            // In questo modo avanti/dietro e sx/dx restano coerenti rispetto alla macchina.
+            double dotMachineLine = mx * ux + my * uy;
+
+            if (dotMachineLine < 0.0) {
+                ux = -ux;
+                uy = -uy;
+            }
+
+            // Normale laterale alla linea scelta.
+            // Con questa definizione il segno laterale è stabile rispetto al verso locale scelto.
+            double nx = -uy;
+            double ny = ux;
+
+            // Errore: posizione macchina rispetto al target.
+            double ex = machineX - targetX;
+            double ey = machineY - targetY;
+
+            // Proiezione locale:
+            // along   = avanti/dietro lungo AB locale
+            // lateral = sinistra/destra rispetto ad AB locale
+            double along = ex * ux + ey * uy;
+            double lateral = ex * nx + ey * ny;
+
+            double distance = Math.sqrt(ex * ex + ey * ey);
+
+            return new Delta(lateral, along, distance);
         }
     }
 
