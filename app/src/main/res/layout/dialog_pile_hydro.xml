@@ -96,28 +96,28 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/_____cancel_text" />
+            android:background="@color/blue_dark" />
         <CheckBox
-            android:buttonTint="@color/black"
+            android:buttonTint="@color/blue"
             android:layout_marginVertical="5dp"
             android:id="@+id/ck6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reverse_Slide_T"
-            android:textColor="@color/black"
+            android:textColor="@color/blue"
             android:textSize="18dp" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/_____cancel_text" />
+            android:background="@color/blue_dark" />
         <CheckBox
-            android:buttonTint="@color/black"
+            android:buttonTint="@color/blue"
             android:layout_marginVertical="5dp"
             android:id="@+id/ck7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reverse_Slide_L   "
-            android:textColor="@color/black"
+            android:textColor="@color/blue"
             android:textSize="18dp" />
 
         <View

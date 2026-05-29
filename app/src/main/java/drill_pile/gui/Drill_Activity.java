@@ -2979,9 +2979,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     private void sendToEcu() {
         Handler handler = new Handler(Looper.getMainLooper());
 
-        byte[] tollXY_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_XY * 1000));
+        byte[] tollXY_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_XY*0.5 * 1000));
         byte[] tollHam_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_Z * 1000));
-        byte[] tollAn_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_Angolo * 1000));
+        byte[] tollAn_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_Angolo*0.5 * 1000));
         byte[] windowT = PLC_DataTypes_LittleEndian.U16_to_bytes(35);
 
         handler.post(() ->

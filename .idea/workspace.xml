@@ -610,17 +610,17 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.9 dinamic antenna calib">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.9 pre release">
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gen2/release/output-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/gen2/release/output-metadata.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/MC024_130_nl_T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/MC024_130_nl_T.scs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/Universal_PileDriver_V2.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/MC_024_130_SemiAuto/_24_130_SemiAuto/Universal_PileDriver_V2.p1m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_Drill_Z_Adjust.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_Drill_Z_Adjust.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_TopView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_mast_antenna.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_mast_antenna.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_pile_hydro.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_pile_hydro.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -630,7 +630,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=512DS96403000001]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=510DS10413200017]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -884,14 +884,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00212" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
-      <option name="closed" value="true" />
-      <created>1775906607360</created>
-      <option name="number" value="00212" />
-      <option name="presentableId" value="LOCAL-00212" />
-      <option name="project" value="LOCAL" />
-      <updated>1775906607360</updated>
     </task>
     <task id="LOCAL-00213" summary="4.1.4 Test pick polyline OK+AUTO SOLAR">
       <option name="closed" value="true" />
@@ -1277,7 +1269,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779924920329</updated>
     </task>
-    <option name="localTasksCounter" value="261" />
+    <task id="LOCAL-00261" summary="4.1.9 pre release">
+      <option name="closed" value="true" />
+      <created>1779964868949</created>
+      <option name="number" value="00261" />
+      <option name="presentableId" value="LOCAL-00261" />
+      <option name="project" value="LOCAL" />
+      <updated>1779964868949</updated>
+    </task>
+    <option name="localTasksCounter" value="262" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1293,7 +1293,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="14042026_1130" />
     <MESSAGE value="4.1.4 pre release" />
     <MESSAGE value="4.1.4 aggiunta lingue scandinave" />
     <MESSAGE value="4.1.5 pre release fix polilyne da XML" />
@@ -1318,7 +1317,8 @@
     <MESSAGE value="4.1.8 test preliminari DitchOK+TurchiOK" />
     <MESSAGE value="4.1.8 RELEASE" />
     <MESSAGE value="4.1.9 dinamic antenna calib" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.9 dinamic antenna calib" />
+    <MESSAGE value="4.1.9 pre release" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.9 pre release" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
   <component name="play_dynamic_filters_status">
@@ -1326,22 +1326,22 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1779880806479" />
+            <CheckInfo lastCheckTimestamp="1779969952101" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1779880806478" />
+            <CheckInfo lastCheckTimestamp="1779969952101" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1779880806477" />
+            <CheckInfo lastCheckTimestamp="1779969952101" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1779880806479" />
+            <CheckInfo lastCheckTimestamp="1779969952099" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other">

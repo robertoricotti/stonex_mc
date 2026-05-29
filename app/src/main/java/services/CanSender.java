@@ -57,6 +57,7 @@ import static services.CanService.tiltDisc;
 import static services.CanService.tiltOK;
 import static services.CanService.toolDisc;
 import static services.CanService.toolOK;
+import static services.PointService.AB_REVERSED;
 import static services.PointService.Solar_Delta_X;
 import static services.PointService.Solar_Delta_Y;
 import static services.TriangleService.ctOffGrid;
@@ -1601,6 +1602,10 @@ public class CanSender extends Service {
         });
         int deltax = (int) (Solar_Delta_X * 1000 * REVERSE_DRILL_X);
         int deltay = (int) (Solar_Delta_Y * 1000 * REVERSE_DRILL_Y);
+        if(AB_REVERSED){
+            deltax=deltax*-1;
+            deltay=deltay*-1;
+        }
         byte[] delyaXX = PLC_DataTypes_LittleEndian.S16_to_bytes((short) deltax);
         byte[] delyaYY = PLC_DataTypes_LittleEndian.S16_to_bytes((short) deltay);
         MyDeviceManager.CanWrite(true, 1, 0x7D, 8, new byte[]{

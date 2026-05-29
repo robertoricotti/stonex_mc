@@ -10,8 +10,8 @@ android {
         applicationId "com.example.stx_mc"
         minSdk 26
         targetSdk 34
-        versionCode 4180
-        versionName "4.1.8"
+        versionCode 4190
+        versionName "4.1.9"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
