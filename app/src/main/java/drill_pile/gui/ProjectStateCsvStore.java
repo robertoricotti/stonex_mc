@@ -45,7 +45,8 @@ public class ProjectStateCsvStore {
             "Start-Time",  // ISO_LOCAL_DATE_TIME (date_time_iso)
             "End-Time",    // ISO_LOCAL_DATE_TIME (date_time_iso)
             "Note",
-            "HoleReportFile" // es: HOLES/<HoleID>.csv (facoltativo)
+            "HoleReportFile", // es: HOLES/<HoleID>.csv (facoltativo)
+            "Hole-Z-Override"
     };
 
     public static class HoleStateEntry {
@@ -55,6 +56,9 @@ public class ProjectStateCsvStore {
         public String endTimeIso = "";
         public String note = "";
         public String holeReportFile = "";
+
+        // Solo SOLARFARM_MODE: quota override del punto/palo
+        public String holeZOverride = "";
     }
 
     private final File stateFile;
@@ -195,7 +199,7 @@ public class ProjectStateCsvStore {
                 e.endTimeIso = (cols.length > 3) ? unquote(cols[3]) : "";
                 e.note = (cols.length > 4) ? unquote(cols[4]) : "";
                 e.holeReportFile = (cols.length > 5) ? unquote(cols[5]) : "";
-
+                e.holeZOverride = (cols.length > 6) ? unquote(cols[6]) : "";
                 cache.put(holeId, e);
             }
         }
@@ -237,7 +241,8 @@ public class ProjectStateCsvStore {
                 nvl(e.startTimeIso),
                 nvl(e.endTimeIso),
                 nvl(e.note),
-                nvl(e.holeReportFile)
+                nvl(e.holeReportFile),
+                nvl(e.holeZOverride)
         };
 
         StringBuilder sb = new StringBuilder(128);
@@ -348,5 +353,120 @@ public class ProjectStateCsvStore {
         String t = s.trim();
         return t.isEmpty() ? null : t;
     }
+
+    public Double getHoleZOverride(String holeId) {
+        if (holeId == null || holeId.trim().isEmpty()) return null;
+
+        HoleStateEntry e = cache.get(holeId);
+        if (e == null) return null;
+
+        if (e.holeZOverride == null || e.holeZOverride.trim().isEmpty()) return null;
+
+        try {
+            return Double.parseDouble(e.holeZOverride.trim().replace(",", "."));
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+    public synchronized void upsertZOverrideAndSave(
+            String holeId,
+            Double zOverride
+    ) throws IOException {
+
+        if (holeId == null || holeId.trim().isEmpty()) {
+            throw new IllegalArgumentException("holeId is empty");
+        }
+
+        HoleStateEntry e = cache.get(holeId);
+        if (e == null) {
+            e = new HoleStateEntry();
+            e.holeId = holeId;
+            cache.put(holeId, e);
+        }
+
+        if (zOverride == null || zOverride.isNaN() || zOverride.isInfinite()) {
+            e.holeZOverride = "";
+        } else {
+            e.holeZOverride = String.format(Locale.US, "%.3f", zOverride);
+        }
+
+        List<HoleStateEntry> all = new ArrayList<>(cache.values());
+        all.sort(Comparator.comparing(a -> a.holeId, String.CASE_INSENSITIVE_ORDER));
+        writeAllToDisk(all);
+    }
+    public synchronized void applyZOverrideToAllPointsAndSave(
+            List<Point3D_Drill> points,
+            Double zOverride
+    ) throws IOException {
+
+        if (points == null || points.isEmpty()) return;
+        if (zOverride == null || zOverride.isNaN() || zOverride.isInfinite()) return;
+
+        for (Point3D_Drill p : points) {
+            if (p == null) continue;
+
+            String holeId = canonicalHoleId(p);
+            if (holeId == null || holeId.trim().isEmpty()) continue;
+
+            HoleStateEntry e = cache.get(holeId);
+            if (e == null) {
+                e = new HoleStateEntry();
+                e.holeId = holeId;
+                cache.put(holeId, e);
+            }
+
+            e.holeZOverride = String.format(Locale.US, "%.3f", zOverride);
+        }
+
+        List<HoleStateEntry> all = new ArrayList<>(cache.values());
+        all.sort(Comparator.comparing(a -> a.holeId, String.CASE_INSENSITIVE_ORDER));
+        writeAllToDisk(all);
+    }
+    public synchronized void clearZOverrideAndSave(String holeId) throws IOException {
+        if (holeId == null || holeId.trim().isEmpty()) {
+            throw new IllegalArgumentException("holeId is empty");
+        }
+
+        HoleStateEntry e = cache.get(holeId);
+        if (e == null) {
+            return;
+        }
+
+        e.holeZOverride = "";
+
+        List<HoleStateEntry> all = new ArrayList<>(cache.values());
+        all.sort(Comparator.comparing(a -> a.holeId, String.CASE_INSENSITIVE_ORDER));
+        writeAllToDisk(all);
+    }
+    public synchronized void clearZOverrideForAllPointsAndSave(
+            List<Point3D_Drill> points
+    ) throws IOException {
+
+        if (points == null || points.isEmpty()) return;
+
+        boolean changed = false;
+
+        for (Point3D_Drill p : points) {
+            if (p == null) continue;
+
+            String holeId = canonicalHoleId(p);
+            if (holeId == null || holeId.trim().isEmpty()) continue;
+
+            HoleStateEntry e = cache.get(holeId);
+            if (e == null) continue;
+
+            if (e.holeZOverride != null && !e.holeZOverride.trim().isEmpty()) {
+                e.holeZOverride = "";
+                changed = true;
+            }
+        }
+
+        if (!changed) return;
+
+        List<HoleStateEntry> all = new ArrayList<>(cache.values());
+        all.sort(Comparator.comparing(a -> a.holeId, String.CASE_INSENSITIVE_ORDER));
+        writeAllToDisk(all);
+    }
+
 }
 

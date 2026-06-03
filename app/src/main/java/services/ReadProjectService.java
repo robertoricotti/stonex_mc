@@ -1450,6 +1450,74 @@ public class ReadProjectService extends Service {
             } else {
                 p.setStatus(0);
             }
+
+            // SOLO SOLARFARM_MODE: ripristina quota override salvata nello STATE.csv
+            if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+                p.captureOriginalZIfNeeded();
+                Double zOverride = stateStore.getHoleZOverride(holeId);
+
+                if (zOverride != null) {
+                    p.setHeadZ(zOverride);
+
+                    // Se il punto ha anche una EndZ, la tengo coerente.
+                    // Per SOLARFARM normalmente interessa HeadZ, ma così evitiamo Z miste.
+                    if (p.getEndZ() != null) {
+                        p.setEndZ(zOverride);
+                    }
+
+                    p.recomputeDerived();
+                }
+            }
+        }
+    }
+    public static void persistSolarFarmCurrentToolZToAllPoints() {
+        if (DataSaved.Drilling_Mode != SOLARFARM_MODE) return;
+        if (DataSaved.drill_points == null || DataSaved.drill_points.isEmpty()) return;
+        if (stateStore == null) return;
+        if (packexcalib.exca.ExcavatorLib.toolEndCoord == null ||
+                packexcalib.exca.ExcavatorLib.toolEndCoord.length < 3) return;
+
+        double z = packexcalib.exca.ExcavatorLib.toolEndCoord[2];
+
+        if (Double.isNaN(z) || Double.isInfinite(z)) return;
+
+        // 1) Runtime immediato
+        for (Point3D_Drill p : DataSaved.drill_points) {
+            if (p == null) continue;
+
+            p.setHeadZ(z);
+
+            if (p.getEndZ() != null) {
+                p.setEndZ(z);
+            }
+
+            p.recomputeDerived();
+        }
+
+        // 2) Persistenza nello STATE.csv
+        try {
+            stateStore.applyZOverrideToAllPointsAndSave(DataSaved.drill_points, z);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void clearSolarFarmZOverrideAndRestoreOriginalPoints() {
+        if (DataSaved.Drilling_Mode != SOLARFARM_MODE) return;
+        if (DataSaved.drill_points == null || DataSaved.drill_points.isEmpty()) return;
+        if (stateStore == null) return;
+
+        // 1) Runtime: ripristino quota originale dei punti
+        for (Point3D_Drill p : DataSaved.drill_points) {
+            if (p == null) continue;
+
+            p.restoreOriginalZ();
+        }
+
+        // 2) Persistenza: cancello Hole-Z-Override dallo STATE.csv
+        try {
+            stateStore.clearZOverrideForAllPointsAndSave(DataSaved.drill_points);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -1611,5 +1679,6 @@ public class ReadProjectService extends Service {
         DataSaved.progettoSelected_POINT = "";
         DataSaved.progettoSelected_POLY = null;
     }
+
 
 }

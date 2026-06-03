@@ -53,6 +53,7 @@ import packexcalib.gnss.Deg2UTM;
 import packexcalib.gnss.LocalizationFactory;
 import serial.SerialPortManager;
 import services.ReadProjectService;
+import services.TriangleService;
 import utils.CanFileTransfer;
 import utils.FullscreenActivity;
 import utils.MyData;
@@ -321,7 +322,11 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         stopUpdating();
 
                         if (activity instanceof My3DActivity) {
+                            if(TriangleService.istriRunning) {
+                                activity.stopService(new Intent(activity, TriangleService.class));
+                            }
                             activity.startService(new Intent(activity, ReadProjectService.class));
+
                         } else {
                             activity.startActivity(new Intent(activity, Activity_Home_Page.class));
                             activity.finish();

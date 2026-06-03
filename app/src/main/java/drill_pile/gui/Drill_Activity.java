@@ -135,6 +135,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     Guideline cent_v, side, centro;
     public static boolean showCroce;
     Dialog_Operator_Login dialogOperatorLogin;
+    Dialog_Apply_Z_Drill dialogApplyZDrill;
 
 
     @Override
@@ -234,6 +235,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         dialogDrillSet = new Dialog_DrillSet(this);
         dialogAddRod = new Dialog_Add_Rod(this);
         dialogDrillZAdjust = new Dialog_Drill_Z_Adjust(this);
+        dialogApplyZDrill=new Dialog_Apply_Z_Drill(this);
         rodNum.setTextColor(MyColorClass.colorConstraint);
         if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
             infoPoint.setImageResource((R.drawable.outline_contract_delete_96));
@@ -259,6 +261,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             DataSaved.isAutoSnap = 0;
         }
         if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
+            postElev.setVisibility(View.VISIBLE);
             lineReference.setVisibility(View.VISIBLE);
             imgTilt.setVisibility(View.GONE);
             txttiltActual.setVisibility(View.GONE);
@@ -268,6 +271,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             MyData.push("M" + mchint + "numeroAste", "0");
             DataSaved.numeroAste = 0;
         } else {
+            postElev.setVisibility(View.GONE);
             lineReference.setVisibility(View.GONE);
             imgTilt.setVisibility(View.VISIBLE);
             txttiltActual.setVisibility(View.VISIBLE);
@@ -393,7 +397,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
     private void onClick() {
         postElev.setOnClickListener(v -> {
-
+            if(!dialogApplyZDrill.dialog.isShowing()) {
+                dialogApplyZDrill.show();
+            }
         });
         hydromenu.setOnClickListener(v -> {
             if (isTech) {

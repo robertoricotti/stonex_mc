@@ -7,6 +7,8 @@ import java.io.Serializable;
  * Tutti i campi sono opzionali: se non presenti nel file sorgente restano null.
  */
 public class Point3D_Drill implements Serializable {
+    private Double originalHeadZ;
+    private Double originalEndZ;
 
     private static final long serialVersionUID = 1L;
     // 0 = da fare, 1 = fatto, -1 = abortito , -2 rifiutato
@@ -444,6 +446,34 @@ public class Point3D_Drill implements Serializable {
     public void setPr_4(String pr_4) {
         this.pr_4 = pr_4;
     }
+    public Double getOriginalHeadZ() {
+        return originalHeadZ;
+    }
 
+    public void setOriginalHeadZ(Double originalHeadZ) {
+        this.originalHeadZ = originalHeadZ;
+    }
+
+    public Double getOriginalEndZ() {
+        return originalEndZ;
+    }
+
+    public void setOriginalEndZ(Double originalEndZ) {
+        this.originalEndZ = originalEndZ;
+    }
+    public void restoreOriginalZ() {
+        headZ = originalHeadZ;
+        endZ = originalEndZ;
+        recomputeDerived();
+    }
+    public void captureOriginalZIfNeeded() {
+        if (originalHeadZ == null) {
+            originalHeadZ = headZ;
+        }
+
+        if (originalEndZ == null) {
+            originalEndZ = endZ;
+        }
+    }
 
 }
