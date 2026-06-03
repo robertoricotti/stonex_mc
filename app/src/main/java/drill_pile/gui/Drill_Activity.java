@@ -121,7 +121,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     Dialog_Pile_Hydro dialogPileHydro;
     Dialog_Drill_Z_Adjust dialogDrillZAdjust;
     View divisorioC, divisorioDx, divisorioUp, divisorioDw, topViewCanvas, bubbleCanvas;
-    ImageView digMenu, drilltool, Status, folders, playpause, lineReference, tiposnap, imgHdt, uomesure,
+    ImageView digMenu, drilltool, Status, folders, playpause, lineReference, tiposnap, imgHdt, uomesure,postElev,
             zoom_P, zoom_M, zoom_C, compass, quotaIndicator, infoPoint, drillSet, puntatore, abortisci, normal_stop, imgTilt, mostratesto, hydromenu;
     ConstraintLayout topview, bubble;
     VerticalTargetIndicatorView indicator;
@@ -198,6 +198,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         tiposnap = findViewById(R.id.tiposnap);
         uomesure = findViewById(R.id.uomesure);
         hydromenu = findViewById(R.id.hydromenu);
+        postElev=findViewById(R.id.postElev);
         zoom_P = findViewById(R.id.zoom_P);
         zoom_M = findViewById(R.id.zoom_M);
         zoom_C = findViewById(R.id.zoom_C);
@@ -391,6 +392,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private void onClick() {
+        postElev.setOnClickListener(v -> {
+
+        });
         hydromenu.setOnClickListener(v -> {
             if (isTech) {
                 if (!dialogPileHydro.dialog.isShowing()) {

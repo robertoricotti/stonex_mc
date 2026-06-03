@@ -116,6 +116,8 @@ public class DrawDXF_Drill_Point {
             strokeColor = MyColorClass.colorConstraint;
         }
 
+        boolean zeroZSquare = isSolarFarmZeroZ(point);
+
         paint.setAntiAlias(true);
 
         // ---------------------------------------------------------
@@ -187,12 +189,12 @@ public class DrawDXF_Drill_Point {
             // tappo fondo
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(fillColor);
-            canvas.drawCircle(endX, endY, rEnd, paint);
+            drawCap(canvas, paint, endX, endY, rEnd, zeroZSquare);
 
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(stroke);
             paint.setColor(strokeColor);
-            canvas.drawCircle(endX, endY, rEnd, paint);
+            drawCap(canvas, paint, endX, endY, rEnd, zeroZSquare);
 
             // puntino fondo
             paint.setStyle(Paint.Style.FILL);
@@ -206,12 +208,12 @@ public class DrawDXF_Drill_Point {
         // ---------------------------------------------------------
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(fillColor);
-        canvas.drawCircle(headX, headY, rHead, paint);
+        drawCap(canvas, paint, headX, headY, rHead, zeroZSquare);
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(stroke);
         paint.setColor(strokeColor);
-        canvas.drawCircle(headX, headY, rHead, paint);
+        drawCap(canvas, paint, headX, headY, rHead, zeroZSquare);
 
         // cerchio rosso se A
         if (isAlignA(point)) {
@@ -300,6 +302,8 @@ public class DrawDXF_Drill_Point {
         float highlightStroke = px(UI_SELECTED_HIGHLIGHT_STROKE_PX, UI_MIN_STROKE_PX);
         float centerPointStroke = px(UI_CENTER_POINT_STROKE_PX, UI_MIN_STROKE_PX);
 
+        boolean zeroZSquare = isSolarFarmZeroZ(point);
+
         // ---------------------------------------------------------
         // END POSITION
         // ---------------------------------------------------------
@@ -339,12 +343,12 @@ public class DrawDXF_Drill_Point {
 
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(blueFill);
-            canvas.drawCircle(headX, headY, rHead, paint);
+            drawCap(canvas, paint, headX, headY, rHead, zeroZSquare);
 
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(stroke);
             paint.setColor(blueStroke);
-            canvas.drawCircle(headX, headY, rHead, paint);
+            drawCap(canvas, paint, headX, headY, rHead, zeroZSquare);
 
             if (isAlignA(point)) {
                 drawRedRing(canvas, paint, headX, headY, rHead * UI_RING_RADIUS_MULT);
@@ -409,12 +413,12 @@ public class DrawDXF_Drill_Point {
         if (len < 1e-3f) {
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(blueFill);
-            canvas.drawCircle(headX, headY, rHead, paint);
+            drawCap(canvas, paint, headX, headY, rHead, zeroZSquare);
 
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(stroke);
             paint.setColor(blueStroke);
-            canvas.drawCircle(headX, headY, rHead, paint);
+            drawCap(canvas, paint, headX, headY, rHead, zeroZSquare);
 
             if (isAlignA(point)) {
                 drawRedRing(canvas, paint, headX, headY, rHead * UI_RING_RADIUS_MULT);
@@ -507,22 +511,22 @@ public class DrawDXF_Drill_Point {
         // fondo rosso
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(redFill);
-        canvas.drawCircle(endX, endY, rEnd, paint);
+        drawCap(canvas, paint, endX, endY, rEnd, zeroZSquare);
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(stroke);
         paint.setColor(redStroke);
-        canvas.drawCircle(endX, endY, rEnd, paint);
+        drawCap(canvas, paint, endX, endY, rEnd, zeroZSquare);
 
         // testa blu
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(blueFill);
-        canvas.drawCircle(headX, headY, rHead, paint);
+        drawCap(canvas, paint, headX, headY, rHead, zeroZSquare);
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(stroke);
         paint.setColor(blueStroke);
-        canvas.drawCircle(headX, headY, rHead, paint);
+        drawCap(canvas, paint, headX, headY, rHead, zeroZSquare);
 
         if (isAlignA(point)) {
             drawRedRing(canvas, paint, headX, headY, rHead * UI_RING_RADIUS_MULT);
@@ -581,6 +585,25 @@ public class DrawDXF_Drill_Point {
         }
 
         paint.setStrokeWidth(10f);
+    }
+
+
+    private static boolean isSolarFarmZeroZ(Point3D_Drill point) {
+        if (point == null) return false;
+        if (DataSaved.Drilling_Mode != utils.MyTypes.SOLARFARM_MODE) return false;
+
+        Double z = point.getHeadZ();
+        return z != null && Math.abs(z) <= 1e-9;
+    }
+
+    private static void drawCap(Canvas canvas, Paint paint,
+                                float cx, float cy, float radius,
+                                boolean square) {
+        if (square) {
+            canvas.drawRect(cx - radius, cy - radius, cx + radius, cy + radius, paint);
+        } else {
+            canvas.drawCircle(cx, cy, radius, paint);
+        }
     }
 
 

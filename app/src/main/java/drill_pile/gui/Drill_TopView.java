@@ -22,7 +22,11 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import dxf.Draw2DPolyline;
+import dxf.Draw3DPolyline;
 import dxf.DrawDXF_Drill_Point;
+import dxf.Polyline;
+import dxf.Polyline_2D;
 import gui.draw_class.MyColorClass;
 import iredes.Point3D_Drill;
 import packexcalib.exca.DataSaved;
@@ -201,6 +205,8 @@ public class Drill_TopView extends View {
 
                 drawMachineSchemaNearTool(canvas, paint, toolScreen, mastSX, mastFW, mastDX);
             }
+
+            drawProjectPolylines();
             drawDrillPoints();
             if (DataSaved.Selected_Point3D_Drill != null) {
                 drawSelectedPoint(DataSaved.Selected_Point3D_Drill);
@@ -293,6 +299,71 @@ public class Drill_TopView extends View {
         }
     }
 
+
+    private void drawProjectPolylines() {
+        try {
+            draw3DPolylinesFromProject();
+            draw2DPolylinesFromProject();
+        } catch (Exception e) {
+            Log.e("DrillDraw", "Errore drawProjectPolylines", e);
+        } finally {
+            paint.setPathEffect(null);
+        }
+    }
+
+    private void draw3DPolylinesFromProject() {
+        if (DataSaved.polylines == null || DataSaved.polylines.isEmpty()) return;
+
+        for (Polyline polyline : DataSaved.polylines) {
+            if (polyline == null || polyline.getVertices() == null || polyline.getVertices().size() < 2) {
+                continue;
+            }
+
+            int color = myParseColor(polyline.getLineColor());
+
+            Draw3DPolyline.draw(
+                    paint,
+                    canvas,
+                    polyline.getVertices(),
+                    toolX,
+                    toolY,
+                    toolEast,
+                    toolNord,
+                    color,
+                    scala,
+                    rotationAngle,
+                    polyline
+            );
+        }
+    }
+
+    private void draw2DPolylinesFromProject() {
+        if (DataSaved.polylines_2D == null || DataSaved.polylines_2D.isEmpty()) return;
+
+        for (Polyline_2D polyline : DataSaved.polylines_2D) {
+            if (polyline == null || polyline.getVertices() == null || polyline.getVertices().size() < 2) {
+                continue;
+            }
+
+            int color = myParseColor(polyline.getLineColor());
+
+            Draw2DPolyline.draw(
+                    paint,
+                    canvas,
+                    polyline.getVertices(),
+                    toolX,
+                    toolY,
+                    toolEast,
+                    toolNord,
+                    color,
+                    scala,
+                    rotationAngle,
+                    DataSaved.scale_Factor3D
+            );
+        }
+    }
+
+
     private void drawDrillPoints() {
         try {
             if (DataSaved.drill_points == null) {
@@ -319,6 +390,7 @@ public class Drill_TopView extends View {
 
                 Double e = point.getHeadX();
                 Double n = point.getHeadY();
+                if (e == null || n == null) continue;
                 // CULLING
                 if (e < minE || e > maxE || n < minN || n > maxN) {
                     continue;

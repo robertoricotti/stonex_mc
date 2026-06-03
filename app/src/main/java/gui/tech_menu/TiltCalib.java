@@ -40,7 +40,6 @@ public class TiltCalib extends BaseClass {
 
     CheckBox cbxOff, cbxLeft, cbxRight, cbxInvTR;
 
-
     int indexMachineSelected;
 
     int currentBucket = 1;
@@ -50,6 +49,10 @@ public class TiltCalib extends BaseClass {
 
     int indexMeasure = 0;
 
+    private boolean isLoadingBucket = false;
+
+    private static final int MIN_BUCKET = 1;
+    private static final int MAX_BUCKET = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +60,10 @@ public class TiltCalib extends BaseClass {
         setContentView(R.layout.activity_tilt_config_7);
         findView();
         init();
-        updateUI();
         onClick();
         onLongClick();
         onCheckedChanged();
-
+        updateUI();
     }
 
     private void findView() {
@@ -83,48 +85,32 @@ public class TiltCalib extends BaseClass {
         plus = findViewById(R.id.offsetPlus);
         minus = findViewById(R.id.offsetMinus);
         cbxInvTR = findViewById(R.id.cbxInvTR);
-
     }
 
     @SuppressLint("SetTextI18n")
     private void init() {
-
-
         indexMachineSelected = MyData.get_Int("MachineSelected");
-
         indexMeasure = MyData.get_Int("Unit_Of_Measure");
+
         try {
             cbxInvTR.setChecked(DataSaved.revTiltRot == 1);
             currentBucket = MyData.get_Int("M" + indexMachineSelected + "BucketSelected");
         } catch (Exception e) {
-            currentBucket = 1;
+            currentBucket = MIN_BUCKET;
         }
 
+        currentBucket = clampBucket(currentBucket);
+        MyData.push("M" + indexMachineSelected + "BucketSelected", String.valueOf(currentBucket));
+
         numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
-
         numberDialog = new CustomNumberDialog(this, -1);
-
-
-        tiltLength.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Tilt_Length" + currentBucket)));
 
         tiltLT.setText("LENGTH " + Utils.getMetriSimbol());
         updateValues();
-        int mountPos = Integer.parseInt(MyData.get_String("M" + indexMachineSelected + "_Tilt_MountPos" + currentBucket));
-        switch (mountPos) {
-            case 0:
-                cbxOff.setChecked(true);
-                break;
-            case 1:
-                cbxLeft.setChecked(true);
-                break;
-            case -1:
-                cbxRight.setChecked(true);
-        }
     }
 
     @SuppressLint("DefaultLocale")
     public void updateUI() {
-
         switch (currentBucket) {
             case 1:
                 if (DataSaved.lrTilt != 0) {
@@ -266,44 +252,27 @@ public class TiltCalib extends BaseClass {
                     bennaSelezionata.setImageResource((R.drawable.benna_vuota20));
                 }
                 break;
-
         }
 
         titolo.setText(getString(R.string.tilt_calibration) + " n:" + currentBucket);
         angleTv.setText(String.format("%.02f", ExcavatorLib.correctDeltaAngle).replace(",", "."));
         offsetTv.setText(String.format("%.02f", DataSaved.offsetTiltDeltaAngle).replace(",", "."));
         angleTV_2.setText(String.format("%.02f", Sensors_Decoder.Deg_Benna_W_Tilt).replace(",", ".") + " " + String.format("%.02f", Sensors_Decoder.Deg_tilt).replace(",", "."));
-
-
     }
-
 
     private void onLongClick() {
         set.setOnLongClickListener((View v) -> {
             set.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
             DataSaved.offsetTiltDeltaAngle = ExcavatorLib.correctBucket;
+            updateUI();
             return true;
         });
     }
 
-
     private void onClick() {
-        bennaPiu.setOnClickListener(view -> {
-            currentBucket += 1;
-            if (currentBucket >= 20) {
-                currentBucket = 20;
-            }
-            MyData.push("M" + indexMachineSelected + "BucketSelected", String.valueOf(currentBucket));
-            updateValues();
-        });
-        bennaMeno.setOnClickListener(view -> {
-            currentBucket -= 1;
-            if (currentBucket <= 1) {
-                currentBucket = 1;
-            }
-            MyData.push("M" + indexMachineSelected + "BucketSelected", String.valueOf(currentBucket));
-            updateValues();
-        });
+        bennaPiu.setOnClickListener(view -> changeBucket(+1));
+        bennaMeno.setOnClickListener(view -> changeBucket(-1));
+
         exit.setOnClickListener((View v) -> {
             exit.setEnabled(false);
             save.setEnabled(false);
@@ -313,131 +282,190 @@ public class TiltCalib extends BaseClass {
         });
 
         save.setOnClickListener((View v) -> {
-
-            if (indexMeasure == 4 || indexMeasure == 5) {
-                if (!tiltLength.getText().toString().contains("'")) {
-                    new CustomToast(this, "INPUT ERROR!!!").show_error();
-                } else {
-                    exit.setEnabled(false);
-                    save.setEnabled(false);
-                    save();
-                    startService(new Intent(this, UpdateValuesService.class));
-                    startActivity(new Intent(this, Nuova_Machine_Settings.class));
-                    finish();
-                }
-            } else {
-                if (!(tiltLength.getText().toString().matches("-?\\d+(\\.\\d+)?"))) {
-                    new CustomToast(this, "INPUT ERROR!!!").show_error();
-                } else {
-                    exit.setEnabled(false);
-                    save.setEnabled(false);
-                    save();
-                    startService(new Intent(this, UpdateValuesService.class));
-                    startActivity(new Intent(this, Nuova_Machine_Settings.class));
-                    finish();
-                }
+            if (!isCurrentInputValid()) {
+                new CustomToast(this, "INPUT ERROR!!!").show_error();
+                return;
             }
 
+            exit.setEnabled(false);
+            save.setEnabled(false);
+            save();
+            startService(new Intent(this, UpdateValuesService.class));
+            startActivity(new Intent(this, Nuova_Machine_Settings.class));
+            finish();
         });
 
         minus.setOnClickListener((View v) -> {
             DataSaved.offsetTiltDeltaAngle -= 0.1;
+            updateUI();
         });
 
         plus.setOnClickListener((View v) -> {
             DataSaved.offsetTiltDeltaAngle += 0.1;
+            updateUI();
         });
-
 
         tiltLength.setOnClickListener((View v) -> {
             if (indexMeasure == 4 || indexMeasure == 5) {
-                if (!numberDialogFtIn.dialog.isShowing())
+                if (!numberDialogFtIn.dialog.isShowing()) {
                     numberDialogFtIn.show(tiltLength);
+                }
             } else {
-                if (!numberDialog.dialog.isShowing())
+                if (!numberDialog.dialog.isShowing()) {
                     numberDialog.show(tiltLength);
+                }
             }
-
         });
-
     }
-
 
     private void onCheckedChanged() {
         cbxInvTR.setOnClickListener(view -> {
             DataSaved.revTiltRot += 1;
             DataSaved.revTiltRot = DataSaved.revTiltRot % 2;
+
             if (DataSaved.revTiltRot == 0) {
                 cbxInvTR.setChecked(false);
             } else if (DataSaved.revTiltRot == 1) {
                 cbxInvTR.setChecked(true);
             }
+
             MyData.push("M" + indexMachineSelected + "revTiltRot", String.valueOf(DataSaved.revTiltRot));
         });
+
         cbxOff.setOnCheckedChangeListener((CompoundButton c, boolean b) -> {
+            if (isLoadingBucket) return;
+
             if (cbxOff.isChecked()) {
                 DataSaved.lrTilt = 0;
                 cbxLeft.setChecked(false);
                 cbxRight.setChecked(false);
+                updateUI();
             }
         });
 
         cbxLeft.setOnCheckedChangeListener((CompoundButton c, boolean b) -> {
+            if (isLoadingBucket) return;
+
             if (cbxLeft.isChecked()) {
                 DataSaved.lrTilt = 1;
                 cbxOff.setChecked(false);
                 cbxRight.setChecked(false);
+                updateUI();
             }
         });
 
         cbxRight.setOnCheckedChangeListener((CompoundButton c, boolean b) -> {
+            if (isLoadingBucket) return;
+
             if (cbxRight.isChecked()) {
                 DataSaved.lrTilt = -1;
                 cbxOff.setChecked(false);
                 cbxLeft.setChecked(false);
+                updateUI();
             }
         });
     }
 
+    private void changeBucket(int delta) {
+        if (!isCurrentInputValid()) {
+            new CustomToast(this, "INPUT ERROR!!!").show_error();
+            return;
+        }
+
+        saveCurrentBucketOnly();
+
+        currentBucket = clampBucket(currentBucket + delta);
+       //MyData.push("M" + indexMachineSelected + "BucketSelected", String.valueOf(currentBucket));
+
+        updateValues();
+        updateUI();
+    }
+
+    private int clampBucket(int bucket) {
+        if (bucket < MIN_BUCKET) return MIN_BUCKET;
+        if (bucket > MAX_BUCKET) return MAX_BUCKET;
+        return bucket;
+    }
+
+    private boolean isCurrentInputValid() {
+        String value = tiltLength.getText().toString().trim();
+
+        if (indexMeasure == 4 || indexMeasure == 5) {
+            return value.contains("'");
+        }
+
+        return value.matches("-?\\d+(\\.\\d+)?");
+    }
+
     private void updateValues() {
-        DataSaved.lrTilt = MyData.get_Int("M" + indexMachineSelected + "_Tilt_MountPos" + currentBucket);
-        DataSaved.L_Tilt = MyData.get_Double("M" + indexMachineSelected + "_Tilt_Length" + currentBucket);
-        DataSaved.offsetTiltDeltaAngle = MyData.get_Double("M" + indexMachineSelected + "_Tilt_Offset" + currentBucket);
-        tiltLength.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Tilt_Length" + currentBucket)));
-        int mountPos = MyData.get_Int("M" + indexMachineSelected + "_Tilt_MountPos" + currentBucket);
-        switch (mountPos) {
-            case 0:
-                cbxOff.setChecked(true);
-                break;
-            case 1:
-                cbxLeft.setChecked(true);
-                break;
-            case 2:
-                cbxRight.setChecked(true);
+        isLoadingBucket = true;
+
+        try {
+            DataSaved.lrTilt = MyData.get_Int("M" + indexMachineSelected + "_Tilt_MountPos" + currentBucket);
+            DataSaved.L_Tilt = MyData.get_Double("M" + indexMachineSelected + "_Tilt_Length" + currentBucket);
+            DataSaved.offsetTiltDeltaAngle = MyData.get_Double("M" + indexMachineSelected + "_Tilt_Offset" + currentBucket);
+
+            tiltLength.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "_Tilt_Length" + currentBucket)));
+
+            cbxOff.setChecked(false);
+            cbxLeft.setChecked(false);
+            cbxRight.setChecked(false);
+
+            int mountPos = MyData.get_Int("M" + indexMachineSelected + "_Tilt_MountPos" + currentBucket);
+
+            switch (mountPos) {
+                case 1:
+                    cbxLeft.setChecked(true);
+                    break;
+
+                case -1:
+                    cbxRight.setChecked(true);
+                    break;
+
+                case 0:
+                default:
+                    cbxOff.setChecked(true);
+                    DataSaved.lrTilt = 0;
+                    break;
+            }
+        } finally {
+            isLoadingBucket = false;
         }
     }
 
-    private void save() {
+    private void saveCurrentBucketOnly() {
         int mounPos = 0;
 
         if (cbxLeft.isChecked()) {
             mounPos = 1;
         }
+
         if (cbxRight.isChecked()) {
             mounPos = -1;
         }
+
+        String tiltLengthValue = Utils.writeMetri(tiltLength.getText().toString());
+
         DataSaved.lrTilt = mounPos;
+        try {
+            DataSaved.L_Tilt = Double.parseDouble(tiltLengthValue);
+        } catch (Exception ignored) {
+            DataSaved.L_Tilt = MyData.get_Double("M" + indexMachineSelected + "_Tilt_Length" + currentBucket);
+        }
+
         MyData.push("M" + indexMachineSelected + "_Tilt_MountPos" + currentBucket, String.valueOf(mounPos));
-
-        MyData.push("M" + indexMachineSelected + "_Tilt_Length" + currentBucket, Utils.writeMetri(tiltLength.getText().toString()));
-
+        MyData.push("M" + indexMachineSelected + "_Tilt_Length" + currentBucket, tiltLengthValue);
         MyData.push("M" + indexMachineSelected + "_Tilt_Offset" + currentBucket, String.valueOf(DataSaved.offsetTiltDeltaAngle));
+    }
+
+    private void save() {
+        saveCurrentBucketOnly();
+        //MyData.push("M" + indexMachineSelected + "BucketSelected", String.valueOf(currentBucket));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     @SuppressLint("MissingSuperCall")
@@ -445,8 +473,4 @@ public class TiltCalib extends BaseClass {
     public void onBackPressed() {
 
     }
-
-
 }
-
-

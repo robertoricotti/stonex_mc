@@ -188,11 +188,11 @@
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:tint="@color/_____cancel_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/save"
-        app:layout_constraintTop_toTopOf="@+id/guideline191" />
+        app:layout_constraintTop_toTopOf="@+id/guideline191"
+        app:tint="@color/_____cancel_text" />
 
     <ImageView
         android:id="@+id/save"
@@ -233,9 +233,10 @@
             android:id="@+id/bennaMeno"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_weight="0.5"
             android:rotation="180"
             android:src="@drawable/btn_fwd"
-            android:layout_weight="0.5"
+            android:visibility="invisible"
             app:tint="@color/_____cancel_text" />
 
         <ImageView
@@ -249,8 +250,9 @@
             android:id="@+id/bennaPiu"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/btn_fwd"
             android:layout_weight="0.5"
+            android:src="@drawable/btn_fwd"
+            android:visibility="invisible"
             app:tint="@color/_____cancel_text" />
 
 

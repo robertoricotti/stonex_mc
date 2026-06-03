@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import packexcalib.exca.ExcavatorLib;
 import services.UpdateValuesService;
 import utils.FullscreenActivity;
 import utils.MyData;
+import utils.MyTypes;
 import utils.Utils;
 
 public class Drill_Rod_Activity extends BaseClass {
@@ -75,6 +77,9 @@ public class Drill_Rod_Activity extends BaseClass {
         numberDialog = new CustomNumberDialog(this, -1);
         numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
+        if(DataSaved.Drilling_Mode== MyTypes.SOLARFARM_MODE){
+            bitL.setVisibility(View.INVISIBLE);
+        }
 
     }
 
