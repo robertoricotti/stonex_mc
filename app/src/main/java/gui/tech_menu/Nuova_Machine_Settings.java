@@ -35,6 +35,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -70,7 +72,7 @@ public class Nuova_Machine_Settings extends BaseClass {
     ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
     TextView toExtraSensor, tvSwing, tvFrame, tvBoom1, tvBoom2, tvStick, tvLink,
-            tvMast, tvTilt, tvXYZ, drillEnc, toCanopen, toDamping, can1bd, can2bd, toRoto;
+            tvMast, tvTilt, tvXYZ, drillEnc, toCanopen, toDamping, can1bd, can2bd, toRoto,toCET05,toCET12;
     EditText mchName, techInfo;
     int mode, machineSel;
     public static boolean menu1_visible, menu2_visible, menu3_visible;
@@ -168,6 +170,8 @@ public class Nuova_Machine_Settings extends BaseClass {
         ckAtFwd = findViewById(R.id.ckAtFwd);
         ckAtRight = findViewById(R.id.ckAtRight);
         toRoto = findViewById(R.id.toRoto);
+        toCET05=findViewById(R.id.toCET05);
+        toCET12=findViewById(R.id.toCET12);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
         if (licenseType == MC_3D_EASY || licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_EASY_AUTO) {
             drill.setVisibility(View.INVISIBLE);
@@ -177,6 +181,13 @@ public class Nuova_Machine_Settings extends BaseClass {
     }
 
     private void onClick() {
+        toCET05.setOnClickListener(v -> {
+            showConfirmAndSendCET(0x08);
+        });
+
+        toCET12.setOnClickListener(v -> {
+            showConfirmAndSendCET(0x09);
+        });
         ckAtBoomExca.setOnClickListener(view -> {
             ckAtBoomExca.setChecked(!ckAtBoomExca.isChecked());
             if (ckAtBoomExca.isChecked()) {
@@ -1145,6 +1156,44 @@ public class Nuova_Machine_Settings extends BaseClass {
             new CustomToast(this, "Missing Name").show_error();
         }
     }
+    private void showConfirmAndSendCET(int newId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
+        builder.setTitle(getString(R.string.change_machine));
+        builder.setMessage(getString(R.string.procedi));
 
+        builder.setPositiveButton("YES", (dialog, which) -> {
+            byte[][] messages = new byte[][]{
+                    new byte[]{0x2B, 0x00, 0x18, 0x05, 0x32, 0x00, 0x00, 0x00},
+                    new byte[]{0x23, (byte) 0x80, 0x1F, 0x00, 0x08, 0x00, 0x00, 0x00},
+                    new byte[]{0x2F, 0x01, 0x30, 0x00, (byte) newId, 0x00, 0x00, 0x00},
+                    new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65}
+            };
+
+            Handler handler = new Handler(Looper.getMainLooper());
+
+            for (int i = 0; i < messages.length; i++) {
+                final int index = i;
+
+                handler.postDelayed(() -> {
+                    MyDeviceManager.CanWrite(
+                            true,
+                            0,
+                            0x604,
+                            8,
+                            messages[index]
+                    );
+                }, index * 100L);
+            }
+            new CustomToast(Nuova_Machine_Settings.this,"Unplug and Reconnect the sensor to keep changes").show_alert();
+        });
+
+        builder.setNegativeButton("NO", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.show();
+
+        FullscreenActivity.setFullScreen(dialog);
+    }
 
 }
