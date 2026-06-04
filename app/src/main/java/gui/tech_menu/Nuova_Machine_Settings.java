@@ -1158,7 +1158,7 @@ public class Nuova_Machine_Settings extends BaseClass {
     }
     private void showConfirmAndSendCET(int newId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
-        builder.setTitle(getString(R.string.change_machine));
+        builder.setTitle("SET SENSOR CONFIG");
         builder.setMessage(getString(R.string.procedi));
 
         builder.setPositiveButton("YES", (dialog, which) -> {
