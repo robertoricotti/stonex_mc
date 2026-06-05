@@ -687,13 +687,7 @@ public class USACRSCases {
                 ReadProjectService.startCRS();
                 dialog.dismiss();
                 break;
-            case "NAD83_NEW_HAMPSHIRE_3437.SP":
-                MyData.push("SECONDO_S_CRS", "3437");
-                DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");
-                activity.recreate();
-                ReadProjectService.startCRS();
-                dialog.dismiss();
-                break;
+
             case "NAD83_NEW_JERSEY_32111.SP":
                 MyData.push("SECONDO_S_CRS", "32111");
                 DataSaved.SECONDO_S_CRS = MyData.get_String("SECONDO_S_CRS");

@@ -216,6 +216,20 @@
             "ReadAccess": "9",
             "WriteAccess": "9",
             "NvIndex": "9"
+        },
+        {
+            "GUID": "{143FE19B-A30E-4893-8148-68A46156B3ED}",
+            "DataType": "U16",
+            "ParamName": "Tempo",
+            "ReadAccess": "9",
+            "WriteAccess": "9"
+        },
+        {
+            "GUID": "{144168FB-DC96-c596-084C-FA8568B4AD2F}",
+            "DataType": "U16",
+            "ParamName": "Percentage",
+            "ReadAccess": "9",
+            "WriteAccess": "9"
         }
     ]
 }

@@ -8033,7 +8033,7 @@ public class MyEpsgNumber {
     public final static int NAD83_NEVADA_EAST_32107 = 32107;
     public final static int NAD83_NEVADA_WEST_32109 = 32109;
     public final static int NAD83_NEW_HAMPSHIRE_32110 = 32110;
-    public final static int NAD83_NEW_HAMPSHIRE_3437 = 3437;
+   // public final static int NAD83_NEW_HAMPSHIRE_3437 = 3437;
     public final static int NAD83_NEW_JERSEY_32111 = 32111;
     public final static int NAD83_NEW_MEXICO_CENTRAL_32113 = 32113;
     public final static int NAD83_NEW_MEXICO_EAST_32112 = 32112;

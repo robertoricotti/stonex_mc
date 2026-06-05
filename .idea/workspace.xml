@@ -620,10 +620,17 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.10 UFFICIALE">
+    <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.10 UFFICIALE RELEASE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/loc_data/USA/NAD83_NEW_HAMPSHIRE_3437.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/loc_data/USA/USACRSCases.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/loc_data/USA/USACRSCases.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/sp_data/USA/NAD83_NEW_HAMPSHIRE_3437.SP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/sp_data/USA/USACRSCases.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/sp_data/USA/USACRSCases.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/utils/MyEpsgNumber.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/utils/MyEpsgNumber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/MC050_110_nl_T_MC050_112T.scs" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/mc050_piling/MC050_110_nl_T_MC050_112T.scs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/ProjectParameters.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/mc050_piling/ProjectParameters.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/mc050_piling.p1m" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/mc050_piling/mc050_piling.p1m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_nuova_machine_settings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -889,14 +896,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00221" summary="4.1.4 aggiunta lingue scandinave">
-      <option name="closed" value="true" />
-      <created>1776423487463</created>
-      <option name="number" value="00221" />
-      <option name="presentableId" value="LOCAL-00221" />
-      <option name="project" value="LOCAL" />
-      <updated>1776423487464</updated>
     </task>
     <task id="LOCAL-00222" summary="4.1.5 pre release fix polilyne da XML">
       <option name="closed" value="true" />
@@ -1282,7 +1281,15 @@
       <option name="project" value="LOCAL" />
       <updated>1780564727303</updated>
     </task>
-    <option name="localTasksCounter" value="270" />
+    <task id="LOCAL-00270" summary="4.1.10 UFFICIALE RELEASE">
+      <option name="closed" value="true" />
+      <created>1780566246125</created>
+      <option name="number" value="00270" />
+      <option name="presentableId" value="LOCAL-00270" />
+      <option name="project" value="LOCAL" />
+      <updated>1780566246125</updated>
+    </task>
+    <option name="localTasksCounter" value="271" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1298,7 +1305,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="4.1.6 snappa su entità 2D to do test" />
     <MESSAGE value="4.1.6 snappa su entità 2D 85%" />
     <MESSAGE value="4.1.6 snappa su entità 2D 90%" />
     <MESSAGE value="4.1.6 snappa su entità 2D 95%" />
@@ -1323,7 +1329,8 @@
     <MESSAGE value="4.1.9 RELEASE UFFICIALE OK" />
     <MESSAGE value="4.1.10 da finire" />
     <MESSAGE value="4.1.10 UFFICIALE" />
-    <option name="LAST_COMMIT_MESSAGE" value="4.1.10 UFFICIALE" />
+    <MESSAGE value="4.1.10 UFFICIALE RELEASE" />
+    <option name="LAST_COMMIT_MESSAGE" value="4.1.10 UFFICIALE RELEASE" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
   <component name="play_dynamic_filters_status">
@@ -1331,22 +1338,22 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1780480893068" />
+            <CheckInfo lastCheckTimestamp="1780669078709" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1780480893069" />
+            <CheckInfo lastCheckTimestamp="1780669078707" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1780480893073" />
+            <CheckInfo lastCheckTimestamp="1780669078708" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1780480893072" />
+            <CheckInfo lastCheckTimestamp="1780669078709" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other">
