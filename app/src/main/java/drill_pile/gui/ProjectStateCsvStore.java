@@ -112,6 +112,7 @@ public class ProjectStateCsvStore {
      * - finisci DONE/ABORTED (per registrare End-Time + stato finale)
      */
     public synchronized void upsertAndSave(
+            String operatorName,
             String holeId,
             HoleState state,
             String startTimeIso,

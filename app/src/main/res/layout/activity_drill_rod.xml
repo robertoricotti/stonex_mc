@@ -68,6 +68,15 @@
         android:src="@drawable/save_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/esci"
+        app:layout_constraintTop_toBottomOf="@id/lowH" />
+    <ImageView
+        android:id="@+id/esci"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/btn_close_web"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/save"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lowH" />
 

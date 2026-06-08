@@ -30,7 +30,7 @@ import utils.Utils;
 public class Drill_Rod_Activity extends BaseClass {
     int indexMachine;
     int indexMeasure;
-    ImageView save, plus, minus, deleteAll;
+    ImageView save, plus, minus, deleteAll, esci;
     Intent goBackIntent;
     ImageView gpsDebug;
     CustomNumberDialog numberDialog;
@@ -58,7 +58,7 @@ public class Drill_Rod_Activity extends BaseClass {
         numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
 
         numberDialog = new CustomNumberDialog(this, -1);
-
+        esci = findViewById(R.id.esci);
         save = findViewById(R.id.save);
         titolo = findViewById(R.id.titolo);
         gpsDebug = findViewById(R.id.gpsdebugg);
@@ -77,7 +77,7 @@ public class Drill_Rod_Activity extends BaseClass {
         numberDialog = new CustomNumberDialog(this, -1);
         numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
-        if(DataSaved.Drilling_Mode== MyTypes.SOLARFARM_MODE){
+        if (DataSaved.Drilling_Mode == MyTypes.SOLARFARM_MODE) {
             bitL.setVisibility(View.INVISIBLE);
         }
 
@@ -165,6 +165,11 @@ public class Drill_Rod_Activity extends BaseClass {
                     .show();
 
         });
+        esci.setOnClickListener(v -> {
+            startService(new Intent(this, UpdateValuesService.class));
+            startActivity(goBackIntent);
+            finish();
+        });
         save.setOnClickListener(view -> {
             save.setEnabled(false);
             firstR.setEnabled(false);
@@ -238,8 +243,12 @@ public class Drill_Rod_Activity extends BaseClass {
         } else {
             gpsDebug.setImageTintList(ColorStateList.valueOf(Color.RED));
         }
-        titolo.setText("     E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[0])) + "    N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[1])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[2])));
+        if(DataSaved.coordOrder==0) {
+            titolo.setText("     E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[0])) + "    N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[1])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[2])));
+        }else {
+            titolo.setText("     N: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[1])) + "    E: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[0])) + "  " + "   Z: " + Utils.readSensorCalibration(String.valueOf(ExcavatorLib.toolEndCoord[2])));
 
+        }
     }
 
     private void salva() {

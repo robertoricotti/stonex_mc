@@ -675,6 +675,12 @@ public class ProjectReportXlsxWriter {
             st.setDataFormat(fmt.getFormat("0.000"));
         }
 
+        if (fillColorIndex == IndexedColors.RED.getIndex()) {
+            Font f = wb.createFont();
+            f.setColor(IndexedColors.WHITE.getIndex());
+            st.setFont(f);
+        }
+
         st.setFillForegroundColor(fillColorIndex);
         st.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         return st;

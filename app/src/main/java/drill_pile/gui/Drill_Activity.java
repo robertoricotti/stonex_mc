@@ -14,6 +14,7 @@ import static packexcalib.exca.ExcavatorLib.correctToolRoll;
 import static packexcalib.exca.ExcavatorLib.toolEndCoord;
 import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
 import static services.PointService.AB_REVERSED;
+import static services.PointService.okDrill;
 import static services.PointService.valoriTabella;
 import static utils.MyMCUtils.projectPointOnAxis3D;
 import static utils.MyTypes.JETGROUTING_MODE;
@@ -510,7 +511,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         infoPoint.setOnClickListener(view -> {
 
             if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
-                //TODO rimuovi ultimo palo
+
                 reopenLastSavedHole();
 
 
@@ -595,8 +596,16 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             }
         });
         drilltool.setOnClickListener(view -> {
-            if (!dialogAddRod.dialog.isShowing()) {
-                dialogAddRod.show();
+            if(isDrilling&&isDrillPaused) {
+                if (!dialogAddRod.dialog.isShowing()) {
+                    dialogAddRod.show();
+                }
+            }else if (!isDrilling){
+                if (!dialogAddRod.dialog.isShowing()) {
+                    dialogAddRod.show();
+                }
+            }else {
+                new CustomToast(this,"Can't add Rods While Drilling").show();
             }
         });
         folders.setOnClickListener(view -> {
@@ -608,18 +617,13 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
             if (DataSaved.Drilling_Mode == ROCKDRILL_MODE && isDrilling) {
                 if (isDrillPaused) {
                     resumeDrillClock();
-                    playpause.setImageResource(R.drawable.btn_pause);
-                    // eventuale cambio icona: qui puoi mettere icona pause
-                    // playpause.setImageResource(R.drawable.xxx_pause);
+
                 } else {
                     pauseDrillClock();
                     if (!dialogErrorCodesDrill.dialog.isShowing()) {
                         dialogErrorCodesDrill.show(256);
                     }
-                    playpause.setImageResource(R.drawable.btn_play);
-                    // qui tu aprirai Dialog_Error_Codes_Drill o altra dialog
-                    // eventuale cambio icona: qui puoi mettere icona play
-                    // playpause.setImageResource(R.drawable.xxx_play);
+
                 }
                 return;
             }
@@ -633,7 +637,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         });
         quotaIndicator.setOnLongClickListener(v -> {
             if (DataSaved.Drilling_Mode == SOLARFARM_MODE) {
-                //TODO open dialog Z adjust
+
                 if (!dialogDrillZAdjust.dialog.isShowing()) {
                     dialogDrillZAdjust.show();
                 }
@@ -731,7 +735,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
                 if (nowLog - lastPenRateLogMs >= 1000L) {
                     lastPenRateLogMs = nowLog;
-                   int index = MyData.get_Int("Unit_Of_Measure");
+                    int index = MyData.get_Int("Unit_Of_Measure");
 
                     Double currentPenMmS = getCurrentPenRateMmS();
                     Double currentPenFtS = getCurrentPenRateFtS();
@@ -927,8 +931,9 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 if (isDrilling && sel != null && sel.getEndZ() != null) {
                     double zeta = sel.getEndZ() + DataSaved.Drill_tolleranza_Z;
                     if (toolEndCoord[2] < zeta) {
-                        End_Foro_Ok();
-                        isDrilling = false;
+                        // Stop automatico SOLAR: prima congela i delta correnti, poi scrivi il report.
+                        // Prima qui si chiamava direttamente End_Foro_Ok(), lasciando End_dN/E/Z a 0.
+                        finishCurrentDrillOk();
                     }
                 }
 
@@ -1004,6 +1009,24 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
             topViewCanvas.invalidate();
             bubbleCanvas.invalidate();
+        }
+
+        // PAUSE / RESUME solo ROCKDRILL durante foro in corso
+        if (DataSaved.Drilling_Mode == ROCKDRILL_MODE && isDrilling) {
+            if (isDrillPaused) {
+
+                playpause.setImageResource(R.drawable.btn_play);
+                // eventuale cambio icona: qui puoi mettere icona pause
+                // playpause.setImageResource(R.drawable.xxx_pause);
+            } else {
+                playpause.setImageResource(R.drawable.btn_pause);
+                // qui tu aprirai Dialog_Error_Codes_Drill o altra dialog
+                // eventuale cambio icona: qui puoi mettere icona play
+                // playpause.setImageResource(R.drawable.xxx_play);
+            }
+
+        }else {
+            playpause.setImageResource(R.drawable.btn_play);
         }
     }
 
@@ -1669,12 +1692,18 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         StartForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
         FineForo = (toolEndCoord != null) ? toolEndCoord.clone() : null;
 
+        // Snapshot delta START: deve rappresentare il delta al momento esatto di avvio.
+        // Lo teniamo anche qui, così Start_Foro() resta sicuro anche se richiamato da flussi diversi.
+        fillStartDeltas(p);
+        resetEndDeltas();
+
         isDrilling = true;
 
         // Persistenza STATE (CSV) fuori dal main thread
         runFileWriteAsync(() -> {
             if (ReadProjectService.stateStore != null) {
                 ReadProjectService.stateStore.upsertAndSave(
+                        NOME_OPERATORE,
                         holeIdSnapshot,
                         ProjectStateCsvStore.HoleState.TODO,
                         startIsoSnapshot,
@@ -1786,6 +1815,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 runFileWriteAsync(() -> {
                     if (ReadProjectService.stateStore != null) {
                         ReadProjectService.stateStore.upsertAndSave(
+                                NOME_OPERATORE,
                                 holeId,
                                 ProjectStateCsvStore.HoleState.DONE,
                                 startIsoSnapshot,
@@ -1844,6 +1874,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 runFileWriteAsync(() -> {
                     if (ReadProjectService.stateStore != null) {
                         ReadProjectService.stateStore.upsertAndSave(
+                                NOME_OPERATORE,
                                 holeId,
                                 ProjectStateCsvStore.HoleState.DONE,
                                 startIsoSnapshot,
@@ -1907,6 +1938,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 runFileWriteAsync(() -> {
                     if (ReadProjectService.stateStore != null) {
                         ReadProjectService.stateStore.upsertAndSave(
+                                NOME_OPERATORE,
                                 holeId,
                                 ProjectStateCsvStore.HoleState.DONE,
                                 startIsoSnapshot,
@@ -2037,6 +2069,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 runFileWriteAsync(() -> {
                     if (ReadProjectService.stateStore != null) {
                         ReadProjectService.stateStore.upsertAndSave(
+                                NOME_OPERATORE,
                                 holeId,
                                 ProjectStateCsvStore.HoleState.ABORTED,
                                 startIsoSnapshot,
@@ -2095,6 +2128,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 runFileWriteAsync(() -> {
                     if (ReadProjectService.stateStore != null) {
                         ReadProjectService.stateStore.upsertAndSave(
+                                NOME_OPERATORE,
                                 holeId,
                                 ProjectStateCsvStore.HoleState.ABORTED,
                                 startIsoSnapshot,
@@ -2158,6 +2192,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 runFileWriteAsync(() -> {
                     if (ReadProjectService.stateStore != null) {
                         ReadProjectService.stateStore.upsertAndSave(
+                                NOME_OPERATORE,
                                 holeId,
                                 ProjectStateCsvStore.HoleState.ABORTED,
                                 startIsoSnapshot,
@@ -2228,6 +2263,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         // 2) STATE.csv: sovrascrivi + pulisci campi (qui IMPORTANT: usare "" non null)
         try {
             ReadProjectService.stateStore.upsertAndSave(
+                    NOME_OPERATORE,
                     holeId,
                     ProjectStateCsvStore.HoleState.TODO,
                     "",   // startTimeIso pulito (oppure nowIso se vuoi memorizzare la riapertura)
@@ -2255,7 +2291,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
                 case SOLARFARM_MODE: {
                     ProjectReportXlsxWriter.SolarRow row = new ProjectReportXlsxWriter.SolarRow();
-                    row.operator = "";
+                    row.operator = NOME_OPERATORE;
                     row.pileId = holeId;
                     row.pileDescr = "";
 
@@ -2278,7 +2314,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
                 case JETGROUTING_MODE: {
                     ProjectReportXlsxWriter.JetRow row = new ProjectReportXlsxWriter.JetRow();
-                    row.operator = "";
+                    row.operator = NOME_OPERATORE;
                     row.holeId = holeId;
                     row.holeDescr = "";
 
@@ -2301,7 +2337,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
 
                 default: {
                     ProjectReportXlsxWriter.RockRow row = new ProjectReportXlsxWriter.RockRow();
-                    row.operator = "";
+                    row.operator = NOME_OPERATORE;
                     row.holeId = holeId;
                     row.holeDescr = "";
 
@@ -2398,6 +2434,32 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         End_dZ = 0;
     }
 
+    /**
+     * Chiusura DONE unica: congela sempre i delta correnti prima della scrittura report.
+     * Questo evita che un flusso alternativo, ad esempio lo stop automatico SOLAR,
+     * chiami End_Foro_Ok() senza avere prima valorizzato End_dN/E/Z.
+     */
+    private boolean finishCurrentDrillOk() {
+        if (!canRunDrillRoutine("stop")) return false;
+
+        Point3D_Drill p = Selected_Point3D_Drill;
+        fillEndDeltas(p);
+        End_Foro_Ok();
+        return true;
+    }
+
+    /**
+     * Chiusura ABORTED unica: anche in abort salviamo il delta al momento dell'interruzione.
+     */
+    private boolean finishCurrentDrillAborted() {
+        if (!canRunDrillRoutine("abort")) return false;
+
+        Point3D_Drill p = Selected_Point3D_Drill;
+        fillEndDeltas(p);
+        End_Foro_Aborted();
+        return true;
+    }
+
     private void Drill_Routine(int mode, boolean play, boolean stop, boolean abort) {
 
         switch (mode) {
@@ -2426,18 +2488,14 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 if (stop && isDrilling) {
                     if (!canRunDrillRoutine("stop")) return;
 
-                    Point3D_Drill p = Selected_Point3D_Drill;
-                    fillEndDeltas(p);
-
-                    End_Foro_Ok();
+                    if (!finishCurrentDrillOk()) return;
                     abort = false;
                     play = false;
                     stop = false;
                     isDrilling = false;
                 }
                 if (abort && isDrilling) {
-                    resetEndDeltas();
-                    End_Foro_Aborted();
+                    if (!finishCurrentDrillAborted()) return;
                     abort = false;
                     play = false;
                     stop = false;
@@ -2464,16 +2522,14 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                     isDrilling = true;
                 }
                 if (stop && isDrilling) {
-                    resetEndDeltas();
-                    End_Foro_Ok();
+                    if (!finishCurrentDrillOk()) return;
                     abort = false;
                     play = false;
                     stop = false;
                     isDrilling = false;
                 }
                 if (abort && isDrilling) {
-                    resetEndDeltas();
-                    End_Foro_Aborted();
+                    if (!finishCurrentDrillAborted()) return;
                     abort = false;
                     play = false;
                     stop = false;
@@ -2506,18 +2562,14 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
                 if (stop && isDrilling) {
                     if (!canRunDrillRoutine("stop")) return;
 
-                    Point3D_Drill p = Selected_Point3D_Drill;
-                    fillEndDeltas(p);
-
-                    End_Foro_Ok();
+                    if (!finishCurrentDrillOk()) return;
                     abort = false;
                     play = false;
                     stop = false;
                     isDrilling = false;
                 }
                 if (abort && isDrilling) {
-                    resetEndDeltas();
-                    End_Foro_Aborted();
+                    if (!finishCurrentDrillAborted()) return;
                     abort = false;
                     play = false;
                     stop = false;
@@ -3041,12 +3093,22 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
     }
 
     private boolean startDrillIfPossible() {
-        if ( !isDrilling) {
-            play = true;
-            stop = false;
-            abort = false;
-            Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
-            return true;
+        if(DataSaved.Drilling_Mode==SOLARFARM_MODE) {
+            if (!isDrilling) {
+                play = true;
+                stop = false;
+                abort = false;
+                Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+                return true;
+            }
+        }else {
+            if (!isDrilling&&okDrill) {
+                play = true;
+                stop = false;
+                abort = false;
+                Drill_Routine(DataSaved.Drilling_Mode, play, stop, abort);
+                return true;
+            }
         }
 
         return false;

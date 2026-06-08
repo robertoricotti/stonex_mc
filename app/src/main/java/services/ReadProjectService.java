@@ -1,6 +1,7 @@
 package services;
 
 
+import static drill_pile.gui.Drill_Activity.NOME_OPERATORE;
 import static drill_pile.gui.ProjectStateCsvStore.canonicalHoleId;
 import static gui.MyApp.gridFile_GR_dE;
 import static gui.MyApp.gridFile_GR_dN;
@@ -1548,10 +1549,10 @@ public class ReadProjectService extends Service {
         if (aId.trim().equalsIgnoreCase(bId.trim())) return;
 
         try {
-            stateStore.upsertAndSave("__ALIGN_A", ProjectStateCsvStore.HoleState.TODO,
+            stateStore.upsertAndSave(NOME_OPERATORE,"__ALIGN_A", ProjectStateCsvStore.HoleState.TODO,
                     aId.trim(), "", "ALIGNMENT_A", "");
 
-            stateStore.upsertAndSave("__ALIGN_B", ProjectStateCsvStore.HoleState.TODO,
+            stateStore.upsertAndSave(NOME_OPERATORE,"__ALIGN_B", ProjectStateCsvStore.HoleState.TODO,
                     bId.trim(), "", "ALIGNMENT_B", "");
 
             // aggiorna anche runtime (così UI/guida è immediata)

@@ -145,9 +145,9 @@ public class Dialog_PRJ_Folder extends BaseClass {
         recyclerViewSP.setAdapter(spAdapter);
         recyclerViewSP.setLayoutManager(new LinearLayoutManager(activity));
         recyclerViewSP.setItemViewCacheSize(spAdapter.getItemCount());
-        if (DataSaved.isWL == DRILL) {
+        /*if (DataSaved.isWL == DRILL) {
             addSurf.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
 
     }
@@ -322,7 +322,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
                         stopUpdating();
 
                         if (activity instanceof My3DActivity) {
-                            if(TriangleService.istriRunning) {
+                            if (TriangleService.istriRunning) {
                                 activity.stopService(new Intent(activity, TriangleService.class));
                             }
                             activity.startService(new Intent(activity, ReadProjectService.class));
@@ -685,19 +685,18 @@ public class Dialog_PRJ_Folder extends BaseClass {
             @Override
             public void run() {
                 // Update View
-
                 try {
 
                     if (DataSaved.isWL == DRILL) {
                         textP.setVisibility(View.VISIBLE);
-                        addSurf.setVisibility(View.GONE);
+
                         if (DataSaved.xyz_yxz == 0) {
                             textP.setText("P-E-N-Z-D");
                         } else {
                             textP.setText("P-N-E-Z-D");
                         }
                     } else {
-                        addSurf.setVisibility(View.VISIBLE);
+
                         textP.setVisibility(View.GONE);
                     }
                     String s1 = "";

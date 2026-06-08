@@ -1,5 +1,7 @@
 package gui.dialogs_and_toast;
 
+import static utils.MyTypes.DRILL;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -17,16 +19,18 @@ import gui.my_opengl.My3DActivity;
 import gui.my_opengl.MyGLActivity_Create;
 import gui.projects.Dialog_PRJ_Folder;
 import gui.projects.Usb_Project_Nova;
+import packexcalib.exca.DataSaved;
 import utils.FullscreenActivity;
 
 
 public class Dialog_Add_Surfaces {
     Activity activity;
     public Dialog dialog;
-    ImageView close, usb, flat, ab, area, trincea, triangoli,ditch;
+    ImageView close, usb, flat, ab, area, trincea, triangoli, ditch;
     String mPath;
     String chiamata = "HOME";
     Dialog_PRJ_Folder dialogPrjFolder;
+
     public Dialog_Add_Surfaces(Activity activity, String mPath) {
         this.activity = activity;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
@@ -75,8 +79,16 @@ public class Dialog_Add_Surfaces {
         area = dialog.findViewById(R.id.flatarea);
         trincea = dialog.findViewById(R.id.trench);
         triangoli = dialog.findViewById(R.id.terrein);
-        ditch=dialog.findViewById(R.id.ditch);
-         dialogPrjFolder = new Dialog_PRJ_Folder(activity);
+        ditch = dialog.findViewById(R.id.ditch);
+        dialogPrjFolder = new Dialog_PRJ_Folder(activity);
+        if(DataSaved.isWL==DRILL){
+            ditch.setAlpha(0.3f);
+            flat.setAlpha(0.3f);
+            ab.setAlpha(0.3f);
+            triangoli.setAlpha(0.3f);
+            area.setAlpha(0.3f);
+            trincea.setAlpha(0.3f);
+        }
     }
 
     private void onClick() {
@@ -96,6 +108,9 @@ public class Dialog_Add_Surfaces {
             }
         });
         ditch.setOnClickListener(view -> {
+            if (DataSaved.isWL == DRILL) {
+                return;
+            }
             if (dialogPrjFolder.dialog.isShowing()) {
                 dialogPrjFolder.dialog.dismiss();
             }
@@ -112,8 +127,10 @@ public class Dialog_Add_Surfaces {
             activity.startActivity(intent);
             activity.finish();
         });
-
         flat.setOnClickListener(view -> {
+            if (DataSaved.isWL == DRILL) {
+                return;
+            }
             if (dialogPrjFolder.dialog.isShowing()) {
                 dialogPrjFolder.dialog.dismiss();
             }
@@ -131,6 +148,9 @@ public class Dialog_Add_Surfaces {
             activity.finish();
         });
         ab.setOnClickListener(view -> {
+            if (DataSaved.isWL == DRILL) {
+                return;
+            }
             if (dialogPrjFolder.dialog.isShowing()) {
                 dialogPrjFolder.dialog.dismiss();
             }
@@ -146,6 +166,10 @@ public class Dialog_Add_Surfaces {
             activity.finish();
         });
         triangoli.setOnClickListener(view -> {
+            if (DataSaved.isWL == DRILL) {
+                return;
+            }
+
             if (dialogPrjFolder.dialog.isShowing()) {
                 dialogPrjFolder.dialog.dismiss();
             }
@@ -161,7 +185,9 @@ public class Dialog_Add_Surfaces {
             activity.finish();
         });
         area.setOnClickListener(view -> {
-
+            if(DataSaved.isWL==DRILL){
+                return;
+            }
             if (dialogPrjFolder.dialog.isShowing()) {
                 dialogPrjFolder.dialog.dismiss();
             }
@@ -177,7 +203,9 @@ public class Dialog_Add_Surfaces {
             activity.finish();
         });
         trincea.setOnClickListener(view -> {
-
+            if(DataSaved.isWL==DRILL){
+                return;
+            }
             if (dialogPrjFolder.dialog.isShowing()) {
                 dialogPrjFolder.dialog.dismiss();
             }
