@@ -148,34 +148,56 @@ public class DrillCSVParser {
             // Caso 1) CSV point-only (senza header):
             // t: 0 ID, 1 E, 2 N, 3 Z, 4 Description (opzionale)
             // Esempio: 16496,323903.5179,1155714.3900,479.4549,NE
-            if (t.size() >= 4 && t.size() < 11) {
+            if (t.size() >= 3 && t.size() < 11) {
 
                 String id = safeTrim(t.get(0));
-                Double e = (t.size() >= 2) ? parseDoubleSafe(t.get(1)) : null;
-                Double n = (t.size() >= 3) ? parseDoubleSafe(t.get(2)) : null;
-                Double z = (t.size() >= 4) ? parseDoubleSafe(t.get(3)) : null;
-                String desc = (t.size() >= 5) ? safeTrim(t.get(4)) : null;
 
-                if (id == null || e == null || n == null || z == null) return null;
+                Double e = null;
+                Double n = null;
+                Double z = 0.0;
+                String desc = "";
+
+                if (xyz == 1) {
+                    // Formato P,N,E,Z,D
+                    n = (t.size() >= 2) ? parseDoubleSafe(t.get(1)) : null;
+                    e = (t.size() >= 3) ? parseDoubleSafe(t.get(2)) : null;
+                } else {
+                    // Formato P,E,N,Z,D
+                    e = (t.size() >= 2) ? parseDoubleSafe(t.get(1)) : null;
+                    n = (t.size() >= 3) ? parseDoubleSafe(t.get(2)) : null;
+                }
+
+                if (t.size() >= 4) {
+                    Double parsedZ = parseDoubleSafe(t.get(3));
+                    z = parsedZ != null ? parsedZ : 0.0;
+                }
+
+                if (t.size() >= 5) {
+                    String parsedDesc = safeTrim(t.get(4));
+                    desc = parsedDesc != null ? parsedDesc : "";
+                }
+
+                if (id == null || e == null || n == null) return null;
 
                 p.setRowId(null);
                 p.setId(id);
                 p.setDescription(desc);
 
-                Double[] head = applyXyzSwap(e, n, z, xyz, conv);
+                // Qui passo xyz = 0 perché abbiamo già gestito PNEZD/PENZD sopra
+                Double[] head = applyXyzSwap(e, n, z, 0, conv);
+
                 if (head != null) {
                     p.setHeadX(head[0]);
                     p.setHeadY(head[1]);
                     p.setHeadZ(head[2]);
 
-                    // ✅ Target-point: End = Head
+                    // Target-point: End = Head
                     p.setEndX(head[0]);
                     p.setEndY(head[1]);
                     p.setEndZ(head[2]);
                 }
 
                 p.setDiameter(null);
-
             } else {
                 // Caso 2) formato lungo (il tuo CSV "completo"):
                 // t: 0 Row, 1 Hole, 2 StartE, 3 StartN, 4 StartZ, 5 EndE, 6 EndN, 7 EndZ,
@@ -291,18 +313,64 @@ public class DrillCSVParser {
 
 
     private static boolean looksLikeHeader(List<String> tokens) {
-        String joined = normalizeKey(String.join(" ", tokens));
-        if (joined.contains("row") && joined.contains("hole")) return true;
+        if (tokens == null || tokens.isEmpty()) return false;
 
-        int letters = 0;
-        int numeric = 0;
-        for (String tok : tokens) {
-            String t = safeTrim(tok);
-            if (t == null) continue;
-            if (t.matches(".*[a-zA-Z].*")) letters++;
-            if (parseDoubleSafe(t) != null) numeric++;
+        /*
+         * Caso dati point-only senza header:
+         * P,E,N,Z,D oppure P,N,E,Z,D
+         *
+         * Esempio:
+         * TEMPSP100000,590935.389,7539511.64,,Pink
+         *
+         * Anche se P e D contengono lettere, NON è header,
+         * perché colonna 1 e 2 sono numeriche.
+         */
+        if (tokens.size() >= 3) {
+            Double c1 = parseDoubleSafe(tokens.get(1));
+            Double c2 = parseDoubleSafe(tokens.get(2));
+
+            if (c1 != null && c2 != null) {
+                return false;
+            }
         }
-        return letters >= 2 && letters >= numeric;
+
+        String joined = normalizeKey(String.join(" ", tokens));
+
+        if (joined == null) return false;
+
+        // Header formato lungo
+        if (joined.contains("row") && joined.contains("hole")) return true;
+        if (joined.contains("easting") || joined.contains("northing")) return true;
+        if (joined.contains("start") && joined.contains("end")) return true;
+
+        // Header corto: P,E,N,Z,D oppure P,N,E,Z,D
+        int known = 0;
+        for (String tok : tokens) {
+            String k = normalizeKey(tok);
+            if (k == null) continue;
+
+            if (k.equals("p") ||
+                    k.equals("id") ||
+                    k.equals("point") ||
+                    k.equals("pnt") ||
+                    k.equals("e") ||
+                    k.equals("east") ||
+                    k.equals("easting") ||
+                    k.equals("n") ||
+                    k.equals("north") ||
+                    k.equals("northing") ||
+                    k.equals("z") ||
+                    k.equals("elev") ||
+                    k.equals("elevation") ||
+                    k.equals("d") ||
+                    k.equals("desc") ||
+                    k.equals("description") ||
+                    k.equals("color")) {
+                known++;
+            }
+        }
+
+        return known >= 3;
     }
 
     // -----------------------------

@@ -1049,7 +1049,7 @@ public class PointService extends Service {
         final double oy = origin.getHeadY();
 
         // TUNING
-        final double OFFSET_BUCKET = 1.0;      // stessa logica della tolleranza laterale autosnap
+        final double OFFSET_BUCKET = 1.25;      // stessa logica della tolleranza laterale autosnap
         final int MIN_POINTS_PER_ROW = 2;      // se vuoi più severità, metti 3
         final double HEADING_TOL_DEG = 1.0;
 

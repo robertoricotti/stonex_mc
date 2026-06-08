@@ -144,6 +144,7 @@ import utils.MyDeviceManager;
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
     public static final String gnssFirmware = "STX-SMC-App2.12.260320-BootV114-KernelV108.bin";
     public static final String ecuDrillFirmware="Universal_PileDriver_V2_28052026.lhx";
+    public static final String ecuDrillFirmware_50="mc050_piling_08062026.lhx";
     public static boolean UPDATE_CHECKED = false;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
@@ -424,7 +425,6 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
-
 /*
 git add .
 git commit -m "Messaggio"
@@ -506,7 +506,6 @@ git push
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
-
     }
 
     @Override

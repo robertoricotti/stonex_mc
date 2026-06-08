@@ -119,6 +119,7 @@ import utils.Plus1DiagClient;
 
 
 public class CanSender extends Service {
+    private boolean started = false;
     public static int postRemains;
     public static byte GNSS_MSG = 0x01;
     int heartbitTerzeParti = 0;
@@ -146,7 +147,7 @@ public class CanSender extends Service {
     private ScheduledExecutorService senderExecutor500;
     private ScheduledExecutorService senderExecutor2000;
     private ScheduledExecutorService scheduledExecutorService1min;
-    Executor mExecutor;
+
     private static final int THREAD_POOL_SIZE = 1;
 
 
@@ -158,7 +159,7 @@ public class CanSender extends Service {
         OUTPUT_HYDRO = "";
         payload = new HashMap<>();
 
-        mExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+
         handlerThread = new HandlerThread("CanSenderWorker");
         handlerThread.start();
 
@@ -178,19 +179,24 @@ public class CanSender extends Service {
     @SuppressLint("DiscouragedApi")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (started) {
+            return START_STICKY;
+        }
+
+        started = true;
+
         senderExecutor500 = Executors.newSingleThreadScheduledExecutor();
         senderExecutor2000 = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService1min = Executors.newSingleThreadScheduledExecutor();
+
         senderExecutor500.scheduleAtFixedRate(new AsyncSender500(), 1000, 500, TimeUnit.MILLISECONDS);
         senderExecutor2000.scheduleAtFixedRate(new AsyncSender2000(), 1000, 2000, TimeUnit.MILLISECONDS);
-
         scheduledExecutorService1min.scheduleAtFixedRate(new AsyncSender1min(), 1000, 60000, TimeUnit.MILLISECONDS);
 
+        handler.removeCallbacks(task);
         handler.post(task);
 
-
         return START_STICKY;
-
     }
 
     private final Runnable task = new Runnable() {
@@ -535,26 +541,33 @@ public class CanSender extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        started = false;
+
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
+
         if (senderExecutor500 != null) {
-            senderExecutor500.shutdown();
+            senderExecutor500.shutdownNow();
+            senderExecutor500 = null;
         }
 
         if (senderExecutor2000 != null) {
-            senderExecutor2000.shutdown();
+            senderExecutor2000.shutdownNow();
+            senderExecutor2000 = null;
         }
 
         if (scheduledExecutorService1min != null) {
-            scheduledExecutorService1min.shutdown();
+            scheduledExecutorService1min.shutdownNow();
+            scheduledExecutorService1min = null;
         }
-        try {
-            handler.removeCallbacksAndMessages(null);
+
+        if (handlerThread != null) {
             handlerThread.quitSafely();
-        } catch (Exception ignored) {
-
+            handlerThread = null;
         }
 
-
+        super.onDestroy();
     }
 
     public boolean gpsStat(String quality, double quota, boolean empty) {

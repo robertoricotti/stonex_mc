@@ -320,7 +320,6 @@ public class ReadProjectService extends Service {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("whats", "whats");
                     startActivity(intent);
-
                     MyApp.visibleActivity.finish();
                 } else {
                     MyApp.visibleActivity.recreate();
@@ -1276,17 +1275,13 @@ public class ReadProjectService extends Service {
                                     parserStatus = "Reading Points...";
                                     File f = new File(DataSaved.progettoSelected_POINT);
                                     DataSaved.drill_points = DrillCSVParser.parse(f, 0, DataSaved.xyz_yxz, conversionFactor);
-
-
                                     break;
                                 case "ird":
-
                                     parserStatus = "Reading Points...";
                                     DataSaved.drill_points = IrdParser.parseIrd(DataSaved.progettoSelected_POINT, 0, conversionFactor);
                                     break;
                                 case "xlsx":
                                 case "xls":
-
                                     parserStatus = "Reading Points..." + "\n...WAIT...";
                                     DataSaved.drill_points = JetXlsxParser.parseJetXlsx(
                                             DataSaved.progettoSelected_POINT,

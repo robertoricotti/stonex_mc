@@ -6,6 +6,7 @@ import static gui.MyApp.folderPath;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import gui.BaseClass;
+import gui.MyApp;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
@@ -372,6 +374,7 @@ public class PickProject extends BaseClass {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("MyApp", "Destryed :  "+MyApp.visibleActivity.toString());
 
     }
 
