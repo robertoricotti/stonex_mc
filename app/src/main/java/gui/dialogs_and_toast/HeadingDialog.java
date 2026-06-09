@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.stx_dig.R;
 
+import drill_pile.gui.AddPattern_Activity;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.digging_excavator.Digging2D;
 import gui.digging_excavator.Digging_CutAndFill2D;
@@ -71,11 +72,10 @@ public class HeadingDialog {
         seekBar = dialog.findViewById(R.id.valoreDrift);
         valueDrift = dialog.findViewById(R.id.valueDrift);
         imageView = dialog.findViewById(R.id.imgClose);
-        if (activity instanceof Activity_Crea_Superficie||activity instanceof MyGLActivity_Create) {
+        if (activity instanceof Activity_Crea_Superficie||activity instanceof MyGLActivity_Create||activity instanceof AddPattern_Activity) {
             title.setText(R.string.exit_proj);
             yes.setText(R.string.yes);
             exit.setText(R.string.no);
-
             yes.setBackgroundTintList(ColorStateList.valueOf(activity.getColor(R.color.bg_sfsred)));
         }
         if (DataSaved.useYawFrame == 1 && (activity instanceof Digging_CutAndFill2D || activity instanceof Digging2D)) {
@@ -249,7 +249,7 @@ public class HeadingDialog {
             dialog.dismiss();
         });
         yes.setOnClickListener((View v) -> {
-            if (activity instanceof Activity_Crea_Superficie||activity instanceof MyGLActivity_Create) {
+            if (activity instanceof Activity_Crea_Superficie||activity instanceof MyGLActivity_Create||activity instanceof AddPattern_Activity) {
                 activity.startActivity(new Intent(activity, Activity_Home_Page.class));
                 activity.finish();
 

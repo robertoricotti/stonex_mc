@@ -1,6 +1,10 @@
 package packexcalib.exca;
 
 
+import static packexcalib.exca.Sensors_Decoder.normalizeAngle;
+
+import android.util.Log;
+
 public class TiltEncript {
 
 
@@ -113,7 +117,6 @@ public class TiltEncript {
 
     public static double[] encriptTSM_Tilt(byte[] data, int mount) {
         double norm, ax_norm, ay_norm, az_norm;
-        double qW, qX, qY, qZ, qnorm, mqW, mqX, mqY, mqZ;
         short acc_x;
         short acc_y;
         short acc_z;
@@ -126,12 +129,12 @@ public class TiltEncript {
         ay_norm = (double) acc_y / norm;
         az_norm = (double) acc_z / norm;
         switch (mount) {
-            case 1:
+            case -1:
                 pitch = Math.atan2(ay_norm, -az_norm) * 180 / Math.PI;
                 roll = -(Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI);
                 yaw = 0;
                 break;
-            case -1:
+            case 1:
                 pitch = -(Math.atan2(ay_norm, -az_norm) * 180 / Math.PI);
                 roll = Math.atan2(ax_norm, Math.sqrt(ay_norm * ay_norm + az_norm * az_norm)) * 180.0 / Math.PI;
                 yaw = 0;

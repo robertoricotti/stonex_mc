@@ -918,7 +918,7 @@ public class MyGLActivity_Create extends BaseClass {
                         break;
                 }
             } catch (Exception ignored) {
-                mostraCoor.setText("Coordinate non pronte");
+                mostraCoor.setText("UNKNOWN");
             }
         }
 

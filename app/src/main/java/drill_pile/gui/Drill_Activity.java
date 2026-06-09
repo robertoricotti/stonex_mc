@@ -3044,7 +3044,7 @@ public class Drill_Activity extends BaseClass implements DrillPointsFullscreenDi
         byte[] tollXY_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_XY*0.5 * 1000));
         byte[] tollHam_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_Z * 1000));
         byte[] tollAn_ = PLC_DataTypes_LittleEndian.U16_to_bytes((int) (DataSaved.Drill_tolleranza_Angolo*0.5 * 1000));
-        byte[] windowT = PLC_DataTypes_LittleEndian.U16_to_bytes(35);
+        byte[] windowT = PLC_DataTypes_LittleEndian.U16_to_bytes(40);
 
         handler.post(() ->
                 MyDeviceManager.CanWrite(true, 1, 0x73, 8, new byte[]{(byte) 132, tollAn_[0], tollAn_[1], 0, 0, 0, 0, 0})

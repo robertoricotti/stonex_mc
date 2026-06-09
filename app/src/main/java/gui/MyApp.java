@@ -65,6 +65,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import cloud.S3ManagerSingleton;
+import drill_pile.gui.AddPattern_Activity;
 import drill_pile.gui.Dialog_Error_Codes_Drill;
 import drill_pile.gui.Drill_Activity;
 import drill_pile.gui.Drill_MainPage;
@@ -811,6 +812,8 @@ git push
             ((MyGLActivity_Create) activity).updateUI();
         } else if (activity instanceof Mast_Antenna) {
             ((Mast_Antenna) activity).updateUI();
+        }else if (activity instanceof AddPattern_Activity) {
+            ((AddPattern_Activity) activity).updateUI();
         }
 
     }

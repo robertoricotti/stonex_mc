@@ -22,6 +22,11 @@
           <theme>@style/Theme.Stx_dig</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_drillpattern.xml">
+        <config>
+          <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bottone_grada.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
@@ -175,6 +180,11 @@
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/sfondo_trasp_scuro.xml">
         <config>
           <theme>@style/Theme.Stx_dig</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_add_pattern.xml">
+        <config>
+          <theme>@style/Theme.AppCompat.Light.NoActionBar</theme>
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_boom1_calib.xml">
@@ -621,18 +631,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.10 before release 4.1.11">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/AddPattern_Activity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/bottone_drillpattern.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_add_pattern.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen1/release/output-metadata.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/gen2/release/output-metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_DrillSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Dialog_DrillSet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/drill_pile/gui/Drill_Activity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/MyApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LaunchScreenActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/boot_and_choose/LaunchScreenActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/projects/PickProject.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/projects/PickProject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/iredes/DrillCSVParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/iredes/DrillCSVParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/PointService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/ReadProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Add_Surfaces.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/Dialog_Add_Surfaces.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/HeadingDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/dialogs_and_toast/HeadingDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLActivity_Create.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/my_opengl/MyGLActivity_Create.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/TiltEncript.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/TiltEncript.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_add_new_surgaces.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_add_new_surgaces.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -791,6 +804,9 @@
     <key name="android.template.-263663279">
       <recent name="gui.tech_menu" />
     </key>
+    <key name="android.template.757423614">
+      <recent name="drill_pile.gui" />
+    </key>
     <key name="android.template.-393518860">
       <recent name="gui.drilling" />
     </key>
@@ -897,14 +913,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00224" summary="4.1.6 snappa su entità 2D to do test">
-      <option name="closed" value="true" />
-      <created>1776803170891</created>
-      <option name="number" value="00224" />
-      <option name="presentableId" value="LOCAL-00224" />
-      <option name="project" value="LOCAL" />
-      <updated>1776803170891</updated>
     </task>
     <task id="LOCAL-00225" summary="4.1.6 snappa su entità 2D 85%">
       <option name="closed" value="true" />
@@ -1290,7 +1298,15 @@
       <option name="project" value="LOCAL" />
       <updated>1780914846392</updated>
     </task>
-    <option name="localTasksCounter" value="273" />
+    <task id="LOCAL-00273" summary="4.1.10 before release 4.1.11">
+      <option name="closed" value="true" />
+      <created>1780951429311</created>
+      <option name="number" value="00273" />
+      <option name="presentableId" value="LOCAL-00273" />
+      <option name="project" value="LOCAL" />
+      <updated>1780951429312</updated>
+    </task>
+    <option name="localTasksCounter" value="274" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1339,22 +1355,22 @@
       <map>
         <entry key="com.example.stx_mc.gen1">
           <value>
-            <CheckInfo lastCheckTimestamp="1780905637544" />
+            <CheckInfo lastCheckTimestamp="1781017878581" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen1.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1780905637544" />
+            <CheckInfo lastCheckTimestamp="1781017878577" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2">
           <value>
-            <CheckInfo lastCheckTimestamp="1780905637545" />
+            <CheckInfo lastCheckTimestamp="1781017878578" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.gen2.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1780905637546" />
+            <CheckInfo lastCheckTimestamp="1781017878578" />
           </value>
         </entry>
         <entry key="com.example.stx_mc.other">
