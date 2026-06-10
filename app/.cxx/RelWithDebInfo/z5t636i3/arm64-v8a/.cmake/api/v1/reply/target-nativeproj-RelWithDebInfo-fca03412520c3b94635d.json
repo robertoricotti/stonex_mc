@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "D:/Development/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/z5t636i3/obj/arm64-v8a/libnativeproj.so"
+			"path" : "D:/Developement/MC_V4/app/build/intermediates/cxx/RelWithDebInfo/z5t636i3/obj/arm64-v8a/libnativeproj.so"
 		}
 	],
 	"backtrace" : 1,
@@ -62,7 +62,7 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "D:/Development/MC_V4/app/src/main/cpp/third_party/arm64-v8a/include"
+					"path" : "D:/Developement/MC_V4/app/src/main/cpp/third_party/arm64-v8a/include"
 				}
 			],
 			"language" : "CXX",
@@ -87,22 +87,22 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "D:\\Development\\MC_V4\\app\\src\\main\\cpp\\third_party\\arm64-v8a\\lib\\libproj.a",
+				"fragment" : "D:\\Developement\\MC_V4\\app\\src\\main\\cpp\\third_party\\arm64-v8a\\lib\\libproj.a",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "D:\\Development\\MC_V4\\app\\src\\main\\cpp\\third_party\\arm64-v8a\\lib\\libtiff.a",
+				"fragment" : "D:\\Developement\\MC_V4\\app\\src\\main\\cpp\\third_party\\arm64-v8a\\lib\\libtiff.a",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "D:\\Development\\MC_V4\\app\\src\\main\\cpp\\third_party\\arm64-v8a\\lib\\libz.a",
+				"fragment" : "D:\\Developement\\MC_V4\\app\\src\\main\\cpp\\third_party\\arm64-v8a\\lib\\libz.a",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "D:\\Development\\MC_V4\\app\\src\\main\\cpp\\third_party\\arm64-v8a\\lib\\libsqlite3.a",
+				"fragment" : "D:\\Developement\\MC_V4\\app\\src\\main\\cpp\\third_party\\arm64-v8a\\lib\\libsqlite3.a",
 				"role" : "libraries"
 			},
 			{
