@@ -19,6 +19,7 @@ import static services.ReadProjectService.isFinishedPOLY;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JD_LIEBHERR;
@@ -137,7 +138,7 @@ public class My3DActivity extends BaseClass {
     public static Dialog_Gain_Hydro diaolgGainHydro;
     private MyGLSurfaceView glSurfaceView;
 
-    TextView boxLeft, boxCent, boxRight, txtCutFill, txtDist;
+    TextView boxLeft, boxCent, boxRight, txtCutFill, txtDist,txtDredgeQ;
     LinearLayout sideBar, frameCent;
     ImageView bucketEdge, typeView, offsetSettings, lineReference, freccia, lucchetto, gl_benne;
     ImageView exit, btn_hide, btn_show, btn_color, btn_zoomC, btn_zoomM, btn_zoomP, btn_croce, btn_pnezd, hydroPoint;
@@ -162,17 +163,17 @@ public class My3DActivity extends BaseClass {
         progress.setClickable(true);
         loading.setClickable(true);
 
-            if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
-                try {
-                    if(!TriangleService.istriRunning)
-                        startService(new Intent(this, TriangleService.class));
+        if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
+            try {
+                if (!TriangleService.istriRunning)
+                    startService(new Intent(this, TriangleService.class));
 
-                } catch (Exception e) {
-                    Log.e(TAG, "Unable to start TriangleService", e);
-                }
-
-
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to start TriangleService", e);
             }
+
+
+        }
         try {
             pathToPNEZD = MyData.get_String("progettoSelected");
             pathToPNEZD = pathToPNEZD.substring(0, pathToPNEZD.lastIndexOf("/"));
@@ -212,11 +213,27 @@ public class My3DActivity extends BaseClass {
                             (byte) 0x0,
                             (byte) 0xB0});
         }
+        if(DataSaved.isWL==DREDGE){
+            DataSaved.bucketEdge=0;
+            PNEZD_FUNCTION=true;
+            if(btn_pnezd!=null){
+                isCutFill=false;
+                boxLeft.setVisibility(View.GONE);
+                boxCent.setVisibility(View.GONE);
+                boxRight.setVisibility(View.GONE);
+                frameCent.setVisibility(View.VISIBLE);
+                btn_pnezd.setVisibility(View.VISIBLE);
+                txtDredgeQ.setVisibility(View.VISIBLE);
+
+
+            }
+        }
 
 
     }
 
     private void findView() {
+        txtDredgeQ=findViewById(R.id.txtDredgeQ);
         marcia = findViewById(R.id.marcia);
         navigatorHDT = findViewById(R.id.navigatorHDT);
         navigatorHDT.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
@@ -307,8 +324,12 @@ public class My3DActivity extends BaseClass {
         panel2.setBackgroundColor(MyColorClass.colorSfondo);
 
 
-        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
+        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER ) {
             gl_benne.setImageResource((R.drawable.benna_vuota1));
+            gl_hydroP.setVisibility(View.GONE);
+        } else if ( DataSaved.isWL == DREDGE) {
+            bucketEdge.setVisibility(View.GONE);
+            gl_benne.setImageResource((R.drawable.dragtool));
             gl_hydroP.setVisibility(View.GONE);
         } else {
 
@@ -426,6 +447,8 @@ public class My3DActivity extends BaseClass {
                 i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                 startActivity(i);
                 finish();
+            } else if (DataSaved.isWL==DREDGE) {
+                //TODO menu settaggio tooldredge
             } else {
                 if (!dialogBladeWear.dialog.isShowing()) {
                     dialogBladeWear.show();
@@ -629,10 +652,10 @@ public class My3DActivity extends BaseClass {
             }
         });
         exit.setOnClickListener(view -> {
-          //  if(proj==null) {
-                saveParam();
-                startActivity(new Intent(this, Activity_Home_Page.class));
-                finish();
+            //  if(proj==null) {
+            saveParam();
+            startActivity(new Intent(this, Activity_Home_Page.class));
+            finish();
           /*  }else {
                 clearDataProgetto();
                 saveParam();
@@ -797,7 +820,7 @@ public class My3DActivity extends BaseClass {
         super.onDestroy();
         Grader_Auto_SS = false;
         try {
-            if(TriangleService.istriRunning)
+            if (TriangleService.istriRunning)
                 stopService(new Intent(this, TriangleService.class));
 
         } catch (Exception e) {
@@ -945,7 +968,9 @@ public class My3DActivity extends BaseClass {
                     progress.setVisibility(View.GONE);
                     loading.setVisibility(View.GONE);
                 }
+
                 setupBoxes();
+
                 btn_hide.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
                 btn_show.setImageTintList(ColorStateList.valueOf(MyColorClass.colorConstraint));
                 switch (DataSaved.bucketEdge) {
@@ -1112,7 +1137,8 @@ public class My3DActivity extends BaseClass {
                 colorUp = R.drawable.custom_background_test3d_box_blu;
                 colorGreen = R.drawable.custom_background_test3d_verde;
             }
-        } else {
+        }
+        else {
             txtCutFill.setVisibility(View.VISIBLE);
             if ((MyData.get_Int("UpperBar_Visible") == 1)) {
                 boxLeft.setVisibility(View.VISIBLE);
@@ -1327,199 +1353,337 @@ public class My3DActivity extends BaseClass {
         divisorio_fine.setLayoutParams(fine);
 
 
-        if (TriangleService.ltOffGrid) {
-            boxLeft.setText("-.---");
-            boxLeft.setTextColor(Color.WHITE);
-            boxLeft.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
-        } else {
-            if (TriangleService.quota3D_SX > DataSaved.deadbandH) {
-                boxLeft.setBackground(getResources().getDrawable(colorUp));
+        if(DataSaved.isWL!=DREDGE) {
+            if (TriangleService.ltOffGrid) {
+                boxLeft.setText("-.---");
                 boxLeft.setTextColor(Color.WHITE);
-                boxLeft.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
-                CanSender.onGrade = (byte) 125;
-            } else if (TriangleService.quota3D_SX < -DataSaved.deadbandH) {
-                boxLeft.setTextColor(Color.WHITE);
-                boxLeft.setBackground(getResources().getDrawable(colorDown));
-                boxLeft.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
-                CanSender.onGrade = (byte) 131;
-            } else if (TriangleService.quota3D_SX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
-                if (!isCutFill) {
-                    boxLeft.setTextColor(Color.DKGRAY);
-                } else {
-                    boxLeft.setTextColor(Color.WHITE);
-                }
-                boxLeft.setBackground(getDrawable(colorGreen));
-                boxLeft.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
-                CanSender.onGrade = (byte) 128;
-            }
-        }
-        ///
-        if (DataSaved.isAutoSnap == 0) {
-
-
-            if (TriangleService.ctOffGrid) {
-                boxCent.setText("-.---");
-                boxCent.setTextColor(Color.WHITE);
-                boxCent.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
+                boxLeft.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
             } else {
-                if (TriangleService.quota3D_CT > DataSaved.deadbandH) {
-                    boxCent.setTextColor(Color.WHITE);
-                    boxCent.setBackground(getResources().getDrawable(colorUp));
-                    boxCent.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                if (TriangleService.quota3D_SX > DataSaved.deadbandH) {
+                    boxLeft.setBackground(getResources().getDrawable(colorUp));
+                    boxLeft.setTextColor(Color.WHITE);
+                    boxLeft.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
                     CanSender.onGrade = (byte) 125;
-                } else if (TriangleService.quota3D_CT < -DataSaved.deadbandH) {
-                    boxCent.setTextColor(Color.WHITE);
-                    boxCent.setBackground(getResources().getDrawable(colorDown));
-                    boxCent.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                } else if (TriangleService.quota3D_SX < -DataSaved.deadbandH) {
+                    boxLeft.setTextColor(Color.WHITE);
+                    boxLeft.setBackground(getResources().getDrawable(colorDown));
+                    boxLeft.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
                     CanSender.onGrade = (byte) 131;
-                } else if (TriangleService.quota3D_CT >= -DataSaved.deadbandH && TriangleService.quota3D_CT <= DataSaved.deadbandH) {
+                } else if (TriangleService.quota3D_SX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
                     if (!isCutFill) {
-                        boxCent.setTextColor(Color.DKGRAY);
+                        boxLeft.setTextColor(Color.DKGRAY);
                     } else {
-                        boxCent.setTextColor(Color.WHITE);
+                        boxLeft.setTextColor(Color.WHITE);
                     }
-                    boxCent.setBackground(getDrawable(colorGreen));
-                    boxCent.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                    boxLeft.setBackground(getDrawable(colorGreen));
+                    boxLeft.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_SX)));
                     CanSender.onGrade = (byte) 128;
                 }
             }
+            ///
+            if (DataSaved.isAutoSnap == 0) {
 
-        } else {
 
-            String offsetS = "";
-            double rot;
-            double rotFix = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
-
-            if (DataSaved.lockUnlock == 0) {
-                lucchetto.setImageResource(R.drawable.unlock);
-            } else {
-                lucchetto.setImageResource(R.drawable.lock);
-            }
-            if (DataSaved.isAutoSnap == 1 || DataSaved.isAutoSnap == 3) {
-                offsetS = "";
-                double x = 0, y = 0;
-                switch (DataSaved.bucketEdge) {
-                    case -1:
-                        x = ExcavatorLib.bucketLeftCoord[0];
-                        y = ExcavatorLib.bucketLeftCoord[1];
-                        break;
-
-                    case 0:
-                        x = ExcavatorLib.bucketCoord[0];
-                        y = ExcavatorLib.bucketCoord[1];
-                        break;
-
-                    case 1:
-                        x = ExcavatorLib.bucketRightCoord[0];
-                        y = ExcavatorLib.bucketRightCoord[1];
-                        break;
-                }
-                rot = My_LocationCalc.calcBearingXY(x, y, DataSaved.nearestPoint.getX(), DataSaved.nearestPoint.getY());
-                rot = rot + rotFix;
-                rot = rot % 360;
-                freccia.setRotation((float) rot);
-
-            } else if (DataSaved.isAutoSnap == 2 || DataSaved.isAutoSnap == 4 || DataSaved.isAutoSnap == 20) {
-                offsetS = "\n" + "(" + Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)) + ")";
-                float[] a = new float[2];
-                float[] b = new float[2];
-
-                boolean okA = MyGLRenderer.projectWorldToScreen2D(
-                        DataSaved.snapRefWorldX,
-                        DataSaved.snapRefWorldY,
-                        DataSaved.glL_AnchorView[0],
-                        DataSaved.glL_AnchorView[1],
-                        a
-                );
-
-                boolean okB = MyGLRenderer.projectWorldToScreen2D(
-                        DataSaved.cutWorldX_1,
-                        DataSaved.cutWorldY_1,
-                        DataSaved.glL_AnchorView[0],
-                        DataSaved.glL_AnchorView[1],
-                        b
-                );
-
-                if (okA && okB) {
-                    float dx = b[0] - a[0];
-                    float dy = b[1] - a[1];
-
-                    if (Math.hypot(dx, dy) > 2.0) {
-                        double screenAngle = Math.toDegrees(Math.atan2(dy, dx));
-
-                        // Se la tua icona freccia a rotation=0 punta verso destra:
-                        rot = screenAngle+90;
-
-                        // Se invece la tua icona freccia a rotation=0 punta verso l'alto, usa:
-                        // rot = screenAngle + 90.0;
-
-                        rot = normalize360(rot);
-                        freccia.setRotation((float) rot);
+                if (TriangleService.ctOffGrid) {
+                    boxCent.setText("-.---");
+                    boxCent.setTextColor(Color.WHITE);
+                    boxCent.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
+                } else {
+                    if (TriangleService.quota3D_CT > DataSaved.deadbandH) {
+                        boxCent.setTextColor(Color.WHITE);
+                        boxCent.setBackground(getResources().getDrawable(colorUp));
+                        boxCent.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                        CanSender.onGrade = (byte) 125;
+                    } else if (TriangleService.quota3D_CT < -DataSaved.deadbandH) {
+                        boxCent.setTextColor(Color.WHITE);
+                        boxCent.setBackground(getResources().getDrawable(colorDown));
+                        boxCent.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                        CanSender.onGrade = (byte) 131;
+                    } else if (TriangleService.quota3D_CT >= -DataSaved.deadbandH && TriangleService.quota3D_CT <= DataSaved.deadbandH) {
+                        if (!isCutFill) {
+                            boxCent.setTextColor(Color.DKGRAY);
+                        } else {
+                            boxCent.setTextColor(Color.WHITE);
+                        }
+                        boxCent.setBackground(getDrawable(colorGreen));
+                        boxCent.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                        CanSender.onGrade = (byte) 128;
                     }
                 }
 
             }
-            switch (DataSaved.bucketEdge) {
-                case -1:
-                    dist = TriangleService.dist3D_SX;
+            else {
 
-                    break;
-                case 0:
-                    dist = TriangleService.dist3D_CT;
-                    break;
+                String offsetS = "";
+                double rot;
+                double rotFix = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
 
-                case 1:
-                    dist = TriangleService.dist3D_DX;
-                    break;
-            }
-            if (Math.abs(dist) <= DataSaved.tolleranza_XY) {
-                frameCent.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_verde));
-                freccia.setImageTintList(ColorStateList.valueOf(getColor(R.color._____cancel_text)));
-                freccia.setImageResource(R.drawable.baseline_radio_button_checked_96);
-                lucchetto.setImageTintList(ColorStateList.valueOf(getColor(R.color._____cancel_text)));
-                txtDist.setTextColor(getResources().getColor(R.color._____cancel_text));
-
-            } else {
-                frameCent.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_box));
-                freccia.setImageTintList(ColorStateList.valueOf(getColor(R.color.white)));
-                freccia.setImageResource(R.drawable.navigator_white);
-                lucchetto.setImageTintList(ColorStateList.valueOf(getColor(R.color.white)));
-                txtDist.setTextColor(getResources().getColor(R.color.white));
-            }
-            distances = Utils.readUnitOfMeasureLITE(String.valueOf(dist));
-            txtDist.setText(distances + offsetS);
-
-
-        }
-
-        ////
-        if (TriangleService.rtOffGrid) {
-            boxRight.setText("-.---");
-            boxRight.setTextColor(Color.WHITE);
-            boxRight.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
-        } else {
-            if (TriangleService.quota3D_DX > DataSaved.deadbandH) {
-                boxRight.setTextColor(Color.WHITE);
-                boxRight.setBackground(getResources().getDrawable(colorUp));
-                boxRight.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
-                CanSender.onGrade = (byte) 125;
-            } else if (TriangleService.quota3D_DX < -DataSaved.deadbandH) {
-                boxRight.setTextColor(Color.WHITE);
-                boxRight.setBackground(getResources().getDrawable(colorDown));
-                boxRight.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
-                CanSender.onGrade = (byte) 131;
-            } else if (TriangleService.quota3D_DX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
-                if (!isCutFill) {
-                    boxRight.setTextColor(Color.DKGRAY);
+                if (DataSaved.lockUnlock == 0) {
+                    lucchetto.setImageResource(R.drawable.unlock);
                 } else {
-                    boxRight.setTextColor(Color.WHITE);
+                    lucchetto.setImageResource(R.drawable.lock);
                 }
-                boxRight.setBackground(getDrawable(colorGreen));
-                boxRight.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
-                CanSender.onGrade = (byte) 128;
-            }
-        }
+                if (DataSaved.isAutoSnap == 1 || DataSaved.isAutoSnap == 3) {
+                    offsetS = "";
+                    double x = 0, y = 0;
+                    switch (DataSaved.bucketEdge) {
+                        case -1:
+                            x = ExcavatorLib.bucketLeftCoord[0];
+                            y = ExcavatorLib.bucketLeftCoord[1];
+                            break;
 
+                        case 0:
+                            x = ExcavatorLib.bucketCoord[0];
+                            y = ExcavatorLib.bucketCoord[1];
+                            break;
+
+                        case 1:
+                            x = ExcavatorLib.bucketRightCoord[0];
+                            y = ExcavatorLib.bucketRightCoord[1];
+                            break;
+                    }
+                    rot = My_LocationCalc.calcBearingXY(x, y, DataSaved.nearestPoint.getX(), DataSaved.nearestPoint.getY());
+                    rot = rot + rotFix;
+                    rot = rot % 360;
+                    freccia.setRotation((float) rot);
+
+                } else if (DataSaved.isAutoSnap == 2 || DataSaved.isAutoSnap == 4 || DataSaved.isAutoSnap == 20) {
+                    offsetS = "\n" + "(" + Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)) + ")";
+                    float[] a = new float[2];
+                    float[] b = new float[2];
+
+                    boolean okA = MyGLRenderer.projectWorldToScreen2D(
+                            DataSaved.snapRefWorldX,
+                            DataSaved.snapRefWorldY,
+                            DataSaved.glL_AnchorView[0],
+                            DataSaved.glL_AnchorView[1],
+                            a
+                    );
+
+                    boolean okB = MyGLRenderer.projectWorldToScreen2D(
+                            DataSaved.cutWorldX_1,
+                            DataSaved.cutWorldY_1,
+                            DataSaved.glL_AnchorView[0],
+                            DataSaved.glL_AnchorView[1],
+                            b
+                    );
+
+                    if (okA && okB) {
+                        float dx = b[0] - a[0];
+                        float dy = b[1] - a[1];
+
+                        if (Math.hypot(dx, dy) > 2.0) {
+                            double screenAngle = Math.toDegrees(Math.atan2(dy, dx));
+
+                            // Se la tua icona freccia a rotation=0 punta verso destra:
+                            rot = screenAngle + 90;
+
+                            // Se invece la tua icona freccia a rotation=0 punta verso l'alto, usa:
+                            // rot = screenAngle + 90.0;
+
+                            rot = normalize360(rot);
+                            freccia.setRotation((float) rot);
+                        }
+                    }
+
+                }
+                switch (DataSaved.bucketEdge) {
+                    case -1:
+                        dist = TriangleService.dist3D_SX;
+
+                        break;
+                    case 0:
+                        dist = TriangleService.dist3D_CT;
+                        break;
+
+                    case 1:
+                        dist = TriangleService.dist3D_DX;
+                        break;
+                }
+                if (Math.abs(dist) <= DataSaved.tolleranza_XY) {
+                    frameCent.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_verde));
+                    freccia.setImageTintList(ColorStateList.valueOf(getColor(R.color._____cancel_text)));
+                    freccia.setImageResource(R.drawable.baseline_radio_button_checked_96);
+                    lucchetto.setImageTintList(ColorStateList.valueOf(getColor(R.color._____cancel_text)));
+                    txtDist.setTextColor(getResources().getColor(R.color._____cancel_text));
+
+                } else {
+                    frameCent.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_box));
+                    freccia.setImageTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                    freccia.setImageResource(R.drawable.navigator_white);
+                    lucchetto.setImageTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                    txtDist.setTextColor(getResources().getColor(R.color.white));
+                }
+                distances = Utils.readUnitOfMeasureLITE(String.valueOf(dist));
+                txtDist.setText(distances + offsetS);
+
+
+            }
+
+            ////
+            if (TriangleService.rtOffGrid) {
+                boxRight.setText("-.---");
+                boxRight.setTextColor(Color.WHITE);
+                boxRight.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
+            } else {
+                if (TriangleService.quota3D_DX > DataSaved.deadbandH) {
+                    boxRight.setTextColor(Color.WHITE);
+                    boxRight.setBackground(getResources().getDrawable(colorUp));
+                    boxRight.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                    CanSender.onGrade = (byte) 125;
+                } else if (TriangleService.quota3D_DX < -DataSaved.deadbandH) {
+                    boxRight.setTextColor(Color.WHITE);
+                    boxRight.setBackground(getResources().getDrawable(colorDown));
+                    boxRight.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                    CanSender.onGrade = (byte) 131;
+                } else if (TriangleService.quota3D_DX >= -DataSaved.deadbandH && TriangleService.quota3D_SX <= DataSaved.deadbandH) {
+                    if (!isCutFill) {
+                        boxRight.setTextColor(Color.DKGRAY);
+                    } else {
+                        boxRight.setTextColor(Color.WHITE);
+                    }
+                    boxRight.setBackground(getDrawable(colorGreen));
+                    boxRight.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_DX)));
+                    CanSender.onGrade = (byte) 128;
+                }
+            }
+        }else {
+            //TODO dredge boxes
+            boxLeft.setVisibility(View.GONE);
+            boxCent.setVisibility(View.GONE);
+            boxRight.setVisibility(View.GONE);
+            if (TriangleService.ctOffGrid) {
+                txtDredgeQ.setText("-.---");
+                txtDredgeQ.setTextColor(Color.WHITE);
+                txtDredgeQ.setBackground(getDrawable(R.drawable.custom_background_test3d_box));
+            } else {
+                if (TriangleService.quota3D_CT > DataSaved.deadbandH) {
+                    txtDredgeQ.setTextColor(Color.WHITE);
+                    txtDredgeQ.setBackground(getResources().getDrawable(colorUp));
+                    txtDredgeQ.setText("▼ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                    CanSender.onGrade = (byte) 125;
+                } else if (TriangleService.quota3D_CT < -DataSaved.deadbandH) {
+                    txtDredgeQ.setTextColor(Color.WHITE);
+                    txtDredgeQ.setBackground(getResources().getDrawable(colorDown));
+                    txtDredgeQ.setText("▲ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                    CanSender.onGrade = (byte) 131;
+                } else if (TriangleService.quota3D_CT >= -DataSaved.deadbandH && TriangleService.quota3D_CT <= DataSaved.deadbandH) {
+                    txtDredgeQ.setTextColor(Color.DKGRAY);
+                    txtDredgeQ.setBackground(getDrawable(colorGreen));
+                    txtDredgeQ.setText("⧗ " + Utils.readUnitOfMeasureLITE(String.valueOf(TriangleService.quota3D_CT)));
+                    CanSender.onGrade = (byte) 128;
+                }
+            }
+            if (DataSaved.isAutoSnap != 0) {
+
+                String offsetS = "";
+                double rot;
+                double rotFix = 360 - ((float) (NmeaListener.mch_Orientation + DataSaved.deltaGPS2));
+
+                if (DataSaved.lockUnlock == 0) {
+                    lucchetto.setImageResource(R.drawable.unlock);
+                } else {
+                    lucchetto.setImageResource(R.drawable.lock);
+                }
+                if (DataSaved.isAutoSnap == 1 || DataSaved.isAutoSnap == 3) {
+                    offsetS = "";
+                    double x = 0, y = 0;
+                    switch (DataSaved.bucketEdge) {
+                        case -1:
+                            x = ExcavatorLib.bucketLeftCoord[0];
+                            y = ExcavatorLib.bucketLeftCoord[1];
+                            break;
+
+                        case 0:
+                            x = ExcavatorLib.bucketCoord[0];
+                            y = ExcavatorLib.bucketCoord[1];
+                            break;
+
+                        case 1:
+                            x = ExcavatorLib.bucketRightCoord[0];
+                            y = ExcavatorLib.bucketRightCoord[1];
+                            break;
+                    }
+                    rot = My_LocationCalc.calcBearingXY(x, y, DataSaved.nearestPoint.getX(), DataSaved.nearestPoint.getY());
+                    rot = rot + rotFix;
+                    rot = rot % 360;
+                    freccia.setRotation((float) rot);
+
+                } else if (DataSaved.isAutoSnap == 2 || DataSaved.isAutoSnap == 4 || DataSaved.isAutoSnap == 20) {
+                    offsetS = "\n" + "(" + Utils.readUnitOfMeasureLITE(String.valueOf(DataSaved.line_Offset)) + ")";
+                    float[] a = new float[2];
+                    float[] b = new float[2];
+
+                    boolean okA = MyGLRenderer.projectWorldToScreen2D(
+                            DataSaved.snapRefWorldX,
+                            DataSaved.snapRefWorldY,
+                            DataSaved.glL_AnchorView[0],
+                            DataSaved.glL_AnchorView[1],
+                            a
+                    );
+
+                    boolean okB = MyGLRenderer.projectWorldToScreen2D(
+                            DataSaved.cutWorldX_1,
+                            DataSaved.cutWorldY_1,
+                            DataSaved.glL_AnchorView[0],
+                            DataSaved.glL_AnchorView[1],
+                            b
+                    );
+
+                    if (okA && okB) {
+                        float dx = b[0] - a[0];
+                        float dy = b[1] - a[1];
+
+                        if (Math.hypot(dx, dy) > 2.0) {
+                            double screenAngle = Math.toDegrees(Math.atan2(dy, dx));
+
+                            // Se la tua icona freccia a rotation=0 punta verso destra:
+                            rot = screenAngle + 90;
+
+                            // Se invece la tua icona freccia a rotation=0 punta verso l'alto, usa:
+                            // rot = screenAngle + 90.0;
+
+                            rot = normalize360(rot);
+                            freccia.setRotation((float) rot);
+                        }
+                    }
+
+                }
+                switch (DataSaved.bucketEdge) {
+                    case -1:
+                        dist = TriangleService.dist3D_SX;
+
+                        break;
+                    case 0:
+                        dist = TriangleService.dist3D_CT;
+                        break;
+
+                    case 1:
+                        dist = TriangleService.dist3D_DX;
+                        break;
+                }
+                if (Math.abs(dist) <= DataSaved.tolleranza_XY) {
+                    frameCent.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_verde));
+                    freccia.setImageTintList(ColorStateList.valueOf(getColor(R.color._____cancel_text)));
+                    freccia.setImageResource(R.drawable.baseline_radio_button_checked_96);
+                    lucchetto.setImageTintList(ColorStateList.valueOf(getColor(R.color._____cancel_text)));
+                    txtDist.setTextColor(getResources().getColor(R.color._____cancel_text));
+
+                } else {
+                    frameCent.setBackground(getResources().getDrawable(R.drawable.custom_background_test3d_box));
+                    freccia.setImageTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                    freccia.setImageResource(R.drawable.navigator_white);
+                    lucchetto.setImageTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                    txtDist.setTextColor(getResources().getColor(R.color.white));
+                }
+                distances = Utils.readUnitOfMeasureLITE(String.valueOf(dist));
+                txtDist.setText(distances + offsetS);
+
+
+            }
+
+
+        }
     }
 
     public void showColorPickerDialog(Context context) {
@@ -1681,6 +1845,8 @@ public class My3DActivity extends BaseClass {
                     //setAudio(TriangleService.quota3D_DX, !TriangleService.rtOffGrid);
                     break;
             }
+        } else if (DataSaved.isWL==DREDGE) {
+            //TODO lightbar dredge
         } else {
             MyDeviceManager.CanWrite(true, 0, 0xA0, 3, LeicaLB.mapping(TriangleService.ltOffGrid, TriangleService.quota3D_SX, DataSaved.deadbandH));
 
@@ -1705,7 +1871,7 @@ public class My3DActivity extends BaseClass {
     private void AutoHandling() {
         if (MyApp.licenseType == 5) {
 
-            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
+            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER||DataSaved.isWL==DREDGE) {
                 AUTO_SX.setVisibility(View.INVISIBLE);
                 AUTO_SS.setVisibility(View.INVISIBLE);
                 AUTO_DX.setVisibility(View.INVISIBLE);
@@ -1842,7 +2008,7 @@ public class My3DActivity extends BaseClass {
 
     private static String[] coordShow(int mode) {
         String s = OUTPUT_HYDRO + "\n";
-        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER) {
+        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER||DataSaved.isWL==DREDGE) {
             s = "";
         }
 
@@ -1945,6 +2111,7 @@ public class My3DActivity extends BaseClass {
             zoomHandler.postDelayed(this, ZOOM_INTERVAL);
         }
     };
+
     private double normalize360(double a) {
         a = a % 360.0;
         return a < 0 ? a + 360.0 : a;

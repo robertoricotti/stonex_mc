@@ -177,62 +177,80 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <LinearLayout
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:layout_marginVertical="10dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_height="100dp"
+                android:fillViewport="true"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="1dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/sel_exca"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:background="@drawable/sfondo_bottone_trasparente"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/machines_btn" />
+                    <ImageView
+                        android:id="@+id/sel_exca"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/sfondo_bottone_trasparente"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/machines_btn" />
 
-                <ImageView
-                    android:id="@+id/sel_wheel"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:background="@drawable/sfondo_bottone_trasparente"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/wheel_machines_btn" />
+                    <ImageView
+                        android:id="@+id/sel_wheel"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/sfondo_bottone_trasparente"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/wheel_machines_btn" />
 
-                <ImageView
-                    android:id="@+id/sel_dozer"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:background="@drawable/sfondo_bottone_trasparente"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/dozer_machines_btn" />
+                    <ImageView
+                        android:id="@+id/sel_dozer"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/sfondo_bottone_trasparente"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/dozer_machines_btn" />
 
-                <ImageView
-                    android:id="@+id/sel_grader"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:background="@drawable/sfondo_bottone_trasparente"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/grader_btn" />
+                    <ImageView
+                        android:id="@+id/sel_grader"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/sfondo_bottone_trasparente"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/grader_btn" />
 
-                <ImageView
-                    android:id="@+id/sel_drill"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:padding="5dp"
-                    android:background="@drawable/sfondo_bottone_trasparente"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/drill_btn" />
+                    <ImageView
+                        android:id="@+id/sel_drill"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:padding="5dp"
+                        android:background="@drawable/sfondo_bottone_trasparente"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/drill_btn" />
+
+                    <ImageView
+                        android:id="@+id/sel_dredge"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:padding="5dp"
+                        android:background="@drawable/sfondo_bottone_trasparente"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/drag_btn"
+                        app:tint="@color/_____cancel_text"
+                        />
 
 
-            </LinearLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+
 
             <View
                 android:layout_width="match_parent"
@@ -910,6 +928,18 @@
                         android:ems="15"
                         android:gravity="center"
                         android:text="CET-12 Setup"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/toRM7012"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/orange"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="RM7012 Setup"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />

@@ -6,6 +6,7 @@ import static gui.boot_and_choose.LaunchScreenActivity.hasAuto;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
@@ -191,54 +192,94 @@ public class ExcavatorChooserActivity extends BaseClass {
 
         if (isWL1 == WHEELLOADER) {
             machine1.setImageResource(R.drawable.wheel_machines_btn);
+            machine1.setPadding(15,0,15,0);
 
         } else if (isWL1 == DOZER || isWL1 == DOZER_SIX) {
             machine1.setImageResource(R.drawable.dozer_machines_btn);
+            machine1.setPadding(15,0,15,0);
             bucketM1.setImageResource(R.drawable.ecu_96);
 
         } else if (isWL1 == GRADER) {
             machine1.setImageResource(R.drawable.grader_btn);
+            machine1.setPadding(15,0,15,0);
             bucketM1.setImageResource(R.drawable.ecu_96);
         } else if (isWL1 == DRILL) {
             machine1.setImageResource(R.drawable.drill_btn);
+            machine1.setPadding(30,30,30,30);
             bucketM1.setImageResource(R.drawable.btn_drill_tool);
+        }else if (isWL1 == DREDGE) {
+            machine1.setImageResource(R.drawable.drag_btn);
+            machine1.setPadding(30,30,30,30);
+            bucketM1.setImageResource(R.drawable.dragtool);
         }
+
+
         if (isWL2 == WHEELLOADER) {
             machine2.setImageResource(R.drawable.wheel_machines_btn);
+            machine2.setPadding(15,0,15,0);
         } else if (isWL2 == DOZER || isWL2 == DOZER_SIX) {
             machine2.setImageResource(R.drawable.dozer_machines_btn);
+            machine2.setPadding(15,0,15,0);
             bucketM2.setImageResource(R.drawable.ecu_96);
         } else if (isWL2 == GRADER) {
             machine2.setImageResource(R.drawable.grader_btn);
+            machine2.setPadding(15,0,15,0);
             bucketM2.setImageResource(R.drawable.ecu_96);
         } else if (isWL2 == DRILL) {
             machine2.setImageResource(R.drawable.drill_btn);
+            machine2.setPadding(30,30,30,30);
             bucketM2.setImageResource(R.drawable.btn_drill_tool);
+        }else if (isWL2 == DREDGE) {
+            machine2.setImageResource(R.drawable.drag_btn);
+            machine2.setPadding(30,30,30,30);
+            bucketM2.setImageResource(R.drawable.dragtool);
         }
+
+
         if (isWL3 == WHEELLOADER) {
             machine3.setImageResource(R.drawable.wheel_machines_btn);
+            machine3.setPadding(15,0,15,0);
         } else if (isWL3 == DOZER || isWL3 == DOZER_SIX) {
             machine3.setImageResource(R.drawable.dozer_machines_btn);
+            machine3.setPadding(15,0,15,0);
             bucketM3.setImageResource(R.drawable.ecu_96);
         } else if (isWL3 == GRADER) {
             machine3.setImageResource(R.drawable.grader_btn);
+            machine3.setPadding(15,0,15,0);
             bucketM3.setImageResource(R.drawable.ecu_96);
         } else if (isWL3 == DRILL) {
             machine3.setImageResource(R.drawable.drill_btn);
+            machine3.setPadding(30,30,30,30);
             bucketM3.setImageResource(R.drawable.btn_drill_tool);
+        }else if (isWL3== DREDGE) {
+            machine3.setImageResource(R.drawable.drag_btn);
+            machine3.setPadding(30,30,30,30);
+            bucketM3.setImageResource(R.drawable.dragtool);
         }
+
+
         if (isWL4 == WHEELLOADER) {
             machine4.setImageResource(R.drawable.wheel_machines_btn);
+            machine4.setPadding(15,0,15,0);
         } else if (isWL4 == DOZER || isWL4 == DOZER_SIX) {
             machine4.setImageResource(R.drawable.dozer_machines_btn);
+            machine4.setPadding(15,0,15,0);
             bucketM4.setImageResource(R.drawable.ecu_96);
         } else if (isWL4 == GRADER) {
             machine4.setImageResource(R.drawable.grader_btn);
+            machine4.setPadding(15,0,15,0);
             bucketM4.setImageResource(R.drawable.ecu_96);
         } else if (isWL4 == DRILL) {
             machine4.setImageResource(R.drawable.drill_btn);
+            machine4.setPadding(30,30,30,30);
             bucketM4.setImageResource(R.drawable.btn_drill_tool);
+        }else if (isWL4 == DREDGE) {
+            machine4.setImageResource(R.drawable.drag_btn);
+            machine4.setPadding(30,30,30,30);
+            bucketM4.setImageResource(R.drawable.dragtool);
         }
+
+
         m1.setBackground(indexMachineSelected == 1 ? getResources().getDrawable(R.drawable.sfondo_bottone_selezionato) : getDrawable(R.drawable.sfondo_bottone_non_selezionatoe));
         if (isDefault_1) {
             m1.setAlpha(0.2f);
@@ -436,7 +477,15 @@ public class ExcavatorChooserActivity extends BaseClass {
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                     startActivity(i);
                     finish();
-                } else {
+                } else if (isWL1 == DRILL) {
+                    Intent i = new Intent(this, Drill_Rod_Activity.class);
+                    i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
+                    startActivity(i);
+                    finish();
+
+                } else if (isWL1 == DREDGE) {
+                    new CustomToast(this,"Not Implemented").show_error();
+                }else {
 
                     if (hasAuto) {
                         if (isWL1 == DOZER || isWL1 == DOZER_SIX || isWL1 == GRADER) {
@@ -449,12 +498,6 @@ public class ExcavatorChooserActivity extends BaseClass {
                                     dialogPassword.show(3);
                                 }
                             }
-                        } else if (isWL1 == DRILL) {
-                            Intent i = new Intent(this, Drill_Rod_Activity.class);
-                            i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
-                            startActivity(i);
-                            finish();
-
                         }
                     } else {
                         new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
@@ -471,6 +514,14 @@ public class ExcavatorChooserActivity extends BaseClass {
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                     startActivity(i);
                     finish();
+                }else if (isWL2== DRILL) {
+                    Intent i = new Intent(this, Drill_Rod_Activity.class);
+                    i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
+                    startActivity(i);
+                    finish();
+
+                } else if (isWL2 == DREDGE) {
+                    new CustomToast(this,"Not Implemented").show_error();
                 } else {
 
                     if (hasAuto) {
@@ -484,12 +535,6 @@ public class ExcavatorChooserActivity extends BaseClass {
                                     dialogPassword.show(3);
                                 }
                             }
-                        } else if (isWL2 == DRILL) {
-                            Intent i = new Intent(this, Drill_Rod_Activity.class);
-                            i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
-                            startActivity(i);
-                            finish();
-
                         }
                     } else {
                         new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
@@ -506,7 +551,15 @@ public class ExcavatorChooserActivity extends BaseClass {
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                     startActivity(i);
                     finish();
-                } else {
+                } else if (isWL3 == DRILL) {
+                    Intent i = new Intent(this, Drill_Rod_Activity.class);
+                    i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
+                    startActivity(i);
+                    finish();
+
+                } else if (isWL3 == DREDGE) {
+                    new CustomToast(this,"Not Implemented").show_error();
+                }else {
 
                     if (hasAuto) {
                         if (isWL3 == DOZER || isWL3 == DOZER_SIX || isWL3 == GRADER) {
@@ -519,12 +572,6 @@ public class ExcavatorChooserActivity extends BaseClass {
                                     dialogPassword.show(3);
                                 }
                             }
-                        } else if (isWL3 == DRILL) {
-                            Intent i = new Intent(this, Drill_Rod_Activity.class);
-                            i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
-                            startActivity(i);
-                            finish();
-
                         }
                     } else {
                         new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();
@@ -541,7 +588,16 @@ public class ExcavatorChooserActivity extends BaseClass {
                     i.putExtra("whoDig", String.valueOf(MyApp.visibleActivity));
                     startActivity(i);
                     finish();
-                } else {
+                } else if (isWL4 == DRILL) {
+                    Intent i = new Intent(this, Drill_Rod_Activity.class);
+                    i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
+                    startActivity(i);
+                    finish();
+
+                } else if (isWL4 == DREDGE) {
+                    new CustomToast(this,"Not Implemented").show_error();
+                }
+                else {
 
                     if (hasAuto) {
                         if (isWL4 == DOZER || isWL4 == DOZER_SIX || isWL4 == GRADER) {
@@ -554,12 +610,6 @@ public class ExcavatorChooserActivity extends BaseClass {
                                     dialogPassword.show(3);
                                 }
                             }
-                        } else if (isWL4 == DRILL) {
-                            Intent i = new Intent(this, Drill_Rod_Activity.class);
-                            i.putExtra("whoDrill", String.valueOf(MyApp.visibleActivity));
-                            startActivity(i);
-                            finish();
-
                         }
                     } else {
                         new CustomToast(this, "No AUTO License Activated!\nContact a Stonex Dealer").show_alert();

@@ -7,8 +7,10 @@ import static services.ReadProjectService.isFinishedPOLY;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,7 +62,108 @@ public class DXFParser_20 {
 
     static long drillPointNr = 0;
 
+    // ============================
+    // PREFLIGHT DXF / MODALITA' DI CARICAMENTO
+    // ============================
+    // Mantiene la firma pubblica parseDXF(filePath, conversionFactor) invariata.
+    // Il preflight legge il file una prima volta in modo leggero, senza creare entità DXF,
+    // logga i conteggi e decide se usare una modalità più sicura per DXF troppo pesanti.
+    // Se vuoi solo loggare senza cambiare comportamento, metti AUTO_APPLY_PREFLIGHT_RECOMMENDATION = false.
+    private static final boolean PREFLIGHT_ENABLED = true;
+    private static final boolean AUTO_APPLY_PREFLIGHT_RECOMMENDATION = true;
+
+    private static final long MB = 1024L * 1024L;
+    private static final long PREFLIGHT_WARN_FILE_SIZE_BYTES = 80L * MB;
+    private static final long PREFLIGHT_FORCE_LIGHT_FILE_SIZE_BYTES = 150L * MB;
+    private static final long PREFLIGHT_WARN_PAIRS = 3_000_000L;
+    private static final long PREFLIGHT_MAX_BLOCK_ENTITIES = 150_000L;
+    private static final long PREFLIGHT_MAX_SINGLE_BLOCK_ENTITIES = 30_000L;
+    private static final long PREFLIGHT_MAX_INSERTS_FOR_EXPLODE = 500L;
+    private static final long PREFLIGHT_WARN_TEXT_ENTITIES = 50_000L;
+    private static final long PREFLIGHT_WARN_LINE_ENTITIES = 300_000L;
+
+    public enum DxfLoadMode {
+        /** Comportamento storico: carica BLOCKS, ENTITIES ed esegue explodeBlocks(). */
+        FULL,
+
+        /** Carica BLOCKS ed ENTITIES, ma non esegue explodeBlocks(). */
+        NO_EXPLODE,
+
+        /** Salta completamente la sezione BLOCKS; utile per DXF enormi con definizioni blocco ingestibili. */
+        SKIP_BLOCKS
+    }
+
+    public static final class DxfPreflightResult {
+        public String filePath;
+        public long fileSizeBytes;
+        public long pairCount;
+        public long totalZeroRecords;
+        public long entitiesCount;
+        public long blocksEntityCount;
+        public long blockCount;
+        public long insertCountInEntities;
+        public long insertCountInBlocks;
+        public String biggestBlockName;
+        public long biggestBlockEntityCount;
+        public boolean preflightEnabled = true;
+        public boolean preflightFailed = false;
+        public boolean tooHeavy = false;
+        public boolean shouldSkipBlocks = false;
+        public boolean shouldDisableExplode = false;
+        public String reason;
+        public final List<String> warnings = new ArrayList<>();
+        public final Map<String, Long> entityTypesInEntities = new HashMap<>();
+        public final Map<String, Long> entityTypesInBlocks = new HashMap<>();
+
+        public DxfLoadMode getRecommendedMode() {
+            if (!preflightEnabled || preflightFailed) return DxfLoadMode.FULL;
+            if (shouldSkipBlocks) return DxfLoadMode.SKIP_BLOCKS;
+            if (shouldDisableExplode) return DxfLoadMode.NO_EXPLODE;
+            return DxfLoadMode.FULL;
+        }
+
+        void addWarning(String warning) {
+            if (warning == null || warning.trim().isEmpty()) return;
+            warnings.add(warning);
+            if (reason == null) reason = warning;
+        }
+
+        static DxfPreflightResult disabled(String filePath) {
+            DxfPreflightResult r = new DxfPreflightResult();
+            r.filePath = filePath;
+            r.preflightEnabled = false;
+            r.reason = "Preflight disabilitato";
+            return r;
+        }
+    }
+
     public static DXFData parseDXF(String filePath, double conversionFactor) {
+        return parseDXF(filePath, conversionFactor, null);
+    }
+
+    /**
+     * Overload opzionale: passa forcedMode per forzare FULL / NO_EXPLODE / SKIP_BLOCKS.
+     * Se forcedMode è null, viene usata la raccomandazione del preflight.
+     */
+    public static DXFData parseDXF(String filePath, double conversionFactor, DxfLoadMode forcedMode) {
+        DxfPreflightResult preflight = PREFLIGHT_ENABLED
+                ? preflightDXF(filePath)
+                : DxfPreflightResult.disabled(filePath);
+
+        DxfLoadMode mode = forcedMode;
+        if (mode == null) {
+            mode = AUTO_APPLY_PREFLIGHT_RECOMMENDATION
+                    ? preflight.getRecommendedMode()
+                    : DxfLoadMode.FULL;
+        }
+
+        logPreflightResult(preflight, mode, forcedMode != null);
+        return parseDXFInternal(filePath, conversionFactor, mode);
+    }
+
+    private static DXFData parseDXFInternal(String filePath, double conversionFactor, DxfLoadMode mode) {
+        if (mode == null) mode = DxfLoadMode.FULL;
+
         DXFData dxfData = new DXFData();
         layerColors.clear();
         entityStyles.clear();
@@ -79,6 +182,19 @@ public class DXFParser_20 {
 
                 code = code.trim();
                 value = value.trim();
+
+                // Modalità light: salta completamente la sezione BLOCKS prima di creare oggetti.
+                // Manteniamo comunque la gestione di ENDSEC per tornare correttamente al flusso normale.
+                if (mode == DxfLoadMode.SKIP_BLOCKS && "BLOCKS".equals(state.currentSection)) {
+                    if ("0".equals(code) && "ENDSEC".equals(value)) {
+                        try {
+                            state.handleZero(value);
+                        } catch (Exception entityEx) {
+                            Log.e(TAG, "Errore durante chiusura sezione BLOCKS [" + code + " -> " + value + "]", entityEx);
+                        }
+                    }
+                    continue;
+                }
 
                 try {
                     if ("0".equals(code)) {
@@ -101,7 +217,11 @@ public class DXFParser_20 {
             markParserFinished(filePath);
         }
 
-        explodeBlocks(dxfData, filePath);
+        if (mode == DxfLoadMode.FULL) {
+            explodeBlocks(dxfData, filePath);
+        } else {
+            Log.w(TAG, "explodeBlocks() saltato. DxfLoadMode=" + mode + " file=" + filePath);
+        }
 
         if (!unsupportedEntities.isEmpty()) {
             StringBuilder sb = new StringBuilder();
@@ -119,6 +239,299 @@ public class DXFParser_20 {
         }
 
         return dxfData;
+    }
+
+    private static DxfPreflightResult preflightDXF(String filePath) {
+        DxfPreflightResult result = new DxfPreflightResult();
+        result.filePath = filePath;
+
+        File file = new File(filePath);
+        result.fileSizeBytes = file.length();
+
+        String section = null;
+        String lastZeroValue = null;
+        String currentBlockName = null;
+        long currentBlockEntityCount = 0L;
+        boolean insideBlock = false;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            while (true) {
+                String code = br.readLine();
+                if (code == null) break;
+
+                String value = br.readLine();
+                if (value == null) break;
+
+                result.pairCount++;
+
+                code = code.trim();
+                value = value.trim();
+
+                if ("0".equals(code)) {
+                    result.totalZeroRecords++;
+
+                    if ("SECTION".equals(value)) {
+                        lastZeroValue = "SECTION";
+                        continue;
+                    }
+
+                    if ("ENDSEC".equals(value)) {
+                        if ("BLOCKS".equals(section) && insideBlock) {
+                            updateBiggestBlock(result, currentBlockName, currentBlockEntityCount);
+                        }
+                        section = null;
+                        lastZeroValue = "ENDSEC";
+                        currentBlockName = null;
+                        currentBlockEntityCount = 0L;
+                        insideBlock = false;
+                        continue;
+                    }
+
+                    if ("BLOCK".equals(value) && "BLOCKS".equals(section)) {
+                        if (insideBlock) {
+                            updateBiggestBlock(result, currentBlockName, currentBlockEntityCount);
+                        }
+                        result.blockCount++;
+                        currentBlockName = null;
+                        currentBlockEntityCount = 0L;
+                        insideBlock = true;
+                        lastZeroValue = "BLOCK";
+                        continue;
+                    }
+
+                    if ("ENDBLK".equals(value) && "BLOCKS".equals(section)) {
+                        if (insideBlock) {
+                            updateBiggestBlock(result, currentBlockName, currentBlockEntityCount);
+                        }
+                        currentBlockName = null;
+                        currentBlockEntityCount = 0L;
+                        insideBlock = false;
+                        lastZeroValue = "ENDBLK";
+                        continue;
+                    }
+
+                    if ("ENTITIES".equals(section) && isPreflightCountableEntity(value)) {
+                        result.entitiesCount++;
+                        incrementLongCount(result.entityTypesInEntities, value);
+                        if ("INSERT".equals(value)) {
+                            result.insertCountInEntities++;
+                        }
+                    }
+
+                    if ("BLOCKS".equals(section) && insideBlock && isPreflightCountableEntity(value)) {
+                        result.blocksEntityCount++;
+                        currentBlockEntityCount++;
+                        incrementLongCount(result.entityTypesInBlocks, value);
+                        if ("INSERT".equals(value)) {
+                            result.insertCountInBlocks++;
+                        }
+                    }
+
+                    lastZeroValue = value;
+                    continue;
+                }
+
+                if ("2".equals(code)) {
+                    if ("SECTION".equals(lastZeroValue)) {
+                        section = value;
+                        continue;
+                    }
+
+                    if ("BLOCK".equals(lastZeroValue) && "BLOCKS".equals(section) && currentBlockName == null) {
+                        currentBlockName = value;
+                    }
+                }
+            }
+
+            if ("BLOCKS".equals(section) && insideBlock) {
+                updateBiggestBlock(result, currentBlockName, currentBlockEntityCount);
+            }
+
+        } catch (IOException e) {
+            result.preflightFailed = true;
+            result.tooHeavy = false;
+            result.reason = "Errore preflight DXF: " + e.getMessage();
+            result.addWarning(result.reason);
+            return result;
+        }
+
+        evaluatePreflight(result);
+        return result;
+    }
+
+    private static void evaluatePreflight(DxfPreflightResult result) {
+        if (result.fileSizeBytes > PREFLIGHT_WARN_FILE_SIZE_BYTES) {
+            result.addWarning("File grande: " + formatBytes(result.fileSizeBytes));
+            result.shouldDisableExplode = true;
+        }
+
+        if (result.fileSizeBytes > PREFLIGHT_FORCE_LIGHT_FILE_SIZE_BYTES) {
+            result.addWarning("File oltre soglia light obbligatoria: " + formatBytes(result.fileSizeBytes));
+            result.tooHeavy = true;
+            result.shouldDisableExplode = true;
+        }
+
+        if (result.pairCount > PREFLIGHT_WARN_PAIRS) {
+            result.addWarning("Troppe coppie gruppo/valore: " + result.pairCount);
+            result.tooHeavy = true;
+            result.shouldDisableExplode = true;
+        }
+
+        if (result.blocksEntityCount > PREFLIGHT_MAX_BLOCK_ENTITIES) {
+            result.addWarning("Troppe entità in BLOCKS: " + result.blocksEntityCount);
+            result.tooHeavy = true;
+            result.shouldSkipBlocks = true;
+            result.shouldDisableExplode = true;
+        }
+
+        if (result.biggestBlockEntityCount > PREFLIGHT_MAX_SINGLE_BLOCK_ENTITIES) {
+            result.addWarning("Blocco troppo grande: " + safeString(result.biggestBlockName)
+                    + " = " + result.biggestBlockEntityCount + " entità");
+            result.tooHeavy = true;
+            result.shouldSkipBlocks = true;
+            result.shouldDisableExplode = true;
+        }
+
+        if (result.insertCountInEntities > PREFLIGHT_MAX_INSERTS_FOR_EXPLODE) {
+            result.addWarning("Troppi INSERT in ENTITIES per explode sicuro: " + result.insertCountInEntities);
+            result.shouldDisableExplode = true;
+        }
+
+        long totalText = getLongCount(result.entityTypesInEntities, "TEXT")
+                + getLongCount(result.entityTypesInBlocks, "TEXT")
+                + getLongCount(result.entityTypesInEntities, "MTEXT")
+                + getLongCount(result.entityTypesInBlocks, "MTEXT");
+        if (totalText > PREFLIGHT_WARN_TEXT_ENTITIES) {
+            result.addWarning("Molti testi DXF: " + totalText);
+        }
+
+        long totalLines = getLongCount(result.entityTypesInEntities, "LINE")
+                + getLongCount(result.entityTypesInBlocks, "LINE");
+        if (totalLines > PREFLIGHT_WARN_LINE_ENTITIES) {
+            result.addWarning("Molte LINE DXF: " + totalLines);
+        }
+
+        if (result.reason == null) {
+            result.reason = "OK";
+        }
+    }
+
+    private static boolean isPreflightCountableEntity(String value) {
+        if (value == null || value.trim().isEmpty()) return false;
+
+        switch (value) {
+            case "EOF":
+            case "SECTION":
+            case "ENDSEC":
+            case "TABLE":
+            case "ENDTAB":
+            case "BLOCK":
+            case "ENDBLK":
+            case "SEQEND":
+            case "VERTEX":
+            case "ACAD_TABLE":
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    private static void updateBiggestBlock(DxfPreflightResult result, String blockName, long count) {
+        if (count > result.biggestBlockEntityCount) {
+            result.biggestBlockEntityCount = count;
+            result.biggestBlockName = blockName;
+        }
+    }
+
+    private static void incrementLongCount(Map<String, Long> map, String key) {
+        if (map == null || key == null) return;
+        Long old = map.get(key);
+        map.put(key, old == null ? 1L : old + 1L);
+    }
+
+    private static long getLongCount(Map<String, Long> map, String key) {
+        if (map == null || key == null) return 0L;
+        Long value = map.get(key);
+        return value == null ? 0L : value;
+    }
+
+    private static void logPreflightResult(DxfPreflightResult result, DxfLoadMode appliedMode, boolean forcedMode) {
+        if (result == null) return;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("DXF PREFLIGHT CHECK\n");
+        sb.append("file=").append(result.filePath).append("\n");
+        sb.append("enabled=").append(result.preflightEnabled).append("\n");
+        sb.append("failed=").append(result.preflightFailed).append("\n");
+        sb.append("fileSize=").append(formatBytes(result.fileSizeBytes)).append(" (").append(result.fileSizeBytes).append(" bytes)\n");
+        sb.append("pairCount=").append(result.pairCount).append("\n");
+        sb.append("zeroRecords=").append(result.totalZeroRecords).append("\n");
+        sb.append("blocks=").append(result.blockCount).append("\n");
+        sb.append("entitiesCount=").append(result.entitiesCount).append("\n");
+        sb.append("blocksEntityCount=").append(result.blocksEntityCount).append("\n");
+        sb.append("insertCountInEntities=").append(result.insertCountInEntities).append("\n");
+        sb.append("insertCountInBlocks=").append(result.insertCountInBlocks).append("\n");
+        sb.append("biggestBlock=").append(safeString(result.biggestBlockName)).append("\n");
+        sb.append("biggestBlockEntityCount=").append(result.biggestBlockEntityCount).append("\n");
+        sb.append("tooHeavy=").append(result.tooHeavy).append("\n");
+        sb.append("shouldSkipBlocks=").append(result.shouldSkipBlocks).append("\n");
+        sb.append("shouldDisableExplode=").append(result.shouldDisableExplode).append("\n");
+        sb.append("recommendedMode=").append(result.getRecommendedMode()).append("\n");
+        sb.append("appliedMode=").append(appliedMode);
+        if (forcedMode) sb.append(" (FORCED)");
+        sb.append("\n");
+        sb.append("reason=").append(safeString(result.reason)).append("\n");
+
+        if (!result.warnings.isEmpty()) {
+            sb.append("warnings:\n");
+            for (String warning : result.warnings) {
+                sb.append("- ").append(warning).append("\n");
+            }
+        }
+
+        appendTopCounts(sb, "Top ENTITIES", result.entityTypesInEntities, 12);
+        appendTopCounts(sb, "Top BLOCKS", result.entityTypesInBlocks, 12);
+
+        if (result.tooHeavy || result.shouldSkipBlocks || result.shouldDisableExplode || result.preflightFailed) {
+            Log.w(TAG, sb.toString());
+        } else {
+            Log.i(TAG, sb.toString());
+        }
+    }
+
+    private static void appendTopCounts(StringBuilder sb, String title, Map<String, Long> counts, int limit) {
+        if (sb == null || counts == null || counts.isEmpty()) return;
+
+        List<Map.Entry<String, Long>> entries = new ArrayList<>(counts.entrySet());
+        Collections.sort(entries, new Comparator<Map.Entry<String, Long>>() {
+            @Override
+            public int compare(Map.Entry<String, Long> a, Map.Entry<String, Long> b) {
+                long diff = b.getValue() - a.getValue();
+                if (diff > 0) return 1;
+                if (diff < 0) return -1;
+                return a.getKey().compareTo(b.getKey());
+            }
+        });
+
+        sb.append(title).append(":\n");
+        int count = 0;
+        for (Map.Entry<String, Long> entry : entries) {
+            if (count >= limit) break;
+            sb.append("- ").append(entry.getKey()).append(" = ").append(entry.getValue()).append("\n");
+            count++;
+        }
+    }
+
+    private static String formatBytes(long bytes) {
+        if (bytes <= 0) return "0 B";
+        if (bytes < 1024L) return bytes + " B";
+        if (bytes < MB) return (bytes / 1024L) + " KB";
+        long mb100 = (bytes * 100L) / MB;
+        return (mb100 / 100L) + "." + String.format("%02d", (mb100 % 100L)) + " MB";
+    }
+
+    private static String safeString(String value) {
+        return value == null ? "" : value;
     }
 
     private static void markParserFinished(String filePath) {

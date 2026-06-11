@@ -17,6 +17,7 @@ import static services.UpdateValuesService.firstLaunch;
 import static services.UpdateValuesService.startedService;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
@@ -130,7 +131,6 @@ public class Activity_Home_Page extends BaseClass {
     private void enableAll() {
         close.setEnabled(true);
         toDig.setEnabled(true);
-        toDig.setEnabled(true);
         titolo.setEnabled(true);
         joblist.setEnabled(true);
         lock.setEnabled(true);
@@ -209,6 +209,11 @@ public class Activity_Home_Page extends BaseClass {
                 toDueD.setAlpha(1.0f);
                 toDueD.setImageResource(R.drawable.bottone_report_prj);
                 txt2d.setText("REPORTS");
+                break;
+            case DREDGE:
+                toDueD.setAlpha(0.3f);
+                toDueD.setImageResource(R.drawable.bottone_duedi);
+                txt2d.setText("1D  - 2D");
                 break;
         }
 
@@ -326,7 +331,6 @@ public class Activity_Home_Page extends BaseClass {
     private void enableAll(boolean b) {
         close.setEnabled(b);
         toDig.setEnabled(b);
-        toDig.setEnabled(b);
         titolo.setEnabled(b);
         joblist.setEnabled(b);
         lock.setEnabled(b);
@@ -342,9 +346,11 @@ public class Activity_Home_Page extends BaseClass {
     public void updateUI() {
         try {
             if (isTech) {
+                lock.setImageResource(R.drawable.unlock);
                 checkUpdates.setVisibility(View.VISIBLE);
                 testSP.setVisibility(View.VISIBLE);
             } else {
+                lock.setImageResource(R.drawable.lock);
                 testSP.setVisibility(View.INVISIBLE);
                 checkUpdates.setVisibility(View.INVISIBLE);
             }
@@ -375,13 +381,6 @@ public class Activity_Home_Page extends BaseClass {
                 wif.setBackgroundColor(getColor(R.color.light_yellow));
             }
 
-            if (isTech) {
-                lock.setImageResource(R.drawable.unlock);
-
-            } else {
-                lock.setImageResource(R.drawable.lock);
-            }
-
             switch (DataSaved.isWL) {
                 case EXCAVATOR:
                     stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " New Faces\n");
@@ -408,6 +407,11 @@ public class Activity_Home_Page extends BaseClass {
                 case DRILL:
                     stringsStat.setText(ReadProjectService.parserStatus);
                     toDig.setImageResource(R.drawable.bottone_drilla);
+
+                    break;
+                case DREDGE:
+                    stringsStat.setText(ReadProjectService.parserStatus + "\n" + numbers + " New Faces\n");
+                    toDig.setImageResource(R.drawable.todredge);
 
                     break;
 

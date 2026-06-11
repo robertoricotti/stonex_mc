@@ -292,7 +292,7 @@ public class DataSaved {
     public static Coordinate[] puntiProgetto;
     public static String[] idPunti;
 
-    public static double Max_CQ3D;
+    public static double Max_CQ3D=0.07;
 
     public static int damp_Fr;
     public static int damp_B1;

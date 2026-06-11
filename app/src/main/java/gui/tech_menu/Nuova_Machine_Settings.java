@@ -9,6 +9,7 @@ import static utils.MyTypes.AT_BOOM;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
@@ -69,10 +70,10 @@ public class Nuova_Machine_Settings extends BaseClass {
     CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2, ckJ, ckRock, ckJet, ckSolar, ckEcu,ckuse2dpoly;
     CheckBox ckBody, ckBoom, ckAtLeft, ckAtFwd, ckAtRight, ckAtBoomExca;
     CustomQwertyDialog customQwertyDialog;
-    ImageView back, exca, wheel, grader, dozer, drill, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
+    ImageView back, exca, wheel, grader, sel_dozer, drill,sel_dredge, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
     TextView toExtraSensor, tvSwing, tvFrame, tvBoom1, tvBoom2, tvStick, tvLink,
-            tvMast, tvTilt, tvXYZ, drillEnc, toCanopen, toDamping, can1bd, can2bd, toRoto,toCET05,toCET12;
+            tvMast, tvTilt, tvXYZ, drillEnc, toCanopen, toDamping, can1bd, can2bd, toRoto,toCET05,toCET12,toRM7012;
     EditText mchName, techInfo;
     int mode, machineSel;
     public static boolean menu1_visible, menu2_visible, menu3_visible;
@@ -118,7 +119,8 @@ public class Nuova_Machine_Settings extends BaseClass {
         exca = findViewById(R.id.sel_exca);
         wheel = findViewById(R.id.sel_wheel);
         grader = findViewById(R.id.sel_grader);
-        dozer = findViewById(R.id.sel_dozer);
+        sel_dozer = findViewById(R.id.sel_dozer);
+        sel_dredge=findViewById(R.id.sel_dredge);
         drill = findViewById(R.id.sel_drill);
         menu_1 = findViewById(R.id.bt_menu1);
         menu_2 = findViewById(R.id.bt_sens_set);
@@ -172,6 +174,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         toRoto = findViewById(R.id.toRoto);
         toCET05=findViewById(R.id.toCET05);
         toCET12=findViewById(R.id.toCET12);
+        toRM7012=findViewById(R.id.toRM7012);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
         if (licenseType == MC_3D_EASY || licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_EASY_AUTO) {
             drill.setVisibility(View.INVISIBLE);
@@ -187,6 +190,9 @@ public class Nuova_Machine_Settings extends BaseClass {
 
         toCET12.setOnClickListener(v -> {
             showConfirmAndSendCET(0x09);
+        });
+        toRM7012.setOnClickListener(view -> {
+            showConfirmAndSendRM();
         });
         ckAtBoomExca.setOnClickListener(view -> {
             ckAtBoomExca.setChecked(!ckAtBoomExca.isChecked());
@@ -644,7 +650,7 @@ public class Nuova_Machine_Settings extends BaseClass {
             FullscreenActivity.setFullScreen(dialog);
 
         });
-        dozer.setOnClickListener(view -> {
+        sel_dozer.setOnClickListener(view -> {
             // Crea un nuovo AlertDialog.Builder
             AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
             builder.setTitle(getString(R.string.change_machine));
@@ -652,6 +658,30 @@ public class Nuova_Machine_Settings extends BaseClass {
             // Aggiungi il pulsante "Sì"
             builder.setPositiveButton("YES", (dialog, which) -> {
                 MyData.push("M" + machineSel + "_isWL", "2");
+                DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
+                mode = DataSaved.isWL;
+                updateCK();
+            });
+            // Aggiungi il pulsante "No"
+            builder.setNegativeButton("NO", (dialog, which) -> {
+                //do nothing
+            });
+            // CREA E MOSTRA IL DIALOG
+            AlertDialog dialog = builder.show();
+
+            // APPLICA IL FULLSCREEN
+            FullscreenActivity.setFullScreen(dialog);
+
+        });
+        sel_dredge.setOnClickListener(view -> {
+            // Crea un nuovo AlertDialog.Builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
+            builder.setTitle(getString(R.string.change_machine));
+            builder.setMessage(getString(R.string.procedi));
+            // Aggiungi il pulsante "Sì"
+            builder.setPositiveButton("YES", (dialog, which) -> {
+                MyData.push("M" + machineSel + "_LengthBoom1", "0.0");
+                MyData.push("M" + machineSel + "_isWL", "12");
                 DataSaved.isWL = MyData.get_Int("M" + machineSel + "_isWL");
                 mode = DataSaved.isWL;
                 updateCK();
@@ -769,7 +799,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         }
 
         switch (mode) {
-            case 0:
+            case EXCAVATOR:
                 //Excavatore
                 ckAtBoomExca.setVisibility(View.GONE);
                 tvMast.setVisibility(View.GONE);
@@ -799,7 +829,7 @@ public class Nuova_Machine_Settings extends BaseClass {
                 tvBoom1.setBackgroundTintList(getColorStateList(R.color.bg_stonex_blue));
                 tvBoom1.setTextColor(getColor(R.color.white));
                 break;
-            case 1:
+            case WHEELLOADER:
                 //Wheel
                 ckAtBoomExca.setVisibility(View.GONE);
                 tvMast.setVisibility(View.GONE);
@@ -831,8 +861,8 @@ public class Nuova_Machine_Settings extends BaseClass {
                     tvBoom1.setTextColor(getColor(R.color._____cancel_text));
                 }
                 break;
-            case 2:
-            case 3:
+            case DOZER:
+            case DOZER_SIX:
                 //Dozer
                 ckAtBoomExca.setVisibility(View.GONE);
                 tvMast.setVisibility(View.GONE);
@@ -857,7 +887,7 @@ public class Nuova_Machine_Settings extends BaseClass {
                     tvBoom1.setTextColor(getColor(R.color._____cancel_text));
                 }
                 break;
-            case 4:
+            case GRADER:
                 //Grader
                 ckAtBoomExca.setVisibility(View.GONE);
                 tvMast.setVisibility(View.GONE);
@@ -882,7 +912,7 @@ public class Nuova_Machine_Settings extends BaseClass {
                     tvBoom1.setTextColor(getColor(R.color._____cancel_text));
                 }
                 break;
-            case 10:
+            case DRILL:
                 //DRILL
                 ckAtBoomExca.setVisibility(View.GONE);
                 if (DataSaved.Drill_Antenna_Mounting.equals(AT_BODY)) {
@@ -909,7 +939,8 @@ public class Nuova_Machine_Settings extends BaseClass {
                     tvXYZ.setVisibility(View.VISIBLE);
                     tvBoom1.setBackgroundTintList(getColorStateList(R.color.bg_stonex_blue));
                     tvBoom1.setTextColor(getColor(R.color.white));
-                } else {
+                }
+                else {
                     tvMast.setVisibility(View.VISIBLE);
                     drillEnc.setVisibility(View.VISIBLE);
                     tvFrame.setVisibility(View.GONE);
@@ -933,6 +964,24 @@ public class Nuova_Machine_Settings extends BaseClass {
                     tvBoom1.setBackgroundTintList(getColorStateList(R.color.bg_stonex_blue));
                     tvBoom1.setTextColor(getColor(R.color.white));
                 }
+                break;
+            case DREDGE:
+                lay_antmount.setVisibility(View.GONE);
+                lay_ant_orient.setVisibility(View.GONE);
+                lay_drilmode.setVisibility(View.GONE);
+                ckAtBoomExca.setVisibility(View.GONE);
+                toExtraSensor.setVisibility(View.GONE);
+                tvSwing.setVisibility(View.GONE);
+                tvFrame.setVisibility(View.GONE);
+                tvBoom1.setVisibility(View.GONE);
+                tvBoom2.setVisibility(View.GONE);
+                tvStick.setVisibility(View.GONE);
+                tvLink.setVisibility(View.GONE);
+                tvMast.setVisibility(View.GONE);
+                tvTilt.setVisibility(View.GONE);
+                tvXYZ.setVisibility(View.GONE);
+                drillEnc.setVisibility(View.GONE);
+                toRoto.setVisibility(View.GONE);
                 break;
 
 
@@ -963,12 +1012,13 @@ public class Nuova_Machine_Settings extends BaseClass {
         }
         ViewGroup.LayoutParams excaP = exca.getLayoutParams();
         ViewGroup.LayoutParams wheelP = wheel.getLayoutParams();
-        ViewGroup.LayoutParams dozerP = dozer.getLayoutParams();
+        ViewGroup.LayoutParams dozerP = sel_dozer.getLayoutParams();
         ViewGroup.LayoutParams graderP = grader.getLayoutParams();
         ViewGroup.LayoutParams drillP = drill.getLayoutParams();
+        ViewGroup.LayoutParams dredgeP = sel_dredge.getLayoutParams();
 
         switch (DataSaved.isWL) {
-            case 0:
+            case EXCAVATOR:
                 excaP.width = bigg;
                 excaP.height = bigg;
                 wheelP.width = small;
@@ -979,23 +1029,29 @@ public class Nuova_Machine_Settings extends BaseClass {
                 dozerP.height = small;
                 drillP.width = small;
                 drillP.height = small;
+
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
-                dozer.setLayoutParams(dozerP);
+                sel_dozer.setLayoutParams(dozerP);
                 grader.setLayoutParams(graderP);
                 drill.setLayoutParams(drillP);
                 exca.setAlpha(1.0f);
                 wheel.setAlpha(0.2f);
-                dozer.setAlpha(0.2f);
+                sel_dozer.setAlpha(0.2f);
                 grader.setAlpha(0.2f);
                 drill.setAlpha(0.2f);
+
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
-                dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                sel_dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                dredgeP.width=small;
+                dredgeP.height=small;
+                sel_dredge.setAlpha(0.2f);
+                sel_dredge.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 break;
-            case 1:
+            case WHEELLOADER:
                 excaP.width = small;
                 excaP.height = small;
                 wheelP.width = bigg;
@@ -1008,22 +1064,26 @@ public class Nuova_Machine_Settings extends BaseClass {
                 drillP.height = small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
-                dozer.setLayoutParams(dozerP);
+                sel_dozer.setLayoutParams(dozerP);
                 grader.setLayoutParams(graderP);
                 drill.setLayoutParams(drillP);
                 exca.setAlpha(0.2f);
                 wheel.setAlpha(1f);
-                dozer.setAlpha(0.2f);
+                sel_dozer.setAlpha(0.2f);
                 grader.setAlpha(0.2f);
                 drill.setAlpha(0.2f);
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
-                dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                sel_dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                dredgeP.width=small;
+                dredgeP.height=small;
+                sel_dredge.setAlpha(0.2f);
+                sel_dredge.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 break;
-            case 2:
-            case 3:
+            case DOZER:
+            case DOZER_SIX:
                 excaP.width = small;
                 excaP.height = small;
                 wheelP.width = small;
@@ -1036,21 +1096,25 @@ public class Nuova_Machine_Settings extends BaseClass {
                 drillP.height = small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
-                dozer.setLayoutParams(dozerP);
+                sel_dozer.setLayoutParams(dozerP);
                 grader.setLayoutParams(graderP);
                 drill.setLayoutParams(drillP);
                 exca.setAlpha(0.2f);
                 wheel.setAlpha(0.2f);
-                dozer.setAlpha(1f);
+                sel_dozer.setAlpha(1f);
                 grader.setAlpha(0.2f);
                 drill.setAlpha(0.2f);
-                dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
+                sel_dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                dredgeP.width=small;
+                dredgeP.height=small;
+                sel_dredge.setAlpha(0.2f);
+                sel_dredge.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 break;
-            case 4:
+            case GRADER:
                 excaP.width = small;
                 excaP.height = small;
                 wheelP.width = small;
@@ -1063,21 +1127,25 @@ public class Nuova_Machine_Settings extends BaseClass {
                 drillP.height = small;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
-                dozer.setLayoutParams(dozerP);
+                sel_dozer.setLayoutParams(dozerP);
                 grader.setLayoutParams(graderP);
                 drill.setLayoutParams(drillP);
                 exca.setAlpha(0.2f);
                 wheel.setAlpha(0.2f);
-                dozer.setAlpha(0.2f);
+                sel_dozer.setAlpha(0.2f);
                 grader.setAlpha(1.0f);
                 drill.setAlpha(0.2f);
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
-                dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                sel_dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                dredgeP.width=small;
+                dredgeP.height=small;
+                sel_dredge.setAlpha(0.2f);
+                sel_dredge.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 break;
-            case 10:
+            case DRILL:
 
                 excaP.width = small;
                 excaP.height = small;
@@ -1091,19 +1159,55 @@ public class Nuova_Machine_Settings extends BaseClass {
                 drillP.height = bigg;
                 exca.setLayoutParams(excaP);
                 wheel.setLayoutParams(wheelP);
-                dozer.setLayoutParams(dozerP);
+                sel_dozer.setLayoutParams(dozerP);
                 grader.setLayoutParams(graderP);
                 drill.setLayoutParams(drillP);
                 exca.setAlpha(0.2f);
                 wheel.setAlpha(0.2f);
-                dozer.setAlpha(0.2f);
+                sel_dozer.setAlpha(0.2f);
                 grader.setAlpha(0.2f);
                 drill.setAlpha(1.0f);
                 exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
-                dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                sel_dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
                 drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
+                dredgeP.width=small;
+                dredgeP.height=small;
+                sel_dredge.setAlpha(0.2f);
+                sel_dredge.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                break;
+            case DREDGE:
+
+                excaP.width = small;
+                excaP.height = small;
+                wheelP.width = small;
+                wheelP.height = small;
+                graderP.width = small;
+                graderP.height = small;
+                dozerP.width = small;
+                dozerP.height = small;
+                drillP.width = small;
+                drillP.height = small;
+                exca.setLayoutParams(excaP);
+                wheel.setLayoutParams(wheelP);
+                sel_dozer.setLayoutParams(dozerP);
+                grader.setLayoutParams(graderP);
+                drill.setLayoutParams(drillP);
+                exca.setAlpha(0.2f);
+                wheel.setAlpha(0.2f);
+                sel_dozer.setAlpha(0.2f);
+                grader.setAlpha(0.2f);
+                drill.setAlpha(0.2f);
+                exca.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                wheel.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                sel_dozer.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                grader.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                drill.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_trasparente));
+                dredgeP.width=bigg;
+                dredgeP.height=bigg;
+                sel_dredge.setAlpha(1.0f);
+                sel_dredge.setBackground(getResources().getDrawable(R.drawable.sfondo_bottone_mch_selezionata));
                 break;
         }
         ckAtBoomExca.setChecked(MyData.get_Int("M" + machineSel + "Exca_Antenna_Mounting") == 1);
@@ -1144,9 +1248,10 @@ public class Nuova_Machine_Settings extends BaseClass {
         menu_3.setEnabled(b);
         exca.setEnabled(b);
         wheel.setEnabled(b);
-        dozer.setEnabled(b);
+        sel_dozer.setEnabled(b);
         grader.setEnabled(b);
         drill.setEnabled(b);
+        sel_dredge.setEnabled(b);
     }
 
     public void saveName() {
@@ -1179,6 +1284,51 @@ public class Nuova_Machine_Settings extends BaseClass {
                             true,
                             0,
                             0x604,
+                            8,
+                            messages[index]
+                    );
+                }, index * 100L);
+            }
+            new CustomToast(Nuova_Machine_Settings.this,"Unplug and Reconnect the sensor to keep changes").show_alert();
+        });
+
+        builder.setNegativeButton("NO", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.show();
+
+        FullscreenActivity.setFullScreen(dialog);
+    }
+    private void showConfirmAndSendRM() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Nuova_Machine_Settings.this);
+        builder.setTitle("SET SENSOR CONFIG");
+        builder.setMessage(getString(R.string.procedi));
+
+        builder.setPositiveButton("YES", (dialog, which) -> {
+            byte[][] messages = new byte[][]{
+                    new byte[]{0x2F, 0x00, 0x18, 0x02, (byte) 0xFE, 0x00, 0x00, 0x00},
+                    new byte[]{0x2B, 0x00, 0x18, 0x05, 0x32, 0x00, 0x00, 0x00},
+                    new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65}
+            };
+
+            Handler handler = new Handler(Looper.getMainLooper());
+
+            for (int i = 0; i < messages.length; i++) {
+                final int index = i;
+
+                handler.postDelayed(() -> {
+                    MyDeviceManager.CanWrite(
+                            true,
+                            0,
+                            0x610,
+                            8,
+                            messages[index]
+                    );
+                    MyDeviceManager.CanWrite(
+                            true,
+                            0,
+                            0x60F,
                             8,
                             messages[index]
                     );

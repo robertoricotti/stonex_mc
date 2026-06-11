@@ -174,7 +174,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
             rtkMode.setVisibility(View.GONE);
         }
 
-        tvCq.setText("Max CQ\n" + Utils.showCoords(String.valueOf(DataSaved.Max_CQ3D)).replace(",", "."));
+
 
         frame.setBackgroundColor(Color.TRANSPARENT);
         boom1.setBackgroundColor(Color.TRANSPARENT);
@@ -182,6 +182,7 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
         stick.setBackgroundColor(Color.TRANSPARENT);
         bucket.setBackgroundColor(Color.TRANSPARENT);
         tilt.setBackgroundColor(Color.TRANSPARENT);
+        tvCq.setText("Max CQ\n" + Utils.showCoords(String.valueOf(DataSaved.Max_CQ3D)).replace(",", "."));
 
 
     }
@@ -312,13 +313,13 @@ public class Dialog_GNSS_Coordinates extends BaseClass {
 
         cqpiu.setOnClickListener(view -> {
             DataSaved.Max_CQ3D += 0.01;
-            init();
+            tvCq.setText("Max CQ\n" + Utils.showCoords(String.valueOf(DataSaved.Max_CQ3D)).replace(",", "."));
         });
         cqmeno.setOnClickListener(view -> {
             if (DataSaved.Max_CQ3D >= 0.02) {
                 DataSaved.Max_CQ3D -= 0.01;
             }
-            init();
+            tvCq.setText("Max CQ\n" + Utils.showCoords(String.valueOf(DataSaved.Max_CQ3D)).replace(",", "."));
         });
 
 

@@ -296,7 +296,18 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/guidTop"
         app:layout_constraintTop_toTopOf="parent">
-
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/txtDredgeQ"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/custom_background_test3d_box"
+            android:gravity="center"
+            android:text="0.002 [m]"
+            android:textColor="@color/white"
+            android:textSize="36sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/txtLeft"
             android:layout_width="0dp"

@@ -395,6 +395,7 @@ public class CanSender extends Service {
                 } else {
                     if (licenseType == MC_3D_PRO_AUTO || licenseType == MC_3D_PRO || licenseType == MC_2D || licenseType == MC_3D_EASY || licenseType == MC_3D_EASY_AUTO) {
                         switch (DataSaved.my_comPort) {
+
                             case 0:
                                 if (DataSaved.gpsType == 0) {
                                     connections++;
@@ -424,8 +425,9 @@ public class CanSender extends Service {
                                     double vrms = 0;
                                     try {
                                         vrms = Double.parseDouble(NmeaListener.VRMS_);
-                                    } catch (NumberFormatException e) {
+                                    } catch (Exception e) {
                                         vrms = 0.002;
+                                        Log.e("MAXCQ3D",DataSaved.Max_CQ3D+"   "+NmeaListener.VRMS_+"   "+e.getMessage());
                                     }
                                     if (!nmeaSTX_Disc) {
                                         DataSaved.gpsOk = NmeaListener.ggaQuality.equals("4") && vrms < DataSaved.Max_CQ3D && NmeaListener.mch_Hdt_1 != 999.999;
@@ -469,6 +471,7 @@ public class CanSender extends Service {
                         }
                     } else {
                         DataSaved.gpsOk = true;
+
                     }
                 }
 
@@ -577,6 +580,7 @@ public class CanSender extends Service {
                 rms = Double.parseDouble(NmeaListener.VRMS_);
             } catch (Exception e) {
                 rms = DataSaved.Max_CQ3D;
+
             }
             if (quality.contains("4") && rms <= DataSaved.Max_CQ3D) {
 

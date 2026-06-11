@@ -13,6 +13,7 @@ import static packexcalib.gnss.Deg2UTM.nativeProjTransformerToGeo;
 import static services.TriangleService.scanPNEZD;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
@@ -175,6 +176,7 @@ public class ReadProjectService extends Service {
                     case DOZER_SIX:
                     case WHEELLOADER:
                     case GRADER:
+                    case DREDGE:
                         if (licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_PRO || licenseType == MC_3D_PRO_AUTO) {
                             Execute_MC();
                         } else {
@@ -275,7 +277,7 @@ public class ReadProjectService extends Service {
                         DataSaved.isWL == WHEELLOADER ||
                         DataSaved.isWL == DOZER ||
                         DataSaved.isWL == DOZER_SIX ||
-                        DataSaved.isWL == GRADER) {
+                        DataSaved.isWL == GRADER||DataSaved.isWL==DREDGE) {
                     if (isFinishedDTM && isFinishedPOLY && isFinishedPOINT) {
                         startCorrectActivity();
                     } else {

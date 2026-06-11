@@ -305,13 +305,13 @@ public class Dialog_Drill_GNSS {
 
         cqpiu.setOnClickListener(view -> {
             DataSaved.Max_CQ3D += 0.01;
-            init();
+            tvCq.setText("Max CQ\n" + Utils.showCoords(String.valueOf(DataSaved.Max_CQ3D)).replace(",", "."));
         });
         cqmeno.setOnClickListener(view -> {
             if (DataSaved.Max_CQ3D >= 0.02) {
                 DataSaved.Max_CQ3D -= 0.01;
             }
-            init();
+            tvCq.setText("Max CQ\n" + Utils.showCoords(String.valueOf(DataSaved.Max_CQ3D)).replace(",", "."));
         });
 
 
