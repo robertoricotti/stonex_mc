@@ -441,5 +441,52 @@ public class Sensors_Decoder_Drill {
         double circumference = Math.PI * pulleyDiameter;
         return (signedCounts / CPR) * circumference;
     }
+    public static double slewAngleDegFromZeroedEncoder(
+            long rawU32,
+            double rollerDiameterMm,
+            double slewDiameterMm,
+            int lrRotary
+    ) {
+        final long K = 0x02000000L;   // 33554432 counts totali, 0..0x01FFFFFF
+        final long MASK = K - 1;      // 0x01FFFFFF
+        final long HALF = K / 2;      // 0x01000000
+        final double CPR = 8192.0;    // counts per giro encoder
+
+        // Prendo solo i bit validi dell'encoder
+        long raw = rawU32 & MASK;
+
+        // Converto il valore assoluto in signed:
+        // 0, 1, 2, 3... = rotazione positiva
+        // 0x01FFFFFF, 0x01FFFFFE... = rotazione negativa
+        long signedCounts = (raw >= HALF) ? (raw - K) : raw;
+
+        // Inversione verso montaggio
+        // Usa +1 se destra = positivo
+        // Usa -1 se destra = negativo
+        if (lrRotary == -1) {
+            signedCounts = -signedCounts;
+        }
+
+        // Counts encoder -> angolo ralla
+        double angleDeg =
+                (signedCounts / CPR)
+                        * (rollerDiameterMm / slewDiameterMm)
+                        * 360.0;
+
+        // Limita il risultato a -180 / +180
+        return wrap180(angleDeg);
+    }
+
+    private static double wrap180(double angleDeg) {
+        double a = angleDeg % 360.0;
+
+        if (a >= 180.0) {
+            a -= 360.0;
+        } else if (a < -180.0) {
+            a += 360.0;
+        }
+
+        return a;
+    }
 
 }

@@ -218,6 +218,9 @@ public class My3DActivity extends BaseClass {
             PNEZD_FUNCTION=true;
             if(btn_pnezd!=null){
                 isCutFill=false;
+                glGradient=false;
+                gl_pnezd.setVisibility(View.GONE);
+                gl_gradient.setVisibility(View.GONE);
                 boxLeft.setVisibility(View.GONE);
                 boxCent.setVisibility(View.GONE);
                 boxRight.setVisibility(View.GONE);
@@ -228,6 +231,7 @@ public class My3DActivity extends BaseClass {
 
             }
         }
+
 
 
     }
@@ -714,6 +718,10 @@ public class My3DActivity extends BaseClass {
             updateMemories();
         });
         gl_gradient.setOnClickListener(view -> {
+            if(DataSaved.isWL==DREDGE){
+                glGradient=false;
+                return;
+            }
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
             glGradient = !glGradient;

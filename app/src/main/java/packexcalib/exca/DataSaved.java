@@ -27,6 +27,7 @@ import iredes.Point3D_IR;
 import iredes.RigStatus_IR;
 
 public class DataSaved {
+    public static int Dredge_Interface_Type;
     public static int autoSavePoint;
     public static int merge2DEntitiesForSnap;
     public static int DRILL_STATUS = 0;

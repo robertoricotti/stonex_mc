@@ -57,4 +57,11 @@ public class MyTypes {
     public static final int OEM_PROTO = 255;
 
 
+
+    public static final int STONEX_SENSORS=0;
+    public static final int LIEBHERR_CRANE=1;
+    public static final int SENNEBOGHEN=2;
+
+
+
 }

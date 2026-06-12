@@ -9,6 +9,7 @@ import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.WHEELLOADER;
@@ -109,13 +110,15 @@ public class ExcavatorLib {
 
             }
 
+
             if (GPS_Enabled) {
                 if (DataSaved.Exca_Antenna_Mounting == 0) {
                     Execute_Normal();
                 } else {
                     Execute_Normal();
                 }
-            } else {
+            }
+            else {
                 startXYZ = new double[]{0, 0, 0};
                 //To Do 2D
                 coordinateDZ = new double[]{0, 0, 0};
@@ -154,6 +157,7 @@ public class ExcavatorLib {
                 } else {
                     coordB2 = coordB1;
                 }
+
                 coordiLSV = Exca_Quaternion.endPoint(coordB2, correctStick, Deg_Boom_Roll, DataSaved.LSV, hdt_BOOM);
                 coordLSH = Exca_Quaternion.endPoint(coordiLSV, correctStick + (90 * Double.compare(DataSaved.LSH, 0)), Deg_Boom_Roll, DataSaved.LSH, hdt_BOOM);
                 coordinateLASER = coordLSH;
@@ -513,6 +517,7 @@ public class ExcavatorLib {
             switch (DataSaved.isWL) {
                 case EXCAVATOR:
                 case WHEELLOADER:
+
                     double deltaYY = DataSaved.deltaY;
                     if (DataSaved.Extra_Heading != 0) {
                         if (DataSaved.deltaY < 0) {
@@ -540,6 +545,7 @@ public class ExcavatorLib {
                     }
                     overturn = Math.abs(correctRoll) > 85.0d || Math.abs(correctPitch) > 85.0d;
                     coordB1 = Exca_Quaternion.endPoint(coordMiniPitch, correctBoom1, Deg_Boom_Roll, DataSaved.L_Boom1, hdt_BOOM);
+
                     if (DataSaved.lrBoom2 != 0) {
                         coordB2 = Exca_Quaternion.endPoint(coordB1, correctBoom2, Deg_Boom_Roll, DataSaved.L_Boom2, hdt_BOOM);
 
@@ -585,7 +591,6 @@ public class ExcavatorLib {
                                     DataSaved.piccolaBucket,
                                     hdt_BOOM + yawSensor
                             );
-
                             bucketRightCoord = Exca_Quaternion.endPoint(
                                     bucketCoord,
                                     -correctTilt,

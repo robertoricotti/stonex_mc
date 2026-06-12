@@ -8,6 +8,7 @@ import static utils.CanFileTransfer.sendFileViaCAN;
 import static utils.CanFileTransfer.sendFileViaSerial;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
@@ -275,7 +276,7 @@ public class Dialog_PRJ_Folder extends BaseClass {
         });
 
         usaFile.setOnClickListener(view -> {
-            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DOZER || DataSaved.isWL == GRADER || DataSaved.isWL == DOZER_SIX) {
+            if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == WHEELLOADER || DataSaved.isWL == DOZER || DataSaved.isWL == GRADER || DataSaved.isWL == DOZER_SIX || DataSaved.isWL == DREDGE) {
                 if (projectAdapter.getSelectedCkTrmPosition() == -1) {
                     new CustomToast(activity, "SELECT A TERRAIN MODEL TO USE").show();
                 } else {
