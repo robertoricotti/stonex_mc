@@ -27,7 +27,31 @@ import iredes.Point3D_IR;
 import iredes.RigStatus_IR;
 
 public class DataSaved {
-    public static int Dredge_Interface_Type;
+    //Dredge
+    public static int Dredge_Interface_Type;//0=Stonex 1=Liebherr 2=Senneboghen
+    public static int Pos_FRAME;//vedi exca
+    public static int Pos_BOOM;//vedi exca
+    public static int Pos_ENCODER;//1=clock 0=off -1=reverse
+    public static int Pos_SLEW;//1=clock 0=off -1=reverse
+    public static double Diametro_Tamburo;//ruota sulla quale è montato encoder Fune id 0x190
+    public static double Diametro_Ralla;//diametro della ralla sulla quale legge encoder 0x18F
+    public static double Diametro_Ruotino_Dredge;//ruota sulla quale è montato encoder Fune id 0x18F
+    public static double Lunghezza_Pitch;
+    public static double Lunghezza_Roll;
+    public static double Lunghezza_Braccio;
+    public static double Altezza_Attrezzo;
+
+    public static double Lunghezza_Pontone;
+    public static double Larghezza_Pontone;
+    public static double Delta_X_Draga;//delta gps su frame macchina
+    public static double Delta_Y_Draga;//delta gps su frame macchina
+    public static double Delta_Z_Draga;//delta gps su frame macchina
+    public static double Delta_X_Pontone;//da lato SX distanza verso DX come display android
+    public static double Delta_Y_Pontone;//da lato ALTO verso BASSO come display android
+    public static double Delta_Z_Pontone;//da antenna a basamento
+    //End Dredge
+
+
     public static int autoSavePoint;
     public static int merge2DEntitiesForSnap;
     public static int DRILL_STATUS = 0;

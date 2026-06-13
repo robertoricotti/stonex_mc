@@ -253,6 +253,31 @@ public class UpdateValuesService extends Service {
                     String Drill_Mast_Position = MyData.get_String("M" + i + "Drill_Mast_Position");
                     String Exca_Antenna_Mounting = MyData.get_String("M" + i + "Exca_Antenna_Mounting");
 
+                    //Dredge
+                    String Dredge_Interface_Type = MyData.get_String("M" + i + "Dredge_Interface_Type");
+                    String Pos_FRAME = MyData.get_String("M" + i + "Pos_FRAME");
+                    String Pos_BOOM = MyData.get_String("M" + i + "Pos_BOOM");
+                    String Pos_ENCODER = MyData.get_String("M" + i + "Pos_ENCODER");
+                    String Pos_SLEW = MyData.get_String("M" + i + "Pos_SLEW");
+
+                    String Diametro_Tamburo = MyData.get_String("M" + i + "Diametro_Tamburo");
+                    String Diametro_Ralla = MyData.get_String("M" + i + "Diametro_Ralla");
+                    String Diametro_Ruotino_Dredge = MyData.get_String("M" + i + "Diametro_Ruotino_Dredge");
+                    String Lunghezza_Pitch = MyData.get_String("M" + i + "Lunghezza_Pitch");
+                    String Lunghezza_Roll = MyData.get_String("M" + i + "Lunghezza_Roll");
+                    String Lunghezza_Braccio = MyData.get_String("M" + i + "Lunghezza_Braccio");
+                    String Altezza_Attrezzo = MyData.get_String("M" + i + "Altezza_Attrezzo");
+
+                    String Lunghezza_Pontone = MyData.get_String("M" + i + "Lunghezza_Pontone");
+                    String Larghezza_Pontone = MyData.get_String("M" + i + "Larghezza_Pontone");
+                    String Delta_X_Draga = MyData.get_String("M" + i + "Delta_X_Draga");
+                    String Delta_Y_Draga = MyData.get_String("M" + i + "Delta_Y_Draga");
+                    String Delta_Z_Draga = MyData.get_String("M" + i + "Delta_Z_Draga");
+                    String Delta_X_Pontone = MyData.get_String("M" + i + "Delta_X_Pontone");
+                    String Delta_Y_Pontone = MyData.get_String("M" + i + "Delta_Y_Pontone");
+                    String Delta_Z_Pontone = MyData.get_String("M" + i + "Delta_Z_Pontone");
+
+                    //fine dredge
                     if (nameM == null) {
                         MyData.push("M" + i + "_Name", ("DEFAULT " + i).toUpperCase());
                     }
@@ -449,7 +474,67 @@ public class UpdateValuesService extends Service {
                     if (offsetSwingExca == null) {
                         MyData.push("M" + i + "offsetSwingExca", "0.0");
                     }
-
+                    //dredge
+                    if (Dredge_Interface_Type == null) {
+                        MyData.push("M"+i+"Dredge_Interface_Type","0");
+                    }
+                    if (Pos_FRAME == null) {
+                        MyData.push("M"+i+"Pos_FRAME","0");
+                    }
+                    if (Pos_BOOM == null) {
+                        MyData.push("M"+i+"Pos_BOOM","0");
+                    }
+                    if (Pos_ENCODER == null) {
+                        MyData.push("M"+i+"Pos_ENCODER","0");
+                    }
+                    if (Pos_SLEW == null) {
+                        MyData.push("M"+i+"Pos_SLEW","0");
+                    }
+                    if (Diametro_Tamburo == null) {
+                        MyData.push("M"+i+"Diametro_Tamburo","0.0");
+                    }
+                    if (Diametro_Ralla == null) {
+                        MyData.push("M"+i+"Diametro_Ralla","0.0");
+                    }
+                    if (Diametro_Ruotino_Dredge == null) {
+                        MyData.push("M"+i+"Diametro_Ruotino_Dredge","0.0");
+                    }
+                    if (Lunghezza_Pitch == null) {
+                        MyData.push("M"+i+"Lunghezza_Pitch","0.0");
+                    }
+                    if (Lunghezza_Roll == null) {
+                        MyData.push("M"+i+"Lunghezza_Roll","0.0");
+                    }
+                    if (Lunghezza_Braccio == null) {
+                        MyData.push("M"+i+"Lunghezza_Braccio","0.0");
+                    }
+                    if (Altezza_Attrezzo == null) {
+                        MyData.push("M"+i+"Altezza_Attrezzo","0.0");
+                    }
+                    if (Lunghezza_Pontone == null) {
+                        MyData.push("M"+i+"Lunghezza_Pontone","0.0");
+                    }
+                    if (Larghezza_Pontone == null) {
+                        MyData.push("M"+i+"Larghezza_Pontone","0.0");
+                    }
+                    if (Delta_X_Draga == null) {
+                        MyData.push("M"+i+"Delta_X_Draga","0.0");
+                    }
+                    if (Delta_Y_Draga == null) {
+                        MyData.push("M"+i+"Delta_Y_Draga","0.0");
+                    }
+                    if (Delta_Z_Draga == null) {
+                        MyData.push("M"+i+"Delta_Z_Draga","0.0");
+                    }
+                    if (Delta_X_Pontone == null) {
+                        MyData.push("M"+i+"Delta_X_Pontone","0.0");
+                    }
+                    if (Delta_Y_Pontone == null) {
+                        MyData.push("M"+i+"Delta_Y_Pontone","0.0");
+                    }
+                    if (Delta_Z_Pontone == null) {
+                        MyData.push("M"+i+"Delta_Z_Pontone","0.0");
+                    }
 
                     if (iswl == null) {
                         if (i == 1 || i == 2) {
@@ -1010,7 +1095,7 @@ public class UpdateValuesService extends Service {
                         MyData.push("scaleFactor_vista2D", "1");
                     }
 
-                    if(autoSavePoint==null){
+                    if (autoSavePoint == null) {
                         MyData.push("autoSavePoint", "0");
                     }
 
@@ -2090,6 +2175,108 @@ public class UpdateValuesService extends Service {
                 DataSaved.progettoSelected = MyData.get_String("progettoSelected");
                 DataSaved.progettoSelected_POLY = MyData.get_String("progettoSelected_POLY");
                 DataSaved.progettoSelected_POINT = MyData.get_String("progettoSelected_POINT");
+                //Dredge
+                try {
+                    DataSaved.Dredge_Interface_Type = MyData.get_Int("M" + indexMach + "Dredge_Interface_Type");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Dredge_Interface_Type: " + e.getMessage());
+                }
+
+                try {
+                    DataSaved.Pos_FRAME = MyData.get_Int("M" + indexMach + "Pos_FRAME");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Pos_FRAME: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Pos_BOOM = MyData.get_Int("M" + indexMach + "Pos_BOOM");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Pos_BOOM: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Pos_ENCODER = MyData.get_Int("M" + indexMach + "Pos_ENCODER");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Pos_ENCODER: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Pos_SLEW = MyData.get_Int("M" + indexMach + "Pos_SLEW");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Pos_SLEW: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Diametro_Tamburo = MyData.get_Double("M" + indexMach + "Diametro_Tamburo");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Diametro_Tamburo: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Diametro_Ralla = MyData.get_Double("M" + indexMach + "Diametro_Ralla");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Diametro_Ralla: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Diametro_Ruotino_Dredge = MyData.get_Double("M" + indexMach + "Diametro_Ruotino_Dredge");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Diametro_Ruotino_Dredge: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Lunghezza_Pitch = MyData.get_Double("M" + indexMach + "Lunghezza_Pitch");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Lunghezza_Pitch: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Lunghezza_Roll= MyData.get_Double("M" + indexMach + "Lunghezza_Roll");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Lunghezza_Roll: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Lunghezza_Braccio= MyData.get_Double("M" + indexMach + "Lunghezza_Braccio");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Lunghezza_Braccio: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Altezza_Attrezzo= MyData.get_Double("M" + indexMach + "Altezza_Attrezzo");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Altezza_Attrezzo: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Lunghezza_Pontone= MyData.get_Double("M" + indexMach + "Lunghezza_Pontone");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Lunghezza_Pontone: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Larghezza_Pontone= MyData.get_Double("M" + indexMach + "Larghezza_Pontone");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Larghezza_Pontone: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Delta_X_Draga= MyData.get_Double("M" + indexMach + "Delta_X_Draga");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Delta_X_Draga: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Delta_Y_Draga= MyData.get_Double("M" + indexMach + "Delta_Y_Draga");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Delta_Y_Draga: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Delta_Z_Draga= MyData.get_Double("M" + indexMach + "Delta_Z_Draga");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Delta_Z_Draga: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Delta_X_Pontone= MyData.get_Double("M" + indexMach + "Delta_X_Pontone");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Delta_X_Pontone: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Delta_Y_Pontone= MyData.get_Double("M" + indexMach + "Delta_Y_Pontone");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Delta_Y_Pontone: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Delta_Z_Pontone= MyData.get_Double("M" + indexMach + "Delta_Z_Pontone");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Delta_Z_Pontone: " + e.getMessage());
+                }
 
 
                 try {
@@ -2167,6 +2354,7 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di hasQuick: " + e.getMessage());
                 }
 
+
                 try {
                     DataSaved.lrTilt = MyData.get_Int("M" + indexMach + "_Tilt_MountPos" + indexBucket);
                 } catch (Exception e) {
@@ -2208,6 +2396,10 @@ public class UpdateValuesService extends Service {
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di L_RotoToBucket: " + e.getMessage());
                 }
+
+
+
+
                 try {
                     DataSaved.scale_Factor = MyData.get_Double("scaleFactor");
                 } catch (Exception e) {

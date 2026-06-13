@@ -1,5 +1,12 @@
 package packexcalib.exca;
 
+import static packexcalib.exca.DataSaved.Diametro_Ralla;
+import static packexcalib.exca.DataSaved.Diametro_Ruotino_Dredge;
+import static packexcalib.exca.DataSaved.Diametro_Tamburo;
+import static packexcalib.exca.DataSaved.Pos_BOOM;
+import static packexcalib.exca.DataSaved.Pos_ENCODER;
+import static packexcalib.exca.DataSaved.Pos_FRAME;
+import static packexcalib.exca.DataSaved.Pos_SLEW;
 import static packexcalib.exca.Sensors_Decoder_Drill.ropeLenSignedFromAbsolute;
 import static packexcalib.exca.Sensors_Decoder_Drill.slewAngleDegFromZeroedEncoder;
 import static utils.MyTypes.LIEBHERR_CRANE;
@@ -15,57 +22,20 @@ public class SD_Dredge {
     private static final int SENNEBOGEN_BOOM_ANGLE = 0x1C034333;
     private static final int SENNEBOGEN_ROPE = 0x1F8;
     private static final int SENNEBOGEN_HOOK = 0x3F8;
-
-
-    private static long u32le(byte[] d, int off) {
-        return ((long) d[off] & 0xFF)
-                | (((long) d[off + 1] & 0xFF) << 8)
-                | (((long) d[off + 2] & 0xFF) << 16)
-                | (((long) d[off + 3] & 0xFF) << 24);
-    }
-
-    private static int s32le(byte[] d, int off) {
-        return (int) u32le(d, off);
-    }
-
-    private static double normalizeDeg360(double deg) {
-        double out = deg % 360.0d;
-        if (out < 0.0d) out += 360.0d;
-        return out;
-    }
-
-    private static int u16le(byte[] d, int off) {
-        return (d[off] & 0xFF) | ((d[off + 1] & 0xFF) << 8);
-    }
-
-    private static int s16le(byte[] d, int off) {
-        return (short) u16le(d, off);
-    }
-
-    public static int Pos_FRAME, Pos_BOOM, Pos_ENCODER, Pos_SLEW;
     public static double Angolo_Pitch_Dredge;
     public static double Angolo_Roll_Dredge;
     public static double Angolo_Braccio_Dredge;
     public static double Angolo_Fune_Dredge = 0d;
     public static double Angolo_Slew_Dredge;
     public static double Lunghezza_Fune;
-    public static double Angolo_Attrezzo_Dredge;
+    public static double Angolo_Attrezzo_Dredge=0d;
 
-    public static double Diametro_Tamburo;
-    public static double Diametro_Ralla;
-    public static double Diametro_Ruotino_Dredge;
+
     public static double Lunghezza_Fune_2;
-    public static double Lunghezza_Pitch;
-    public static double Lunghezza_Roll;
-    public static double Lunghezza_Braccio;
-    public static double Altezza_Attrezzo;
 
-    public static double Lunghezza_Pontone;
-    public static double Larghezza_Pontone;
 
-    public static double Delta_X_Pontone;
-    public static double Delta_Y_Pontone;
-    public static double Delta_Z_Pontone;
+
+
 
 
     public static void decode(int id, byte[] data) {
@@ -228,4 +198,30 @@ public class SD_Dredge {
 
 
     }
+
+    private static long u32le(byte[] d, int off) {
+        return ((long) d[off] & 0xFF)
+                | (((long) d[off + 1] & 0xFF) << 8)
+                | (((long) d[off + 2] & 0xFF) << 16)
+                | (((long) d[off + 3] & 0xFF) << 24);
+    }
+
+    private static int s32le(byte[] d, int off) {
+        return (int) u32le(d, off);
+    }
+
+    private static double normalizeDeg360(double deg) {
+        double out = deg % 360.0d;
+        if (out < 0.0d) out += 360.0d;
+        return out;
+    }
+
+    private static int u16le(byte[] d, int off) {
+        return (d[off] & 0xFF) | ((d[off + 1] & 0xFF) << 8);
+    }
+
+    private static int s16le(byte[] d, int off) {
+        return (short) u16le(d, off);
+    }
+
 }

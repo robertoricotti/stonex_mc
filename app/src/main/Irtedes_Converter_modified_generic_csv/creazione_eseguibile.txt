@@ -1,0 +1,8 @@
+pyinstaller --noconsole --onefile stx_hole_converter.py --icon=stx_icon.ico ^
+  --add-data "templates\Jet_Template.xlsx;templates" ^
+  --add-data "templates\Rock_Template.xlsx;templates" ^
+  --add-data "templates\Solar_Template.xlsx;templates"
+
+
+lanciare da path dentro cartella progetto il comando: 
+D:\Development\Irtedes_Converter_modified_generic_csv>python -m PyInstaller --onefile --windowed --name stonex_converter stx_hole_converter.py (verificare path)
