@@ -28,6 +28,7 @@ import static utils.MyTypes.CAT_SEA;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.FMI_SENS;
@@ -63,6 +64,7 @@ import packexcalib.exca.DataSaved;
 import packexcalib.exca.PGNExtractor;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
 import packexcalib.exca.Sensors_Decoder;
+import packexcalib.exca.Sensors_Decoder_Dredge;
 import packexcalib.exca.Sensors_Decoder_Drill;
 import packexcalib.gnss.NmeaListener;
 import serial.OpenSerialPort;
@@ -89,9 +91,11 @@ public class CanService extends Service {
     public static boolean CanServiceState = false;
     int dlc;
 
+    //draga
+    public static boolean BraccioCon, RopeCon, CarroCon;
+
     @Override
     public void onCreate() {
-
 
 
         nmeaSTX_Disc = true;
@@ -115,6 +119,9 @@ public class CanService extends Service {
         JD_Connected = false;
         KOM_Connected = false;
         CASE_Connected = false;
+        RopeCon=false;
+        BraccioCon=false;
+        CarroCon=false;
 
         if (DataSaved.lrFrame != 0) {
             handler_frame.postDelayed(timeoutRunnable_frame, 3000);
@@ -147,6 +154,12 @@ public class CanService extends Service {
         handler_NOBAS_Connected.postDelayed(timeoutRunnable_NOBAS_Connected, 3000);
 
         handler_rotoTilt.postDelayed(timeoutRunnable_rotoTilt, 3000);
+
+        CarroConnesso.postDelayed(timeout_CarroConn,3000);
+        BraccioConnesso.postDelayed(timeout_BraccioConn,3000);
+        RopeConnesso.postDelayed(timeout_RopeConn,3000);
+
+
 
 
         super.onCreate();
@@ -509,12 +522,16 @@ public class CanService extends Service {
                             Sensors_Decoder_Drill.decode(id, msg);
                         }
                         break;
+                    case DREDGE:
+                        messaggiDraga(id);
+                        Sensors_Decoder_Dredge.decode(id,msg);
+                        break;
                 }
 
             }
 
             if (channel == 2) {
-                if(id==0xCDA0103||id==0x0CDA01F1) {
+                if (id == 0xCDA0103 || id == 0x0CDA01F1) {
                     Log.w("PLUS1_KEY", id + "  " + dlc + "  " + Arrays.toString(msg) + "\n");
                 }
                 //client.onCanFrameReceived(id>2047, channel, id, dlc, msg);
@@ -687,7 +704,7 @@ public class CanService extends Service {
 
                 }
 
-                //todo messaggi drill ecu
+
                 if (DataSaved.isWL == DRILL && DataSaved.isCanOpen == UNIVERSAL_ECU) {
                     Sensors_Decoder_Drill.decode(id, msg);
                     if (id == 0x81) {
@@ -697,7 +714,7 @@ public class CanService extends Service {
                         handler_tool.postDelayed(timeoutRunnable_tool, 3000);
                     }
                     if (id == 0x3AC) {
-                        int index=msg[0];
+                        int index = msg[0];
                         int valore = PLC_DataTypes_LittleEndian.byte_to_U16(new byte[]{msg[1], msg[2]});
                         switch (index) {
                             case 0:
@@ -707,59 +724,59 @@ public class CanService extends Service {
                                 EV1_LOWER = valore;
                                 break;
                             case 2:
-                                EV2_UPPER=valore;
+                                EV2_UPPER = valore;
                                 break;
                             case 3:
-                                EV2_LOWER=valore;
+                                EV2_LOWER = valore;
                                 break;
                             case 4:
-                                EV3_UPPER=valore;
+                                EV3_UPPER = valore;
                                 break;
                             case 5:
-                                EV3_LOWER=valore;
+                                EV3_LOWER = valore;
                                 break;
                             case 6:
-                                EV4_UPPER=valore;
+                                EV4_UPPER = valore;
                                 break;
                             case 7:
-                                EV4_LOWER=valore;
+                                EV4_LOWER = valore;
                                 break;
                             case 8:
-                                EV5_UPPER=valore;
+                                EV5_UPPER = valore;
                                 break;
                             case 9:
-                                EV5_LOWER=valore;
+                                EV5_LOWER = valore;
                                 break;
                             case 10:
-                                EV6_UPPER=valore;
+                                EV6_UPPER = valore;
                                 break;
                             case 11:
-                                EV6_LOWER=valore;
+                                EV6_LOWER = valore;
                                 break;
                             case 12:
-                                SWAP_PLUMB_AX= valore == 1;
+                                SWAP_PLUMB_AX = valore == 1;
                                 break;
                             case 13:
-                                REVERSE_FOOT_ENCODER=valore==1;
+                                REVERSE_FOOT_ENCODER = valore == 1;
                                 break;
                             case 14:
-                                REVERSE_PLUMB_AX_1=valore==1;
+                                REVERSE_PLUMB_AX_1 = valore == 1;
                                 break;
                             case 15:
-                                REVERSE_PLUMB_AX_2=valore==1;
+                                REVERSE_PLUMB_AX_2 = valore == 1;
                                 break;
                             case 16:
-                                    REVERSE_HAMMER=valore==1;
+                                REVERSE_HAMMER = valore == 1;
                                 break;
                             case 17:
-                                HAMMER_ENGAGEMENT_DELAY_seconds=valore;
+                                HAMMER_ENGAGEMENT_DELAY_seconds = valore;
                                 break;
                             case 18:
-                                RISE_DIST_mm=valore;
+                                RISE_DIST_mm = valore;
                                 break;
                             case 19:
-                                Dialog_Pile_Hydro.hasReaded=true;
-                                REVERSE_RISE_LOW=valore==1;
+                                Dialog_Pile_Hydro.hasReaded = true;
+                                REVERSE_RISE_LOW = valore == 1;
                                 break;
                         }
                     }
@@ -771,6 +788,38 @@ public class CanService extends Service {
         }
     }
 
+    private  void messaggiDraga(int id){
+        switch (id & 0x1FFFFFFF){
+            case 0x381:
+                CarroCon=true;
+                CarroConnesso.removeCallbacks(timeout_CarroConn);
+                CarroConnesso.postDelayed(timeout_CarroConn,3000);
+                break;
+            case 0x18FF8380:
+                CarroCon=true;
+                BraccioCon=true;
+                CarroConnesso.removeCallbacks(timeout_CarroConn);
+                CarroConnesso.postDelayed(timeout_CarroConn,3000);
+                BraccioConnesso.removeCallbacks(timeout_BraccioConn);
+                BraccioConnesso.postDelayed(timeout_BraccioConn,3000);
+                break;
+
+            case 0x382:
+                BraccioCon=true;
+                BraccioConnesso.removeCallbacks(timeout_BraccioConn);
+                BraccioConnesso.postDelayed(timeout_BraccioConn,3000);
+                break;
+
+            case 0x190:
+            case 0x18FF8080:
+            case 0x1F8:
+                RopeCon=true;
+                RopeConnesso.removeCallbacks(timeout_RopeConn);
+                RopeConnesso.postDelayed(timeout_RopeConn,3000);
+
+                break;
+        }
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -1011,6 +1060,29 @@ public class CanService extends Service {
         @Override
         public void run() {
             Sensors_Decoder.Deg_Roto = 0;
+        }
+    };
+
+
+    private final Handler CarroConnesso = new Handler();
+    private final Runnable timeout_CarroConn = new Runnable() {
+        @Override
+        public void run() {
+            CarroCon = false;
+        }
+    };
+    private final Handler BraccioConnesso = new Handler();
+    private final Runnable timeout_BraccioConn = new Runnable() {
+        @Override
+        public void run() {
+            BraccioCon = false;
+        }
+    };
+    private final Handler RopeConnesso = new Handler();
+    private final Runnable timeout_RopeConn = new Runnable() {
+        @Override
+        public void run() {
+            RopeCon = false;
         }
     };
 

@@ -15,7 +15,7 @@ import static utils.MyTypes.STONEX_SENSORS;
 
 import android.util.Log;
 
-public class SD_Dredge {
+public class Sensors_Decoder_Dredge {
     private static final int LIEBHERR_ROPE_LENGTH = 0x18FF8080;
     private static final int LIEBHERR_MACHINE = 0x18FF8380;
     private static final int SENNEBOGEN_SLEW = 0x1C044333;
@@ -64,7 +64,7 @@ public class SD_Dredge {
                             break;
 
                     }
-
+                    DredgeLib.Dredge();
                     break;
 
                 case LIEBHERR_CRANE:
@@ -109,7 +109,7 @@ public class SD_Dredge {
                             // double grabHeight_mm        = s16le(data, 4) * 10.0d;
                             break;
                     }
-
+                    DredgeLib.Dredge();
                     break;
 
                 case SENNEBOGHEN:
@@ -125,6 +125,9 @@ public class SD_Dredge {
                             double[] out = TiltEncript.encriptTSM_Frame(data, Pos_FRAME);
                             Angolo_Pitch_Dredge = out[0];
                             Angolo_Roll_Dredge = out[1];
+                            break;
+                        case 0x382:
+                            Angolo_Braccio_Dredge = TiltEncript.encriptTSM_Boom(data, Pos_BOOM)[0];
                             break;
 
                         case SENNEBOGEN_SLEW:
@@ -189,7 +192,7 @@ public class SD_Dredge {
                             // Altezza_Hook_2 = hookHeight2_mm;
                             break;
                     }
-
+                    DredgeLib.Dredge();
                     break;
             }
         } catch (Exception e) {

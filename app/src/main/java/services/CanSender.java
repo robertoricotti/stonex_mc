@@ -33,14 +33,18 @@ import static packexcalib.exca.Sensors_Decoder.Deg_pitch;
 import static packexcalib.exca.Sensors_Decoder.Deg_roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_stick;
 import static packexcalib.exca.Sensors_Decoder.Deg_tilt;
+import static packexcalib.exca.Sensors_Decoder_Dredge.*;
 import static packexcalib.gnss.NmeaListener.Est1;
 import static packexcalib.gnss.NmeaListener.Nord1;
 import static packexcalib.gnss.NmeaListener.Quota1;
 import static packexcalib.gnss.NmeaListener.mLat_1;
 import static packexcalib.gnss.NmeaListener.mLon_1;
 import static serial.SerialReadThread.serialEmpty;
+import static services.CanService.BraccioCon;
+import static services.CanService.CarroCon;
 import static services.CanService.Dozer_Auto_Main;
 import static services.CanService.Grader_Auto_SS;
+import static services.CanService.RopeCon;
 import static services.CanService.boom1Disc;
 import static services.CanService.boom1OK;
 import static services.CanService.boom2Disc;
@@ -68,6 +72,7 @@ import static utils.MyTypes.CAT_SEA;
 import static utils.MyTypes.DEMO_BAG;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
@@ -107,10 +112,12 @@ import drill_pile.gui.Drill_Activity;
 import gui.MyApp;
 import gui.my_opengl.My3DActivity;
 import packexcalib.exca.DataSaved;
+import packexcalib.exca.DredgeLib;
 import packexcalib.exca.DrillLib;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
 import packexcalib.exca.PLC_DataTypes_LittleEndian;
+import packexcalib.exca.Sensors_Decoder_Dredge;
 import packexcalib.exca.Sensors_Decoder_Drill;
 import packexcalib.gnss.NmeaListener;
 import utils.MyDeviceManager;
@@ -212,8 +219,6 @@ public class CanSender extends Service {
                         }
                         break;
                     case DRILL:
-                        //TODO a 25mS Solar_Delta_X Solar_Delta_Y
-
                         AutoDrillHandling();
 
                         break;
@@ -238,6 +243,9 @@ public class CanSender extends Service {
                 flagLaser = true;
                 tiltOK = true;
                 toolOK = true;
+                RopeCon=true;
+                BraccioCon=true;
+                CarroCon=true;
                 final DPadMapperLeft currentLeft = DPadHelper.getInstance().getLeft();
                 final DPadMapperRight currentRight = DPadHelper.getInstance().getRight();
                 switch (DataSaved.isWL) {
@@ -256,7 +264,6 @@ public class CanSender extends Service {
                         Deg_pitch = (currentRight.getRightHatY() * -1) * 0.5;
                         Deg_tilt = currentRight.getRightHatX();
                         Deg_Boom_Roll = Deg_roll;
-
 
                         if (DataSaved.portView == 1) {
                             NmeaListener.roof_Orientation = HEADING;
@@ -320,9 +327,22 @@ public class CanSender extends Service {
                         DataSaved.demoZ = DPadHelper.getInstance().getZ();
                         DrillLib.Drill();
                         break;
-
+                    case DREDGE:
+                        HEADING = currentLeft.getLeftAxisX();
+                        Angolo_Pitch_Dredge = (currentRight.getRightHatY() * -1) * 0.5;
+                        Angolo_Roll_Dredge=0.0d;
+                        Angolo_Braccio_Dredge = currentRight.getRightAxisY() * -1;
+                        double lenF = 0;
+                        lenF = MyMCUtils.myscaleD(currentLeft.getLeftYaw(), -180, 180, 0, 50);
+                        Lunghezza_Fune=lenF;
+                        double slew=0;
+                        slew=currentRight.getRightYaw();
+                        Angolo_Slew_Dredge=slew;
+                        DredgeLib.Dredge();
+                        break;
                 }
             }
+
             handler.postDelayed(this, 25); // esempio
         }
     };

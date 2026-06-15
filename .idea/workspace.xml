@@ -567,9 +567,21 @@
   <component name="ChangeListManager">
     <list default="true" id="7f19be0e-ad4c-4b50-a50a-7317c6f46d21" name="Changes" comment="4.1.10 before release 4.1.11 da finire addpattern implementazione liebherr e senneboghen messages">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DataSaved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/SD_Dredge.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/SD_Dredge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/UpdateValuesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/4v3f5h6n/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/4v3f5h6n/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/z5t636i3/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/gui/tech_menu/Nuova_Machine_Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DredgeLib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/DredgeLib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/ExcavatorLib.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/SD_Dredge.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/packexcalib/exca/Sensors_Decoder_Dredge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/services/CanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/70089370.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/70089370v240.SYS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/MC050_110_nl_T_MC050_112T.scs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/PLCFile1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/ProjectParameters.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/mc050_piling.p1m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/mc050_piling/mc050_piling.p1x" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -579,7 +591,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=512DS96403000001]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -838,14 +850,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760420071112</updated>
-    </task>
-    <task id="LOCAL-00229" summary="4.1.6 snappa su entità 2D 95%">
-      <option name="closed" value="true" />
-      <created>1777149285598</created>
-      <option name="number" value="00229" />
-      <option name="presentableId" value="LOCAL-00229" />
-      <option name="project" value="LOCAL" />
-      <updated>1777149285599</updated>
     </task>
     <task id="LOCAL-00230" summary="4.1.6 snappa su entità 2D 95%">
       <option name="closed" value="true" />
@@ -1231,7 +1235,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781298386774</updated>
     </task>
-    <option name="localTasksCounter" value="278" />
+    <task id="LOCAL-00278" summary="4.1.10 before release 4.1.11 da finire addpattern implementazione liebherr e senneboghen messages">
+      <option name="closed" value="true" />
+      <created>1781382912139</created>
+      <option name="number" value="00278" />
+      <option name="presentableId" value="LOCAL-00278" />
+      <option name="project" value="LOCAL" />
+      <updated>1781382912140</updated>
+    </task>
+    <option name="localTasksCounter" value="279" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

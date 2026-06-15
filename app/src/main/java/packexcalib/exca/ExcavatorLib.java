@@ -265,7 +265,8 @@ public class ExcavatorLib {
                     distToSurf = mDist2Surf(msideC, actualY2D);
                     distToSurfX = mDist2Surf_X(msideCX, actualX2D);
 
-                } else {
+                }
+                else {
                     //to do calcoli
                     for (int i = 0; i < puntiProfilo.length; i++) {
                         for (int j = 0; j < puntiProfilo[i].length; j++) {
