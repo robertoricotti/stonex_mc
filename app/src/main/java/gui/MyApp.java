@@ -115,6 +115,7 @@ import gui.tech_menu.DrillEncoder;
 import gui.tech_menu.DrillToolCalib;
 import gui.tech_menu.ExcavatorChooserActivity;
 import gui.tech_menu.FrameCalib;
+import gui.tech_menu.Frame_Drg_Activity;
 import gui.tech_menu.GPS_Autocalib;
 import gui.tech_menu.LinkageCalib;
 import gui.tech_menu.MastLinkCalib;
@@ -122,11 +123,13 @@ import gui.tech_menu.Mast_Antenna;
 import gui.tech_menu.NetworkConfigSettings;
 import gui.tech_menu.Nuova_Blade_Calib;
 import gui.tech_menu.Nuova_Machine_Settings;
+import gui.tech_menu.Rope_Drg_Activity;
 import gui.tech_menu.StickCalib;
 import gui.tech_menu.TiltCalib;
 import gui.tech_menu.Tilt_Blade;
 import gui.tech_menu.ToolSensor;
 import gui.tech_menu.XYZ_Calib;
+import gui.tech_menu.XYZ_Drg_Activity;
 import packexcalib.exca.DataSaved;
 import packexcalib.exca.ExcavatorLib;
 import packexcalib.exca.PLC_DataTypes_BigEndian;
@@ -144,8 +147,8 @@ import utils.MyDeviceManager;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
     public static final String gnssFirmware = "STX-SMC-App2.12.260320-BootV114-KernelV108.bin";
-    public static final String ecuDrillFirmware="Universal_PileDriver_V2_28052026.lhx";
-    public static final String ecuDrillFirmware_50="mc050_piling_08062026.lhx";
+    public static final String ecuDrillFirmware = "Universal_PileDriver_V2_28052026.lhx";
+    public static final String ecuDrillFirmware_50 = "mc050_piling_08062026.lhx";
     public static boolean UPDATE_CHECKED = false;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
@@ -813,8 +816,14 @@ git push
             ((MyGLActivity_Create) activity).updateUI();
         } else if (activity instanceof Mast_Antenna) {
             ((Mast_Antenna) activity).updateUI();
-        }else if (activity instanceof AddPattern_Activity) {
+        } else if (activity instanceof AddPattern_Activity) {
             ((AddPattern_Activity) activity).updateUI();
+        } else if (activity instanceof XYZ_Drg_Activity) {
+            ((XYZ_Drg_Activity) activity).updateUI();
+        } else if (activity instanceof Frame_Drg_Activity) {
+            ((Frame_Drg_Activity) activity).updateUI();
+        }else if (activity instanceof Rope_Drg_Activity) {
+            ((Rope_Drg_Activity) activity).updateUI();
         }
 
     }

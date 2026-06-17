@@ -37,6 +37,7 @@ public class DataSaved {
     public static double Diametro_Ralla;//diametro della ralla sulla quale legge encoder 0x18F
     public static double Diametro_Ruotino_Dredge;//ruota sulla quale è montato encoder Fune id 0x18F
     public static double Lunghezza_Pitch;
+    public static double Rope_Fixed_Offset;
     public static double Lunghezza_Roll;
     public static double Lunghezza_Braccio;
     public static double Altezza_Attrezzo;

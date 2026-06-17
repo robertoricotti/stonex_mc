@@ -16,6 +16,7 @@ import static utils.MyTypes.FMI_SENS;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.JETGROUTING_MODE;
 import static utils.MyTypes.JOYSTICKS;
+import static utils.MyTypes.LIEBHERR_CRANE;
 import static utils.MyTypes.MAST_FORWARD;
 import static utils.MyTypes.MAST_LEFT;
 import static utils.MyTypes.MAST_RIGHT;
@@ -25,7 +26,9 @@ import static utils.MyTypes.MC_3D_EASY;
 import static utils.MyTypes.MC_3D_EASY_AUTO;
 import static utils.MyTypes.MC_3D_PRO_AUTO;
 import static utils.MyTypes.ROCKDRILL_MODE;
+import static utils.MyTypes.SENNEBOGHEN;
 import static utils.MyTypes.SOLARFARM_MODE;
+import static utils.MyTypes.STONEX_SENSORS;
 import static utils.MyTypes.TSM_ACC;
 import static utils.MyTypes.UNIVERSAL_ECU;
 import static utils.MyTypes.WHEELLOADER;
@@ -65,15 +68,17 @@ import utils.MyData;
 import utils.MyDeviceManager;
 
 public class Nuova_Machine_Settings extends BaseClass {
+
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
     CheckBox ckDO, ckUHF, ckUpper, ck_stxGen1, ckDEMO, ckSchermo, ckMach, ck22, ck_stxGen2, ckJ, ckRock, ckJet, ckSolar, ckEcu, ckuse2dpoly;
-    CheckBox ckBody, ckBoom, ckAtLeft, ckAtFwd, ckAtRight, ckAtBoomExca;
+    CheckBox ckBody, ckBoom, ckAtLeft, ckAtFwd, ckAtRight, ckAtBoomExca,ckDrgStx,ckDrgLieb,ckDrgSen;
     CustomQwertyDialog customQwertyDialog;
     ImageView back, exca, wheel, grader, sel_dozer, drill, sel_dredge, menu_1, menu_2, saveToFile, readFromFile, status, menu_3;
-    ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3;
+    ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3,constr_Draga;
     TextView toExtraSensor, tvSwing, tvFrame, tvBoom1, tvBoom2, tvStick, tvLink,
             tvMast, tvTilt, tvXYZ, drillEnc, toCanopen, toDamping, can1bd, can2bd, toRoto, toCET05, toCET12, toRM7012;
+    TextView toxyzDrg,toFrameDrg,toBoomDrg,toRopeDrg,toRope2Drg,toSleweDrg,toPontonDrg;
     EditText mchName, techInfo;
     int mode, machineSel;
     public static boolean menu1_visible, menu2_visible, menu3_visible;
@@ -99,6 +104,9 @@ public class Nuova_Machine_Settings extends BaseClass {
         onClick();
         updateCK();
         updateUI();
+        ckDrgStx.setChecked(DataSaved.Dredge_Interface_Type==STONEX_SENSORS);
+        ckDrgLieb.setChecked(DataSaved.Dredge_Interface_Type==LIEBHERR_CRANE);
+        ckDrgSen.setChecked(DataSaved.Dredge_Interface_Type==SENNEBOGHEN);
     }
 
     private void findView() {
@@ -128,6 +136,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         constraintLayout = findViewById(R.id.constraint_general);
         constraintLayout_2 = findViewById(R.id.constr_2);
         constraintLayout_3 = findViewById(R.id.constr_3);
+        constr_Draga=findViewById(R.id.constr_Draga);
         tvSwing = findViewById(R.id.tvSwing);
         toExtraSensor = findViewById(R.id.toExtraSensor);
         drillEnc = findViewById(R.id.drillEnc);
@@ -175,6 +184,16 @@ public class Nuova_Machine_Settings extends BaseClass {
         toCET05 = findViewById(R.id.toCET05);
         toCET12 = findViewById(R.id.toCET12);
         toRM7012 = findViewById(R.id.toRM7012);
+        ckDrgStx=findViewById(R.id.ckDrgStx);
+        ckDrgLieb=findViewById(R.id.ckDrgLieb);
+        ckDrgSen=findViewById(R.id.ckDrgSen);
+        toxyzDrg=findViewById(R.id.toxyzDrg);
+        toFrameDrg=findViewById(R.id.toFrameDrg);
+        toBoomDrg=findViewById(R.id.toBoomDrg);
+        toRopeDrg=findViewById(R.id.toRopeDrg);
+        toRope2Drg=findViewById(R.id.toRope2Drg);
+        toSleweDrg=findViewById(R.id.toSleweDrg);
+        toPontonDrg=findViewById(R.id.toPontonDrg);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
         if (licenseType == MC_3D_EASY || licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_EASY_AUTO) {
             drill.setVisibility(View.INVISIBLE);
@@ -184,6 +203,63 @@ public class Nuova_Machine_Settings extends BaseClass {
     }
 
     private void onClick() {
+        toxyzDrg.setOnClickListener(view -> {
+            en_dis(false);
+            startActivity(new Intent(this,XYZ_Drg_Activity.class));
+            finish();
+        });
+        toFrameDrg.setOnClickListener(view -> {
+            en_dis(false);
+            startActivity(new Intent(this,Frame_Drg_Activity.class));
+            finish();
+        });
+        toBoomDrg.setOnClickListener(view -> {
+            en_dis(false);
+            startActivity(new Intent(this,Boom_Drg_Activity.class));
+            finish();
+        });
+        toRopeDrg.setOnClickListener(view -> {
+            en_dis(false);
+            startActivity(new Intent(this,Rope_Drg_Activity.class));
+            finish();
+        });
+        toRope2Drg.setOnClickListener(view -> {
+            en_dis(false);
+            startActivity(new Intent(this,Rope_2_Drg_Activity.class));
+            finish();
+        });
+        toSleweDrg.setOnClickListener(view -> {
+            en_dis(false);
+            startActivity(new Intent(this,Slew_Drg_Activity.class));
+            finish();
+        });
+        toPontonDrg.setOnClickListener(view -> {
+            en_dis(false);
+            startActivity(new Intent(this,Ponton_Drg_Activity.class));
+            finish();
+        });
+        ckDrgStx.setOnClickListener(view -> {
+            ckDrgStx.setChecked(true);
+            ckDrgLieb.setChecked(false);
+            ckDrgSen.setChecked(false);
+            DataSaved.Dredge_Interface_Type=STONEX_SENSORS;
+            MyData.push("M"+machineSel+"Dredge_Interface_Type","0");
+
+        });
+        ckDrgLieb.setOnClickListener(view -> {
+            ckDrgStx.setChecked(false);
+            ckDrgLieb.setChecked(true);
+            ckDrgSen.setChecked(false);
+            DataSaved.Dredge_Interface_Type=LIEBHERR_CRANE;
+            MyData.push("M"+machineSel+"Dredge_Interface_Type","1");
+        });
+        ckDrgSen.setOnClickListener(view -> {
+            ckDrgStx.setChecked(false);
+            ckDrgLieb.setChecked(false);
+            ckDrgSen.setChecked(true);
+            DataSaved.Dredge_Interface_Type=SENNEBOGHEN;
+            MyData.push("M"+machineSel+"Dredge_Interface_Type","2");
+        });
         toCET05.setOnClickListener(v -> {
             showConfirmAndSendCET(0x08);
         });
@@ -1000,9 +1076,16 @@ public class Nuova_Machine_Settings extends BaseClass {
         }
         if (menu2_visible) {
             menu_2.setImageResource(R.drawable.keyboard_arrow_down_96);
-            constraintLayout_2.setVisibility(View.VISIBLE);
+            if(DataSaved.isWL==DREDGE){
+                constr_Draga.setVisibility(View.VISIBLE);
+                constraintLayout_2.setVisibility(View.GONE);
+            }else {
+                constraintLayout_2.setVisibility(View.VISIBLE);
+                constr_Draga.setVisibility(View.GONE);
+            }
         } else {
             constraintLayout_2.setVisibility(View.GONE);
+            constr_Draga.setVisibility(View.GONE);
             menu_2.setImageResource(R.drawable.key_arrow_right);
         }
         if (menu3_visible) {
@@ -1237,6 +1320,16 @@ public class Nuova_Machine_Settings extends BaseClass {
     }
 
     private void en_dis(boolean b) {
+        ckDrgStx.setEnabled(b);
+        ckDrgLieb.setEnabled(b);
+        ckDrgSen.setEnabled(b);
+        toxyzDrg.setEnabled(b);
+        toFrameDrg.setEnabled(b);
+        toBoomDrg.setEnabled(b);
+        toRopeDrg.setEnabled(b);
+        toRope2Drg.setEnabled(b);
+        toSleweDrg.setEnabled(b);
+        toPontonDrg.setEnabled(b);
         back.setEnabled(b);
         tvFrame.setEnabled(b);
         tvBoom1.setEnabled(b);

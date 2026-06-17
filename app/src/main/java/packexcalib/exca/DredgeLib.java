@@ -11,6 +11,7 @@ import static packexcalib.exca.DataSaved.Lunghezza_Braccio;
 import static packexcalib.exca.DataSaved.Lunghezza_Pitch;
 import static packexcalib.exca.DataSaved.Lunghezza_Pontone;
 import static packexcalib.exca.DataSaved.Lunghezza_Roll;
+import static packexcalib.exca.DataSaved.Rope_Fixed_Offset;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.coordB1;
 import static packexcalib.exca.ExcavatorLib.coordB2;
@@ -18,7 +19,6 @@ import static packexcalib.exca.ExcavatorLib.coordST;
 import static packexcalib.exca.ExcavatorLib.coordinateDX;
 import static packexcalib.exca.ExcavatorLib.coordinateDY;
 import static packexcalib.exca.ExcavatorLib.coordinateDZ;
-
 import static packexcalib.exca.ExcavatorLib.hdt_BOOM;
 import static packexcalib.exca.ExcavatorLib.overturn;
 import static packexcalib.exca.ExcavatorLib.startXYZ;
@@ -77,7 +77,7 @@ public class DredgeLib {
             overturn = Math.abs(correctDredgeRoll) > 85.0d || Math.abs(correctDredgePitch) > 85.0d;
             coordB1 = Exca_Quaternion.endPoint(coordinateDY, correctDredgeBoom, correctDredgeRoll, Lunghezza_Braccio, hdt_BOOM);
             coordB2 = coordB1;
-            coordST = Exca_Quaternion.endPoint(coordB1, -90, correctDredgeRoll, Lunghezza_Fune, hdt_BOOM);
+            coordST = Exca_Quaternion.endPoint(coordB1, -90, correctDredgeRoll, Lunghezza_Fune+Rope_Fixed_Offset, hdt_BOOM);
             ExcavatorLib.bucketCoord = Exca_Quaternion.endPoint(coordST, -90, correctDredgeRoll, Altezza_Attrezzo, hdt_BOOM);
             ExcavatorLib.bucketRightCoord = bucketCoord;
             ExcavatorLib.bucketLeftCoord = bucketCoord;

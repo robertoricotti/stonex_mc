@@ -166,22 +166,23 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/botla"
-        app:layout_constraintTop_toBottomOf="@id/topla"
-        android:scrollbarSize="24dp"
+        android:fadeScrollbars="false"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbarFadeDuration="0"
-        android:fadeScrollbars="false">
+        android:scrollbarSize="24dp"
+        app:layout_constraintBottom_toTopOf="@id/botla"
+        app:layout_constraintTop_toBottomOf="@id/topla">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:fillViewport="true"
-                >
+                android:fillViewport="true">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -230,8 +231,8 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_marginHorizontal="20dp"
-                        android:padding="5dp"
                         android:background="@drawable/sfondo_bottone_trasparente"
+                        android:padding="5dp"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/drill_btn" />
 
@@ -240,12 +241,11 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_marginHorizontal="20dp"
-                        android:padding="5dp"
                         android:background="@drawable/sfondo_bottone_trasparente"
+                        android:padding="5dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/drag_btn"
-                        app:tint="@color/_____cancel_text"
-                        />
+                        app:tint="@color/_____cancel_text" />
 
 
                 </LinearLayout>
@@ -307,6 +307,7 @@
                     android:textStyle="bold|italic"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
                 <CheckBox
                     android:id="@+id/ckuse2dpoly"
                     android:layout_width="wrap_content"
@@ -460,11 +461,11 @@
                     android:layout_height="wrap_content"
                     android:focusableInTouchMode="false"
                     android:gravity="center"
-                    android:textStyle="bold|italic"
-                    app:layout_constraintTop_toBottomOf="@id/brake"
-                    android:textSize="22sp"
                     android:textAllCaps="false"
-                    android:textColor="@color/_____cancel_text" />
+                    android:textColor="@color/_____cancel_text"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintTop_toBottomOf="@id/brake" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
@@ -505,6 +506,155 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constr_Draga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="84dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="5dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/ckDrgStx"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
+                            android:text="STONEX DRG"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:textStyle="bold|italic" />
+
+                        <CheckBox
+                            android:id="@+id/ckDrgLieb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
+                            android:text="LIEBHERR"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:textStyle="bold|italic" />
+
+                        <CheckBox
+                            android:id="@+id/ckDrgSen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
+                            android:text="SENNEBOGEN"
+                            android:textColor="@color/_____cancel_text"
+                            android:textSize="18sp"
+                            android:textStyle="bold|italic" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/bg_gray" />
+                    <TextView
+                        android:id="@+id/toxyzDrg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="BODY ΔX ΔY ΔZ"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/toFrameDrg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="FRAME"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/toBoomDrg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="MAIN BOOM"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/toRopeDrg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="MAIN ROPE"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/toRope2Drg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="SECOND ROPE"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/toSleweDrg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="SLEW"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/toPontonDrg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="BARGE"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constr_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -527,19 +677,19 @@
                         android:id="@+id/lay_antmount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginVertical="5dp"
                         android:gravity="center"
-                        android:layout_marginVertical="5dp">
+                        android:orientation="horizontal">
 
                         <CheckBox
                             android:id="@+id/ckBody"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
                             android:text="ANTENNA AT BODY"
                             android:textColor="@color/_____cancel_text"
                             android:textSize="18sp"
-                            android:ems="12"
                             android:textStyle="bold|italic" />
 
                         <CheckBox
@@ -547,10 +697,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
                             android:text="ANTENNA AT MAST"
                             android:textColor="@color/_____cancel_text"
                             android:textSize="18sp"
-                            android:ems="12"
                             android:textStyle="bold|italic" />
 
 
@@ -565,19 +715,19 @@
                         android:id="@+id/lay_ant_orient"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginVertical="5dp"
                         android:gravity="center"
-                        android:layout_marginVertical="5dp">
+                        android:orientation="horizontal">
 
                         <CheckBox
                             android:id="@+id/ckAtLeft"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
                             android:text="LEFT OF THE MACHINE"
                             android:textColor="@color/_____cancel_text"
                             android:textSize="18sp"
-                            android:ems="12"
                             android:textStyle="bold|italic" />
 
                         <CheckBox
@@ -585,10 +735,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
                             android:text="FRONT OF THE MACHINE"
                             android:textColor="@color/_____cancel_text"
                             android:textSize="18sp"
-                            android:ems="12"
                             android:textStyle="bold|italic" />
 
                         <CheckBox
@@ -596,10 +746,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
                             android:text="RIGHT OF THE MACHINE"
                             android:textColor="@color/_____cancel_text"
                             android:textSize="18sp"
-                            android:ems="12"
                             android:textStyle="bold|italic" />
 
 
@@ -614,19 +764,19 @@
                         android:id="@+id/lay_drilmode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginVertical="5dp"
                         android:gravity="center"
-                        android:layout_marginVertical="5dp">
+                        android:orientation="horizontal">
 
                         <CheckBox
                             android:id="@+id/ckRock"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
                             android:text="ROCK DRILL MODE"
                             android:textColor="@color/_____cancel_text"
                             android:textSize="18sp"
-                            android:ems="12"
                             android:textStyle="bold|italic" />
 
                         <CheckBox
@@ -634,10 +784,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
                             android:text="JET GROUTING MODE"
                             android:textColor="@color/_____cancel_text"
                             android:textSize="18sp"
-                            android:ems="12"
                             android:textStyle="bold|italic" />
 
                         <CheckBox
@@ -645,10 +795,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/_____cancel_text"
+                            android:ems="12"
                             android:text="SOLAR FARM MODE"
                             android:textColor="@color/_____cancel_text"
                             android:textSize="18sp"
-                            android:ems="12"
                             android:textStyle="bold|italic" />
 
                     </LinearLayout>
@@ -662,12 +812,12 @@
                         android:id="@+id/ckAtBoomExca"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
                         android:buttonTint="@color/_____cancel_text"
+                        android:ems="12"
                         android:text="ANTENNA AT BOOM"
                         android:textColor="@color/_____cancel_text"
                         android:textSize="18sp"
-                        android:ems="12"
-                        android:layout_margin="15dp"
                         android:textStyle="bold|italic" />
 
                     <TextView
@@ -807,12 +957,12 @@
                         android:layout_marginVertical="5dp"
                         android:background="@color/light_yellow"
                         android:ems="15"
-                        android:visibility="gone"
                         android:gravity="center"
                         android:text="TILT ROTATOR"
                         android:textColor="@color/_____cancel_text"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
 
                     <TextView
@@ -907,6 +1057,7 @@
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/toCET05"
                         android:layout_width="wrap_content"
@@ -919,6 +1070,7 @@
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/toCET12"
                         android:layout_width="wrap_content"
@@ -931,6 +1083,7 @@
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/toRM7012"
                         android:layout_width="wrap_content"

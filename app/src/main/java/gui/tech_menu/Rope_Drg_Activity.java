@@ -1,10 +1,7 @@
 package gui.tech_menu;
 
-import static packexcalib.exca.Sensors_Decoder_Drill.RopeLen;
-import static services.CanSender.requestZeroedEnc;
-import static utils.MyTypes.SOLARFARM_MODE;
-import static utils.MyTypes.UNIVERSAL_ECU;
 
+import static packexcalib.exca.Sensors_Decoder_Dredge.Lunghezza_Fune;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,9 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.stx_dig.R;
-
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
@@ -27,21 +22,20 @@ import utils.MyData;
 import utils.MyDeviceManager;
 import utils.Utils;
 
-public class DrillEncoder extends BaseClass {
-    TextView b2l, distVal;
+public class Rope_Drg_Activity extends BaseClass {
+    TextView b2l, distVal,txtOffset;
     CheckBox ckOff, ckClock, ckRev;
-    EditText diamVal;
+    EditText diamVal,fixedOff;
     Button offsetSetZero;
     ImageView save, exit;
     int indexMachineSelected;
     CustomNumberDialog numberDialog;
     CustomNumberDialogFtIn numberDialogFtIn;
     int indexMeasure;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drill_encoder);
+        setContentView(R.layout.activity_rope_drg);
         findView();
         init();
         onClick();
@@ -53,6 +47,8 @@ public class DrillEncoder extends BaseClass {
         b2l = findViewById(R.id.b2l);
         distVal = findViewById(R.id.distVal);
         diamVal = findViewById(R.id.diamVal);
+        txtOffset=findViewById(R.id.txtOffset);
+        fixedOff = findViewById(R.id.fixedOff);
         ckOff = findViewById(R.id.cbxOff);
         ckClock = findViewById(R.id.cbxLeft);
         ckRev = findViewById(R.id.cbxRight);
@@ -73,9 +69,11 @@ public class DrillEncoder extends BaseClass {
                 numberDialog = new CustomNumberDialog(this, -1);
             }
 
-            diamVal.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "Rotary_Diam")));
+            diamVal.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "Diametro_Tamburo")));
+            fixedOff.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "Rope_Fixed_Offset")));
             b2l.setText("WHEEL DIAMETER " + Utils.getMetriSimbol());
-            int mountPos = MyData.get_Int("M" + indexMachineSelected + "Rotary_Mount");
+            txtOffset.setText("ROPE OFFSET "+Utils.getMetriSimbol());
+            int mountPos = MyData.get_Int("M" + indexMachineSelected + "Pos_ENCODER");
             switch (mountPos) {
                 case 0:
                     ckOff.setChecked(true);
@@ -94,46 +92,21 @@ public class DrillEncoder extends BaseClass {
 
     private void onClick() {
         offsetSetZero.setOnLongClickListener(view -> {
-            if(DataSaved.Drilling_Mode == SOLARFARM_MODE){
-                switch (DataSaved.isCanOpen){
-                    case UNIVERSAL_ECU :
-                        requestZeroedEnc=1;
-                        break;
 
-                    default:
-
-                        MyDeviceManager.CanWrite(true, 0, 0x609, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException ignored) {
-
-                        }
-                        MyDeviceManager.CanWrite(true, 0, 0x609, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
-
-                        break;
-                }
-
-            }else {
                 MyDeviceManager.CanWrite(true, 0, 0x610, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException ignored) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ignored) {
 
-                }
-                MyDeviceManager.CanWrite(true, 0, 0x610, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
-                MyDeviceManager.CanWrite(true, 0, 0x60F, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException ignored) {
-
-                }
-                MyDeviceManager.CanWrite(true, 0, 0x60F, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
             }
+            MyDeviceManager.CanWrite(true, 0, 0x610, 8, new byte[]{0x23, 0x10, 0x10, 0x01, 0x73, 0x61, 0x76, 0x65});
+
+
             return true;
         });
         save.setOnClickListener((View v) -> {
             if (indexMeasure == 4 || indexMeasure == 5) {
-                if (!diamVal.getText().toString().contains("'")) {
+                if (!diamVal.getText().toString().contains("'")&&!fixedOff.getText().toString().contains("'")) {
                     new CustomToast(this, "INPUT ERROR!!!").show_error();
                 } else {
                     exit.setEnabled(false);
@@ -143,7 +116,7 @@ public class DrillEncoder extends BaseClass {
                     finish();
                 }
             } else {
-                if (!diamVal.getText().toString().matches("-?\\d+(\\.\\d+)?")) {
+                if (!diamVal.getText().toString().matches("-?\\d+(\\.\\d+)?")||!fixedOff.getText().toString().matches("-?\\d+(\\.\\d+)?")) {
                     new CustomToast(this, "INPUT ERROR!!!").show_error();
                 } else {
                     exit.setEnabled(false);
@@ -153,6 +126,9 @@ public class DrillEncoder extends BaseClass {
                     finish();
                 }
             }
+
+
+
         });
 
         exit.setOnClickListener((View v) -> {
@@ -170,12 +146,21 @@ public class DrillEncoder extends BaseClass {
                     numberDialog.show(diamVal);
             }
         });
+        fixedOff.setOnClickListener(view -> {
+            if (indexMeasure == 4 || indexMeasure == 5) {
+                if (!numberDialogFtIn.dialog.isShowing())
+                    numberDialogFtIn.show(fixedOff);
+            } else {
+                if (!numberDialog.dialog.isShowing())
+                    numberDialog.show(fixedOff);
+            }
+        });
     }
 
     private void onCheckedChange() {
         ckOff.setOnCheckedChangeListener((CompoundButton c, boolean b) -> {
             if (ckOff.isChecked()) {
-                DataSaved.lrRotary = 0;
+                DataSaved.Pos_ENCODER = 0;
                 ckClock.setChecked(false);
                 ckRev.setChecked(false);
             }
@@ -183,7 +168,7 @@ public class DrillEncoder extends BaseClass {
 
         ckClock.setOnCheckedChangeListener((CompoundButton c, boolean b) -> {
             if (ckClock.isChecked()) {
-                DataSaved.lrRotary = 1;
+                DataSaved.Pos_ENCODER = 1;
                 ckOff.setChecked(false);
                 ckRev.setChecked(false);
             }
@@ -191,7 +176,7 @@ public class DrillEncoder extends BaseClass {
 
         ckRev.setOnCheckedChangeListener((CompoundButton c, boolean b) -> {
             if (ckRev.isChecked()) {
-                DataSaved.lrRotary = -1;
+                DataSaved.Pos_ENCODER = -1;
                 ckOff.setChecked(false);
                 ckClock.setChecked(false);
             }
@@ -201,7 +186,7 @@ public class DrillEncoder extends BaseClass {
 
     public void updateUI() {
         try {
-            distVal.setText(Utils.readSensorCalibration(String.valueOf(RopeLen)));
+            distVal.setText(Utils.readSensorCalibration(String.valueOf(Lunghezza_Fune)));
         } catch (Exception e) {
             distVal.setText("Error");
         }
@@ -218,11 +203,14 @@ public class DrillEncoder extends BaseClass {
         if (ckRev.isChecked()) {
             mounPos = -1;
         }
-        DataSaved.lrRotary = mounPos;
-        MyData.push("M" + indexMachineSelected + "Rotary_Mount", String.valueOf(mounPos));
+        DataSaved.Pos_ENCODER = mounPos;
+        MyData.push("M" + indexMachineSelected + "Pos_ENCODER", String.valueOf(mounPos));
 
-        MyData.push("M" + indexMachineSelected + "Rotary_Diam", Utils.writeMetri(diamVal.getText().toString()));
-        DataSaved.Rotary_Diam = Double.parseDouble(Utils.writeMetri(diamVal.getText().toString()));
+        MyData.push("M" + indexMachineSelected + "Diametro_Tamburo", Utils.writeMetri(diamVal.getText().toString()));
+        DataSaved.Diametro_Tamburo = Double.parseDouble(Utils.writeMetri(diamVal.getText().toString()));
+
+        MyData.push("M" + indexMachineSelected + "Rope_Fixed_Offset", Utils.writeMetri(fixedOff.getText().toString()));
+        DataSaved.Rope_Fixed_Offset = Double.parseDouble(Utils.writeMetri(fixedOff.getText().toString()));
     }
 
 
