@@ -50,9 +50,9 @@ public class DredgeLib {
 
         try {
             startXYZ = new double[]{NmeaListener.Est1, NmeaListener.Nord1, NmeaListener.Quota1};
-            correctDredgePitch = Offset_Applier.realPitch(DataSaved.offsetPitch);//dato da utilizzare nel software già offsettato
-            correctDredgeRoll = Offset_Applier.realRoll(DataSaved.offsetRoll);
-            correctDredgeBoom = Offset_Applier.realBoom1(DataSaved.offsetBoom1);
+            correctDredgePitch = Offset_Applier.realPitch_Drg(DataSaved.offsetPitch);//dato da utilizzare nel software già offsettato
+            correctDredgeRoll = Offset_Applier.realRoll_Drg(DataSaved.offsetRoll);
+            correctDredgeBoom = Offset_Applier.realBoom_Drg(DataSaved.offsetBoom1);
             double hdt0 = ((NmeaListener.mch_Orientation + DataSaved.deltaGPS2) % 360 + 360) % 360;
             double hdtR = ((hdt0 + 90) % 360 + 360) % 360;
 

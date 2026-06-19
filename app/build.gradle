@@ -88,13 +88,14 @@ android {
 
     productFlavors {
         gen1 {
-            getIsDefault().set(true)
+
             dimension "generation"
             applicationIdSuffix ".gen1"
             versionNameSuffix "-GEN1"
         }
 
         gen2 {
+            getIsDefault().set(true)
             dimension "generation"
             applicationIdSuffix ".gen2"
             versionNameSuffix "-GEN2"
@@ -136,7 +137,11 @@ android {
         }
     }
 }
-
+androidComponents {
+    beforeVariants(selector().withBuildType("debug")) { variantBuilder ->
+        variantBuilder.enable = false
+    }
+}
 dependencies {
     implementation 'androidx.activity:activity-ktx:1.13.0'
 

@@ -1,8 +1,13 @@
 package gui.tech_menu;
 
+import static services.CanService.BraccioCon;
+import static services.CanService.CarroCon;
 import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.LIEBHERR_CRANE;
+import static utils.MyTypes.SENNEBOGHEN;
+import static utils.MyTypes.STONEX_SENSORS;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -43,10 +48,10 @@ import utils.Utils;
 public class Boom_Drg_Activity extends BaseClass {
     EditText lengthBoom1;
     CheckBox off, left, right;
-    TextView boom1Angle, boom1OffsetAngle, textBoom1, border;
+    TextView boom1Angle, boom1OffsetAngle, textBoom1, border,headerr;
     Button minusOffset, plusOffset, setOffset;
     ImageView save, esc;
-    ImageView img_hiddenpin;
+    ImageView img_hiddenpin,stato;
 
 
     int indexMachineSelected, count = 0;
@@ -75,6 +80,8 @@ public class Boom_Drg_Activity extends BaseClass {
     }
 
     private void findView() {
+        headerr=findViewById(R.id.headerr);
+        stato=findViewById(R.id.stato);
         save = findViewById(R.id.save);
         esc = findViewById(R.id.exit);
         lengthBoom1 = findViewById(R.id.boom1Length);
@@ -100,6 +107,20 @@ public class Boom_Drg_Activity extends BaseClass {
 
     @SuppressLint("SetTextI18n")
     private void init() {
+        switch (DataSaved.Dredge_Interface_Type) {
+            case STONEX_SENSORS:
+                headerr.setText(getResources().getString(R.string.boom1_calibration) + " - id: 0x382h");
+                break;
+            case SENNEBOGHEN:
+                headerr.setText(getResources().getString(R.string.boom1_calibration) + " - id: 0x1C034333h");
+                break;
+
+            case LIEBHERR_CRANE:
+                headerr.setText(getResources().getString(R.string.boom1_calibration) + " - id: 0x18FF8380h");
+                break;
+
+
+        }
 
         dialogHiddenPinCalc = new Dialog_HiddenPin_Calc(this);
         indexMachineSelected = MyData.get_Int("MachineSelected");
@@ -168,6 +189,7 @@ public class Boom_Drg_Activity extends BaseClass {
             startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
             finish();
         });
+        ////
 
         minusOffset.setOnClickListener((View v) -> {
             DataSaved.offsetBoom1 -= 0.05;
@@ -264,6 +286,11 @@ public class Boom_Drg_Activity extends BaseClass {
 
     @SuppressLint("DefaultLocale")
     public void updateUI() {
+        if (BraccioCon) {
+            stato.setImageResource(R.drawable.sfondo_bottone_selezionato);
+        } else {
+            stato.setImageResource(R.drawable.sfondo_auto_enabled);
+        }
         if (minusPressed && plusPressed) {
             count++;
             if (count > 40) {

@@ -109,6 +109,7 @@ import gui.projects.Remote_Activity;
 import gui.projects.Usb_Project_Nova;
 import gui.tech_menu.Boom1Calib;
 import gui.tech_menu.Boom2Calib;
+import gui.tech_menu.Boom_Drg_Activity;
 import gui.tech_menu.CanOpenTSM;
 import gui.tech_menu.DampingActivity;
 import gui.tech_menu.DrillEncoder;
@@ -123,7 +124,9 @@ import gui.tech_menu.Mast_Antenna;
 import gui.tech_menu.NetworkConfigSettings;
 import gui.tech_menu.Nuova_Blade_Calib;
 import gui.tech_menu.Nuova_Machine_Settings;
+import gui.tech_menu.Rope_2_Drg_Activity;
 import gui.tech_menu.Rope_Drg_Activity;
+import gui.tech_menu.Slew_Drg_Activity;
 import gui.tech_menu.StickCalib;
 import gui.tech_menu.TiltCalib;
 import gui.tech_menu.Tilt_Blade;
@@ -824,6 +827,12 @@ git push
             ((Frame_Drg_Activity) activity).updateUI();
         }else if (activity instanceof Rope_Drg_Activity) {
             ((Rope_Drg_Activity) activity).updateUI();
+        }else if (activity instanceof Rope_2_Drg_Activity) {
+            ((Rope_2_Drg_Activity) activity).updateUI();
+        }else if (activity instanceof Slew_Drg_Activity) {
+            ((Slew_Drg_Activity) activity).updateUI();
+        }else if (activity instanceof Boom_Drg_Activity) {
+            ((Boom_Drg_Activity) activity).updateUI();
         }
 
     }

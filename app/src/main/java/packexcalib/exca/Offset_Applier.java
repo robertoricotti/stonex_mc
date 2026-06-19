@@ -13,13 +13,25 @@ import static packexcalib.exca.Sensors_Decoder.Deg_roll;
 import static packexcalib.exca.Sensors_Decoder.Deg_stick;
 import static packexcalib.exca.Sensors_Decoder.Deg_tilt;
 import static packexcalib.exca.Sensors_Decoder.V_Laser;
+import static packexcalib.exca.Sensors_Decoder_Dredge.Angolo_Braccio_Dredge;
+import static packexcalib.exca.Sensors_Decoder_Dredge.Angolo_Pitch_Dredge;
+import static packexcalib.exca.Sensors_Decoder_Dredge.Angolo_Roll_Dredge;
 import static utils.MyTypes.EXCAVATOR;
 
 public class Offset_Applier {
 
     public static double correctStick, mcorrectStrick;
     public static boolean dbAlert = false;
+    public static double realBoom_Drg(double offset) {
+        double a;
+        double d = Angolo_Braccio_Dredge;
+        a = d - offset;
+        a = (a < -179.99) ? a + 360.00 :
+                (a > 179.99) ? a - 360.00 :
+                a;
+        return a;
 
+    }
     public static double realBoom1(double offset) {
         double a;
         double d = Deg_boom1;
@@ -137,6 +149,21 @@ public class Offset_Applier {
     public static double realPitch(double offset) {
         double a;
         double d = Deg_pitch;
+        a = (d - offset);
+
+        return a;
+    }
+    public static double realRoll_Drg(double offset) {
+        double a;
+        double d = Angolo_Roll_Dredge;
+        a = (d - offset);
+
+        return a;
+    }
+
+    public static double realPitch_Drg(double offset) {
+        double a;
+        double d = Angolo_Pitch_Dredge;
         a = (d - offset);
 
         return a;

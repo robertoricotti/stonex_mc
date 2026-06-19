@@ -32,12 +32,15 @@ public class DataSaved {
     public static int Pos_FRAME;//vedi exca
     public static int Pos_BOOM;//vedi exca
     public static int Pos_ENCODER;//1=clock 0=off -1=reverse
+    public static int Pos_ENCODER_2;//1=clock 0=off -1=reverse
     public static int Pos_SLEW;//1=clock 0=off -1=reverse
     public static double Diametro_Tamburo;//ruota sulla quale è montato encoder Fune id 0x190
+    public static double Diametro_Tamburo_2;//ruota sulla quale è montato encoder Fune id 0x18E
     public static double Diametro_Ralla;//diametro della ralla sulla quale legge encoder 0x18F
     public static double Diametro_Ruotino_Dredge;//ruota sulla quale è montato encoder Fune id 0x18F
     public static double Lunghezza_Pitch;
     public static double Rope_Fixed_Offset;
+    public static double Rope_Fixed_Offset_2;
     public static double Lunghezza_Roll;
     public static double Lunghezza_Braccio;
     public static double Altezza_Attrezzo;

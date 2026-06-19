@@ -180,7 +180,7 @@ public class CPCanHelper {
                         Log.e("CPCanHelper", e.toString() + "  APOLLO2_12_PRO");
                     }
                 } else if (!CPCommConfig.isUseSocketCanService() && CPCommConfig.isUseMcuCanService()) {
-                    //resto APOLLO10
+                    //resto APOLLO10 ,7 ,MEGA
                     try {
                         mProxy = new CPVxProtocolProxy();
                         mProxy.setCANBaudrate(DataSaved.boudrateCAN1, DataSaved.boudrateCAN2);

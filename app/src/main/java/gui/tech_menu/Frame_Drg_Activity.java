@@ -1,5 +1,11 @@
 package gui.tech_menu;
 
+import static services.CanService.CarroCon;
+import static services.CanService.SlewCon;
+import static utils.MyTypes.LIEBHERR_CRANE;
+import static utils.MyTypes.SENNEBOGHEN;
+import static utils.MyTypes.STONEX_SENSORS;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,9 +48,9 @@ public class Frame_Drg_Activity extends BaseClass {
 
     EditText lengthPitch, lengthRoll;
     CheckBox off, fwd, bwd, left, right;
-    TextView pitchAngle, pitchOffsetAngle, rollAngle, rollOffsetAngle, textPitchL, textRollL, tempHDT;
+    TextView pitchAngle, pitchOffsetAngle, rollAngle, rollOffsetAngle, textPitchL, textRollL, tempHDT, headerr;
     Button minusOffsetPitch, plusOffsetPitch, setOffsetPitch, minusOffsetRoll, plusOffsetRoll, setOffsetRoll;
-    ImageView infoMount;
+    ImageView infoMount, stato;
     ImageView save, esc;
     int countZero, countZeroP;
     boolean minusPressedP, plusPressedP, minusPressedR, plusPressedR;
@@ -57,6 +63,7 @@ public class Frame_Drg_Activity extends BaseClass {
     int indexMeasure = 0;
 
     PopupImageDialog mount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +80,8 @@ public class Frame_Drg_Activity extends BaseClass {
     }
 
     private void findView() {
+        headerr = findViewById(R.id.headerr);
+        stato = findViewById(R.id.stato);
         save = findViewById(R.id.save);
         esc = findViewById(R.id.exit);
         lengthPitch = findViewById(R.id.pitchLength);
@@ -102,6 +111,7 @@ public class Frame_Drg_Activity extends BaseClass {
     @SuppressLint("SetTextI18n")
     private void init() {
 
+
         mount = new PopupImageDialog(this, R.layout.popup_frame_mount);
 
         indexMachineSelected = MyData.get_Int("MachineSelected");
@@ -112,7 +122,6 @@ public class Frame_Drg_Activity extends BaseClass {
         numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
 
         numberDialog = new CustomNumberDialog(this, -1);
-
 
 
         lengthPitch.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "Lunghezza_Pitch")));
@@ -139,6 +148,18 @@ public class Frame_Drg_Activity extends BaseClass {
                 left.setChecked(true);
                 break;
         }
+        switch (DataSaved.Dredge_Interface_Type) {
+            case STONEX_SENSORS:
+            case SENNEBOGHEN:
+                headerr.setText(getResources().getString(R.string.picth_and_roll_calibration) + " - id: 0x381h");
+                break;
+
+            case LIEBHERR_CRANE:
+                headerr.setText(getResources().getString(R.string.picth_and_roll_calibration) + " - id: 0x18FF8380h");
+                break;
+
+
+        }
     }
 
     @SuppressLint("DefaultLocale")
@@ -146,7 +167,11 @@ public class Frame_Drg_Activity extends BaseClass {
 
 
         try {
-
+            if (CarroCon) {
+                stato.setImageResource(R.drawable.sfondo_bottone_selezionato);
+            } else {
+                stato.setImageResource(R.drawable.sfondo_auto_enabled);
+            }
             if (minusPressedR && plusPressedR) {
                 countZero++;
                 if (countZero > 40) {

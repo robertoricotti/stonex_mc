@@ -258,10 +258,13 @@ public class UpdateValuesService extends Service {
                     String Pos_FRAME = MyData.get_String("M" + i + "Pos_FRAME");
                     String Pos_BOOM = MyData.get_String("M" + i + "Pos_BOOM");
                     String Pos_ENCODER = MyData.get_String("M" + i + "Pos_ENCODER");
+                    String Pos_ENCODER_2 = MyData.get_String("M" + i + "Pos_ENCODER_2");
                     String Pos_SLEW = MyData.get_String("M" + i + "Pos_SLEW");
 
                     String Diametro_Tamburo = MyData.get_String("M" + i + "Diametro_Tamburo");
+                    String Diametro_Tamburo_2 = MyData.get_String("M" + i + "Diametro_Tamburo_2");
                     String Rope_Fixed_Offset = MyData.get_String("M" + i + "Rope_Fixed_Offset");
+                    String Rope_Fixed_Offset_2 = MyData.get_String("M" + i + "Rope_Fixed_Offset_2");
                     String Diametro_Ralla = MyData.get_String("M" + i + "Diametro_Ralla");
                     String Diametro_Ruotino_Dredge = MyData.get_String("M" + i + "Diametro_Ruotino_Dredge");
                     String Lunghezza_Pitch = MyData.get_String("M" + i + "Lunghezza_Pitch");
@@ -488,14 +491,23 @@ public class UpdateValuesService extends Service {
                     if (Pos_ENCODER == null) {
                         MyData.push("M"+i+"Pos_ENCODER","0");
                     }
+                    if (Pos_ENCODER_2 == null) {
+                        MyData.push("M"+i+"Pos_ENCODER_2","0");
+                    }
                     if (Pos_SLEW == null) {
                         MyData.push("M"+i+"Pos_SLEW","0");
                     }
                     if (Diametro_Tamburo == null) {
                         MyData.push("M"+i+"Diametro_Tamburo","0.0");
                     }
+                    if (Diametro_Tamburo_2 == null) {
+                        MyData.push("M"+i+"Diametro_Tamburo_2","0.0");
+                    }
                     if (Rope_Fixed_Offset == null) {
                         MyData.push("M"+i+"Rope_Fixed_Offset","0.0");
+                    }
+                    if (Rope_Fixed_Offset_2 == null) {
+                        MyData.push("M"+i+"Rope_Fixed_Offset_2","0.0");
                     }
                     if (Diametro_Ralla == null) {
                         MyData.push("M"+i+"Diametro_Ralla","0.0");
@@ -2202,6 +2214,11 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di Pos_ENCODER: " + e.getMessage());
                 }
                 try {
+                    DataSaved.Pos_ENCODER_2 = MyData.get_Int("M" + indexMach + "Pos_ENCODER_2");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Pos_ENCODER_2: " + e.getMessage());
+                }
+                try {
                     DataSaved.Pos_SLEW = MyData.get_Int("M" + indexMach + "Pos_SLEW");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Pos_SLEW: " + e.getMessage());
@@ -2212,9 +2229,19 @@ public class UpdateValuesService extends Service {
                     Log.e("Error", "Errore nell'inizializzazione di Diametro_Tamburo: " + e.getMessage());
                 }
                 try {
+                    DataSaved.Diametro_Tamburo_2 = MyData.get_Double("M" + indexMach + "Diametro_Tamburo_2");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Diametro_Tamburo_2: " + e.getMessage());
+                }
+                try {
                     DataSaved.Rope_Fixed_Offset = MyData.get_Double("M" + indexMach + "Rope_Fixed_Offset");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Rope_Fixed_Offset: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Rope_Fixed_Offset_2 = MyData.get_Double("M" + indexMach + "Rope_Fixed_Offset_2");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Rope_Fixed_Offset_2: " + e.getMessage());
                 }
                 try {
                     DataSaved.Diametro_Ralla = MyData.get_Double("M" + indexMach + "Diametro_Ralla");

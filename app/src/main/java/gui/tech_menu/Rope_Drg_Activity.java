@@ -2,6 +2,12 @@ package gui.tech_menu;
 
 
 import static packexcalib.exca.Sensors_Decoder_Dredge.Lunghezza_Fune;
+import static services.CanService.RopeCon;
+import static services.CanService.SlewCon;
+import static utils.MyTypes.LIEBHERR_CRANE;
+import static utils.MyTypes.SENNEBOGHEN;
+import static utils.MyTypes.STONEX_SENSORS;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,11 +29,11 @@ import utils.MyDeviceManager;
 import utils.Utils;
 
 public class Rope_Drg_Activity extends BaseClass {
-    TextView b2l, distVal,txtOffset;
+    TextView b2l, distVal,txtOffset,headerr;
     CheckBox ckOff, ckClock, ckRev;
     EditText diamVal,fixedOff;
     Button offsetSetZero;
-    ImageView save, exit;
+    ImageView save, exit,stato;
     int indexMachineSelected;
     CustomNumberDialog numberDialog;
     CustomNumberDialogFtIn numberDialogFtIn;
@@ -44,6 +50,8 @@ public class Rope_Drg_Activity extends BaseClass {
     }
 
     private void findView() {
+        stato=findViewById(R.id.stato);
+        headerr = findViewById(R.id.headerr);
         b2l = findViewById(R.id.b2l);
         distVal = findViewById(R.id.distVal);
         diamVal = findViewById(R.id.diamVal);
@@ -55,6 +63,30 @@ public class Rope_Drg_Activity extends BaseClass {
         offsetSetZero = findViewById(R.id.offsetSetZero);
         save = findViewById(R.id.save);
         exit = findViewById(R.id.exit);
+        switch (DataSaved.Dredge_Interface_Type) {
+            case STONEX_SENSORS:
+                headerr.setText("ROPE ENCODER CALIBRATION - id: 0x190h");
+                break;
+
+            case LIEBHERR_CRANE:
+                headerr.setText("ROPE ENCODER CALIBRATION - id: 0x18FF8080h");
+                diamVal.setVisibility(View.INVISIBLE);
+                b2l.setVisibility(View.INVISIBLE);
+                offsetSetZero.setVisibility(View.INVISIBLE);
+                fixedOff.setVisibility(View.INVISIBLE);
+                txtOffset.setVisibility(View.INVISIBLE);
+                break;
+
+            case SENNEBOGHEN:
+                headerr.setText("ROPE ENCODER CALIBRATION - id: 0x1F8h");
+                diamVal.setVisibility(View.INVISIBLE);
+                b2l.setVisibility(View.INVISIBLE);
+                offsetSetZero.setVisibility(View.INVISIBLE);
+                fixedOff.setVisibility(View.INVISIBLE);
+                txtOffset.setVisibility(View.INVISIBLE);
+                break;
+
+        }
 
     }
 
@@ -186,6 +218,11 @@ public class Rope_Drg_Activity extends BaseClass {
 
     public void updateUI() {
         try {
+            if(RopeCon){
+                stato.setImageResource(R.drawable.sfondo_bottone_selezionato);
+            }else {
+                stato.setImageResource(R.drawable.sfondo_auto_enabled);
+            }
             distVal.setText(Utils.readSensorCalibration(String.valueOf(Lunghezza_Fune)));
         } catch (Exception e) {
             distVal.setText("Error");

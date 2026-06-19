@@ -92,7 +92,7 @@ public class CanService extends Service {
     int dlc;
 
     //draga
-    public static boolean BraccioCon, RopeCon, CarroCon;
+    public static boolean BraccioCon, RopeCon, RopeCon_2, CarroCon, SlewCon;
 
     @Override
     public void onCreate() {
@@ -119,9 +119,11 @@ public class CanService extends Service {
         JD_Connected = false;
         KOM_Connected = false;
         CASE_Connected = false;
-        RopeCon=false;
-        BraccioCon=false;
-        CarroCon=false;
+        RopeCon = false;
+        RopeCon_2 = false;
+        BraccioCon = false;
+        CarroCon = false;
+        SlewCon = false;
 
         if (DataSaved.lrFrame != 0) {
             handler_frame.postDelayed(timeoutRunnable_frame, 3000);
@@ -155,11 +157,11 @@ public class CanService extends Service {
 
         handler_rotoTilt.postDelayed(timeoutRunnable_rotoTilt, 3000);
 
-        CarroConnesso.postDelayed(timeout_CarroConn,3000);
-        BraccioConnesso.postDelayed(timeout_BraccioConn,3000);
-        RopeConnesso.postDelayed(timeout_RopeConn,3000);
-
-
+        CarroConnesso.postDelayed(timeout_CarroConn, 3000);
+        BraccioConnesso.postDelayed(timeout_BraccioConn, 3000);
+        RopeConnesso.postDelayed(timeout_RopeConn, 3000);
+        Rope2Connesso.postDelayed(timeout_RopeConn2, 3000);
+        SlewConnesso.postDelayed(timeout_SlewConnesso, 3000);
 
 
         super.onCreate();
@@ -524,15 +526,17 @@ public class CanService extends Service {
                         break;
                     case DREDGE:
                         messaggiDraga(id);
-                        Sensors_Decoder_Dredge.decode(id,msg);
+                        Sensors_Decoder_Dredge.decode(id, msg);
                         break;
                 }
 
             }
 
             if (channel == 2) {
-                if (id == 0xCDA0103 || id == 0x0CDA01F1) {
-                    Log.w("PLUS1_KEY", id + "  " + dlc + "  " + Arrays.toString(msg) + "\n");
+
+                if (DataSaved.isWL == DREDGE) {
+                    messaggiDraga(id);
+                    Sensors_Decoder_Dredge.decode(id, msg);
                 }
                 //client.onCanFrameReceived(id>2047, channel, id, dlc, msg);
 
@@ -788,35 +792,58 @@ public class CanService extends Service {
         }
     }
 
-    private  void messaggiDraga(int id){
-        switch (id & 0x1FFFFFFF){
+    private void messaggiDraga(int id) {
+        switch (id & 0x1FFFFFFF) {
             case 0x381:
-                CarroCon=true;
+
                 CarroConnesso.removeCallbacks(timeout_CarroConn);
-                CarroConnesso.postDelayed(timeout_CarroConn,3000);
+                CarroConnesso.postDelayed(timeout_CarroConn, 3000);
                 break;
             case 0x18FF8380:
-                CarroCon=true;
-                BraccioCon=true;
+
+
+                SlewCon = true;
                 CarroConnesso.removeCallbacks(timeout_CarroConn);
-                CarroConnesso.postDelayed(timeout_CarroConn,3000);
+                CarroConnesso.postDelayed(timeout_CarroConn, 3000);
                 BraccioConnesso.removeCallbacks(timeout_BraccioConn);
-                BraccioConnesso.postDelayed(timeout_BraccioConn,3000);
+                BraccioConnesso.postDelayed(timeout_BraccioConn, 3000);
+                SlewConnesso.removeCallbacks(timeout_SlewConnesso);
+                SlewConnesso.postDelayed(timeout_SlewConnesso, 3000);
                 break;
 
             case 0x382:
-                BraccioCon=true;
+
                 BraccioConnesso.removeCallbacks(timeout_BraccioConn);
-                BraccioConnesso.postDelayed(timeout_BraccioConn,3000);
+                BraccioConnesso.postDelayed(timeout_BraccioConn, 3000);
                 break;
 
             case 0x190:
+
+
+                RopeConnesso.removeCallbacks(timeout_RopeConn);
+                RopeConnesso.postDelayed(timeout_RopeConn, 3000);
+                break;
+            case 0x18E:
+
+
+                Rope2Connesso.removeCallbacks(timeout_RopeConn2);
+                Rope2Connesso.postDelayed(timeout_RopeConn2, 3000);
+
+                break;
             case 0x18FF8080:
             case 0x1F8:
-                RopeCon=true;
-                RopeConnesso.removeCallbacks(timeout_RopeConn);
-                RopeConnesso.postDelayed(timeout_RopeConn,3000);
 
+                RopeConnesso.removeCallbacks(timeout_RopeConn);
+                RopeConnesso.postDelayed(timeout_RopeConn, 3000);
+
+                Rope2Connesso.removeCallbacks(timeout_RopeConn2);
+                Rope2Connesso.postDelayed(timeout_RopeConn2, 3000);
+                break;
+            case 0x18F:
+            case 0x1C044333:
+
+                SlewConnesso.removeCallbacks(timeout_SlewConnesso);
+                SlewConnesso.postDelayed(timeout_SlewConnesso, 3000);
                 break;
         }
     }
@@ -1083,6 +1110,21 @@ public class CanService extends Service {
         @Override
         public void run() {
             RopeCon = false;
+        }
+    };
+    private final Handler Rope2Connesso = new Handler();
+    private final Runnable timeout_RopeConn2 = new Runnable() {
+        @Override
+        public void run() {
+            RopeCon_2 = false;
+        }
+    };
+
+    private final Handler SlewConnesso = new Handler();
+    private final Runnable timeout_SlewConnesso = new Runnable() {
+        @Override
+        public void run() {
+            SlewCon = false;
         }
     };
 

@@ -3,8 +3,10 @@ package packexcalib.exca;
 import static packexcalib.exca.DataSaved.Diametro_Ralla;
 import static packexcalib.exca.DataSaved.Diametro_Ruotino_Dredge;
 import static packexcalib.exca.DataSaved.Diametro_Tamburo;
+import static packexcalib.exca.DataSaved.Diametro_Tamburo_2;
 import static packexcalib.exca.DataSaved.Pos_BOOM;
 import static packexcalib.exca.DataSaved.Pos_ENCODER;
+import static packexcalib.exca.DataSaved.Pos_ENCODER_2;
 import static packexcalib.exca.DataSaved.Pos_FRAME;
 import static packexcalib.exca.DataSaved.Pos_SLEW;
 import static packexcalib.exca.Sensors_Decoder_Drill.ropeLenSignedFromAbsolute;
@@ -12,6 +14,7 @@ import static packexcalib.exca.Sensors_Decoder_Drill.slewAngleDegFromZeroedEncod
 import static utils.MyTypes.LIEBHERR_CRANE;
 import static utils.MyTypes.SENNEBOGHEN;
 import static utils.MyTypes.STONEX_SENSORS;
+import static services.CanService.*;
 
 import android.util.Log;
 
@@ -28,14 +31,10 @@ public class Sensors_Decoder_Dredge {
     public static double Angolo_Fune_Dredge = 0d;
     public static double Angolo_Slew_Dredge;
     public static double Lunghezza_Fune;
-    public static double Angolo_Attrezzo_Dredge=0d;
+    public static double Angolo_Attrezzo_Dredge = 0d;
 
 
     public static double Lunghezza_Fune_2;
-
-
-
-
 
 
     public static void decode(int id, byte[] data) {
@@ -45,23 +44,34 @@ public class Sensors_Decoder_Dredge {
 
                     switch (id) {
                         case 0x381:
+                            CarroCon = true;
                             double[] out = TiltEncript.encriptTSM_Frame(data, Pos_FRAME);
                             Angolo_Pitch_Dredge = out[0];
                             Angolo_Roll_Dredge = out[1];
                             break;
                         case 0x382:
+                            BraccioCon = true;
                             Angolo_Braccio_Dredge = TiltEncript.encriptTSM_Boom(data, Pos_BOOM)[0];
                             break;
                         case 0x18F:
+                            SlewCon = true;
                             // Encoder connected 8192 count per revolution FULL SCALE= 0x20000000(536870912)
                             long revolutionF = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]});
                             Angolo_Slew_Dredge = slewAngleDegFromZeroedEncoder(revolutionF, Diametro_Ruotino_Dredge, Diametro_Ralla, Pos_SLEW);
                             break;
                         case 0x190:
+                            RopeCon = true;
                             // Encoder connected 8192 count per revolution FULL SCALE= 0x20000000(536870912)
                             long revolution = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]});
                             Lunghezza_Fune = ropeLenSignedFromAbsolute(revolution, Diametro_Tamburo, Pos_ENCODER);
                             break;
+                        case 0x18E:
+                            RopeCon_2 = true;
+                            // Encoder connected 8192 count per revolution FULL SCALE= 0x20000000(536870912)
+                            long revolution2 = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]});
+                            Lunghezza_Fune_2 = ropeLenSignedFromAbsolute(revolution2, Diametro_Tamburo_2, Pos_ENCODER_2);
+                            break;
+
 
                     }
                     DredgeLib.Dredge();
@@ -79,8 +89,11 @@ public class Sensors_Decoder_Dredge {
                     switch (canId29) {
 
                         case LIEBHERR_MACHINE:
+                            CarroCon = true;
+                            BraccioCon = true;
+                            SlewCon = true;
                             // Byte 0-1: slewing gear angle, unsigned, 0.01 deg
-                            Angolo_Slew_Dredge = u16le(data, 0) * 0.01d;
+                            Angolo_Slew_Dredge = u16le(data, 0) * 0.01d * Pos_SLEW;
 
                             // Byte 2-3: boom angle, unsigned, 0.01 deg
                             Angolo_Braccio_Dredge = u16le(data, 2) * 0.01d;
@@ -100,12 +113,14 @@ public class Sensors_Decoder_Dredge {
                             break;
 
                         case LIEBHERR_ROPE_LENGTH:
+                            RopeCon = true;
+                            RopeCon_2 = true;
                             // Byte 0-1: rope_length_hg1, signed, 0.01 m.
                             // Conversione: raw * 0.01 m * 1000 = raw * 10 mm
-                            Lunghezza_Fune = s16le(data, 0) * 0.01d;
+                            Lunghezza_Fune = s16le(data, 0) * 0.01d*Pos_ENCODER;
 
                             // Se ti servono anche le altre due:
-                            Lunghezza_Fune_2 = s16le(data, 2) * 0.01d;
+                            Lunghezza_Fune_2 = s16le(data, 2) * 0.01d*Pos_ENCODER_2;
                             // double grabHeight_mm        = s16le(data, 4) * 10.0d;
                             break;
                     }
@@ -122,15 +137,18 @@ public class Sensors_Decoder_Dredge {
 
                     switch (canId) {
                         case 0x381:
+                            CarroCon = true;
                             double[] out = TiltEncript.encriptTSM_Frame(data, Pos_FRAME);
                             Angolo_Pitch_Dredge = out[0];
                             Angolo_Roll_Dredge = out[1];
                             break;
                         case 0x382:
+                            BraccioCon = true;
                             Angolo_Braccio_Dredge = TiltEncript.encriptTSM_Boom(data, Pos_BOOM)[0];
                             break;
 
                         case SENNEBOGEN_SLEW:
+                            SlewCon = true;
                             /*
                              * InterfacePositionData.sym:
                              * DisplayUppercarriageSlewAngle unsigned 48,16
@@ -141,7 +159,7 @@ public class Sensors_Decoder_Dredge {
                             double slewDegSigned = u16le(data, 6) * 0.01d - 180.0d;
 
                             // Coerente con Liebherr/local system: 0..360 deg
-                            Angolo_Slew_Dredge = normalizeDeg360(slewDegSigned);
+                            Angolo_Slew_Dredge = normalizeDeg360(slewDegSigned)* Pos_SLEW;
 
                             // Se invece vuoi il valore nativo Sennebogen -180..+180 circa:
                             // Angolo_Slew_Dredge = slewDegSigned;
@@ -153,10 +171,13 @@ public class Sensors_Decoder_Dredge {
                              * DisplayMainBoomAngle unsigned 0,16
                              * unit deg, factor 0.01, offset -200
                              */
+                            BraccioCon = true;
                             Angolo_Braccio_Dredge = u16le(data, 0) * 0.01d - 200.0d;
                             break;
 
                         case SENNEBOGEN_ROPE:
+                            RopeCon = true;
+                            RopeCon_2 = true;
                             /*
                              * InterfacePositionData_Machine.sym:
                              * u16_RopeLength1_cm unsigned 0,16 /u:cm
@@ -168,8 +189,8 @@ public class Sensors_Decoder_Dredge {
                             double ropeLength2_mm = u16le(data, 2) * 10.0d;
 
                             // Equivalente alla fune principale / hoist, da usare come Lunghezza_Fune
-                            Lunghezza_Fune = ropeLength1_mm * 0.001;
-                            Lunghezza_Fune_2 = ropeLength2_mm * 0.001;
+                            Lunghezza_Fune = ropeLength1_mm * 0.001*Pos_ENCODER;
+                            Lunghezza_Fune_2 = ropeLength2_mm * 0.001*Pos_ENCODER_2;
 
                             // Se ti serve anche la seconda:
                             // Lunghezza_Fune_2 = ropeLength2_mm;
