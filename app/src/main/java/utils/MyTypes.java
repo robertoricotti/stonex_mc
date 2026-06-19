@@ -63,5 +63,11 @@ public class MyTypes {
     public static final int SENNEBOGHEN=2;
 
 
+    public static final double PRIMA_MARCIA=1.0d;
+    public static final double SECONDA_MARCIA=0.5d;
+    public static final double QUARTA_MARCIA=0.25d;
+    public static final double SESTA_MARCIA=0.1666d;
+
+
 
 }

@@ -260,7 +260,7 @@ public class UpdateValuesService extends Service {
                     String Pos_ENCODER = MyData.get_String("M" + i + "Pos_ENCODER");
                     String Pos_ENCODER_2 = MyData.get_String("M" + i + "Pos_ENCODER_2");
                     String Pos_SLEW = MyData.get_String("M" + i + "Pos_SLEW");
-
+                    String MARCIA_DREDGE = MyData.get_String("M" + i + "MARCIA_DREDGE");
                     String Diametro_Tamburo = MyData.get_String("M" + i + "Diametro_Tamburo");
                     String Diametro_Tamburo_2 = MyData.get_String("M" + i + "Diametro_Tamburo_2");
                     String Rope_Fixed_Offset = MyData.get_String("M" + i + "Rope_Fixed_Offset");
@@ -502,6 +502,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (Diametro_Tamburo_2 == null) {
                         MyData.push("M"+i+"Diametro_Tamburo_2","0.0");
+                    }
+                    if (MARCIA_DREDGE == null) {
+                        MyData.push("M"+i+"MARCIA_DREDGE","1.0");
                     }
                     if (Rope_Fixed_Offset == null) {
                         MyData.push("M"+i+"Rope_Fixed_Offset","0.0");
@@ -2232,6 +2235,11 @@ public class UpdateValuesService extends Service {
                     DataSaved.Diametro_Tamburo_2 = MyData.get_Double("M" + indexMach + "Diametro_Tamburo_2");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Diametro_Tamburo_2: " + e.getMessage());
+                }
+                try {
+                    DataSaved.MARCIA_DREDGE = MyData.get_Double("M" + indexMach + "MARCIA_DREDGE");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di MARCIA_DREDGE: " + e.getMessage());
                 }
                 try {
                     DataSaved.Rope_Fixed_Offset = MyData.get_Double("M" + indexMach + "Rope_Fixed_Offset");

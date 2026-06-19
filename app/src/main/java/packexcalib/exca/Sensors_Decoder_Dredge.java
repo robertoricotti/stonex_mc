@@ -4,6 +4,7 @@ import static packexcalib.exca.DataSaved.Diametro_Ralla;
 import static packexcalib.exca.DataSaved.Diametro_Ruotino_Dredge;
 import static packexcalib.exca.DataSaved.Diametro_Tamburo;
 import static packexcalib.exca.DataSaved.Diametro_Tamburo_2;
+import static packexcalib.exca.DataSaved.MARCIA_DREDGE;
 import static packexcalib.exca.DataSaved.Pos_BOOM;
 import static packexcalib.exca.DataSaved.Pos_ENCODER;
 import static packexcalib.exca.DataSaved.Pos_ENCODER_2;
@@ -63,7 +64,7 @@ public class Sensors_Decoder_Dredge {
                             RopeCon = true;
                             // Encoder connected 8192 count per revolution FULL SCALE= 0x20000000(536870912)
                             long revolution = PLC_DataTypes_LittleEndian.byte_to_U32(new byte[]{data[0], data[1], data[2], data[3]});
-                            Lunghezza_Fune = ropeLenSignedFromAbsolute(revolution, Diametro_Tamburo, Pos_ENCODER);
+                            Lunghezza_Fune = ropeLenSignedFromAbsolute(revolution, Diametro_Tamburo, Pos_ENCODER)*MARCIA_DREDGE;
                             break;
                         case 0x18E:
                             RopeCon_2 = true;
@@ -117,7 +118,7 @@ public class Sensors_Decoder_Dredge {
                             RopeCon_2 = true;
                             // Byte 0-1: rope_length_hg1, signed, 0.01 m.
                             // Conversione: raw * 0.01 m * 1000 = raw * 10 mm
-                            Lunghezza_Fune = s16le(data, 0) * 0.01d*Pos_ENCODER;
+                            Lunghezza_Fune = s16le(data, 0) * 0.01d*Pos_ENCODER*MARCIA_DREDGE;
 
                             // Se ti servono anche le altre due:
                             Lunghezza_Fune_2 = s16le(data, 2) * 0.01d*Pos_ENCODER_2;
@@ -189,7 +190,7 @@ public class Sensors_Decoder_Dredge {
                             double ropeLength2_mm = u16le(data, 2) * 10.0d;
 
                             // Equivalente alla fune principale / hoist, da usare come Lunghezza_Fune
-                            Lunghezza_Fune = ropeLength1_mm * 0.001*Pos_ENCODER;
+                            Lunghezza_Fune = ropeLength1_mm * 0.001*Pos_ENCODER*MARCIA_DREDGE;
                             Lunghezza_Fune_2 = ropeLength2_mm * 0.001*Pos_ENCODER_2;
 
                             // Se ti serve anche la seconda:

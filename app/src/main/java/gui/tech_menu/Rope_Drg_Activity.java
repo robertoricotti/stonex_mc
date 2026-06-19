@@ -5,12 +5,17 @@ import static packexcalib.exca.Sensors_Decoder_Dredge.Lunghezza_Fune;
 import static services.CanService.RopeCon;
 import static services.CanService.SlewCon;
 import static utils.MyTypes.LIEBHERR_CRANE;
+import static utils.MyTypes.PRIMA_MARCIA;
+import static utils.MyTypes.QUARTA_MARCIA;
+import static utils.MyTypes.SECONDA_MARCIA;
 import static utils.MyTypes.SENNEBOGHEN;
+import static utils.MyTypes.SESTA_MARCIA;
 import static utils.MyTypes.STONEX_SENSORS;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,6 +23,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.PopupMenu;
+
 import com.example.stx_dig.R;
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
@@ -29,7 +37,7 @@ import utils.MyDeviceManager;
 import utils.Utils;
 
 public class Rope_Drg_Activity extends BaseClass {
-    TextView b2l, distVal,txtOffset,headerr;
+    TextView b2l, distVal,txtOffset,headerr,txtmarcia;
     CheckBox ckOff, ckClock, ckRev;
     EditText diamVal,fixedOff;
     Button offsetSetZero;
@@ -50,6 +58,7 @@ public class Rope_Drg_Activity extends BaseClass {
     }
 
     private void findView() {
+        txtmarcia=findViewById(R.id.txtmarcia);
         stato=findViewById(R.id.stato);
         headerr = findViewById(R.id.headerr);
         b2l = findViewById(R.id.b2l);
@@ -123,6 +132,42 @@ public class Rope_Drg_Activity extends BaseClass {
     }
 
     private void onClick() {
+        txtmarcia.setOnClickListener(view -> {
+            PopupMenu popupMenu = new PopupMenu(this, txtmarcia);
+
+            popupMenu.getMenu().add("1-Speed");
+            popupMenu.getMenu().add("2-Speed");
+            popupMenu.getMenu().add("4-Speed");
+            popupMenu.getMenu().add("6-Speed");
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                String selezione = item.getTitle().toString();
+
+
+                switch (selezione){
+                    case "1-Speed":
+                        DataSaved.MARCIA_DREDGE=PRIMA_MARCIA;
+                        MyData.push("M"+indexMachineSelected+"MARCIA_DREDGE",String.valueOf("1.0"));
+                        break;
+                    case "2-Speed":
+                        DataSaved.MARCIA_DREDGE=SECONDA_MARCIA;
+                        MyData.push("M"+indexMachineSelected+"MARCIA_DREDGE",String.valueOf("0.5"));
+                        break;
+                    case "4-Speed":
+                        DataSaved.MARCIA_DREDGE=QUARTA_MARCIA;
+                        MyData.push("M"+indexMachineSelected+"MARCIA_DREDGE",String.valueOf("0.25"));
+                        break;
+                    case "6-Speed":
+                        DataSaved.MARCIA_DREDGE=SESTA_MARCIA;
+                        MyData.push("M"+indexMachineSelected+"MARCIA_DREDGE",String.valueOf("0.1666"));
+                        break;
+                }
+
+                return true;
+            });
+
+            popupMenu.show();
+        });
         offsetSetZero.setOnLongClickListener(view -> {
 
                 MyDeviceManager.CanWrite(true, 0, 0x610, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
@@ -218,6 +263,17 @@ public class Rope_Drg_Activity extends BaseClass {
 
     public void updateUI() {
         try {
+            if (DataSaved.MARCIA_DREDGE==PRIMA_MARCIA){
+                txtmarcia.setText("1-Speed");
+            }else if (DataSaved.MARCIA_DREDGE==SECONDA_MARCIA){
+                txtmarcia.setText("2-Speed");
+            }else if (DataSaved.MARCIA_DREDGE==QUARTA_MARCIA){
+                txtmarcia.setText("4-Speed");
+            }else if (DataSaved.MARCIA_DREDGE==SESTA_MARCIA){
+                txtmarcia.setText("6-Speed");
+            }else {
+                txtmarcia.setText("Invalid");
+            }
             if(RopeCon){
                 stato.setImageResource(R.drawable.sfondo_bottone_selezionato);
             }else {
@@ -227,7 +283,7 @@ public class Rope_Drg_Activity extends BaseClass {
         } catch (Exception e) {
             distVal.setText("Error");
         }
-        ;
+
 
     }
 

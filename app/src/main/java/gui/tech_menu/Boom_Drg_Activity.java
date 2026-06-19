@@ -189,7 +189,7 @@ public class Boom_Drg_Activity extends BaseClass {
             startActivity(new Intent(getApplicationContext(), Nuova_Machine_Settings.class));
             finish();
         });
-        ////
+        //+++++
 
         minusOffset.setOnClickListener((View v) -> {
             DataSaved.offsetBoom1 -= 0.05;

@@ -34,6 +34,7 @@ public class DataSaved {
     public static int Pos_ENCODER;//1=clock 0=off -1=reverse
     public static int Pos_ENCODER_2;//1=clock 0=off -1=reverse
     public static int Pos_SLEW;//1=clock 0=off -1=reverse
+    public static double MARCIA_DREDGE;//moltiplicatore bozzello
     public static double Diametro_Tamburo;//ruota sulla quale è montato encoder Fune id 0x190
     public static double Diametro_Tamburo_2;//ruota sulla quale è montato encoder Fune id 0x18E
     public static double Diametro_Ralla;//diametro della ralla sulla quale legge encoder 0x18F
