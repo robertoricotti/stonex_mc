@@ -39,6 +39,7 @@ import gui.debug_ecu.Can_Msg_Debug;
 import gui.debug_ecu.Serial_Msg_Debug;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
+import gui.dialogs_and_toast.Dialog_Dredge_GNSS;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
@@ -71,6 +72,7 @@ public class ExcavatorChooserActivity extends BaseClass {
     Dialog_InfoApp dialogInfoApp;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
+    Dialog_Dredge_GNSS dialog_dredge_gnss;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,7 @@ public class ExcavatorChooserActivity extends BaseClass {
         dialogInfoApp = new Dialog_InfoApp(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
+        dialog_dredge_gnss=new Dialog_Dredge_GNSS(this);
 
     }
 
@@ -433,6 +436,10 @@ public class ExcavatorChooserActivity extends BaseClass {
             if (DataSaved.isWL == DRILL) {
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
+                }
+            } else if (DataSaved.isWL==DREDGE) {
+                if (!dialog_dredge_gnss.alertDialog.isShowing()) {
+                    dialog_dredge_gnss.show();
                 }
             } else {
                 if (!dialogGnssCoordinates.alertDialog.isShowing()) {

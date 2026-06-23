@@ -59,6 +59,7 @@ import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_CanBaud;
+import gui.dialogs_and_toast.Dialog_Dredge_GNSS;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_Wheel_Steer;
@@ -86,6 +87,7 @@ public class Nuova_Machine_Settings extends BaseClass {
     Dialog_CanBaud dialogCanBaud;
     Dialog_Swing_Boom dialogSwingBoom;
     Dialog_Wheel_Steer dialogWheelSteer;
+    Dialog_Dredge_GNSS dialog_dredge_gnss;
     LinearLayout linear_1, linear_2, linear_3, lay_drilmode, lay_antmount, lay_ant_orient;
     int small, bigg;
 
@@ -114,6 +116,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         dialogPassword = new DialogPassword(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
+        dialog_dredge_gnss=new Dialog_Dredge_GNSS(this);
         customQwertyDialog = new CustomQwertyDialog(this, null);
         dialogSwingBoom = new Dialog_Swing_Boom(this);
         dialogWheelSteer = new Dialog_Wheel_Steer(this);
@@ -351,6 +354,10 @@ public class Nuova_Machine_Settings extends BaseClass {
             if (DataSaved.isWL == DRILL) {
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
+                }
+            } else if (DataSaved.isWL==DREDGE) {
+                if (!dialog_dredge_gnss.alertDialog.isShowing()) {
+                    dialog_dredge_gnss.show();
                 }
             } else {
                 if (!dialogGnssCoordinates.alertDialog.isShowing()) {

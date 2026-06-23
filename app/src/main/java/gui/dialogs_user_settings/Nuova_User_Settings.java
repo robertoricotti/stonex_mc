@@ -3,6 +3,7 @@ package gui.dialogs_user_settings;
 import static drill_pile.gui.PickReport.getAllUtcOffsets;
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 
 import android.content.Intent;
@@ -27,6 +28,7 @@ import java.util.List;
 import gui.BaseClass;
 import gui.boot_and_choose.Activity_Home_Page;
 import gui.dialogs_and_toast.DialogPassword;
+import gui.dialogs_and_toast.Dialog_Dredge_GNSS;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
@@ -40,6 +42,7 @@ import utils.MyData;
 import utils.Utils;
 
 public class Nuova_User_Settings extends BaseClass {
+    Dialog_Dredge_GNSS dialog_dredge_gnss;
     List<UtcOffset> offsets;
     int selectedOffsetMinutes;
     // Variabili di supporto
@@ -101,6 +104,7 @@ public class Nuova_User_Settings extends BaseClass {
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogInfoApp = new Dialog_InfoApp(this);
+        dialog_dredge_gnss=new Dialog_Dredge_GNSS(this);
 
         tvMainfallValue = findViewById(R.id.tvMainfallValue);
         but_meno_mainfall = findViewById(R.id.but_meno_mainfall);
@@ -398,6 +402,10 @@ public class Nuova_User_Settings extends BaseClass {
             if (DataSaved.isWL == DRILL) {
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
+                }
+            } else if (DataSaved.isWL==DREDGE) {
+                if (!dialog_dredge_gnss.alertDialog.isShowing()) {
+                    dialog_dredge_gnss.show();
                 }
             } else {
                 if (!dialogGnssCoordinates.alertDialog.isShowing()) {

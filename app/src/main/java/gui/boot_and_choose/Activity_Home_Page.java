@@ -54,6 +54,7 @@ import gui.dialogs_and_toast.CloseAppDialog;
 import gui.dialogs_and_toast.CustomToast;
 import gui.dialogs_and_toast.DialogPassword;
 import gui.dialogs_and_toast.Dialog_Create_New_Prj;
+import gui.dialogs_and_toast.Dialog_Dredge_GNSS;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_InfoApp;
@@ -80,6 +81,7 @@ public class Activity_Home_Page extends BaseClass {
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
     Dialog_Drill_GNSS dialogDrillGnss;
     Dialog_To_DueDi dialogToDueDi;
+    Dialog_Dredge_GNSS dialog_dredge_gnss;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +157,7 @@ public class Activity_Home_Page extends BaseClass {
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
         dialogDrillGnss = new Dialog_Drill_GNSS(this);
         dialogToDueDi = new Dialog_To_DueDi(this);
+        dialog_dredge_gnss=new Dialog_Dredge_GNSS(this);
         close = findViewById(R.id.btn_1);
         progressBar = findViewById(R.id.progressBar);
         stringsStat = findViewById(R.id.stringastat);
@@ -273,6 +276,10 @@ public class Activity_Home_Page extends BaseClass {
             if (DataSaved.isWL == DRILL) {
                 if (!dialogDrillGnss.alertDialog.isShowing()) {
                     dialogDrillGnss.show();
+                }
+            } else if (DataSaved.isWL==DREDGE) {
+                if (!dialog_dredge_gnss.alertDialog.isShowing()) {
+                    dialog_dredge_gnss.show();
                 }
             } else {
                 if (!dialogGnssCoordinates.alertDialog.isShowing()) {

@@ -2,6 +2,8 @@ package gui.gps;
 
 import static packexcalib.gnss.CRS_Strings._NONE;
 import static services.CanSender.GNSS_MSG;
+import static utils.MyTypes.DREDGE;
+import static utils.MyTypes.DRILL;
 import static utils.MyTypes.S980;
 import static utils.MyTypes.SC600;
 import static utils.MyTypes.SMC;
@@ -58,6 +60,8 @@ import gui.dialogs_and_toast.CustomMenu;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomQwertyDialog;
 import gui.dialogs_and_toast.CustomToast;
+import gui.dialogs_and_toast.Dialog_Dredge_GNSS;
+import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.tech_menu.ExcavatorChooserActivity;
 import packexcalib.exca.DataSaved;
@@ -95,6 +99,8 @@ public class Nuovo_Gps extends BaseClass {
     Button defaultF, read0, read1, read2, read3, read4, read5, read6, read7, read8, read9, read10, read11, read12, read28, read38, readNet;
     Button write0, write1, write2, write3, write4, write5, write6, write7, write8, write9, write10, write11, write12, write28, write38, writeNet;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_Dredge_GNSS dialog_dredge_gnss;
+    Dialog_Drill_GNSS dialogDrillGnss;
     CustomQwertyDialog customQwertyDialog;
     CustomNumberDialog customNumberDialog;
     static boolean isRead0, isRead1, isRead2, isRead3, isRead4, isRead5, isRead6, isRead7, isRead8, isRead9, isRead10, isRead11, isRead12, isRead28, isRead38, isReadNet;
@@ -329,6 +335,8 @@ public class Nuovo_Gps extends BaseClass {
         isRead28 = false;
         isRead38 = false;
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
+        dialog_dredge_gnss=new Dialog_Dredge_GNSS(this);
+        dialogDrillGnss=new Dialog_Drill_GNSS(this);
         customNumberDialog = new CustomNumberDialog(this, 100);
         customQwertyDialog = new CustomQwertyDialog(this, null);
         ckHSL0.setText(MyDeviceManager.serialCom(1).replaceAll("/dev/", ""));
@@ -541,9 +549,25 @@ public class Nuovo_Gps extends BaseClass {
         });
         gpsStat.setOnClickListener(view -> {
             if (!showWebUI) {
-                if (!dialogGnssCoordinates.alertDialog.isShowing()) {
-                    dialogGnssCoordinates.show();
+                switch (DataSaved.isWL){
+                    case DREDGE :
+                        if (!dialog_dredge_gnss.alertDialog.isShowing()) {
+                            dialog_dredge_gnss.show();
+                        }
+                        break;
+
+                    case DRILL:
+                        if (!dialogDrillGnss.alertDialog.isShowing()) {
+                            dialogDrillGnss.show();
+                        }
+                        break;
+                    default:
+                        if (!dialogGnssCoordinates.alertDialog.isShowing()) {
+                            dialogGnssCoordinates.show();
+                        }
+                        break;
                 }
+
             }
         });
         debug.setOnClickListener(view -> {

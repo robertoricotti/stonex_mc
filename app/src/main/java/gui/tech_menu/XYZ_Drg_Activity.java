@@ -28,6 +28,7 @@ import com.example.stx_dig.R;
 import gui.BaseClass;
 import gui.dialogs_and_toast.CustomNumberDialog;
 import gui.dialogs_and_toast.CustomNumberDialogFtIn;
+import gui.dialogs_and_toast.Dialog_Dredge_GNSS;
 import gui.dialogs_and_toast.Dialog_Drill_GNSS;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import packexcalib.exca.DataSaved;
@@ -53,6 +54,8 @@ public class XYZ_Drg_Activity extends BaseClass {
     TextView tvX, tvY, tvZ, titolo;
     ImageView xp, xm, yp, ym, zp, zm, hp, hm;
     double myStep = 0.001;
+    Dialog_Dredge_GNSS dialog_dredge_gnss;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +76,7 @@ public class XYZ_Drg_Activity extends BaseClass {
         hp = findViewById(R.id.but_piu_h);
 
 
-        if (DataSaved.isWL ==DREDGE) {
+        if (DataSaved.isWL == DREDGE) {
             imgdwdx.setVisibility(View.VISIBLE);
             imgupsx.setVisibility(View.VISIBLE);
             imgupdx.setVisibility(View.VISIBLE);
@@ -106,8 +109,7 @@ public class XYZ_Drg_Activity extends BaseClass {
         numberDialogFtIn = new CustomNumberDialogFtIn(this, -1);
 
         numberDialog = new CustomNumberDialog(this, -1);
-
-
+        dialog_dredge_gnss = new Dialog_Dredge_GNSS(this);
         updateTxt();
         tvX.setText("ΔX " + Utils.getMetriSimbol());
         tvY.setText("ΔY " + Utils.getMetriSimbol());
@@ -115,7 +117,9 @@ public class XYZ_Drg_Activity extends BaseClass {
 
 
         gpsDebug.setOnClickListener(view -> {
-
+            if (!dialog_dredge_gnss.alertDialog.isShowing()) {
+                dialog_dredge_gnss.show();
+            }
         });
         update.setOnClickListener(view -> {
 
