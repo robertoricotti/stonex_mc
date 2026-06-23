@@ -167,7 +167,7 @@ public class VerticalTargetIndicatorView extends View {
         // Testo actual
         textPaint.setTextSize(18f);
         canvas.drawText(
-                Utils.readUnitOfMeasureLITE(String.valueOf(currentValue)),
+                Utils.readSensorCalibration(String.valueOf(currentValue)),
 
                 w - 1,
                 arrowY,
