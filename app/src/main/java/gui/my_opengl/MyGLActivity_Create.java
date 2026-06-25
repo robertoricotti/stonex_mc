@@ -4,6 +4,7 @@ import static gui.MyApp.folderPath;
 import static gui.my_opengl.My3DActivity.glVista3d;
 import static gui.my_opengl.My3DActivity.isPan;
 import static utils.MyTypes.EXCAVATOR;
+import static utils.MyTypes.DREDGE;
 
 import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
@@ -178,7 +179,7 @@ public class MyGLActivity_Create extends BaseClass {
         gl_2d3d = findViewById(R.id.gl_2d3d);
         gl_croce=findViewById(R.id.gl_croce);
 
-        if (DataSaved.isWL == EXCAVATOR) {
+        if (DataSaved.isWL == EXCAVATOR || DataSaved.isWL == DREDGE) {
             bucketEdgeL.setImageResource(R.drawable.benna_misura_sinistra);
             bucketEdgeC.setImageResource(R.drawable.benna_misura_cnt);
             bucketEdgeR.setImageResource(R.drawable.benna_misura_destra);

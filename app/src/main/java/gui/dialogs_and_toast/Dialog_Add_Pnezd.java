@@ -187,7 +187,7 @@ public class Dialog_Add_Pnezd {
             public void run() {
                 try {
                     pnezd_color.setBackgroundColor(setColor(MyData.get_String("lastColor")));
-                    if (!showingRecycler) {
+                    if (showingRecycler) {
                         recyclerView.setVisibility(View.VISIBLE);
                         customView.setVisibility(View.INVISIBLE);
                         save.setVisibility(View.INVISIBLE);

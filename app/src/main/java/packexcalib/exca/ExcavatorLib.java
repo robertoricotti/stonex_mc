@@ -1,12 +1,24 @@
 package packexcalib.exca;
 
 
+import static packexcalib.exca.DataSaved.Delta_X_Pontone;
+import static packexcalib.exca.DataSaved.Delta_Y_Pontone;
+import static packexcalib.exca.DataSaved.Delta_Z_Pontone;
 import static packexcalib.exca.DataSaved.L_Bucket;
+import static packexcalib.exca.DataSaved.L_Pitch;
+import static packexcalib.exca.DataSaved.L_Roll;
+import static packexcalib.exca.DataSaved.Larghezza_Pontone;
+import static packexcalib.exca.DataSaved.Lunghezza_Pitch;
+import static packexcalib.exca.DataSaved.Lunghezza_Pontone;
+import static packexcalib.exca.DataSaved.Lunghezza_Roll;
 import static packexcalib.exca.DataSaved.isTiltRotator;
 import static packexcalib.exca.DataSaved.piccolaBucket;
 import static packexcalib.exca.DataSaved.puntiProfilo;
+import static packexcalib.exca.DredgeLib.*;
+
 import static packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll;
 import static packexcalib.exca.Sensors_Decoder.ExtensionBoom;
+import static packexcalib.exca.Sensors_Decoder_Dredge.Angolo_Slew_Dredge;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
 import static utils.MyTypes.DREDGE;
@@ -114,6 +126,7 @@ public class ExcavatorLib {
             if (GPS_Enabled) {
                 if (DataSaved.Exca_Antenna_Mounting == 0) {
                     Execute_Normal();
+
                 } else {
                     Execute_Normal();
                 }
@@ -798,6 +811,22 @@ public class ExcavatorLib {
                                 break;
                         }
                     }
+
+                    if (L_Roll > 0) {
+                        ExcavatorLib.coordRoll = Exca_Quaternion.endPoint(coordinateDY, correctDredgeRoll, -correctDredgePitch, Lunghezza_Roll, hdtL);
+                    } else {
+                        ExcavatorLib.coordRoll = Exca_Quaternion.endPoint(coordinateDY, -correctDredgeRoll, correctDredgePitch, Lunghezza_Roll, hdtR);
+                    }
+
+                    if (L_Pitch > 0) {
+                        ExcavatorLib.coordPitch = Exca_Quaternion.endPoint(ExcavatorLib.coordRoll, -correctDredgePitch, -correctDredgeRoll, Lunghezza_Pitch, hdtReverse);
+                    } else {
+                        ExcavatorLib.coordPitch = Exca_Quaternion.endPoint(ExcavatorLib.coordRoll, correctDredgePitch, correctDredgeRoll, Lunghezza_Pitch, hdt0);
+                    }
+
+
+                    centroRalla = ExcavatorLib.coordPitch;
+                    calcolaPontone(hdt_BOOM, hdtL, hdtR, hdtReverse);
                     break;
                 case DOZER:
                 case DOZER_SIX:
@@ -1184,4 +1213,48 @@ public class ExcavatorLib {
         }
     }
 
+    private static void calcolaPontone(double hdt0, double hdtL, double hdtR, double hdtReverse) {
+
+        if (Lunghezza_Pontone <= 0.0d || Larghezza_Pontone <= 0.0d) {
+            resetPontone();
+            return;
+        }
+
+        double[] riferimentoPontone = Exca_Quaternion.endPoint(
+                centroRalla,
+                correctPitch - 90,
+                correctRoll,
+                Delta_Z_Pontone,
+                hdt0
+        );
+        topEdge = Exca_Quaternion.endPoint(riferimentoPontone, 0, 0, Delta_Y_Pontone, hdt0 - Angolo_Slew_Dredge);
+        spigolo_Asx = Exca_Quaternion.endPoint(topEdge, 0, 0, Delta_X_Pontone, hdtL - Angolo_Slew_Dredge);
+        spigolo_Adx = Exca_Quaternion.endPoint(spigolo_Asx, 0, 0, Larghezza_Pontone, hdtR - Angolo_Slew_Dredge);
+        spigolo_Bdx = Exca_Quaternion.endPoint(spigolo_Adx, 0, 0, Lunghezza_Pontone, hdtReverse - Angolo_Slew_Dredge);
+        spigolo_Bsx = Exca_Quaternion.endPoint(spigolo_Asx, 0, 0, Lunghezza_Pontone, hdtReverse - Angolo_Slew_Dredge);
+
+        spigolo_Asx_BOTTOM = new double[]{spigolo_Asx[0], spigolo_Asx[1], spigolo_Asx[2] - 2.0d};
+        spigolo_Adx_BOTTOM = new double[]{spigolo_Adx[0], spigolo_Adx[1], spigolo_Adx[2] - 2.0d};
+        spigolo_Bdx_BOTTOM = new double[]{spigolo_Bdx[0], spigolo_Bdx[1], spigolo_Bdx[2] - 2.0d};
+        spigolo_Bsx_BOTTOM = new double[]{spigolo_Bsx[0], spigolo_Bsx[1], spigolo_Bsx[2] - 2.0d};
+    }
+
+    private static void resetPontone() {
+        topEdge = new double[]{0, 0, 0};
+        spigolo_Asx = new double[]{0, 0, 0};
+        spigolo_Adx = new double[]{0, 0, 0};
+        spigolo_Bdx = new double[]{0, 0, 0};
+        spigolo_Bsx = new double[]{0, 0, 0};
+        spigolo_Asx_BOTTOM = new double[]{0, 0, 0};
+        spigolo_Adx_BOTTOM = new double[]{0, 0, 0};
+        spigolo_Bdx_BOTTOM = new double[]{0, 0, 0};
+        spigolo_Bsx_BOTTOM = new double[]{0, 0, 0};
+    }
+
+
+    private static double normalizeDeg360(double deg) {
+        double out = deg % 360.0d;
+        if (out < 0.0d) out += 360.0d;
+        return out;
+    }
 }

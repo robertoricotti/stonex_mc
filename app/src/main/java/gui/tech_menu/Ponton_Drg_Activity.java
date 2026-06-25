@@ -2,6 +2,7 @@ package gui.tech_menu;
 
 import static packexcalib.exca.DataSaved.Delta_X_Pontone;
 import static packexcalib.exca.DataSaved.Delta_Y_Pontone;
+import static packexcalib.exca.DataSaved.Delta_Z_Pontone;
 import static packexcalib.exca.DataSaved.Larghezza_Pontone;
 import static packexcalib.exca.DataSaved.Lunghezza_Pontone;
 import static packexcalib.exca.DataSaved.Unit_Of_Measure;
@@ -32,11 +33,11 @@ import utils.Utils;
 public class Ponton_Drg_Activity extends BaseClass {
     TextView headerr;
     ImageView save;
-    EditText larghezza,altezza,deltaX,deltaY;
+    EditText larghezza,altezza,deltaX,deltaY,deltaZ;
     ConstraintLayout panel3D;
     CustomNumberDialog customNumberDialog;
     CustomNumberDialogFtIn customNumberDialogFtIn;
-    double tempLarg,tempAlt,tempdX,tempdY;
+    double tempLarg,tempAlt,tempdX,tempdY,tempdZ;
     int machineSelected;
     PontonTopView pontonTopView;
 
@@ -75,6 +76,7 @@ public class Ponton_Drg_Activity extends BaseClass {
         altezza=findViewById(R.id.altezza);
         deltaX=findViewById(R.id.deltaX);
         deltaY=findViewById(R.id.deltaY);
+        deltaZ=findViewById(R.id.deltaZ);
         pontonTopView = new PontonTopView(this);
         panel3D.addView(pontonTopView, new ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
@@ -86,12 +88,14 @@ public class Ponton_Drg_Activity extends BaseClass {
         tempAlt= Lunghezza_Pontone;
         tempdX= Delta_X_Pontone;
         tempdY= Delta_Y_Pontone;
+        tempdZ= Delta_Z_Pontone;
 
         headerr.setText("BARGE DIMENSION "+Utils.getMetriSimbol());
         larghezza.setText(Utils.readSensorCalibration(String.valueOf(Larghezza_Pontone)));
         altezza.setText(Utils.readSensorCalibration(String.valueOf(Lunghezza_Pontone)));
         deltaX.setText(Utils.readSensorCalibration(String.valueOf(Delta_X_Pontone)));
         deltaY.setText(Utils.readSensorCalibration(String.valueOf(Delta_Y_Pontone)));
+        deltaZ.setText(Utils.readSensorCalibration(String.valueOf(Delta_Z_Pontone)));
         pontonTopView.setValues(
                 tempLarg,
                 tempAlt,
@@ -105,10 +109,12 @@ public class Ponton_Drg_Activity extends BaseClass {
             Lunghezza_Pontone=tempAlt;
             Delta_X_Pontone=tempdX;
             Delta_Y_Pontone=tempdY;
+            Delta_Z_Pontone=tempdZ;
             MyData.push("M"+machineSelected+"Larghezza_Pontone",String.valueOf(Larghezza_Pontone));
             MyData.push("M"+machineSelected+"Lunghezza_Pontone",String.valueOf(Lunghezza_Pontone));
             MyData.push("M"+machineSelected+"Delta_X_Pontone",String.valueOf(Delta_X_Pontone));
             MyData.push("M"+machineSelected+"Delta_Y_Pontone",String.valueOf(Delta_Y_Pontone));
+            MyData.push("M"+machineSelected+"Delta_Z_Pontone",String.valueOf(Delta_Z_Pontone));
            startActivity(new Intent(this,Nuova_Machine_Settings.class));
            finish();
         });
@@ -148,6 +154,15 @@ public class Ponton_Drg_Activity extends BaseClass {
                     customNumberDialog.show(deltaY);
             }
         });
+        deltaZ.setOnClickListener(view -> {
+            if (Unit_Of_Measure == 4 || Unit_Of_Measure == 5) {
+                if (!customNumberDialogFtIn.dialog.isShowing())
+                    customNumberDialogFtIn.show(deltaZ);
+            } else {
+                if (!customNumberDialog.dialog.isShowing())
+                    customNumberDialog.show(deltaZ);
+            }
+        });
     }
 
     private void updateValues(){
@@ -168,6 +183,11 @@ public class Ponton_Drg_Activity extends BaseClass {
         }
         try {
             tempdY=Double.parseDouble(Utils.writeMetri(deltaY.getText().toString()));
+        } catch (NumberFormatException e) {
+            new CustomToast(Ponton_Drg_Activity.this,e.getMessage()).show_error();
+        }
+        try {
+            tempdZ=Double.parseDouble(Utils.writeMetri(deltaZ.getText().toString()));
         } catch (NumberFormatException e) {
             new CustomToast(Ponton_Drg_Activity.this,e.getMessage()).show_error();
         }

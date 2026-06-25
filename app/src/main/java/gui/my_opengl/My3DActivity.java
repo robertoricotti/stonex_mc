@@ -63,6 +63,7 @@ import gui.dialogs_and_toast.DialogOffset_3D;
 import gui.dialogs_and_toast.Dialog_Add_Pnezd;
 import gui.dialogs_and_toast.Dialog_Blade_Wear;
 import gui.dialogs_and_toast.Dialog_CutFill_3D;
+import gui.dialogs_and_toast.Dialog_Dredge_GNSS;
 import gui.dialogs_and_toast.Dialog_Dredge_Tool_Measure;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_MapMode;
@@ -132,6 +133,7 @@ public class My3DActivity extends BaseClass {
     private final Handler no_touch_menu = new Handler();
     Dialog_MapMode dialogMapMode;
     Dialog_GNSS_Coordinates dialogGnssCoordinates;
+    Dialog_Dredge_GNSS dialog_dredge_gnss;
     Dialog_PRJ_Folder dialogPrjFolder;
     DialogColors dialogColors;
     DialogAudioSystem dialogAudioSystem;
@@ -303,6 +305,7 @@ public class My3DActivity extends BaseClass {
         allarmeAlt.setVisibility(View.GONE);
         dialogMapMode = new Dialog_MapMode(this);
         dialogGnssCoordinates = new Dialog_GNSS_Coordinates(this);
+        dialog_dredge_gnss = new Dialog_Dredge_GNSS(this);
         dialogPrjFolder = new Dialog_PRJ_Folder(this);
         dialogColors = new DialogColors(this);
         dialogAudioSystem = new DialogAudioSystem(this);
@@ -612,8 +615,14 @@ public class My3DActivity extends BaseClass {
         gl_gps.setOnClickListener(view -> {
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
-            if (!dialogGnssCoordinates.alertDialog.isShowing()) {
-                dialogGnssCoordinates.show();
+            if(DataSaved.isWL==DREDGE){
+                if (!dialog_dredge_gnss.alertDialog.isShowing()) {
+                    dialog_dredge_gnss.show();
+                }
+            }else {
+                if (!dialogGnssCoordinates.alertDialog.isShowing()) {
+                    dialogGnssCoordinates.show();
+                }
             }
         });
         gl_pnezd.setOnClickListener(view -> {

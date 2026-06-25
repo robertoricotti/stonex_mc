@@ -4,6 +4,7 @@ import static gui.my_opengl.My3DActivity.PNEZD_FUNCTION;
 import static gui.my_opengl.My3DActivity.glPoint;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.WHEELLOADER;
@@ -213,6 +214,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private void drawMachine() {
         switch (DataSaved.isWL) {
             case EXCAVATOR:
+            case DREDGE:
                 GL_DrawExca.draw(gl11);
                 break;
             case WHEELLOADER:

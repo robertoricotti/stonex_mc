@@ -1,6 +1,7 @@
 package services;
 
 import static packexcalib.exca.DataSaved.polylines;
+import static packexcalib.exca.DredgeLib.centroRalla;
 import static packexcalib.exca.ExcavatorLib.bucketCoord;
 import static packexcalib.exca.ExcavatorLib.bucketLeftCoord;
 import static packexcalib.exca.ExcavatorLib.bucketRightCoord;
@@ -8,6 +9,7 @@ import static packexcalib.exca.ExcavatorLib.hdt_LAMA;
 import static packexcalib.exca.ExcavatorLib.yawSensor;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
 import static utils.MyTypes.OEM_PROTO;
@@ -178,19 +180,42 @@ public class TriangleService extends Service {
                 try {
                     switch (DataSaved.isWL) {
                         case EXCAVATOR:
-                            DataSaved.glL_AnchorView = bucketCoord;//scegliere quale è il punto sul quale ancorare la vista GL
+                            DataSaved.glL_AnchorView = bucketCoord;
+
                             DataSaved.GL_Bucket_Coord = PuntiBenna.GLBucketCoord();
                             DataSaved.GL_BENNA = My_Benna.puntiBenna();
                             DataSaved.GL_ATTACCO = My_Benna.attacco();
                             DataSaved.GL_STICK = My_Stick.puntiStick();
+
                             if (DataSaved.lrBoom2 == 0) {
                                 DataSaved.GL_BOOM1 = My_Boom1.puntiBoom();
+                                DataSaved.GL_BOOM1_2 = null;
                             } else {
+                                DataSaved.GL_BOOM1 = null;
                                 DataSaved.GL_BOOM1_2 = My_Boom1_Boom2.puntiBoom();
                             }
-                            DataSaved.GL_FRAME_BASE = My_Frame.puntiFrame();
 
+                            DataSaved.GL_FRAME_BASE = buildScaledFrameForDraw(My_Frame.puntiFrame());
+                            autoScaleMachineFrameByBoom();
+                            break;
 
+                        case DREDGE:
+                            prepareDredgeFrameForDraw();
+
+                            DataSaved.glL_AnchorView = centroRalla;
+
+                            // IMPORTANTISSIMO:
+                            // in draga non devono restare geometrie escavatore vive/stale
+                            DataSaved.GL_Bucket_Coord = null;
+                            DataSaved.GL_BENNA = null;
+                            DataSaved.GL_ATTACCO = null;
+                            DataSaved.GL_STICK = null;
+                            DataSaved.GL_BOOM1 = null;
+                            DataSaved.GL_BOOM1_2 = null;
+
+                            // Solo frame/cabina/ralla/cingoli standard
+                            DataSaved.GL_FRAME_BASE = buildScaledFrameForDraw(My_Frame.puntiFrame());
+                            autoScaleMachineFrameByBoom();
                             break;
 
                         case WHEELLOADER:
@@ -1304,7 +1329,254 @@ public class TriangleService extends Service {
             orientamentoFreccia = normalize360(Math.toDegrees(Math.atan2(dN, dE)));
         }
     }
+    private static void prepareDredgeFrameForDraw() {
+        try {
+            /*
+             * Se DredgeLib.Dredge() viene già chiamata dal decoder CAN,
+             * questa chiamata non è strettamente obbligatoria.
+             * Però è utile perché forza il refresh anche quando cambia GNSS/HDT
+             * senza nuovo messaggio CAN.
+             */
+            packexcalib.exca.DredgeLib.Dredge();
 
+            /*
+             * Bridge DREDGE -> geometria standard frame escavatore.
+             * My_Frame.puntiFrame() legge da ExcavatorLib, non da DredgeLib.
+             */
+            ExcavatorLib.correctPitch = packexcalib.exca.DredgeLib.correctDredgePitch;
+            ExcavatorLib.correctRoll = packexcalib.exca.DredgeLib.correctDredgeRoll;
+
+            /*
+             * My_Frame usa coordinateDY come perno frame/boom.
+             * In DredgeLib coordinateDY è già stato popolato in ExcavatorLib
+             * perché lo importi staticamente lì.
+             */
+            ExcavatorLib.coordMiniPitch = ExcavatorLib.coordinateDY;
+
+            /*
+             * Se non hai roll dedicato del boom in draga, evita valori stale
+             * provenienti dall'escavatore.
+             */
+            packexcalib.exca.Sensors_Decoder.Deg_Boom_Roll = 0.0d;
+
+        } catch (Exception e) {
+            Log.e("TRI_DREDGE_FRAME", Log.getStackTraceString(e));
+        }
+    }
+    private static void autoScaleMachineFrameByBoom() {
+        try {
+            if (DataSaved.GL_FRAME_BASE == null || DataSaved.GL_FRAME_BASE.length <= 49) return;
+
+            /*
+             * Per DREDGE uso Lunghezza_Braccio.
+             * Per EXCAVATOR uso L_Boom1 + L_Boom2.
+             */
+            double boomLength;
+            if (DataSaved.isWL == DREDGE) {
+                boomLength = DataSaved.Lunghezza_Braccio;
+            } else if (DataSaved.isWL == EXCAVATOR) {
+                boomLength = DataSaved.L_Boom1 + Math.max(0.0d, DataSaved.L_Boom2);
+            } else {
+                return;
+            }
+
+            if (boomLength <= 0.0d) return;
+
+            /*
+             * Taratura:
+             * fino a circa 12 m resta uguale.
+             * sopra i 12 m cresce progressivamente.
+             */
+            float widthScale = clampFloat(
+                    (float) (1.0d + Math.max(0.0d, boomLength - 12.0d) / 30.0d),
+                    1.0f,
+                    1.75f
+            );
+
+            /*
+             * Allargo molto in larghezza, un po' meno in lunghezza.
+             */
+            float lengthScale = 1.0f + (widthScale - 1.0f) * 0.45f;
+
+            scaleFrameAroundRalla(widthScale, lengthScale);
+
+        } catch (Exception e) {
+            Log.e("FRAME_AUTOSCALE", Log.getStackTraceString(e));
+        }
+    }
+
+    private static void scaleFrameAroundRalla(float widthScale, float lengthScale) {
+        Point3DF[] frame = DataSaved.GL_FRAME_BASE;
+        if (frame == null || frame.length <= 49) return;
+
+        Point3DF center = frame[36]; // centro/ralla bassa
+        if (center == null) center = frame[35]; // fallback ralla alta
+        if (center == null) return;
+
+        /*
+         * Assi locali del carro ricavati dai punti cingolo/frame.
+         * Stessa logica che usiamo per pontone/fallback.
+         */
+        Point3DF sideAxis = null;
+        Point3DF forwardAxis = null;
+
+        if (frame[49] != null && frame[37] != null) {
+            sideAxis = frame[49].subtract(frame[37]).normalize();
+        }
+
+        if (sideAxis == null || sideAxis.length() < 0.0001f) {
+            sideAxis = new Point3DF(1f, 0f, 0f);
+        }
+
+        if (frame[38] != null && frame[37] != null) {
+            forwardAxis = frame[38].subtract(frame[37]).normalize();
+        }
+
+        if (forwardAxis == null || forwardAxis.length() < 0.0001f) {
+            forwardAxis = new Point3DF(0f, 1f, 0f);
+        }
+
+        Point3DF upAxis = cross(sideAxis, forwardAxis).normalize();
+        if (upAxis.length() < 0.0001f) {
+            upAxis = new Point3DF(0f, 0f, 1f);
+        }
+
+        /*
+         * Ricostruisco forward ortogonale, così evito deformazioni strane
+         * se i punti frame non sono perfettamente ortogonali.
+         */
+        forwardAxis = cross(upAxis, sideAxis).normalize();
+        if (forwardAxis.length() < 0.0001f) {
+            forwardAxis = new Point3DF(0f, 1f, 0f);
+        }
+
+        for (int i = 0; i < frame.length; i++) {
+            Point3DF p = frame[i];
+            if (p == null) continue;
+
+            Point3DF v = p.subtract(center);
+
+            float localSide = dot(v, sideAxis);
+            float localForward = dot(v, forwardAxis);
+            float localUp = dot(v, upAxis);
+
+            frame[i] = center
+                    .add(sideAxis.scale(localSide * widthScale))
+                    .add(forwardAxis.scale(localForward * lengthScale))
+                    .add(upAxis.scale(localUp));
+        }
+    }
+
+    private static float dot(Point3DF a, Point3DF b) {
+        return a.getX() * b.getX()
+                + a.getY() * b.getY()
+                + a.getZ() * b.getZ();
+    }
+
+    private static Point3DF cross(Point3DF a, Point3DF b) {
+        return new Point3DF(
+                a.getY() * b.getZ() - a.getZ() * b.getY(),
+                a.getZ() * b.getX() - a.getX() * b.getZ(),
+                a.getX() * b.getY() - a.getY() * b.getX()
+        );
+    }
+
+    private static float clampFloat(float value, float min, float max) {
+        return Math.max(min, Math.min(max, value));
+    }
+    public static Point3DF[] buildScaledFrameForDraw(Point3DF[] rawFrame) {
+        try {
+            if (rawFrame == null || rawFrame.length <= 49) return rawFrame;
+
+            if (DataSaved.isWL != EXCAVATOR && DataSaved.isWL != DREDGE) {
+                return rawFrame;
+            }
+
+            double boomLength;
+            if (DataSaved.isWL == DREDGE) {
+                boomLength = DataSaved.Lunghezza_Braccio;
+            } else {
+                boomLength = DataSaved.L_Boom1 + Math.max(0.0d, DataSaved.L_Boom2);
+            }
+
+            if (boomLength <= 0.0d) return rawFrame;
+
+            float widthScale = clampFloat(
+                    (float) (1.0d + Math.max(0.0d, boomLength - 12.0d) / 30.0d),
+                    1.0f,
+                    1.75f
+            );
+
+            float lengthScale = 1.0f + (widthScale - 1.0f) * 0.45f;
+
+            return scaledFrameCopy(rawFrame, widthScale, lengthScale);
+
+        } catch (Exception e) {
+            Log.e("FRAME_AUTOSCALE", Log.getStackTraceString(e));
+            return rawFrame;
+        }
+    }
+
+    private static Point3DF[] scaledFrameCopy(Point3DF[] rawFrame, float widthScale, float lengthScale) {
+        if (rawFrame == null || rawFrame.length <= 49) return rawFrame;
+
+        Point3DF center = rawFrame[36];
+        if (center == null) center = rawFrame[35];
+        if (center == null) return rawFrame;
+
+        Point3DF sideAxis = null;
+        Point3DF forwardAxis = null;
+
+        if (rawFrame[49] != null && rawFrame[37] != null) {
+            sideAxis = rawFrame[49].subtract(rawFrame[37]).normalize();
+        }
+
+        if (sideAxis == null || sideAxis.length() < 0.0001f) {
+            sideAxis = new Point3DF(1f, 0f, 0f);
+        }
+
+        if (rawFrame[38] != null && rawFrame[37] != null) {
+            forwardAxis = rawFrame[38].subtract(rawFrame[37]).normalize();
+        }
+
+        if (forwardAxis == null || forwardAxis.length() < 0.0001f) {
+            forwardAxis = new Point3DF(0f, 1f, 0f);
+        }
+
+        Point3DF upAxis = cross(sideAxis, forwardAxis).normalize();
+        if (upAxis.length() < 0.0001f) {
+            upAxis = new Point3DF(0f, 0f, 1f);
+        }
+
+        forwardAxis = cross(upAxis, sideAxis).normalize();
+        if (forwardAxis.length() < 0.0001f) {
+            forwardAxis = new Point3DF(0f, 1f, 0f);
+        }
+
+        Point3DF[] out = new Point3DF[rawFrame.length];
+
+        for (int i = 0; i < rawFrame.length; i++) {
+            Point3DF p = rawFrame[i];
+
+            if (p == null) {
+                out[i] = null;
+                continue;
+            }
+
+            Point3DF v = p.subtract(center);
+
+            float localSide = dot(v, sideAxis);
+            float localForward = dot(v, forwardAxis);
+            float localUp = dot(v, upAxis);
+
+            out[i] = center
+                    .add(sideAxis.scale(localSide * widthScale))
+                    .add(forwardAxis.scale(localForward * lengthScale))
+                    .add(upAxis.scale(localUp));
+        }
+
+        return out;
+    }
 
 
 }
