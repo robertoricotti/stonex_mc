@@ -644,7 +644,7 @@
                         android:background="@color/bg_stonex_blue"
                         android:ems="15"
                         android:gravity="center"
-                        android:text="BARGE"
+                        android:text="DECK BARGE"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -963,6 +963,18 @@
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/toPontonExc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/bg_stonex_blue"
+                        android:ems="15"
+                        android:gravity="center"
+                        android:text="DECK BARGE"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
 
                     <TextView

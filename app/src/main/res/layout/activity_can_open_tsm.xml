@@ -113,7 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:clickable="false"
-        android:ems="7"
+        android:ems="8"
         android:text="Frame ID 0x1"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -127,7 +127,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:clickable="false"
-        android:ems="7"
+        android:ems="8"
         android:text="Boom1 ID 0x2"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -141,7 +141,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:clickable="false"
-        android:ems="7"
+        android:ems="8"
         android:text="Boom2 ID 0x7"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -155,7 +155,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:clickable="false"
-        android:ems="7"
+        android:ems="8"
         android:text="Stick ID 0x4"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -171,6 +171,7 @@
         android:text="Bucket ID 0x5"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:ems="8"
         app:layout_constraintLeft_toLeftOf="@id/cbFR"
         app:layout_constraintTop_toBottomOf="@id/cbFR" />
 
@@ -182,7 +183,7 @@
         android:text="Tilt ID 0x6"
         android:textSize="20sp"
         android:textStyle="bold"
-
+        android:ems="8"
         app:layout_constraintLeft_toLeftOf="@id/cbB1"
         app:layout_constraintTop_toTopOf="@id/cbBK" />
 
@@ -194,6 +195,7 @@
         android:text="Default ID 0x3"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:ems="8"
         app:layout_constraintLeft_toLeftOf="@id/cbB2"
         app:layout_constraintTop_toTopOf="@id/cbTL" />
 

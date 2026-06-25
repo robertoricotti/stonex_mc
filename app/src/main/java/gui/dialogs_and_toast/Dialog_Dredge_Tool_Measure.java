@@ -1,0 +1,239 @@
+package gui.dialogs_and_toast;
+
+
+
+import static packexcalib.exca.ExcavatorLib.bucketCoord;
+import static packexcalib.exca.ExcavatorLib.toolEndCoord;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.example.stx_dig.R;
+
+import packexcalib.exca.DataSaved;
+import utils.FullscreenActivity;
+import utils.MyData;
+import utils.Utils;
+
+public class Dialog_Dredge_Tool_Measure {
+    CustomNumberDialog customNumberDialog;
+    CustomNumberDialogFtIn customNumberDialogFtIn;
+    private static final long UI_UPDATE_INTERVAL_MS = 80;
+    private boolean uiUpdateRunning = false;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean isRepeating = false;
+    Activity activity;
+    public Dialog dialog;
+    ImageView close,btnPiu,btnMeno,btReset;
+    EditText valore;
+    TextView tito;
+    DisplayMetrics displayMetrics;
+    int larg = 1000, alt = 600;
+    int units,machineSelected;
+    double step=0.001;
+    public Dialog_Dredge_Tool_Measure(Activity activity) {
+        this.activity = activity;
+        dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        displayMetrics = new DisplayMetrics();
+
+    }
+    public void show() {
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        larg = (int) (displayMetrics.widthPixels * 0.65);
+        alt = (int) (displayMetrics.heightPixels * 0.65);
+        dialog.create();
+        dialog.setContentView(R.layout.dialog_dredge_tool_measure);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setOnDismissListener(d -> stopUiUpdates());
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // layout trasparente
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            wlp.gravity = Gravity.CENTER;
+            wlp.dimAmount = 0.25f; //  Offusca sfondo (0 = nessun dim, 1 = nero pieno)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); // 🔹 Applica dim
+            window.setAttributes(wlp);
+        }
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        dialog.getWindow().setLayout(larg, alt);
+        wlp.gravity = Gravity.CENTER;
+
+        dialog.show();
+        FullscreenActivity.setFullScreen(dialog);
+        findView();
+        init();
+        onClick();
+        startUiUpdates();
+
+    }
+    private void findView() {
+        machineSelected= MyData.get_Int("MachineSelected");
+        units = MyData.get_Int("Unit_Of_Measure");
+        DataSaved.Altezza_Attrezzo=MyData.get_Double("M"+machineSelected+"Altezza_Attrezzo");
+        close=dialog.findViewById(R.id.close);
+        valore=dialog.findViewById(R.id.valore);
+        btnPiu=dialog.findViewById(R.id.btPiu);
+        btnMeno=dialog.findViewById(R.id.btMeno);
+        btReset=dialog.findViewById(R.id.btReset);
+        tito=dialog.findViewById(R.id.tito);
+        customNumberDialog=new CustomNumberDialog(activity,-1);
+        customNumberDialogFtIn=new CustomNumberDialogFtIn(activity,-1);
+
+    }
+    private void init(){
+        updateValore();
+    }
+
+    private void updateUI() {
+        if (tito == null) return;
+
+        String stringa = "Dredge Tool Z:   " +
+                Utils.showCoords(String.valueOf(bucketCoord[2])).replace(",", ".");
+
+        tito.setText(stringa + " " + Utils.getMetriSimbol());
+    }
+    private void onClick(){
+        btReset.setOnClickListener(v -> {
+            new CustomToast(activity,"Long Press To Delete").show();
+        });
+        btReset.setOnLongClickListener(v -> {
+            DataSaved.Altezza_Attrezzo=0;
+            updateValore();
+            return true;
+        });
+        close.setOnClickListener(v -> {
+            stopUiUpdates();
+            MyData.push("M" + machineSelected + "Altezza_Attrezzo", Utils.writeMetri(String.valueOf(DataSaved.Altezza_Attrezzo).replace(",", ".")));
+            dialog.dismiss();
+        });
+        if(btnPiu!=null) {
+            setupAutoRepeat(btnPiu,() ->{
+                DataSaved.Altezza_Attrezzo+=step;
+                updateValore();
+
+            });
+        }
+        if(btnMeno!=null) {
+            setupAutoRepeat(btnMeno,() ->{
+                DataSaved.Altezza_Attrezzo-=step;
+                updateValore();
+
+            });
+        }
+        valore.setOnClickListener(view -> {
+            if (units == 4 || units == 5) {
+                if (!customNumberDialogFtIn.dialog.isShowing())
+                    customNumberDialogFtIn.show(valore);
+            } else {
+                if (!customNumberDialog.dialog.isShowing())
+                    customNumberDialog.show(valore);
+            }
+        });
+        customNumberDialog.dialog.setOnDismissListener(dialog -> {
+
+            try {
+                DataSaved.Altezza_Attrezzo = Double.parseDouble(Utils.writeMetri((valore.getText().toString())));
+            } catch (NumberFormatException ignored) {
+
+            }
+
+
+        });
+        customNumberDialogFtIn.dialog.setOnDismissListener(dialog -> {
+
+            try {
+                DataSaved.Altezza_Attrezzo = Double.parseDouble(Utils.writeMetri((valore.getText().toString())));
+            } catch (NumberFormatException ignored) {
+
+            }
+
+        });
+    }
+    private void updateValore(){
+        if(valore!=null){
+            valore.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Altezza_Attrezzo)));
+        }
+    }
+    private void setupAutoRepeat(ImageView button, Runnable action) {
+        button.setOnClickListener(v -> {
+
+            action.run();
+        });
+
+
+        button.setOnLongClickListener(v -> {
+
+            isRepeating = true;
+
+
+            // Primo ritardo di 500ms prima di iniziare la ripetizione
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isRepeating) {
+                        action.run();
+                        handler.postDelayed(this, 20); // ripeti ogni 50ms
+                    }
+                }
+            }, 500);
+
+            return true; // segnala che il long click è gestito
+        });
+
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    if (isRepeating) {
+
+
+                    }
+                    isRepeating = false; // stop
+
+                    break;
+            }
+            return false;
+        });
+    }
+
+    private final Runnable uiUpdateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!uiUpdateRunning || dialog == null || !dialog.isShowing()) {
+                return;
+            }
+
+            updateUI();
+
+            handler.postDelayed(this, UI_UPDATE_INTERVAL_MS);
+        }
+    };
+
+    private void startUiUpdates() {
+        if (uiUpdateRunning) return;
+
+        uiUpdateRunning = true;
+        handler.post(uiUpdateRunnable);
+    }
+
+    private void stopUiUpdates() {
+        uiUpdateRunning = false;
+        handler.removeCallbacks(uiUpdateRunnable);
+    }
+}
+
+
+

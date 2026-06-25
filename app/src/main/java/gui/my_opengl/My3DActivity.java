@@ -63,6 +63,7 @@ import gui.dialogs_and_toast.DialogOffset_3D;
 import gui.dialogs_and_toast.Dialog_Add_Pnezd;
 import gui.dialogs_and_toast.Dialog_Blade_Wear;
 import gui.dialogs_and_toast.Dialog_CutFill_3D;
+import gui.dialogs_and_toast.Dialog_Dredge_Tool_Measure;
 import gui.dialogs_and_toast.Dialog_GNSS_Coordinates;
 import gui.dialogs_and_toast.Dialog_MapMode;
 import gui.dialogs_and_toast.Dialog_Point_Poly;
@@ -102,6 +103,7 @@ public class My3DActivity extends BaseClass {
 
     TextView AUTO_SX, AUTO_SS, AUTO_DX;
     Dialog_Blade_Wear dialogBladeWear;
+    Dialog_Dredge_Tool_Measure dialogDredgeToolMeasure;
     public static boolean PNEZD_FUNCTION;
     ImageView allarmeAlt, allarmeBound, gl_hydroP;
     String bucketName;
@@ -310,6 +312,7 @@ public class My3DActivity extends BaseClass {
         dialogBladeWear = new Dialog_Blade_Wear(this);
         diaolgGainHydro = new Dialog_Gain_Hydro(this);
         dialogCutFill3D = new Dialog_CutFill_3D(this);
+        dialogDredgeToolMeasure=new Dialog_Dredge_Tool_Measure(this);
 
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
@@ -452,7 +455,9 @@ public class My3DActivity extends BaseClass {
                 startActivity(i);
                 finish();
             } else if (DataSaved.isWL==DREDGE) {
-                //TODO menu settaggio tooldredge
+                if(!dialogDredgeToolMeasure.dialog.isShowing()){
+                    dialogDredgeToolMeasure.show();
+                }
             } else {
                 if (!dialogBladeWear.dialog.isShowing()) {
                     dialogBladeWear.show();

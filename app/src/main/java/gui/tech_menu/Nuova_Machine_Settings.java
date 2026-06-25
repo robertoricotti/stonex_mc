@@ -79,7 +79,7 @@ public class Nuova_Machine_Settings extends BaseClass {
     ConstraintLayout constraintLayout, constraintLayout_2, constraintLayout_3,constr_Draga;
     TextView toExtraSensor, tvSwing, tvFrame, tvBoom1, tvBoom2, tvStick, tvLink,
             tvMast, tvTilt, tvXYZ, drillEnc, toCanopen, toDamping, can1bd, can2bd, toRoto, toCET05, toCET12, toRM7012;
-    TextView toxyzDrg,toFrameDrg,toBoomDrg,toRopeDrg,toRope2Drg,toSleweDrg,toPontonDrg;
+    TextView toxyzDrg,toFrameDrg,toBoomDrg,toRopeDrg,toRope2Drg,toSleweDrg,toPontonDrg,toPontonExc;
     EditText mchName, techInfo;
     int mode, machineSel;
     public static boolean menu1_visible, menu2_visible, menu3_visible;
@@ -197,6 +197,7 @@ public class Nuova_Machine_Settings extends BaseClass {
         toRope2Drg=findViewById(R.id.toRope2Drg);
         toSleweDrg=findViewById(R.id.toSleweDrg);
         toPontonDrg=findViewById(R.id.toPontonDrg);
+        toPontonExc=findViewById(R.id.toPontonExc);
         mchName.setText(MyData.get_String("M" + machineSel + "_Name"));
         if (licenseType == MC_3D_EASY || licenseType == MC_1D || licenseType == MC_2D || licenseType == MC_3D_EASY_AUTO) {
             drill.setVisibility(View.INVISIBLE);
@@ -237,6 +238,11 @@ public class Nuova_Machine_Settings extends BaseClass {
             finish();
         });
         toPontonDrg.setOnClickListener(view -> {
+            en_dis(false);
+            startActivity(new Intent(this,Ponton_Drg_Activity.class));
+            finish();
+        });
+        toPontonExc.setOnClickListener(view -> {
             en_dis(false);
             startActivity(new Intent(this,Ponton_Drg_Activity.class));
             finish();
@@ -851,8 +857,10 @@ public class Nuova_Machine_Settings extends BaseClass {
         }
         if (DataSaved.isWL == EXCAVATOR) {
             toRoto.setVisibility(View.VISIBLE);
+            toPontonExc.setVisibility(View.VISIBLE);
         } else {
             toRoto.setVisibility(View.GONE);
+            toPontonExc.setVisibility(View.GONE);
         }
         if (DataSaved.isWL == DRILL) {
             lay_drilmode.setVisibility(View.VISIBLE);
@@ -868,16 +876,7 @@ public class Nuova_Machine_Settings extends BaseClass {
             lay_ant_orient.setVisibility(View.GONE);
             lay_antmount.setVisibility(View.GONE);
         }
-        if (DataSaved.isWL == EXCAVATOR ||
-                DataSaved.isWL == WHEELLOADER ||
-                DataSaved.isWL == DRILL ||
-                DataSaved.isWL == DREDGE) {
-            toCanopen.setVisibility(View.VISIBLE);
-            toDamping.setVisibility(View.VISIBLE);
-        } else {
-            toCanopen.setVisibility(View.INVISIBLE);
-            toDamping.setVisibility(View.INVISIBLE);
-        }
+
         if (DataSaved.gpsOk && errorCode == 0) {
             status.setImageTintList(ColorStateList.valueOf(Color.GREEN));
         } else {
@@ -1067,6 +1066,7 @@ public class Nuova_Machine_Settings extends BaseClass {
                 tvXYZ.setVisibility(View.GONE);
                 drillEnc.setVisibility(View.GONE);
                 toRoto.setVisibility(View.GONE);
+                toPontonExc.setVisibility(View.GONE);
                 break;
 
 
