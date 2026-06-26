@@ -9,6 +9,7 @@ import static gui.MyApp.geoidAll;
 import static gui.MyApp.licenseType;
 import static gui.MyApp.listFilesInFolderGeoid;
 import static gui.MyApp.numGeoidiInterni;
+import static gui.MyApp.timeUI;
 import static gui.MyApp.updateGeoidFolderFromCloud;
 import static gui.MyApp.usa;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
@@ -214,6 +215,7 @@ public class Activity_Home_Page extends BaseClass {
                 txt2d.setText("REPORTS");
                 break;
             case DREDGE:
+                timeUI=100;
                 toDueD.setAlpha(0.3f);
                 toDueD.setImageResource(R.drawable.bottone_duedi);
                 txt2d.setText("1D  - 2D");

@@ -18,6 +18,7 @@ import com.example.stx_dig.R;
 
 import packexcalib.exca.DataSaved;
 import services.TriangleService;
+import utils.FullscreenActivity;
 import utils.Utils;
 
 public class Dialog_CutFill_3D {
@@ -49,7 +50,7 @@ public class Dialog_CutFill_3D {
         }
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
-
+        FullscreenActivity.setFullScreen(dialog);
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);

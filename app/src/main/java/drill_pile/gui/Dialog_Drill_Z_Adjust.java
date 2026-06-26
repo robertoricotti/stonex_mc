@@ -37,6 +37,7 @@ public class Dialog_Drill_Z_Adjust {
     int units,machineSelected;
     double step=0.001;
 
+
 //DataSaved.drill_Bit_Len
     //
     public Dialog_Drill_Z_Adjust(Activity activity) {

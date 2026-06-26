@@ -202,7 +202,7 @@ public class TriangleService extends Service {
                         case DREDGE:
                             prepareDredgeFrameForDraw();
 
-                            DataSaved.glL_AnchorView = centroRalla;
+                            DataSaved.glL_AnchorView = bucketCoord;
 
                             // IMPORTANTISSIMO:
                             // in draga non devono restare geometrie escavatore vive/stale
@@ -214,7 +214,7 @@ public class TriangleService extends Service {
                             DataSaved.GL_BOOM1_2 = null;
 
                             // Solo frame/cabina/ralla/cingoli standard
-                            DataSaved.GL_FRAME_BASE = buildScaledFrameForDraw(My_Frame.puntiFrame());
+                            DataSaved.GL_FRAME_BASE = buildScaledFrameForDraw(My_Frame.puntiFrameDredge());
                             autoScaleMachineFrameByBoom();
                             break;
 

@@ -271,7 +271,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float scale = 1f;
         if (!My3DActivity.glFilter) {
             if (My3DActivity.glFace || My3DActivity.glFill) {
-                GLDrawer.drawFaces(gl11, DataSaved.dxfFaces, 0.8f, scale, isXML,My3DActivity.glFill,My3DActivity.glFace);
+                GLDrawer.drawFaces(gl11, DataSaved.dxfFaces, 0.8f, scale, isXML, My3DActivity.glFill, My3DActivity.glFace);
             }
             if (My3DActivity.glGradient) {
                 GLDrawer.drawFacesGradientPRO(gl11, DataSaved.dxfFaces, scale, TriangleService.minZ, TriangleService.maxZ);
@@ -290,13 +290,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             }
             if (PNEZD_FUNCTION || glPoint) {
                 GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
-                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                if (My3DActivity.glText) {
+                    GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                }
             }
 
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         } else {
             if (My3DActivity.glFace || My3DActivity.glFill) {
-                GLDrawer.drawFaces(gl11, DataSaved.filteredFaces, 0.8f, scale, isXML,My3DActivity.glFill,My3DActivity.glFace);
+                GLDrawer.drawFaces(gl11, DataSaved.filteredFaces, 0.8f, scale, isXML, My3DActivity.glFill, My3DActivity.glFace);
             }
             if (My3DActivity.glGradient) {
                 GLDrawer.drawFacesGradientPRO(gl11, DataSaved.filteredFaces, scale, TriangleService.minZ, TriangleService.maxZ);
@@ -315,7 +317,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             }
             if (PNEZD_FUNCTION || glPoint) {
                 GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, scale);
-                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                if (My3DActivity.glText) {
+                    GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, scale, atlasPNEZD);
+                }
             }
 
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -325,7 +329,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private void drawTerrain2D() {
         if (!My3DActivity.glFilter) {
             if (My3DActivity.glFace || My3DActivity.glFill) {
-                GLDrawer.drawFaces2D(gl11, DataSaved.dxfFacesGL_2D, 0.8f, 1f, isXML,My3DActivity.glFill,My3DActivity.glFace);
+                GLDrawer.drawFaces2D(gl11, DataSaved.dxfFacesGL_2D, 0.8f, 1f, isXML, My3DActivity.glFill, My3DActivity.glFace);
             }
             if (My3DActivity.glGradient) {
                 GLDrawer.drawFacesGradient2D(gl11, DataSaved.dxfFaces, 1f, TriangleService.minZ, TriangleService.maxZ);
@@ -350,13 +354,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             }
             if (PNEZD_FUNCTION || glPoint) {
                 GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, 1f);
-                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, 1f, atlasPNEZD);
+                if (My3DActivity.glText) {
+                    GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, 1f, atlasPNEZD);
+                }
             }
+
 
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         } else {
             if (My3DActivity.glFace || My3DActivity.glFill) {
-                GLDrawer.drawFaces2D(gl11, DataSaved.filteredFacesGL_2D, 0.8f, 1f, isXML,My3DActivity.glFill,My3DActivity.glFace);
+                GLDrawer.drawFaces2D(gl11, DataSaved.filteredFacesGL_2D, 0.8f, 1f, isXML, My3DActivity.glFill, My3DActivity.glFace);
             }
             if (My3DActivity.glGradient) {
                 GLDrawer.drawFacesGradient2D(gl11, DataSaved.filteredFaces, 1f, TriangleService.minZ, TriangleService.maxZ);
@@ -381,7 +388,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             }
             if (PNEZD_FUNCTION || glPoint) {
                 GLDrawer.drawPNEZD(gl11, DataSaved.pnezdPoints, 15f, 1f);
-                GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, 1f, atlasPNEZD);
+                if (My3DActivity.glText) {
+                    GLDrawer.drawTextsBilBoardPNEZD(gl11, DataSaved.pnezdPoints, DataSaved.glL_AnchorView, charSpacingFactor, 1f, atlasPNEZD);
+                }
             }
 
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -391,6 +400,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public static float currentRenderScale() {
         return 1f;
     }
+
     public static boolean projectWorldToScreen2D(
             double worldX,
             double worldY,

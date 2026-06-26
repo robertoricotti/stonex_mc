@@ -3,6 +3,11 @@ package gui;
 
 import static gui.tech_menu.NetworkConfigSettings.getConnectionType;
 import static packexcalib.exca.DataSaved.DRILL_STATUS;
+import static services.CanService.BraccioCon;
+import static services.CanService.CarroCon;
+import static services.CanService.RopeCon;
+import static services.CanService.RopeCon_2;
+import static services.CanService.SlewCon;
 import static services.CanService.boom1Disc;
 import static services.CanService.boom1OK;
 import static services.CanService.boom2Disc;
@@ -18,6 +23,7 @@ import static services.CanService.tiltOK;
 import static services.CanService.toolOK;
 import static utils.MyTypes.DOZER;
 import static utils.MyTypes.DOZER_SIX;
+import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
 import static utils.MyTypes.EXCAVATOR;
 import static utils.MyTypes.GRADER;
@@ -956,6 +962,16 @@ git push
                     (!boom2OK) && DataSaved.lrBoom2 != 0,
                     (!stickOK) && DataSaved.lrStick != 0,
                     (!toolOK) && DataSaved.lrTool != 0,
+                    false, false, false
+
+            });
+        } else if (DataSaved.isWL==DREDGE) {
+            errorCode = PLC_DataTypes_BigEndian.Encode_8_bool_be(new boolean[]{
+                    (!CarroCon) && DataSaved.Pos_FRAME != 0,
+                    (!BraccioCon) && DataSaved.Pos_BOOM != 0,
+                    (!RopeCon) && DataSaved.Pos_ENCODER != 0,
+                    (!RopeCon_2) && DataSaved.Pos_ENCODER_2 != 0,
+                    (!SlewCon) && DataSaved.Pos_SLEW != 0,
                     false, false, false
 
             });

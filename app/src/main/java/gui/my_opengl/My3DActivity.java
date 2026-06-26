@@ -74,6 +74,8 @@ import gui.draw_class.DrawDXF_Layer1;
 import gui.draw_class.DrawDXF_Layer1_Tilt;
 import gui.draw_class.DrawDXF_Layer2;
 import gui.draw_class.DrawDXF_Layer2_Tilt;
+import gui.draw_class.Dredge_DrawDXF_Layer1;
+import gui.draw_class.Dredge_DrawDXF_Layer2;
 import gui.draw_class.MyColorClass;
 import gui.grade_draw_class.Grade_DrawDXF_Layer1;
 import gui.grade_draw_class.Grade_DrawDXF_Layer2;
@@ -320,13 +322,30 @@ public class My3DActivity extends BaseClass {
         indexAudioSystem = MyData.get_Int("indexAudioSystem");
         vol = MyData.get_Float("volumeAudioSystem");
 
-        if (DataSaved.isWL < DOZER) {
-            layer1Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer1_Tilt(this) : new DrawDXF_Layer1(this);
-            layer2Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer2_Tilt(this) : new DrawDXF_Layer2(this);
-        } else {
-            layer1Canvas = new Grade_DrawDXF_Layer1(this);
-            layer2Canvas = new Grade_DrawDXF_Layer2(this);
+        switch (DataSaved.isWL){
+            case EXCAVATOR:
+            case WHEELLOADER:
+                layer1Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer1_Tilt(this) : new DrawDXF_Layer1(this);
+                layer2Canvas = (DataSaved.lrTilt != 0) ? new DrawDXF_Layer2_Tilt(this) : new DrawDXF_Layer2(this);
+                break;
+
+            case DOZER:
+            case DOZER_SIX:
+            case GRADER:
+                layer1Canvas = new Grade_DrawDXF_Layer1(this);
+                layer2Canvas = new Grade_DrawDXF_Layer2(this);
+                break;
+
+            case DREDGE:
+                layer1Canvas = new Dredge_DrawDXF_Layer1(this);
+                layer2Canvas = new Dredge_DrawDXF_Layer2(this);
+
+
+                break;
+
+
         }
+
         panel1.addView(layer1Canvas);
         panel2.addView(layer2Canvas);
 
@@ -613,6 +632,7 @@ public class My3DActivity extends BaseClass {
             }
         });
         gl_gps.setOnClickListener(view -> {
+            no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.removeCallbacks(timeOutTouch);
             no_touch_menu.postDelayed(timeOutTouch, delay);
             if(DataSaved.isWL==DREDGE){

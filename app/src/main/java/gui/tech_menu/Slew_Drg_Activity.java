@@ -113,7 +113,7 @@ public class Slew_Drg_Activity extends BaseClass {
             diamVal.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "Diametro_Ralla")));
             fixedOff.setText(Utils.readSensorCalibration(MyData.get_String("M" + indexMachineSelected + "Diametro_Ruotino_Dredge")));
             b2l.setText("WHEEL DIAMETER " + Utils.getMetriSimbol());
-            txtOffset.setText("ROPE OFFSET " + Utils.getMetriSimbol());
+            txtOffset.setText("ENCODER WHEEL\nDIAMETER " + Utils.getMetriSimbol());
             int mountPos = MyData.get_Int("M" + indexMachineSelected + "Pos_SLEW");
             switch (mountPos) {
                 case 0:

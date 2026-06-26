@@ -80,8 +80,8 @@ public class DredgeLib {
 
             coordB1 = Exca_Quaternion.endPoint(coordinateDY, correctDredgeBoom, correctDredgeRoll, Lunghezza_Braccio, hdt_BOOM);
             coordB2 = coordB1;
-            coordST = Exca_Quaternion.endPoint(coordB1, -90, correctDredgeRoll, Lunghezza_Fune + Rope_Fixed_Offset, hdt_BOOM);
-            ExcavatorLib.bucketCoord = Exca_Quaternion.endPoint(coordST, -90, correctDredgeRoll, Altezza_Attrezzo, hdt_BOOM);
+            coordST = Exca_Quaternion.endPoint(coordB1, -90, 0, Lunghezza_Fune + Rope_Fixed_Offset, hdt_BOOM);
+            ExcavatorLib.bucketCoord = Exca_Quaternion.endPoint(coordST, -90, 0, Altezza_Attrezzo, hdt_BOOM);
             ExcavatorLib.bucketRightCoord = bucketCoord;
             ExcavatorLib.bucketLeftCoord = bucketCoord;
 

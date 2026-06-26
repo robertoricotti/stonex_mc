@@ -613,6 +613,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/toRope2Drg"
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"

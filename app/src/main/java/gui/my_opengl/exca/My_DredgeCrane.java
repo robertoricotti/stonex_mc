@@ -9,6 +9,8 @@ import static gui.my_opengl.MyGLRenderer.coloreInterno;
 import static gui.my_opengl.Point3DF.pTransform;
 import static packexcalib.exca.Sensors_Decoder_Dredge.Angolo_Attrezzo_Dredge;
 
+import android.opengl.GLES20;
+
 import gui.my_opengl.Cylinder;
 import gui.my_opengl.GL_Methods;
 import gui.my_opengl.MyGLRenderer;
@@ -21,7 +23,7 @@ import packexcalib.exca.ExcavatorLib;
 public class My_DredgeCrane {
     private static final float MAIN_TUBE_RADIUS_M = 0.060f;
     private static final float BRACE_TUBE_RADIUS_M = 0.032f;
-    private static final float ROPE_RADIUS_M = 0.010f;
+    private static final float ROPE_RADIUS_M = 0.030f;
 
     private static float rs() {
         return MyGLRenderer.currentRenderScale();
@@ -352,12 +354,17 @@ public class My_DredgeCrane {
         float height = Math.max(geometricHeight, Math.max(configuredHeight, boomBasedMin));
         height = clamp(height, 1.10f * scale, 2.80f * scale);
 
-        // Proporzioni più simili a un grab/clamshell: testa stretta,
-        // pancia larga e bocca pronunciata. Colore unico come la benna.
-        float halfDepth = clamp(height * 0.26f, 0.18f * scale, 0.70f * scale);
-        float halfHeadWidth = clamp(height * 0.20f, 0.14f * scale, 0.52f * scale);
-        float halfBellyWidth = clamp(height * 0.50f, 0.36f * scale, 1.25f * scale);
-        float halfLipWidth = clamp(height * 0.44f, 0.30f * scale, 1.12f * scale);
+        /*
+         * Proporzione coerente con Layer1/Layer2 Canvas:
+         * larghezza massima clamshell = 0.75 * altezza.
+         */
+        float toolWidth = height * 0.75f;
+        float halfToolWidth = toolWidth * 0.50f;
+
+        float halfDepth = clamp(height * 0.24f, 0.16f * scale, 0.62f * scale);
+        float halfHeadWidth = clamp(halfToolWidth * 0.48f, 0.12f * scale, 0.42f * scale);
+        float halfBellyWidth = clamp(halfToolWidth, 0.26f * scale, 0.95f * scale);
+        float halfLipWidth = clamp(halfToolWidth * 0.88f, 0.22f * scale, 0.84f * scale);
         float shellThroat = clamp(height * 0.07f, 0.04f * scale, 0.18f * scale);
         float headBlockH = clamp(height * 0.16f, 0.12f * scale, 0.42f * scale);
 
@@ -394,6 +401,15 @@ public class My_DredgeCrane {
         Point3DF hingeRight = head.add(lateral.scale(halfHeadWidth + split));
         drawTube(gl, hingeLeft, hingeRight, pinRadius, bucketLineColor, 8);
         drawTube(gl, headBlockTop, head, Math.max(pinRadius * 0.60f, 0.010f), bucketLineColor, 8);
+
+        /*
+         * Croce di allineamento come nella benna.
+         * La disegno sul punto di lavoro del grab, cioè bottom / bucketCoord.
+         * Non ricavo la heading dalla fune: uso gli assi già ereditati dal boom.
+         */
+        if (DataSaved.showAlign > 0) {
+            drawToolAlignCross(gl, bottom, vertical, depthAxis, lateral, height, scale);
+        }
     }
 
     private static void drawGrabShell(GL11 gl,
@@ -446,34 +462,43 @@ public class My_DredgeCrane {
 
         short[] facesA = new short[]{
                 // front plate
-                0, 1, 7,  1, 6, 7,
-                1, 2, 6,  2, 5, 6,
-                2, 3, 5,  3, 4, 5,
+                0, 1, 7, 1, 6, 7,
+                1, 2, 6, 2, 5, 6,
+                2, 3, 5, 3, 4, 5,
                 // back plate
-                8, 15, 9,  9, 15, 14,
+                8, 15, 9, 9, 15, 14,
                 9, 14, 10, 10, 14, 13,
                 10, 13, 11, 11, 13, 12
         };
 
         short[] facesB = new short[]{
-                0, 8, 9,  9, 1, 0,
+                0, 8, 9, 9, 1, 0,
                 1, 9, 10, 10, 2, 1,
                 2, 10, 11, 11, 3, 2,
                 3, 11, 12, 12, 4, 3,
                 4, 12, 13, 13, 5, 4,
                 5, 13, 14, 14, 6, 5,
                 6, 14, 15, 15, 7, 6,
-                7, 15, 8,  8, 0, 7
+                7, 15, 8, 8, 0, 7
         };
 
         short[] edges = new short[]{
-                0,1, 1,2, 2,3, 3,4, 4,5, 5,6, 6,7, 7,0,
-                8,9, 9,10, 10,11, 11,12, 12,13, 13,14, 14,15, 15,8,
-                0,8, 1,9, 2,10, 3,11, 4,12, 5,13, 6,14, 7,15
+                0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 0,
+                8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 8,
+                0, 8, 1, 9, 2, 10, 3, 11, 4, 12, 5, 13, 6, 14, 7, 15
         };
 
         // Colore unico sulle due valve: niente faccia arancione/grigia separata.
         drawSolid(gl, pts, bucketColor, bucketColor, facesA, facesB, edges);
+
+        /*
+         * Bordatura 3D reale della clamshell.
+         * Serve per leggere meglio la forma da lontano.
+         */
+        float[] borderColor = GL_Methods.darkenColor(bucketColor.clone(), 0.38f, bucketColor[3]);
+        float borderRadius = Math.max(0.026f * rs(), 0.012f);
+
+        drawClamshellBorder(gl, pts, borderRadius, borderColor);
     }
 
     private static Point3DF[] makeBox(Point3DF center, Point3DF forward, Point3DF side, Point3DF up,
@@ -516,9 +541,9 @@ public class My_DredgeCrane {
 
     private static short[] boxEdges() {
         return new short[]{
-                0,1, 1,2, 2,3, 3,0,
-                4,5, 5,6, 6,7, 7,4,
-                0,4, 1,5, 2,6, 3,7
+                0, 1, 1, 2, 2, 3, 3, 0,
+                4, 5, 5, 6, 6, 7, 7, 4,
+                0, 4, 1, 5, 2, 6, 3, 7
         };
     }
 
@@ -636,5 +661,105 @@ public class My_DredgeCrane {
             this.side = side;
             this.up = up;
         }
+    }
+    private static void drawToolAlignCross(GL11 gl,
+                                           Point3DF bottom,
+                                           Point3DF vertical,
+                                           Point3DF forward,
+                                           Point3DF lateral,
+                                           float toolHeight,
+                                           float scale) {
+        if (!valid(bottom)) return;
+
+        Point3DF down = vertical.normalize();
+        if (down.length() < 0.001f) down = new Point3DF(0f, 0f, -1f);
+
+        Point3DF fw = forward.normalize();
+        if (fw.length() < 0.001f) fw = new Point3DF(0f, 1f, 0f);
+
+        Point3DF lat = lateral.normalize();
+        if (lat.length() < 0.001f) lat = new Point3DF(1f, 0f, 0f);
+
+        /*
+         * Punto operativo leggermente sotto al grab,
+         * così non viene coperto dal tool.
+         */
+        Point3DF start = bottom.add(down.scale(Math.max(0.08f * scale, 0.025f)));
+
+        /*
+         * Misure reali:
+         * avanti 50 m
+         * dietro 15 m
+         * destra/sinistra 15 m
+         */
+        float fwLen = 50.0f * scale;
+        float bwLen = 15.0f * scale;
+        float sideLen = 15.0f * scale;
+
+        /*
+         * Spessore visibile
+         */
+        float lineRadius = Math.max(0.15f * scale, 0.050f);
+        float[] alignColor = new float[]{0f, 1f, 0f, 1f};
+
+        Point3DF fwP = start.add(fw.scale(fwLen));
+        Point3DF bwP = start.subtract(fw.scale(bwLen));
+        Point3DF ltP = start.subtract(lat.scale(sideLen));
+        Point3DF rtP = start.add(lat.scale(sideLen));
+
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+
+        try {
+            drawTube(gl, start, fwP, lineRadius, alignColor, 8);
+            drawTube(gl, start, bwP, lineRadius, alignColor, 8);
+            drawTube(gl, start, ltP, lineRadius, alignColor, 8);
+            drawTube(gl, start, rtP, lineRadius, alignColor, 8);
+        } finally {
+            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        }
+
+
+    }
+    private static void drawClamshellBorder(GL11 gl,
+                                            Point3DF[] pts,
+                                            float radius,
+                                            float[] color) {
+        if (pts == null || pts.length < 16) return;
+
+        /*
+         * Contorno faccia frontale.
+         */
+        drawTube(gl, pts[0], pts[1], radius, color, 6);
+        drawTube(gl, pts[1], pts[2], radius, color, 6);
+        drawTube(gl, pts[2], pts[3], radius, color, 6);
+        drawTube(gl, pts[3], pts[4], radius, color, 6);
+        drawTube(gl, pts[4], pts[5], radius, color, 6);
+        drawTube(gl, pts[5], pts[6], radius, color, 6);
+        drawTube(gl, pts[6], pts[7], radius, color, 6);
+        drawTube(gl, pts[7], pts[0], radius, color, 6);
+
+        /*
+         * Contorno faccia posteriore.
+         */
+        drawTube(gl, pts[8], pts[9], radius, color, 6);
+        drawTube(gl, pts[9], pts[10], radius, color, 6);
+        drawTube(gl, pts[10], pts[11], radius, color, 6);
+        drawTube(gl, pts[11], pts[12], radius, color, 6);
+        drawTube(gl, pts[12], pts[13], radius, color, 6);
+        drawTube(gl, pts[13], pts[14], radius, color, 6);
+        drawTube(gl, pts[14], pts[15], radius, color, 6);
+        drawTube(gl, pts[15], pts[8], radius, color, 6);
+
+        /*
+         * Collegamenti di profondità: danno volume e leggibilità.
+         */
+        drawTube(gl, pts[0], pts[8], radius, color, 6);
+        drawTube(gl, pts[1], pts[9], radius, color, 6);
+        drawTube(gl, pts[2], pts[10], radius, color, 6);
+        drawTube(gl, pts[3], pts[11], radius, color, 6);
+        drawTube(gl, pts[4], pts[12], radius, color, 6);
+        drawTube(gl, pts[5], pts[13], radius, color, 6);
+        drawTube(gl, pts[6], pts[14], radius, color, 6);
+        drawTube(gl, pts[7], pts[15], radius, color, 6);
     }
 }

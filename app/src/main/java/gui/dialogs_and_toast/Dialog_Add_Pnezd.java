@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -53,6 +54,7 @@ public class Dialog_Add_Pnezd {
     public Dialog dialog;
     TextView filename, toolCoord, pnezd_color;
     TextView ETdescription;
+    EditText tvDiameter;
     ImageView save, cancel, lista, removelast;
     String path = "";
     String filepath;
@@ -65,11 +67,16 @@ public class Dialog_Add_Pnezd {
     double quota = 100.000;
     private static double conversionFactor = 1;
     static String Snord = "0.000", Sest = "0.000", Squota = "0.000";
+    CustomNumberDialog customNumberDialog;
+    CustomNumberDialogFtIn customNumberDialogFtIn;
+    int units, machineSelected;
+
 
     public Dialog_Add_Pnezd(Activity activity, String path) {
         this.activity = activity;
         this.path = path;
         dialog = new Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        machineSelected = MyData.get_Int("MachineSelected");
         try {
             switch (MyData.get_Int("Unit_Of_Measure")) {
                 case 0:
@@ -149,13 +156,15 @@ public class Dialog_Add_Pnezd {
         // Calcola 75% della larghezza dello schermo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels * 0.85);
-        int height = (int) (displayMetrics.heightPixels * 0.9);
+        int width = (int) (displayMetrics.widthPixels * 0.9);
+        int height = (int) (displayMetrics.heightPixels * 0.95);
         dialog.getWindow().setLayout(width, height);
         dialog.show();
         FullscreenActivity.setFullScreen(dialog);
         findView();
         customQwertyDialog = new CustomQwertyDialog(activity, null);
+        customNumberDialog = new CustomNumberDialog(activity, -1);
+        customNumberDialogFtIn = new CustomNumberDialogFtIn(activity, -1);
         onClick();
         adapter = new PNEZDAdapter(leggiCSV(filepath));
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -176,8 +185,11 @@ public class Dialog_Add_Pnezd {
         toolCoord = dialog.findViewById(R.id.tvCoord);
         pnezd_color = dialog.findViewById(R.id.pnezd_color);
         ETdescription = dialog.findViewById(R.id.descr);
+        tvDiameter = dialog.findViewById(R.id.tvDiameter);
+
         ETdescription.setText(MyData.get_String("lastDescription"));
-        lista.setRotation(0f);
+        tvDiameter.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Diametro_Corpo_Morto)));
+
 
     }
 
@@ -192,13 +204,13 @@ public class Dialog_Add_Pnezd {
                         customView.setVisibility(View.INVISIBLE);
                         save.setVisibility(View.INVISIBLE);
                         removelast.setVisibility(View.VISIBLE);
-                        lista.setRotation(0f);
+
                     } else {
                         save.setVisibility(View.VISIBLE);
                         removelast.setVisibility(View.INVISIBLE);
                         recyclerView.setVisibility(View.INVISIBLE);
                         customView.setVisibility(View.VISIBLE);
-                        lista.setRotation(180f);
+
                     }
                     filename.setText(filepath.replace("/storage/emulated/0/", ""));
                     Snord = "0.000";
@@ -252,6 +264,37 @@ public class Dialog_Add_Pnezd {
     }
 
     private void onClick() {
+        customNumberDialog.dialog.setOnDismissListener(dialog -> {
+
+            try {
+                DataSaved.Diametro_Corpo_Morto = Double.parseDouble(Utils.writeMetri((tvDiameter.getText().toString())));
+                updateValore();
+            } catch (NumberFormatException ignored) {
+
+            }
+
+
+        });
+        customNumberDialogFtIn.dialog.setOnDismissListener(dialog -> {
+
+            try {
+                DataSaved.Diametro_Corpo_Morto = Double.parseDouble(Utils.writeMetri((tvDiameter.getText().toString())));
+                updateValore();
+
+            } catch (NumberFormatException ignored) {
+
+            }
+
+        });
+        tvDiameter.setOnClickListener(view -> {
+            if (units == 4 || units == 5) {
+                if (!customNumberDialogFtIn.dialog.isShowing())
+                    customNumberDialogFtIn.show(tvDiameter);
+            } else {
+                if (!customNumberDialog.dialog.isShowing())
+                    customNumberDialog.show(tvDiameter);
+            }
+        });
         pnezd_color.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(activity, pnezd_color);
             popupMenu.getMenu().add("RED");
@@ -327,7 +370,11 @@ public class Dialog_Add_Pnezd {
 
                     }
                 });
-                builder.show();
+
+                AlertDialog dialog = builder.show();
+
+                // APPLICA IL FULLSCREEN
+                FullscreenActivity.setFullScreen(dialog);
 
             } else {
                 new CustomToast(activity, "No Selection").show();
@@ -337,7 +384,8 @@ public class Dialog_Add_Pnezd {
 
         save.setOnClickListener(view -> {
             // Crea un nuovo AlertDialog.Builder
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            codeSave();
+           /* AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Save Point?");
             builder.setIcon(activity.getResources().getDrawable(R.drawable.save_icon));
 
@@ -345,7 +393,7 @@ public class Dialog_Add_Pnezd {
             builder.setPositiveButton(activity.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    codeSave();
+
 
                 }
 
@@ -356,7 +404,7 @@ public class Dialog_Add_Pnezd {
 
                 }
             });
-            builder.show();
+            builder.show();*/
             ETdescription.setText(MyData.get_String("lastDescription"));
         });
         lista.setOnClickListener(v -> {
@@ -696,5 +744,11 @@ public class Dialog_Add_Pnezd {
         }
     }
 
+    private void updateValore() {
+        if (tvDiameter != null) {
+            tvDiameter.setText(Utils.readSensorCalibration(String.valueOf(DataSaved.Diametro_Corpo_Morto)));
+            MyData.push("M" + machineSelected + "Diametro_Corpo_Morto", Utils.writeMetri(String.valueOf(DataSaved.Diametro_Corpo_Morto).replace(",", ".")));
+        }
+    }
 
 }

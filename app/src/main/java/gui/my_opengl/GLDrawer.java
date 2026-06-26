@@ -624,6 +624,13 @@ public class GLDrawer {
         double[] bucketCenter = DataSaved.glL_AnchorView;
         GLES20.glUniform1f(colorProgram.uPointSize, radius * scala * 2f);
 
+        /*
+         * Diametro reale in metri del corpo morto attorno al PNEZD.
+         * Se <= 0 non viene disegnata nessuna sfera.
+         */
+        float deadBodyDiameter = (float) Math.max(0.0d, DataSaved.Diametro_Corpo_Morto);
+        float deadBodyRadiusGL = deadBodyDiameter > 0f ? deadBodyDiameter * scala * 0.5f : 0f;
+
         for (PNEZDPoint p : points) {
             float x = (float) ((p.getEasting() - bucketCenter[0]) * scala);
             float y = (float) ((p.getNorthing() - bucketCenter[1]) * scala);
@@ -635,10 +642,149 @@ public class GLDrawer {
             }
 
             float[] rgb = GL_Methods.parseColorToGL(color);
+
+            /*
+             * Prima la sfera wireframe, poi il punto PNEZD:
+             * cosi il punto resta visibile al centro.
+             */
+            if (deadBodyRadiusGL > 0f) {
+                drawPnezdDeadBodyWireSphere(gl, x, y, z, deadBodyRadiusGL, rgb);
+            }
+
             FloatBuffer buf = createFloatBuffer(new float[]{x, y, z});
             drawColoredVertices(buf, 1, GLES20.GL_POINTS, identity(), rgb[0], rgb[1], rgb[2], 1f);
         }
     }
+
+    private static void drawPnezdDeadBodyWireSphere(GL11 gl,
+                                                    float cx,
+                                                    float cy,
+                                                    float cz,
+                                                    float radius,
+                                                    float[] baseColor) {
+        if (radius <= 0f) return;
+
+        if (!isAabbVisible(
+                cx - radius, cy - radius, cz - radius,
+                cx + radius, cy + radius, cz + radius
+        )) {
+            return;
+        }
+
+        int segments = computeWireSphereSegments(radius);
+
+        float r = baseColor != null && baseColor.length > 0 ? baseColor[0] : 1f;
+        float g = baseColor != null && baseColor.length > 1 ? baseColor[1] : 1f;
+        float b = baseColor != null && baseColor.length > 2 ? baseColor[2] : 1f;
+        float[] sphereColor = new float[]{r, g, b, 0.88f};
+
+        /*
+         * Su alcuni device OpenGL ES forza comunque lineWidth a 1,
+         * ma dove supportato questa riga rende il contorno piu leggibile.
+         */
+        float lineWidth = Math.max(1.5f, Math.min(4.0f, radius * 0.08f));
+
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+        /*
+         * Tre cerchi principali ortogonali.
+         */
+        drawWireCircle3D(cx, cy, cz, radius, segments, 0, sphereColor, lineWidth);
+        drawWireCircle3D(cx, cy, cz, radius, segments, 1, sphereColor, lineWidth);
+        drawWireCircle3D(cx, cy, cz, radius, segments, 2, sphereColor, lineWidth);
+
+        /*
+         * Due meridiani obliqui aggiuntivi: aiutano a leggere la sfera
+         * anche quando la vista e molto inclinata.
+         */
+        drawWireCircle3DOblique(cx, cy, cz, radius, segments, true, sphereColor, lineWidth);
+        drawWireCircle3DOblique(cx, cy, cz, radius, segments, false, sphereColor, lineWidth);
+    }
+
+    /*
+     * plane:
+     * 0 = XY
+     * 1 = XZ
+     * 2 = YZ
+     */
+    private static void drawWireCircle3D(float cx,
+                                         float cy,
+                                         float cz,
+                                         float radius,
+                                         int segments,
+                                         int plane,
+                                         float[] color,
+                                         float lineWidth) {
+        float[] coords = new float[(segments + 1) * 3];
+
+        for (int i = 0; i <= segments; i++) {
+            double a = 2d * Math.PI * i / segments;
+            float ca = (float) Math.cos(a) * radius;
+            float sa = (float) Math.sin(a) * radius;
+
+            int idx = i * 3;
+            switch (plane) {
+                case 1:
+                    coords[idx] = cx + ca;
+                    coords[idx + 1] = cy;
+                    coords[idx + 2] = cz + sa;
+                    break;
+
+                case 2:
+                    coords[idx] = cx;
+                    coords[idx + 1] = cy + ca;
+                    coords[idx + 2] = cz + sa;
+                    break;
+
+                case 0:
+                default:
+                    coords[idx] = cx + ca;
+                    coords[idx + 1] = cy + sa;
+                    coords[idx + 2] = cz;
+                    break;
+            }
+        }
+
+        drawRawLineStrip3D(coords, segments + 1, color, lineWidth);
+    }
+
+    private static void drawWireCircle3DOblique(float cx,
+                                                float cy,
+                                                float cz,
+                                                float radius,
+                                                int segments,
+                                                boolean firstDiagonal,
+                                                float[] color,
+                                                float lineWidth) {
+        float[] coords = new float[(segments + 1) * 3];
+
+        float invSqrt2 = 0.70710678f;
+        float ux = invSqrt2;
+        float uy = firstDiagonal ? invSqrt2 : -invSqrt2;
+
+        for (int i = 0; i <= segments; i++) {
+            double a = 2d * Math.PI * i / segments;
+            float ca = (float) Math.cos(a) * radius;
+            float sa = (float) Math.sin(a) * radius;
+
+            int idx = i * 3;
+            coords[idx] = cx + ux * ca;
+            coords[idx + 1] = cy + uy * ca;
+            coords[idx + 2] = cz + sa;
+        }
+
+        drawRawLineStrip3D(coords, segments + 1, color, lineWidth);
+    }
+
+    private static int computeWireSphereSegments(float radiusWorld) {
+        float radiusPx = worldToPixels(Math.abs(radiusWorld));
+        float circumferencePx = (float) (2d * Math.PI * radiusPx);
+        int computed = Math.round(circumferencePx / 8f);
+
+        return clamp(Math.max(48, computed), 48, 144);
+    }
+
 
     public static void drawTextsBilBoardPNEZD(GL11 gl, List<PNEZDPoint> texts, double[] anchor, float charSpacingFactor, float scala, FontAtlas atlas) {
         if (texts == null || texts.isEmpty() || atlas == null) return;

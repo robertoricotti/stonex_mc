@@ -271,7 +271,7 @@ public class UpdateValuesService extends Service {
                     String Lunghezza_Roll = MyData.get_String("M" + i + "Lunghezza_Roll");
                     String Lunghezza_Braccio = MyData.get_String("M" + i + "Lunghezza_Braccio");
                     String Altezza_Attrezzo = MyData.get_String("M" + i + "Altezza_Attrezzo");
-
+                    String Diametro_Corpo_Morto = MyData.get_String("M" + i + "Diametro_Corpo_Morto");
                     String Lunghezza_Pontone = MyData.get_String("M" + i + "Lunghezza_Pontone");
                     String Larghezza_Pontone = MyData.get_String("M" + i + "Larghezza_Pontone");
                     String Delta_X_Draga = MyData.get_String("M" + i + "Delta_X_Draga");
@@ -517,6 +517,9 @@ public class UpdateValuesService extends Service {
                     }
                     if (Diametro_Ruotino_Dredge == null) {
                         MyData.push("M"+i+"Diametro_Ruotino_Dredge","0.0");
+                    }
+                    if (Diametro_Corpo_Morto == null) {
+                        MyData.push("M"+i+"Diametro_Corpo_Morto","0.0");
                     }
                     if (Lunghezza_Pitch == null) {
                         MyData.push("M"+i+"Lunghezza_Pitch","0.0");
@@ -2260,6 +2263,11 @@ public class UpdateValuesService extends Service {
                     DataSaved.Diametro_Ruotino_Dredge = MyData.get_Double("M" + indexMach + "Diametro_Ruotino_Dredge");
                 } catch (Exception e) {
                     Log.e("Error", "Errore nell'inizializzazione di Diametro_Ruotino_Dredge: " + e.getMessage());
+                }
+                try {
+                    DataSaved.Diametro_Corpo_Morto = MyData.get_Double("M" + indexMach + "Diametro_Corpo_Morto");
+                } catch (Exception e) {
+                    Log.e("Error", "Errore nell'inizializzazione di Diametro_Corpo_Morto: " + e.getMessage());
                 }
                 try {
                     DataSaved.Lunghezza_Pitch = MyData.get_Double("M" + indexMach + "Lunghezza_Pitch");
