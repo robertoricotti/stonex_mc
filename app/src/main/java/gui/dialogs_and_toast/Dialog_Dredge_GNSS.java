@@ -2,17 +2,23 @@ package gui.dialogs_and_toast;
 
 import static gui.MyApp.errorCode;
 import static gui.dialogs_and_toast.DialogPassword.isTech;
+import static packexcalib.exca.Sensors_Decoder_Dredge.Lunghezza_Fune;
 import static packexcalib.exca.Sensors_Decoder_Drill.RopeLen;
 import static packexcalib.gnss.CRS_Strings._150580;
 import static packexcalib.gnss.CRS_Strings._LOCAL_COORDINATES_FROM_GNSS;
 import static packexcalib.gnss.CRS_Strings._UTM;
 import static services.CanSender.GNSS_MSG;
+import static services.CanService.RopeCon;
 import static services.CanService.RopeCon_2;
 import static services.CanService.SlewCon;
 import static services.CanService.nmeaSTX_Disc;
 import static utils.MyTypes.AT_BOOM;
 import static utils.MyTypes.DREDGE;
 import static utils.MyTypes.DRILL;
+import static utils.MyTypes.PRIMA_MARCIA;
+import static utils.MyTypes.QUARTA_MARCIA;
+import static utils.MyTypes.SECONDA_MARCIA;
+import static utils.MyTypes.SESTA_MARCIA;
 import static utils.MyTypes.SMC;
 import static utils.MyTypes.SOLARFARM_MODE;
 import static utils.MyTypes.STONEX_SENSORS;
@@ -32,6 +38,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.PopupMenu;
 
 import com.example.stx_dig.R;
 
@@ -66,7 +74,7 @@ public class Dialog_Dredge_GNSS {
     TextView framA, boomA, boom2A, stickA, bucketA;
 
     Button cqpiu, cqmeno, setZeroRotary, setZeroSlew;
-    TextView tvCq, frame, boom1, boom2, stick, bucket;
+    TextView tvCq, frame, boom1, boom2, stick, bucket,txtmarcia;
     private boolean isUpdating = false;
     private Handler handler;
     EpsgDialog epsgDialog;
@@ -117,7 +125,7 @@ public class Dialog_Dredge_GNSS {
         tvCq = alertDialog.findViewById(R.id.tvcq);//
         txCon = alertDialog.findViewById(R.id.txconnected);//
         datetim = alertDialog.findViewById(R.id.datetim);
-
+        txtmarcia=alertDialog.findViewById(R.id.txtmarcia);
         serialCon = alertDialog.findViewById(R.id.serialCon);
         txtbennasx = alertDialog.findViewById(R.id.txtbennasx);
         txtbennacx = alertDialog.findViewById(R.id.txtbennacx);
@@ -191,6 +199,42 @@ public class Dialog_Dredge_GNSS {
     }
 
     private void onClick() {
+        txtmarcia.setOnClickListener(view -> {
+            PopupMenu popupMenu = new PopupMenu(activity, txtmarcia);
+
+            popupMenu.getMenu().add("1-Speed");
+            popupMenu.getMenu().add("2-Speed");
+            popupMenu.getMenu().add("4-Speed");
+            popupMenu.getMenu().add("6-Speed");
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                String selezione = item.getTitle().toString();
+
+
+                switch (selezione){
+                    case "1-Speed":
+                        DataSaved.MARCIA_DREDGE=PRIMA_MARCIA;
+                        MyData.push("M"+indexMach+"MARCIA_DREDGE",String.valueOf("1.0"));
+                        break;
+                    case "2-Speed":
+                        DataSaved.MARCIA_DREDGE=SECONDA_MARCIA;
+                        MyData.push("M"+indexMach+"MARCIA_DREDGE",String.valueOf("0.5"));
+                        break;
+                    case "4-Speed":
+                        DataSaved.MARCIA_DREDGE=QUARTA_MARCIA;
+                        MyData.push("M"+indexMach+"MARCIA_DREDGE",String.valueOf("0.25"));
+                        break;
+                    case "6-Speed":
+                        DataSaved.MARCIA_DREDGE=SESTA_MARCIA;
+                        MyData.push("M"+indexMach+"MARCIA_DREDGE",String.valueOf("0.1666"));
+                        break;
+                }
+
+                return true;
+            });
+
+            popupMenu.show();
+        });
         setZeroRotary.setOnLongClickListener(view -> {
 
             MyDeviceManager.CanWrite(true, 0, 0x610, 8, new byte[]{0x23, 0x03, 0x60, 0, 0, 0, 0, 0});
@@ -354,6 +398,22 @@ public class Dialog_Dredge_GNSS {
             public void run() {
                 // Update coord TextView with new coordinates
                 try {
+                    try {
+                        if (DataSaved.MARCIA_DREDGE==PRIMA_MARCIA){
+                            txtmarcia.setText("1-Speed");
+                        }else if (DataSaved.MARCIA_DREDGE==SECONDA_MARCIA){
+                            txtmarcia.setText("2-Speed");
+                        }else if (DataSaved.MARCIA_DREDGE==QUARTA_MARCIA){
+                            txtmarcia.setText("4-Speed");
+                        }else if (DataSaved.MARCIA_DREDGE==SESTA_MARCIA){
+                            txtmarcia.setText("6-Speed");
+                        }else {
+                            txtmarcia.setText("Invalid");
+                        }
+
+                    } catch (Exception ignored) {
+
+                    }
 
                     datetim.setText(NmeaListener.date_time_Y_M_D);
                     if (Build.BRAND.equals("SRT8PROS") || Build.BRAND.equals("SRT7PROS")) {

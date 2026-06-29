@@ -629,7 +629,7 @@ public class GLDrawer {
          * Se <= 0 non viene disegnata nessuna sfera.
          */
         float deadBodyDiameter = (float) Math.max(0.0d, DataSaved.Diametro_Corpo_Morto);
-        float deadBodyRadiusGL = deadBodyDiameter > 0f ? deadBodyDiameter * scala * 0.5f : 0f;
+        float deadBodyRadiusGL = deadBodyDiameter * scala * 0.5f;
 
         for (PNEZDPoint p : points) {
             float x = (float) ((p.getEasting() - bucketCenter[0]) * scala);
@@ -647,8 +647,15 @@ public class GLDrawer {
              * Prima la sfera wireframe, poi il punto PNEZD:
              * cosi il punto resta visibile al centro.
              */
-            if (deadBodyRadiusGL > 0f) {
+           /* if (deadBodyRadiusGL > 0f) {
                 drawPnezdDeadBodyWireSphere(gl, x, y, z, deadBodyRadiusGL, rgb);
+            }*/
+            if (deadBodyRadiusGL > 0f) {
+                drawPnezdDeadBodyBillboardCircle(gl, x, y, z, deadBodyRadiusGL, rgb);
+
+                if (My3DActivity.glVista3d == 1) {
+                    drawPnezdDeadBodyWireSphere(gl, x, y, z, deadBodyRadiusGL, rgb);
+                }
             }
 
             FloatBuffer buf = createFloatBuffer(new float[]{x, y, z});
@@ -676,7 +683,7 @@ public class GLDrawer {
         float r = baseColor != null && baseColor.length > 0 ? baseColor[0] : 1f;
         float g = baseColor != null && baseColor.length > 1 ? baseColor[1] : 1f;
         float b = baseColor != null && baseColor.length > 2 ? baseColor[2] : 1f;
-        float[] sphereColor = new float[]{r, g, b, 0.88f};
+        float[] sphereColor = new float[]{r, g, b, 0.5f};
 
         /*
          * Su alcuni device OpenGL ES forza comunque lineWidth a 1,
@@ -2206,6 +2213,73 @@ public class GLDrawer {
         } catch (Exception e) {
             Log.e(TAG, "drawLineDist2DFromWorld", e);
         }
+    }
+
+    private static void drawPnezdDeadBodyBillboardCircle(GL11 gl,
+                                                         float cx,
+                                                         float cy,
+                                                         float cz,
+                                                         float radius,
+                                                         float[] baseColor) {
+        if (radius <= 0f) return;
+        if (!hasViewMatrix) return;
+
+        if (!isAabbVisible(
+                cx - radius, cy - radius, cz - radius,
+                cx + radius, cy + radius, cz + radius
+        )) {
+            return;
+        }
+
+        int segments = computeWireSphereSegments(radius);
+
+        float r = baseColor != null && baseColor.length > 0 ? baseColor[0] : 1f;
+        float g = baseColor != null && baseColor.length > 1 ? baseColor[1] : 1f;
+        float b = baseColor != null && baseColor.length > 2 ? baseColor[2] : 1f;
+        float[] circleColor = new float[]{r, g, b, 0.88f};
+
+        float lineWidth = Math.max(1.5f, Math.min(4.0f, radius * 0.08f));
+
+        float[] right = getCameraRight();
+        float[] up = getCameraUp();
+
+        normalize3(right);
+        normalize3(up);
+
+        float[] coords = new float[(segments + 1) * 3];
+
+        for (int i = 0; i <= segments; i++) {
+            double a = 2d * Math.PI * i / segments;
+
+            float ca = (float) Math.cos(a) * radius;
+            float sa = (float) Math.sin(a) * radius;
+
+            int idx = i * 3;
+
+            coords[idx]     = cx + right[0] * ca + up[0] * sa;
+            coords[idx + 1] = cy + right[1] * ca + up[1] * sa;
+            coords[idx + 2] = cz + right[2] * ca + up[2] * sa;
+        }
+
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+        drawRawLineStrip3D(coords, segments + 1, circleColor, lineWidth);
+    }
+    private static void normalize3(float[] v) {
+        if (v == null || v.length < 3) return;
+
+        float len = (float) Math.sqrt(
+                v[0] * v[0] +
+                        v[1] * v[1] +
+                        v[2] * v[2]
+        );
+
+        if (len < 1e-6f) return;
+
+        v[0] /= len;
+        v[1] /= len;
+        v[2] /= len;
     }
 }
 

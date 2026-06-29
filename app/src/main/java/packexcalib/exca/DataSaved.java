@@ -28,6 +28,7 @@ import iredes.RigStatus_IR;
 
 public class DataSaved {
     //Dredge
+    public static int EnableMapping;
     public static double Diametro_Corpo_Morto;
     public static int Dredge_Interface_Type;//0=Stonex 1=Liebherr 2=Senneboghen
     public static int Pos_FRAME;//vedi exca
@@ -85,7 +86,7 @@ public class DataSaved {
     public static double LowThreshold;
     public static double PassoGriglia;
     public static String DredgeFileName;
-    public static int EnableMapping;
+
     public static String Drill_Antenna_Mounting = "BODY";
     public static String Drill_Mast_Position = "FORWARD";
 
